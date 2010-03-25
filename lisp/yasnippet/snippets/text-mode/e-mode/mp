@@ -1,0 +1,3 @@
+#name : method port
+# --
+${1:Name?} : ${2:in} method_port of ${3:Type?} is instance;$0

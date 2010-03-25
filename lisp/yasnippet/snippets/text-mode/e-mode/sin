@@ -1,0 +1,3 @@
+#name : keep soft in
+# --
+keep soft `(e-mode-abbrev-find-previous-field)` in [${1:Range?}];$0

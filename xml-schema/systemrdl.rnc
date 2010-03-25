@@ -1,0 +1,255 @@
+default namespace = "http://denali.com/please/assign/me/2.0"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+start = rdl
+rdl =
+  
+  ## 
+  ##         container for all toplevel RDL definitions
+  ##       
+  element rdl {
+    
+    ## 
+    ##           name of toplevel addrmap definition - root of hierarchy
+    ##         
+    attribute name { identifier },
+    
+    ## 
+    ##           SystemRDL XML schema version used by the description
+    ##         
+    attribute version { "2.0" },
+    
+    ## 
+    ##             copyright holder information
+    ##           
+    element copyright { text }?,
+    
+    ## 
+    ##             information about the software which generated the description
+    ##           
+    element generator {
+      
+      ## 
+      ##                 name of generating software package
+      ##               
+      element name { text }
+      & 
+        ## 
+        ##		  company which produced generation software
+        ##		
+        element company { text }?
+      & 
+        ## 
+        ##		  version of software used to generate description
+        ##		
+        element version { text }?
+    }?,
+    
+    ## 
+    ##	    id of user who ran the software to generate the description
+    ##	  
+    element creator { text }?,
+    
+    ## 
+    ##             generation timestamp
+    ##           
+    element pubdate { xsd:dateTime }?,
+    enum*,
+    (define | instance)+,
+    
+    ## 
+    ##             container for references to all source files used during generation
+    ##           
+    element sources { source* }?
+  }
+enum =
+  
+  ## 
+  ##         enumerated type definition
+  ##       
+  element enum {
+    
+    ## 
+    ##           name of enumerated type being defined
+    ##         
+    attribute name { identifier },
+    
+    ## 
+    ##           bit width of all defined values
+    ##         
+    attribute width { xsd:positiveInteger },
+    source?,
+    encoding*
+  }
+encoding =
+  
+  ## 
+  ##         specific name to value association within an enumeration.  the
+  ##         value is defined by the required "value" property
+  ##       
+  element encoding {
+    
+    ## 
+    ##           symbolic name representing encoded value
+    ##         
+    attribute name { identifier },
+    property+
+  }
+define =
+  
+  ## 
+  ##         component definition.  includes local enum and component
+  ##         definitions, component instances and property assignments.
+  ##         "static" properties applied to this component (without a path
+  ##         attribute) shall appear before any component definitions or
+  ##         instances.  "dynamic" property assignments (with a path
+  ##         attribute) shall appear after any instances they reference
+  ##       
+  element define {
+    
+    ## 
+    ##           the component type, currently one of [field, reg, regfile,
+    ##           addrmap, signal]
+    ##         
+    attribute component { identifier },
+    
+    ## 
+    ##           name of component being defined
+    ##         
+    attribute name { identifier },
+    
+    ## 
+    ##             bit width of a register
+    ##           
+    attribute width { xsd:nonNegativeInteger }?,
+    source?,
+    enum*,
+    (define | instance | property)*
+  }
+instance =
+  
+  ## 
+  ##         component instantiation or reference
+  ##       
+  element instance {
+    
+    ## 
+    ##             instantiated component type (copied from definition)
+    ##           
+    attribute component { identifier }?,
+    
+    ## 
+    ##           name of component instance
+    ##         
+    attribute name { identifier },
+    
+    ## 
+    ##             reference to named component definition
+    ##           
+    attribute type { identifier }?,
+    
+    ## 
+    ##             size of an arrayed instance. defaults to 1 if unspecified
+    ##           
+    attribute num { xsd:positiveInteger }?,
+    # these could really be properties...
+    
+    ## 
+    ##             position of a field instance
+    ##           
+    attribute lsb { xsd:nonNegativeInteger }?,
+    (
+     ## 
+     ##             starting address of instance within container
+     ##           
+     attribute addr { xsd:nonNegativeInteger },
+     
+     ## 
+     ##               array stride, address difference between consecutive
+     ##               items in an arrayed instance
+     ##             
+     attribute incr { xsd:nonNegativeInteger }?)?,
+    source?,
+    (property | instance)*
+  }
+property =
+  
+  ## 
+  ##         assignment of or reference to a component property
+  ##       
+  element property {
+    
+    ## 
+    ##             hierarchical path to instance containing the property of interest
+    ##           
+    attribute path { instanceRef }?,
+    
+    ## 
+    ##           name of the property to assign/reference
+    ##         
+    attribute name { identifier },
+    
+    ## 
+    ##             datatype of the property value to assign
+    ##           
+    attribute type {
+      "integer"
+      | "string"
+      | "boolean"
+      | "ref"
+      | "enum"
+      | "accessEnum"
+      | "intrEnum"
+    }?,
+    
+    ## 
+    ##             width of sized integer values
+    ##           
+    attribute width { xsd:positiveInteger }?,
+    
+    ## 
+    ##             specify who defined this property. currently supported
+    ##             values are: NATIVE - indicating the property is built into
+    ##             the SystemRDL specification, or USER - indicating the
+    ##             property was added as a user-defined property.  the
+    ##             default value is NATIVE (which should be omitted for brevity)
+    ##           
+    attribute creator { "NATIVE" | "USER" }?,
+    (accessEnum
+     | intrEnum
+     | xsd:integer
+     | xsd:boolean
+     | xsd:string
+     | (property | instance)+)?
+  }
+source =
+  
+  ## 
+  ##         reference to original source location
+  ##       
+  element source {
+    attribute href { xsd:anyURI },
+    attribute line { xsd:positiveInteger }?,
+    
+    ## 
+    ##             modification timestamp of source file
+    ##	  
+    attribute modified { xsd:dateTime }?
+  }
+identifier = xsd:string { pattern = "[0-9a-zA-Z_]+" }
+instanceRef =
+  xsd:string {
+    pattern =
+      "([0-9a-zA-Z_]*(\[[0-9]+\])?[.])*[0-9a-zA-Z_]*(\[[0-9]+\])?"
+  }
+
+## 
+##       enumerated type used for the values of "hw" and "sw" access
+##       properties.  defaults to RW if unspecified
+##     
+accessEnum = "R" | "W" | "RW" | "NA"
+
+## 
+##       enumerated type used for the value of the "intr" property
+##     
+intrEnum = "POSEDGE" | "NEGEDGE" | "BOTHEDGE" | "LEVEL" | "NONSTICKY"

@@ -1,0 +1,5 @@
+#name : keep soft select
+# --
+keep soft `(e-mode-abbrev-find-previous-field)` == select {
+$>$0
+}$>;

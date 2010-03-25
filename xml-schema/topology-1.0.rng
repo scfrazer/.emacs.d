@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!--
+  Copyright 2006 (c) Cisco Systems Inc.
+  Cisco Confidential
+-->
+
+<grammar
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+  ns="http://rtp-eng.cisco.com/2006/csco_simipc/topology"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
+
+  <start>
+    <choice>
+      <ref name="topology_set_elem"/>
+      <ref name="topology_elem"/>
+    </choice>
+  </start>
+
+
+  <define name="topology_set_elem">
+    <element name="topology-set">
+      <a:documentation>
+        collection of topology definitions
+      </a:documentation>
+
+      <attribute name="version">
+        <value type="decimal">1.0</value>
+      </attribute>
+
+      <interleave>
+        <zeroOrMore>
+          <ref name="topology_elem"/>
+        </zeroOrMore>
+        <ref name="other"/>
+      </interleave>
+    </element>
+  </define>
+
+
+  <define name="topology_elem">
+    <element name="topology">
+      <a:documentation>
+        definition of a simulation run topology - including component
+        members and the connections between them
+      </a:documentation>
+
+      <optional>
+        <attribute name="id">
+          <a:documentation>
+            identifier for this topology - must be unique within the
+            topology set
+          </a:documentation>
+          <data type="ID"/>
+        </attribute>
+      </optional>
+
+      <optional>
+        <attribute name="base">
+          <a:documentation>
+            location of one or more base topologies from which to
+            derive this topology.  all components and streams from the
+            bases will be included in the order listed, as if they
+            were prepended to this topology
+          </a:documentation>
+
+          <list>
+            <data type="anyURI"/>
+          </list>
+        </attribute>
+      </optional>
+
+      <optional>
+        <element name="desc">
+          <a:documentation>
+            description of this topology for documentation generation
+          </a:documentation>
+          <text/>
+        </element>
+      </optional>
+
+      <interleave>
+        <zeroOrMore>
+          <ref name="component_elem"/>
+        </zeroOrMore>
+        <ref name="other"/>
+      </interleave>
+    </element>
+  </define>
+
+
+  <define name="component_elem">
+    <element name="component">
+      <a:documentation>
+        component process of a simulation run
+      </a:documentation>
+
+      <attribute name="name">
+        <a:documentation>
+          generic name of this component type.  this should be the
+          base component name with no client suffix appended
+        </a:documentation>
+      </attribute>
+
+      <optional>
+        <attribute name="map-to">
+          <a:documentation>
+            optional renaming used to differentiate multiple
+            occurrences of the same component type.  if specified,
+            streams use this name to refer to the specific component
+            instance.  if unspecified, the generic identifier from
+            "name" (which must be unique within the topology) is used
+            to identify the component
+          </a:documentation>
+        </attribute>
+      </optional>
+
+      <optional>
+        <attribute name="enable">
+          <a:documentation>
+            optional flag to disable or re-enable a component.  all
+            streams connected to a disabled component will be set to
+            "#DISCON".  especially useful for inherited topologies
+            (also see the "base" attribute of the "topology" element).
+            defaults to "true"
+          </a:documentation>
+
+          <data type="boolean"/>
+        </attribute>        
+      </optional>
+
+      <interleave>
+        <zeroOrMore>
+          <ref name="stream_elem"/>
+        </zeroOrMore>
+        <ref name="other"/>
+      </interleave>
+    </element>
+  </define>
+
+
+  <define name="stream_elem">
+    <element name="stream">
+      <a:documentation>
+        named connection from this component to another
+      </a:documentation>
+
+      <attribute name="name">
+        <a:documentation>
+          
+        </a:documentation>
+      </attribute>
+
+      <optional>
+        <attribute name="map-to">
+          <a:documentation>
+            [ FIXME ].  may also be set to the special value
+            "#DISCONNECT" (or any string starting with "#DISCON") to
+            completely disconnect the stream from the simulation
+          </a:documentation>
+        </attribute>
+      </optional>
+      <ref name="other"/>
+    </element>
+  </define>
+
+  <define name="other">
+    <zeroOrMore>
+      <choice>
+
+        <attribute>
+          <anyName>
+            <except>
+              <nsName/>
+              <nsName ns=""/>
+            </except>
+          </anyName>
+        </attribute>
+
+        <element>
+          <anyName>
+            <except>
+              <nsName/>
+            </except>
+          </anyName>
+          <zeroOrMore>
+            <choice>
+              <attribute><anyName/></attribute>
+              <text/>
+              <ref name="any"/>
+            </choice>
+          </zeroOrMore>
+        </element>
+
+      </choice>
+    </zeroOrMore>
+  </define>
+
+  <define name="any">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+        <choice>
+          <attribute><anyName/></attribute>
+          <text/>
+          <ref name="any"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+</grammar>

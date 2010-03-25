@@ -1,0 +1,5 @@
+#name : keep soft for each
+# --
+keep soft for each in `(e-mode-abbrev-find-previous-field)` {
+$>$0
+}$>;

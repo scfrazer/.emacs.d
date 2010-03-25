@@ -1,0 +1,32 @@
+;;; my-isearch.el
+
+(defun my-isearch-exit-other-end ()
+  "Exit isearch at the other end"
+  (interactive)
+  (when isearch-forward (goto-char isearch-other-end))
+  (isearch-exit))
+
+(defun my-isearch-word-at-point ()
+  "Search for word at point"
+  (interactive)
+  (call-interactively 'isearch-forward))
+
+(defun my-isearch-mode-hook ()
+  (if (equal this-command 'my-isearch-word-at-point)
+      (isearch-yank-string
+       (buffer-substring-no-properties (progn (skip-syntax-backward "w_") (point))
+                                       (save-excursion (skip-syntax-forward "w_") (point))))
+    (when (and transient-mark-mode mark-active)
+      (when (= (point) (region-end))
+        (exchange-point-and-mark))
+      (isearch-yank-string (buffer-substring (point) (region-end))))
+    (setq mark-active nil)))
+
+(add-hook 'isearch-mode-hook 'my-isearch-mode-hook)
+
+(define-key isearch-mode-map (kbd "C-n") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "C-p") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "C-t") 'isearch-toggle-case-fold)
+(define-key isearch-mode-map (kbd "<C-return>") 'my-isearch-exit-other-end)
+
+(provide 'my-isearch)

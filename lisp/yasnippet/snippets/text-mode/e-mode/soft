@@ -1,0 +1,3 @@
+#name : keep soft field
+# --
+keep soft `(e-mode-abbrev-find-previous-field)` == ${1:Value?};$0

@@ -1,0 +1,5 @@
+#name : keep for each
+# --
+keep for each in `(e-mode-abbrev-find-previous-field)` {
+$>$0
+}$>;
