@@ -43,7 +43,7 @@
 (require 'my-erc)
 (require 'my-grep-ed)
 (require 'my-ido)
-(require 'my-igrep)
+(require 'my-grep)
 (require 'my-imenu)
 (require 'my-increment-number)
 (require 'my-isearch)
@@ -155,7 +155,6 @@
               mouse-autoselect-window t
               mouse-highlight 1
               mouse-yank-at-point t
-              my-shrink-window-lines 20
               nxml-sexp-element-flag t
               org-archive-location "%s_archive::"
               org-archive-mark-done nil
@@ -426,6 +425,13 @@
       (narrow-to-region start end)
       (fill-paragraph nil))))
 
+(defun my-fit-window (&optional arg)
+  "Fit window to buffer or `frame-height' / 4.
+Prefix with C-u to fit the `next-window'."
+  (interactive "P")
+  (let ((win (if arg (next-window) (get-buffer-window))))
+    (fit-window-to-buffer win (/ (frame-height) 4))))
+
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
@@ -648,16 +654,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
         ((and (equal major-mode 'dired-mode) (save-excursion (dired-move-to-filename)))
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
-
-(defun my-shrink-window (&optional arg)
-  "Set the window height to fit or ``my-shrink-window-lines'', whichever is smaller.
-Prefix with C-u to shrink the other-window."
-  (interactive "P")
-  (when arg
-    (other-window 1))
-  (shrink-window (- (window-height) (min (count-lines (point-min) (point-max)) my-shrink-window-lines)))
-  (when arg
-    (other-window -1)))
 
 (defun my-tip-of-the-day ()
   "Tip of the day"
@@ -889,7 +885,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-g" 'grep-buffers)
-(my-keys-define "C-c G" 'igrep-find)
+(my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c H" 'unhighlight-regexp)
 (my-keys-define "C-c L" 'll-debug-revert)
 (my-keys-define "C-c N" (lambda () (interactive) (find-file "~/Doc/scfrazer-notes.texi")))
@@ -899,7 +895,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c c" 'my-comment-region-after-copy)
 (my-keys-define "C-c e" 'my-ediff-buffer-with-file)
 (my-keys-define "C-c f" 'font-lock-fontify-buffer)
-(my-keys-define "C-c g" 'igrep)
+(my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c i" (lambda () (interactive) (find-file "~/.emacs.d/ideas.org")))
 (my-keys-define "C-c j" 'my-join-line-with-next)
 (my-keys-define "C-c k" 'browse-kill-ring)
@@ -918,13 +914,13 @@ Only works if there are exactly two windows."
 (my-keys-define "C-k" 'my-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
 (my-keys-define "C-x $" 'my-set-selective-display)
-(my-keys-define "C-x -" 'my-shrink-window)
+(my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
-(my-keys-define "C-x _" (lambda () (interactive) (my-shrink-window t)))
+(my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" ahg-global-map) ;; Yes, this one is not quoted
 (my-keys-define "C-x r a" 'append-to-register)
