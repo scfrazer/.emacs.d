@@ -637,6 +637,8 @@ Uses `query-replace-regexp' internally."
                         "disp(" ");"
                         '(nil "'" (ll-debug-create-next-debug-string) "'"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun ll-debug-get-e-mode-function ()
   (save-excursion
     (when (re-search-backward "^\\s-*\\(\\(\\(\\(package\\|protected\\|private\\)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*([^)]*?)\\s-*\\(.*?[ \t\n]+\\)?is\\(\\s-+\\(also\\|first\\|only\\|empty\\|undefined\\)\\)?\\)\\|\\(on\\s-+\\([a-zA-Z0-9_]+\\)\\)\\)[ \t\n]*[{;]" nil t)
@@ -671,6 +673,16 @@ Uses `query-replace-regexp' internally."
    ")\")"
    ("Variable name: "
     "; print " str)))
+
+(defun ll-debug-renumber ()
+  "Renumber the debug messages in order."
+  (interactive)
+  (let ((next-num 1))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward (concat (regexp-quote ll-debug-output-prefix) "\\([0-9]+\\)") nil t)
+        (replace-match (format "%s%d" ll-debug-output-prefix next-num))
+        (setq next-num (1+ next-num))))))
 
 (provide 'll-debug)
 

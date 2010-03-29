@@ -885,6 +885,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-g" 'grep-buffers)
+(my-keys-define "C-c C-l" 'll-debug-renumber)
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c H" 'unhighlight-regexp)
 (my-keys-define "C-c L" 'll-debug-revert)
