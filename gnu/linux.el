@@ -2,17 +2,18 @@
 
 (normal-erase-is-backspace-mode 1)
 
-;; ClearCase VOBs can have problems listing space
+;; Work stuff
 
-(defvar ls-vob "~/.emacs.d/bin/ls-vob")
-(when (file-exists-p ls-vob)
-  (setq dired-free-space-program nil)
-  (setq insert-directory-program ls-vob))
+(when (string= (getenv "SHELL") "/bin/tcsh")
 
-;; Use a modern grep!
+  ;; ClearCase VOBs can have problems listing space
 
-(setq igrep-program "/bin/egrep")
+  (defvar ls-vob "~/.emacs.d/bin/ls-vob")
+  (when (file-exists-p ls-vob)
+    (setq dired-free-space-program nil)
+    (setq insert-directory-program ls-vob))
 
-;; Better font menu
+  ;; Fix grep color issue
 
-;;(global-set-key [(shift down-mouse-1)] 'alt-mouse-set-font)
+  (grep-apply-setting 'grep-template "setenv GREP_COLOR \"01;31\" ; grep -nH -d skip -I -E -e <R> <C> <F>")
+  (grep-apply-setting 'grep-find-template "setenv GREP_COLOR \"01;31\" ; find <D> <X> -type f <F> -print0 | xargs -0 -e grep -nH -I -E -e <R> <C>"))
