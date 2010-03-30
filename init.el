@@ -940,8 +940,6 @@ Only works if there are exactly two windows."
 (my-keys-define "M-;" 'comment-indent)
 (my-keys-define "M-?" 'etags-select-find-tag-at-point)
 (my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
-(my-keys-define "M-J" 'makd-backward-kill-section)
-(my-keys-define "M-K" 'makd-forward-kill-section)
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
@@ -954,8 +952,6 @@ Only works if there are exactly two windows."
 (my-keys-define "M-e" 'makd-select-word-at-point)
 (my-keys-define "M-g" 'goto-line)
 (my-keys-define "M-i" 'ido-switch-buffer)
-(my-keys-define "M-j" 'makd-backward-kill)
-(my-keys-define "M-k" 'makd-forward-kill)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
 (my-keys-define "M-s" 'makd-yank)
@@ -987,11 +983,11 @@ Only works if there are exactly two windows."
 (my-keys-define "C->" 'makd-forward-block)
 (my-keys-define "C-<" 'makd-backward-block)
 
-(my-keys-define "M-H" 'makd-backward-word-section)
-(my-keys-define "M-L" 'makd-forward-word-section)
+(my-keys-define "M-H" 'makd-backward-word-end)
+(my-keys-define "M-L" 'makd-forward-word-end)
 
-(my-keys-define "C-S-h" 'makd-backward-word-end)
-(my-keys-define "C-S-l" 'makd-forward-word-end)
+(my-keys-define "C-S-h" 'makd-backward-word-section)
+(my-keys-define "C-S-l" 'makd-forward-word-section)
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)
@@ -1000,6 +996,14 @@ Only works if there are exactly two windows."
 
 (my-keys-define "C-S-n" 'makd-scroll-down)
 (my-keys-define "C-S-p" 'makd-scroll-up)
+
+;; Kill
+
+(my-keys-define "M-j" 'makd-backward-kill)
+(my-keys-define "M-k" 'makd-forward-kill)
+
+(my-keys-define "M-J" 'makd-backward-kill-section)
+(my-keys-define "M-K" 'makd-forward-kill-section)
 
 ;; Force myself to stop using the arrow keys :)
 
