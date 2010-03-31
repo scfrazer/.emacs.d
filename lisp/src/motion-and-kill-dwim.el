@@ -424,8 +424,8 @@ With argument, do this that many times"
        ((eq c ?p) (kill-region (point) (progn (makd-forward-paragraph) (point))))
        ((eq c ?P) (kill-region (point) (progn (makd-backward-paragraph) (point))))
 
-       ((eq c ?>) (kill-region (point) (progn (makd-forward-block) (point))))
-       ((eq c ?<) (kill-region (point) (progn (makd-backward-block) (point))))
+       ((eq c ?l) (kill-region (point) (progn (makd-forward-block) (point))))
+       ((eq c ?L) (kill-region (point) (progn (makd-backward-block) (point))))
 
        ((eq c ?m) (kill-sexp 1))
        ((eq c ?M) (kill-sexp -1))
@@ -464,8 +464,8 @@ With argument, do this that many times"
                   ((eq c ?p) (makd-forward-paragraph))
                   ((eq c ?P) (makd-backward-paragraph))
 
-                  ((eq c ?>) (makd-forward-block))
-                  ((eq c ?<) (makd-backward-block))
+                  ((eq c ?l) (makd-forward-block))
+                  ((eq c ?L) (makd-backward-block))
 
                   ((eq c ?m) (forward-sexp 1))
                   ((eq c ?M) (forward-sexp -1))
