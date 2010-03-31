@@ -25,16 +25,12 @@
 
 ;;; Commentary:
 
-;; A set of motion and kill do-what-I-mean commands, plus a minor-mode.
+;; A set of motion and kill do-what-I-mean commands.
 
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper functions
-
-(defun makd-mark-active ()
-  "Is region active."
-  (and transient-mark-mode mark-active))
 
 (defun makd-dotimes (n form)
   "Optionally do a form a number of times."
@@ -43,6 +39,18 @@
     (eval form)
     (setq n (1- n))))
 
+(defvar makd-highlight-delay 0.5
+  "*How long to highlight.")
+
+(defun makd-highlight (beg end &optional face)
+  "Highlight a region temporarily."
+  (unless face
+    (setq face 'isearch))
+  (let ((ov (make-overlay beg end)))
+    (overlay-put ov 'face face)
+    (sit-for makd-highlight-delay)
+    (delete-overlay ov)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Control variables
 
@@ -50,9 +58,6 @@
   "*Sections can also be camelCase")
 
 (make-local-variable 'makd-camelcase-sections)
-
-(defvar makd-highlight-delay 0.5
-  "*How long to highlight.")
 
 (defvar makd-block-indented-modes (list 'emacs-lisp-mode
                                         'lisp-mode
@@ -87,16 +92,6 @@ With argument, do this that many times"
   (makd-dotimes n '(progn (unless (looking-at "\\(\\sw\\|\\s_\\)")
                             (skip-syntax-forward "^w_"))
                           (skip-syntax-forward "w_"))))
-
-(defun makd-forward-to-char (n char)
-  "Move forward to CHAR.
-With argument, do this that many times"
-  (interactive "p\ncForward to char: ")
-  (unless (and n (integerp n) (> n 0)) (setq n 1))
-  (let ((case-fold-search nil))
-    (forward-char)
-    (search-forward (char-to-string char) nil nil n))
-  (backward-char))
 
 (defun makd-forward-paragraph (&optional n)
   "Like forward-paragraph, but goes to next non-blank line.
@@ -175,14 +170,6 @@ With argument, do this that many times"
   (makd-dotimes n '(progn (when (looking-back "\\(\\sw\\|\\s_\\)")
                             (skip-syntax-backward "w_"))
                           (skip-syntax-backward "^w_"))))
-
-(defun makd-backward-to-char (n char)
-  "Move backward to CHAR.
-With argument, do this that many times"
-  (interactive "p\ncBackward to char: ")
-  (unless (and n (integerp n) (> n 0)) (setq n 1))
-  (let ((case-fold-search nil))
-    (search-backward (char-to-string char) nil nil n)))
 
 (defun makd-backward-paragraph (&optional n)
   "Go to first line after previous blank line.
@@ -268,7 +255,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
 ;; Utility region functions
 
 (defun makd-region-inside-pair (char dir)
-  "Find the region inside paired chars ()[]{}<>"
+  "Find the region inside paired chars ()[]{}"
   (let* ((beg (point))
          (end beg)
          regex open close)
@@ -283,11 +270,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
           ((or (eq char ?\{) (eq char ?\}))
            (setq regex "[{}]"
                  open  ?\{
-                 close ?\}))
-          ((or (eq char ?\<) (eq char ?\>))
-           (setq regex "[<>]"
-                 open  ?\<
-                 close ?\>)))
+                 close ?\})))
     (save-excursion
       (cond ((equal dir 'backward)
              (setq beg (makd-backward-paired regex open close)))
@@ -330,34 +313,6 @@ This is a utility function, you probably want `makd-backward-word-section'."
     (backward-char))
   (point))
 
-(defun makd-region-inside-quotes (char dir)
-  "Find the region inside quote chars \"'"
-  (let* ((beg (point))
-         (end beg)
-         (regex (char-to-string char))
-         done)
-    (unless (equal dir 'forward)
-      (save-excursion
-        (setq done nil)
-        (while (not (or done (bobp)))
-          (when (re-search-backward regex nil 'go)
-            (setq done (not (equal (char-before) ?\\)))))
-        (unless (bobp)
-          (forward-char))
-        (setq beg (point))))
-    (unless (equal dir 'backward)
-      (save-excursion
-        (setq done nil)
-        (while (not (or done (eobp)))
-          (when (re-search-forward regex nil 'go)
-            (backward-char)
-            (setq done (not (equal (char-before) ?\\)))
-            (forward-char)))
-        (unless (eobp)
-          (backward-char))
-        (setq end (point))))
-    (cons beg end)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill
 
@@ -373,7 +328,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
 8. Else kill next char
 With argument, do this that many times"
   (interactive "p")
-  (if (makd-mark-active)
+  (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (makd-dotimes n '(kill-region (point)
                                   (progn
@@ -418,7 +373,7 @@ With argument, do this that many times"
 7. Else kill previous char
 With argument, do this that many times"
   (interactive "p")
-  (if (makd-mark-active)
+  (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (makd-dotimes n '(kill-region (point)
                                   (progn
@@ -455,30 +410,90 @@ With argument, do this that many times"
                                   (makd-backward-section)
                                   (point)))))
 
-;; Kill to char
+(defun makd-kill-unit ()
+  "Kill over a unit of text."
+  (interactive)
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end))
+    (message "Kill:")
+    (let ((c (read-char)) dir)
+      (cond
+       ((eq c ?/) (call-interactively 'makd-kill-to-isearch))
+       ((eq c ??) (call-interactively 'makd-backward-kill-to-isearch))
 
-(defun makd-kill-to-char (n char)
-  "Kill up to CHAR.
-With argument, do this that many times"
-  (interactive "p\ncKill to char: ")
-  (unless (and n (integerp n) (> n 0)) (setq n 1))
-  (let ((case-fold-search nil))
-    (kill-region (point) (progn
-                           (forward-char)
-                           (search-forward (char-to-string char) nil nil n)
-                           (backward-char)
-                           (point)))))
+       ((eq c ?p) (kill-region (point) (progn (makd-forward-paragraph) (point))))
+       ((eq c ?P) (kill-region (point) (progn (makd-backward-paragraph) (point))))
 
-(defun makd-backward-kill-to-char (n char)
-  "Kill backwards up to CHAR.
-With argument, do this that many times"
-  (interactive "p\ncBackward kill to char: ")
-  (unless (and n (integerp n) (> n 0)) (setq n 1))
-  (let ((case-fold-search nil))
-    (kill-region (point) (progn
-                           (search-backward (char-to-string char) nil nil n)
-                           (forward-char)
-                           (point)))))
+       ((eq c ?>) (kill-region (point) (progn (makd-forward-block) (point))))
+       ((eq c ?<) (kill-region (point) (progn (makd-backward-block) (point))))
+
+       ((eq c ?m) (kill-sexp 1))
+       ((eq c ?M) (kill-sexp -1))
+
+       ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\})))
+        (kill-region (point-at-bol) (point-at-bol 2))))
+
+      (when (eq c ?i)
+        (message "Kill: i")
+        (setq c (read-char))
+        (setq dir 'inside))
+
+      (cond ((memq c '(?\( ?\[ ?\{))
+             (unless dir
+               (setq dir 'backward)))
+            ((memq c '(?\) ?\] ?\}))
+             (unless dir
+               (setq dir 'forward))))
+      (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\}))
+        (let ((region (makd-region-inside-pair c dir)))
+          (kill-region (car region) (cdr region)))))))
+
+(defun makd-copy-unit ()
+  "Copy over a unit of text."
+  (interactive)
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (message "Copy:")
+    (let ((c (read-char)))
+      (cond ((eq c ?/) (call-interactively 'makd-copy-to-isearch))
+            ((eq c ??) (call-interactively 'makd-backward-copy-to-isearch))
+            (t
+             (let ((beg (point)) end dir)
+               (save-excursion
+                 (cond
+                  ((eq c ?p) (makd-forward-paragraph))
+                  ((eq c ?P) (makd-backward-paragraph))
+
+                  ((eq c ?>) (makd-forward-block))
+                  ((eq c ?<) (makd-backward-block))
+
+                  ((eq c ?m) (forward-sexp 1))
+                  ((eq c ?M) (forward-sexp -1))
+
+                  ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\})))
+                   (setq beg (point-at-bol)) (forward-line) (beginning-of-line)))
+
+                 (setq end (point)))
+
+               (when (eq c ?i)
+                 (message "Copy: i")
+                 (setq c (read-char))
+                 (setq dir 'inside))
+
+               (cond ((memq c '(?\( ?\[ ?\{))
+                      (unless dir
+                        (setq dir 'backward)))
+                     ((memq c '(?\) ?\] ?\}))
+                      (unless dir
+                        (setq dir 'forward))))
+               (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\}))
+                 (let ((region (makd-region-inside-pair c dir)))
+                   (setq beg (car region)
+                         end (cdr region))))
+
+               (unless (= beg end)
+                 (makd-highlight beg end 'makd-copy-region-face)
+                 (kill-ring-save beg end))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill/copy with isearch
@@ -487,6 +502,7 @@ With argument, do this that many times"
 (defvar makd-isearch-end nil)
 (defvar makd-isearch-overlay nil)
 (defvar makd-isearch-face nil)
+(defvar makd-isearch-forward nil)
 
 (defface makd-kill-region-face
   '((t (:inherit region)))
@@ -501,32 +517,45 @@ With argument, do this that many times"
 (defun makd-kill-to-isearch ()
   "Kill from point to somewhere else using isearch."
   (interactive)
-  (unwind-protect
-      (save-excursion
-        (setq makd-isearch-start (point))
-        (setq makd-isearch-face 'makd-kill-region-face)
-        (when (isearch-forward)
-          (kill-region makd-isearch-start makd-isearch-end)))
-    (setq makd-isearch-start nil)
-    (when makd-isearch-overlay
-      (delete-overlay makd-isearch-overlay))))
+  (makd-kill-or-copy-isearch t t))
+
+(defun makd-backward-kill-to-isearch ()
+  "Kill backward from point to somewhere else using isearch."
+  (interactive)
+  (makd-kill-or-copy-isearch t nil))
 
 (defun makd-copy-to-isearch ()
   "Copy from point to somewhere else using isearch."
   (interactive)
+  (makd-kill-or-copy-isearch nil t))
+
+(defun makd-backward-copy-to-isearch ()
+  "Copy backward from point to somewhere else using isearch."
+  (interactive)
+  (makd-kill-or-copy-isearch nil nil))
+
+(defun makd-kill-or-copy-isearch (kill forward)
+  "Kill or copy from point to somewhere else using isearch."
   (unwind-protect
       (save-excursion
         (setq makd-isearch-start (point))
-        (setq makd-isearch-face 'makd-copy-region-face)
-        (when (isearch-forward)
-          (copy-region-as-kill makd-isearch-start makd-isearch-end)))
+        (setq makd-isearch-face (if kill
+                                    'makd-kill-region-face
+                                  'makd-copy-region-face))
+        (setq makd-isearch-forward forward)
+        (when (if forward (isearch-forward) (isearch-backward))
+          (if kill
+              (kill-region makd-isearch-start makd-isearch-end)
+            (copy-region-as-kill makd-isearch-start makd-isearch-end))))
     (setq makd-isearch-start nil)
     (when makd-isearch-overlay
       (delete-overlay makd-isearch-overlay))))
 
 (defadvice isearch-highlight (after makd-iseach-add-overlay activate)
   (when makd-isearch-start
-    (setq makd-isearch-end (ad-get-arg 0))
+    (if makd-isearch-forward
+        (setq makd-isearch-end (ad-get-arg 0))
+      (setq makd-isearch-end (ad-get-arg 1)))
     (if makd-isearch-overlay
         (move-overlay makd-isearch-overlay makd-isearch-start makd-isearch-end (current-buffer))
       (setq makd-isearch-overlay (make-overlay makd-isearch-start makd-isearch-end)))
@@ -537,26 +566,12 @@ With argument, do this that many times"
     (delete-overlay makd-isearch-overlay)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copy/kill/yank/indent/open
-
-(defun makd-copy-region-as-kill ()
-  "When called interactively with no active region, copy current line."
-  (interactive)
-  (let ((beg (if (makd-mark-active) (region-beginning) (point-at-bol)))
-        (end (if (makd-mark-active) (region-end) (point-at-bol 2))))
-    (copy-region-as-kill beg end)))
-
-(defun makd-kill-region ()
-  "When called interactively with no active region, kill current line."
-  (interactive)
-  (let ((beg (if (makd-mark-active) (region-beginning) (point-at-bol)))
-        (end (if (makd-mark-active) (region-end) (point-at-bol 2))))
-    (kill-region beg end)))
+;; Yank
 
 (defun makd-yank (&optional arg)
   "Yank and indent."
   (interactive "P")
-  (when (makd-mark-active)
+  (when (region-active-p)
     (kill-region (region-beginning) (region-end))
     (rotate-yank-pointer 1))
   (yank)
@@ -565,12 +580,18 @@ With argument, do this that many times"
     (indent-region (point) (mark 't))
     (exchange-point-and-mark)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Indent
+
 (defun makd-indent ()
   "Indent the region if it is active, otherwise normal indent."
   (interactive)
-  (if (makd-mark-active)
+  (if (region-active-p)
       (indent-region (region-beginning) (region-end))
     (indent-according-to-mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Open
 
 (defun makd-open-line-above ()
   "Open a line above the current one."
@@ -584,130 +605,6 @@ With argument, do this that many times"
   (interactive)
   (end-of-line)
   (newline))
-
-(defun makd-kill-over-motion ()
-  "Kill over a motion command"
-  (interactive)
-  (if (makd-mark-active)
-      (kill-region (region-beginning) (region-end))
-    (message "Kill:")
-    (let ((c (read-char)) dir)
-      (cond
-       ((eq c ?/) (call-interactively 'makd-kill-to-isearch))
-
-       ((eq c ?s) (makd-forward-kill-section))
-       ((eq c ?S) (makd-backward-kill-section))
-
-       ((eq c ?w) (makd-forward-kill))
-       ((eq c ?W) (makd-backward-kill))
-
-       ((eq c ?b) (kill-region (point) (progn (makd-forward-block) (point))))
-       ((eq c ?B) (kill-region (point) (progn (makd-backward-block) (point))))
-
-       ((eq c ?p) (kill-region (point) (progn (makd-forward-paragraph) (point))))
-       ((eq c ?P) (kill-region (point) (progn (makd-backward-paragraph) (point))))
-
-       ((eq c ?.) (kill-region (point) (progn (makd-forward-word-end) (point))))
-       ((eq c ?,) (kill-region (point) (progn (makd-backward-word-end) (point))))
-
-       ((eq c ?a) (kill-region (point) (point-at-bol)))
-       ((eq c ?e) (kill-line))
-
-       ((eq c ?m) (kill-sexp 1))
-       ((eq c ?M) (kill-sexp -1))
-
-       ((eq c ?A) (kill-region (point) (progn (back-to-indentation) (point))))
-
-       ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
-        (kill-region (point-at-bol) (point-at-bol 2))))
-
-      (when (eq c ?i)
-        (message "Kill: i")
-        (setq c (read-char))
-        (setq dir 'inside))
-
-      (cond ((memq c '(?\( ?\[ ?\{ ?\<))
-             (unless dir
-               (setq dir 'backward)))
-            ((memq c '(?\) ?\] ?\} ?\>))
-             (unless dir
-               (setq dir 'forward))))
-      (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
-        (let ((region (makd-region-inside-pair c dir)))
-          (kill-region (car region) (cdr region))))
-
-      (when (memq c '(?\" ?\'))
-        (unless dir
-          (setq dir 'forward))
-        (let ((region (makd-region-inside-quotes c dir)))
-          (kill-region (car region)(cdr region)))))))
-
-(defun makd-copy-over-motion ()
-  "Copy over a motion command"
-  (interactive)
-  (if (makd-mark-active)
-      (kill-ring-save (region-beginning) (region-end))
-    (message "Copy:")
-    (let ((c (read-char)))
-      (if (eq c ?/)
-          (call-interactively 'makd-copy-to-isearch)
-        (let ((beg (point)) end dir)
-          (save-excursion
-            (cond
-             ((eq c ?s) (makd-forward-section))
-             ((eq c ?S) (makd-backward-section))
-
-             ((eq c ?w) (makd-forward-word))
-             ((eq c ?W) (makd-backward-word))
-
-             ((eq c ?p) (makd-forward-paragraph))
-             ((eq c ?P) (makd-backward-paragraph))
-
-             ((eq c ?b) (makd-forward-block))
-             ((eq c ?B) (makd-backward-block))
-
-             ((eq c ?.) (makd-forward-word-end))
-             ((eq c ?,) (makd-backward-word-end))
-
-             ((eq c ?a) (beginning-of-line))
-             ((eq c ?e) (end-of-line))
-
-             ((eq c ?A) (back-to-indentation))
-
-             ((eq c ?m) (forward-sexp 1))
-             ((eq c ?M) (forward-sexp -1))
-
-             ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
-              (setq beg (point-at-bol)) (forward-line) (beginning-of-line)))
-
-            (setq end (point)))
-
-          (when (eq c ?i)
-            (message "Copy: i")
-            (setq c (read-char))
-            (setq dir 'inside))
-
-          (cond ((memq c '(?\( ?\[ ?\{ ?\<))
-                 (unless dir
-                   (setq dir 'backward)))
-                ((memq c '(?\) ?\] ?\} ?\>))
-                 (unless dir
-                   (setq dir 'forward))))
-          (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
-            (let ((region (makd-region-inside-pair c dir)))
-              (setq beg (car region)
-                    end (cdr region))))
-
-          (when (memq c '(?\" ?\'))
-            (unless dir
-              (setq dir 'forward))
-            (let ((region (makd-region-inside-quotes c dir)))
-              (setq beg (car region)
-                    end (cdr region))))
-
-          (unless (= beg end)
-            (makd-highlight beg end 'makd-copy-region-face)
-            (kill-ring-save beg end)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Select
@@ -731,69 +628,10 @@ With argument, do this that many times"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Search/Replace
 
-(defun makd-highlight (beg end &optional face)
-  "Highlight a region temporarily."
-  (unless face
-    (setq face 'isearch))
-    (let ((ov (make-overlay beg end)))
-      (overlay-put ov 'face face)
-      (sit-for makd-highlight-delay)
-      (delete-overlay ov)))
-
-(defvar makd-search-wrap nil
-  "Internal search-wrap variable")
-
-(defun makd-search-forward ()
-  "Search forward."
-  (interactive)
-  (when (makd-mark-active)
-    (isearch-update-ring (buffer-substring-no-properties (region-beginning) (region-end)))
-    (deactivate-mark))
-  (when (car search-ring)
-    (cond ((search-forward (car search-ring) nil t)
-           (makd-highlight (match-beginning 0) (match-end 0))
-           (setq makd-search-wrap nil))
-          ((and makd-search-wrap (equal last-command 'makd-search-forward))
-           (setq makd-search-wrap nil)
-           (if (save-excursion (search-backward (car search-ring) nil t))
-               (progn
-                 (goto-char (point-min))
-                 (makd-search-forward))
-             (beep)
-             (message "No more matches")))
-          (t
-           (beep)
-           (message "No more matches")
-           (setq makd-search-wrap t)))))
-
-(defun makd-search-backward ()
-  "Search backward."
-  (interactive)
-  (when (makd-mark-active)
-    (isearch-update-ring (buffer-substring-no-properties (region-beginning) (region-end)))
-    (goto-char (region-beginning))
-    (deactivate-mark))
-  (when (car search-ring)
-    (cond ((search-backward (car search-ring) nil t)
-           (makd-highlight (match-beginning 0) (match-end 0))
-           (setq makd-search-wrap nil))
-          ((and makd-search-wrap (equal last-command 'makd-search-backward))
-           (setq makd-search-wrap nil)
-           (if (save-excursion (search-forward (car search-ring) nil t))
-               (progn
-                 (goto-char (point-max))
-                 (makd-search-backward))
-             (beep)
-             (message "No more matches")))
-          (t
-           (beep)
-           (message "No more matches")
-           (setq makd-search-wrap t)))))
-
 (defun makd-query-replace ()
   "query-replace ... take from-string from region if it is active"
   (interactive "*")
-  (if (makd-mark-active)
+  (if (region-active-p)
       (let* ((from (buffer-substring (region-beginning) (region-end)))
              (to (read-from-minibuffer (format "Query replace %s with: " from) nil nil nil 'query-replace-history)))
         (goto-char (region-beginning))
