@@ -84,7 +84,7 @@
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
 (show-paren-mode t)
-(transient-mark-mode t)
+(delete-selection-mode t)
 (blink-cursor-mode 1)
 (set-scroll-bar-mode nil)
 (tool-bar-mode 0)
@@ -347,15 +347,6 @@
       (my-dec-to-hex)
     (my-hex-to-dec)))
 
-(defun my-delete-char (arg)
-  "Delete region if active, char otherwise."
-  (interactive "p")
-  (if (region-active-p)
-      (delete-region (region-beginning) (region-end))
-    (unless arg
-      (setq arg 1))
-    (delete-char arg)))
-
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
   (interactive "*")
@@ -497,6 +488,14 @@ Prefix with C-u to fit the `next-window'."
                (not (string= "*scratch*" (buffer-name))))
       (kill-buffer nil)
       (delete-window))))
+
+(defun my-kill-ring-pop ()
+  "Pop the last kill off the ring."
+  (interactive)
+  (when kill-ring
+    (setq kill-ring (cdr kill-ring)))
+  (when kill-ring-yank-pointer
+    (setq kill-ring-yank-pointer kill-ring)))
 
 (defun my-kill-this-buffer (arg)
   "Kill buffer and delete window if there is more than one."
@@ -871,6 +870,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-g" 'grep-buffers)
+(my-keys-define "C-c C-k" 'my-kill-ring-pop)
 (my-keys-define "C-c C-l" 'll-debug-renumber)
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c H" 'unhighlight-regexp)
@@ -896,7 +896,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c t" (lambda () (interactive) (find-file "~/org/work.org")))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
-(my-keys-define "C-d" 'my-delete-char)
 (my-keys-define "C-i" 'my-yank-target-map)
 (my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
