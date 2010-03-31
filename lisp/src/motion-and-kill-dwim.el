@@ -30,29 +30,10 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helper functions
-
-(defun makd-dotimes (n form)
-  "Optionally do a form a number of times."
-  (unless n (setq n 1))
-  (while (> n 0)
-    (eval form)
-    (setq n (1- n))))
+;; Control variables
 
 (defvar makd-highlight-delay 0.5
   "*How long to highlight.")
-
-(defun makd-highlight (beg end &optional face)
-  "Highlight a region temporarily."
-  (unless face
-    (setq face 'isearch))
-  (let ((ov (make-overlay beg end)))
-    (overlay-put ov 'face face)
-    (sit-for makd-highlight-delay)
-    (delete-overlay ov)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Control variables
 
 (defvar makd-camelcase-sections t
   "*Sections can also be camelCase")
@@ -69,157 +50,141 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Motion
 
-(defun makd-forward-word (&optional n)
-  "Like forward-word, but stops at beginning of words.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (when (looking-at "\\(\\sw\\|\\s_\\)")
-                            (skip-syntax-forward "w_"))
-                          (skip-syntax-forward "^w_"))))
+(defun makd-forward-word ()
+  "Like forward-word, but stops at beginning of words."
+  (interactive)
+  (when (looking-at "\\(\\sw\\|\\s_\\)")
+    (skip-syntax-forward "w_"))
+  (skip-syntax-forward "^w_"))
 
-(defun makd-forward-word-section (&optional n)
-  "Like forward-word, but only goes over alphanumerics.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn
-                     (makd-forward-section)
-                     (skip-chars-forward "^a-zA-Z0-9"))))
+(defun makd-forward-word-section ()
+  "Like forward-word, but only goes over alphanumerics."
+  (interactive)
+  (makd-forward-section)
+  (skip-chars-forward "^a-zA-Z0-9"))
 
-(defun makd-forward-word-end (&optional n)
-  "Forward to end of word.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (unless (looking-at "\\(\\sw\\|\\s_\\)")
-                            (skip-syntax-forward "^w_"))
-                          (skip-syntax-forward "w_"))))
+(defun makd-forward-word-end ()
+  "Forward to end of word."
+  (interactive)
+  (unless (looking-at "\\(\\sw\\|\\s_\\)")
+    (skip-syntax-forward "^w_"))
+  (skip-syntax-forward "w_"))
 
-(defun makd-forward-paragraph (&optional n)
-  "Like forward-paragraph, but goes to next non-blank line.
-With argument, do this that many times"
-  (interactive "p")
+(defun makd-forward-paragraph ()
+  "Like forward-paragraph, but goes to next non-blank line."
+  (interactive)
   (beginning-of-line)
-  (makd-dotimes n '(progn (when (re-search-forward "^\\s-*$" nil 'go)
-                            (re-search-forward "[^ \t\f\n]" nil 'go)
-                            (beginning-of-line)))))
+  (when (re-search-forward "^\\s-*$" nil 'go)
+    (re-search-forward "[^ \t\f\n]" nil 'go)
+    (beginning-of-line)))
 
-(defun makd-forward-block (&optional n)
+(defun makd-forward-block ()
   "Goes forward to end of next curly-bracket or indented block
-depending on the major mode (see `makd-block-indented-modes').
-With argument, do this that many times"
-  (interactive "p")
+depending on the major mode (see `makd-block-indented-modes')."
+  (interactive)
   (if (memq major-mode makd-block-indented-modes)
-      (makd-forward-indented-block n)
-    (makd-forward-curly-block n)))
+      (makd-forward-indented-block)
+    (makd-forward-curly-block)))
 
-(defun makd-forward-curly-block (&optional n)
-  "Goes forward to end of next curly-bracket block.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (let (done)
-                            (while (not (or done (eobp)))
-                              (when (and (re-search-forward "[{}]" nil 'go)
-                                         (not (memq (get-text-property (1- (point)) 'face)
-                                                    '(font-lock-comment-face font-lock-string-face))))
-                                (when (equal (char-before) ?{)
-                                  (backward-char)
-                                  (forward-sexp))
-                                (forward-line)
-                                (beginning-of-line)
-                                (while (and (not (eobp)) (looking-at "^\\s-*$"))
-                                  (forward-line))
-                                (setq done t)))))))
+(defun makd-forward-curly-block ()
+  "Goes forward to end of next curly-bracket block."
+  (interactive)
+  (let (done)
+    (while (not (or done (eobp)))
+      (when (and (re-search-forward "[{}]" nil 'go)
+                 (not (memq (get-text-property (1- (point)) 'face)
+                            '(font-lock-comment-face font-lock-string-face))))
+        (when (equal (char-before) ?{)
+          (backward-char)
+          (forward-sexp))
+        (forward-line)
+        (beginning-of-line)
+        (while (and (not (eobp)) (looking-at "^\\s-*$"))
+          (forward-line))
+        (setq done t)))))
 
-(defun makd-forward-indented-block (&optional n)
-  "Goes forward to next line at the same or less indentation.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (beginning-of-line)
-                          (when (looking-at "\\s-*$")
-                            (re-search-forward "[^ \t\f\n]" nil 'go))
-                          (back-to-indentation)
-                          (let ((col (current-column)) done)
-                            (while (not (or done (eobp)))
-                              (forward-line 1)
-                              (back-to-indentation)
-                              (when (and (<= (current-column) col) (not (looking-at "$")))
-                                (beginning-of-line)
-                                (while (and (not (eobp)) (looking-at "^\\s-*$"))
-                                  (forward-line))
-                                (setq done t)))))))
-
-(defun makd-backward-word (&optional n)
-  "Like backward-word, but stops at beginning of words.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (unless (looking-back "\\(\\sw\\|\\s_\\)")
-                            (skip-syntax-backward "^w_"))
-                          (skip-syntax-backward "w_"))))
-
-(defun makd-backward-word-section (&optional n)
-  "Like backward-word, but only goes over alphanumerics.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn
-                     (skip-chars-backward "^a-zA-Z0-9")
-                     (makd-backward-section))))
-
-(defun makd-backward-word-end (&optional n)
-  "Backward to end of word.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (when (looking-back "\\(\\sw\\|\\s_\\)")
-                            (skip-syntax-backward "w_"))
-                          (skip-syntax-backward "^w_"))))
-
-(defun makd-backward-paragraph (&optional n)
-  "Go to first line after previous blank line.
-With argument, do this that many times"
-  (interactive "p")
+(defun makd-forward-indented-block ()
+  "Goes forward to next line at the same or less indentation."
+  (interactive)
   (beginning-of-line)
-  (makd-dotimes n '(progn (re-search-backward "[^ \t\f\n]" nil 'go)
-                          (when (re-search-backward "^\\s-*$" nil 'go)
-                            (forward-line 1))
-                          (beginning-of-line))))
+  (when (looking-at "\\s-*$")
+    (re-search-forward "[^ \t\f\n]" nil 'go))
+  (back-to-indentation)
+  (let ((col (current-column)) done)
+    (while (not (or done (eobp)))
+      (forward-line 1)
+      (back-to-indentation)
+      (when (and (<= (current-column) col) (not (looking-at "$")))
+        (beginning-of-line)
+        (while (and (not (eobp)) (looking-at "^\\s-*$"))
+          (forward-line))
+        (setq done t)))))
 
-(defun makd-backward-block (&optional n)
+(defun makd-backward-word ()
+  "Like backward-word, but stops at beginning of words."
+  (interactive)
+  (unless (looking-back "\\(\\sw\\|\\s_\\)")
+    (skip-syntax-backward "^w_"))
+  (skip-syntax-backward "w_"))
+
+(defun makd-backward-word-section ()
+  "Like backward-word, but only goes over alphanumerics."
+  (interactive)
+  (skip-chars-backward "^a-zA-Z0-9")
+  (makd-backward-section))
+
+(defun makd-backward-word-end ()
+  "Backward to end of word."
+  (interactive)
+  (when (looking-back "\\(\\sw\\|\\s_\\)")
+    (skip-syntax-backward "w_"))
+  (skip-syntax-backward "^w_"))
+
+(defun makd-backward-paragraph ()
+  "Go to first line after previous blank line."
+  (interactive)
+  (beginning-of-line)
+  (re-search-backward "[^ \t\f\n]" nil 'go)
+  (when (re-search-backward "^\\s-*$" nil 'go)
+    (forward-line 1))
+  (beginning-of-line))
+
+(defun makd-backward-block ()
   "Goes backward to beginning of next curly-bracket or indented block
-depending on the major mode (see `makd-block-indented-modes').
-With argument, do this that many times"
-  (interactive "p")
+depending on the major mode (see `makd-block-indented-modes')."
+  (interactive)
   (if (memq major-mode makd-block-indented-modes)
-      (makd-backward-indented-block n)
-    (makd-backward-curly-block n)))
+      (makd-backward-indented-block)
+    (makd-backward-curly-block)))
 
-(defun makd-backward-curly-block (&optional n)
-  "Goes backward to beginning of next curly-bracket block.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (let (done)
-                            (while (not (or done (bobp)))
-                              (when (and (re-search-backward "[{}]" nil 'go)
-                                         (not (memq (get-text-property (point) 'face)
-                                                    '(font-lock-comment-face font-lock-string-face))))
-                                (when (equal (char-after) ?})
-                                  (forward-char)
-                                  (backward-sexp))
-                                (beginning-of-line)
-                                (setq done t)))))))
+(defun makd-backward-curly-block ()
+  "Goes backward to beginning of next curly-bracket block."
+  (interactive)
+  (let (done)
+    (while (not (or done (bobp)))
+      (when (and (re-search-backward "[{}]" nil 'go)
+                 (not (memq (get-text-property (point) 'face)
+                            '(font-lock-comment-face font-lock-string-face))))
+        (when (equal (char-after) ?})
+          (forward-char)
+          (backward-sexp))
+        (beginning-of-line)
+        (setq done t)))))
 
-(defun makd-backward-indented-block (&optional n)
-  "Goes backward to beginning of line at the same or less indentation.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(progn (beginning-of-line)
-                          (when (looking-at "\\s-*$")
-                            (re-search-backward "[^ \t\f\n]" nil 'go))
-                          (back-to-indentation)
-                          (let ((col (current-column)) done)
-                            (while (not (or done (bobp)))
-                              (forward-line -1)
-                              (back-to-indentation)
-                              (when (and (<= (current-column) col) (not (looking-at "$")))
-                                (setq done t)
-                                (beginning-of-line)))))))
+(defun makd-backward-indented-block ()
+  "Goes backward to beginning of line at the same or less indentation."
+  (interactive)
+  (beginning-of-line)
+  (when (looking-at "\\s-*$")
+    (re-search-backward "[^ \t\f\n]" nil 'go))
+  (back-to-indentation)
+  (let ((col (current-column)) done)
+    (while (not (or done (bobp)))
+      (forward-line -1)
+      (back-to-indentation)
+      (when (and (<= (current-column) col) (not (looking-at "$")))
+        (setq done t)
+        (beginning-of-line)))))
 
 ;;; Utility motion functions
 
@@ -314,9 +279,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
   (point))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Kill
+;; Kill/copy
 
-(defun makd-forward-kill (&optional n)
+(defun makd-forward-kill ()
   "Smart kill forward.
 1. If region is active, kill it
 2. Else if at the beginning of a word, kill the word and trailing whitespace
@@ -325,44 +290,42 @@ This is a utility function, you probably want `makd-backward-word-section'."
 5. Else if looking at punctuation, kill punctuation forward
 6. Else if looking at an open bracket/brace/paren, kill sexp forward
 7. Else if looking at a quotation mark, kill quoted text
-8. Else kill next char
-With argument, do this that many times"
-  (interactive "p")
+8. Else kill next char"
+  (interactive)
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
-    (makd-dotimes n '(kill-region (point)
-                                  (progn
-                                    (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
-                                           (skip-syntax-forward "w_")
-                                           (skip-syntax-forward " "))
-                                          ((looking-at "\\(\\sw\\|\\s_\\)")
-                                           (skip-syntax-forward "w_"))
-                                          ((looking-at "\\s ")
-                                           (skip-syntax-forward " "))
-                                          ((looking-at "\\s.")
-                                           (skip-syntax-forward "."))
-                                          ((looking-at "\\s(")
-                                           (forward-sexp))
-                                          ((looking-at "\\s\"")
-                                           (forward-char)
-                                           (skip-syntax-forward "^\"")
-                                           (forward-char))
-                                          (t
-                                           (forward-char)))
-                                    (point))))))
+    (kill-region (point)
+                 (progn
+                   (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
+                          (skip-syntax-forward "w_")
+                          (skip-syntax-forward " "))
+                         ((looking-at "\\(\\sw\\|\\s_\\)")
+                          (skip-syntax-forward "w_"))
+                         ((looking-at "\\s ")
+                          (skip-syntax-forward " "))
+                         ((looking-at "\\s.")
+                          (skip-syntax-forward "."))
+                         ((looking-at "\\s(")
+                          (forward-sexp))
+                         ((looking-at "\\s\"")
+                          (forward-char)
+                          (skip-syntax-forward "^\"")
+                          (forward-char))
+                         (t
+                          (forward-char)))
+                   (point)))))
 
-(defun makd-forward-kill-section (&optional n)
-  "Forward kill pieces of words.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(kill-region (point)
-                                (progn
-                                  (makd-forward-section)
-                                  (while (looking-at "\\s_")
-                                    (forward-char))
-                                  (point)))))
+(defun makd-forward-kill-section ()
+  "Forward kill pieces of words."
+  (interactive)
+  (kill-region (point)
+               (progn
+                 (makd-forward-section)
+                 (while (looking-at "\\s_")
+                   (forward-char))
+                 (point))))
 
-(defun makd-backward-kill (&optional n)
+(defun makd-backward-kill ()
   "Smart kill backward.
 1. If region is active, kill it
 2. Else if looking back at whitespace, kill backward whitespace and word
@@ -370,45 +333,43 @@ With argument, do this that many times"
 4. Else if looking at punctuation, kill backward punctuation
 5. Else if looking at an close bracket/brace/paren, kill backward sexp
 6. Else if looking at a quotation mark, kill backward quoted text
-7. Else kill previous char
-With argument, do this that many times"
-  (interactive "p")
+7. Else kill previous char"
+  (interactive)
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
-    (makd-dotimes n '(kill-region (point)
-                                  (progn
-                                    (cond ((looking-back "\\s ")
-                                           (skip-syntax-backward " ")
-                                           (when (looking-back "\\(\\sw\\|\\s_\\)")
-                                             (skip-syntax-backward "w_")))
-;;                                           ((looking-back "\\(\\sw\\|\\s_\\)\\>")
-;;                                            (skip-syntax-backward "w_")
-;;                                            (unless (looking-back "^\\s +")
-;;                                              (skip-syntax-backward " ")))
-                                          ((looking-back "\\(\\sw\\|\\s_\\)")
-                                           (skip-syntax-backward "w_"))
-                                          ((looking-back "\\s.")
-                                           (skip-syntax-backward "."))
-                                          ((looking-back "\\s)")
-                                           (backward-sexp))
-                                          ((looking-back "\\s\"")
-                                           (backward-char)
-                                           (skip-syntax-backward "^\"")
-                                           (backward-char))
-                                          (t
-                                           (backward-char)))
-                                    (point))))))
+    (kill-region (point)
+                 (progn
+                   (cond ((looking-back "\\s ")
+                          (skip-syntax-backward " ")
+                          (when (looking-back "\\(\\sw\\|\\s_\\)")
+                            (skip-syntax-backward "w_")))
+;;                          ((looking-back "\\(\\sw\\|\\s_\\)\\>")
+;;                          (skip-syntax-backward "w_")
+;;                          (unless (looking-back "^\\s +")
+;;                          (skip-syntax-backward " ")))
+                         ((looking-back "\\(\\sw\\|\\s_\\)")
+                          (skip-syntax-backward "w_"))
+                         ((looking-back "\\s.")
+                          (skip-syntax-backward "."))
+                         ((looking-back "\\s)")
+                          (backward-sexp))
+                         ((looking-back "\\s\"")
+                          (backward-char)
+                          (skip-syntax-backward "^\"")
+                          (backward-char))
+                         (t
+                          (backward-char)))
+                   (point)))))
 
-(defun makd-backward-kill-section (&optional n)
-  "Backward kill pieces of words.
-With argument, do this that many times"
-  (interactive "p")
-  (makd-dotimes n '(kill-region (point)
-                                (progn
-                                  (while (looking-back "\\s_")
-                                    (backward-char))
-                                  (makd-backward-section)
-                                  (point)))))
+(defun makd-backward-kill-section ()
+  "Backward kill pieces of words."
+  (interactive)
+  (kill-region (point)
+               (progn
+                 (while (looking-back "\\s_")
+                   (backward-char))
+                 (makd-backward-section)
+                 (point))))
 
 (defun makd-kill-unit ()
   "Kill over a unit of text."
@@ -494,6 +455,20 @@ With argument, do this that many times"
                (unless (= beg end)
                  (makd-highlight beg end 'makd-copy-region-face)
                  (kill-ring-save beg end))))))))
+
+(defun makd-kill-line (&optional arg)
+  "Like kill-line, but use `my-join-line-with-next' when at
+end-of-line (and it's not a empty line."
+  (interactive "P")
+  (if (or arg (not (eolp)) (bolp))
+      (kill-line arg)
+    (my-join-line-with-next)))
+
+(defun makd-join-line-with-next ()
+  "Join current line with next."
+  (interactive)
+  (delete-indentation t)
+  (just-one-space 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill/copy with isearch
@@ -701,6 +676,18 @@ With argument, do this that many times"
       (setq temporary-goal-column col))
     (move-to-column (truncate temporary-goal-column))
     (setq this-command 'previous-line)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Highlight
+
+(defun makd-highlight (beg end &optional face)
+  "Highlight a region temporarily."
+  (unless face
+    (setq face 'isearch))
+  (let ((ov (make-overlay beg end)))
+    (overlay-put ov 'face face)
+    (sit-for makd-highlight-delay)
+    (delete-overlay ov)))
 
 ;;; Done
 

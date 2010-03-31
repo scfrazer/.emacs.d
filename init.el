@@ -471,12 +471,6 @@ Prefix with C-u to fit the `next-window'."
     (setq char (char-before))
     (insert-char char (- 80 (- (point) (point-at-bol))))))
 
-(defun my-join-line-with-next ()
-  "Join current line with next."
-  (interactive)
-  (delete-indentation t)
-  (just-one-space 1))
-
 (defun my-kill-buffer (arg buffer)
   "Kill buffer and delete window if there is more than one."
   (interactive "P\nbKill buffer: ")
@@ -490,13 +484,6 @@ Prefix with C-u to fit the `next-window'."
   (if (> (length (frame-list)) 1)
       (delete-frame)
     (save-buffers-kill-emacs)))
-
-(defun my-kill-line ()
-  "Like kill-line, but use `my-join-line-with-next'."
-  (interactive)
-  (if (and (eolp) (not (bolp)))
-      (my-join-line-with-next)
-    (kill-line)))
 
 (defun my-kill-results-buffer ()
   "Kill a compliation/igrep/*whatever* buffer in a second window."
@@ -897,7 +884,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c f" 'font-lock-fontify-buffer)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c i" (lambda () (interactive) (find-file "~/.emacs.d/ideas.org")))
-(my-keys-define "C-c j" 'my-join-line-with-next)
+(my-keys-define "C-c j" 'makd-join-line-with-next)
 (my-keys-define "C-c k" 'browse-kill-ring)
 (my-keys-define "C-c l" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c m" 'compile)
@@ -911,8 +898,9 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
 (my-keys-define "C-d" 'my-delete-char)
 (my-keys-define "C-i" 'my-yank-target-map)
-(my-keys-define "C-k" 'my-kill-line)
+(my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-w" 'makd-kill-unit)
 (my-keys-define "C-x $" 'my-set-selective-display)
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
@@ -927,6 +915,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x t" 'task-map)
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
+(my-keys-define "C-y" 'makd-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "C-~" 'previous-error)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
@@ -945,7 +934,6 @@ Only works if there are exactly two windows."
 (my-keys-define "M-[" 'insert-pair)
 (my-keys-define "M-\"" 'insert-pair)
 (my-keys-define "M-^" 'etags-stack-show)
-(my-keys-define "M-a" 'makd-kill-unit)
 (my-keys-define "M-b" 'task-bmk-show-all)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-e" 'makd-select-word-at-point)
@@ -953,7 +941,6 @@ Only works if there are exactly two windows."
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
-(my-keys-define "M-s" 'makd-yank)
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 
