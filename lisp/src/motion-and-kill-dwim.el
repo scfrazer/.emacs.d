@@ -457,12 +457,14 @@ This is a utility function, you probably want `makd-backward-word-section'."
                  (kill-ring-save beg end))))))))
 
 (defun makd-kill-line (&optional arg)
-  "Like kill-line, but use `my-join-line-with-next' when at
+  "Like kill-line, but use `makd-join-line-with-next' when at
 end-of-line (and it's not a empty line."
   (interactive "P")
   (if (or arg (not (eolp)) (bolp))
-      (kill-line arg)
-    (my-join-line-with-next)))
+      (if (= arg 0)
+          (kill-region (point) (progn (back-to-indentation) (point)))
+      (kill-line arg))
+    (makd-join-line-with-next)))
 
 (defun makd-join-line-with-next ()
   "Join current line with next."
