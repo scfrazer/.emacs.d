@@ -47,6 +47,7 @@
 (require 'my-imenu)
 (require 'my-increment-number)
 (require 'my-isearch)
+(require 'my-occur)
 (require 'my-org)
 (require 'my-pop-back)
 (require 'my-recentf)
@@ -548,19 +549,6 @@ Prefix with C-u to fit the `next-window'."
      (point))
    (point)))
 
-(defun my-occur ()
-  "Take the string from the region if it is active."
-  (interactive)
-  (if (and transient-mark-mode mark-active)
-      (progn
-        (occur (buffer-substring (region-beginning) (region-end)))
-        (deactivate-mark))
-    (call-interactively 'occur))
-  (when (buffer-live-p (get-buffer "*Occur*"))
-    (pop-to-buffer "*Occur*")
-    (setq truncate-lines 'one-line-each)
-    (fit-window-to-buffer nil (/ (frame-height) 2))))
-
 (defun my-pop-tag-mark-kill-buffer ()
   "Pop tag mark and kill previous buffer."
   (interactive)
@@ -745,11 +733,6 @@ Only works if there are exactly two windows."
                                  (when dir
                                    (insert dir))))))
 
-(defun my-occur-mode-hook ()
-  (define-key occur-mode-map "q" 'my-kill-this-buffer)
-  (define-key occur-mode-map "n" 'next-line)
-  (define-key occur-mode-map "p" 'previous-line))
-
 (defun my-sh-mode-hook ()
   (use-local-map nil))
 
@@ -772,7 +755,6 @@ Only works if there are exactly two windows."
 (add-hook 'grep-mode-hook 'my-grep-mode-hook)
 (add-hook 'midnight-hook 'recentf-cleanup)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
-(add-hook 'occur-mode-hook 'my-occur-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)

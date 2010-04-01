@@ -461,9 +461,12 @@ This is a utility function, you probably want `makd-backward-word-section'."
 end-of-line (and it's not a empty line."
   (interactive "P")
   (if (or arg (not (eolp)) (bolp))
-      (if (= arg 0)
-          (kill-region (point) (progn (back-to-indentation) (point)))
-      (kill-line arg))
+      (cond ((null arg)
+             (kill-line))
+            ((= arg 0)
+             (kill-region (point) (progn (back-to-indentation) (point))))
+            (t
+             (kill-line arg)))
     (makd-join-line-with-next)))
 
 (defun makd-join-line-with-next ()
