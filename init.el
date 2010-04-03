@@ -263,7 +263,6 @@
 (add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.csh$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))
-(add-to-list 'auto-mode-alist '("\\.cs$" . clearcase-cs-mode))
 (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
 (add-to-list 'auto-mode-alist '("\\.elog$" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.g$" . antlr3-mode))
@@ -695,6 +694,11 @@ Only works if there are exactly two windows."
       (when matching-text
         (message matching-text)))))
 
+(defadvice narrow-to-region (after my-narrow-to-region activate)
+  "After narrowing to region, deactivate region and go to top."
+  (deactivate-mark)
+  (goto-char (point-min)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 
@@ -881,6 +885,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-i" 'my-yank-target-map)
 (my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-v" clearcase-prefix-map)
 (my-keys-define "C-w" 'makd-kill-unit)
 (my-keys-define "C-x $" 'my-set-selective-display)
 (my-keys-define "C-x -" 'my-fit-window)
@@ -1006,6 +1011,11 @@ Only works if there are exactly two windows."
 (my-keys-define "<M-backspace>" 'undefined)
 (my-keys-define "<C-delete>" 'undefined)
 (my-keys-define "<M-delete>" 'undefined)
+
+;; TODO Until I stop doing these by accident
+
+(my-keys-define "M-s" (lambda () (interactive)))
+(my-keys-define "M-a" (lambda () (interactive)))
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."

@@ -12,6 +12,11 @@
   (clearcase-ct-cleartool-cmd "setview" view)
   (message "ct setview complete"))
 
+(defun clearcase-fprop-viewtag (file)
+  "For FILE, return its \"viewtag\" ClearCase property."
+  (or (aref (clearcase-fprop-get-properties file) 10)
+      clearcase-setview-viewtag))
+
 (defun my-clearcase-list-checkouts ()
   "List the checkouts of FILE.
 FILE can be a file or a directory. If it is a directory, only the information
@@ -191,5 +196,7 @@ on the directory element itself is listed, not on its contents."
   (turn-on-font-lock)
 
   (run-hooks 'text-mode-hook))
+
+(add-to-list 'auto-mode-alist '("\\.cs$" . clearcase-cs-mode))
 
 (provide 'my-clearcase)

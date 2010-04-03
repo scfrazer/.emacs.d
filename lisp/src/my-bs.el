@@ -46,6 +46,7 @@
       '(("all" nil nil nil nil nil)
         ("files" nil nil nil (lambda (buf) (my-bs-ignore-buffer (buffer-name buf))) nil)))
 (setq bs-cycle-configuration-name "files")
+(setq bs-max-window-height 100)
 
 ;; font-lock
 
