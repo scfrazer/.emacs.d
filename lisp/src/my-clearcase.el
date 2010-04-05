@@ -96,6 +96,7 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-prefix-map "=" 'clearcase-ediff-pred-current-buffer)
 (define-key clearcase-prefix-map "+" 'clearcase-ediff-named-version-current-buffer)
 (define-key clearcase-prefix-map "-" 'clearcase-diff-pred-current-buffer)
+(define-key clearcase-prefix-map "_" 'clearcase-diff-named-version-current-buffer)
 
 (define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
@@ -110,6 +111,7 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-dired-prefix-map "=" 'clearcase-ediff-pred-dired-file)
 (define-key clearcase-dired-prefix-map "+" 'clearcase-ediff-named-version-dired-file)
 (define-key clearcase-dired-prefix-map "-" 'clearcase-diff-pred-dired-file)
+(define-key clearcase-dired-prefix-map "_" 'clearcase-diff-named-version-current-buffer)
 
 (define-key clearcase-comment-mode-map (kbd "C-x C-s") 'clearcase-comment-finish)
 (define-key clearcase-comment-mode-map (kbd "C-x C-w") 'clearcase-comment-save)

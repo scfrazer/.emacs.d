@@ -1,11 +1,11 @@
 ;;; my-occur.el
 
-(defun my-occur ()
+(defun my-occur (&optional nlines)
   "Take the string from the region if it is active."
-  (interactive)
+  (interactive "P")
   (if (region-active-p)
       (progn
-        (occur (buffer-substring (region-beginning) (region-end)))
+        (occur (buffer-substring (region-beginning) (region-end)) nlines)
         (deactivate-mark))
     (call-interactively 'occur))
   (when (buffer-live-p (get-buffer "*Occur*"))
