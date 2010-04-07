@@ -495,7 +495,8 @@ Prefix with C-u to fit the `next-window'."
   (when kill-ring
     (setq kill-ring (cdr kill-ring)))
   (when kill-ring-yank-pointer
-    (setq kill-ring-yank-pointer kill-ring)))
+    (setq kill-ring-yank-pointer kill-ring))
+  (message "Last kill popped off kill-ring."))
 
 (defun my-kill-this-buffer (arg)
   "Kill buffer and delete window if there is more than one."

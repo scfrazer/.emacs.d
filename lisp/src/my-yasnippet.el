@@ -1,7 +1,6 @@
 ;;; my-yasnippet.el
 
 (setq-default yas/dont-activate t
-              yas/next-field-key (kbd "<tab>")
               yas/indent-line nil
               yas/fallback-behavior 'return-nil)
 
@@ -12,7 +11,7 @@
 (defun my-yasnippet-exit-current ()
   "Exit current snippet"
   (interactive)
-  (yas/exit-snippet (yas/snippet-of-current-keymap)))
+  (yas/exit-snippet (car (yas/snippets-at-point))))
 
 (define-key yas/keymap (kbd "<return>") 'my-yasnippet-exit-current)
 
@@ -58,6 +57,6 @@
 (define-abbrev global-abbrev-table
   "fix"
   ""
-  (lambda() (insert comment-start "FIXME ") (indent-according-to-mode)))
+  (lambda() (insert comment-start "FIXME") (indent-according-to-mode)))
 
 (provide 'my-yasnippet)
