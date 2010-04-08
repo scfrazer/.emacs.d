@@ -56,6 +56,8 @@
 (require 'my-yank-target)
 (require 'my-yasnippet)
 
+(require 'my-theme)
+
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
 (autoload 'all "all" nil t)
@@ -1037,13 +1039,6 @@ Only works if there are exactly two windows."
 (global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (makd-scroll-down 5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OS-specific setup
-
-(let ((extra-config (concat "~/.emacs.d/" (symbol-name system-type) ".el")))
-  (when (file-exists-p extra-config)
-    (load-file extra-config)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
 (setq etags-table-alist
@@ -1068,8 +1063,12 @@ Only works if there are exactly two windows."
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
-(require 'my-theme)
-(my-theme-deeper-blue)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; OS-specific setup
+
+(let ((extra-config (concat "~/.emacs.d/" (symbol-name system-type) ".el")))
+  (when (file-exists-p extra-config)
+    (load-file extra-config)))
 
 ;; Time emacs load time
 

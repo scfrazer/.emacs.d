@@ -7,3 +7,7 @@
 (setq grep-program "egrep")
 (setq igrep-program "egrep")
 (setq igrep-find-program "find")
+
+;; Theme
+
+(my-theme-whiteboard)

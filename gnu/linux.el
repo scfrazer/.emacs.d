@@ -17,3 +17,7 @@
 
   (grep-apply-setting 'grep-template "setenv GREP_COLOR \"01;31\" ; grep -nH -d skip -I -E -e <R> <C> <F>")
   (grep-apply-setting 'grep-find-template "setenv GREP_COLOR \"01;31\" ; find <D> <X> -type f <F> -print0 | xargs -0 -e grep -nH -I -E -e <R> <C>"))
+
+;; Theme
+
+(my-theme-deeper-blue)
