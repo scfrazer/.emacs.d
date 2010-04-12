@@ -58,6 +58,11 @@ Needs to end with \"/\"."
   :group 'task
   :type 'boolean)
 
+(defcustom task-after-load-hook nil
+  "*Hooks to run after a task is loaded."
+  :group 'task
+  :type 'hook)
+
 (defcustom task-extra-vars-to-save '(buffer-history
                                      command-history
                                      compile-history
@@ -103,7 +108,7 @@ Needs to end with \"/\"."
   :group 'task
   :type 'hook)
 
-;; TODO Hooks for: after-load, before-save, before-quit
+;; TODO Hooks for: before-save, before-quit
 
 ;; Extra variables to save as part of task
 
@@ -176,14 +181,29 @@ Needs to end with \"/\"."
   (desktop-read (concat task-top-dir name))
   (if (equal name task-save-at-exit-name)
       (setq task-current-name nil)
-    (setq task-current-name name)))
+    (setq task-current-name name))
+  (run-hooks 'task-after-load-hook))
+
+;;;###autoload
+(defun task-reload ()
+  "Reload the current task."
+  (interactive)
+  (let ((name task-current-name))
+    (task-quit-no-save)
+    (task-load name)))
 
 ;;;###autoload
 (defun task-quit ()
-  "Quit task."
+  "Save and quit task."
   (interactive)
   (when task-current-name
     (task-save))
+  (task-quit-no-save))
+
+;;;###autoload
+(defun task-quit-no-save ()
+  "Quit task without saving it."
+  (interactive)
   (desktop-clear)
   (task-bmk-clear)
   (setq task-current-name nil))
@@ -248,7 +268,9 @@ Needs to end with \"/\"."
 (define-key task-map (kbd "s") 'task-save)
 (define-key task-map (kbd "a") 'task-save-as)
 (define-key task-map (kbd "l") 'task-load)
+(define-key task-map (kbd "r") 'task-reload)
 (define-key task-map (kbd "q") 'task-quit)
+(define-key task-map (kbd "Q") 'task-quit-no-save)
 (define-key task-map (kbd "o") 'task-notes)
 (define-key task-map (kbd "RET") 'task-list-show)
 (define-key task-map (kbd "b") 'task-bmk-show-all)

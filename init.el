@@ -395,6 +395,13 @@
     (replace-match ""))
   (goto-char (point-min)))
 
+(defun my-downcase-region ()
+  "Downcase region or current char."
+  (interactive)
+  (if (region-active-p)
+      (downcase-region (region-beginning) (region-end))
+    (downcase-region (point) (1+ (point)))))
+
 (defun my-fill ()
   "Fill region if active, paragraph if not."
   (interactive)
@@ -479,7 +486,7 @@ Prefix with C-u to fit the `next-window'."
     (save-buffers-kill-emacs)))
 
 (defun my-kill-results-buffer ()
-  "Kill a compliation/igrep/*whatever* buffer in a second window."
+  "Kill a compliation/grep/*whatever* buffer in a second window."
   (interactive)
   (when (> (count-windows) 1)
     (other-window 1)
@@ -687,6 +694,13 @@ Only works if there are exactly two windows."
         (fill-region (region-beginning) (region-end))
       (fill-paragraph 1))))
 
+(defun my-upcase-region ()
+  "Upcase region or current char."
+  (interactive)
+  (if (region-active-p)
+      (upcase-region (region-beginning) (region-end))
+    (upcase-region (point) (1+ (point)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
 
@@ -743,6 +757,13 @@ Only works if there are exactly two windows."
 (defun my-sh-mode-hook ()
   (use-local-map nil))
 
+(defun my-task-after-load-hook ()
+  (when clearcase-setview-viewtag
+    (dolist (buf (buffer-list))
+      (when (buffer-file-name buf)
+        (set-buffer buf)
+        (clearcase-hook-find-file-hook)))))
+
 (defun my-whitespace-off-hook ()
   (my-font-lock-show-whitespace -1))
 
@@ -764,6 +785,7 @@ Only works if there are exactly two windows."
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -825,7 +847,6 @@ Only works if there are exactly two windows."
 
 (my-keys-define "<C-f4>" 'my-apply-macro-to-region-lines)
 (my-keys-define "<C-return>" 'my-yasnippet-or-abbrev-expand)
-(my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-return>" 'makd-open-line-above)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
@@ -895,6 +916,8 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
+(my-keys-define "C-x C-l" 'my-downcase-region)
+(my-keys-define "C-x C-u" 'my-upcase-region)
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
