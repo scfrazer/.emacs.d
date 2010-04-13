@@ -847,6 +847,7 @@ Only works if there are exactly two windows."
 
 (my-keys-define "<C-f4>" 'my-apply-macro-to-region-lines)
 (my-keys-define "<C-return>" 'my-yasnippet-or-abbrev-expand)
+(my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-return>" 'makd-open-line-above)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
@@ -1003,7 +1004,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-J" 'makd-backward-kill-section)
 (my-keys-define "M-K" 'makd-forward-kill-section)
 
-;; Force myself to stop using the arrow keys :)
+;; TODO Until I stop doing these
 
 (my-keys-define "<C-up>" 'undefined)
 (my-keys-define "<M-up>" 'undefined)
@@ -1037,11 +1038,8 @@ Only works if there are exactly two windows."
 (my-keys-define "<M-backspace>" 'undefined)
 (my-keys-define "<C-delete>" 'undefined)
 (my-keys-define "<M-delete>" 'undefined)
-
-;; TODO Until I stop doing these by accident
-
-(my-keys-define "M-s" (lambda () (interactive)))
-(my-keys-define "M-a" (lambda () (interactive)))
+(my-keys-define "M-s" 'undefined)
+(my-keys-define "M-a" 'undefined)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
