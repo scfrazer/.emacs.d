@@ -402,6 +402,11 @@
       (downcase-region (region-beginning) (region-end))
     (downcase-region (point) (1+ (point)))))
 
+(defun my-ffap (&optional arg)
+  "ffap, or ffap-other-window when preceded with C-u."
+  (interactive "P")
+  (call-interactively (if arg 'ffap-other-window 'ffap)))
+
 (defun my-fill ()
   "Fill region if active, paragraph if not."
   (interactive)
@@ -862,7 +867,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-," 'iflipb-previous-buffer)
 (my-keys-define "C-." 'iflipb-next-buffer)
 (my-keys-define "C-/" 'dabbrev-expand)
-(my-keys-define "C-?" 'ffap)
+(my-keys-define "C-?" 'my-ffap)
 (my-keys-define "C-M-;" 'comment-set-column)
 (my-keys-define "C-M-w" 'clipboard-kill-ring-save)
 (my-keys-define "C-M-y" 'clipboard-yank)

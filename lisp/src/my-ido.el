@@ -27,7 +27,7 @@
   (interactive)
   (let ((dir (my-ido-get-bookmark-dir)))
     (when dir
-      (find-alternate-file dir))))
+      (find-alternate-file (ido-read-directory-name "Jump to dir: " dir nil t)))))
 
 (defun my-ido-get-bookmark-dir ()
   "Get the directory of a bookmark."
