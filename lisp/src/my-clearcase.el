@@ -22,7 +22,7 @@
 FILE can be a file or a directory. If it is a directory, only the information
 on the directory element itself is listed, not on its contents."
   (interactive)
-  (let* ((file (buffer-file-name))
+  (let* ((file (if (equal major-mode 'dired-mode) (dired-get-filename) (buffer-file-name)))
          (mtype (clearcase-fprop-mtype file)))
     (if (not (or (eq mtype 'version)
                  (eq mtype 'directory-version)))

@@ -245,6 +245,9 @@
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
 
+(add-to-list 'ffap-string-at-point-mode-alist
+             '(file "--:\\\\$+<>@-Z_[:alpha:]~*?{}" "<@" "@>;.,!:"))
+
 (setq frame-title-format "%F")
 
 (setq default-mode-line-format
@@ -915,7 +918,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-i" 'my-yank-target-map)
 (my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
-(my-keys-define "C-v" clearcase-prefix-map)
 (my-keys-define "C-w" 'makd-kill-unit)
 (my-keys-define "C-x $" 'my-set-selective-display)
 (my-keys-define "C-x -" 'my-fit-window)
@@ -1008,6 +1010,10 @@ Only works if there are exactly two windows."
 
 (my-keys-define "M-J" 'makd-backward-kill-section)
 (my-keys-define "M-K" 'makd-forward-kill-section)
+
+;; Because of file vs. dired mapping
+
+(global-set-key (kbd "C-v") clearcase-prefix-map)
 
 ;; TODO Until I stop doing these
 
