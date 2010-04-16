@@ -41,8 +41,8 @@ on the directory element itself is listed, not on its contents."
   (interactive)
   (let ((viewtag (clearcase-fprop-viewtag default-directory)))
     (when viewtag
-      (let* ((ignore (message "Finding view-private files..."))
-             (text (clearcase-ct-blocking-call "lsprivate" "-tag" viewtag)))
+      (let ((ignore (message "Finding view-private files..."))
+            (text (clearcase-ct-blocking-call "lsprivate" "-tag" viewtag)))
         (if (zerop (length text))
             (message "No private files found")
           (message "Finding view-private files...done")
@@ -62,6 +62,37 @@ on the directory element itself is listed, not on its contents."
           (goto-char (point-min))
           (setq buffer-read-only t)
           (set-buffer-modified-p nil))))))
+
+(defun my-clearcase-unreserve ()
+  "Unreserve current buffer/dired-file."
+  (interactive)
+  (let ((file (if (equal major-mode 'dired-mode) (dired-get-filename) (buffer-file-name))) view)
+    (when (clearcase-fprop-viewtag file)
+      (message "Unreserving file...")
+      (with-temp-buffer
+        (insert (clearcase-ct-blocking-call "lsco" "-l" file))
+        (goto-char (point-min))
+        (when (re-search-forward "by view:.+?:\\(.+?\\)\"" nil t)
+          (setq view (match-string 1))))
+      (clearcase-ct-blocking-call "unres" "-view" view file)
+      (let ((buf (get-file-buffer file)))
+        (when buf
+          (with-current-buffer buf
+            (revert-buffer nil t))))
+      (dired-relist-file file))))
+
+(defun my-clearcase-reserve ()
+  "Reserve current buffer/dired-file."
+  (interactive)
+  (let ((file (if (equal major-mode 'dired-mode) (dired-get-filename) (buffer-file-name))))
+    (when (clearcase-fprop-viewtag file)
+      (message "Reserving file...")
+      (clearcase-ct-blocking-call "reserve" file)
+      (let ((buf (get-file-buffer file)))
+        (when buf
+          (with-current-buffer buf
+            (revert-buffer nil t))))
+      (dired-relist-file file))))
 
 (defun my-clearcase-backup-set-mode ()
   "Set the mode of backup ClearCase files to the mode of the original."
@@ -88,7 +119,9 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-prefix-map "o" 'clearcase-checkout-current-buffer)
 (define-key clearcase-prefix-map "O" 'clearcase-checkout-unreserved-current-buffer)
 (define-key clearcase-prefix-map "L" 'my-clearcase-list-checkouts)
+(define-key clearcase-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-prefix-map "p" 'my-clearcase-lsprivate)
+(define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "s" 'my-clearcase-setcs-current)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
@@ -103,7 +136,9 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-dired-files)
 (define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-unreserved-dired-files)
 (define-key clearcase-dired-prefix-map "L" 'my-clearcase-list-checkouts)
+(define-key clearcase-dired-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-dired-prefix-map "p" 'my-clearcase-lsprivate)
+(define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "s" 'my-clearcase-setcs-current)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))

@@ -124,6 +124,8 @@
      (2 'elog-mode-msg-level-face)
      (3 'elog-mode-path-face)
      (4 'elog-mode-msg-face))
+    ("(Err:.+?)"
+     (0 'elog-mode-error-face t))
     )
   "Font locking for 'elog-mode'.")
 
