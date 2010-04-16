@@ -645,6 +645,13 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
 
+(defun my-skip-lines-matching-regexp (regexp)
+  "Skip lines matching a regexp."
+  (interactive "sSkip lines matching regexp: ")
+  (beginning-of-line)
+  (while (and (not (eobp)) (looking-at regexp))
+    (forward-line 1)))
+
 (defun my-tip-of-the-day ()
   "Tip of the day"
   (interactive)
