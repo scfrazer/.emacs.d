@@ -1022,42 +1022,7 @@ Only works if there are exactly two windows."
 
 (global-set-key (kbd "C-v") clearcase-prefix-map)
 
-;; TODO Until I stop doing these
-
-(my-keys-define "<C-up>" 'undefined)
-(my-keys-define "<M-up>" 'undefined)
-(my-keys-define "<S-up>" 'undefined)
-(my-keys-define "<C-M-up>" 'undefined)
-(my-keys-define "<C-S-up>" 'undefined)
-(my-keys-define "<M-S-up>" 'undefined)
-(my-keys-define "<C-M-S-up>" 'undefined)
-(my-keys-define "<C-down>" 'undefined)
-(my-keys-define "<M-down>" 'undefined)
-(my-keys-define "<S-down>" 'undefined)
-(my-keys-define "<C-M-down>" 'undefined)
-(my-keys-define "<C-S-down>" 'undefined)
-(my-keys-define "<M-S-down>" 'undefined)
-(my-keys-define "<C-M-S-down>" 'undefined)
-(my-keys-define "<C-left>" 'undefined)
-(my-keys-define "<M-left>" 'undefined)
-(my-keys-define "<S-left>" 'undefined)
-(my-keys-define "<C-M-left>" 'undefined)
-(my-keys-define "<C-S-left>" 'undefined)
-(my-keys-define "<M-S-left>" 'undefined)
-(my-keys-define "<C-M-S-left>" 'undefined)
-(my-keys-define "<C-right>" 'undefined)
-(my-keys-define "<M-right>" 'undefined)
-(my-keys-define "<S-right>" 'undefined)
-(my-keys-define "<C-M-right>" 'undefined)
-(my-keys-define "<C-S-right>" 'undefined)
-(my-keys-define "<M-S-right>" 'undefined)
-(my-keys-define "<C-M-S-right>" 'undefined)
-(my-keys-define "<C-backspace>" 'undefined)
-(my-keys-define "<M-backspace>" 'undefined)
-(my-keys-define "<C-delete>" 'undefined)
-(my-keys-define "<M-delete>" 'undefined)
-(my-keys-define "M-s" 'undefined)
-(my-keys-define "M-a" 'undefined)
+;; Keybinding minor mode
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
