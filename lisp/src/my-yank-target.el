@@ -28,7 +28,10 @@
       (save-excursion
         (with-current-buffer (marker-buffer my-yank-target-marker)
           (goto-char (marker-position my-yank-target-marker))
-          (insert text)))
+          (setq start (point))
+          (insert text)
+          (when (not (member indent-line-function '(indent-relative sh-basic-indent-line)))
+            (indent-region start (point)))))
       (setq my-yank-target-source (point-marker))
       (if (region-active-p)
           (progn (deactivate-mark)
