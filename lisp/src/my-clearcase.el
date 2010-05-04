@@ -72,14 +72,17 @@ on the directory element itself is listed, not on its contents."
       (with-temp-buffer
         (insert (clearcase-ct-blocking-call "lsco" "-l" file))
         (goto-char (point-min))
-        (when (re-search-forward "by view:.+?:\\(.+?\\)\"" nil t)
-          (setq view (match-string 1))))
-      (clearcase-ct-blocking-call "unres" "-view" view file)
-      (let ((buf (get-file-buffer file)))
-        (when buf
-          (with-current-buffer buf
-            (revert-buffer nil t))))
-      (dired-relist-file file))))
+        (when (re-search-forward "(reserved)" nil t)
+          (when (re-search-forward "by view:.+?:\\(.+?\\)\"" nil t)
+            (setq view (match-string 1)))))
+      (if (not view)
+          (message "File is not reserved by anyone")
+        (clearcase-ct-blocking-call "unres" "-view" view file)
+        (let ((buf (get-file-buffer file)))
+          (when buf
+            (with-current-buffer buf
+              (revert-buffer nil t))))
+        (dired-relist-file file)))))
 
 (defun my-clearcase-reserve ()
   "Reserve current buffer/dired-file."
