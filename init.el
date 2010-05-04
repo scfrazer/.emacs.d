@@ -593,20 +593,24 @@ Prefix with C-u to fit the `next-window'."
   (indent-region (point-min) (point-max)))
 
 (defvar my-recenter-count nil)
-(defun my-recenter ()
+(defun my-recenter (&optional arg)
   "Recenter high/middle/low."
-  (interactive)
-  (unless (equal last-command 'my-recenter)
-    (setq my-recenter-count 0))
-  (cond ((= my-recenter-count 0)
-         (recenter))
-        ((= my-recenter-count 1)
-         (recenter (/ (window-text-height) 4)))
-        (t
-         (recenter (/ (* (window-text-height) 3) 4))))
-  (setq my-recenter-count (1+ my-recenter-count))
-  (when (> my-recenter-count 2)
-    (setq my-recenter-count 0)))
+  (interactive "P")
+  (if arg
+      (progn
+        (setq my-recenter-count 0)
+        (recenter arg))
+    (unless (equal last-command 'my-recenter)
+      (setq my-recenter-count 0))
+    (cond ((= my-recenter-count 0)
+           (recenter))
+          ((= my-recenter-count 1)
+           (recenter (/ (window-text-height) 4)))
+          (t
+           (recenter (/ (* (window-text-height) 3) 4))))
+    (setq my-recenter-count (1+ my-recenter-count))
+    (when (> my-recenter-count 2)
+      (setq my-recenter-count 0))))
 
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
