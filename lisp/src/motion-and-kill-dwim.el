@@ -220,7 +220,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
 ;; Utility region functions
 
 (defun makd-region-inside-pair (char dir)
-  "Find the region inside paired chars ()[]{}"
+  "Find the region inside paired chars ()[]{}<>"
   (let* ((beg (point))
          (end beg)
          regex open close)
@@ -235,7 +235,11 @@ This is a utility function, you probably want `makd-backward-word-section'."
           ((or (eq char ?\{) (eq char ?\}))
            (setq regex "[{}]"
                  open  ?\{
-                 close ?\})))
+                 close ?\}))
+          ((or (eq char ?\<) (eq char ?\>))
+           (setq regex "[<>]"
+                 open  ?\<
+                 close ?\>)))
     (save-excursion
       (cond ((equal dir 'backward)
              (setq beg (makd-backward-paired regex open close)))
@@ -278,6 +282,34 @@ This is a utility function, you probably want `makd-backward-word-section'."
     (backward-char))
   (point))
 
+(defun makd-region-inside-quotes (char dir)
+  "Find the region inside quote chars \"'"
+  (let* ((beg (point))
+         (end beg)
+         (regex (char-to-string char))
+         done)
+    (unless (equal dir 'forward)
+      (save-excursion
+        (setq done nil)
+        (while (not (or done (bobp)))
+          (when (re-search-backward regex nil 'go)
+            (setq done (not (equal (char-before) ?\\)))))
+        (unless (bobp)
+          (forward-char))
+        (setq beg (point))))
+    (unless (equal dir 'backward)
+      (save-excursion
+        (setq done nil)
+        (while (not (or done (eobp)))
+          (when (re-search-forward regex nil 'go)
+            (backward-char)
+            (setq done (not (equal (char-before) ?\\)))
+            (forward-char)))
+        (unless (eobp)
+          (backward-char))
+        (setq end (point))))
+    (cons beg end)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill/copy
 
@@ -308,8 +340,10 @@ This is a utility function, you probably want `makd-backward-word-section'."
                          ((looking-at "\\s(")
                           (forward-sexp))
                          ((looking-at "\\s\"")
-                          (forward-char)
-                          (skip-syntax-forward "^\"")
+                          (let ((c (char-after)) region)
+                            (forward-char)
+                            (setq region (makd-region-inside-quotes c 'forward))
+                            (goto-char (cdr region)))
                           (forward-char))
                          (t
                           (forward-char)))
@@ -355,7 +389,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
                           (backward-sexp))
                          ((looking-back "\\s\"")
                           (backward-char)
-                          (skip-syntax-backward "^\"")
+                          (let ((c (char-after)) region)
+                            (setq region (makd-region-inside-quotes c 'backward))
+                            (goto-char (car region)))
                           (backward-char))
                          (t
                           (backward-char)))
@@ -391,7 +427,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?m) (kill-sexp 1))
        ((eq c ?M) (kill-sexp -1))
 
-       ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\})))
+       ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
         (kill-region (point-at-bol) (point-at-bol 2))))
 
       (when (eq c ?i)
@@ -399,14 +435,20 @@ This is a utility function, you probably want `makd-backward-word-section'."
         (setq c (read-char))
         (setq dir 'inside))
 
-      (cond ((memq c '(?\( ?\[ ?\{))
+      (cond ((memq c '(?\( ?\[ ?\{ ?\<))
              (unless dir
                (setq dir 'backward)))
-            ((memq c '(?\) ?\] ?\}))
+            ((memq c '(?\) ?\] ?\} ?\>))
              (unless dir
                (setq dir 'forward))))
-      (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\}))
+      (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
         (let ((region (makd-region-inside-pair c dir)))
+          (kill-region (car region) (cdr region))))
+
+      (when (memq c '(?\" ?\'))
+        (unless dir
+          (setq dir 'forward))
+        (let ((region (makd-region-inside-quotes c dir)))
           (kill-region (car region) (cdr region)))))))
 
 (defun makd-copy-unit ()
@@ -431,7 +473,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
                   ((eq c ?m) (forward-sexp 1))
                   ((eq c ?M) (forward-sexp -1))
 
-                  ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\})))
+                  ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
                    (setq beg (point-at-bol)) (forward-line) (beginning-of-line)))
 
                  (setq end (point)))
@@ -441,14 +483,21 @@ This is a utility function, you probably want `makd-backward-word-section'."
                  (setq c (read-char))
                  (setq dir 'inside))
 
-               (cond ((memq c '(?\( ?\[ ?\{))
+               (cond ((memq c '(?\( ?\[ ?\{ ?\<))
                       (unless dir
                         (setq dir 'backward)))
-                     ((memq c '(?\) ?\] ?\}))
+                     ((memq c '(?\) ?\] ?\} ?\>))
                       (unless dir
                         (setq dir 'forward))))
-               (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\}))
+               (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
                  (let ((region (makd-region-inside-pair c dir)))
+                   (setq beg (car region)
+                         end (cdr region))))
+
+               (when (memq c '(?\" ?\'))
+                 (unless dir
+                   (setq dir 'forward))
+                 (let ((region (makd-region-inside-quotes c dir)))
                    (setq beg (car region)
                          end (cdr region))))
 
