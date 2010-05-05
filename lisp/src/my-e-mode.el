@@ -30,6 +30,7 @@
   (interactive)
   (save-excursion
     (let (field subtype struct package bound)
+      (skip-syntax-forward "^w_")
       (setq field (buffer-substring (progn (skip-syntax-backward "w_") (point))
                                     (progn (skip-syntax-forward "w_") (point))))
       (backward-up-list)
