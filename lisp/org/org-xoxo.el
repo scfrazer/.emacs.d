@@ -1,12 +1,12 @@
 ;;; org-xoxo.el --- XOXO export for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -30,6 +30,9 @@
 
 ;;; XOXO export
 
+(defvar org-export-xoxo-final-hook nil
+  "Hook run after XOXO export, in the new buffer.")
+
 (defun org-export-as-xoxo-insert-into (buffer &rest output)
   (with-current-buffer buffer
     (apply 'insert output)))
@@ -40,6 +43,7 @@
   "Export the org buffer as XOXO.
 The XOXO buffer is named *xoxo-<source buffer name>*"
   (interactive (list (current-buffer)))
+  (run-hooks 'org-export-first-hook)
   ;; A quickie abstraction
 
   ;; Output everything as XOXO
@@ -112,6 +116,7 @@ The XOXO buffer is named *xoxo-<source buffer name>*"
       ;; Finish the buffer off and clean it up.
       (switch-to-buffer-other-window out)
       (indent-region (point-min) (point-max) nil)
+      (run-hooks 'org-export-xoxo-final-hook)
       (save-buffer)
       (goto-char (point-min))
       )))
@@ -119,6 +124,4 @@ The XOXO buffer is named *xoxo-<source buffer name>*"
 (provide 'org-xoxo)
 
 ;; arch-tag: 16e6a31f-f4f5-46f1-af18-48dc89faa702
-
-
 ;;; org-xoxo.el ends here

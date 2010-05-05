@@ -1,11 +1,11 @@
 ;;; org-plot.el --- Support for plotting from Org-mode
 
-;; Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc.
 ;;
 ;; Author: Eric Schulte <schulte dot eric at gmail dot com>
 ;; Keywords: tables, plotting
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -33,7 +33,7 @@
 (require 'org)
 (require 'org-exp)
 (require 'org-table)
-(eval-and-compile
+(eval-when-compile
   (require 'cl))
 
 (declare-function gnuplot-delchar-or-maybe-eof "ext:gnuplot" (arg))
@@ -64,6 +64,7 @@ Returns the resulting property list."
 		  ("file"    . :file)
 		  ("labels"  . :labels)
 		  ("map"     . :map)
+                  ("timeind" . :timeind)
 		  ("timefmt" . :timefmt)))
 	    (multiples '("set" "line"))
 	    (regexp ":\\([\"][^\"]+?[\"]\\|[(][^)]+?[)]\\|[^ \t\n\r;,.]*\\)")
@@ -133,7 +134,7 @@ Pass PARAMS through to `orgtbl-to-generic' when exporting TABLE."
 
 (defun org-plot/gnuplot-to-grid-data (table data-file params)
   "Export the data in TABLE to DATA-FILE for gnuplot.
-This means, in a format appropriate for grid plotting by gnuplot.
+This means in a format appropriate for grid plotting by gnuplot.
 PARAMS specifies which columns of TABLE should be plotted as independent
 and dependant variables."
   (interactive)
@@ -181,9 +182,11 @@ and dependant variables."
 	    (setf back-edge "") (setf front-edge "")))))
     row-vals))
 
-(defun org-plot/gnuplot-script (data-file num-cols params)
+(defun org-plot/gnuplot-script (data-file num-cols params &optional preface)
   "Write a gnuplot script to DATA-FILE respecting the options set in PARAMS.
-NUM-COLS controls the number of columns plotted in a 2-d plot."
+NUM-COLS controls the number of columns plotted in a 2-d plot.
+Optional argument PREFACE returns only option parameters in a
+manner suitable for prepending to a user-specified script."
   (let* ((type (plist-get params :plot-type))
 	 (with (if (equal type 'grid)
 		   'pm3d
@@ -238,7 +241,8 @@ NUM-COLS controls the number of columns plotted in a 2-d plot."
 	(add-to-script (concat "set timefmt \""
 			       (or timefmt ;; timefmt passed to gnuplot
 				   "%Y-%m-%d-%H:%M:%S") "\"")))
-      (case type ;; plot command
+      (unless preface
+        (case type ;; plot command
 	('2d (dotimes (col num-cols)
 	       (unless (and (equal type '2d)
 			    (or (and ind (equal (+ 1 col) ind))
@@ -246,8 +250,9 @@ NUM-COLS controls the number of columns plotted in a 2-d plot."
 		 (setf plot-lines
 		       (cons
 			(format plot-str data-file
-				(or (and (not text-ind) ind
-					 (> ind 0) (format "%d:" ind)) "")
+				(or (and ind (> ind 0)
+                                         (not text-ind)
+                                         (format "%d:" ind)) "")
 				(+ 1 col)
 				(if text-ind (format ":xticlabel(%d)" ind) "")
 				with
@@ -259,8 +264,8 @@ NUM-COLS controls the number of columns plotted in a 2-d plot."
 	('grid
 	 (setq plot-lines (list (format "'%s' with %s title ''"
 					data-file with)))))
-      (add-to-script
-       (concat plot-cmd " " (mapconcat 'identity (reverse plot-lines) ",\\\n    ")))
+        (add-to-script
+         (concat plot-cmd " " (mapconcat 'identity (reverse plot-lines) ",\\\n    "))))
       script)))
 
 ;;-----------------------------------------------------------------------------
@@ -275,8 +280,8 @@ line directly before or after the table."
   (save-window-excursion
     (delete-other-windows)
     (when (get-buffer "*gnuplot*") ;; reset *gnuplot* if it already running
-      (save-excursion
-	(set-buffer "*gnuplot*") (goto-char (point-max))
+      (with-current-buffer "*gnuplot*"
+	(goto-char (point-max))
 	(gnuplot-delchar-or-maybe-eof nil)))
     (org-plot/goto-nearest-table)
     ;; set default options
@@ -296,7 +301,7 @@ line directly before or after the table."
 	(setf table (delq 'hline (cdr table)))) ;; clean non-data from table
       ;; collect options
       (save-excursion (while (and (equal 0 (forward-line -1))
-				  (looking-at "#\\+"))
+				  (looking-at "[[:space:]]*#\\+"))
 			(setf params (org-plot/collect-options params))))
       ;; dump table to datafile (very different for grid)
       (case (plist-get params :plot-type)
@@ -316,7 +321,6 @@ line directly before or after the table."
 			   (mapcar (lambda (row) (nth ind row)) table)))) 0)
 	      (plist-put params :timeind t)
 	    ;; check for text ind column
-
 	    (if (or (string= (plist-get params :with) "hist")
 		    (> (length
 			(delq 0 (mapcar
@@ -328,10 +332,13 @@ line directly before or after the table."
       ;; write script
       (with-temp-buffer
 	(if (plist-get params :script) ;; user script
-	    (progn (insert-file-contents (plist-get params :script))
-		   (goto-char (point-min))
-		   (while (re-search-forward "$datafile" nil t)
-		     (replace-match data-file nil nil)))
+	    (progn (insert
+                    (org-plot/gnuplot-script data-file num-cols params t))
+                   (insert "\n")
+                   (insert-file-contents (plist-get params :script))
+                   (goto-char (point-min))
+                   (while (re-search-forward "$datafile" nil t)
+                     (replace-match data-file nil nil)))
 	  (insert
 	   (org-plot/gnuplot-script data-file num-cols params)))
 	;; graph table
@@ -339,7 +346,7 @@ line directly before or after the table."
 	(gnuplot-send-buffer-to-gnuplot))
       ;; cleanup
       (bury-buffer (get-buffer "*gnuplot*"))
-      (delete-file data-file))))
+      (run-with-idle-timer 0.1 nil (lambda () (delete-file data-file))))))
 
 (provide 'org-plot)
 

@@ -1,12 +1,12 @@
 ;;; org-compat.el --- Compatibility code for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -36,7 +36,8 @@
 
 (require 'org-macs)
 
-(declare-function find-library-name             "find-func"  (library))
+(declare-function find-library-name "find-func"  (library))
+(declare-function w32-focus-frame "term/w32-win" (frame))
 
 (defconst org-xemacs-p (featurep 'xemacs)) ; not used by org.el itself
 (defconst org-format-transports-properties-p
@@ -48,17 +49,25 @@
 (defun org-compatible-face (inherits specs)
   "Make a compatible face specification.
 If INHERITS is an existing face and if the Emacs version supports it,
-just inherit the face.  If not, use SPECS to define the face.
+just inherit the face.  If INHERITS is set and the Emacs version does
+not support it, copy the face specification from the inheritance face.
+If INHERITS is not given and SPECS is, use SPECS to define the face.
 XEmacs and Emacs 21 do not know about the `min-colors' attribute.
 For them we convert a (min-colors 8) entry to a `tty' entry and move it
 to the top of the list.  The `min-colors' attribute will be removed from
 any other entries, and any resulting duplicates will be removed entirely."
+  (when (and inherits (facep inherits) (not specs))
+    (setq specs (or specs
+		    (get inherits 'saved-face)
+		    (get inherits 'face-defface-spec))))
   (cond
    ((and inherits (facep inherits)
-	 (not (featurep 'xemacs)) (> emacs-major-version 22))
-    ;; In Emacs 23, we use inheritance where possible.
-    ;; We only do this in Emacs 23, because only there the outline
-    ;; faces have been changed to the original org-mode-level-faces.
+	 (not (featurep 'xemacs))
+	 (>= emacs-major-version 22)
+	 ;; do not inherit outline faces before Emacs 23
+	 (or (>= emacs-major-version 23)
+	     (not (string-match "\\`outline-[0-9]+"
+				(symbol-name inherits)))))
     (list (list t :inherit inherits)))
    ((or (featurep 'xemacs) (< emacs-major-version 22))
     ;; These do not understand the `min-colors' attribute.
@@ -318,6 +327,74 @@ that can be added."
     (if (and (> (length s) 0) (= (aref s (1- (length s))) ?\n))
 	(setq n (1- n)))
     n))
+
+(defun org-kill-new (string &rest args)
+  (remove-text-properties 0 (length string) '(line-prefix t wrap-prefix t)
+			  string)
+  (apply 'kill-new string args))
+
+(defun org-select-frame-set-input-focus (frame)
+  "Select FRAME, raise it, and set input focus, if possible."
+  (cond ((featurep 'xemacs)
+	 (if (fboundp 'select-frame-set-input-focus)
+	     (select-frame-set-input-focus frame)
+	   (raise-frame frame)
+	   (select-frame frame)
+	   (focus-frame frame)))
+	;; `select-frame-set-input-focus' defined in Emacs 21 will not
+	;; set the input focus.
+	((>= emacs-major-version 22)
+	 (select-frame-set-input-focus frame))
+	(t
+	 (raise-frame frame)
+	 (select-frame frame)
+	 (cond ((memq window-system '(x ns mac))
+		(x-focus-frame frame))
+	       ((eq window-system 'w32)
+		(w32-focus-frame frame)))
+	 (when focus-follows-mouse
+	   (set-mouse-position frame (1- (frame-width frame)) 0)))))
+
+(defun org-float-time (&optional time)
+  "Convert time value TIME to a floating point number.
+TIME defaults to the current time."
+  (if (featurep 'xemacs)
+      (time-to-seconds (or time (current-time)))
+    (float-time time)))
+
+; XEmacs does not have `looking-back'.
+(if (fboundp 'looking-back)
+    (defalias 'org-looking-back 'looking-back)
+  (defun org-looking-back (regexp &optional limit greedy)
+    "Return non-nil if text before point matches regular expression REGEXP.
+Like `looking-at' except matches before point, and is slower.
+LIMIT if non-nil speeds up the search by specifying a minimum
+starting position, to avoid checking matches that would start
+before LIMIT.
+
+If GREEDY is non-nil, extend the match backwards as far as
+possible, stopping when a single additional previous character
+cannot be part of a match for REGEXP.  When the match is
+extended, its starting position is allowed to occur before
+LIMIT."
+    (let ((start (point))
+	  (pos
+	   (save-excursion
+	     (and (re-search-backward (concat "\\(?:" regexp "\\)\\=") limit t)
+		  (point)))))
+      (if (and greedy pos)
+	  (save-restriction
+	    (narrow-to-region (point-min) start)
+	    (while (and (> pos (point-min))
+			(save-excursion
+			  (goto-char pos)
+			  (backward-char 1)
+			  (looking-at (concat "\\(?:"  regexp "\\)\\'"))))
+	      (setq pos (1- pos)))
+	    (save-excursion
+	      (goto-char pos)
+	      (looking-at (concat "\\(?:"  regexp "\\)\\'")))))
+      (not (null pos)))))
 
 (provide 'org-compat)
 

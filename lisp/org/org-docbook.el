@@ -1,18 +1,17 @@
 ;;; org-docbook.el --- DocBook exporter for org-mode
 ;;
-;; Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-docbook.el
-;; Version: 6.27a
+;; Version: 6.35i
 ;; Author: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Maintainer: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Keywords: org, wp, docbook
 ;; Description: Converts an org-mode buffer into DocBook
-;; $Id: org-docbook.el 35 2009-03-23 01:03:21Z baoqiu $
 ;; URL:
 
-;; This file is NOT part of GNU Emacs.
+;; This file is part of GNU Emacs.
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -120,7 +119,7 @@ entities, you can set this variable to:
 ]>
 \"
 
-If you want to process DocBook documents without internet
+If you want to process DocBook documents without an Internet
 connection, it is suggested that you download the required entity
 file(s) and use system identifier(s) (external files) in the
 DOCTYPE declaration."
@@ -243,6 +242,11 @@ the variable to
   :group 'org-export-docbook
   :type 'string)
 
+;;; Hooks
+
+(defvar org-export-docbook-final-hook nil
+  "Hook run at the end of DocBook export, in the new buffer.")
+
 ;;; Autoload functions:
 
 ;;;###autoload
@@ -281,8 +285,7 @@ then use this command to convert it."
 			 beg end t 'string))
 	(setq reg (buffer-substring beg end)
 	      buf (get-buffer-create "*Org tmp*"))
-	(save-excursion
-	  (set-buffer buf)
+	(with-current-buffer buf
 	  (erase-buffer)
 	  (insert reg)
 	  (org-mode)
@@ -381,6 +384,8 @@ header and footer, simply return the content of the document (all
 top-level sections).  When PUB-DIR is set, use this as the
 publishing directory."
   (interactive "P")
+  (run-hooks 'org-export-first-hook)
+
   ;; Make sure we have a file name when we need it.
   (when (and (not (or to-buffer body-only))
 	     (not buffer-file-name))
@@ -388,7 +393,7 @@ publishing directory."
 	(org-set-local 'buffer-file-name
 		       (with-current-buffer (buffer-base-buffer)
 			 buffer-file-name))
-      (error "Need a file name to be able to export.")))
+      (error "Need a file name to be able to export")))
 
   (message "Exporting...")
   (setq-default org-todo-line-regexp org-todo-line-regexp)
@@ -407,7 +412,7 @@ publishing directory."
 	 (rbeg (and region-p (region-beginning)))
 	 (rend (and region-p (region-end)))
 	 (subtree-p
-	  (if (plist-get opt-plist :ignore-subree-p)
+	  (if (plist-get opt-plist :ignore-subtree-p)
 	      nil
 	    (when region-p
 	      (save-excursion
@@ -569,6 +574,7 @@ publishing directory."
     (set-buffer buffer)
     (let ((inhibit-read-only t)) (erase-buffer))
     (fundamental-mode)
+    (org-install-letbind)
 
     (and (fboundp 'set-buffer-file-coding-system)
 	 (set-buffer-file-coding-system coding-system-for-write))
@@ -605,7 +611,9 @@ publishing directory."
   </info>\n"
 		 (org-docbook-expand title)
 		 firstname othername surname
-		 (if email (concat "<email>" email "</email>") "")
+		 (if (and org-export-email-info
+			  email (string-match "\\S-" email))
+		     (concat "<email>" email "</email>") "")
 		 )))
 
       (org-init-section-numbers)
@@ -618,7 +626,7 @@ publishing directory."
 
 	  ;; End of quote section?
 	  (when (and inquote (string-match "^\\*+ " line))
-	    (insert "]]>\n</programlisting>\n")
+	    (insert "]]></programlisting>\n")
 	    (org-export-docbook-open-para)
 	    (setq inquote nil))
 	  ;; Inside a quote section?
@@ -638,19 +646,24 @@ publishing directory."
 		      (not (string-match "^[ \t]*\\(:.*\\)"
 					 (car lines))))
 	      (setq infixed nil)
-	      (insert "]]>\n</programlisting>\n")
+	      (insert "]]></programlisting>\n")
 	      (org-export-docbook-open-para))
 	    (throw 'nextline nil))
 
+	  (org-export-docbook-close-lists-maybe line)
+
 	  ;; Protected HTML
 	  (when (get-text-property 0 'org-protected line)
-	    (let (par)
+	    (let (par (ind (get-text-property 0 'original-indentation line)))
 	      (when (re-search-backward
 		     "\\(<para>\\)\\([ \t\r\n]*\\)\\=" (- (point) 100) t)
 		(setq par (match-string 1))
 		(replace-match "\\2\n"))
 	      (insert line "\n")
 	      (while (and lines
+			  (or (= (length (car lines)) 0)
+			      (not ind)
+			      (equal ind (get-text-property 0 'original-indentation (car lines))))
 			  (or (= (length (car lines)) 0)
 			      (get-text-property 0 'org-protected (car lines))))
 		(insert (pop lines) "\n"))
@@ -727,8 +740,12 @@ publishing directory."
 	  ;; Make targets to anchors.  Note that currently FOP does not
 	  ;; seem to support <anchor> tags when generating PDF output,
 	  ;; but this can be used in DocBook --> HTML conversion.
-	  (while (string-match "<<<?\\([^<>]*\\)>>>?\\((INVISIBLE)\\)?[ \t]*\n?" line)
+	  (setq start 0)
+	  (while (string-match
+		  "<<<?\\([^<>]*\\)>>>?\\((INVISIBLE)\\)?[ \t]*\n?" line start)
 	    (cond
+	     ((get-text-property (match-beginning 1) 'org-protected line)
+	      (setq start (match-end 1)))
 	     ((match-end 2)
 	      (setq line (replace-match
 			  (format "@<anchor xml:id=\"%s\"/>"
@@ -788,12 +805,13 @@ publishing directory."
 		   (setq id-file (org-id-find-id-file path)))
 	      ;; This is an id: link to another file (if it was the same file,
 	      ;; it would have become an internal link...)
-	      (setq id-file (file-relative-name
-			     id-file (file-name-directory org-current-export-file)))
-	      (setq id-file (concat (file-name-sans-extension id-file)
-				    org-export-docbook-extension))
-	      (setq rpl (format "<link xlink:href=\"%s#%s\">%s</link>"
-				id-file path (org-export-docbook-format-desc desc))))
+	      (save-match-data
+		(setq id-file (file-relative-name
+			       id-file (file-name-directory org-current-export-file)))
+		(setq id-file (concat (file-name-sans-extension id-file)
+				      org-export-docbook-extension))
+		(setq rpl (format "<link xlink:href=\"%s#%s\">%s</link>"
+				  id-file path (org-export-docbook-format-desc desc)))))
 	     ((member type '("http" "https"))
 	      ;; Standard URL, just check if we need to inline an image
 	      (if (and (or (eq t org-export-docbook-inline-images)
@@ -896,7 +914,8 @@ publishing directory."
 	    (while (string-match "\\([^* \t].*?\\)\\[\\([0-9]+\\)\\]" line start)
 	      (if (get-text-property (match-beginning 2) 'org-protected line)
 		  (setq start (match-end 2))
-		(let ((num (match-string 2 line)))
+		(let* ((num (match-string 2 line))
+		       (footnote-def (assoc num footnote-list)))
 		  (if (assoc num footref-seen)
 		      (setq line (replace-match
 				  (format "%s<footnoteref linkend=\"%s%s\"/>"
@@ -908,9 +927,10 @@ publishing directory."
 					(match-string 1 line)
 					org-export-docbook-footnote-id-prefix
 					num
-					(save-match-data
-					  (org-docbook-expand
-					   (cdr (assoc num footnote-list)))))
+					(if footnote-def
+					    (save-match-data
+					      (org-docbook-expand (cdr footnote-def)))
+					  (format "FOOTNOTE DEFINITION NOT FOUND: %s" num)))
 				t t line))
 		    (push (cons num 1) footref-seen))))))
 
@@ -972,7 +992,8 @@ publishing directory."
 		    ((= llt ?\)) "^\\([ \t]*\\)\\(\\([-+*] \\)\\|\\([0-9]+)\\) \\)?\\( *[^ \t\n\r]\\|[ \t]*$\\)")
 		    (t (error "Invalid value of `org-plain-list-ordered-item-terminator'")))
 		   line)
-	      (setq ind (org-get-string-indentation line)
+	      (setq ind (or (get-text-property 0 'original-indentation line)
+			    (org-get-string-indentation line))
 		    item-type (if (match-beginning 4) "o" "u")
 		    starter (if (match-beginning 2)
 				(substring (match-string 2 line) 0 -1))
@@ -1075,7 +1096,7 @@ publishing directory."
 
       ;; Properly close all local lists and other lists
       (when inquote
-	(insert "]]>\n</programlisting>\n")
+	(insert "]]></programlisting>\n")
 	(org-export-docbook-open-para))
       (when in-local-list
 	;; Close any local lists before inserting a new header line
@@ -1094,7 +1115,7 @@ publishing directory."
 
       (unless (plist-get opt-plist :buffer-will-be-killed)
 	(normal-mode)
-	(if (eq major-mode default-major-mode)
+	(if (eq major-mode (default-value 'major-mode))
 	    (nxml-mode)))
 
       ;; Remove empty paragraphs and lists.  Replace them with a
@@ -1104,6 +1125,13 @@ publishing directory."
 	      "[ \r\n\t]*\\(<para>\\)[ \r\n\t]*</para>[ \r\n\t]*" nil t)
 	(when (not (get-text-property (match-beginning 1) 'org-protected))
 	  (replace-match "\n")
+	  ;; Avoid empty <listitem></listitem> caused by inline tasks.
+	  ;; We should add an empty para to make everything valid.
+	  (when (and (looking-at "</listitem>")
+		     (save-excursion
+		       (backward-char (length "<listitem>\n"))
+		       (looking-at "<listitem>")))
+	    (insert "<para></para>"))
 	  (backward-char 1)))
       ;; Fill empty sections with <para></para>.  This is to make sure
       ;; that the DocBook document generated is valid and well-formed.
@@ -1116,6 +1144,7 @@ publishing directory."
       (goto-char (point-max))
       (unless body-only
 	(insert "</article>"))
+      (run-hooks 'org-export-docbook-final-hook)
       (or to-buffer (save-buffer))
       (goto-char (point-min))
       (or (org-export-push-to-kill-ring "DocBook")
@@ -1143,6 +1172,28 @@ publishing directory."
   (if (equal type "d")
       (insert "</listitem></varlistentry>\n")
     (insert "</listitem>\n")))
+
+(defvar in-local-list)
+(defvar local-list-indent)
+(defvar local-list-type)
+(defun org-export-docbook-close-lists-maybe (line)
+  (let ((ind (or (get-text-property 0 'original-indentation line)))
+;		 (and (string-match "\\S-" line)
+;		      (org-get-indentation line))))
+	didclose)
+    (when ind
+      (while (and in-local-list
+		  (<= ind (car local-list-indent)))
+	(setq didclose t)
+	(let ((listtype (car local-list-type)))
+	  (org-export-docbook-close-li listtype)
+	  (insert (cond
+		   ((equal listtype "o") "</orderedlist>\n")
+		   ((equal listtype "u") "</itemizedlist>\n")
+		   ((equal listtype "d") "</variablelist>\n"))))
+	(pop local-list-type) (pop local-list-indent)
+	(setq in-local-list local-list-indent))
+      (and didclose (org-export-docbook-open-para)))))
 
 (defun org-export-docbook-level-start (level title)
   "Insert a new level in DocBook export.
@@ -1208,16 +1259,14 @@ string, don't modify these."
   (if org-export-with-sub-superscripts
       (setq s (org-export-docbook-convert-sub-super s)))
   (if org-export-with-TeX-macros
-      (let ((start 0) wd ass)
+      (let ((start 0) wd rep)
 	(while (setq start (string-match "\\\\\\([a-zA-Z]+\\)\\({}\\)?"
 					 s start))
 	  (if (get-text-property (match-beginning 0) 'org-protected s)
 	      (setq start (match-end 0))
 	    (setq wd (match-string 1 s))
-	    (if (setq ass (assoc wd org-html-entities))
-		(setq s (replace-match (or (cdr ass)
-					   (concat "&" (car ass) ";"))
-				       t t s))
+	    (if (setq rep (org-entity-get-representation wd 'html))
+		(setq s (replace-match rep t t s))
 	      (setq start (+ start (length wd))))))))
   s)
 
@@ -1274,6 +1323,7 @@ string, don't modify these."
 	   (label (org-find-text-property-in-string 'org-label src))
 	   (default-attr org-export-docbook-default-image-attributes)
 	   tmp)
+      (setq caption (and caption (org-html-do-expand caption)))
       (while (setq tmp (pop default-attr))
 	(if (not (string-match (concat (car tmp) "=") attr))
 	    (setq attr (concat attr " " (car tmp) "=" (cdr tmp)))))
@@ -1299,18 +1349,33 @@ string, don't modify these."
 	(replace-match ""))))
 
 (defun org-export-docbook-finalize-table (table)
-  "Change TABLE to informaltable if caption does not exist.
+  "Clean up TABLE and turn it into DocBook format.
+This function adds a label to the table if it is available, and
+also changes TABLE to informaltable if caption does not exist.
 TABLE is a string containing the HTML code generated by
 `org-format-table-html' for a table in Org-mode buffer."
-  (if (string-match
-       "^<table \\(\\(.\\|\n\\)+\\)<caption></caption>\n\\(\\(.\\|\n\\)+\\)</table>"
-       table)
-      (replace-match (concat "<informaltable "
-			     (match-string 1 table)
-			     (match-string 3 table)
-			     "</informaltable>")
-		     nil nil table)
-    table))
+  (let (table-with-label)
+    ;; Get the label if it exists, and move it into the <table> element.
+    (setq table-with-label
+	  (if (string-match
+	       "^<table \\(\\(.\\|\n\\)+\\)<a name=\"\\(.+\\)\" id=\".+\"></a>\n\\(\\(.\\|\n\\)+\\)</table>"
+	       table)
+	      (replace-match (concat "<table xml:id=\"" (match-string 3 table) "\" "
+				     (match-string 1 table)
+				     (match-string 4 table)
+				     "</table>")
+			     nil nil table)
+	    table))
+    ;; Change <table> into <informaltable> if caption does not exist.
+    (if (string-match
+	 "^<table \\(\\(.\\|\n\\)+\\)<caption></caption>\n\\(\\(.\\|\n\\)+\\)</table>"
+	 table-with-label)
+	(replace-match (concat "<informaltable "
+			       (match-string 1 table-with-label)
+			       (match-string 3 table-with-label)
+			       "</informaltable>")
+		       nil nil table-with-label)
+      table-with-label)))
 
 ;; Note: This function is very similar to
 ;; org-export-html-convert-sub-super.  They can be merged in the future.
@@ -1372,4 +1437,5 @@ that need to be preserved in later phase of DocBook exporting."
 
 (provide 'org-docbook)
 
+;; arch-tag: a24a127c-d365-4c2a-9e9b-f7dcb0ebfdc3
 ;;; org-docbook.el ends here

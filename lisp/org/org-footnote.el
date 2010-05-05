@@ -1,11 +1,11 @@
 ;;; org-footnote.el --- Footnote support in Org and elsewhere
 ;;
-;; Copyright (C) 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2010 Free Software Foundation, Inc.
 ;;
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -38,6 +38,7 @@
 (require 'org-macs)
 (require 'org-compat)
 
+(declare-function org-in-commented-line "org" ())
 (declare-function org-in-regexp "org" (re &optional nlines visually))
 (declare-function org-mark-ring-push "org" (&optional pos buffer))
 (declare-function outline-next-heading "outline")
@@ -45,6 +46,9 @@
 (declare-function org-show-context "org" (&optional key))
 (declare-function org-back-to-heading "org" (&optional invisible-ok))
 (declare-function org-end-of-subtree "org"  (&optional invisible-ok to-heading))
+(declare-function org-in-verbatim-emphasis "org" ())
+(declare-function org-inside-latex-macro-p "org" ())
+(defvar org-odd-levels-only) ;; defined in org.el
 
 (defconst org-footnote-re
   (concat "[^][\n]"   ; to make sure it is not at the beginning of a line
@@ -57,7 +61,7 @@
 	  "\\]")
   "Regular expression for matching footnotes.")
 
-(defconst org-footnote-definition-re 
+(defconst org-footnote-definition-re
   (org-re "^\\(\\[\\([0-9]+\\|fn:[-_[:word:]]+\\)\\]\\)")
   "Regular expression matching the definition of a footnote.")
 
@@ -73,7 +77,7 @@ If this is a string, during export, all subtrees starting with this
 heading will be removed after extracting footnote definitions."
   :group 'org-footnotes
   :type '(choice
-	  (string :tag "Collect fotnotes under heading")
+	  (string :tag "Collect footnotes under heading")
 	  (const :tag "Define footnotes locally" nil)))
 
 (defcustom org-footnote-tag-for-non-org-mode-files "Footnotes:"
@@ -87,7 +91,7 @@ of the file, followed by the collected and normalized footnotes."
   :type 'string)
 
 (defcustom org-footnote-define-inline nil
-  "Non-nil means, define footnotes inline, at reference location.
+  "Non-nil means define footnotes inline, at reference location.
 When nil, footnotes will be defined in a special section near
 the end of the document.  When t, the [fn:label:definition] notation
 will be used to define the footnote at the reference position."
@@ -95,7 +99,7 @@ will be used to define the footnote at the reference position."
   :type 'boolean)
 
 (defcustom org-footnote-auto-label t
-  "Non-nil means, define automatically new labels for footnotes.
+  "Non-nil means define automatically new labels for footnotes.
 Possible values are:
 
 nil        prompt the user for each label
@@ -106,13 +110,30 @@ confirm    like t, but let the user edit the created value.  In particular,
 plain      Automatically create plain number labels like [1]"
   :group 'org-footnote
   :type '(choice
-	  (const :tag "Frompt for label" nil)
+	  (const :tag "Prompt for label" nil)
 	  (const :tag "Create automatic [fn:N]" t)
 	  (const :tag "Offer automatic [fn:N] for editing" confirm)
 	  (const :tag "Create automatic [N]" plain)))
 
+(defcustom org-footnote-auto-adjust nil
+  "Non-nil means automatically adjust footnotes after insert/delete.
+When this is t, after each insertion or deletion of a footnote,
+simple fn:N footnotes will be renumbered, and all footnotes will be sorted.
+If you want to have just sorting or just renumbering, set this variable
+to `sort' or `renumber'.
+
+The main values of this variable can be set with in-buffer options:
+
+#+STARTUP: fnadjust
+#+STARTUP: nofnadjust"
+  :group 'org-footnote
+  :type '(choice
+	  (const :tag "Renumber" renumber)
+	  (const :tag "Sort" sort)
+	  (const :tag "Renumber and Sort" t)))
+
 (defcustom org-footnote-fill-after-inline-note-extraction nil
-  "Non-nil means, fill paragraphs after extracting footnotes.
+  "Non-nil means fill paragraphs after extracting footnotes.
 When extracting inline footnotes, the lengths of lines can change a lot.
 When this option is set, paragraphs from which an inline footnote has been
 extracted will be filled again."
@@ -162,7 +183,7 @@ with start and label of the footnote if there is a definition at point."
       (message "Edit definition and go back with `C-c &' or, if unique, with `C-c C-c'."))))
 
 (defun org-footnote-goto-next-reference (label)
-  "Find the definition of the footnote with label LABEL."
+  "Find the next reference of the footnote with label LABEL."
   (interactive "sLabel: ")
   (org-mark-ring-push)
   (setq label (org-footnote-normalize-label label))
@@ -246,10 +267,12 @@ or new, let the user edit the definition of the footnote."
       (message "New reference to existing note"))
      (org-footnote-define-inline
       (insert "[" label ": ]")
-      (backward-char 1))
+      (backward-char 1)
+      (org-footnote-auto-adjust-maybe))
      (t
       (insert "[" label "]")
-      (org-footnote-create-definition label)))))
+      (org-footnote-create-definition label)
+      (org-footnote-auto-adjust-maybe)))))
 
 (defun org-footnote-create-definition (label)
   "Start the definition of a footnote with label LABEL."
@@ -269,7 +292,8 @@ or new, let the user edit the definition of the footnote."
 	  (goto-char (point-max))
 	  (insert "\n\n* " org-footnote-section "\n")))
       ;; Now go to the end of this entry and insert there.
-      (org-footnote-goto-local-insertion-point))
+      (org-footnote-goto-local-insertion-point)
+      (org-show-context 'link-search))
      (t
       (setq re (concat "^" org-footnote-tag-for-non-org-mode-files "[ \t]*$"))
       (unless (re-search-forward re nil t)
@@ -288,17 +312,22 @@ or new, let the user edit the definition of the footnote."
 (defun org-footnote-action (&optional special)
   "Do the right thing for footnotes.
 When at a footnote reference, jump to the definition.  When at a definition,
-jump to the refernces.  When neither at definition or reference,
+jump to the references.  When neither at definition or reference,
 create a new footnote, interactively.
 With prefix arg SPECIAL, offer additional commands in a menu."
   (interactive "P")
   (let (tmp c)
     (cond
      (special
-      (message "Footnotes: [s]ort  |  convert to [n]umeric  |  [d]elete")
+      (message "Footnotes: [s]ort  |  [r]enumber fn:N  |  [S]=r+s |->[n]umeric  |  [d]elete")
       (setq c (read-char-exclusive))
       (cond
        ((equal c ?s)
+	(org-footnote-normalize 'sort))
+       ((equal c ?r)
+	(org-footnote-renumber-fn:N))
+       ((equal c ?S)
+	(org-footnote-renumber-fn:N)
 	(org-footnote-normalize 'sort))
        ((equal c ?n)
 	(org-footnote-normalize))
@@ -316,54 +345,67 @@ With prefix arg SPECIAL, offer additional commands in a menu."
 ;;;###autoload
 (defun org-footnote-normalize (&optional sort-only for-preprocessor)
   "Collect the footnotes in various formats and normalize them.
-This find the different sorts of footnotes allowed in Org, and
+This finds the different sorts of footnotes allowed in Org, and
 normalizes them to the usual [N] format that is understood by the
 Org-mode exporters.
 When SORT-ONLY is set, only sort the footnote definitions into the
 referenced sequence."
   ;; This is based on Paul's function, but rewritten.
-  (let ((count 0) ref def idef ref-table beg beg1 marker a before
-	ins-point)
+  (let* ((limit-level
+	  (and (boundp 'org-inlinetask-min-level)
+	       org-inlinetask-min-level
+	       (1- org-inlinetask-min-level)))
+	 (nstars (and limit-level
+		      (if org-odd-levels-only
+			  (and limit-level (1- (* limit-level 2)))
+			limit-level)))
+	 (outline-regexp
+	  (concat "\\*" (if nstars (format "\\{1,%d\\} " nstars) "+ ")))
+	 (count 0)
+	 ref def idef ref-table beg beg1 marker a before ins-point)
      (save-excursion
       ;; Now find footnote references, and extract the definitions
       (goto-char (point-min))
       (while (re-search-forward org-footnote-re nil t)
-	(org-if-unprotected
-	 (setq def (match-string 4)
-	       idef def
-	       ref (or (match-string 1) (match-string 2))
-	       before (char-to-string (char-after (match-beginning 0))))
-	 (if (equal ref "fn:") (setq ref nil))
-	 (if (and ref (setq a (assoc ref ref-table)))
-	     (progn
-	       (setq marker (nth 1 a))
-	       (unless (nth 2 a) (setf (caddr a) def)))
-	   (setq marker (number-to-string (incf count))))
-	 (save-match-data
-	   (if def
-	       (setq def (org-trim def))
-	     (save-excursion
-	       (goto-char (point-min))
-	       (if (not (re-search-forward (concat "^\\[" (regexp-quote ref)
-						   "\\]") nil t))
-		   (setq def nil)
-		 (setq beg (match-beginning 0))
-		 (setq beg1 (match-end 0))
-		 (re-search-forward
-		  (org-re "^[ \t]*$\\|^\\*+ \\|^\\[\\([0-9]+\\|fn:[-_[:word:]]+\\)\\]")
-		  nil 'move)
-		 (setq def (buffer-substring beg1 (or (match-beginning 0)
-						      (point-max))))
-		 (goto-char beg)
-		 (skip-chars-backward " \t\n\t")
-		 (delete-region (1+ (point)) (match-beginning 0))))))
-	 (unless sort-only
-	   (replace-match (concat before "[" marker "]"))
-	   (and idef
-		org-footnote-fill-after-inline-note-extraction
-		(fill-paragraph)))
-	 (if (not a) (push (list ref marker def (if idef t nil)) ref-table))))
-      
+	(unless (or (org-in-commented-line) (org-in-verbatim-emphasis)
+		    (org-inside-latex-macro-p))
+	  (org-if-unprotected
+	   (setq def (match-string 4)
+		 idef def
+		 ref (or (match-string 1) (match-string 2))
+		 before (char-to-string (char-after (match-beginning 0))))
+	   (if (equal ref "fn:") (setq ref nil))
+	   (if (and ref (setq a (assoc ref ref-table)))
+	       (progn
+		 (setq marker (nth 1 a))
+		 (unless (nth 2 a) (setf (caddr a) def)))
+	     (setq marker (number-to-string (incf count))))
+	   (save-match-data
+	     (if def
+		 (setq def (org-trim def))
+	       (save-excursion
+		 (goto-char (point-min))
+		 (if (not (re-search-forward (concat "^\\[" (regexp-quote ref)
+						     "\\]") nil t))
+		     (setq def nil)
+		   (setq beg (match-beginning 0))
+		   (setq beg1 (match-end 0))
+		   (re-search-forward
+		    (org-re "^[ \t]*$\\|^\\*+ \\|^\\[\\([0-9]+\\|fn:[-_[:word:]]+\\)\\]")
+		    nil 'move)
+		   (setq def (buffer-substring beg1 (or (match-beginning 0)
+							(point-max))))
+		   (goto-char beg)
+		   (skip-chars-backward " \t\n\t")
+		   (delete-region (1+ (point)) (match-beginning 0))))))
+	   (unless sort-only
+	     (replace-match (concat before "[" marker "]") t t)
+	     (and idef
+		  org-footnote-fill-after-inline-note-extraction
+		  (fill-paragraph)))
+	   (if (not a) (push (list ref marker def (if idef t nil))
+			     ref-table)))))
+
       ;; First find and remove the footnote section
       (goto-char (point-min))
       (cond
@@ -386,7 +428,7 @@ referenced sequence."
 	      (insert "* " org-footnote-section "\n")
 	      (setq ins-point (point))))))
        (t
-	(if (re-search-forward 
+	(if (re-search-forward
 	     (concat "^"
 		     (regexp-quote org-footnote-tag-for-non-org-mode-files)
 		     "[ \t]*$")
@@ -397,7 +439,7 @@ referenced sequence."
 	(delete-region (point) (point-max))
 	(insert "\n\n" org-footnote-tag-for-non-org-mode-files "\n")
 	(setq ins-point (point))))
-      
+
       ;; Insert the footnotes again
       (goto-char (or ins-point (point-max)))
       (setq ref-table (reverse ref-table))
@@ -452,12 +494,12 @@ ENTRY is (fn-label num-mark definition)."
 
 (defun org-footnote-goto-local-insertion-point ()
   "Find insertion point for footnote, just before next outline heading."
-  (outline-next-heading)
+  (org-with-limited-levels (outline-next-heading))
   (or (bolp) (newline))
   (beginning-of-line 0)
   (while (and (not (bobp)) (= (char-after) ?#))
     (beginning-of-line 0))
-  (if (looking-at "#\\+TBLFM:") (beginning-of-line 2))
+  (if (looking-at "[ \t]*#\\+TBLFM:") (beginning-of-line 2))
   (end-of-line 1)
   (skip-chars-backward "\n\r\t "))
 
@@ -494,8 +536,41 @@ and all references of a footnote label."
 	      (goto-char (point-max)))
 	    (delete-region beg (point))
 	    (incf ndef))))
+      (org-footnote-auto-adjust-maybe)
       (message "%d definition(s) of and %d reference(s) of footnote %s removed"
 	       ndef nref label))))
+
+(defun org-footnote-renumber-fn:N ()
+  "Renumber the simple footnotes like fn:17 into a sequence in the document."
+  (interactive)
+  (let (map i (n 0))
+    (save-excursion
+      (save-restriction
+	(widen)
+	(goto-char (point-min))
+	(while (re-search-forward "\\[fn:\\([0-9]+\\)[]:]" nil t)
+	  (setq i (string-to-number (match-string 1)))
+	  (when (and (string-match "\\S-" (buffer-substring
+					   (point-at-bol) (match-beginning 0)))
+		     (not (assq i map)))
+	    (push (cons i (number-to-string (incf n))) map)))
+	(goto-char (point-min))
+	(while (re-search-forward "\\(\\[fn:\\)\\([0-9]+\\)\\([]:]\\)" nil t)
+	  (replace-match (concat "\\1" (cdr (assq (string-to-number (match-string 2)) map)) "\\3")))))))
+
+(defun org-footnote-auto-adjust-maybe ()
+  "Renumber and/or sort footnotes according to user settings."
+  (when (memq org-footnote-auto-adjust '(t renumber))
+    (org-footnote-renumber-fn:N))
+  (when (memq org-footnote-auto-adjust '(t sort))
+    (let ((label (nth 1 (org-footnote-at-definition-p))))
+      (org-footnote-normalize 'sort)
+      (when label
+	(goto-char (point-min))
+	(and (re-search-forward (concat "^\\[" (regexp-quote label) "\\]")
+				nil t)
+	     (progn (insert " ")
+		    (just-one-space)))))))
 
 (provide 'org-footnote)
 

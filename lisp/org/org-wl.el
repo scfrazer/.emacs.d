@@ -1,12 +1,12 @@
 ;;; org-wl.el --- Support for links to Wanderlust messages from within Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Tokuya Kameshima <kames at fa2 dot so-net dot ne dot jp>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -54,11 +54,6 @@
 ;; Backward compatibility to old version of wl
 (declare-function wl "ext:wl" () t)
 (declare-function wl-summary-buffer-msgdb "ext:wl-folder" () t)
-;(declare-function wl-folder-get-elmo-folder "ext:wl-folder"
-;		  (entity &optional no-cache))
-(declare-function wl-summary-goto-folder-subr "ext:wl-summary"
-		  (&optional name scan-type other-window sticky interactive
-			     scoring force-exit))
 (declare-function wl-summary-jump-to-msg-by-message-id "ext:wl-summary"
 		  (&optional id))
 (declare-function wl-summary-line-from "ext:wl-summary" ())
@@ -96,7 +91,11 @@
 		 wl-summary-buffer-elmo-folder msgnum)
 	      (elmo-msgdb-overview-get-entity
 	       msgnum (wl-summary-buffer-msgdb))))
-	   (from (wl-summary-line-from))
+	   (from (let ((from-field (elmo-message-entity-field wl-message-entity
+							      'from)))
+		   (if (listp from-field)
+		       (car from-field)
+		     from-field)))
 	   (to (let ((to-field (elmo-message-entity-field wl-message-entity
 							  'to)))
 		 (if (listp to-field)
@@ -105,6 +104,10 @@
 	   (subject (let (wl-thr-indent-string wl-parent-message-entity)
 		      (wl-summary-line-subject)))
 	   desc link)
+     ;; remove text properties of subject string to avoid possible bug
+     ;; when formatting the subject
+     (set-text-properties 0 (length subject) nil subject)
+
      (org-store-link-props :type "wl" :from from :to to
 			    :subject subject :message-id message-id)
      (setq message-id (org-remove-angle-brackets message-id))

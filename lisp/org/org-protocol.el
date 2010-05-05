@@ -1,36 +1,30 @@
 ;;; org-protocol.el --- Intercept calls from emacsclient to trigger custom actions.
 ;;
-;; Copyright (c) 2008, 2009
-;;          Bastien Guerry <bzg AT altern DOT org>,
-;;          Daniel German <dmg AT uvic DOT org>,
-;;          Sebastian Rose <sebastian_rose AT gmx DOT de>,
-;;          Ross Patterson <me AT rpatterson DOT net>
-;;          David Moffat
-;;          (will be FSF when done)
+;; Copyright (C) 2008, 2009, 2010
+;;          Free Software Foundation, Inc.
 ;;
-;;
-;; Filename: org-protocol.el
-;; Version: 6.27a
 ;; Author: Bastien Guerry <bzg AT altern DOT org>
 ;; Author: Daniel M German <dmg AT uvic DOT org>
 ;; Author: Sebastian Rose <sebastian_rose AT gmx DOT de>
 ;; Author: Ross Patterson <me AT rpatterson DOT net>
 ;; Maintainer: Sebastian Rose <sebastian_rose AT gmx DOT de>
 ;; Keywords: org, emacsclient, wp
+;; Version: 6.35i
 
-;; This file is not part of GNU Emacs.
-
-;; This program is free software: you can redistribute it and/or modify
+;; This file is part of GNU Emacs.
+;;
+;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 
-;; This program is distributed in the hope that it will be useful,
+;; GNU Emacs is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; See <http://www.gnu.org/licenses/>.
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Commentary:
@@ -94,7 +88,7 @@
 ;;     triggered through the sub-protocol \"store-link\".
 ;;
 ;;   * Call `org-protocol-remember' by using the sub-protocol \"remember\".  If
-;;     Org-mode is loaded, emacs will popup a remember buffer and fill the
+;;     Org-mode is loaded, emacs will pop-up a remember buffer and fill the
 ;;     template with the data provided. I.e. the browser's URL is inserted as an
 ;;     Org-link of which the page title will be the description part. If text
 ;;     was select in the browser, that text will be the body of the entry.
@@ -115,8 +109,8 @@
 ;;
 ;;  use template ?x.
 ;;
-;; Note, that using double shlashes is optional from org-protocol.el's point of
-;; view because emacsclient sqashes the slashes to one.
+;; Note, that using double slashes is optional from org-protocol.el's point of
+;; view because emacsclient squashes the slashes to one.
 ;;
 ;;
 ;; provides: 'org-protocol
@@ -131,7 +125,7 @@
 		  (&optional refresh))
 (declare-function org-publish-get-project-from-filename "org-publish"
 		  (filename &optional up))
-(declare-function server-edit "server" ())
+(declare-function server-edit "server" (&optional arg))
 
 
 (defgroup org-protocol nil
@@ -191,6 +185,8 @@ Possible properties are:
                        Last slash required.
   :working-directory - the local working directory. This is, what base-url will
                        be replaced with.
+  :redirects         - A list of cons cells, each of which maps a regular
+                       expression to match to a path relative to :working-directory.
 
 Example:
 
@@ -204,7 +200,12 @@ Example:
           :online-suffix \".html\"
           :working-suffix \".org\"
           :base-url \"http://localhost/org/\"
-          :working-directory \"/home/user/org/\")))
+          :working-directory \"/home/user/org/\"
+          :rewrites ((\"org/?$\" . \"index.php\")))))
+
+   The last line tells `org-protocol-open-source' to open
+   /home/user/org/index.php, if the URL cannot be mapped to an existing
+   file, and ends with either \"org\" or \"org/\".
 
 Consider using the interactive functions `org-protocol-create' and
 `org-protocol-create-for-org' to help you filling this variable with valid contents."
@@ -237,7 +238,7 @@ function - function that handles requests with protocol and takes exactly one
            `org-protocol-protocol-alist-default'. See `org-protocol-split-data'.
 
 kill-client - If t, kill the client immediately, once the sub-protocol is
-           detected. This is neccessary for actions that can be interupted by
+           detected. This is necessary for actions that can be interrupted by
            `C-g' to avoid dangeling emacsclients. Note, that all other command
            line arguments but the this one will be discarded, greedy handlers
            still receive the whole list of arguments though.
@@ -253,6 +254,11 @@ Here is an example:
          :function your-protocol-handler-fuction)))"
   :group 'org-protocol
   :type '(alist))
+
+(defcustom org-protocol-default-template-key "w"
+  "The default org-remember-templates key to use."
+  :group 'org-protocol
+  :type 'string)
 
 
 ;;; Helper functions:
@@ -280,6 +286,17 @@ decode each split part."
 	    (mapcar unhexify split-parts)
 	  (mapcar 'org-protocol-unhex-string split-parts))
       split-parts)))
+
+;; This inline function is needed in org-protocol-unhex-compound to do
+;; the right thing to decode UTF-8 char integer values.
+(eval-when-compile
+  (if (>= emacs-major-version 23)
+      (defsubst org-protocol-char-to-string(c)
+	"Defsubst to decode UTF-8 character values in emacs 23 and beyond."
+	(char-to-string c))
+    (defsubst org-protocol-char-to-string (c)
+      "Defsubst to decode UTF-8 character values in emacs 22."
+      (string (decode-char 'ucs c)))))
 
 (defun org-protocol-unhex-string(str)
   "Unhex hexified unicode strings as returned from the JavaScript function
@@ -332,7 +349,7 @@ encodeURIComponent. E.g. `%C3%B6' is the german Umlaut `ü'."
 	(setq sum (+ (lsh sum shift) val))
 	(if (> eat 0) (setq eat (- eat 1)))
 	(when (= 0 eat)
-	  (setq ret (concat ret (char-to-string sum)))
+	  (setq ret (concat ret (org-protocol-char-to-string sum)))
 	  (setq sum 0))
 	)) ;; end (while bytes
     ret ))
@@ -371,7 +388,7 @@ returned list."
       (progn
        (dolist (e l ret)
          (setq ret
-               (append ret 
+               (append ret
                        (list
                         (if (stringp e)
                             (if (stringp replacement)
@@ -423,23 +440,23 @@ The sub-protocol used to reach this function is set in
              uri))
   nil)
 
-
 (defun org-protocol-remember  (info)
   "Process an org-protocol://remember:// style url.
 
 The sub-protocol used to reach this function is set in
 `org-protocol-protocol-alist'.
 
-This function detects an URL, title and optinal text, separated by '/'
+This function detects an URL, title and optional text, separated by '/'
 The location for a browser's bookmark has to look like this:
 
   javascript:location.href='org-protocol://remember://'+ \\
-        encodeURIComponent(location.href)+ \\
+        encodeURIComponent(location.href)+'/' \\
         encodeURIComponent(document.title)+'/'+ \\
         encodeURIComponent(window.getSelection())
 
-By default the template character ?w is used. But you may prepend the encoded
-URL with a character and a slash like so:
+By default, it uses the character `org-protocol-default-template-key',
+which should be associated with a template in `org-remember-templates'.
+But you may prepend the encoded URL with a character and a slash like so:
 
   javascript:location.href='org-protocol://org-store-link://b/'+ ...
 
@@ -448,13 +465,15 @@ Now template ?b will be used."
   (if (and (boundp 'org-stored-links)
            (fboundp 'org-remember))
       (let* ((parts (org-protocol-split-data info t))
-             (template (or (and (= 1 (length (car parts))) (pop parts)) "w"))
+             (template (or (and (= 1 (length (car parts))) (pop parts))
+			   org-protocol-default-template-key))
              (url (org-protocol-sanitize-uri (car parts)))
              (type (if (string-match "^\\([a-z]+\\):" url)
                        (match-string 1 url)))
-             (title (cadr parts))
-             (region (caddr parts))
-             (orglink (org-make-link-string url title))
+             (title (or (cadr parts) ""))
+             (region (or (caddr parts) ""))
+             (orglink (org-make-link-string
+		       url (if (string-match "[^[:space:]]" title) title url)))
              remember-annotation-functions)
         (setq org-stored-links
               (cons (list url title) org-stored-links))
@@ -465,10 +484,9 @@ Now template ?b will be used."
                               :initial region)
         (raise-frame)
         (org-remember nil (string-to-char template)))
-    
+
     (message "Org-mode not loaded."))
   nil)
-
 
 (defun org-protocol-open-source (fname)
   "Process an org-protocol://open-source:// style url.
@@ -494,10 +512,35 @@ The location for a browser's bookmark should look like this:
             (let* ((wdir (plist-get (cdr prolist) :working-directory))
                    (strip-suffix (plist-get (cdr prolist) :online-suffix))
                    (add-suffix (plist-get (cdr prolist) :working-suffix))
-                   (start-pos (+ (string-match wsearch f) (length base-url)))
+		   ;; Strip "[?#].*$" if `f' is a redirect with another
+		   ;; ending than strip-suffix here:
+		   (f1 (substring f 0 (string-match "\\([\\?#].*\\)?$" f)))
+                   (start-pos (+ (string-match wsearch f1) (length base-url)))
                    (end-pos (string-match
-                             (concat (regexp-quote strip-suffix) "\\([?#].*\\)?$") f))
-                   (the-file (concat wdir (substring f start-pos end-pos) add-suffix)))
+			     (regexp-quote strip-suffix) f1))
+		   ;; We have to compare redirects without suffix below:
+		   (f2 (concat wdir (substring f1 start-pos end-pos)))
+                   (the-file (concat f2 add-suffix)))
+
+	      ;; Note: the-file may still contain `%C3' et al here because browsers
+	      ;; tend to encode `&auml;' in URLs to `%25C3' - `%25' being `%'.
+	      ;; So the results may vary.
+
+	      ;; -- start redirects --
+	      (unless (file-exists-p the-file)
+		(message "File %s does not exist.\nTesting for rewritten URLs." the-file)
+		(let ((rewrites (plist-get (cdr prolist) :rewrites)))
+		  (when rewrites
+		    (message "Rewrites found: %S" rewrites)
+		    (mapc
+		     (lambda (rewrite)
+		       "Try to match a rewritten URL and map it to a real file."
+		       ;; Compare redirects without suffix:
+		       (if (string-match (car rewrite) f2)
+			   (throw 'result (concat wdir (cdr rewrite)))))
+		     rewrites))))
+	      ;; -- end of redirects --
+
               (if (file-readable-p the-file)
                   (throw 'result the-file))
               (if (file-exists-p the-file)
@@ -582,12 +625,11 @@ most of the work."
                (substitute-command-keys"\\[org-protocol-create]")))))
 
 
-
 (defun org-protocol-create(&optional project-plist)
   "Create a new org-protocol project interactively.
 An org-protocol project is an entry in `org-protocol-project-alist'
 which is used by `org-protocol-open-source'.
-Optionally use project-plist to initialize the defaults for this worglet. If
+Optionally use project-plist to initialize the defaults for this project. If
 project-plist is the CDR of an element in `org-publish-project-alist', reuse
 :base-directory, :html-extension and :base-extension."
   (interactive)
@@ -623,15 +665,16 @@ project-plist is the CDR of an element in `org-publish-project-alist', reuse
            (concat "Extension of editable files ("working-suffix"): ")
                    working-suffix nil working-suffix t))
 
-    (when (yes-or-no-p "Save the new worglet to your init file? ")
+    (when (yes-or-no-p "Save the new org-protocol-project to your init file? ")
       (setq org-protocol-project-alist
             (cons `(,base-url . (:base-url ,base-url
                                  :working-directory ,working-dir
                                  :online-suffix ,strip-suffix
                                  :working-suffix ,working-suffix))
                   org-protocol-project-alist))
-      (customize-save-variable 'org-protocol-project-alist org-protocol-project-alist))
-))
+      (customize-save-variable 'org-protocol-project-alist org-protocol-project-alist))))
 
 (provide 'org-protocol)
+
+;; arch-tag: b5c5c2ac-77cf-4a94-a649-2163dff95846
 ;;; org-protocol.el ends here

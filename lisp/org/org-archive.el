@@ -1,12 +1,12 @@
 ;;; org-archive.el --- Archiving for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -32,6 +32,21 @@
 
 (require 'org)
 
+(declare-function org-inlinetask-remove-END-maybe "org-inlinetask" ())
+
+(defcustom org-archive-default-command 'org-archive-subtree
+  "The default archiving command."
+  :group 'org-archive
+  :type '(choice
+	  (const org-archive-subtree)
+	  (const org-archive-to-archive-sibling)
+	  (const org-archive-set-tag)))
+
+(defcustom org-archive-reversed-order nil
+  "Non-nil means make the tree first child under the archive heading, not last."
+  :group 'org-archive
+  :type 'boolean)
+
 (defcustom org-archive-sibling-heading "Archive"
   "Name of the local archive sibling that is used to archive entries locally.
 Locally means: in the tree, under a sibling.
@@ -39,8 +54,8 @@ See `org-archive-to-archive-sibling' for more information."
   :group 'org-archive
   :type 'string)
 
-(defcustom org-archive-mark-done t
-  "Non-nil means, mark entries as DONE when they are moved to the archive file.
+(defcustom org-archive-mark-done nil
+  "Non-nil means mark entries as DONE when they are moved to the archive file.
 This can be a string to set the keyword to use.  When t, Org-mode will
 use the first keyword in its list that means done."
   :group 'org-archive
@@ -50,7 +65,7 @@ use the first keyword in its list that means done."
 	  (string :tag "Use this keyword")))
 
 (defcustom org-archive-stamp-time t
-  "Non-nil means, add a time stamp to entries moved to an archive file.
+  "Non-nil means add a time stamp to entries moved to an archive file.
 This variable is obsolete and has no effect anymore, instead add or remove
 `time' from the variable `org-archive-save-context-info'."
   :group 'org-archive
@@ -263,7 +278,11 @@ this heading."
 		  (end-of-line 0))
 		;; Make the subtree visible
 		(show-subtree)
-		(org-end-of-subtree t)
+		(if org-archive-reversed-order
+		    (progn
+		      (org-back-to-heading t)
+		      (outline-next-heading))
+		  (org-end-of-subtree t))
 		(skip-chars-backward " \t\r\n")
 		(and (looking-at "[ \t\r\n]*")
 		     (replace-match "\n\n")))
@@ -293,22 +312,21 @@ this heading."
 
 	  ;; Save and kill the buffer, if it is not the same buffer.
 	  (when (not (eq this-buffer buffer))
-	    (save-buffer)
-	    ;; Check if it is OK to kill the buffer
-	    (unless
-		(or visiting
-		    (equal (marker-buffer org-clock-marker) (current-buffer)))
-	      (kill-buffer buffer)))
+	    (save-buffer))
 	  ))
       ;; Here we are back in the original buffer.  Everything seems to have
       ;; worked.  So now cut the tree and finish up.
       (let (this-command) (org-cut-subtree))
+      (when (featurep 'org-inlinetask)
+	(org-inlinetask-remove-END-maybe))
       (setq org-markers-to-move nil)
       (message "Subtree archived %s"
 	       (if (eq this-buffer buffer)
 		   (concat "under heading: " heading)
 		 (concat "in file: " (abbreviate-file-name afile))))))
-  (org-reveal))
+  (org-reveal)
+  (if (looking-at "^[ \t]*$")
+      (outline-next-visible-heading 1)))
 
 (defun org-archive-to-archive-sibling ()
   "Archive the current heading by moving it under the archive sibling.
@@ -346,7 +364,9 @@ sibling does not exist, it will be created at the end of the subtree."
 	(beginning-of-line 0)
 	(org-toggle-tag org-archive-tag 'on))
       (beginning-of-line 1)
-      (org-end-of-subtree t t)
+      (if org-archive-reversed-order
+	  (outline-next-heading)
+	(org-end-of-subtree t t))
       (save-excursion
 	(goto-char pos)
 	(let ((this-command this-command)) (org-cut-subtree)))
@@ -360,7 +380,9 @@ sibling does not exist, it will be created at the end of the subtree."
       (hide-subtree)
       (org-cycle-show-empty-lines 'folded)
       (goto-char pos)))
-  (org-reveal))
+  (org-reveal)
+  (if (looking-at "^[ \t]*$")
+      (outline-next-visible-heading 1)))
 
 (defun org-archive-all-done (&optional tag)
   "Archive sublevels of the current tree without open TODO items.
@@ -378,7 +400,8 @@ When TAG is non-nil, don't move trees, but mark them with the ARCHIVE tag."
 	(progn
 	  (setq re1 (concat "^" (regexp-quote
 				 (make-string
-				  (1+ (- (match-end 0) (match-beginning 0) 1))
+				  (+ (- (match-end 0) (match-beginning 0) 1)
+				     (if org-odd-levels-only 2 1))
 				  ?*))
 			    " "))
 	  (move-marker begm (point))
@@ -419,6 +442,27 @@ the children that do not contain any open TODO items."
 	(when set (hide-subtree)))
       (and set (beginning-of-line 1))
       (message "Subtree %s" (if set "archived" "unarchived")))))
+
+(defun org-archive-set-tag ()
+  "Set the ARCHIVE tag."
+  (interactive)
+  (org-toggle-tag org-archive-tag 'on))
+
+;;;###autoload
+(defun org-archive-subtree-default ()
+  "Archive the current subtree with the default command.
+This command is set with the variable `org-archive-default-command'."
+  (interactive)
+  (call-interactively org-archive-default-command))
+
+;;;###autoload
+(defun org-archive-subtree-default-with-confirmation ()
+  "Archive the current subtree with the default command.
+This command is set with the variable `org-archive-default-command'."
+  (interactive)
+  (if (y-or-n-p "Archive this subtree or entry? ")
+      (call-interactively org-archive-default-command)
+    (error "Abort")))
 
 (provide 'org-archive)
 

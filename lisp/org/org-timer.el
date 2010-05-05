@@ -1,11 +1,11 @@
 ;;; org-timer.el --- The relative timer code for Org-mode
 
-;; Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.35i
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -29,6 +29,9 @@
 
 (require 'org)
 
+(declare-function org-show-notification "org-clock" (parameters))
+(declare-function org-agenda-error "org-agenda" ())
+
 (defvar org-timer-start-time nil
   "t=0 for the running timer.")
 
@@ -44,6 +47,24 @@ This format must contain one instance of \"%s\" which will be replaced by
 the value of the relative timer."
   :group 'org-time
   :type 'string)
+
+(defvar org-timer-start-hook nil
+  "Hook run after relative timer is started.")
+
+(defvar org-timer-stop-hook nil
+  "Hook run before relative timer is stopped.")
+
+(defvar org-timer-pause-hook nil
+  "Hook run before relative timer is paused.")
+
+(defvar org-timer-set-hook nil
+  "Hook run after countdown timer is set.")
+
+(defvar org-timer-done-hook nil
+  "Hook run after countdown timer reaches zero.")
+
+(defvar org-timer-cancel-hook nil
+  "Hook run before countdown timer is canceled.")
 
 ;;;###autoload
 (defun org-timer-start (&optional offset)
@@ -75,13 +96,12 @@ the region 0:00:00."
 	  (setq delta (org-timer-hms-to-secs (org-timer-fix-incomplete s)))))
 	(setq org-timer-start-time
 	      (seconds-to-time
-	       (-
-		(time-to-seconds (current-time))
-		(org-timer-hms-to-secs s)))))
+	       (- (org-float-time) (org-timer-hms-to-secs s)))))
       (org-timer-set-mode-line 'on)
       (message "Timer start time set to %s, current value is %s"
 	       (format-time-string "%T" org-timer-start-time)
-	       (org-timer-secs-to-hms (or delta 0))))))
+	       (org-timer-secs-to-hms (or delta 0)))
+      (run-hooks 'org-timer-start-hook))))
 
 (defun org-timer-pause-or-continue (&optional stop)
   "Pause or continue the relative timer.  With prefix arg, stop it entirely."
@@ -94,14 +114,15 @@ the region 0:00:00."
     (setq org-timer-start-time
 	  (seconds-to-time
 	   (-
-	    (time-to-seconds (current-time))
-	    (- (time-to-seconds org-timer-pause-time)
-	       (time-to-seconds org-timer-start-time))))
+	    (org-float-time)
+	    (- (org-float-time org-timer-pause-time)
+	       (org-float-time org-timer-start-time))))
 	  org-timer-pause-time nil)
     (org-timer-set-mode-line 'on)
     (message "Timer continues at %s" (org-timer-value-string)))
    (t
     ;; pause timer
+    (run-hooks 'org-timer-pause-hook)
     (setq org-timer-pause-time (current-time))
     (org-timer-set-mode-line 'pause)
     (message "Timer paused at %s" (org-timer-value-string)))))
@@ -109,6 +130,7 @@ the region 0:00:00."
 (defun org-timer-stop ()
   "Stop the relative timer."
   (interactive)
+  (run-hooks 'org-timer-stop-hook)
   (setq org-timer-start-time nil
 	org-timer-pause-time nil)
   (org-timer-set-mode-line 'off))
@@ -130,8 +152,8 @@ that was not started at the correct moment."
   (format org-timer-format (org-timer-secs-to-hms (floor (org-timer-seconds)))))
 
 (defun org-timer-seconds ()
-  (- (time-to-seconds (or org-timer-pause-time (current-time)))
-     (time-to-seconds org-timer-start-time)))
+  (- (org-float-time (or org-timer-pause-time (current-time)))
+     (org-float-time org-timer-start-time)))
 
 ;;;###autoload
 (defun org-timer-change-times-in-region (beg end delta)
@@ -216,7 +238,7 @@ If the integer is negative, the string will start with \"-\"."
 (defvar org-timer-mode-line-string nil)
 
 (defun org-timer-set-mode-line (value)
-  "Set the mode-line dispay of the relative timer.
+  "Set the mode-line display of the relative timer.
 VALUE can be `on', `off', or `pause'."
   (or global-mode-string (setq global-mode-string '("")))
   (or (memq 'org-timer-mode-line-string global-mode-string)
@@ -252,6 +274,64 @@ VALUE can be `on', `off', or `pause'."
     (setq org-timer-mode-line-string
 	  (concat " <" (substring (org-timer-value-string) 0 -1) ">"))
     (force-mode-line-update)))
+
+(defvar org-timer-current-timer nil)
+(defun org-timer-cancel-timer ()
+  "Cancel the current timer."
+  (interactive)
+  (when (eval org-timer-current-timer)
+    (run-hooks 'org-timer-cancel-hook)
+    (cancel-timer org-timer-current-timer)
+    (setq org-timer-current-timer nil))
+  (message "Last timer canceled"))
+
+(defun org-timer-show-remaining-time ()
+  "Display the remaining time before the timer ends."
+  (interactive)
+  (require 'time)
+  (if (not org-timer-current-timer)
+      (message "No timer set")
+    (let* ((rtime (decode-time
+		   (time-subtract (timer--time org-timer-current-timer)
+				  (current-time))))
+	   (rsecs (nth 0 rtime))
+	   (rmins (nth 1 rtime)))
+      (message "%d minute(s) %d seconds left before next time out"
+	       rmins rsecs))))
+
+;;;###autoload
+(defun org-timer-set-timer (minutes)
+  "Set a timer."
+  (interactive "sTime out in (min)? ")
+  (if (not (string-match "[0-9]+" minutes))
+      (org-timer-show-remaining-time)
+    (let* ((mins (string-to-number (match-string 0 minutes)))
+	   (secs (* mins 60))
+	   (hl (cond
+		((string-match "Org Agenda" (buffer-name))
+		 (let* ((marker (or (get-text-property (point) 'org-marker)
+				    (org-agenda-error)))
+			(hdmarker (or (get-text-property (point) 'org-hd-marker)
+				      marker))
+			(pos (marker-position marker)))
+		   (with-current-buffer (marker-buffer marker)
+		     (widen)
+		     (goto-char pos)
+		     (org-show-entry)
+		     (org-get-heading))))
+		((eq major-mode 'org-mode)
+		 (org-get-heading))
+		(t (error "Not in an Org buffer"))))
+	   timer-set)
+      (if org-timer-current-timer
+	  (error "You cannot run several timers at the same time")
+	(setq org-timer-current-timer
+	      (run-with-timer
+	       secs nil `(lambda ()
+			   (setq org-timer-current-timer nil)
+			   (org-notify ,(format "%s: time out" hl) t)
+			   (run-hooks 'org-timer-done-hook))))
+	(run-hooks 'org-timer-set-hook)))))
 
 (provide 'org-timer)
 
