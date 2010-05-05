@@ -158,38 +158,6 @@
               mouse-highlight 1
               mouse-yank-at-point t
               nxml-sexp-element-flag t
-              org-archive-location "%s_archive::"
-              org-archive-mark-done nil
-              org-archive-save-context-info '(itags ltags olpath)
-              org-completion-use-ido t
-              org-cycle-include-plain-lists t
-              org-cycle-separator-lines 1
-              org-hide-leading-stars t
-              org-id-track-globally nil
-              org-log-done 'time
-              org-modules nil
-              org-priority-faces '((?A . (:foreground "LightPink2" :weight bold))
-                                   (?B . (:foreground "SkyBlue1" :weight bold))
-                                   (?C . (:foreground "DarkSeaGreen3" :weight bold)))
-              org-read-date-popup-calendar nil
-              org-replace-disputed-keys t
-              org-special-ctrl-a/e t
-              org-special-ctrl-k t
-              org-startup-folded nil
-              org-tags-column -80
-              org-time-stamp-custom-formats '("<%a %b %d, %Y>" . "<%a %b %d, %Y %H:%M>")
-              org-todo-keywords '((sequence "TODO" "STARTED" "WAITING" "|" "DONE")
-                                  (sequence "MAYBE" "SOMEDAY" "|" "CANCELED")
-                                  (sequence "|" "REASSIGNED"))
-              org-todo-keyword-faces '(("TODO"       . (:foreground "IndianRed1" :weight bold))
-                                       ("STARTED"    . (:foreground "DeepSkyBlue1" :weight bold))
-                                       ("WAITING"    . (:foreground "Yellow2" :weight bold))
-                                       ("DONE"       . (:foreground "PaleGreen2" :weight bold))
-                                       ("MAYBE"      . (:foreground "DeepSkyBlue4" :weight bold))
-                                       ("SOMEDAY"    . (:foreground "Yellow4" :weight bold))
-                                       ("CANCELED"   . (:foreground "PaleGreen4" :weight bold))
-                                       ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
-              org-display-custom-times t
               parens-require-spaces nil
               protect-buffer-bury-p nil
               ps-always-build-face-reference t
