@@ -55,9 +55,14 @@ Otherwise: Add a checkbox and update heading accordingly."
       (org-up-heading-safe)
     (org-back-to-heading)))
 
+(defun my-org-set-todo-state ()
+  "Set todo state using ido."
+  (interactive)
+  (org-todo '(4)))
+
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-v RET") 'my-org-insert-heading)
-  (define-key org-mode-map (kbd "C-v t") (lambda() (interactive) (org-todo '(4))))
+  (define-key org-mode-map (kbd "C-v t") 'my-org-set-todo-state)
   (define-key org-mode-map (kbd "C-v #") 'org-priority)
   (define-key org-mode-map (kbd "C-v :") 'org-set-tags)
   (define-key org-mode-map (kbd "C-v !") 'my-org-insert-open-time-stamp)
