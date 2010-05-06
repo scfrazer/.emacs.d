@@ -366,13 +366,6 @@
     (replace-match ""))
   (goto-char (point-min)))
 
-(defun my-downcase-region ()
-  "Downcase region or current char."
-  (interactive)
-  (if (region-active-p)
-      (downcase-region (region-beginning) (region-end))
-    (downcase-region (point) (1+ (point)))))
-
 (defun my-ffap (&optional arg)
   "ffap, or ffap-other-window when preceded with C-u."
   (interactive "P")
@@ -580,6 +573,27 @@ Prefix with C-u to fit the `next-window'."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-rotate-case ()
+  "Rotate case to capitalized, uppercase, lowercase."
+  (interactive)
+  (let ((case-fold-search nil) beg end)
+    (save-excursion
+      (skip-syntax-forward "w_")
+      (setq end (point))
+      (skip-syntax-backward "w_")
+      (skip-chars-forward "^a-zA-Z")
+      (setq beg (point))
+      (if (< (- end beg) 2)
+          (if (looking-at "[A-Z]")
+              (downcase-region beg end)
+            (upcase-region beg end))
+        (if (looking-at "[a-z]")
+            (upcase-region beg (1+ beg))
+          (forward-char)
+          (if (re-search-forward "[a-z]" end t)
+              (upcase-region beg end)
+            (downcase-region beg end)))))))
+
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
   (interactive)
@@ -680,13 +694,6 @@ Only works if there are exactly two windows."
     (if (region-active-p)
         (fill-region (region-beginning) (region-end))
       (fill-paragraph 1))))
-
-(defun my-upcase-region ()
-  "Upcase region or current char."
-  (interactive)
-  (if (region-active-p)
-      (upcase-region (region-beginning) (region-end))
-    (upcase-region (point) (1+ (point)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
@@ -903,8 +910,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
-(my-keys-define "C-x C-l" 'my-downcase-region)
-(my-keys-define "C-x C-u" 'my-upcase-region)
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
@@ -934,6 +939,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-\"" 'insert-pair)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-b" 'task-bmk-show-all)
+(my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-e" 'makd-select-word-at-point)
 (my-keys-define "M-g" 'goto-line)
