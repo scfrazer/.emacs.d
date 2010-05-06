@@ -22,8 +22,8 @@
                           (list (cons (concat "^.*/\*\\s-*\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\)")
                                       (list '(1 'my-todo-face t))))
                           'add-to-end)
-  (c-setup-filladapt)
-  (filladapt-mode 1)
+;;   (c-setup-filladapt)
+;;   (filladapt-mode 1)
   (abbrev-mode -1)
   (c-set-style "strou2"))
 

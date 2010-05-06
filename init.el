@@ -23,7 +23,7 @@
 (require 'etags-stack)
 (require 'etags-table)
 (require 'iflipb)
-(require 'filladapt)
+;; (require 'filladapt)
 (require 'magit)
 (require 'mdabbrev)
 (require 'midnight)
@@ -132,8 +132,8 @@
               file-template-insert-automatically 'ask
               file-template-paths (list "~/.emacs.d/templates/")
               fill-column 78
-              filladapt-mode t
-              filladapt-mode-line-string ""
+;;               filladapt-mode t
+;;               filladapt-mode-line-string ""
               flyspell-mode-map nil
               highlight-changes-active-string " Chg+"
               highlight-changes-passive-string " Chg-"
