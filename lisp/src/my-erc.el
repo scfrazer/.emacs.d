@@ -4,13 +4,10 @@
   "Start ERC"
   (interactive)
 
-  (set-frame-font "-apple-Menlo-medium-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-  (my-theme-whiteboard)
-
   ;; ERC
   (require 'erc)
   (erc-autojoin-mode t)
-  (erc-track-mode t)
+  ;; (erc-track-mode t)
   (setq erc-autojoin-channels-alist '((".*\\.freenode.net" "#emacs"))
         erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "324" "329" "332" "333" "353" "477")
         erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
@@ -22,12 +19,12 @@
         erc-timestamp-format "%H:%M "
         erc-insert-timestamp-function 'erc-insert-timestamp-left)
 
-  (add-to-list 'erc-modules 'scrolltobottom)
-  (setq erc-input-line-position -2)
+  ;; (add-to-list 'erc-modules 'scrolltobottom)
+  ;; (setq erc-input-line-position -2)
 
   ;; ERC Nicklist
-  (require 'erc-nicklist)
-  (setq erc-nicklist-use-icons nil)
+  ;; (require 'erc-nicklist)
+  ;; (setq erc-nicklist-use-icons nil)
   (add-hook 'erc-join-hook 'my-erc-join-hook)
 
   ;; ERC Highlight Nicknames
@@ -64,7 +61,6 @@
 (defun my-erc-join-hook ()
   "Stuff to do per-channel"
   ;; (erc-nicklist)
-  (filladapt-mode 0)
   (set (make-local-variable 'erc-prompt)
        (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)))
 
