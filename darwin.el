@@ -2,7 +2,7 @@
       '((width . 120) (height . 60)))
 
 ;(insert "\n(set-default-font \"" (cdr (assoc 'font (frame-parameters))) "\")\n")
-(set-default-font "-apple-Menlo-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+(set-default-font "-apple-Fixed-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1")
 
 (setq grep-program "egrep")
 (setq igrep-program "egrep")
@@ -10,4 +10,4 @@
 
 ;; Theme
 
-(my-theme-whiteboard)
+(my-theme-deeper-blue)
