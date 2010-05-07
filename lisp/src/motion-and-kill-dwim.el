@@ -507,16 +507,18 @@ This is a utility function, you probably want `makd-backward-word-section'."
 
 (defun makd-kill-line (&optional arg)
   "Like kill-line, but use `makd-join-line-with-next' when at
-end-of-line (and it's not a empty line."
+end-of-line (and it's not a empty line).  Kills region if active."
   (interactive "P")
-  (if (or arg (not (eolp)) (bolp))
-      (cond ((null arg)
-             (kill-line))
-            ((= arg 0)
-             (kill-region (point) (progn (back-to-indentation) (point))))
-            (t
-             (kill-line arg)))
-    (makd-join-line-with-next)))
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end))
+    (if (or arg (not (eolp)) (bolp))
+        (cond ((null arg)
+               (kill-line))
+              ((= arg 0)
+               (kill-region (point) (progn (back-to-indentation) (point))))
+              (t
+               (kill-line arg)))
+      (makd-join-line-with-next))))
 
 (defun makd-join-line-with-next ()
   "Join current line with next."
