@@ -140,7 +140,6 @@
               highlight-changes-passive-string " Chg-"
               highlight-changes-global-modes nil
               htmlize-output-type 'font
-              ido-enable-tramp-completion nil
               iflipb-ignore-buffers 'my-bs-ignore-buffer
               indicate-buffer-boundaries t
               indent-tabs-mode nil

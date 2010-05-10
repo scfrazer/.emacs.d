@@ -9,14 +9,16 @@
 
 (ido-mode 1)
 
-(setq ido-enable-flex-matching t)
-(setq ido-ignore-extensions t)
-(setq ido-max-dir-file-cache 0)
-(setq ido-max-prospects 10)
-(setq ido-decorations '("{" "}" ", " ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]"))
-(setq ido-enter-matching-directory 'first)
-(setq ido-auto-merge-work-directories-length -1)
-(setq ido-ignore-buffers '(my-bs-ignore-buffer))
+(setq ido-enable-flex-matching t
+      ido-ignore-extensions t
+      ido-max-dir-file-cache 0
+      ido-max-directory-size 300000
+      ido-max-prospects 10
+      ido-enable-tramp-completion nil
+      ido-decorations '("{" "}" ", " ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]")
+      ido-enter-matching-directory 'first
+      ido-auto-merge-work-directories-length -1
+      ido-ignore-buffers '(my-bs-ignore-buffer))
 
 ;; ido + bookmarks
 
