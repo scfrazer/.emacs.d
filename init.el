@@ -125,6 +125,7 @@
               cursor-in-non-selected-windows nil
               cursor-type 'box
               dabbrev-case-fold-search nil
+              dired-auto-revert-buffer t
               etags-select-use-short-name-completion t
               etags-table-search-up-depth 10
               even-window-heights nil
@@ -146,6 +147,7 @@
               inhibit-startup-message t
               isearch-lazy-highlight-initial-delay 0
               js2-basic-offset 4
+              kill-do-not-save-duplicates t
               kill-whole-line t
               line-move-visual t
               line-number-mode t
@@ -185,8 +187,10 @@
               python-indent 4
               rst-mode-lazy nil
               save-abbrevs nil
+              save-interprogram-paste-before-kill t
               scroll-conservatively 10000
               scroll-preserve-screen-position t
+              select-active-regions t
               show-paren-delay 0
               tags-revert-without-query t
               tempo-interactive t
@@ -566,9 +570,9 @@ Prefix with C-u to fit the `next-window'."
     (cond ((= my-recenter-count 0)
            (recenter))
           ((= my-recenter-count 1)
-           (recenter (/ (window-text-height) 4)))
+           (recenter (/ (window-text-height) 5)))
           (t
-           (recenter (/ (* (window-text-height) 3) 4))))
+           (recenter (/ (* (window-text-height) 4) 5))))
     (setq my-recenter-count (1+ my-recenter-count))
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
@@ -1013,6 +1017,8 @@ Only works if there are exactly two windows."
                                       (interactive "e")
                                       (mouse-set-point event)
                                       (makd-select-word-at-point)))
+
+(global-set-key (kbd "<mouse-2>") 'mouse-yank-primary)
 
 (global-set-key (kbd "<S-down-mouse-3>") 'imenu)
 (global-set-key (kbd "<C-down-mouse-3>") 'mouse-popup-menubar)
