@@ -94,6 +94,11 @@ Otherwise: Add a checkbox and update heading accordingly."
   (interactive)
   (org-todo '(4)))
 
+(defun my-org-copy-file-link ()
+  "Create a file link by line number in the kill ring."
+  (interactive)
+  (kill-new (concat "[[" (buffer-file-name) "::" (number-to-string (line-number-at-pos)) "]]")))
+
 (define-prefix-command 'my-org-mode-map)
 (define-key my-org-mode-map (kbd "RET") 'my-org-insert-heading)
 (define-key my-org-mode-map (kbd "t") 'my-org-set-todo-state)
