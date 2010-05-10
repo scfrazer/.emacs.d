@@ -277,14 +277,19 @@
 ;; Functions
 
 (defun my-7x14 ()
-  "Switch to 7x14 font"
+  "Switch to 7x14 font."
   (interactive)
   (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
 
 (defun my-9x15 ()
-  "Switch to 9x15 font"
+  "Switch to 9x15 font."
   (interactive)
   (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
+
+(defun my-proggy ()
+  "Switch to Proggy font."
+  (interactive)
+  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
 
 (defun my-align ()
   "Align declarations, etc."
