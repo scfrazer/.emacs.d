@@ -682,7 +682,9 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (forward-line n)
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
-    (move-to-column (truncate temporary-goal-column))
+    (move-to-column (truncate (if (consp temporary-goal-column)
+                                  (car temporary-goal-column)
+                                temporary-goal-column)))
     (setq this-command 'next-line)))
 
 (defun makd-scroll-up (n)
@@ -694,7 +696,9 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (forward-line (- 0 n))
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
-    (move-to-column (truncate temporary-goal-column))
+    (move-to-column (truncate (if (consp temporary-goal-column)
+                                  (car temporary-goal-column)
+                                temporary-goal-column)))
     (setq this-command 'previous-line)))
 
 (defun makd-page-down ()
@@ -713,7 +717,9 @@ end-of-line (and it's not a empty line).  Kills region if active."
         (recenter -1)))
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
-    (move-to-column (truncate temporary-goal-column))
+    (move-to-column (truncate (if (consp temporary-goal-column)
+                                  (car temporary-goal-column)
+                                temporary-goal-column)))
     (setq this-command 'next-line)))
 
 (defun makd-page-up ()
@@ -730,7 +736,9 @@ end-of-line (and it's not a empty line).  Kills region if active."
       (forward-line lines))
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
-    (move-to-column (truncate temporary-goal-column))
+    (move-to-column (truncate (if (consp temporary-goal-column)
+                                  (car temporary-goal-column)
+                                temporary-goal-column)))
     (setq this-command 'previous-line)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
