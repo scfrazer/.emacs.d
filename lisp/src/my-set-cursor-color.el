@@ -1,14 +1,21 @@
 ;;; my-set-cursor-color.el
 
+(defvar my-set-cursor-color-read-only-color "yellow2"
+  "*Cursor color when buffer is read-only.")
+(defvar my-set-cursor-color-overwrite-color "red1"
+  "*Cursor color when in overwrite mode.")
+(defvar my-set-cursor-color-normal-color "lawngreen"
+  "*Normal cursor color.")
+
 (defvar my-set-cursor-color "")
 
 (defun my-set-cursor-color-according-to-mode ()
   "Change cursor color according to buffer state."
   (let ((color (if buffer-read-only
-                   "yellow2"
+                   my-set-cursor-color-read-only-color
                  (if overwrite-mode
-                     "red1"
-                   "lawngreen"))))
+                     my-set-cursor-color-overwrite-color
+                   my-set-cursor-color-normal-color))))
     (unless (string= color my-set-cursor-color)
       (set-cursor-color (setq my-set-cursor-color color)))))
 
