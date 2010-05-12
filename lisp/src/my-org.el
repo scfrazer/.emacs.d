@@ -170,7 +170,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 (define-key my-org-mode-map (kbd "a") 'org-archive-subtree)
 
 (defun my-org-mode-hook ()
-  (define-key org-mode-map (kbd "C-;") 'my-org-mode-map)
+  (define-key org-mode-map (kbd "C-v") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end))
 
