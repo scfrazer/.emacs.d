@@ -683,7 +683,8 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
     (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (car temporary-goal-column)
+                                  (+ (car temporary-goal-column)
+                                     (cdr temporary-goal-column))
                                 temporary-goal-column)))
     (setq this-command 'next-line)))
 
@@ -697,7 +698,8 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
     (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (car temporary-goal-column)
+                                  (+ (car temporary-goal-column)
+                                     (cdr temporary-goal-column))
                                 temporary-goal-column)))
     (setq this-command 'previous-line)))
 
@@ -718,7 +720,8 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
     (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (car temporary-goal-column)
+                                  (+ (car temporary-goal-column)
+                                     (cdr temporary-goal-column))
                                 temporary-goal-column)))
     (setq this-command 'next-line)))
 
@@ -737,7 +740,8 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (unless (memq last-command (list 'next-line 'previous-line))
       (setq temporary-goal-column col))
     (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (car temporary-goal-column)
+                                  (+ (car temporary-goal-column)
+                                     (cdr temporary-goal-column))
                                 temporary-goal-column)))
     (setq this-command 'previous-line)))
 
