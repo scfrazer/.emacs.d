@@ -275,21 +275,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
 
-(defun my-7x14 ()
-  "Switch to 7x14 font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
-
-(defun my-9x15 ()
-  "Switch to 9x15 font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
-
-(defun my-proggy ()
-  "Switch to Proggy font."
-  (interactive)
-  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
-
 (defun my-align ()
   "Align declarations, etc."
   (interactive)
@@ -407,6 +392,21 @@ Prefix with C-u to fit the `next-window'."
   (interactive "P")
   (let ((win (if arg (next-window) (get-buffer-window))))
     (fit-window-to-buffer win (/ (frame-height) 4))))
+
+(defun my-font-large ()
+  "Switch to large font."
+  (interactive)
+  (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
+
+(defun my-font-medium ()
+  "Switch to medium font."
+  (interactive)
+  (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
+
+(defun my-font-small ()
+  "Switch to small font."
+  (interactive)
+  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
 
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
