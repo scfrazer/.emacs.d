@@ -229,10 +229,12 @@
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification
         "  " mode-line-modes
-        (:eval (if (not clearcase-servers-online)
+        (:eval (if (and clearcase-servers-online clearcase-setview-viewtag)
+                   (concat "  [View: " clearcase-setview-viewtag "]")
+                 ""))
+        (:eval (if (not task-current-name)
                    ""
-                 (concat "  [View: " (or clearcase-setview-viewtag "** NONE **") "]")))
-        (:eval (concat "  [Task: " (or task-current-name "NONE") "]"))))
+                 (concat "  [Task: " (or task-current-name "NONE") "]")))))
 
 (nbutlast mode-line-modes 1)
 
