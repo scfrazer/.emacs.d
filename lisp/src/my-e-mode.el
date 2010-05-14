@@ -23,8 +23,6 @@
 (define-abbrev e-mode-abbrev-table "bool" "as_a(bool)")
 (define-abbrev e-mode-abbrev-table "uint" "as_a(uint)")
 
-(defvar my-e-mode-field-as-constraint nil)
-
 (defun my-e-mode-copy-field-as-constraint ()
   "Copy the field at point as a constraint."
   (interactive)
@@ -48,20 +46,11 @@
                   (string-match "::" struct)
                   (null package))
         (setq struct (concat package "::" struct)))
-      (setq my-e-mode-field-as-constraint
-            (concat "extend " (or subtype " ") struct " {\n"
-                    "    keep " field " == TODO;\n"
-                    "};\n"))
+      (kill-new (concat "extend " (or subtype " ") struct " {\n"
+                        "    keep " field " == TODO;\n"
+                        "};\n"))
       (message (concat "Copied field '" field "' as constraint")))))
 
-(defun my-e-mode-paste-field-as-constraint ()
-  "Paste the copied constraint from `my-e-mode-copy-field-as-constraint'."
-  (interactive)
-  (let ((start (point)))
-    (insert my-e-mode-field-as-constraint)
-    (indent-region start (point))))
-
 (define-key e-mode-map (kbd "<f11>") 'my-e-mode-copy-field-as-constraint)
-(define-key e-mode-map (kbd "<S-f11>") 'my-e-mode-paste-field-as-constraint)
 
 (provide 'my-e-mode)
