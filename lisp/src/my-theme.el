@@ -81,7 +81,7 @@
    (font-lock-variable-name-face ((t (:foreground "SeaGreen2"))))
    (font-lock-warning-face ((t (:foreground "red"))))
    (fringe ((t (:background "black"))))
-   (highlight ((t (:background "darkgreen"))))
+   (highlight ((t (:background "DodgerBlue4"))))
    (highlight-changes ((t (:background "SteelBlue4" :foreground "white"))))
    (highlight-changes-delete ((t (:background "firebrick"))))
    (info-header-node ((t (:foreground "DeepSkyBlue1"))))
