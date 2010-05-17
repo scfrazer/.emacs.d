@@ -148,6 +148,7 @@
               js2-basic-offset 4
               kill-do-not-save-duplicates t
               kill-whole-line t
+              large-file-warning-threshold nil
               line-move-visual t
               line-number-mode t
               ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
