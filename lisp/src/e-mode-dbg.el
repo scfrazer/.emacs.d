@@ -25,13 +25,13 @@
 
 ;;;###autoload
 (defface e-mode-dbg-fringe-face
-  '((t (:foreground "red")))
+  '((t (:foreground "red" :background "black")))
   "Face to highlight e-mode-dbg fringe markers"
   :group 'e-mode-dbg)
 
 ;;;###autoload
 (defface e-mode-dbg-cond-fringe-face
-  '((t (:foreground "yellow")))
+  '((t (:foreground "yellow" :background "black")))
   "Face to highlight e-mode-dbg conditional fringe markers"
   :group 'e-mode-dbg)
 
@@ -93,6 +93,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Functions
+
+(defun e-mode-dbg-goto-line (line)
+  "Goto LINE."
+  (goto-char (point-min))
+  (forward-line (1- line)))
 
 ;;; Breakpoints
 
@@ -251,12 +256,11 @@
 
 (defun e-mode-dbg-update-code-buffer (buf)
   "Update a code buffer."
-  (save-excursion
-    (set-buffer buf)
+  (with-current-buffer buf
     (let ((filename (buffer-file-name)))
       (dolist (bpnt e-mode-dbg-breakpoints)
         (when (string= (car bpnt) filename)
-          (goto-line (nth 1 bpnt))
+          (e-mode-dbg-goto-line (nth 1 bpnt))
           (beginning-of-line)
           (e-mode-dbg-add-overlay (nth 2 bpnt) (nth 3 bpnt)))))))
 
@@ -428,12 +432,12 @@
       (if other-window
           (save-excursion
             (find-file-other-window filename)
-            (goto-line line-num)
+            (e-mode-dbg-goto-line line-num)
             (recenter)
             (other-window 1))
         (e-mode-dbg-quit)
         (find-file filename)
-        (goto-line line-num)
+        (e-mode-dbg-goto-line line-num)
         (recenter)))))
 
 (defun e-mode-dbg-set-breakpoint-condition ()
@@ -465,7 +469,7 @@
                     (and orig-condition (not new-condition)))
             (with-current-buffer (get-file-buffer filename)
               (save-excursion
-                (goto-line line-num)
+                (e-mode-dbg-goto-line line-num)
                 (delete-overlay (e-mode-dbg-breakpoint-at (point)))
                 (e-mode-dbg-add-overlay new-condition time))))
           (e-mode-dbg-update-control-window-and-target)
@@ -501,7 +505,7 @@
           (e-mode-dbg-write-breakpoint-1 filename line-num condition new-time)
           (with-current-buffer (get-file-buffer filename)
             (save-excursion
-              (goto-line line-num)
+              (e-mode-dbg-goto-line line-num)
               (delete-overlay (e-mode-dbg-breakpoint-at (point)))
               (e-mode-dbg-add-overlay condition new-time)))
           (e-mode-dbg-update-control-window-and-target)
@@ -557,7 +561,7 @@
                (buf (find-buffer-visiting (car elt))))
           (if buf
               (with-current-buffer buf
-                (goto-line (nth 1 elt))
+                (e-mode-dbg-goto-line (nth 1 elt))
                 (e-mode-dbg-remove-breakpoint (e-mode-dbg-breakpoint-at (point))))
             (setq e-mode-dbg-breakpoints (delete elt e-mode-dbg-breakpoints)))))
     (if (not (looking-at "\\(.+\\)=\\(.+\\)"))

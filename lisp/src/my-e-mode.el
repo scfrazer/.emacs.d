@@ -16,8 +16,15 @@
 
 (define-abbrev e-mode-abbrev-table
   "ro"
-  "read_only()"
-  (lambda () (backward-char)))
+  "read_only"
+  (lambda ()
+    (unless (looking-at "\\s-*\(")
+      (save-excursion
+        (insert "(")
+        (end-of-line)
+        (delete-region (point) (progn (skip-chars-backward " \t;") (point)))
+        (insert ");"))
+      (forward-char))))
 
 (define-abbrev e-mode-abbrev-table "bit" "as_a(bit)")
 (define-abbrev e-mode-abbrev-table "bool" "as_a(bool)")

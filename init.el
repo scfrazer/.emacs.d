@@ -854,6 +854,7 @@ Only works if there are exactly two windows."
 (my-keys-define "<C-return>" 'my-yasnippet-or-abbrev-expand)
 (my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-return>" 'makd-open-line-above)
+(my-keys-define "<M-S-return>" 'makd-open-line-below)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
 (my-keys-define "<delete>" 'delete-char)
