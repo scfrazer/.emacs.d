@@ -445,9 +445,10 @@ Prefix with C-u to fit the `next-window'."
 (defun my-indent ()
   "Use makd-indent unless in shell mode."
   (interactive)
-  (if (equal major-mode 'shell-mode)
-      (comint-dynamic-complete)
-    (makd-indent)))
+  (cond ((equal major-mode 'shell-mode)
+         (comint-dynamic-complete))
+        (t
+         (makd-indent))))
 
 (defun my-insert-comment-line ()
   "Insert an 80-column comment line"
