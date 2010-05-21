@@ -442,6 +442,13 @@ Prefix with C-u to fit the `next-window'."
       (my-increment-number-hexadecimal)
     (my-increment-number-decimal)))
 
+(defun my-indent ()
+  "Use makd-indent unless in shell mode."
+  (interactive)
+  (if (equal major-mode 'shell-mode)
+      (comint-dynamic-complete)
+    (makd-indent)))
+
 (defun my-insert-comment-line ()
   "Insert an 80-column comment line"
   (interactive)
@@ -862,7 +869,7 @@ Only works if there are exactly two windows."
 (my-keys-define "<f5>" 'task-bmk-toggle)
 (my-keys-define "<f6>" 'task-bmk-buf-next)
 (my-keys-define "<f7>" 'task-bmk-all-next)
-(my-keys-define "<tab>" 'makd-indent)
+(my-keys-define "<tab>" 'my-indent)
 (my-keys-define "C-&" 'my-pop-back-ffap-kill-buffer)
 (my-keys-define "C-*" 'my-pop-back-ffap)
 (my-keys-define "C-," 'iflipb-previous-buffer)
