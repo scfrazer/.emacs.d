@@ -24,7 +24,7 @@
   (or (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
            (my-bs-str-in-regexp-list name my-bs-never-show-regexps))
       (and my-ido-ignore-dired-buffers
-           (with-temp-buffer name
+           (with-current-buffer name
              (equal major-mode 'dired-mode)))))
 
 ;; Toggle buffers
