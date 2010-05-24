@@ -62,6 +62,8 @@
 (autoload 'align-regexp "align" nil t)
 (autoload 'all "all" nil t)
 (autoload 'antlr3-mode "antlr3-mode" "ANTLR code editing mode" t)
+(autoload 'ascii-table "ascii-table" nil t)
+(autoload 'ascii-table-hex "ascii-table" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
 (autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
