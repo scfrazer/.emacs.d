@@ -659,6 +659,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (while (and (not (eobp)) (looking-at regexp))
     (forward-line 1)))
 
+(defun my-skip-lines-backward-matching-regexp (regexp)
+  "Skip lines backward matching a regexp."
+  (interactive "sSkip lines backward matching regexp: ")
+  (beginning-of-line)
+  (forward-line -1)
+  (while (and (not (bobp)) (looking-at regexp))
+    (forward-line -1)))
+
 (defun my-tip-of-the-day ()
   "Tip of the day"
   (interactive)

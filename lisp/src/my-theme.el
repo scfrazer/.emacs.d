@@ -111,6 +111,7 @@
    (secondary-selection ((t (:background "yellow" :foreground "gray10"))))
    (show-paren-match-face ((t (:background "dodgerblue1" :foreground "white"))))
    (show-paren-mismatch-face ((t (:background "red1" :foreground "white"))))
+   (task-bmk-face ((t (:background "#203060"))))
    (tooltip ((t (:background "lightyellow" :foreground "black"))))
    (trailing-whitespace ((t (:background "#181a26"))))
    (widget-button-pressed-face ((t (:foreground "red"))))
