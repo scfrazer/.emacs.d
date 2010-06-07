@@ -37,7 +37,6 @@
 
 (define-key isearch-mode-map (kbd "C-n") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "C-p") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "C-t") 'isearch-toggle-case-fold)
 (define-key isearch-mode-map (kbd "<C-return>") 'my-isearch-exit-other-end)
 
 (provide 'my-isearch)
