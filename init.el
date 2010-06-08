@@ -398,26 +398,6 @@ Prefix with C-u to fit the `next-window'."
   (let ((win (if arg (next-window) (get-buffer-window))))
     (fit-window-to-buffer win (/ (frame-height) 4))))
 
-(defun my-font-large ()
-  "Switch to large font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
-
-(defun my-font-medium ()
-  "Switch to medium font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
-
-(defun my-font-small ()
-  "Switch to small font."
-  (interactive)
-  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
-
-(defun my-font-tiny ()
-  "Switch to tiny font."
-  (interactive)
-  (set-frame-font "-*-profont-*-*-*-*-12-*-*-*-*-*-*-*"))
-
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
@@ -755,9 +735,6 @@ Only works if there are exactly two windows."
   (define-key diff-mode-map "n" 'diff-hunk-next)
   (define-key diff-mode-map "p" 'diff-hunk-prev))
 
-(defun my-elog-mode-hook ()
-  (my-whitespace-off-hook))
-
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0))
 
@@ -804,7 +781,6 @@ Only works if there are exactly two windows."
 (add-hook 'after-save-hook 'my-after-save-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
-(add-hook 'elog-mode-hook 'my-elog-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'etags-select-mode-hook 'my-etags-select-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
@@ -838,6 +814,8 @@ Only works if there are exactly two windows."
 (eval-after-load "elog-mode"
   '(progn
      (defun my-elog-mode-hook ()
+       (my-whitespace-off-hook)
+       (buffer-face-set 'my-tiny-face)
        (setq truncate-lines 'one-line-each))
      (add-hook 'elog-mode-hook 'my-elog-mode-hook)))
 

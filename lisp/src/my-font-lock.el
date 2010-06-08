@@ -5,10 +5,66 @@
 (setq-default lazy-lock-mode nil)
 (global-font-lock-mode t)
 
-(custom-set-faces
- '(my-tab-face ((((class color)) (:background "seashell"))) t)
- '(my-trailing-space-face ((((class color)) (:background "lemonchiffon"))) t)
- '(my-todo-face ((((class color)) (:bold on :weight bold :box t :foreground "firebrick2" :background "yellow"))) t))
+;; Extra font-lock faces
+
+(defface my-tab-face
+  '((t (:background "seashell")))
+  "Visible tab chars."
+  :group 'faces)
+
+(defface my-trailing-space-face
+  '((t (:background "lemonchiffon")))
+  "Visible trailing space."
+  :group 'faces)
+
+(defface my-todo-face
+  '((t (:bold on :weight bold :box t :foreground "firebrick2" :background "yellow")))
+  "todo/fixme highlighting."
+  :group 'faces)
+
+;; Font size faces and functions
+
+(defface my-large-face
+  '((t (:height 1.1 :family "sfrazer")))
+  "Large face."
+  :group 'faces)
+
+(defface my-medium-face
+  '((t (:family "sfrazer")))
+  "Medium face."
+  :group 'faces)
+
+(defface my-small-face
+  '((t (:family "proggycleansz")))
+  "Small face."
+  :group 'faces)
+
+(defface my-tiny-face
+  '((t (:height 0.86 :family "profont")))
+  "Tiny face."
+  :group 'faces)
+
+(defun my-font-large ()
+  "Switch to large font."
+  (interactive)
+  (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
+
+(defun my-font-medium ()
+  "Switch to medium font."
+  (interactive)
+  (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
+
+(defun my-font-small ()
+  "Switch to small font."
+  (interactive)
+  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
+
+(defun my-font-tiny ()
+  "Switch to tiny font."
+  (interactive)
+  (set-frame-font "-*-profont-*-*-*-*-12-*-*-*-*-*-*-*"))
+
+;; Show whitespace functionality
 
 (defvar my-font-lock-show-whitespace t
   "*Show whitespace")
@@ -43,6 +99,8 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
     (font-lock-remove-keywords nil
                                '(("\t+" (0 'my-tab-face t))
                                  ("[ \t]+$" (0 'my-trailing-space-face t))))))
+
+;; Hooks and advice for adding font-lock faces
 
 (defun my-font-lock-mode-hook ()
   (when comment-start
