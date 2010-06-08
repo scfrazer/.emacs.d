@@ -8,6 +8,13 @@
   - [ ] Pop-back from ffap and imenu
   - [ ] Abbrev and yasnippet
 
+* TODO ClearCase [0/6]
+  - [ ] Buffer showing all view private files
+  - [ ] Open/add/delete/diff/unco/goto-dir-and-switch-modes files
+  - [ ] Switch mode to buffer showing ct ls --recursive
+  - [ ] Open/diff/unco/checkin/switch-modes files/dirs
+  - [ ] cc_label
+
 * TODO Edit recentf entries more easily (sort/unsort s, mark d, regex mark D, unmark u, execute x, quit q)
 * TODO Fix nXML schema stuff
 * TODO Fix antlr3 mode ('>' in syntax table?)
