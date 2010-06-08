@@ -324,7 +324,7 @@ Returns 'in-code if point is not in a string or comment"
           (list
            ;; Methods
            (cons
-            "^\\s-*\\(\\(package\\|protected\\|private\\)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*(\\s-*\\([a-zA-Z0-9_]+\\s-*:\\|)\\s-*is\\>\\)"
+            "^\\s-*\\(\\(package\\|protected\\|private\\)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*(\\s-*\\([a-zA-Z0-9_]+\\s-*:\\|)\\s-*\\(is\\>\\|[@:]\\)\\)"
             '(3 font-lock-function-name-face))
            (cons
             "^\\s-*method_type\\s-+\\([a-zA-Z0-9_]+\\)"
