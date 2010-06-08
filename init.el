@@ -108,6 +108,7 @@
               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
               browse-kill-ring-separator-face (quote font-lock-keyword-face)
               browse-kill-ring-use-fontification t
+              buffer-face-mode-face 'my-tiny-face
               case-fold-search t
               column-number-mode t
               comment-column 0
@@ -882,6 +883,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c +" 'my-inc-num)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
+(my-keys-define "C-c ," 'buffer-face-toggle)
 (my-keys-define "C-c ;" 'my-insert-comment-line)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region)
