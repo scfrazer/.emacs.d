@@ -47,7 +47,7 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
 (defun my-font-lock-mode-hook ()
   (when comment-start
     (font-lock-add-keywords nil
-                            (list (cons "\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\)"
+                            (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\)\\>"
                                         (list '(1 'my-todo-face t))))
                             'add-to-end)
     (when my-font-lock-show-whitespace
