@@ -413,6 +413,11 @@ Prefix with C-u to fit the `next-window'."
   (interactive)
   (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
 
+(defun my-font-tiny ()
+  "Switch to tiny font."
+  (interactive)
+  (set-frame-font "-*-profont-*-*-*-*-12-*-*-*-*-*-*-*"))
+
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
