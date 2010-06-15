@@ -26,18 +26,40 @@
         (insert ");"))
       (forward-char))))
 
+(define-abbrev e-mode-abbrev-table
+  "ron"
+  "read_only"
+  (lambda ()
+    (save-excursion
+      (insert "(")
+      (when (re-search-forward "\\(and\\|or\\|;\\)" nil t)
+        (goto-char (match-beginning 0))
+        (skip-syntax-backward "-"))
+      (insert ")"))))
+
 (define-abbrev e-mode-abbrev-table "bit" "as_a(bit)")
 (define-abbrev e-mode-abbrev-table "bool" "as_a(bool)")
 (define-abbrev e-mode-abbrev-table "uint" "as_a(uint)")
 
-(defun my-e-mode-copy-field-as-constraint ()
-  "Copy the field at point as a constraint."
+(defun my-e-mode-extend-item ()
+  "Copy a field/method/tcm as an extension."
   (interactive)
   (save-excursion
-    (let (field subtype struct package bound)
+    (let (item type subtype struct package bound)
       (skip-syntax-forward "^w_")
-      (setq field (buffer-substring (progn (skip-syntax-backward "w_") (point))
-                                    (progn (skip-syntax-forward "w_") (point))))
+      (setq item (buffer-substring (progn (skip-syntax-backward "w_") (point))
+                                   (progn (skip-syntax-forward "w_") (point))))
+      (if (looking-at "\\s-*:")
+          (setq type 'field)
+        (setq type 'method)
+        (setq item
+              (buffer-substring
+               (progn (skip-syntax-backward "w_")
+                      (point))
+               (progn (re-search-forward "\\_<is\\([ \t\n]+\\(first\\|also\\|only\\|empty\\|undefined\\)\\|[ \t\n]*{\\)" nil t)
+                      (goto-char (match-beginning 0))
+                      (skip-syntax-backward "-")
+                      (point)))))
       (backward-up-list)
       (re-search-backward "\\_<\\(when\\|extend\\|struct\\|unit\\)\\_>")
       (save-excursion
@@ -47,17 +69,24 @@
       (setq subtype (match-string 1))
       (setq struct (match-string 3))
       (goto-char (point-min))
-      (when (re-search-forward "^\\s-*package\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
+      (when (re-search-forward "^\\s-*package\\s-+\\([a-zA-Z0-9_]+\\)\\s-*;" nil t)
         (setq package (match-string 1)))
       (unless (or (string-match "^csco" struct)
                   (string-match "::" struct)
                   (null package))
         (setq struct (concat package "::" struct)))
-      (kill-new (concat "extend " (or subtype " ") struct " {\n"
-                        "    keep " field " == TODO;\n"
-                        "};\n"))
-      (message (concat "Copied field '" field "' as constraint")))))
+      (if (equal type 'field)
+          (progn
+            (kill-new (concat "extend " (or subtype " ") struct " {\n"
+                              "    keep " item " == TODO;\n"
+                              "};\n"))
+            (message "Field constraint copied"))
+        (kill-new (concat "extend " (or subtype " ") struct " {\n"
+                          "    " item " is also {\n"
+                          "        // TODO\n"
+                          "    };\n};\n"))
+        (message "Method extension copied")))))
 
-(define-key e-mode-map (kbd "<f11>") 'my-e-mode-copy-field-as-constraint)
+(define-key e-mode-map (kbd "<f11>") 'my-e-mode-extend-item)
 
 (provide 'my-e-mode)
