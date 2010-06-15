@@ -52,11 +52,11 @@
 (define-abbrev global-abbrev-table
   "td"
   ""
-  (lambda() (insert comment-start "TODO") (indent-according-to-mode)))
+  (lambda() (insert comment-start "TODO")))
 
 (define-abbrev global-abbrev-table
   "fix"
   ""
-  (lambda() (insert comment-start "FIXME") (indent-according-to-mode)))
+  (lambda() (insert comment-start "FIXME")))
 
 (provide 'my-yasnippet)
