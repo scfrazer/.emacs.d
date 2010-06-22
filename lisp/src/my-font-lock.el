@@ -40,7 +40,7 @@
   :group 'faces)
 
 (defface my-tiny-face
-  '((t (:height 0.86 :family "profont")))
+  '((t (:height 0.78 :family "gohufont")))
   "Tiny face."
   :group 'faces)
 
@@ -62,7 +62,7 @@
 (defun my-font-tiny ()
   "Switch to tiny font."
   (interactive)
-  (set-frame-font "-*-profont-*-*-*-*-12-*-*-*-*-*-*-*"))
+  (set-frame-font "-*-gohufont-medium-*-*-*-11-*"))
 
 ;; Show whitespace functionality
 
