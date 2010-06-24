@@ -816,7 +816,7 @@ Only works if there are exactly two windows."
   '(progn
      (defun my-elog-mode-hook ()
        (my-whitespace-off-hook)
-       (buffer-face-set 'my-tiny-face)
+       (buffer-face-mode 1)
        (setq truncate-lines 'one-line-each))
      (add-hook 'elog-mode-hook 'my-elog-mode-hook)))
 
