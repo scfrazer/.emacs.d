@@ -24,45 +24,25 @@
 
 ;; Font size faces and functions
 
-(defface my-large-face
-  '((t (:height 1.1 :family "sfrazer")))
-  "Large face."
-  :group 'faces)
-
-(defface my-medium-face
-  '((t (:family "sfrazer")))
-  "Medium face."
-  :group 'faces)
-
 (defface my-small-face
-  '((t (:family "proggycleansz")))
+  '((t (:height 0.78)))
   "Small face."
   :group 'faces)
-
-(defface my-tiny-face
-  '((t (:height 0.78 :family "gohufont")))
-  "Tiny face."
-  :group 'faces)
-
-(defun my-font-large ()
-  "Switch to large font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-15-*-*-*-*-*-*-*"))
-
-(defun my-font-medium ()
-  "Switch to medium font."
-  (interactive)
-  (set-frame-font "-sfrazer-*-medium-*-*-*-14-*-*-*-*-*-*-*"))
 
 (defun my-font-small ()
   "Switch to small font."
   (interactive)
-  (set-frame-font "-*-proggycleansz-*-*-*-*-*-*-*-*-*-*-*-*"))
+  (set-frame-font "smf-small"))
 
-(defun my-font-tiny ()
-  "Switch to tiny font."
+(defun my-font-medium ()
+  "Switch to medium font."
   (interactive)
-  (set-frame-font "-*-gohufont-medium-*-*-*-11-*"))
+  (set-frame-font "smf-medium"))
+
+(defun my-font-large ()
+  "Switch to large font."
+  (interactive)
+  (set-frame-font "smf-large"))
 
 ;; Show whitespace functionality
 

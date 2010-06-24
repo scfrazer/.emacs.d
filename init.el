@@ -108,7 +108,7 @@
               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
               browse-kill-ring-separator-face (quote font-lock-keyword-face)
               browse-kill-ring-use-fontification t
-              buffer-face-mode-face 'my-tiny-face
+              buffer-face-mode-face 'my-small-face
               case-fold-search t
               column-number-mode t
               comment-column 0
