@@ -53,7 +53,7 @@
 (defun makd-forward-word ()
   "Like forward-word, but stops at beginning of words."
   (interactive)
-  (when (looking-at "\\(\\sw\\|\\s_\\)")
+  (when (makd-looking-at-syntax "w_")
     (skip-syntax-forward "w_"))
   (skip-syntax-forward "^w_"))
 
@@ -66,7 +66,7 @@
 (defun makd-forward-word-end ()
   "Forward to end of word."
   (interactive)
-  (unless (looking-at "\\(\\sw\\|\\s_\\)")
+  (unless (makd-looking-at-syntax "w_")
     (skip-syntax-forward "^w_"))
   (skip-syntax-forward "w_"))
 
@@ -123,7 +123,7 @@ depending on the major mode (see `makd-block-indented-modes')."
 (defun makd-backward-word ()
   "Like backward-word, but stops at beginning of words."
   (interactive)
-  (unless (looking-back "\\(\\sw\\|\\s_\\)")
+  (unless (makd-looking-back-syntax "w_")
     (skip-syntax-backward "^w_"))
   (skip-syntax-backward "w_"))
 
@@ -136,7 +136,7 @@ depending on the major mode (see `makd-block-indented-modes')."
 (defun makd-backward-word-end ()
   "Backward to end of word."
   (interactive)
-  (when (looking-back "\\(\\sw\\|\\s_\\)")
+  (when (makd-looking-back-syntax "w_")
     (skip-syntax-backward "w_"))
   (skip-syntax-backward "^w_"))
 
@@ -188,6 +188,22 @@ depending on the major mode (see `makd-block-indented-modes')."
 
 ;;; Utility motion functions
 
+(defun makd-looking-at-syntax (str)
+  "Return non-nil if looking at syntax of a char in STR."
+  (unless (eobp)
+    (let* ((invert (= (string-to-char str) ?^))
+           (syntax-chars (append (if invert (substring str 1) str) nil))
+           (result (member (char-syntax (char-after (point))) syntax-chars)))
+      (if invert (not result) result))))
+
+(defun makd-looking-back-syntax (str)
+  "Return non-nil if looking back at syntax of a char in STR."
+  (unless (bobp)
+    (let* ((invert (= (string-to-char str) ?^))
+           (syntax-chars (append (if invert (substring str 1) str) nil))
+           (result (member (char-syntax (char-before (point))) syntax-chars)))
+      (if invert (not result) result))))
+
 (defun makd-forward-section ()
   "Move forward a word section.
 This is a utility function, you probably want `makd-forward-word-section'"
@@ -209,11 +225,11 @@ This is a utility function, you probably want `makd-backward-word-section'."
     (if makd-camelcase-sections
         (progn
           (skip-chars-backward "0-9")
-          (if (looking-back "[A-Z]")
+          (if (looking-back "[A-Z]" (1- (point)))
               (skip-chars-backward "A-Z0-9")
-            (when (looking-back "[a-z]")
+            (when (looking-back "[a-z]" (1- (point)))
                 (skip-chars-backward "a-z0-9")
-                (when (looking-back "[A-Z]")
+                (when (looking-back "[A-Z]" (1- (point)))
                   (backward-char)))))
       (skip-chars-backward "a-zA-Z0-9"))))
 
@@ -331,15 +347,15 @@ This is a utility function, you probably want `makd-backward-word-section'."
                    (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
                           (skip-syntax-forward " "))
-                         ((looking-at "\\(\\sw\\|\\s_\\)")
+                         ((makd-looking-at-syntax "w_")
                           (skip-syntax-forward "w_"))
-                         ((looking-at "\\s ")
+                         ((makd-looking-at-syntax " ")
                           (skip-syntax-forward " "))
-                         ((looking-at "\\s.")
+                         ((makd-looking-at-syntax ".")
                           (skip-syntax-forward "."))
-                         ((looking-at "\\s(")
+                         ((makd-looking-at-syntax "(")
                           (forward-sexp))
-                         ((looking-at "\\s\"")
+                         ((makd-looking-at-syntax "\"")
                           (let ((c (char-after)) region)
                             (forward-char)
                             (setq region (makd-region-inside-quotes c 'forward))
@@ -355,8 +371,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
   (kill-region (point)
                (progn
                  (makd-forward-section)
-                 (while (looking-at "\\s_")
-                   (forward-char))
+                 (skip-syntax-forward "_")
                  (point))))
 
 (defun makd-backward-kill ()
@@ -373,21 +388,17 @@ This is a utility function, you probably want `makd-backward-word-section'."
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-back "\\s ")
+                   (cond ((makd-looking-back-syntax " ")
                           (skip-syntax-backward " ")
-                          (when (looking-back "\\(\\sw\\|\\s_\\)")
+                          (when (makd-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
-;;                          ((looking-back "\\(\\sw\\|\\s_\\)\\>")
-;;                          (skip-syntax-backward "w_")
-;;                          (unless (looking-back "^\\s +")
-;;                          (skip-syntax-backward " ")))
-                         ((looking-back "\\(\\sw\\|\\s_\\)")
+                         ((makd-looking-back-syntax "w_")
                           (skip-syntax-backward "w_"))
-                         ((looking-back "\\s.")
+                         ((makd-looking-back-syntax ".")
                           (skip-syntax-backward "."))
-                         ((looking-back "\\s)")
+                         ((makd-looking-back-syntax ")")
                           (backward-sexp))
-                         ((looking-back "\\s\"")
+                         ((makd-looking-back-syntax "\"")
                           (backward-char)
                           (let ((c (char-after)) region)
                             (setq region (makd-region-inside-quotes c 'backward))
@@ -402,8 +413,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
   (interactive)
   (kill-region (point)
                (progn
-                 (while (looking-back "\\s_")
-                   (backward-char))
+                 (skip-syntax-backward "_")
                  (makd-backward-section)
                  (point))))
 
