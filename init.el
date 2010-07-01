@@ -871,7 +871,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-." 'iflipb-next-buffer)
 (my-keys-define "C-/" 'dabbrev-expand)
 (my-keys-define "C-?" 'my-ffap)
-(my-keys-define "C-M-;" 'comment-set-column)
 (my-keys-define "C-M-w" 'clipboard-kill-ring-save)
 (my-keys-define "C-M-y" 'clipboard-yank)
 (my-keys-define "C-S-SPC" 'my-rect-toggle)

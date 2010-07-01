@@ -18,11 +18,15 @@ def main():
         opt_parser.print_help()
         sys.exit(1)
 
-    try:
-        thing = open(filenames[0], 'r')
-    except IOError:
-        print "*** ERROR: Couldn't open file '%%s'" %% (filenames[0])
-        sys.exit(1)
+    for filename in filenames:
+
+        try:
+            thing = open(filenames[0], 'r')
+        except IOError:
+            print "*** ERROR: Couldn't open file '%%s'" %% (filenames[0])
+            sys.exit(1)
+
+        thing.close()
 
 ################################################################################
 

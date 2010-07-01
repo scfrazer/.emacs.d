@@ -37,7 +37,7 @@
       (beginning-of-line-text)
       (if (looking-at "d")
           (find-alternate-file (dired-get-filename))
-        (dired-advertised-find-file)))))
+        (dired-find-file)))))
 
 ;; Jump to directory
 
@@ -114,13 +114,11 @@
 
 (defun my-dired-mode-hook ()
   (define-key dired-mode-map " " 'my-dired-toggle-mark)
-  (define-key dired-mode-map "I" 'my-dired-jump-to-prev-dir)
   (define-key dired-mode-map (kbd "C-o") nil)
   (define-key dired-mode-map (kbd "M-o") nil)
   (define-key dired-mode-map "c" 'dired-do-copy)
-  (define-key dired-mode-map "i" 'my-dired-jump-to-dir)
-  (define-key dired-mode-map "j" 'dired-next-line)
-  (define-key dired-mode-map "k" 'dired-previous-line)
+  (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
+  (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
   (define-key dired-mode-map "o" 'my-dired-do-find-file)
   (define-key dired-mode-map "r" 'dired-do-rename)
   (define-key dired-mode-map "u" 'my-dired-up-dir)
@@ -129,35 +127,5 @@
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)
-
-;; TODO
-
-;; (defvar my-dired-omit-status t
-;;   "The status of dired omit file.")
-;; (defvar my-dired-omit-regexp "^\\.?#\\|^\\..*"
-;;   "The regexp string that matching omit files.")
-;; (defvar my-dired-omit-extensions '(".cache")
-;;   "The list that matching omit file's extension.")
-;;
-;; (defun dired-omit-method ()
-;;   "The omit method of dired."
-;;   (when my-dired-omit-status
-;;     (setq dired-omit-mode t)
-;;     (setq dired-omit-files my-dired-omit-regexp)
-;;     (setq dired-omit-extensions my-dired-omit-extensions)))
-;;
-;; (defun dired-toggle-omit ()
-;;   "Toggle omit status of dired files."
-;;   (interactive)
-;;   (if my-dired-omit-status
-;;       (let ((dired-omit-size-limit nil))
-;;         (setq dired-omit-mode nil)
-;;         (dired-omit-expunge)
-;;         (setq my-dired-omit-status nil))
-;;     (setq dired-omit-mode t)
-;;     (setq my-dired-omit-status t))
-;;   (revert-buffer))
-;;
-;; (add-hook 'dired-mode-hook 'dired-omit-method)
 
 (provide 'my-dired)
