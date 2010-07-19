@@ -322,7 +322,7 @@
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
   (interactive "*")
-  (delete-region (point) (progn (skip-chars-forward " \t") (point))))
+  (delete-region (point) (progn (skip-chars-forward " \t\n") (point))))
 
 (defun my-delete-trailing-whitespace ()
   "Remove trailing spaces and excess blank lines in the buffer."

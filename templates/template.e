@@ -5,7 +5,7 @@
 //   Language : 'e'
 //   Author   : %u
 //
-//   Description : %1%q
+//   Description : %1
 //
 // ----------------------------------------------------------------------------
 // Copyright (c) %Y by Cisco Systems, Inc
