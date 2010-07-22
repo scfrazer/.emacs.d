@@ -358,7 +358,7 @@ Use the C-u prefix to prevent the etags-select window from closing."
           (setq search-count 1))
         (setq search-count (1- search-count)))
       (beginning-of-line)
-      (re-search-forward tagname)
+      (re-search-forward (concat "\\_<" tagname "\\_>"))
       (goto-char (match-beginning 0))
       (when etags-select-highlight-tag-after-jump
         (etags-select-highlight (match-beginning 0) (match-end 0))))))
