@@ -23,6 +23,7 @@
 ;; ido + bookmarks
 
 (defvar my-ido-doing-bookmark-dir nil)
+(defvar my-ido-exiting-with-slash nil)
 
 (defun my-ido-bookmark-jump ()
   "Jump to bookmark using ido"
@@ -30,7 +31,9 @@
   (let ((dir (my-ido-get-bookmark-dir)))
     (when dir
       (setq my-dired-prev-dir (dired-current-directory))
-      (find-alternate-file (ido-read-directory-name "Jump to dir: " dir nil t)))))
+      (find-alternate-file (if my-ido-exiting-with-slash
+                               (ido-read-directory-name "Jump to dir: " dir nil t)
+                             dir)))))
 
 (defun my-ido-get-bookmark-dir ()
   "Get the directory of a bookmark."
@@ -65,9 +68,27 @@
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)
   (when my-ido-doing-bookmark-dir
     (let ((map (make-sparse-keymap)))
-      (define-key map "/" 'ido-exit-minibuffer)
+      (setq my-ido-exiting-with-slash nil)
+      (define-key map "/" 'my-ido-exit-minibuffer-with-slash)
       (set-keymap-parent map ido-common-completion-map)
       (setq ido-completion-map map))))
+
+(defun my-ido-exit-minibuffer-with-slash ()
+  "Exited finding a bookmark dir with slash."
+  (interactive)
+  (setq my-ido-exiting-with-slash t)
+  (ido-exit-minibuffer))
+
+;; (defun ido-final-slash (dir &optional fix-it)
+;;   (if fix-it
+;;       (concat dir "/")
+;;     (if (not my-ido-exiting-with-slash)
+;;         t
+;;       (setq dir (ido-name dir))
+;;       (cond
+;;        ((string-match "/\\'" dir) dir)
+;;        ((ido-is-tramp-root dir) dir)
+;;        (t nil)))))
 
 ;; ido + recentf
 
