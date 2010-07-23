@@ -4,6 +4,12 @@
 ;; Time load time
 
 (defvar *emacs-load-start* (current-time))
+(defun my-get-load-time ()
+  "Get current load time."
+  (let* ((now (current-time))
+         (start-time (+ (first *emacs-load-start*) (second *emacs-load-start*) (/ (float (third *emacs-load-start*)) 1e6)))
+         (end-time (+ (first now) (second now) (/ (float (third now)) 1e6))))
+    (- end-time start-time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic settings
@@ -1068,13 +1074,17 @@ Only works if there are exactly two windows."
   (when (file-exists-p extra-config)
     (load-file extra-config)))
 
+;; TODO This is temporary
+
+(require 'command-frequency)
+(command-frequency-table-load)
+(command-frequency-mode 1)
+(command-frequency-autosave-mode 1)
+
 ;; Time emacs load time
 
-(message ".emacs loaded in %.3f s"
-         (let* ((now (current-time))
-                (start-time (+ (first *emacs-load-start*) (second *emacs-load-start*)
-                               (/ (float (third *emacs-load-start*)) 1e6)))
-                (end-time (+ (first now) (second now) (/ (float (third now)) 1e6))))
-           (- end-time start-time)))
+(message "~/.emacs.d/init.el load time = %.3f s" (my-get-load-time))
+
+;; Disabled commands
 
 (put 'erase-buffer 'disabled nil)
