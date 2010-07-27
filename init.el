@@ -586,6 +586,23 @@ Prefix with C-u to fit the `next-window'."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-regexp-backward (regexp)
+  "Skip lines backward containing a regexp."
+  (interactive "sSkip lines backward containing regexp: ")
+  (beginning-of-line)
+  (forward-line -1)
+  (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
+    (beginning-of-line)
+    (forward-line -1)))
+
+(defun my-regexp-forward (regexp)
+  "Skip lines containing a regexp."
+  (interactive "sSkip lines containing regexp: ")
+  (beginning-of-line)
+  (while (and (not (eobp)) (re-search-forward regexp (line-end-position) t))
+    (beginning-of-line)
+    (forward-line 1)))
+
 (defun my-rotate-case ()
   "Rotate case to capitalized, uppercase, lowercase."
   (interactive)
@@ -643,21 +660,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
         ((and (equal major-mode 'dired-mode) (save-excursion (dired-move-to-filename)))
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
-
-(defun my-skip-lines-matching-regexp (regexp)
-  "Skip lines matching a regexp."
-  (interactive "sSkip lines matching regexp: ")
-  (beginning-of-line)
-  (while (and (not (eobp)) (looking-at regexp))
-    (forward-line 1)))
-
-(defun my-skip-lines-backward-matching-regexp (regexp)
-  "Skip lines backward matching a regexp."
-  (interactive "sSkip lines backward matching regexp: ")
-  (beginning-of-line)
-  (forward-line -1)
-  (while (and (not (bobp)) (looking-at regexp))
-    (forward-line -1)))
 
 (defun my-tip-of-the-day ()
   "Tip of the day"
