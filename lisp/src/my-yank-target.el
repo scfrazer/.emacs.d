@@ -49,6 +49,7 @@
   (if (or (not (marker-buffer my-yank-target-marker))
           (not (marker-position my-yank-target-marker)))
       (error "Yank target buffer killed or position no longer exists")
+    (setq my-yank-target-source (point-marker))
     (switch-to-buffer (marker-buffer my-yank-target-marker))
     (goto-char (marker-position my-yank-target-marker))))
 
