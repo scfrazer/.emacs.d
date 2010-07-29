@@ -830,6 +830,9 @@ Only works if there are exactly two windows."
 (eval-after-load "grep"
   '(define-key grep-mode-map "q" 'my-kill-results-buffer))
 
+(eval-after-load "magit"
+  '(define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit))
+
 (eval-after-load "make-mode"
   '(progn
      (defun my-makefile-mode-hook ()
