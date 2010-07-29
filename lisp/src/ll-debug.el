@@ -592,12 +592,12 @@ Uses `query-replace-regexp' internally."
                         "std::cout << " " << std::endl;"
                         '(nil "\""
                               (concat (ll-debug-create-next-debug-string)
-                                      ":\" << __LINE__ << \" ("
+                                      " \" << __FILE__ << \":\" << __LINE__ << \" ("
                                       (ll-debug-get-c++-function-name)
                                       ")")
                               "\"")
                         '(nil "\"" (concat (ll-debug-create-next-debug-string)
-                                           ":\" << __LINE__ << \" ("
+                                           " \" << __FILE__ << \":\" << __LINE__ << \" ("
                                            (ll-debug-get-c++-function-name)
                                            ")")
                               "\""
