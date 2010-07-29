@@ -622,16 +622,6 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (exchange-point-and-mark)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Indent
-
-(defun makd-indent ()
-  "Indent the region if it is active, otherwise normal indent."
-  (interactive)
-  (if (region-active-p)
-      (indent-region (region-beginning) (region-end))
-    (indent-according-to-mode)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Open
 
 (defun makd-open-line-above ()
