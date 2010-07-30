@@ -931,7 +931,8 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x k" 'my-kill-buffer)
-(my-keys-define "C-x m" ahg-global-map) ;; Yes, this one is not quoted
+; (my-keys-define "C-x m" ahg-global-map) ;; Yes, this one is not quoted
+(my-keys-define "C-x m" 'magit-status)
 (my-keys-define "C-x r a" 'append-to-register)
 (my-keys-define "C-x t" 'task-map)
 (my-keys-define "C-x w" 'my-clone-file)
@@ -1074,9 +1075,7 @@ Only works if there are exactly two windows."
 ;; TODO This is temporary
 
 (require 'command-frequency)
-(command-frequency-table-load)
 (command-frequency-mode 1)
-(command-frequency-autosave-mode 1)
 
 ;; Time emacs load time
 
