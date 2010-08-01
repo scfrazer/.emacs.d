@@ -1,4 +1,4 @@
-;;; my-yasnippet.el
+;;; my-expand.el
 
 (setq-default yas/dont-activate t
               yas/indent-line nil
@@ -15,7 +15,7 @@
 
 (define-key yas/keymap (kbd "<return>") 'my-yasnippet-exit-current)
 
-(defun my-yasnippet-or-abbrev-expand ()
+(defun my-expand-yasnippet-or-abbrev ()
   "Try to expand yasnippet, then expand abbrev if it fails."
   (interactive)
   (let (expanded)
@@ -59,4 +59,14 @@
   ""
   (lambda() (insert comment-start "FIXME")))
 
-(provide 'my-yasnippet)
+(defun my-expand-hook ()
+  (when (and (member major-mode (list 'c++-mode 'c-mode 'cperl-mode))
+             (looking-back "{"))
+    (insert "\n\n}")
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode)))
+
+(add-hook 'pre-abbrev-expand-hook 'my-expand-hook)
+
+(provide 'my-expand)

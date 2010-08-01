@@ -47,6 +47,7 @@
 (require 'my-comment)
 (require 'my-ediff)
 (require 'my-erc)
+(require 'my-expand)
 (require 'my-grep-ed)
 (require 'my-ido)
 (require 'my-grep)
@@ -60,7 +61,6 @@
 (require 'my-rect)
 (require 'my-set-cursor-color)
 (require 'my-yank-target)
-(require 'my-yasnippet)
 
 (require 'my-theme)
 
@@ -856,7 +856,7 @@ Only works if there are exactly two windows."
   (list 'define-key 'my-keys-minor-mode-map (list 'kbd key) fn))
 
 (my-keys-define "<C-f4>" 'my-apply-macro-to-region-lines)
-(my-keys-define "<C-return>" 'my-yasnippet-or-abbrev-expand)
+(my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-S-return>" 'makd-open-line-below)
 (my-keys-define "<M-return>" 'makd-open-line-above)
