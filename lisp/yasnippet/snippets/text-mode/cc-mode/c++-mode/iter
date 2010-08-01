@@ -1,0 +1,6 @@
+#name : iter
+# --
+for(${1:Type?}::iterator it = ${2:Field?}.begin(); it != $2.end(); it++)
+{$>
+$>$0
+}$>
