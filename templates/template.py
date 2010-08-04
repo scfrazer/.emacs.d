@@ -21,9 +21,9 @@ def main():
     for filename in filenames:
 
         try:
-            thing = open(filenames[0], 'r')
+            thing = open(filename, 'r')
         except IOError:
-            print "*** ERROR: Couldn't open file '%%s'" %% (filenames[0])
+            print "*** ERROR: Couldn't open file '%%s'" %% (filename)
             sys.exit(1)
 
         thing.close()
