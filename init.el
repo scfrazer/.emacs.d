@@ -91,6 +91,7 @@
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
+(autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'verilog-mode "verilog-mode" "Verilog mode" t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
@@ -258,8 +259,12 @@
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
-(add-to-list 'auto-mode-alist '("\\.sv$" . verilog-mode))
-(add-to-list 'auto-mode-alist '("\\.vh$" . verilog-mode))
+
+(add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
+
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
