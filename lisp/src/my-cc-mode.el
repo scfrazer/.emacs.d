@@ -126,13 +126,6 @@
 (add-hook 'c++-mode-hook 'doxymacs-mode)
 (add-hook 'c-mode-hook 'doxymacs-mode)
 
-(defun my-doxymacs-font-lock-hook ()
-  (if (eq major-mode 'c-mode)
-      (doxymacs-font-lock))
-  (if (eq major-mode 'c++-mode)
-      (doxymacs-font-lock)))
-(add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
-
 ;; Done
 
 (provide 'my-cc-mode)

@@ -488,7 +488,7 @@ Key bindings:
   (when doxymacs-mode
     (when (boundp 'filladapt-token-table)
       ;; add tokens to filladapt to match doxygen markup
-      (let ((bullet-regexp "[@\\]\\(param\\(?:\\s-*\\[\\(?:in\\|out\\|in,out\\)\\]\\)?\\s-+\\sw+\\|return\\)"))
+      (let ((bullet-regexp "[@\\]\\(param\\(?:\\s-*\\[\\(?:in\\|out\\|in,out\\)\\]\\)?\\s-+\\(\\sw\\|\\s_\\)+\\|return\\)"))
 	(unless (assoc bullet-regexp filladapt-token-table)
 	  (setq filladapt-token-table
 		(append filladapt-token-table
@@ -558,13 +558,13 @@ Key bindings:
    (list
     (concat "\\([@\\\\]\\(param\\(?:\\s-*\\[\\(?:in\\|out\\|in,out\\)\\]\\)?"
 	    "\\|a\\|namespace\\|relates\\(also\\)?"
-	    "\\|var\\|def\\)\\)\\s-+\\(\\sw+\\)")
+	    "\\|var\\|def\\)\\)\\s-+\\(\\(\\sw\\|\\s_\\)+\\)")
     '(1 font-lock-keyword-face prepend)
     '(4 font-lock-variable-name-face prepend))
    ;; keywords that take a type name as an argument
    (list
     (concat "\\([@\\\\]\\(class\\|struct\\|union\\|exception\\|enum"
-	    "\\|throw\\|interface\\|protocol\\)\\)\\s-+\\(\\(\\sw\\|:\\)+\\)")
+	    "\\|throw\\|interface\\|protocol\\)\\)\\s-+\\(\\(\\sw\\|\\s_\\|:\\)+\\)")
     '(1 font-lock-keyword-face prepend)
     '(3 font-lock-type-face prepend))
    ;; keywords that take a function name as an argument
@@ -589,7 +589,7 @@ Key bindings:
     '(3 (quote italic) prepend))
    ;; keywords that take a list
    (list
-    "\\([@\\\\]ingroup\\)\\s-+\\(\\(\\sw+\\s-*\\)+\\)\\s-*$"
+    "\\([@\\\\]ingroup\\)\\s-+\\(\\(\\(\\sw\\|\\s_\\)+\\s-*\\)+\\)\\s-*$"
     '(1 font-lock-keyword-face prepend)
     '(2 font-lock-string-face prepend))
    ;; one argument that can contain arbitrary non-whitespace stuff

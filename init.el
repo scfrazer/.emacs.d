@@ -757,6 +757,10 @@ Does not set point.  Does nothing if mark ring is empty."
   (define-key diff-mode-map "n" 'diff-hunk-next)
   (define-key diff-mode-map "p" 'diff-hunk-prev))
 
+(defun my-doxymacs-font-lock-hook ()
+  (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
+    (doxymacs-font-lock)))
+
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0))
 
@@ -806,11 +810,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'etags-select-mode-hook 'my-etags-select-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
+(add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (add-hook 'grep-mode-hook 'my-grep-mode-hook)
 (add-hook 'midnight-hook 'recentf-cleanup)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'sv-mode-hook 'doxymacs-mode)
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
