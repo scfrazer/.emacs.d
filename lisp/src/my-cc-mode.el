@@ -16,7 +16,6 @@
   (setq comment-end "" )
   (setq ll-debug-print-filename nil)
   (define-key c-mode-base-map "/" nil)
-  (define-key c-mode-base-map (kbd "C-c C-o") 'ff-get-other-file)
   (define-key c-mode-base-map (kbd "C-c d e") 'my-c-make-function-from-prototype)
   (font-lock-add-keywords nil
                           (list (cons (concat "^.*/\*\\s-*\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\)")

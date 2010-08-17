@@ -915,6 +915,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-g" 'grep-buffers)
 (my-keys-define "C-c C-k" 'my-kill-ring-pop)
 (my-keys-define "C-c C-l" 'll-debug-renumber)
+(my-keys-define "C-c C-o" 'ff-get-other-file)
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c H" 'unhighlight-regexp)
 (my-keys-define "C-c L" 'll-debug-revert)
