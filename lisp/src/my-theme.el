@@ -69,7 +69,7 @@
    (font-lock-builtin-face ((t (:foreground "LightCoral"))))
    (font-lock-comment-delimiter-face ((t (:foreground "CadetBlue"))))
    (font-lock-comment-face ((t (:foreground "CadetBlue"))))
-   (font-lock-constant-face ((t (:foreground "gold"))))
+   (font-lock-constant-face ((t (:foreground "DarkSeaGreen2"))))
    (font-lock-doc-face ((t (:foreground "moccasin"))))
    (font-lock-doc-string-face ((t (:foreground "moccasin"))))
    (font-lock-function-name-face ((t (:foreground "goldenrod"))))
