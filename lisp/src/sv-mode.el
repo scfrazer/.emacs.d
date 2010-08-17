@@ -76,11 +76,6 @@ Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
 
-(defface sv-mode-directive-face
-  '((t (:foreground "yellow4")))
-  "Face for preprocessor directives."
-  :group 'sv-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font lock
 
@@ -110,12 +105,12 @@ Otherwise indent them as usual."
              "pulsestyle_onevent" "pulsestyle_ondetect" "pure" "rand" "randc"
              "randcase" "randsequence" "rcmos" "ref" "release" "repeat" "return"
              "rnmos" "rpmos" "rtran" "rtranif0" "rtranif1" "scalared" "sequence"
-             "showcancelled" "signed" "small" "solve" "specify" "specparam"
-             "static" "struct" "super" "table" "tagged" "task" "this"
-             "throughout" "timeprecision" "timeunit" "tran" "tranif0" "tranif1"
-             "type" "typedef" "union" "unique" "unsigned" "use" "var" "vectored"
-             "virtual" "void" "wait" "wait_order" "while" "wildcard" "with"
-             "within" "xnor" "xor"))
+             "showcancelled" "small" "solve" "specify" "specparam" "static"
+             "struct" "super" "table" "tagged" "task" "this" "throughout"
+             "timeprecision" "timeunit" "tran" "tranif0" "tranif1" "type"
+             "typedef" "union" "unique" "use" "var" "vectored" "virtual" "void"
+             "wait" "wait_order" "while" "wildcard" "with" "within" "xnor"
+             "xor"))
           "\\)\\_>"))
 
 (defvar sv-mode-builtin-types
@@ -123,8 +118,9 @@ Otherwise indent them as usual."
           (regexp-opt
            '(
              "bit" "byte" "chandle" "event" "int" "integer" "logic" "longint"
-             "real" "realtime" "reg" "shortint" "shortreal" "string" "time"
-             "tri" "tri0" "tri1" "triand" "trior" "trireg" "wand" "wire" "wor"
+             "real" "realtime" "reg" "shortint" "shortreal" "signed" "string"
+             "time" "tri" "tri0" "tri1" "triand" "trior" "trireg" "unsigned"
+             "wand" "wire" "wor"
              ))
           "\\)\\_>"))
 
@@ -167,8 +163,6 @@ Otherwise indent them as usual."
 
 (defvar sv-mode-font-lock-keywords
   (list
-   ;; Line comments
-   (cons "//.*$" '(0 font-lock-comment-face))
    ;; Keywords
    (cons sv-mode-keywords '(0 font-lock-keyword-face keep))
    ;; Builtin types
@@ -176,31 +170,48 @@ Otherwise indent them as usual."
    ;; Constants
    (cons sv-mode-const '(0 font-lock-constant-face))
    ;; Preprocessor directives
-   (cons sv-mode-directives '(0 'sv-mode-directive-face)))
+   (cons sv-mode-directives '(0 font-lock-preprocessor-face)))
   "Default highlighting for sv-mode.")
 
 (defvar sv-mode-font-lock-keywords-1
   (append sv-mode-font-lock-keywords
           (list
            ;; Builtin methods
-           (cons sv-mode-builtin-methods '(0 font-lock-builtin-face))))
+           (cons sv-mode-builtin-methods '(0 font-lock-builtin-face))
+           ;; Macros
+           (cons "`[a-zA-Z0-9_]+" '(0 font-lock-variable-name-face))
+           ;; Defines
+           (cons "^\\s-*`\\(define\\|ifdef\\|ifndef\\|undef\\)\\s-+\\([a-zA-Z0-9_]+\\)"
+                 '(2 font-lock-variable-name-face))))
   "Subdued level highlighting for sv-mode.")
 
 (defvar sv-mode-font-lock-keywords-2
   (append sv-mode-font-lock-keywords-1
           (list
-           ;; Tasks
-           (cons
-            "^\\s-*task\\s+\\(\\(static\\|automatic\\)\\s-+)?\\([a-zA-Z0-9_.:]+\\)"
-            '(3 font-lock-function-name-face))
-           ;; Functions
-           (cons
-            "^\\s-*function\\s+\\(\\(static\\|automatic\\)\\s-+)?.*?\\([a-zA-Z0-9_.:]+\\)\\s-*[(;]"
-            '(3 font-lock-function-name-face))))
+           ;; Scope resolution
+           (cons "\\([a-zA-Z0-9_]+\\)::" '(1 font-lock-type-face))
+           ;; Tasks/functions
+           (cons "^\\s-*\\(\\(extern\\|local\\|virtual\\)\\s-+\\)*\\(task\\|function\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
+                 '(4 font-lock-function-name-face t))
+           ;; Labels
+           (cons (concat "\\_<" (regexp-opt
+                                 '("endcase" "endclass" "endclocking" "endconfig"
+                                   "endfunction" "endgenerate" "endgroup"
+                                   "endinterface" "endmodule" "endpackage"
+                                   "endprimitive" "endprogram" "endproperty"
+                                   "endspecify" "endsequence" "endtable" "endtask"))
+                         "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
+                 '(1 font-lock-constant-face))))
   "Medium level highlighting for sv-mode.")
 
 (defvar sv-mode-font-lock-keywords-3
-  sv-mode-font-lock-keywords-2
+  (append sv-mode-font-lock-keywords-2
+          (list
+           ;; User types
+           (cons "^\\s-*\\(\\(typedef\\|virtual\\)\\s-+\\)*\\(class\\|struct\\|enum\\|module\\|interface\\)\\s-+\\([a-zA-Z0-9_]+\\)"
+                 '(4 font-lock-type-face))
+           (cons "\\_<extends\\s-+\\([a-zA-Z0-9_]+\\)"
+                 '(1 font-lock-type-face))))
   "Gaudy level highlighting for sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -322,6 +333,12 @@ Key Bindings:
           nil ;; TODO function to move to beginning of reasonable region to highlight
           ))
   (turn-on-font-lock)
+
+  ;; Other-file
+
+  (setq ff-other-file-alist
+        '(("\\.sv$" (".svh"))
+          ("\\.svh$" (".sv"))))
 
   ;; Hooks
 
