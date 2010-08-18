@@ -44,6 +44,8 @@
 ;; 01 Jan 2007 -- v0.1
 ;;                Initial creation
 
+(require 'ffap)
+
 (defconst sv-mode-version "0.1"
   "Version of sv-mode.")
 
@@ -272,6 +274,25 @@ move to limit of search and return nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
 
+(defconst sv-mode-end-regexp
+  (concat "\\_<\\("
+          (regexp-opt '("end" "endcase" "endclass" "endclocking" "endconfig"
+                        "endfunction" "endgenerate" "endgroup" "endinterface"
+                        "endmodule" "endpackage" "endprimitive" "endprogram"
+                        "endproperty" "endspecify" "endsequence" "endtable"
+                        "endtask"))
+          "\\_>\\)")
+  "End keyword regexp.")
+
+(defconst sv-mode-begin-regexp
+  (concat "\\_<\\("
+          (regexp-opt '("begin" "case" "class" "clocking" "config" "function"
+                        "generate" "group" "interface" "module" "package"
+                        "primitive" "program" "property" "specify" "sequence"
+                        "table" "task"))
+          "\\_>\\)")
+  "Begin keyword regexp.")
+
 (defun sv-mode-indent-line ()
   "Indent the current line."
   (interactive)
@@ -317,9 +338,85 @@ move to limit of search and return nil."
             offset))
       (error nil))))
 
-(defun sv-mode-get-indent-if-opener () 0)
-(defun sv-mode-get-indent-if-closer () 0)
-(defun sv-mode-get-normal-indent () 0)
+(defun sv-mode-get-indent-if-opener ()
+  "Get amount to indent if looking at a opening item."
+  (when (looking-at "^[ \t]*\\({\\|\\_<begin\\_>\\)")
+    (sv-mode-beginning-of-statement)
+    (current-column)))
+
+(defun sv-mode-get-indent-if-closer ()
+  "Get amount to indent if looking at a closing item."
+  (if (looking-at "^[ \t]*}")
+      (progn
+        (backward-up-list)
+        (sv-mode-beginning-of-statement)
+        (current-column))
+    (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp))
+      (forward-word)
+      (sv-mode-backward-sexp)
+      (sv-mode-beginning-of-statement)
+      (current-column))))
+
+(defun sv-mode-get-normal-indent ()
+  "Normal indent for a line."
+  (save-excursion
+    (condition-case nil
+        (let ((bol (point))
+              (offset 0))
+          (sv-mode-beginning-of-statement)
+          (when (> bol (point-at-bol))
+            (setq offset sv-mode-continued-line-offset))
+          (sv-mode-backward-up-list)
+          (sv-mode-beginning-of-statement)
+          (+ (current-column) sv-mode-basic-offset offset))
+      (error 0))))
+
+(defun sv-mode-beginning-of-statement ()
+  "Move to beginning of statement."
+  (skip-syntax-forward " >")
+  (let ((limit (point)))
+    (sv-mode-re-search-backward "[;{]\\|\\_<begin\\_>" nil 'go)
+    (unless (and (looking-at ";")
+                 (re-search-backward "\\_<for\\_>\\s-*(" (point-at-bol) t))
+      (when (looking-at "[;{]\\|\\_<begin\\_>")
+        (goto-char (match-end 0))
+        (skip-syntax-forward " >" limit)
+        (while (looking-at "//")
+          (forward-line)
+          (skip-syntax-forward " >" limit))))
+    (back-to-indentation)))
+
+(defun sv-mode-backward-sexp ()
+  "Go backward over s-expression.  Matching of begin/task/module/etc. to
+end/endtask/endmodule/etc. is done if you are on or after the end expression."
+  (interactive)
+  (backward-sexp)
+  (when (looking-at sv-mode-end-regexp)
+    (let* ((pair-kind (substring (match-string-no-properties 0) 3))
+           (end-string (concat "end" pair-kind))
+           (begin-string (if (string= pair-kind "") "begin" pair-kind))
+           (regexp (concat "\\_<\\(" end-string "\\|" begin-string "\\)\\_>"))
+           (depth 1))
+      (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
+        (if (looking-at end-string)
+            (setq depth (1+ depth))
+          (setq depth (1- depth)))))))
+
+(defun sv-mode-backward-up-list ()
+  (interactive)
+  (condition-case nil
+      (backward-up-list)
+    (error
+     (let ((pos (point))
+           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+           (depth 1))
+       (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
+         (if (looking-at "end")
+             (setq depth (1+ depth))
+           (setq depth (1- depth))))
+       (when (> depth 0)
+         (goto-char pos)
+         (error "Unbalanced parentheses or begin/end constructs"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
