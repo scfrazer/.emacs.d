@@ -54,12 +54,12 @@
   "SystemVerilog mode."
   :group 'languages)
 
-(defcustom sv-mode-basic-offset 3
+(defcustom sv-mode-basic-offset 4
   "*Indentation of statements with respect to containing block."
   :group 'sv-mode
   :type 'integer)
 
-(defcustom sv-mode-continued-line-offset 3
+(defcustom sv-mode-continued-line-offset 4
   "*Extra indentation of continued statements."
   :group 'sv-mode
   :type 'integer)
@@ -156,9 +156,11 @@ Otherwise indent them as usual."
              "left" "low" "monitor" "onehot" "onehot0" "random" "readmemb"
              "readmemh" "realtime" "rewind" "right" "sformat" "shortrealtobits"
              "signed" "size" "srandom" "sscanf" "stop" "strobe" "swrite"
-             "swriteb" "swriteh" "swriteo" "time" "typename" "typeof" "ungetc"
-             "unsigned" "urandom" "urandom_range" "void" "warning" "write"
-             "writememb" "writememh"))
+             "swriteb" "swriteh" "swriteo" "time" "timeformat" "typename"
+             "typeof" "ungetc" "unsigned" "urandom" "urandom_range" "void"
+             "warning" "write" "writememb" "writememh"
+             ;; Not in the LRM, but most simulators support
+             "psprintf"))
           "\\)\\_>"))
 
 (defvar sv-mode-font-lock-keywords
@@ -190,8 +192,8 @@ Otherwise indent them as usual."
           (list
            ;; Scope resolution
            (cons "\\([a-zA-Z0-9_]+\\)::" '(1 font-lock-type-face))
-           ;; Tasks/functions
-           (cons "^\\s-*\\(\\(extern\\|local\\|virtual\\)\\s-+\\)*\\(task\\|function\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
+           ;; Tasks/functions/programs
+           (cons "^\\s-*\\(\\(extern\\|local\\|protected\\|virtual\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
            ;; Labels
            (cons (concat "\\_<" (regexp-opt
@@ -201,12 +203,20 @@ Otherwise indent them as usual."
                                    "endprimitive" "endprogram" "endproperty"
                                    "endspecify" "endsequence" "endtable" "endtask"))
                          "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
-                 '(1 font-lock-constant-face))))
+                 '(1 font-lock-constant-face t))))
   "Medium level highlighting for sv-mode.")
 
 (defvar sv-mode-font-lock-keywords-3
   (append sv-mode-font-lock-keywords-2
           (list
+           ;; Clocking
+           (cons "#+[0-9]+"
+                 '(0 font-lock-constant-face))
+           (cons "@"
+                 '(0 font-lock-constant-face))
+           ;; Time
+           (cons "\\_<[0-9.]+[munpf]?s"
+                 '(0 font-lock-constant-face))
            ;; User types
            (cons "^\\s-*\\(\\(typedef\\|virtual\\)\\s-+\\)*\\(class\\|struct\\|enum\\|module\\|interface\\)\\s-+\\([a-zA-Z0-9_]+\\)"
                  '(4 font-lock-type-face))
@@ -215,11 +225,101 @@ Otherwise indent them as usual."
   "Gaudy level highlighting for sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper functions
+
+(defsubst sv-mode-in-comment-or-string ()
+  "Return 'comment if point is inside a comment, 'string if point is inside a
+string, or nil if neither."
+  (let ((pps (syntax-ppss)))
+    (catch 'return
+      (when (nth 4 pps)
+        (throw 'return 'comment))
+      (when (nth 3 pps)
+        (throw 'return 'string)))))
+
+(defsubst sv-mode-re-search-forward (REGEXP &optional BOUND NOERROR)
+  "Like re-search-forward, but skips over comments and strings.
+Never throws an error; if NOERROR is anything other nil or t
+move to limit of search and return nil."
+  (let ((pos (point)))
+    (when (equal NOERROR t)
+      (setq NOERROR nil))
+    (condition-case nil
+        (catch 'done
+          (while (re-search-forward REGEXP BOUND NOERROR)
+            (unless (sv-mode-in-comment-or-string)
+              (throw 'done (point)))))
+      (error
+       (goto-char pos)
+       nil))))
+
+(defsubst sv-mode-re-search-backward (REGEXP &optional BOUND NOERROR)
+  "Like as re-search-backward, but skips over comments and strings.
+Never throws an error; if NOERROR is anything other nil or t
+move to limit of search and return nil."
+  (let ((pos (point)))
+    (when (equal NOERROR t)
+      (setq NOERROR nil))
+    (condition-case nil
+        (catch 'done
+          (while (re-search-backward REGEXP BOUND NOERROR)
+            (unless (sv-mode-in-comment-or-string)
+              (throw 'done (point)))))
+      (error
+       (goto-char pos)
+       nil))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
 
 (defun sv-mode-indent-line ()
   "Indent the current line."
-  (interactive))
+  (interactive)
+  (let ((pos (- (point-max) (point)))
+        (indent (sv-mode-get-indent)))
+    (unless (= indent (current-indentation))
+      (back-to-indentation)
+      (delete-region (point-at-bol) (point))
+      (indent-to indent))
+    (if (< (- (point) (point-at-bol)) indent)
+        (back-to-indentation)
+      (when (> (- (point-max) pos) (point))
+        (goto-char (- (point-max) pos))))))
+
+(defun sv-mode-get-indent ()
+  "Return how much the current line should be indented."
+  (save-excursion
+    (beginning-of-line)
+    (cond
+     ((sv-mode-in-comment-or-string) 0)
+     ((sv-mode-get-indent-if-in-paren))
+     ((sv-mode-get-indent-if-opener))
+     ((sv-mode-get-indent-if-closer))
+     ((sv-mode-get-normal-indent)))))
+
+(defun sv-mode-get-indent-if-in-paren ()
+  "Get amount to indent if in parentheses or brackets."
+  (save-excursion
+    (condition-case nil
+        (let ((at-closer (looking-at "[ \t]*[])]"))
+              offset)
+          (backward-up-list)
+          (unless (or (= (char-after) ?{)
+                      (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
+                      (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
+            (setq offset (current-column))
+            (unless at-closer
+              (forward-char)
+              (if (and (> (skip-syntax-forward " >" (point-at-eol)) 0)
+                       (not (looking-at "//")))
+                  (setq offset (current-column))
+                (setq offset (1+ offset))))
+            offset))
+      (error nil))))
+
+(defun sv-mode-get-indent-if-opener () 0)
+(defun sv-mode-get-indent-if-closer () 0)
+(defun sv-mode-get-normal-indent () 0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
