@@ -45,6 +45,7 @@
 (require 'my-cc-mode)
 (require 'my-clearcase)
 (require 'my-comment)
+(require 'my-doxymacs)
 (require 'my-ediff)
 (require 'my-erc)
 (require 'my-expand)
