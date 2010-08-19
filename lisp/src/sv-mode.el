@@ -43,7 +43,7 @@
 ;; 10 Aug 2010 -- v0.1
 ;;                Initial creation
 
-(require 'ffap)
+(require 'find-file)
 
 (defconst sv-mode-version "0.1"
   "Version of sv-mode.")
@@ -429,6 +429,49 @@ end/endtask/endmodule/etc. also."
        (when (> depth 0)
          (goto-char pos)
          (error "Unbalanced parentheses or begin/end constructs"))))))
+
+;; Make function from prototype
+
+(defun sv-mode-make-implementation-from-prototype ()
+  "Turn a task/function prototype into a skeleton implementation."
+  ;; TODO Change this from the cc-mode version
+  (interactive)
+  (let (ret-val fcn-name args const namespaces start-of-fcn)
+    (save-excursion
+      (end-of-line)
+      (c-beginning-of-statement 1)
+      (beginning-of-line)
+      (when (re-search-forward
+             "\\s-*\\(.*\\)\\s-+\\([-a-zA-Z0-9_!=<>~]+\\)\\s-*[(]" nil t)
+        (setq ret-val (match-string 1))
+        (setq ret-val (replace-regexp-in-string "\\(virtual\\|static\\)\\s-*" "" ret-val))
+        (setq fcn-name (match-string 2))
+        (when (re-search-forward "\\([^)]*\\)[)]" nil t)
+          (setq args (match-string 1))
+          (setq args (replace-regexp-in-string "\\s-*=.+?," "," args))
+          (setq args (replace-regexp-in-string "\\s-*=.+?)" ")" args))
+          (setq args (replace-regexp-in-string "\\s-*=.+?$" "" args))
+          (if (looking-at "\\s-*const")
+              (setq const " const")
+            (setq const ""))
+          (condition-case nil
+              (while 't
+                (backward-up-list 1)
+                (when (re-search-backward
+                       "\\(class\\|namespace\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
+                  (setq namespaces (concat (match-string 2) "::" namespaces))))
+            (error nil)))))
+    ;; Switch to other file and insert implementation
+    (ff-get-other-file)
+    (setq start-of-fcn (point))
+    (insert (concat ret-val (unless (string= ret-val "") "\n") namespaces fcn-name "(" args ")" const))
+    (insert "\n{\n/** @todo Fill in this function. */\n}\n")
+    (unless (eobp)
+      (insert "\n"))
+    (indent-region start-of-fcn (point) nil)
+    (goto-char start-of-fcn)
+    (when (fboundp 'doxymacs-insert-function-comment)
+      (doxymacs-insert-function-comment))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
