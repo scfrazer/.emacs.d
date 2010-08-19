@@ -13,3 +13,11 @@
 // possession or use of this file requires written permission from Cisco.
 // ----------------------------------------------------------------------------
 
+`ifndef _%N_%E_
+`define _%N_%E_
+
+/** @file */
+
+%@
+
+`endif
