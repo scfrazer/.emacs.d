@@ -99,6 +99,52 @@ Otherwise indent them as usual."
           "\\_>\\)")
   "Begin keyword regexp.")
 
+(defconst sv-mode-end-to-begin-alist
+  '(("end" . "begin")
+    ("endcase" . "case")
+    ("endclass" . "class")
+    ("endclocking" . "clocking")
+    ("endconfig" . "config")
+    ("endfunction" . "function")
+    ("endgenerate" . "generate")
+    ("endgroup" . "covergroup")
+    ("endinterface" . "interface")
+    ("endmodule" . "module")
+    ("endpackage" . "package")
+    ("endprimitive" . "primitive")
+    ("endprogram" . "program")
+    ("endproperty" . "property")
+    ("endspecify" . "specify")
+    ("endsequence" . "sequence")
+    ("endtable" . "table")
+    ("endtask" . "task")
+    ("join" . "fork")
+    ("join_any" . "fork")
+    ("join_none" . "fork"))
+  "Alist from ending keyword to begin regexp.")
+
+(defconst sv-mode-begin-to-end-alist
+  '(("begin" . "end")
+    ("case" . "endcase")
+    ("class" . "endclass")
+    ("clocking" . "endclocking")
+    ("config" . "endconfig")
+    ("function" . "endfunction")
+    ("generate" . "endgenerate")
+    ("covergroup" . "endgroup")
+    ("interface" . "endinterface")
+    ("module" . "endmodule")
+    ("package" . "endpackage")
+    ("primitive" . "endprimitive")
+    ("program" . "endprogram")
+    ("property" . "endproperty")
+    ("specify" . "endspecify")
+    ("sequence" . "endsequence")
+    ("table" . "endtable")
+    ("task" . "endtask")
+    ("fork" . "join\\|join_any\\|join_none"))
+  "Alist from beginning keyword to end regexp.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font lock
 
@@ -286,32 +332,106 @@ move to limit of search and return nil."
        (goto-char pos)
        nil))))
 
+(defun sv-mode-backward-sexp ()
+  "Go backward over s-expression.  Matching of begin/task/module/etc. to
+end/endtask/endmodule/etc. is done if you are on or after the end expression."
+  (backward-sexp)
+  (when (looking-at sv-mode-end-regexp)
+    (let* ((end-string (match-string-no-properties 0))
+           (begin-string (cdr (assoc end-string sv-mode-end-to-begin-alist)))
+           (regexp (concat "\\_<\\(" end-string "\\|" begin-string "\\)\\_>"))
+           (depth 1))
+      (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
+        (if (looking-at end-string)
+            (setq depth (1+ depth))
+          (unless (sv-mode-decl-only-p)
+            (setq depth (1- depth))))))))
+
+(defun sv-mode-forward-sexp ()
+  "Go forward over s-expression.  Matching of begin/task/module/etc. to
+end/endtask/endmodule/etc. is done if you are on or before the begin
+expression."
+  (forward-sexp)
+  (when (looking-back sv-mode-begin-regexp (line-beginning-position))
+    (let* ((begin-string (match-string-no-properties 0))
+           (end-string (cdr (assoc begin-string sv-mode-begin-to-end-alist)))
+           (regexp (concat "\\_<\\(" begin-string "\\|" end-string "\\)\\_>"))
+           (depth 1))
+      (while (and (> depth 0) (sv-mode-re-search-forward regexp nil t))
+        (if (string= (match-string-no-properties 0) begin-string)
+            (progn (backward-char)
+                   (unless (sv-mode-decl-only-p)
+                     (setq depth (1+ depth))))
+          (setq depth (1- depth)))))))
+
+(defun sv-mode-decl-only-p ()
+  "Looks backward from point to see if an item is just a declaration."
+  (save-excursion
+    (let ((pos (point)))
+      (sv-mode-beginning-of-statement)
+      (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
+
+(defun sv-mode-beginning-of-statement ()
+  "Move to beginning of statement."
+  (skip-syntax-forward " >")
+  (let* ((limit (point))
+         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|" sv-mode-end-regexp))
+         (matched (sv-mode-re-search-backward regexp nil 'go))
+         (end (match-end 0)))
+    (unless (and (looking-at ";")
+                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
+      (when matched
+        (if (looking-at "case")
+            (forward-sexp 2)
+          (goto-char end)
+          (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
+            (goto-char (match-end 0))))
+        (skip-syntax-forward " >" limit)
+        (while (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
+          (forward-line)
+          (skip-syntax-forward " >" limit))))
+    (back-to-indentation)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Interactive functions
+
+(defun sv-mode-jump-other-end ()
+  "Jumps to the opposite begin/end expression from the one point is at."
+  (interactive)
+  (let ((pos (point)))
+    (skip-syntax-backward "w_")
+    (skip-syntax-forward " ")
+    (if (looking-at sv-mode-end-regexp)
+        (progn
+          (forward-char)
+          (sv-mode-backward-sexp))
+      (if (looking-at sv-mode-begin-regexp)
+          (progn
+            (sv-mode-forward-sexp)
+            (backward-word))
+        (goto-char pos)))))
+
+(defun sv-mode-backward-up-list ()
+  "Like `backward-up-list', but matches begin/task/module/etc. and
+end/endtask/endmodule/etc. also."
+  (interactive)
+  (condition-case nil
+      (backward-up-list)
+    (error
+     (let ((pos (point))
+           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+           (depth 1))
+       (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
+         (if (looking-at "end\\|join")
+             (setq depth (1+ depth))
+           (unless (sv-mode-decl-only-p)
+             (setq depth (1- depth)))))
+       (when (> depth 0)
+         (goto-char pos)
+         (error "Unbalanced parentheses or begin/end constructs"))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
-
-(defconst sv-mode-end-to-begin-alist
-  '(("end" . "begin")
-    ("endcase" . "case")
-    ("endclass" . "class")
-    ("endclocking" . "clocking")
-    ("endconfig" . "config")
-    ("endfunction" . "function")
-    ("endgenerate" . "generate")
-    ("endgroup" . "covergroup")
-    ("endinterface" . "interface")
-    ("endmodule" . "module")
-    ("endpackage" . "package")
-    ("endprimitive" . "primitive")
-    ("endprogram" . "program")
-    ("endproperty" . "property")
-    ("endspecify" . "specify")
-    ("endsequence" . "sequence")
-    ("endtable" . "table")
-    ("endtask" . "task")
-    ("join" . "fork")
-    ("join_any" . "fork")
-    ("join_none" . "fork"))
-  "Alist from ending keyword to begin regexp.")
 
 (defun sv-mode-indent-line ()
   "Indent the current line."
@@ -415,69 +535,6 @@ move to limit of search and return nil."
           (+ (current-column) sv-mode-basic-offset offset))
       (error 0))))
 
-(defun sv-mode-beginning-of-statement ()
-  "Move to beginning of statement."
-  (skip-syntax-forward " >")
-  (let* ((limit (point))
-         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|" sv-mode-end-regexp))
-         (matched (sv-mode-re-search-backward regexp nil 'go))
-         (end (match-end 0)))
-    (unless (and (looking-at ";")
-                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
-      (when matched
-        (if (looking-at "case")
-            (forward-sexp 2)
-          (goto-char end)
-          (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
-            (goto-char (match-end 0))))
-        (skip-syntax-forward " >" limit)
-        (while (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
-          (forward-line)
-          (skip-syntax-forward " >" limit))))
-    (back-to-indentation)))
-
-(defun sv-mode-backward-sexp ()
-  "Go backward over s-expression.  Matching of begin/task/module/etc. to
-end/endtask/endmodule/etc. is done if you are on or after the end expression."
-  (interactive)
-  (backward-sexp)
-  (when (looking-at sv-mode-end-regexp)
-    (let* ((end-string (match-string-no-properties 0))
-           (begin-string (cdr (assoc end-string sv-mode-end-to-begin-alist)))
-           (regexp (concat "\\_<\\(" end-string "\\|" begin-string "\\)\\_>"))
-           (depth 1))
-      (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
-        (if (looking-at end-string)
-            (setq depth (1+ depth))
-          (unless (sv-mode-decl-only-p)
-            (setq depth (1- depth))))))))
-
-(defun sv-mode-decl-only-p ()
-  "Looks backward from point to see if an item is just a declaration."
-  (save-excursion
-    (let ((pos (point)))
-      (sv-mode-beginning-of-statement)
-      (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
-
-(defun sv-mode-backward-up-list ()
-  "Like `backward-up-list', but matches begin/task/module/etc. and
-end/endtask/endmodule/etc. also."
-  (interactive)
-  (condition-case nil
-      (backward-up-list)
-    (error
-     (let ((pos (point))
-           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
-           (depth 1))
-       (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
-         (if (looking-at "end\\|join")
-             (setq depth (1+ depth))
-           (unless (sv-mode-decl-only-p)
-             (setq depth (1- depth)))))
-       (when (> depth 0)
-         (goto-char pos)
-         (error "Unbalanced parentheses or begin/end constructs"))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
 
@@ -530,11 +587,48 @@ end/endtask/endmodule/etc. also."
 
 (define-abbrev-table 'sv-mode-abbrev-table ())
 
+(define-abbrev sv-mode-abbrev-table
+  "beg"
+  ""
+  (lambda()
+    (insert "begin")
+    (sv-mode-indent-line)
+    (insert "\n\nend")
+    (sv-mode-indent-line)
+    (forward-line -1)
+    (sv-mode-indent-line)))
+
+(define-abbrev sv-mode-abbrev-table
+  "end"
+  ""
+  (lambda()
+    (let (begin-type end-type label)
+      (save-excursion
+        (sv-mode-backward-up-list)
+        (re-search-forward "\\sw+" (line-end-position))
+        (setq begin-type (match-string-no-properties 0))
+        (setq end-type (cdr (assoc begin-type sv-mode-begin-to-end-alist)))
+        (when (member begin-type (list "task" "function" "program"))
+          (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
+          (setq label (match-string-no-properties 1)))
+        (when (member begin-type (list "class" "module" "interface"))
+          (re-search-forward "[a-zA-Z0-9_]+" nil t)
+          (setq label (match-string-no-properties 0))))
+      (insert "\n" end-type)
+      (when label
+        (insert " : " label))
+      (sv-mode-indent-line)
+      (forward-line -1)
+      (sv-mode-indent-line))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode map
 
 (defvar sv-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
+    (define-key map (kbd "C-c C-u") 'sv-mode-backward-up-list)
+    (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     map)
   "Keymap used in sv-mode.")
 
