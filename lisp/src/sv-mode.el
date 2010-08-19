@@ -34,14 +34,13 @@
 ;; (autoload 'sv-mode "sv-mode" "SystemVerilog code editing mode" t)
 ;; (setq auto-mode-alist
 ;;        (append (list
-;;                 (cons "\\.v\\'" 'sv-mode)
 ;;                 (cons "\\.sv\\'" 'sv-mode)
 ;;                 (cons "\\.svh\\'" 'sv-mode))
 ;;                auto-mode-alist))
 ;;
 ;;; Change log:
 ;;
-;; 01 Jan 2007 -- v0.1
+;; 10 Aug 2010 -- v0.1
 ;;                Initial creation
 
 (require 'ffap)
@@ -321,9 +320,9 @@ move to limit of search and return nil."
         (indent (sv-mode-get-indent)))
     (unless (= indent (current-indentation))
       (back-to-indentation)
-      (delete-region (point-at-bol) (point))
+      (delete-region (line-beginning-position) (point))
       (indent-to indent))
-    (if (< (- (point) (point-at-bol)) indent)
+    (if (< (- (point) (line-beginning-position)) indent)
         (back-to-indentation)
       (when (> (- (point-max) pos) (point))
         (goto-char (- (point-max) pos))))))
@@ -332,31 +331,55 @@ move to limit of search and return nil."
   "Return how much the current line should be indented."
   (save-excursion
     (beginning-of-line)
-    (cond
-     ((sv-mode-in-comment-or-string) 0)
-     ((sv-mode-get-indent-if-in-paren))
-     ((sv-mode-get-indent-if-opener))
-     ((sv-mode-get-indent-if-closer))
-     ((sv-mode-get-normal-indent)))))
+    (let ((in-comment-or-string (sv-mode-in-comment-or-string)))
+      (cond
+       ((equal in-comment-or-string 'string) 0)
+       ((equal in-comment-or-string 'comment)
+        (sv-mode-get-indent-in-comment))
+       ((sv-mode-get-indent-if-in-paren))
+       ((sv-mode-get-indent-if-opener))
+       ((sv-mode-get-indent-if-closer))
+       ((sv-mode-get-normal-indent))))))
+
+(defun sv-mode-get-indent-in-comment ()
+  "Get amount to indent when in comment."
+  (let ((starts-with-* (looking-at "\\s-*\\*")))
+    (save-excursion
+      (forward-line -1)
+      (while (looking-at "^\\s-*$")
+        (forward-line -1))
+      (if (sv-mode-in-comment-or-string)
+          (back-to-indentation)
+        (re-search-forward "/\\*")
+        (backward-char))
+      (unless (and starts-with-* (= (char-after) ?*))
+        (skip-syntax-forward "^w_" (line-end-position)))
+      (current-column))))
 
 (defun sv-mode-get-indent-if-in-paren ()
-  "Get amount to indent if in parentheses or brackets."
+  "Get amount to indent if in parentheses, brackets, or braces"
   (save-excursion
     (condition-case nil
-        (let ((at-closer (looking-at "[ \t]*[])]"))
+        (let ((at-closer (looking-at "[ \t]*[])}]"))
               offset)
           (backward-up-list)
-          (unless (or (= (char-after) ?{)
-                      (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
-                      (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
-            (setq offset (current-column))
-            (unless at-closer
-              (forward-char)
-              (if (and (> (skip-syntax-forward " >" (point-at-eol)) 0)
-                       (not (looking-at "//")))
-                  (setq offset (current-column))
-                (setq offset (1+ offset))))
-            offset))
+          (if (= (char-after) ?{)
+              (progn
+                (sv-mode-beginning-of-statement)
+                (setq offset (current-column))
+                (unless at-closer
+                  (setq offset (+ offset sv-mode-basic-offset)))
+                offset)
+            (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
+                        (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
+              (setq offset (current-column))
+              (unless at-closer
+                (forward-char)
+                (if (and (> (skip-syntax-forward " >" (line-end-position)) 0)
+                         (not (looking-at "//\\|/*")))
+                    (setq offset (current-column))
+                  (setq offset (1+ offset))))
+              offset)))
       (error nil))))
 
 (defun sv-mode-get-indent-if-opener ()
@@ -385,7 +408,7 @@ move to limit of search and return nil."
         (let ((bol (point))
               (offset 0))
           (sv-mode-beginning-of-statement)
-          (when (> bol (point-at-bol))
+          (when (> bol (line-beginning-position))
             (setq offset sv-mode-continued-line-offset))
           (sv-mode-backward-up-list)
           (sv-mode-beginning-of-statement)
@@ -396,17 +419,19 @@ move to limit of search and return nil."
   "Move to beginning of statement."
   (skip-syntax-forward " >")
   (let* ((limit (point))
-         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\)\\_>\\|" sv-mode-end-regexp))
+         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|" sv-mode-end-regexp))
          (matched (sv-mode-re-search-backward regexp nil 'go))
          (end (match-end 0)))
     (unless (and (looking-at ";")
-                 (re-search-backward "\\_<for\\_>\\s-*(" (point-at-bol) t))
+                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
       (when matched
-        (goto-char end)
-        (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
-          (goto-char (match-end 0)))
+        (if (looking-at "case")
+            (forward-sexp 2)
+          (goto-char end)
+          (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
+            (goto-char (match-end 0))))
         (skip-syntax-forward " >" limit)
-        (while (looking-at "//")
+        (while (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
           (forward-line)
           (skip-syntax-forward " >" limit))))
     (back-to-indentation)))
@@ -424,20 +449,15 @@ end/endtask/endmodule/etc. is done if you are on or after the end expression."
       (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
         (if (looking-at end-string)
             (setq depth (1+ depth))
-          (unless (sv-mode-is-extern-p)
+          (unless (sv-mode-decl-only-p)
             (setq depth (1- depth))))))))
 
-(defun sv-mode-is-extern-p ()
-  "Looks backward from point to see if an item is declared extern."
+(defun sv-mode-decl-only-p ()
+  "Looks backward from point to see if an item is just a declaration."
   (save-excursion
-    (condition-case nil
-        (progn
-          (backward-word)
-          (or (looking-at "extern")
-              (when (looking-at "virtual\\|forkjoin")
-                (backward-word)
-                (looking-at "extern"))))
-      (error nil))))
+    (let ((pos (point)))
+      (sv-mode-beginning-of-statement)
+      (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
 
 (defun sv-mode-backward-up-list ()
   "Like `backward-up-list', but matches begin/task/module/etc. and
@@ -452,7 +472,7 @@ end/endtask/endmodule/etc. also."
        (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
          (if (looking-at "end\\|join")
              (setq depth (1+ depth))
-           (unless (sv-mode-is-extern-p)
+           (unless (sv-mode-decl-only-p)
              (setq depth (1- depth)))))
        (when (> depth 0)
          (goto-char pos)
