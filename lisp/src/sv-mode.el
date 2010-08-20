@@ -392,6 +392,56 @@ expression."
           (skip-syntax-forward " >" limit))))
     (back-to-indentation)))
 
+(defun sv-mode-determine-end-expr ()
+  "Determine what the next appropriate end expression should be."
+  (let (begin-type end-type label)
+    (save-excursion
+      (sv-mode-backward-up-list)
+      (when (looking-at "[[({]")
+        (error "Inside open parentheses, backets, or braces"))
+      (re-search-forward "\\sw+" (line-end-position) t)
+      (setq begin-type (match-string-no-properties 0))
+      (setq end-type (cdr (assoc begin-type sv-mode-begin-to-end-alist)))
+      (when (member begin-type (list "task" "function" "program"))
+        (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
+        (setq label (match-string-no-properties 1)))
+      (when (member begin-type (list "class" "module" "interface"))
+        (re-search-forward "[a-zA-Z0-9_]+" nil t)
+        (setq label (match-string-no-properties 0))))
+    (concat end-type (if label (concat " : " label) ""))))
+
+(defun sv-mode-get-namespaces ()
+  "Return a list with all encompassing namespaces in out-to-in order."
+  (let ((namespaces '()))
+    (save-excursion
+      (while (sv-mode-backward-up-list)
+        (unless (looking-at "[[({]")
+          (re-search-forward "\\sw+" (line-end-position))
+          (setq begin-type (match-string-no-properties 0))
+          (when (member begin-type (list "task" "function" "program"))
+            (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
+            (push (match-string-no-properties 1) namespaces))
+          (when (member begin-type (list "class" "module" "interface"))
+            (re-search-forward "[a-zA-Z0-9_]+" nil t)
+            (push (match-string-no-properties 0) namespaces)))
+        (beginning-of-line)))
+    namespaces))
+
+(defun sv-mode-parse-prototype ()
+  "Parse a function/task prototype and return an alist with the structure:
+
+'(('type . TYPE)
+  ('name . NAME)
+  ('ret . TYPE)
+  ('args . '((ARG-TYPE . ARG_NAME)
+             (ARG-TYPE . ARG_NAME))))"
+  (let ((type "")
+        (name "")
+        (ret "")
+        (args '()))
+    ;; TODO
+    ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
 
@@ -400,23 +450,25 @@ expression."
   (interactive)
   (let ((pos (point)))
     (skip-syntax-backward "w_")
-    (skip-syntax-forward " ")
-    (if (looking-at sv-mode-end-regexp)
+    (if (re-search-forward
+         (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp) nil t)
         (progn
-          (forward-char)
-          (sv-mode-backward-sexp))
-      (if (looking-at sv-mode-begin-regexp)
-          (progn
-            (sv-mode-forward-sexp)
-            (backward-word))
-        (goto-char pos)))))
+          (backward-word)
+          (if (looking-at sv-mode-end-regexp)
+              (progn
+                (forward-char)
+                (sv-mode-backward-sexp))
+            (when (looking-at sv-mode-begin-regexp)
+              (sv-mode-forward-sexp)
+              (backward-word))))
+      (goto-char pos))))
 
 (defun sv-mode-backward-up-list ()
   "Like `backward-up-list', but matches begin/task/module/etc. and
 end/endtask/endmodule/etc. also."
   (interactive)
   (condition-case nil
-      (backward-up-list)
+      (progn (backward-up-list) t)
     (error
      (let ((pos (point))
            (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
@@ -428,50 +480,46 @@ end/endtask/endmodule/etc. also."
              (setq depth (1- depth)))))
        (when (> depth 0)
          (goto-char pos)
-         (error "Unbalanced parentheses or begin/end constructs"))))))
-
-;; Make function from prototype
+         (when (interactive-p)
+           (error "Unbalanced parentheses or begin/end constructs")))
+       (= depth 0)))))
 
 (defun sv-mode-make-implementation-from-prototype ()
   "Turn a task/function prototype into a skeleton implementation."
-  ;; TODO Change this from the cc-mode version
   (interactive)
-  (let (ret-val fcn-name args const namespaces start-of-fcn)
-    (save-excursion
-      (end-of-line)
-      (c-beginning-of-statement 1)
-      (beginning-of-line)
-      (when (re-search-forward
-             "\\s-*\\(.*\\)\\s-+\\([-a-zA-Z0-9_!=<>~]+\\)\\s-*[(]" nil t)
-        (setq ret-val (match-string 1))
-        (setq ret-val (replace-regexp-in-string "\\(virtual\\|static\\)\\s-*" "" ret-val))
-        (setq fcn-name (match-string 2))
-        (when (re-search-forward "\\([^)]*\\)[)]" nil t)
-          (setq args (match-string 1))
-          (setq args (replace-regexp-in-string "\\s-*=.+?," "," args))
-          (setq args (replace-regexp-in-string "\\s-*=.+?)" ")" args))
-          (setq args (replace-regexp-in-string "\\s-*=.+?$" "" args))
-          (if (looking-at "\\s-*const")
-              (setq const " const")
-            (setq const ""))
-          (condition-case nil
-              (while 't
-                (backward-up-list 1)
-                (when (re-search-backward
-                       "\\(class\\|namespace\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
-                  (setq namespaces (concat (match-string 2) "::" namespaces))))
-            (error nil)))))
-    ;; Switch to other file and insert implementation
-    (ff-get-other-file)
-    (setq start-of-fcn (point))
-    (insert (concat ret-val (unless (string= ret-val "") "\n") namespaces fcn-name "(" args ")" const))
-    (insert "\n{\n/** @todo Fill in this function. */\n}\n")
-    (unless (eobp)
-      (insert "\n"))
-    (indent-region start-of-fcn (point) nil)
-    (goto-char start-of-fcn)
-    (when (fboundp 'doxymacs-insert-function-comment)
-      (doxymacs-insert-function-comment))))
+;;   (let (ret-val fcn-name args namespaces start-of-fcn)
+;;     (save-excursion
+;;       (sv-mode-beginning-of-statement)
+;;       (beginning-of-line)
+;;       (when (re-search-forward
+;;              "\\s-*\\(.*\\)\\s-+\\([-a-zA-Z0-9_!=<>~]+\\)\\s-*[(]" nil t)
+;;         (setq ret-val (match-string 1))
+;;         (setq ret-val (replace-regexp-in-string "\\(virtual\\|static\\)\\s-*" "" ret-val))
+;;         (setq fcn-name (match-string 2))
+;;         (when (re-search-forward "\\([^)]*\\)[)]" nil t)
+;;           (setq args (match-string 1))
+;;           (setq args (replace-regexp-in-string "\\s-*=.+?," "," args))
+;;           (setq args (replace-regexp-in-string "\\s-*=.+?)" ")" args))
+;;           (setq args (replace-regexp-in-string "\\s-*=.+?$" "" args))
+;;           (if (looking-at "\\s-*const")
+;;               (setq const " const")
+;;             (setq const ""))
+;;           (condition-case nil
+;;               (while 't
+;;                 (backward-up-list 1)
+;;                 (when (re-search-backward
+;;                        "\\(class\\|namespace\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
+;;                   (setq namespaces (concat (match-string 2) "::" namespaces))))
+;;             (error nil)))))
+;;     (ff-get-other-file)
+;;     (setq start-of-fcn (point))
+;;     (insert (concat ret-val (unless (string= ret-val "") "\n") namespaces fcn-name "(" args ")" const))
+;;     (insert "\n{\n/** @todo Fill in this function. */\n}\n")
+;;     (unless (eobp)
+;;       (insert "\n"))
+;;     (indent-region start-of-fcn (point) nil)
+;;     (goto-char start-of-fcn)))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
@@ -645,24 +693,17 @@ end/endtask/endmodule/etc. also."
   "end"
   ""
   (lambda()
-    (let (begin-type end-type label)
-      (save-excursion
-        (sv-mode-backward-up-list)
-        (re-search-forward "\\sw+" (line-end-position))
-        (setq begin-type (match-string-no-properties 0))
-        (setq end-type (cdr (assoc begin-type sv-mode-begin-to-end-alist)))
-        (when (member begin-type (list "task" "function" "program"))
-          (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
-          (setq label (match-string-no-properties 1)))
-        (when (member begin-type (list "class" "module" "interface"))
-          (re-search-forward "[a-zA-Z0-9_]+" nil t)
-          (setq label (match-string-no-properties 0))))
-      (insert "\n" end-type)
-      (when label
-        (insert " : " label))
-      (sv-mode-indent-line)
-      (forward-line -1)
-      (sv-mode-indent-line))))
+    (insert "\n" (sv-mode-determine-end-expr))
+    (sv-mode-indent-line)
+    (forward-line -1)
+    (sv-mode-indent-line)))
+
+(define-abbrev sv-mode-abbrev-table
+  "sup"
+  ""
+  (lambda()
+    (insert "super." (car (last (sv-mode-get-namespaces))) "();")
+    (backward-char 2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode map
