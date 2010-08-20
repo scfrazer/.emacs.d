@@ -429,7 +429,6 @@ expression."
 
 (defun sv-mode-parse-prototype ()
   "Parse a function/task prototype and return an alist with the structure:
-
 '(('type . TYPE)
   ('name . NAME)
   ('ret . TYPE)
@@ -438,9 +437,26 @@ expression."
   (let ((type "")
         (name "")
         (ret "")
-        (args '()))
-    ;; TODO
-    ))
+        (args '())
+        pos)
+    (save-excursion
+      (sv-mode-beginning-of-statement)
+      (re-search-forward "task\\|function")
+      (setq type (match-string-no-properties 0))
+      (re-search-forward "\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]")
+      (setq name (match-string-no-properties 1))
+      (when (string= type "function")
+        (goto-char (match-beginning 1))
+        (setq pos (point))
+        (re-search-backward "\\_<\\(task\\|function\\|static\\|automatic\\)\\_>")
+        (forward-word)
+        (re-search-forward ".*" pos)
+        (setq ret (match-string-no-properties 0))
+        (setq ret (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" ret))))
+      (list (cons 'type type)
+            (cons 'name name)
+            (cons 'ret ret)
+            (cons 'args args))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
@@ -693,9 +709,7 @@ end/endtask/endmodule/etc. also."
   "end"
   ""
   (lambda()
-    (insert "\n" (sv-mode-determine-end-expr))
-    (sv-mode-indent-line)
-    (forward-line -1)
+    (insert (sv-mode-determine-end-expr))
     (sv-mode-indent-line)))
 
 (define-abbrev sv-mode-abbrev-table
