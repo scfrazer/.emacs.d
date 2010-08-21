@@ -432,8 +432,8 @@ expression."
 '(('type . TYPE)
   ('name . NAME)
   ('ret . TYPE)
-  ('args . '((ARG-TYPE . ARG_NAME)
-             (ARG-TYPE . ARG_NAME))))"
+  ('args . '((NAME . TYPE)
+             (NAME . TYPE))))"
   (let ((type "")
         (name "")
         (ret "")
@@ -452,11 +452,35 @@ expression."
         (forward-word)
         (re-search-forward ".*" pos)
         (setq ret (match-string-no-properties 0))
-        (setq ret (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" ret))))
+        (setq ret (sv-mode-trim-whitespace ret))
+        (re-search-forward "[(;]"))
+      (when (= (char-before) ?\()
+        (re-search-forward "\\([^)]*\\))")
+        (let ((arg-string (match-string-no-properties 1))
+              arg-strings arg-name arg-type)
+          (setq arg-string (replace-regexp-in-string "\n" " " arg-string))
+          (setq arg-strings (split-string arg-string "," t))
+          (dolist (str arg-strings)
+            (when (string-match "\\(.+\\)=" str)
+              (setq str (match-string 1 str)))
+            (setq str (sv-mode-trim-whitespace str))
+            (if (string-match "\\(.+\\)\\s-+\\(.+\\)$" str)
+                (setq arg-type (match-string 1 str)
+                      arg-name (match-string 2 str))
+              (setq arg-name str))
+            (setq args (cons (cons (sv-mode-trim-whitespace arg-name)
+                                   (sv-mode-trim-whitespace arg-type)) args))))
+        (when args
+          (setq args (nreverse args)))))
       (list (cons 'type type)
             (cons 'name name)
             (cons 'ret ret)
             (cons 'args args))))
+
+(defsubst sv-mode-trim-whitespace (string)
+  "Trim leading/trailing whitespace from a string."
+  (when string
+    (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
