@@ -1,4 +1,4 @@
-;;; sv-mode.el -- Mode for editing SystemVerilog files
+;; sv-mode.el -- Mode for editing SystemVerilog files
 
 ;; Copyright (C) 2010  Scott Frazer
 
@@ -288,7 +288,7 @@ Otherwise indent them as usual."
   "Gaudy level highlighting for sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helper functions
+;; Functions
 
 (defsubst sv-mode-in-comment-or-string ()
   "Return 'comment if point is inside a comment, 'string if point is inside a
@@ -396,7 +396,7 @@ expression."
   "Determine what the next appropriate end expression should be."
   (let (begin-type end-type label)
     (save-excursion
-      (sv-mode-backward-up-list)
+      (sv-mode-beginning-of-scope)
       (when (looking-at "[[({]")
         (error "Inside open parentheses, backets, or braces"))
       (re-search-forward "\\sw+" (line-end-position) t)
@@ -414,7 +414,7 @@ expression."
   "Return a list with all encompassing namespaces in out-to-in order."
   (let ((namespaces '()))
     (save-excursion
-      (while (sv-mode-backward-up-list)
+      (while (sv-mode-beginning-of-scope)
         (unless (looking-at "[[({]")
           (re-search-forward "\\sw+" (line-end-position))
           (setq begin-type (match-string-no-properties 0))
@@ -436,14 +436,14 @@ expression."
              (NAME . TYPE))))"
   (let ((type "")
         (name "")
-        (ret "")
+        (ret nil)
         (args '())
         pos)
     (save-excursion
       (sv-mode-beginning-of-statement)
       (re-search-forward "task\\|function")
       (setq type (match-string-no-properties 0))
-      (re-search-forward "\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]")
+      (re-search-forward "\\s-+.*?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
       (setq name (match-string-no-properties 1))
       (when (string= type "function")
         (goto-char (match-beginning 1))
@@ -453,6 +453,8 @@ expression."
         (re-search-forward ".*" pos)
         (setq ret (match-string-no-properties 0))
         (setq ret (sv-mode-trim-whitespace ret))
+        (when (string= ret "")
+          (setq ret nil))
         (re-search-forward "[(;]"))
       (when (= (char-before) ?\()
         (re-search-forward "\\([^)]*\\))")
@@ -482,6 +484,11 @@ expression."
   (when string
     (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" string)))
 
+(defsubst sv-mode-trim-brackets (string)
+  "Trim any bracketed expression from a string."
+  (when string
+    (replace-regexp-in-string "\\[[^]]*\\]" "" string)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
 
@@ -503,7 +510,7 @@ expression."
               (backward-word))))
       (goto-char pos))))
 
-(defun sv-mode-backward-up-list ()
+(defun sv-mode-beginning-of-scope ()
   "Like `backward-up-list', but matches begin/task/module/etc. and
 end/endtask/endmodule/etc. also."
   (interactive)
@@ -524,42 +531,72 @@ end/endtask/endmodule/etc. also."
            (error "Unbalanced parentheses or begin/end constructs")))
        (= depth 0)))))
 
-(defun sv-mode-make-implementation-from-prototype ()
+(defun sv-mode-end-of-scope ()
+  "Like `up-list', but matches begin/task/module/etc. and
+end/endtask/endmodule/etc. also."
+  (interactive)
+  (condition-case nil
+      (progn (up-list) t)
+    (error
+     (let ((pos (point))
+           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+           done)
+       (while (and (not done) (sv-mode-re-search-forward regexp nil t))
+         (backward-word)
+         (if (not (looking-at "end\\|join"))
+             (if (sv-mode-decl-only-p)
+                 (forward-word)
+               (sv-mode-forward-sexp))
+           (forward-word)
+           (setq done t)))
+       (unless done
+         (goto-char pos)
+         (when (interactive-p)
+           (error "Unbalanced parentheses or begin/end constructs")))
+       done))))
+
+(defun sv-mode-create-skeleton-from-prototype ()
   "Turn a task/function prototype into a skeleton implementation."
   (interactive)
-;;   (let (ret-val fcn-name args namespaces start-of-fcn)
-;;     (save-excursion
-;;       (sv-mode-beginning-of-statement)
-;;       (beginning-of-line)
-;;       (when (re-search-forward
-;;              "\\s-*\\(.*\\)\\s-+\\([-a-zA-Z0-9_!=<>~]+\\)\\s-*[(]" nil t)
-;;         (setq ret-val (match-string 1))
-;;         (setq ret-val (replace-regexp-in-string "\\(virtual\\|static\\)\\s-*" "" ret-val))
-;;         (setq fcn-name (match-string 2))
-;;         (when (re-search-forward "\\([^)]*\\)[)]" nil t)
-;;           (setq args (match-string 1))
-;;           (setq args (replace-regexp-in-string "\\s-*=.+?," "," args))
-;;           (setq args (replace-regexp-in-string "\\s-*=.+?)" ")" args))
-;;           (setq args (replace-regexp-in-string "\\s-*=.+?$" "" args))
-;;           (if (looking-at "\\s-*const")
-;;               (setq const " const")
-;;             (setq const ""))
-;;           (condition-case nil
-;;               (while 't
-;;                 (backward-up-list 1)
-;;                 (when (re-search-backward
-;;                        "\\(class\\|namespace\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
-;;                   (setq namespaces (concat (match-string 2) "::" namespaces))))
-;;             (error nil)))))
-;;     (ff-get-other-file)
-;;     (setq start-of-fcn (point))
-;;     (insert (concat ret-val (unless (string= ret-val "") "\n") namespaces fcn-name "(" args ")" const))
-;;     (insert "\n{\n/** @todo Fill in this function. */\n}\n")
-;;     (unless (eobp)
-;;       (insert "\n"))
-;;     (indent-region start-of-fcn (point) nil)
-;;     (goto-char start-of-fcn)))
-  )
+  (let ((proto (sv-mode-parse-prototype))
+        pos lim type namespaces next-func-re)
+    (save-excursion
+      (setq namespaces (sv-mode-get-namespaces))
+      (sv-mode-re-search-forward ";" nil t)
+      (setq pos (point))
+      (sv-mode-end-of-scope)
+      (setq lim (point))
+      (goto-char pos)
+      (when (sv-mode-re-search-forward
+             "\\(task\\|function\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]" lim t)
+        (setq type (match-string-no-properties 1))
+        (setq next-func-re (match-string-no-properties 2))
+        (dolist (ns (reverse namespaces))
+          (setq next-func-re (concat ns "::" next-func-re)))
+        (setq next-func-re (concat type ".+\\_<" next-func-re "\\_>")))
+      (ff-get-other-file)
+      (goto-char (point-min))
+      (if (not next-func-re)
+          (goto-char (point-max))
+        (when (sv-mode-re-search-forward next-func-re nil 'go)
+          (sv-mode-beginning-of-statement)
+          (forward-line -1)
+          (insert "\n")
+          (forward-line -1)))
+      (insert "\n")
+      (insert (cdr (assoc 'type proto)) " ")
+      (when (cdr (assoc 'ret proto))
+        (insert (cdr (assoc 'ret proto)) " "))
+      (dolist (ns namespaces)
+        (insert ns "::"))
+      (insert (cdr (assoc 'name proto)) "(")
+      (dolist (arg (cdr (assoc 'args proto)))
+        (insert (cdr arg) " " (car arg) ", "))
+      (when (cdr (assoc 'args proto))
+        (delete-char -2))
+      (insert ");\n")
+      (insert (sv-mode-determine-end-expr))
+      (forward-line -1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
@@ -661,7 +698,7 @@ end/endtask/endmodule/etc. also."
           (sv-mode-beginning-of-statement)
           (when (> bol (line-beginning-position))
             (setq offset sv-mode-continued-line-offset))
-          (sv-mode-backward-up-list)
+          (sv-mode-beginning-of-scope)
           (sv-mode-beginning-of-statement)
           (+ (current-column) sv-mode-basic-offset offset))
       (error 0))))
@@ -733,15 +770,26 @@ end/endtask/endmodule/etc. also."
   "end"
   ""
   (lambda()
-    (insert (sv-mode-determine-end-expr))
+    (insert "\n" (sv-mode-determine-end-expr))
+    (sv-mode-indent-line)
+    (forward-line -1)
     (sv-mode-indent-line)))
 
 (define-abbrev sv-mode-abbrev-table
   "sup"
   ""
   (lambda()
-    (insert "super." (car (last (sv-mode-get-namespaces))) "();")
-    (backward-char 2)))
+    (insert "super." (car (last (sv-mode-get-namespaces))) "(")
+    (let (args)
+      (save-excursion
+        (while (and (sv-mode-beginning-of-scope)
+                    (not (looking-at "task\\|function"))))
+        (setq args (cdr (assoc 'args (sv-mode-parse-prototype)))))
+      (dolist (arg args)
+        (insert (sv-mode-trim-brackets (car arg)) ", "))
+      (when args
+        (delete-char -2))
+      (insert ");"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode map
@@ -749,7 +797,9 @@ end/endtask/endmodule/etc. also."
 (defvar sv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
-    (define-key map (kbd "C-c C-u") 'sv-mode-backward-up-list)
+    (define-key map (kbd "C-c C-u") 'sv-mode-beginning-of-scope)
+    (define-key map (kbd "C-c C-d") 'sv-mode-end-of-scope)
+    (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     map)
   "Keymap used in sv-mode.")
