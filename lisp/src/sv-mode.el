@@ -37,12 +37,12 @@
 
 ;;; Change log:
 ;;
-;; 10 Aug 2010 -- v0.1
-;;                Initial creation
+;; 23 Aug 2010 -- v1.0
+;;                Initial release
 
 (require 'find-file)
 
-(defconst sv-mode-version "0.1"
+(defconst sv-mode-version "1.0"
   "Version of sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,11 +69,41 @@ Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
 
-(defcustom sv-mode-skeleton-add-doxygen t
-  "*Non-nil means add a doxygen comment block when creating skeletons
-if doxymacs is available."
+(defcustom sv-mode-finish-skeleton-function
+  'sv-mode-default-finish-skeleton-function
+  "*Function to call to finish task/function skeleton creation."
   :group 'sv-mode
-  :type 'boolean)
+  :type 'function)
+
+(defcustom sv-mode-doxymacs-blank-singleline-comment-template
+  '("/** " > p " */" > n )
+  "*Doxymacs blank single line comment template."
+  :group 'sv-mode
+  :type 'sexp)
+
+(defcustom sv-mode-doxymacs-blank-multiline-comment-template
+  '("/**" > n "* " p > n "*/" > n )
+  "*Doxymacs blank multi-line comment template."
+  :group 'sv-mode
+  :type 'sexp)
+
+(defcustom sv-mode-doxymacs-function-comment-template
+  '((let* ((proto (sv-mode-parse-prototype))
+           (args (cdr (assoc 'args proto)))
+           (ret (cdr (assoc 'ret proto))))
+      (list 'l
+            "/**" '> 'n
+            " * " 'p '> 'n
+            (when args
+              '(l " *" '> 'n))
+            (doxymacs-parm-tempo-element (mapcar 'car args))
+            (when (and ret (not (string= ret "void")))
+              '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
+                  "return " (p "Returns: ") > n))
+            " */" '> 'n 'n)))
+  "*Doxymacs function comment template."
+  :group 'sv-mode
+  :type 'sexp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variables/constants
@@ -603,13 +633,33 @@ end/endtask/endmodule/etc. also."
       (insert ");\n")
       (insert (sv-mode-determine-end-expr) "\n")
       (forward-line -2)
-      (when (and (featurep 'doxymacs) sv-mode-skeleton-add-doxygen)
-        (end-of-line)
+      (funcall sv-mode-finish-skeleton-function proto namespaces))))
+
+(defun sv-mode-default-finish-skeleton-function (proto namespaces)
+  "Default finish task/function skeleton function.  PROTO is the parsed
+function/task prototype, and NAMESPACES is the list of namespaces."
+  (save-excursion
+    (end-of-line)
+    (if (featurep 'doxymacs)
         (insert "\n// @todo Implement this " (cdr (assoc 'type proto)))
-        (sv-mode-indent-line)
-        (forward-line -2)
-        (insert "\n")
-        (doxymacs-insert-function-comment)))))
+      (insert "\n// TODO: Implement this " (cdr (assoc 'type proto))))
+    (sv-mode-indent-line)
+    (forward-line -2)
+    (insert "\n")
+    (if (featurep 'doxymacs)
+        (doxymacs-insert-blank-multiline-comment)
+      (insert "/**")
+      (sv-mode-indent-line)
+      (insert "\n* ")
+      (sv-mode-indent-line)
+      (insert "\n*/")
+      (sv-mode-indent-line)
+      (insert "\n")
+      (forward-line -2)
+      (end-of-line))
+    (dolist (ns namespaces)
+      (insert ns "::"))
+    (insert (cdr (assoc 'name proto)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
@@ -872,32 +922,17 @@ Key Bindings:
 
   ;; Other-file
 
-  (setq ff-other-file-alist
-        '(("\\.sv$" (".svh"))
-          ("\\.svh$" (".sv"))))
+  (setq ff-other-file-alist '(("\\.sv$" (".svh"))
+                              ("\\.svh$" (".sv"))))
 
   ;; Doxygen
 
   (setq doxymacs-JavaDoc-blank-singleline-comment-template
-        '("/** " > p " */" > n ))
-
-  (setq doxymacs-JavaDoc-blank-multiline-comment-template
-        '("/**" > n "* " p > n "*/" > n ))
-
-  (setq doxymacs-JavaDoc-function-comment-template
-        '((let* ((proto (sv-mode-parse-prototype))
-                 (args (cdr (assoc 'args proto)))
-                 (ret (cdr (assoc 'ret proto))))
-            (list 'l
-             "/**" '> 'n
-             " * " 'p '> 'n
-             (when args
-               '(l " *" '> 'n))
-             (doxymacs-parm-tempo-element (mapcar 'car args))
-             (when (and ret (not (string= ret "void")))
-               '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
-                   "return " (p "Returns: ") > n))
-             " */" '> 'n))))
+        sv-mode-doxymacs-blank-singleline-comment-template
+        doxymacs-JavaDoc-blank-multiline-comment-template
+        sv-mode-doxymacs-blank-multiline-comment-template
+        doxymacs-JavaDoc-function-comment-template
+        sv-mode-doxymacs-function-comment-template)
 
   ;; Hooks
 
