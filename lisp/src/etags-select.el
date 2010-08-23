@@ -5,12 +5,12 @@
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 07 Jun 2007
-;; Version: 1.13
+;; Version: 1.14
 ;; Keywords: etags tags tag select
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -45,6 +45,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 23 Aug 2010 -- v1.14
+;;                Drop XEmacs support
 ;; 28 Oct 2008 -- v1.13
 ;;                Add short tag name completion option
 ;;                Add go-if-tagnum-is-unambiguous option
@@ -120,9 +122,7 @@ have a function named foobar in several classes and you invoke
 `etags-select-find-tag'.  If this variable is nil, you would have
 to type ClassA::foo<TAB> to start completion.  Since avoiding
 knowing which class a function is in is the basic idea of this
-package, if you set this to t you can just type foo<TAB>.
-
-Only works with GNU Emacs."
+package, if you set this to t you can just type foo<TAB>."
   :group 'etags-select-mode
   :type 'boolean)
 
@@ -151,21 +151,11 @@ Only works with GNU Emacs."
 
 ;;; Functions
 
-(if (string-match "XEmacs" emacs-version)
-    (fset 'etags-select-match-string 'match-string)
-  (fset 'etags-select-match-string 'match-string-no-properties))
-
-;; I use Emacs, but with a hacked version of XEmacs' etags.el, thus this variable
-
-(defvar etags-select-use-xemacs-etags-p (fboundp 'get-tag-table-buffer)
-  "Use XEmacs etags?")
-
 (defun etags-select-case-fold-search ()
   "Get case-fold search."
-  (when (boundp 'tags-case-fold-search)
-    (if (memq tags-case-fold-search '(nil t))
-        tags-case-fold-search
-      case-fold-search)))
+  (if (memq tags-case-fold-search '(nil t))
+      tags-case-fold-search
+    case-fold-search))
 
 (defun etags-select-insert-matches (tagname tag-file tag-count)
   "Insert matches to tagname in tag-file."
@@ -183,20 +173,19 @@ Only works with GNU Emacs."
     (while (search-forward tagname nil t)
       (beginning-of-line)
       (when (re-search-forward tag-regex (point-at-eol) 'goto-eol)
-        (setq full-tagname (or (etags-select-match-string 2) tagname))
+        (setq full-tagname (or (match-string-no-properties 2) tagname))
         (setq tag-count (1+ tag-count))
         (beginning-of-line)
         (re-search-forward "\\s-*\\(.*?\\)\\s-*\^?")
-        (setq tag-line (etags-select-match-string 1))
+        (setq tag-line (match-string-no-properties 1))
         (end-of-line)
         (save-excursion
           (re-search-backward "\f")
           (re-search-forward "^\\(.*?\\),")
-          (setq filename (etags-select-match-string 1))
+          (setq filename (match-string-no-properties 1))
           (unless (file-name-absolute-p filename)
             (setq filename (concat tag-file-path filename))))
-        (save-excursion
-          (set-buffer etags-select-buffer-name)
+        (with-current-buffer etags-select-buffer-name
           (when (not (string= filename current-filename))
             (insert "\nIn: " filename "\n")
             (setq current-filename filename))
@@ -206,10 +195,8 @@ Only works with GNU Emacs."
 
 (defun etags-select-get-tag-table-buffer (tag-file)
   "Get tag table buffer for a tag file."
-  (if etags-select-use-xemacs-etags-p
-      (get-tag-table-buffer tag-file)
-    (visit-tags-table-buffer tag-file)
-    (get-file-buffer tag-file)))
+  (visit-tags-table-buffer tag-file)
+  (get-file-buffer tag-file))
 
 ;;;###autoload
 (defun etags-select-find-tag-at-point ()
@@ -241,22 +228,17 @@ to do."
 
 (defun etags-select-build-completion-table ()
   "Build tag completion table."
-  (save-excursion
-    (set-buffer etags-select-source-buffer)
+  (with-current-buffer etags-select-source-buffer
     (let ((tag-files (etags-select-get-tag-files)))
       (mapcar (lambda (tag-file) (etags-select-get-tag-table-buffer tag-file)) tag-files))))
 
 (defun etags-select-get-tag-files ()
   "Get tag files."
-  (if etags-select-use-xemacs-etags-p
-      (buffer-tag-table-list)
-    (mapcar 'tags-expand-table-name tags-table-list)))
+  (mapcar 'tags-expand-table-name tags-table-list))
 
 (defun etags-select-get-completion-table ()
   "Get the tag completion table."
-  (if etags-select-use-xemacs-etags-p
-      tag-completion-table
-    (tags-completion-table)))
+    (tags-completion-table))
 
 (defun etags-select-tags-completion-table-function ()
   "Short tag name completion."
@@ -275,11 +257,10 @@ to do."
         (progress-reporter-update progress-reporter (point))))
     table))
 
-(unless etags-select-use-xemacs-etags-p
-  (defadvice etags-recognize-tags-table (after etags-select-short-name-completion activate)
-    "Turn on short tag name completion (maybe)"
-    (when etags-select-use-short-name-completion
-      (setq tags-completion-table-function 'etags-select-tags-completion-table-function))))
+(defadvice etags-recognize-tags-table (after etags-select-short-name-completion activate)
+  "Turn on short tag name completion (maybe)"
+  (when etags-select-use-short-name-completion
+    (setq tags-completion-table-function 'etags-select-tags-completion-table-function)))
 
 (defun etags-select-find (tagname)
   "Core tag finding function."
@@ -291,9 +272,9 @@ to do."
     (setq buffer-read-only nil)
     (erase-buffer)
     (insert "Finding tag: " tagname "\n")
-    (mapcar (lambda (tag-file)
-              (setq tag-count (etags-select-insert-matches tagname tag-file tag-count)))
-            tag-files)
+    (mapc (lambda (tag-file)
+            (setq tag-count (etags-select-insert-matches tagname tag-file tag-count)))
+          tag-files)
     (cond ((= tag-count 0)
            (message (concat "No matches for tag \"" tagname "\""))
            (ding))
@@ -323,17 +304,17 @@ Use the C-u prefix to prevent the etags-select window from closing."
     (save-excursion
       (goto-char (point-min))
       (re-search-forward "Finding tag: \\(.*\\)$")
-      (setq tagname (etags-select-match-string 1)))
+      (setq tagname (match-string-no-properties 1)))
     (beginning-of-line)
     (if (looking-at etags-select-non-tag-regexp)
         (message "Please put the cursor on a line with the tag.")
       (setq tag-point (point))
       (setq overlay-arrow-position (point-marker))
       (re-search-forward "\\]\\s-+\\(.+?\\)\\s-*$")
-      (setq text-to-search-for (regexp-quote (etags-select-match-string 1)))
+      (setq text-to-search-for (regexp-quote (match-string-no-properties 1)))
       (goto-char tag-point)
       (re-search-backward "^In: \\(.*\\)$")
-      (setq filename (etags-select-match-string 1))
+      (setq filename (match-string-no-properties 1))
       (setq filename-point (point))
       (goto-char tag-point)
       (while (re-search-backward (concat "^.*?\\]\\s-+" text-to-search-for) filename-point t)
@@ -345,9 +326,7 @@ Use the C-u prefix to prevent the etags-select window from closing."
           (delete-window (selected-window))
           (select-window etags-select-opened-window)))
       (switch-to-buffer etags-select-source-buffer)
-      (if etags-select-use-xemacs-etags-p
-          (push-tag-mark)
-        (ring-insert find-tag-marker-ring (point-marker)))
+      (ring-insert find-tag-marker-ring (point-marker))
       (if other-window
           (find-file-other-window filename)
         (find-file filename))
@@ -358,32 +337,22 @@ Use the C-u prefix to prevent the etags-select window from closing."
           (setq search-count 1))
         (setq search-count (1- search-count)))
       (beginning-of-line)
-      (re-search-forward (concat "\\_<" tagname "\\_>"))
-      (goto-char (match-beginning 0))
-      (when etags-select-highlight-tag-after-jump
-        (etags-select-highlight (match-beginning 0) (match-end 0))))))
+      (when (re-search-forward (concat "\\_<" tagname "\\_>") nil t)
+        (goto-char (match-beginning 0))
+        (when etags-select-highlight-tag-after-jump
+          (etags-select-highlight (match-beginning 0) (match-end 0)))))))
 
 (defun etags-select-highlight (beg end)
   "Highlight a region temporarily."
-  (if (featurep 'xemacs)
-      (let ((extent (make-extent beg end))
-            (idx 0))
-        (while (< idx 3)
-          (set-extent-property extent 'face 'etags-select-highlight-tag-face)
-          (sit-for 0.3)
-          (set-extent-property extent 'face nil)
-          (sit-for 0.2)
-          (setq idx (1+ idx)))
-        (delete-extent extent))
-    (let ((ov (make-overlay beg end))
-          (idx 0))
-      (while (< idx 3)
-        (overlay-put ov 'face 'etags-select-highlight-tag-face)
-        (sit-for 0.3)
-        (overlay-put ov 'face nil)
-        (sit-for 0.2)
-        (setq idx (1+ idx)))
-      (delete-overlay ov))))
+  (let ((ov (make-overlay beg end))
+        (idx 0))
+    (while (< idx 3)
+      (overlay-put ov 'face 'etags-select-highlight-tag-face)
+      (sit-for 0.3)
+      (overlay-put ov 'face nil)
+      (sit-for 0.2)
+      (setq idx (1+ idx)))
+    (delete-overlay ov)))
 
 (defun etags-select-goto-tag-other-window (&optional arg)
   "Goto the file/line of the tag under the cursor in other window.
@@ -441,6 +410,8 @@ Use the C-u prefix to prevent the etags-select window from closing."
       (define-key map [(meta return)] 'etags-select-goto-tag-other-window)
       (define-key map [(down)] 'etags-select-next-tag)
       (define-key map [(up)] 'etags-select-previous-tag)
+      (define-key map (kbd "C-n") 'etags-select-next-tag)
+      (define-key map (kbd "C-p") 'etags-select-previous-tag)
       (define-key map "n" 'etags-select-next-tag)
       (define-key map "p" 'etags-select-previous-tag)
       (define-key map "q" 'etags-select-quit)
