@@ -853,6 +853,8 @@ Does not set point.  Does nothing if mark ring is empty."
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.s$" . "template.s"))
      (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))
+     (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
+     (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
      (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))))
 
 (eval-after-load "grep"
