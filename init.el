@@ -1031,8 +1031,8 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)
-(my-keys-define "C-n" 'next-line)
-(my-keys-define "C-p" 'previous-line)
+;; (my-keys-define "C-n" 'next-line)
+;; (my-keys-define "C-p" 'previous-line)
 
 (my-keys-define "C-S-n" 'makd-scroll-down)
 (my-keys-define "C-S-p" 'makd-scroll-up)
