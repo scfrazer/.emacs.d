@@ -32,12 +32,9 @@
 ;; ~/.emacs startup file
 ;;
 ;; (autoload 'sv-mode "sv-mode" "SystemVerilog code editing mode" t)
-;; (setq auto-mode-alist
-;;        (append (list
-;;                 (cons "\\.sv\\'" 'sv-mode)
-;;                 (cons "\\.svh\\'" 'sv-mode))
-;;                auto-mode-alist))
-;;
+;; (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
+;; (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
+
 ;;; Change log:
 ;;
 ;; 10 Aug 2010 -- v0.1
@@ -60,11 +57,6 @@
   :group 'sv-mode
   :type 'integer)
 
-(defcustom sv-mode-continued-line-offset 4
-  "*Extra indentation of continued statements."
-  :group 'sv-mode
-  :type 'integer)
-
 (defcustom sv-mode-line-up-bracket t
   "*Non-nil means indent items in brackets relative to the '['.
 Otherwise indent them as usual."
@@ -74,6 +66,12 @@ Otherwise indent them as usual."
 (defcustom sv-mode-line-up-paren t
   "*Non-nil means indent items in parentheses relative to the '('.
 Otherwise indent them as usual."
+  :group 'sv-mode
+  :type 'boolean)
+
+(defcustom sv-mode-skeleton-add-doxygen t
+  "*Non-nil means add a doxygen comment block when creating skeletons
+if doxymacs is available."
   :group 'sv-mode
   :type 'boolean)
 
@@ -375,7 +373,11 @@ expression."
   "Move to beginning of statement."
   (skip-syntax-forward " >")
   (let* ((limit (point))
-         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|" sv-mode-end-regexp))
+         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+                         (regexp-opt '("`define" "`else" "`elsif" "`endif"
+                                       "`ifdef" "`ifndef" "`include"
+                                       "`timescale" "`undef")) ".+\\|"
+                         sv-mode-end-regexp))
          (matched (sv-mode-re-search-backward regexp nil 'go))
          (end (match-end 0)))
     (unless (and (looking-at ";")
@@ -387,7 +389,8 @@ expression."
           (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
             (goto-char (match-end 0))))
         (skip-syntax-forward " >" limit)
-        (while (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
+        (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
+                    (not (eobp)))
           (forward-line)
           (skip-syntax-forward " >" limit))))
     (back-to-indentation)))
@@ -559,7 +562,7 @@ end/endtask/endmodule/etc. also."
   "Turn a task/function prototype into a skeleton implementation."
   (interactive)
   (let ((proto (sv-mode-parse-prototype))
-        pos lim type namespaces next-func-re)
+        pos lim next-func-type namespaces next-func-re)
     (save-excursion
       (setq namespaces (sv-mode-get-namespaces))
       (sv-mode-re-search-forward ";" nil t)
@@ -569,20 +572,23 @@ end/endtask/endmodule/etc. also."
       (goto-char pos)
       (when (sv-mode-re-search-forward
              "\\(task\\|function\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]" lim t)
-        (setq type (match-string-no-properties 1))
+        (setq next-func-type (match-string-no-properties 1))
         (setq next-func-re (match-string-no-properties 2))
         (dolist (ns (reverse namespaces))
           (setq next-func-re (concat ns "::" next-func-re)))
-        (setq next-func-re (concat type ".+\\_<" next-func-re "\\_>")))
+        (setq next-func-re (concat next-func-type ".+\\_<" next-func-re "\\_>")))
       (ff-get-other-file)
       (goto-char (point-min))
       (if (not next-func-re)
           (goto-char (point-max))
         (when (sv-mode-re-search-forward next-func-re nil 'go)
           (sv-mode-beginning-of-statement)
-          (forward-line -1)
-          (insert "\n")
-          (forward-line -1)))
+          (sv-mode-re-search-backward
+           (concat";\\|" (regexp-opt '("`define" "`else" "`elsif" "`endif"
+                                       "`ifdef" "`ifndef" "`include"
+                                       "`timescale" "`undef")) ".+\\|"
+                                       sv-mode-end-regexp))
+          (forward-line 1)))
       (insert "\n")
       (insert (cdr (assoc 'type proto)) " ")
       (when (cdr (assoc 'ret proto))
@@ -595,8 +601,15 @@ end/endtask/endmodule/etc. also."
       (when (cdr (assoc 'args proto))
         (delete-char -2))
       (insert ");\n")
-      (insert (sv-mode-determine-end-expr))
-      (forward-line -1))))
+      (insert (sv-mode-determine-end-expr) "\n")
+      (forward-line -2)
+      (when (and (featurep 'doxymacs) sv-mode-skeleton-add-doxygen)
+        (end-of-line)
+        (insert "\n// @todo Implement this " (cdr (assoc 'type proto)))
+        (sv-mode-indent-line)
+        (forward-line -2)
+        (insert "\n")
+        (doxymacs-insert-function-comment)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
@@ -621,6 +634,7 @@ end/endtask/endmodule/etc. also."
     (beginning-of-line)
     (let ((in-comment-or-string (sv-mode-in-comment-or-string)))
       (cond
+       ((bobp) 0)
        ((equal in-comment-or-string 'string) 0)
        ((equal in-comment-or-string 'comment)
         (sv-mode-get-indent-in-comment))
@@ -634,7 +648,7 @@ end/endtask/endmodule/etc. also."
   (let ((starts-with-* (looking-at "\\s-*\\*")))
     (save-excursion
       (forward-line -1)
-      (while (looking-at "^\\s-*$")
+      (while (and (looking-at "^\\s-*$") (not (bobp)))
         (forward-line -1))
       (if (sv-mode-in-comment-or-string)
           (back-to-indentation)
@@ -692,16 +706,15 @@ end/endtask/endmodule/etc. also."
 (defun sv-mode-get-normal-indent ()
   "Normal indent for a line."
   (save-excursion
-    (condition-case nil
-        (let ((bol (point))
-              (offset 0))
-          (sv-mode-beginning-of-statement)
-          (when (> bol (line-beginning-position))
-            (setq offset sv-mode-continued-line-offset))
-          (sv-mode-beginning-of-scope)
-          (sv-mode-beginning-of-statement)
-          (+ (current-column) sv-mode-basic-offset offset))
-      (error 0))))
+    (let ((bol (point))
+          (offset 0))
+      (sv-mode-beginning-of-statement)
+      (when (> bol (line-beginning-position))
+        (setq offset sv-mode-basic-offset))
+      (if (not (sv-mode-beginning-of-scope))
+          0
+        (sv-mode-beginning-of-statement)
+        (+ (current-column) sv-mode-basic-offset offset)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
@@ -853,7 +866,7 @@ Key Bindings:
           nil ;; nil means highlight strings & comments as well as keywords
           nil ;; nil means keywords must match case
           nil ;; use minimal syntax table for font lock
-          nil ;; TODO function to move to beginning of reasonable region to highlight
+          nil ;; TODO Function to move to beginning of reasonable region to highlight
           ))
   (turn-on-font-lock)
 
@@ -862,6 +875,29 @@ Key Bindings:
   (setq ff-other-file-alist
         '(("\\.sv$" (".svh"))
           ("\\.svh$" (".sv"))))
+
+  ;; Doxygen
+
+  (setq doxymacs-JavaDoc-blank-singleline-comment-template
+        '("/** " > p " */" > n ))
+
+  (setq doxymacs-JavaDoc-blank-multiline-comment-template
+        '("/**" > n "* " p > n "*/" > n ))
+
+  (setq doxymacs-JavaDoc-function-comment-template
+        '((let* ((proto (sv-mode-parse-prototype))
+                 (args (cdr (assoc 'args proto)))
+                 (ret (cdr (assoc 'ret proto))))
+            (list 'l
+             "/**" '> 'n
+             " * " 'p '> 'n
+             (when args
+               '(l " *" '> 'n))
+             (doxymacs-parm-tempo-element (mapcar 'car args))
+             (when (and ret (not (string= ret "void")))
+               '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
+                   "return " (p "Returns: ") > n))
+             " */" '> 'n))))
 
   ;; Hooks
 
