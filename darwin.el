@@ -16,7 +16,7 @@
 
 ;; Theme
 
-(my-theme-whiteboard)
+(my-theme-deeper-blue)
 
 (setq my-set-cursor-color-normal-color "Green3"
       my-set-cursor-color-read-only-color "Yellow3"
