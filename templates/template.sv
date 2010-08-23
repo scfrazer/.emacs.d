@@ -15,6 +15,6 @@
 
 /** @file */
 
-`include "%n.h"
+`include "%n.svh"
 
 %@
