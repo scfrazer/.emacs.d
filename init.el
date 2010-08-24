@@ -17,6 +17,9 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "~/.emacs.d/lisp/org")
 
+(when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
 ;; Need these first to avoid font-lock/dired issues
 
 (require 'my-font-lock)
