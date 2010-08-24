@@ -705,15 +705,17 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (condition-case nil
         (let ((at-closer (looking-at "[ \t]*[])}]"))
+              (pos (point))
               offset)
           (backward-up-list)
           (if (= (char-after) ?{)
               (progn
                 (sv-mode-beginning-of-statement)
-                (setq offset (current-column))
-                (unless at-closer
-                  (setq offset (+ offset sv-mode-basic-offset)))
-                offset)
+                (when (looking-at "\\(typedef\\s-+\\)?enum")
+                  (setq offset (current-column))
+                  (unless at-closer
+                    (setq offset (+ offset sv-mode-basic-offset)))
+                  offset))
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
                         (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
               (setq offset (current-column))
