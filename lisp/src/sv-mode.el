@@ -640,26 +640,18 @@ end/endtask/endmodule/etc. also."
 function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (end-of-line)
-    (if (featurep 'doxymacs)
-        (insert "\n// @todo Implement this " (cdr (assoc 'type proto)))
-      (insert "\n// TODO: Implement this " (cdr (assoc 'type proto))))
+    (insert "\n// @todo Implement this " (cdr (assoc 'type proto)))
     (sv-mode-indent-line)
     (forward-line -2)
     (insert "\n")
-    (if (featurep 'doxymacs)
-        (doxymacs-insert-blank-multiline-comment)
-      (insert "/**")
-      (sv-mode-indent-line)
-      (insert "\n* ")
-      (sv-mode-indent-line)
-      (insert "\n*/")
-      (sv-mode-indent-line)
-      (insert "\n")
-      (forward-line -2)
-      (end-of-line))
+    (sv-mode-indent-line)
+    (insert-char ?/ (- 80 (- (point) (point-at-bol))))
+    (insert "\n// ")
+    (sv-mode-indent-line)
     (dolist (ns namespaces)
       (insert ns "::"))
-    (insert (cdr (assoc 'name proto)))))
+    (insert (cdr (assoc 'name proto)))
+    (insert "\n")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
