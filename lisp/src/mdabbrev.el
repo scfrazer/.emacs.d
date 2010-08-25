@@ -1,4 +1,4 @@
-;;; mdabbrev.el -- Dynamic abbreviation expansion in the middle of a word
+;;; mdabbrev.el --- Dynamic abbreviation expansion in the middle of a word
 
 ;; Copyright (C) 2008  Scott Frazer
 
@@ -24,7 +24,7 @@
 ;; USA.
 
 ;;; Commentary:
-
+;;
 ;; Dynamic abbreviation expansion in the middle of a word.  mdabbrev
 ;; essentially acts like dabbrev, but dabbrev only looks to the left of point
 ;; when considering completions, while mdabbrev looks to the left AND right,
@@ -42,13 +42,6 @@
 ;; mdabbrev tries to reuse dabbrev customization variables and functions where
 ;; possible so it will act similar to dabbrev, although more could probably be
 ;; done.
-
-;; 05 Dec 2008 -- v1.1
-;;                No code changes, just switch to GPL v3 and add more
-;;                commentary.
-;;
-;; 03 Dec 2008 -- v1.0
-;;                Initial release
 
 ;;; Code:
 
