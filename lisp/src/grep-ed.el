@@ -1,6 +1,6 @@
-;;; grep-ed.el
+;;; grep-ed.el --- Edit grep results and write back to the files
 
-;; Copyright (C) 2009  Scott Frazer
+;; Copyright (C) 2009-2010  Scott Frazer
 
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
@@ -24,7 +24,7 @@
 ;; USA.
 
 ;;; Commentary:
-
+;;
 ;; This package lets you edit the results of a 'grep' by pressing "\C-c\C-e",
 ;; then write the results back to the files by pressing "\C-c\C-s" (or
 ;; aborting by pressing "\C-c\C-e" again).
@@ -33,9 +33,6 @@
 ;; written back automatically or if you have to do it manually.  The variable
 ;; `grep-ed-unload-new-buffers-after-changes' determines if any new buffers
 ;; created to make changes will be automatically unloaded.
-
-;; 09 Jan 2009 -- v1.0
-;;                Initial release
 
 ;;; Code:
 
@@ -48,31 +45,37 @@
 
 ;; Public
 
+;;;###autoload
 (defgroup grep-ed nil
   "*Edit grep results"
   :group 'grep)
 
+;;;###autoload
 (defcustom grep-ed-save-after-changes t
   "*If non-nil, save buffers after changing them"
   :group 'grep-ed
   :type 'boolean)
 
+;;;###autoload
 (defcustom grep-ed-unload-new-buffers-after-changes t
   "*If non-nil, unload any new buffers that were created to make changes.
 This variable will be ignored if `grep-ed-save-after-changes' is nil."
   :group 'grep-ed
   :type 'boolean)
 
+;;;###autoload
 (defcustom grep-ed-vc-checkout-function nil
   "*Function to checkout out version controlled files"
   :group 'grep-ed
   :type 'function)
 
+;;;###autoload
 (defcustom grep-ed-start-hook nil
   "*Hooks to run when grep-ed starts"
   :group 'grep-ed
   :type 'hook)
 
+;;;###autoload
 (defcustom grep-ed-exit-hook nil
   "*Hooks to run when grep-ed exits"
   :group 'grep-ed
@@ -92,6 +95,7 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Functions
 
+;;;###autoload
 (defun grep-ed-start ()
   "Start grep-ed mode"
   (interactive)
@@ -194,7 +198,8 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
       (set-buffer buf))
     ;; Make the change
     (toggle-read-only -1)
-    (goto-line line-num)
+    (goto-char (point-min))
+    (forward-line (1- line-num))
     (let ((kill-whole-line nil))
       (kill-line))
     (insert line-text)))
