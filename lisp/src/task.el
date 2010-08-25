@@ -1,4 +1,4 @@
-;;; task.el
+;;; task.el --- Save/load/switch tasks, i.e. opened files and visual bookmarks
 
 ;; Copyright (C) 2010  Scott Frazer
 
@@ -24,7 +24,6 @@
 ;; USA.
 
 ;;; Commentary:
-
 ;; TODO
 ;; Do this: (require 'task)
 ;;          (task-add-to-mode-line t)
@@ -38,31 +37,37 @@
 
 ;; Customizable
 
+;;;###autoload
 (defgroup task nil
   "Task oriented interface"
   :group 'convenience)
 
+;;;###autoload
 (defcustom task-top-dir (concat (getenv "HOME") "/.emacs.d/tasks/")
   "*Top-level directory to save tasks in.
 Needs to end with \"/\"."
   :group 'task
   :type 'string)
 
+;;;###autoload
 (defcustom task-notes-filename "task_notes.org"
   "*Name of task notes file."
   :group 'task
   :type 'string)
 
+;;;###autoload
 (defcustom task-ask-for-confirmation nil
   "*Ask for confirmation before doing 'destructive' things."
   :group 'task
   :type 'boolean)
 
+;;;###autoload
 (defcustom task-after-load-hook nil
   "*Hooks to run after a task is loaded."
   :group 'task
   :type 'hook)
 
+;;;###autoload
 (defcustom task-extra-vars-to-save '(buffer-history
                                      command-history
                                      compile-history
@@ -83,26 +88,31 @@ Needs to end with \"/\"."
   :group 'task
   :type '(repeat symbol))
 
+;;;###autoload
 (defcustom task-save-at-exit-name "auto-save"
   "*Name to auto-save current setup to when exiting Emacs."
   :group 'task
   :type 'string)
 
+;;;###autoload
 (defcustom task-list-mode-hook nil
   "*Hooks to run when entering task-list-mode"
   :group 'task
   :type 'hook)
 
+;;;###autoload
 (defface task-bmk-face
   '((t (:background "dodgerblue4")))
   "Face to highlight bookmarks"
   :group 'task)
 
+;;;###autoload
 (defcustom task-bmk-save-in-killed-buffers nil
   "*Save bookmarks when a buffer is killed"
   :group 'task
   :type 'boolean)
 
+;;;###autoload
 (defcustom task-bmk-mode-hook nil
   "*Hooks to run when entering task-bmk-mode"
   :group 'task

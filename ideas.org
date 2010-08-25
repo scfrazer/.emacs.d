@@ -1,3 +1,17 @@
+* TODO ELPA [8/11]
+  - Title, desc, keywords, code:, code ends here ;;;, autoloads, GPL v3
+  - [X] etags-select
+  - [ ] etags-stack (remove XEmacs)
+  - [X] etags-table
+  - [X] mdabbrev
+  - [X] sv-mode
+  - [X] e-mode
+  - [ ] task
+  - [X] file-template
+  - [X] grep-buffers
+  - [X] grep-ed
+  - [ ] yank-target
+
 * TODO Blog ideas [0/9]
   - [ ] Minor mode for key customization
   - [ ] Ido w/ recentf and imenu
@@ -15,61 +29,4 @@
   - [ ] Open/diff/unco/checkin/switch-modes files/dirs
   - [ ] cc_label
 
-* TODO Edit recentf entries more easily (sort/unsort s, mark d, regex mark D, unmark u, execute x, quit q)
-* TODO Fix nXML schema stuff
 * TODO Fix antlr3 mode ('>' in syntax table?)
-* TODO snTags: optional * in parameter lists
-* TODO Remove gratuitous use of mapc(ar) in my-*.el
-
-* DONE Tasks [0/10]
-  CLOSED: [2010-03-04 Thu 13:10]
-  - [ ] save -- ask for name if no current task
-  - [ ] save as
-  - [ ] load -- save, load
-  - [ ] quit -- save, blank out
-  - [ ] new -- quit, get name
-  - [ ] select/rename/delete using list
-  - [ ] make visual bookmarks persistent, store in dir
-  - [ ] notes -- use org, store in dir, description is first line
-  - [ ] add task-name to mode-line
-  - [ ] add quit-emacs hook to save
-* DONE Set-paste-point, then copy or kill to paste-point
-  CLOSED: [2010-02-08 Mon 10:06]
-* DONE Select desktop session using ido
-  CLOSED: [2010-02-06 Sat 13:35]
-* DONE Have recentf list cleaned up automatically at midnight
-  CLOSED: [2010-02-01 Mon 14:14]
-* DONE Fix MAKD section delete stuff
-  CLOSED: [2010-01-08 Fri 13:53]
-* DONE Fix loccur highlighting and taking from region
-  CLOSED: [2009-10-13 Tue 10:15]
-* DONE Fix ido to not offer .pyc (and others)
-  CLOSED: [2009-10-13 Tue 09:40]
-* DONE Set mode of .keep files to default for non-.keep
-  CLOSED: [2009-09-17 Thu 14:29]
-* DONE Paste in csh not indent (fix csh indent?)
-  CLOSED: [2009-08-24 Mon 15:16]
-* CANCELED Improve bubble-buffer
-  CLOSED: [2009-08-23 Sun 09:55]
-* CANCELED Condense buffer filtering somehow
-  CLOSED: [2009-08-23 Sun 09:55]
-* DONE Fix ido so M-b works both ways
-  CLOSED: [2009-08-09 Sun 07:11]
-* DONE Add hooks to grep-ed to checkout /vob files but not mark read-only after
-  CLOSED: [2009-08-08 Sat 17:39]
-* DONE Turn on whitespace mode when changing from read-only
-  CLOSED: [2009-08-08 Sat 17:35]
-* CANCELED Fix *uint params in e-mode.el ... just put a space in there
-  CLOSED: [2009-08-08 Sat 17:25]
-* DONE Add "others", "edges", etc. to e-mode.el
-  CLOSED: [2009-08-08 Sat 17:21]
-* DONE Fix exit-hook to not prompt about saving desktop file
-  CLOSED: [2009-08-06 Thu 09:14]
-* DONE Stop MAKD pasting indent better (look at indent function?)
-  CLOSED: [2009-07-07 Tue 15:07]
-* DONE Fix clearcase U to always no keep, and u to always keep
-  CLOSED: [2009-08-06 Thu 08:56]
-* DONE Make Ido stop loading Tramp
-  CLOSED: [2009-07-07 Tue 14:54]
-* DONE Fix elog mode
-  CLOSED: [2009-08-03 Mon 09:22]
