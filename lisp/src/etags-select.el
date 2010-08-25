@@ -1,4 +1,4 @@
-;;; etags-select.el --- Select from multiple tags
+;;; etags-select.el --- Select tag to find from multiple definitions
 
 ;; Copyright (C) 2007  Scott Frazer
 
@@ -6,7 +6,7 @@
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 07 Jun 2007
 ;; Version: 1.14
-;; Keywords: etags tags tag select
+;; Keywords: tools
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,45 +38,6 @@
 ;; I use this:
 ;; (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 ;; (global-set-key "\M-." 'etags-select-find-tag)
-;;
-;; Contributers of ideas and/or code:
-;; David Engster
-;; James Ferguson
-;;
-;;; Change log:
-;;
-;; 23 Aug 2010 -- v1.14
-;;                Drop XEmacs support
-;; 28 Oct 2008 -- v1.13
-;;                Add short tag name completion option
-;;                Add go-if-tagnum-is-unambiguous option
-;; 13 May 2008 -- v1.12
-;;                Fix completion bug for XEmacs etags
-;;                Add highlighting of tag after jump
-;; 28 Apr 2008 -- v1.11
-;;                Add tag completion
-;; 25 Sep 2007 -- v1.10
-;;                Fix save window layout bug
-;; 25 Sep 2007 -- v1.9
-;;                Add function to prompt for tag to find (instead of using
-;;                what is at point)
-;; 25 Sep 2007 -- v1.8
-;;                Don't mess up user's window layout.
-;;                Add function/binding to go to the tag in other window.
-;; 10 Sep 2007 -- v1.7
-;;                Disambiguate tags with matching suffixes
-;; 04 Sep 2007 -- v1.6
-;;                Speed up tag searching
-;; 27 Jul 2007 -- v1.5
-;;                Respect case-fold-search and tags-case-fold-search
-;; 24 Jul 2007 -- v1.4
-;;                Fix filenames for tag files with absolute paths
-;; 24 Jul 2007 -- v1.3
-;;                Handle qualified and implicit tags.
-;;                Add tag name to display.
-;;                Add tag numbers so you can jump directly to one.
-;; 13 Jun 2007 -- v1.2
-;;                Need to regexp-quote the searched-for string.
 
 ;;; Code:
 
