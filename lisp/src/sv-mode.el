@@ -1,4 +1,4 @@
-;; sv-mode.el -- Major mode for editing SystemVerilog files
+;;; sv-mode.el -- Major mode for editing SystemVerilog files
 
 ;; Copyright (C) 2010  Scott Frazer
 
@@ -47,6 +47,8 @@
 ;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
+
+;;; Code:
 
 (require 'find-file)
 
@@ -952,3 +954,4 @@ Key Bindings:
   (run-hooks 'sv-mode-hook))
 
 (provide 'sv-mode)
+;;; sv-mode.el ends here
