@@ -1,4 +1,4 @@
-;;; sv-mode.el -- Major mode for editing SystemVerilog files
+;;; sv-mode.el --- Major mode for editing SystemVerilog files
 
 ;; Copyright (C) 2010  Scott Frazer
 
@@ -50,6 +50,7 @@
 
 ;;; Code:
 
+(require 'custom)
 (require 'find-file)
 
 (defconst sv-mode-version "1.0"
