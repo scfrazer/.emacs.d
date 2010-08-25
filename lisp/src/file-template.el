@@ -1,4 +1,4 @@
-;;; file-template.el --- File templates
+;;; file-template.el --- Templates for newly created files
 
 ;; Copyright (C) 2007  Scott Frazer
 
@@ -10,7 +10,7 @@
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -40,15 +40,7 @@
 ;;
 ;; (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 ;; (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
-;;
-;;; Change log:
-;;
-;; 01 Jan 2008 -- v1.1
-;;                When file-template-insert-automatically is set to 'ask, don't
-;;                ask when a template for the new file doesn't exist
-;;
-;; 29 Nov 2007 -- v1.0
-;;                Initial creation
+
 
 ;;; Code:
 
