@@ -6,7 +6,7 @@
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 28 Oct 2008
 ;; Version: 1.1
-;; Keywords: etags tags tag
+;; Keywords: tools
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,16 +35,6 @@
 ;;
 ;; When you switch files and do something tag-related, the tags table list is
 ;; automatically recomputed.
-
-;;; Change log:
-;;
-;; 27 Mar 2009 -- v1.1
-;;                Add ability to use backreferences in etags-table-alist
-;;                Change files to true names when adding to table
-;;                Fix the way parent directories are found
-;;
-;; 28 Oct 2008 -- v1.0
-;;                Initial release
 
 ;;; Code:
 
