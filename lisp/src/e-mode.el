@@ -1,4 +1,4 @@
-;; e-mode.el -- Mode for editing Specman 'e' files
+;;; e-mode.el --- Major mode for editing Specman 'e' files
 
 ;; Copyright (C) 2007  Scott Frazer
 
@@ -6,11 +6,11 @@
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 01 Jan 2007
 ;; Version: 1.0
-;; Keywords: specman
+;; Keywords: programming
 ;;
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -31,17 +31,9 @@
 ;; ~/.emacs startup file
 ;;
 ;; (autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
-;; (setq auto-mode-alist
-;;        (append (list
-;;                 (cons "\\.e\\'" 'e-mode))
-;;                auto-mode-alist))
-;; (add-hook 'speedbar-load-hook (lambda () (speedbar-add-supported-extension ".e")))
-;;
-;;; Change log:
-;;
-;; 01 Jan 2007 -- v1.0
-;;                Not really the date it was first written, but gotta put
-;;                something in the initial change log ...
+;; (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
+
+;;; Code:
 
 (defconst e-mode-version "1.0"
   "Version of this Specman 'e' mode.")
@@ -53,57 +45,68 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
+;;;###autoload
 (defgroup e-mode nil
   "Specman 'e' mode."
   :group 'languages)
 
+;;;###autoload
 (defcustom e-mode-basic-offset 4
   "*Indentation of statements with respect to containing block."
   :group 'e-mode
   :type 'integer)
 
+;;;###autoload
 (defcustom e-mode-try-to-guess-indent t
   "*Try to guess what to set `e-mode-basic-offset' to when opening a file."
   :group 'e-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom e-mode-continued-line-offset 4
   "*Extra indentation of continued statements."
   :group 'e-mode
   :type 'integer)
 
+;;;###autoload
 (defcustom e-mode-constraint-line-offset 0
   "*Extra indentation of constraints."
   :group 'e-mode
   :type 'integer)
 
+;;;###autoload
 (defcustom e-mode-line-up-bracket t
   "*Non-nil means indent items in brackets relative to the '['.
 Otherwise indent them as usual."
   :group 'e-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom e-mode-line-up-paren t
   "*Non-nil means indent items in parentheses relative to the '('.
 Otherwise indent them as usual."
   :group 'e-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom e-mode-curly-opener-is-electric t
   "*Non-nil means reindent the current line after entering '{'."
   :group 'e-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom e-mode-curly-closer-is-electric t
   "*Non-nil means reindent the current line after entering '}'."
   :group 'e-mode
   :type 'boolean)
 
+;;;###autoload
 (defface e-mode-preprocessor-face
   '((t (:foreground "yellow4")))
   "Face for preprocessor directives."
   :group 'e-mode)
 
+;;;###autoload
 (defcustom e-mode-imenu-flatten nil
   "*Non-nil means flatten the heirarchical imenu output."
   :group 'e-mode
@@ -833,6 +836,7 @@ Returns 'in-code if point is not in a string or comment"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; E mode
 
+;;;###autoload
 (defun e-mode ()
   "Major mode for editing Specman 'e' code.
 
