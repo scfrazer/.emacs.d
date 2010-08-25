@@ -1,11 +1,11 @@
-;; sv-mode.el -- Mode for editing SystemVerilog files
+;; sv-mode.el -- Major mode for editing SystemVerilog files
 
 ;; Copyright (C) 2010  Scott Frazer
 
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 10 Aug 2010
-;; Version: 0.1
+;; Version: 1.0
 ;; Keywords: programming
 ;;
 ;; This file is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;; sv-mode is a major mode for editing code written in the SystemVerilog
-;; language
+;; language.
 ;;
 ;; Put this file on your Emacs-Lisp load path, add following into your
 ;; ~/.emacs startup file
@@ -34,11 +34,19 @@
 ;; (autoload 'sv-mode "sv-mode" "SystemVerilog code editing mode" t)
 ;; (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
-
-;;; Change log:
 ;;
-;; 23 Aug 2010 -- v1.0
-;;                Initial release
+;; Default keybindings:
+;;
+;; C-c C-j : Jump to matching begin/end/class/endclass/fork/join/etc.
+;; C-c C-u : Move up out of the current scope
+;; C-c C-d : Move down out of the current scope
+;; C-c C-b : Move to beginning of current statement
+;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
+;; C-c C-s : Create skeleton task/function implementation in .sv file
+;;           from prototype on current line in .svh file
+;;
+;; This mode supports the insertion of Doxygen comments if you use the
+;; doxymacs package.
 
 (require 'find-file)
 
@@ -48,45 +56,53 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
+;;;###autoload
 (defgroup sv-mode nil
   "SystemVerilog mode."
   :group 'languages)
 
+;;;###autoload
 (defcustom sv-mode-basic-offset 4
   "*Indentation of statements with respect to containing block."
   :group 'sv-mode
   :type 'integer)
 
+;;;###autoload
 (defcustom sv-mode-line-up-bracket t
   "*Non-nil means indent items in brackets relative to the '['.
 Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom sv-mode-line-up-paren t
   "*Non-nil means indent items in parentheses relative to the '('.
 Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
 
+;;;###autoload
 (defcustom sv-mode-finish-skeleton-function
   'sv-mode-default-finish-skeleton-function
   "*Function to call to finish task/function skeleton creation."
   :group 'sv-mode
   :type 'function)
 
+;;;###autoload
 (defcustom sv-mode-doxymacs-blank-singleline-comment-template
   '("/** " > p " */" > n )
   "*Doxymacs blank single line comment template."
   :group 'sv-mode
   :type 'sexp)
 
+;;;###autoload
 (defcustom sv-mode-doxymacs-blank-multiline-comment-template
   '("/**" > n "* " p > n "*/" > n )
   "*Doxymacs blank multi-line comment template."
   :group 'sv-mode
   :type 'sexp)
 
+;;;###autoload
 (defcustom sv-mode-doxymacs-function-comment-template
   '((let* ((proto (sv-mode-parse-prototype))
            (args (cdr (assoc 'args proto)))
@@ -399,32 +415,6 @@ expression."
       (sv-mode-beginning-of-statement)
       (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
 
-(defun sv-mode-beginning-of-statement ()
-  "Move to beginning of statement."
-  (skip-syntax-forward " >")
-  (let* ((limit (point))
-         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
-                         (regexp-opt '("`define" "`else" "`elsif" "`endif"
-                                       "`ifdef" "`ifndef" "`include"
-                                       "`timescale" "`undef")) ".+\\|"
-                         sv-mode-end-regexp))
-         (matched (sv-mode-re-search-backward regexp nil 'go))
-         (end (match-end 0)))
-    (unless (and (looking-at ";")
-                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
-      (when matched
-        (if (looking-at "case")
-            (forward-sexp 2)
-          (goto-char end)
-          (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
-            (goto-char (match-end 0))))
-        (skip-syntax-forward " >" limit)
-        (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
-                    (not (eobp)))
-          (forward-line)
-          (skip-syntax-forward " >" limit))))
-    (back-to-indentation)))
-
 (defun sv-mode-determine-end-expr ()
   "Determine what the next appropriate end expression should be."
   (let (begin-type end-type label)
@@ -445,7 +435,8 @@ expression."
 
 (defun sv-mode-get-namespaces ()
   "Return a list with all encompassing namespaces in out-to-in order."
-  (let ((namespaces '()))
+  (let ((namespaces '())
+        begin-type)
     (save-excursion
       (while (sv-mode-beginning-of-scope)
         (unless (looking-at "[[({]")
@@ -524,6 +515,33 @@ expression."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
+
+(defun sv-mode-beginning-of-statement ()
+  "Move to beginning of statement."
+  (interactive)
+  (skip-syntax-forward " >")
+  (let* ((limit (point))
+         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+                         (regexp-opt '("`define" "`else" "`elsif" "`endif"
+                                       "`ifdef" "`ifndef" "`include"
+                                       "`timescale" "`undef")) ".+\\|"
+                                       sv-mode-end-regexp))
+         (matched (sv-mode-re-search-backward regexp nil 'go))
+         (end (match-end 0)))
+    (unless (and (looking-at ";")
+                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
+      (when matched
+        (if (looking-at "case")
+            (forward-sexp 2)
+          (goto-char end)
+          (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
+            (goto-char (match-end 0))))
+        (skip-syntax-forward " >" limit)
+        (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
+                    (not (eobp)))
+          (forward-line)
+          (skip-syntax-forward " >" limit))))
+    (back-to-indentation)))
 
 (defun sv-mode-jump-other-end ()
   "Jumps to the opposite begin/end expression from the one point is at."
@@ -705,7 +723,6 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (condition-case nil
         (let ((at-closer (looking-at "[ \t]*[])}]"))
-              (pos (point))
               offset)
           (backward-up-list)
           (if (= (char-after) ?{)
@@ -854,6 +871,7 @@ function/task prototype, and NAMESPACES is the list of namespaces."
 (defvar sv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
+    (define-key map (kbd "C-c C-b") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-u") 'sv-mode-beginning-of-scope)
     (define-key map (kbd "C-c C-d") 'sv-mode-end-of-scope)
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
@@ -864,6 +882,7 @@ function/task prototype, and NAMESPACES is the list of namespaces."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SystemVerilog mode
 
+;;;###autoload
 (defun sv-mode ()
   "Major mode for editing SystemVerilog code.
 
