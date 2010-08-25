@@ -1,16 +1,16 @@
 ;;; grep-buffers.el --- grep through buffers (a la 'moccur')
 
-;; Copyright (C) 2007-2009  Scott Frazer
+;; Copyright (C) 2007-2010  Scott Frazer
 
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 01 Jan 2007
 ;; Version: 2.2
-;; Keywords: grep buffers
+;; Keywords: grep
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -30,6 +30,8 @@
 ;; uses the standard compilation-mode interface, i.e. next-error,
 ;; previous-error, etc. all work.
 
+;;; Code:
+
 (defvar grep-buffers-buffer-name "*grep-buffers*"
   "grep-buffers buffer name.")
 
@@ -44,6 +46,7 @@
 
 ;; Grep buffers
 
+;;;###autoload
 (defun grep-buffers ()
   "Grep buffers that have file names associated with them."
   (interactive)
@@ -61,34 +64,29 @@
       (erase-buffer)
       (display-buffer grep-buffers-buffer-name)
       (insert (format "grep buffers for '%s' ...\n\n" regexp))
-      (mapcar (lambda (x)
-                (when (grep-buffers-do-this-one x)
-                  (set-buffer x)
-                  (save-excursion
-                    (save-match-data
-                      (goto-char (point-min))
-                      (while (re-search-forward regexp nil t)
-                        (let ((line (count-lines 1 (point)))
-                              (substr (buffer-substring (point-at-bol)
-                                                        (point-at-eol))))
-                          (save-excursion
-                            (set-buffer grep-buffers-buffer-name)
-                            (insert (format "%s:%d:%s\n" x line substr))))
-                        (goto-char (point-at-eol)))))))
-              buffers)
+      (mapc (lambda (x)
+              (when (grep-buffers-do-this-one x)
+                (set-buffer x)
+                (save-excursion
+                  (save-match-data
+                    (goto-char (point-min))
+                    (while (re-search-forward regexp nil t)
+                      (let ((line (count-lines 1 (point)))
+                            (substr (buffer-substring (point-at-bol)
+                                                      (point-at-eol))))
+                        (save-excursion
+                          (set-buffer grep-buffers-buffer-name)
+                          (insert (format "%s:%d:%s\n" x line substr))))
+                      (goto-char (point-at-eol)))))))
+            buffers)
       (set-buffer grep-buffers-buffer-name)
       (goto-char (point-max))
       (insert "\ngrep finished\n")
-      (if (< emacs-major-version 22)
-          (progn
-            (compilation-mode)
-            (set (make-local-variable 'compilation-parse-errors-function)
-                 'grep-buffers-parse-matches))
-        (grep-mode)
-        (grep-buffers-parse-matches nil nil)
-        (setq grep-buffers-match-index -1)
-        (setq overlay-arrow-position nil)
-        (setq next-error-function 'grep-buffers-next-match))
+      (grep-mode)
+      (grep-buffers-parse-matches nil nil)
+      (setq grep-buffers-match-index -1)
+      (setq overlay-arrow-position nil)
+      (setq next-error-function 'grep-buffers-next-match)
       (goto-char (point-min))
       (set-buffer-modified-p nil)
       (setq buffer-read-only nil)
@@ -104,7 +102,7 @@
         (case-fold-search nil)
         match)
   (when name
-    (mapcar
+    (mapc
      (lambda (x) (setq match (or match (string-match x name))))
      grep-buffers-name-regexps-to-ignore)
     (not match))))
@@ -129,30 +127,10 @@ See variable `compilation-parse-errors-function' for interface."
                               (point-marker))
                             (save-excursion
                               (set-buffer buffer-of-match)
-                              (goto-line line-of-match)
+                              (goto-char (point-min))
+                              (forward-line (1- line-of-match))
                               (beginning-of-line)
                               (point-marker))))))))))
 
-;; Next match (Emacs 22)
-
-(defun grep-buffers-next-match (&optional arg reset)
-  (let (match-info)
-    (if reset
-        (setq grep-buffers-match-index 0)
-      (if (= arg 0)
-          (setq grep-buffers-match-index (- (count-lines (point-at-bol) (point-min)) 2))
-        (setq grep-buffers-match-index (+ grep-buffers-match-index arg)))
-      (when (< grep-buffers-match-index 0)
-        (setq grep-buffers-match-index 0))
-      (when (> grep-buffers-match-index (length compilation-error-list))
-        (setq grep-buffers-match-index (length compilation-error-list))))
-    (setq match-info (elt compilation-error-list grep-buffers-match-index))
-    (pop-to-buffer (marker-buffer (car match-info)))
-    (goto-char (marker-position (car match-info)))
-    (setq overlay-arrow-position (point-marker))
-    (pop-to-buffer (marker-buffer (cdr match-info)))
-    (goto-char (marker-position (cdr match-info)))))
-
 (provide 'grep-buffers)
-
 ;;; grep-buffers.el ends here
