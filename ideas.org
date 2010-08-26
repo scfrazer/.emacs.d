@@ -1,7 +1,7 @@
-* TODO ELPA [8/11]
-  - Title, desc, keywords, code:, code ends here ;;;, autoloads, GPL v3
+* TODO ELPA [10/11]
+  - Title, desc, keywords, copyright, code:, code ends here ;;;, autoloads, GPL v3
   - [X] etags-select
-  - [ ] etags-stack (remove XEmacs)
+  - [X] etags-stack (remove XEmacs)
   - [X] etags-table
   - [X] mdabbrev
   - [X] sv-mode
@@ -10,7 +10,7 @@
   - [X] file-template
   - [X] grep-buffers
   - [X] grep-ed
-  - [ ] yank-target
+  - [X] yank-target
 
 * TODO Blog ideas [0/9]
   - [ ] Minor mode for key customization

@@ -1,6 +1,6 @@
 ;;; etags-stack.el --- Navigate the tags stack
 
-;; Copyright (C) 2008  Scott Frazer
+;; Copyright (C) 2008-2010  Scott Frazer
 
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
@@ -10,7 +10,7 @@
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -25,10 +25,10 @@
 
 ;;; Commentary:
 
-;; Navigate the tags stack
-
-;; 14 Aug 2008 -- v1.0
-;;                Initial release
+;; Navigate the tags stack.  A small window opens showing the current
+;; stack of tag lines you have jumped to.  Move to a line and press RET
+;; to pop locations off until you get to the selected one, or press 'q'
+;; to quit.
 
 ;;; Code:
 
@@ -65,11 +65,6 @@
     )
   "Font-lock-keywords.")
 
-;; I use Emacs, but with a hacked version of XEmacs' etags.el, thus this variable
-
-(defvar etags-stack-use-xemacs-etags-p (fboundp 'get-tag-table-buffer)
-  "Use XEmacs etags?")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Functions
 
@@ -81,35 +76,15 @@
   (set-buffer etags-stack-buffer-name)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (if etags-stack-use-xemacs-etags-p
-      (etags-stack-show-xemacs-style)
-    (etags-stack-show-emacs-style))
+  (mapc 'etags-stack-insert-from-marker (reverse (ring-elements find-tag-marker-ring)))
+  (insert "<<current buffer>>")
+  (goto-char (point-at-bol))
   (setq buffer-read-only t)
   (set-buffer-modified-p nil)
   (select-window (split-window-vertically))
   (switch-to-buffer etags-stack-buffer-name)
-  (if etags-stack-use-xemacs-etags-p
-      (shrink-window-if-larger-than-buffer)
-    (fit-window-to-buffer))
+  (fit-window-to-buffer)
   (etags-stack-mode))
-
-(defun etags-stack-show-xemacs-style ()
-  "Show using XEmacs-style tags."
-  (mapcar 'etags-stack-insert-from-marker (reverse tag-mark-stack1))
-  (insert "<<current buffer>>\n")
-  (let ((pos (point-at-bol 0))
-        (stack tag-mark-stack2))
-    (while (and stack (marker-buffer (car stack)))
-      (etags-stack-insert-from-marker (car stack))
-      (setq stack (cdr stack)))
-    (delete-char -1)
-    (goto-char pos)))
-
-(defun etags-stack-show-emacs-style ()
-  "Show using Emacs-style tags."
-  (mapcar 'etags-stack-insert-from-marker (reverse (ring-elements find-tag-marker-ring)))
-  (insert "<<current buffer>>")
-  (goto-char (point-at-bol)))
 
 (defun etags-stack-insert-from-marker (marker)
   "Insert tag contents from marker."
@@ -136,9 +111,7 @@
     (setq pop-arg (< 0 stack-offset))
     (setq stack-offset (abs stack-offset))
     (while (> stack-offset 0)
-      (if etags-stack-use-xemacs-etags-p
-          (pop-tag-mark pop-arg)
-        (pop-tag-mark))
+      (pop-tag-mark)
       (setq stack-offset (1- stack-offset)))))
 
 (defun etags-stack-quit ()
@@ -150,9 +123,7 @@
 (defun etags-stack-clear()
   "Clear tag stack."
   (interactive)
-  (if etags-stack-use-xemacs-etags-p
-      nil ; TODO
-    (setq find-tag-marker-ring (make-ring find-tag-marker-ring-length))))
+  (setq find-tag-marker-ring (make-ring find-tag-marker-ring-length)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Keymap
