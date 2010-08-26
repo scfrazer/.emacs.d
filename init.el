@@ -42,6 +42,7 @@
 (require 'revbufs)
 (require 'task)
 (require 'uniquify)
+(require 'yank-target)
 
 (require 'my-bs)
 (require 'my-bookmark)
@@ -64,7 +65,6 @@
 (require 'my-recentf)
 (require 'my-rect)
 (require 'my-set-cursor-color)
-(require 'my-yank-target)
 
 (require 'my-theme)
 
@@ -901,7 +901,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<f6>" 'task-bmk-buf-next)
 (my-keys-define "<f7>" 'task-bmk-all-next)
 (my-keys-define "C-&" 'my-pop-back-ffap-kill-buffer)
-(my-keys-define "C-'" 'my-yank-target-map)
 (my-keys-define "C-*" 'my-pop-back-ffap)
 (my-keys-define "C-," 'iflipb-previous-buffer)
 (my-keys-define "C-." 'iflipb-next-buffer)
@@ -953,6 +952,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c t" (lambda () (interactive) (find-file "~/org/work.org")))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
+(my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
 (my-keys-define "C-w" 'makd-kill-unit)
