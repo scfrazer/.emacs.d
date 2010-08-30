@@ -1,16 +1,6 @@
-* TODO ELPA [10/11]
-  - Title, desc, keywords, copyright, code:, code ends here ;;;, autoloads, GPL v3
-  - [X] etags-select
-  - [X] etags-stack (remove XEmacs)
-  - [X] etags-table
-  - [X] mdabbrev
-  - [X] sv-mode
-  - [X] e-mode
-  - [ ] task
-  - [X] file-template
-  - [X] grep-buffers
-  - [X] grep-ed
-  - [X] yank-target
+* TODO C++ mode [0/2]
+  - [ ] Handle void type in doxymacs
+  - [ ] Automatic switching files and choosing insertion location for doxygen
 
 * TODO Blog ideas [0/9]
   - [ ] Minor mode for key customization
