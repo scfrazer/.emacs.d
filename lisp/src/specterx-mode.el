@@ -7,12 +7,20 @@
   :group 'languages)
 
 (defface specterx-directive-face
-  '((t (:foreground "tomato" :bold t :weight bold)))
+  '((t (:foreground "tomato3")))
   "Face for SpecterX directives."
   :group 'specterx-mode)
 
+(defun specterx-mode-offset-background-color ()
+  (let* ((bg-color (cdr (assoc 'background-color (frame-parameters))))
+         (vals (mapcar (lambda (val) (lsh val -8)) (color-values bg-color))))
+    (if (eq frame-background-mode 'dark)
+        (setq vals (mapcar (lambda (val) (min 255 (+ val #x1c))) vals))
+      (setq vals (mapcar (lambda (val) (max 0 (- val #x1c))) vals)))
+    (apply 'format "#%02x%02x%02x" vals)))
+
 (defface specterx-block-connect-face
-  '((t (:background "#353560")))
+  (list (list t `(:background ,(specterx-mode-offset-background-color))))
   "Face for SpecterX block-connect wires."
   :group 'specterx-mode)
 
