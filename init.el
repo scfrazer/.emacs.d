@@ -750,6 +750,11 @@ Does not set point.  Does nothing if mark ring is empty."
   (deactivate-mark)
   (goto-char (point-min)))
 
+(defadvice find-tag-default (after my-find-tag-default activate)
+  "Remove backtick in sv-mode."
+  (when (equal major-mode 'sv-mode)
+    (setq ad-return-value (replace-regexp-in-string "`" "" ad-return-value))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 
