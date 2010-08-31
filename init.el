@@ -1079,14 +1079,22 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (setq etags-table-alist
       (list
-       '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
-       '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
-       '("/vob/astro/.*\\.vh?$" "/nfs/astro_scratch/tags/rtl/TAGS")
-       '("/vob/astro/.*\\.s$" "/nfs/astro_scratch/tags/rtl/TAGS")
-       '("/vob/wolverine/.*\\.e$" "/nfs/wolverine_scratch/tags/dv/TAGS")
-       '("/vob/wolverine/.*\\.v$" "/nfs/wolverine_scratch/tags/rtl/TAGS")
-       '("/vob/hkp/.*\\.e$" "/nfs/hkp_scratch/tags/dv/TAGS")
-       '("/vob/hkp/.*\\.v$" "/nfs/hkp_scratch/tags/rtl/TAGS")
+       '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
+       '("/vob/sse/asic/.*\\.sv?$" "/nfs/luke_scratch/tags/sv/TAGS")
+       '("/vob/sse/asic/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
+       '("/vob/sse/asic/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
+       '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
+       '("/vob/cpp/asic/yoda/.*\\.sv?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
+
+;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
+;;        '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
+;;        '("/vob/astro/.*\\.vh?$" "/nfs/astro_scratch/tags/rtl/TAGS")
+;;        '("/vob/astro/.*\\.s$" "/nfs/astro_scratch/tags/rtl/TAGS")
+;;        '("/vob/wolverine/.*\\.e$" "/nfs/wolverine_scratch/tags/dv/TAGS")
+;;        '("/vob/wolverine/.*\\.v$" "/nfs/wolverine_scratch/tags/rtl/TAGS")
+;;        '("/vob/hkp/.*\\.e$" "/nfs/hkp_scratch/tags/dv/TAGS")
+;;        '("/vob/hkp/.*\\.v$" "/nfs/hkp_scratch/tags/rtl/TAGS")
+
        ))
 
 (unless (getenv "SPECMAN_PATH")

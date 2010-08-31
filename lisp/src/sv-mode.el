@@ -262,7 +262,7 @@ Otherwise indent them as usual."
   (concat "\\_<[$]\\("
           (regexp-opt
            '("assertkill" "assertoff" "asserton" "bits" "bitstoshortreal"
-             "coverage_control" "coverage_get" "coverage_get_max"
+             "cast" "coverage_control" "coverage_get" "coverage_get_max"
              "coverage_merge" "coverage_save" "dimensions" "display" "dumpfile"
              "dumpports" "dumpportsall" "dumpportsflush" "dumpportslimit"
              "dumpportsoff" "dumpportson" "dumpvars" "error" "exit" "fatal"
@@ -943,12 +943,14 @@ Key Bindings:
 
   ;; Doxygen
 
-  (setq doxymacs-JavaDoc-blank-singleline-comment-template
-        sv-mode-doxymacs-blank-singleline-comment-template
-        doxymacs-JavaDoc-blank-multiline-comment-template
-        sv-mode-doxymacs-blank-multiline-comment-template
-        doxymacs-JavaDoc-function-comment-template
-        sv-mode-doxymacs-function-comment-template)
+  (set (make-local-variable 'doxymacs-JavaDoc-blank-singleline-comment-template)
+       sv-mode-doxymacs-blank-singleline-comment-template)
+
+  (set (make-local-variable 'doxymacs-JavaDoc-blank-multiline-comment-template)
+       sv-mode-doxymacs-blank-multiline-comment-template)
+
+  (set (make-local-variable 'doxymacs-JavaDoc-function-comment-template)
+       sv-mode-doxymacs-function-comment-template)
 
   ;; Hooks
 
