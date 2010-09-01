@@ -3480,7 +3480,8 @@ on the directory element itself is listed, not on its contents."
                                                  file
                                                  'unused
                                                  (if (eq mtype 'directory-version)
-                                                     (list "-d")))
+                                                     (list "-d")
+                                                   (list "-fmt" "'%Sd  %u  %Xn %Rf %l\\n%c'")))
               (setq default-directory (file-name-directory file))
               (while (looking-at "=3D*\n")
                 (delete-char (- (match-end 0) (match-beginning 0)))
