@@ -65,6 +65,7 @@
 (require 'my-recentf)
 (require 'my-rect)
 (require 'my-set-cursor-color)
+(require 'my-sv-mode)
 
 (require 'my-theme)
 
@@ -750,11 +751,6 @@ Does not set point.  Does nothing if mark ring is empty."
   (deactivate-mark)
   (goto-char (point-min)))
 
-(defadvice find-tag-default (after my-find-tag-default activate)
-  "Remove backtick in sv-mode."
-  (when (equal major-mode 'sv-mode)
-    (setq ad-return-value (replace-regexp-in-string "`" "" ad-return-value))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 
@@ -1105,6 +1101,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (unless (getenv "SPECMAN_PATH")
   (setenv "SPECMAN_PATH"
           ".:/vob/astro/verification/testbench:/vob/astro/verification/evc_lib:/vob/asicproc/verification/evc_lib"))
+
+(unless (getenv "SV_PATH")
+  (setenv "SV_PATH"
+          ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Finish up
