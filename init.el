@@ -267,6 +267,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
 
@@ -1082,10 +1083,12 @@ Does not set point.  Does nothing if mark ring is empty."
       (list
        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/.*\\.sv?$" "/nfs/luke_scratch/tags/sv/TAGS")
+       '("/vob/sse/asic/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.sv?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
+       '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
 
 ;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
 ;;        '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
