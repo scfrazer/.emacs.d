@@ -4,7 +4,7 @@
 
 (setq imenu-max-items 25)
 (setq imenu-max-length 100)
-(setq imenu-sort-function 'imenu--sort-by-name)
+(setq imenu-sort-function nil)
 (add-hook 'imenu-after-jump-hook 'recenter)
 
 (defun imenu (index-item)
