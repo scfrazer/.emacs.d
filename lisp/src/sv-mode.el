@@ -5,7 +5,7 @@
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 10 Aug 2010
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: programming
 ;;
 ;; This file is free software; you can redistribute it and/or modify
@@ -53,7 +53,7 @@
 (require 'custom)
 (require 'find-file)
 
-(defconst sv-mode-version "1.0"
+(defconst sv-mode-version "1.1"
   "Version of sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -870,6 +870,35 @@ function/task prototype, and NAMESPACES is the list of namespaces."
       (insert ");"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Imenu
+
+;; TODO Make this cooler, e.g. heirarchical in speedbar, find properties, etc.
+
+(defun sv-mode-imenu-create-index-function ()
+  "Create sv-mode Imenu index."
+  (let ((item-alist '())
+        item-type)
+    (goto-char (point-min))
+    (while (sv-mode-re-search-forward
+            "\\_<\\(class\\|struct\\|enum\\|module\\|interface\\|task\\|function\\|program\\)\\_>"
+            nil 'go)
+      (setq item-type (match-string-no-properties 1))
+      (if (member item-type (list "class" "struct" "enum" "module" "interface"))
+          (when (or (not (string= item-type "class"))
+                    (save-excursion
+                      (backward-word 2)
+                      (not (looking-at "typedef"))))
+            (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
+            (push (cons (concat (match-string-no-properties 1) " <" item-type ">")
+                        (match-beginning 1))
+                  item-alist))
+        (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
+        (push (cons (concat (match-string-no-properties 2) " <" item-type ">")
+                    (match-beginning 2))
+              item-alist)))
+    (nreverse item-alist)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode map
 
 (defvar sv-mode-map
@@ -941,6 +970,11 @@ Key Bindings:
 
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))))
+
+  ;; Imenu
+
+  (setq imenu-generic-expression nil
+        imenu-create-index-function 'sv-mode-imenu-create-index-function)
 
   ;; Doxygen
 
