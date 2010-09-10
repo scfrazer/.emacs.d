@@ -195,7 +195,8 @@ to do."
 
 (defun etags-select-get-tag-files ()
   "Get tag files."
-  (mapcar 'tags-expand-table-name tags-table-list))
+  (tags-table-check-computed-list)
+  tags-table-computed-list)
 
 (defun etags-select-get-completion-table ()
   "Get the tag completion table."
