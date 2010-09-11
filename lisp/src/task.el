@@ -1,4 +1,4 @@
-;;; task.el --- Save/load/switch tasks, i.e. opened files and visual bookmarks
+;;; task.el --- Work with named tasks, i.e. open files and visual bookmarks
 
 ;; Copyright (C) 2010  Scott Frazer
 
@@ -24,10 +24,69 @@
 ;; USA.
 
 ;;; Commentary:
+;;
+;; 
+
 ;; TODO
 ;; Do this: (require 'task)
 ;;          (task-add-to-mode-line t)
 ;;          (global-set-key (kbd "C-x t") 'task-map)
+;; auto-save, task-win, bookmark-win, unloaded-file bmks
+;; local vs. global bmks
+;; notes file
+;; show in modeline
+;;
+;; (define-prefix-command 'task-map)
+;; (define-key task-map (kbd "?") 'task-show-current-name)
+;; (define-key task-map (kbd "n") 'task-new)
+;; (define-key task-map (kbd "s") 'task-save)
+;; (define-key task-map (kbd "a") 'task-save-as)
+;; (define-key task-map (kbd "l") 'task-load)
+;; (define-key task-map (kbd "r") 'task-reload)
+;; (define-key task-map (kbd "q") 'task-quit)
+;; (define-key task-map (kbd "Q") 'task-quit-no-save)
+;; (define-key task-map (kbd "o") 'task-notes)
+;; (define-key task-map (kbd "RET") 'task-list-show)
+;; (define-key task-map (kbd "b") 'task-bmk-show-all)
+;; (define-key task-map (kbd "B") 'task-bmk-show-buf)
+;;
+;; (if (not task-list-mode-map)
+;;     (let ((map (make-sparse-keymap)))
+;;       (define-key map (kbd "<down>") 'task-list-mode-next)
+;;       (define-key map (kbd "<up>") 'task-list-mode-prev)
+;;       (define-key map (kbd "C-n") 'task-list-mode-next)
+;;       (define-key map (kbd "C-p") 'task-list-mode-prev)
+;;       (define-key map "n" 'task-list-mode-next)
+;;       (define-key map "p" 'task-list-mode-prev)
+;;       (define-key map "d" 'task-list-mode-mark-current)
+;;       (define-key map "u" 'task-list-mode-unmark-current)
+;;       (define-key map "U" 'task-list-mode-unmark-all)
+;;       (define-key map "x" 'task-list-mode-execute)
+;;       (define-key map "r" 'task-list-mode-rename)
+;;       (define-key map (kbd "RET") 'task-list-mode-load)
+;;       (define-key map "q" 'task-list-mode-quit)
+;;       (setq task-list-mode-map map)))
+;;
+;; (if (not task-bmk-mode-map)
+;;     (let ((map (make-sparse-keymap)))
+;;       (define-key map (kbd "<down>") 'task-bmk-mode-next)
+;;       (define-key map (kbd "<up>") 'task-bmk-mode-prev)
+;;       (define-key map (kbd "C-n") 'task-bmk-mode-next)
+;;       (define-key map (kbd "C-p") 'task-bmk-mode-prev)
+;;       (define-key map "n" 'task-bmk-mode-next)
+;;       (define-key map "p" 'task-bmk-mode-prev)
+;;       (define-key map (kbd "RET") 'task-bmk-mode-go)
+;;       (define-key map (kbd "SPC") 'task-bmk-mode-show)
+;;       (define-key map "d" 'task-bmk-mode-delete)
+;;       (define-key map "g" 'task-bmk-mode-refresh)
+;;       (define-key map "q" 'task-bmk-mode-quit)
+;;       (setq task-bmk-mode-map map)))
+;;
+;; (my-keys-define "<f5>" 'task-bmk-toggle)
+;; (my-keys-define "<f6>" 'task-bmk-buf-next)
+;; (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
+;; (my-keys-define "<f7>" 'task-bmk-all-next)
+;; (my-keys-define "<S-f7>" 'task-bmk-all-prev)
 
 ;;; Code:
 
@@ -427,6 +486,8 @@ Needs to end with \"/\"."
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "<down>") 'task-list-mode-next)
       (define-key map (kbd "<up>") 'task-list-mode-prev)
+      (define-key map (kbd "C-n") 'task-list-mode-next)
+      (define-key map (kbd "C-p") 'task-list-mode-prev)
       (define-key map "n" 'task-list-mode-next)
       (define-key map "p" 'task-list-mode-prev)
       (define-key map "d" 'task-list-mode-mark-current)
@@ -921,6 +982,8 @@ Key Bindings:
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "<down>") 'task-bmk-mode-next)
       (define-key map (kbd "<up>") 'task-bmk-mode-prev)
+      (define-key map (kbd "C-n") 'task-bmk-mode-next)
+      (define-key map (kbd "C-p") 'task-bmk-mode-prev)
       (define-key map "n" 'task-bmk-mode-next)
       (define-key map "p" 'task-bmk-mode-prev)
       (define-key map (kbd "RET") 'task-bmk-mode-go)

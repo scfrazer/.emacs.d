@@ -18,5 +18,3 @@
   - [ ] Switch mode to buffer showing ct ls --recursive
   - [ ] Open/diff/unco/checkin/switch-modes files/dirs
   - [ ] cc_label
-
-* TODO Fix antlr3 mode ('>' in syntax table?)

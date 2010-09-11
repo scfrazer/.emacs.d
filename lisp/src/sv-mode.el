@@ -133,7 +133,9 @@ Otherwise indent them as usual."
                         "join" "join_any" "join_none" "endfunction"
                         "endgenerate" "endgroup" "endinterface" "endmodule"
                         "endpackage" "endprimitive" "endprogram" "endproperty"
-                        "endspecify" "endsequence" "endtable" "endtask"))
+                        "endspecify" "endsequence" "endtable" "endtask"
+                        ;; AOP
+                        "endextends"))
           "\\_>\\)")
   "End keyword regexp.")
 
@@ -142,7 +144,9 @@ Otherwise indent them as usual."
           (regexp-opt '("begin" "case" "class" "clocking" "config" "fork"
                         "function" "generate" "covergroup" "interface" "module"
                         "package" "primitive" "program" "property" "specify"
-                        "sequence" "table" "task"))
+                        "sequence" "table" "task"
+                        ;; AOP
+                        "extends"))
           "\\_>\\)")
   "Begin keyword regexp.")
 
@@ -167,7 +171,9 @@ Otherwise indent them as usual."
     ("endtask" . "task")
     ("join" . "fork")
     ("join_any" . "fork")
-    ("join_none" . "fork"))
+    ("join_none" . "fork")
+    ;; AOP
+    ("endextends" . "extends"))
   "Alist from ending keyword to begin regexp.")
 
 (defconst sv-mode-begin-to-end-alist
@@ -189,7 +195,9 @@ Otherwise indent them as usual."
     ("sequence" . "endsequence")
     ("table" . "endtable")
     ("task" . "endtask")
-    ("fork" . "join\\|join_any\\|join_none"))
+    ("fork" . "join\\|join_any\\|join_none")
+    ;; AOP
+    ("extends" . "endextends"))
   "Alist from beginning keyword to end regexp.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -280,6 +288,13 @@ Otherwise indent them as usual."
              "psprintf"))
           "\\)\\_>"))
 
+(defvar sv-mode-aop-keywords
+  (concat "\\_<\\("
+          (regexp-opt
+           '( "after" "around" "before" "dominates" "endextends" "hide"
+              "proceed" "rules" "virtuals" ))
+          "\\)\\_>"))
+
 (defvar sv-mode-font-lock-keywords
   (list
    ;; Keywords
@@ -310,7 +325,7 @@ Otherwise indent them as usual."
            ;; Scope resolution
            (cons "\\([a-zA-Z0-9_]+\\)::" '(1 font-lock-type-face))
            ;; Tasks/functions/programs
-           (cons "^\\s-*\\(\\(extern\\|local\\|protected\\|virtual\\|forkjoin\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
+           (cons "^\\s-*\\(\\(extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
            ;; Labels
            (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
@@ -320,6 +335,8 @@ Otherwise indent them as usual."
 (defvar sv-mode-font-lock-keywords-3
   (append sv-mode-font-lock-keywords-2
           (list
+           ;; AOP keywords
+           (cons sv-mode-aop-keywords '(0 font-lock-keyword-face keep))
            ;; Clocking
            (cons "#+[0-9]+"
                  '(0 font-lock-constant-face))
@@ -331,7 +348,7 @@ Otherwise indent them as usual."
            ;; User types
            (cons "^\\s-*\\(\\(typedef\\|virtual\\)\\s-+\\)*\\(class\\|struct\\|enum\\|module\\|interface\\)\\s-+\\([a-zA-Z0-9_]+\\)"
                  '(4 font-lock-type-face))
-           (cons "\\_<extends\\s-+\\([a-zA-Z0-9_]+\\)"
+           (cons "\\_<extends\\s-+\\([a-zA-Z0-9_:]+\\)"
                  '(1 font-lock-type-face))))
   "Gaudy level highlighting for sv-mode.")
 
