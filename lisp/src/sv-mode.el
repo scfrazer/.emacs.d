@@ -5,7 +5,7 @@
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 10 Aug 2010
-;; Version: 1.1
+;; Version: 1.2
 ;; Keywords: programming
 ;;
 ;; This file is free software; you can redistribute it and/or modify
@@ -53,7 +53,7 @@
 (require 'custom)
 (require 'find-file)
 
-(defconst sv-mode-version "1.1"
+(defconst sv-mode-version "1.2"
   "Version of sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -422,12 +422,14 @@ expression."
            (end-string (cdr (assoc begin-string sv-mode-begin-to-end-alist)))
            (regexp (concat "\\_<\\(" begin-string "\\|" end-string "\\)\\_>"))
            (depth 1))
-      (while (and (> depth 0) (sv-mode-re-search-forward regexp nil t))
-        (if (string= (match-string-no-properties 0) begin-string)
-            (progn (backward-char)
-                   (unless (sv-mode-decl-only-p)
-                     (setq depth (1+ depth))))
-          (setq depth (1- depth)))))))
+      (unless (and (string= begin-string "extends")
+                   (sv-mode-class-decl-p))
+        (while (and (> depth 0) (sv-mode-re-search-forward regexp nil t))
+          (if (string= (match-string-no-properties 0) begin-string)
+              (progn (backward-char)
+                     (unless (sv-mode-decl-only-p)
+                       (setq depth (1+ depth))))
+            (setq depth (1- depth))))))))
 
 (defun sv-mode-decl-only-p ()
   "Looks backward from point to see if an item is just a declaration."
@@ -435,6 +437,12 @@ expression."
     (let ((pos (point)))
       (sv-mode-beginning-of-statement)
       (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
+
+(defun sv-mode-class-decl-p ()
+  "Is the current statement a class declaration?"
+  (save-excursion
+    (sv-mode-beginning-of-statement)
+    (looking-at "class")))
 
 (defun sv-mode-determine-end-expr ()
   "Determine what the next appropriate end expression should be."
@@ -449,7 +457,7 @@ expression."
       (when (member begin-type (list "task" "function" "program"))
         (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
         (setq label (match-string-no-properties 1)))
-      (when (member begin-type (list "class" "module" "interface"))
+      (when (member begin-type (list "class" "module" "interface" "extends"))
         (re-search-forward "[a-zA-Z0-9_]+" nil t)
         (setq label (match-string-no-properties 0))))
     (concat end-type (if label (concat " : " label) ""))))
@@ -466,7 +474,7 @@ expression."
           (when (member begin-type (list "task" "function" "program"))
             (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
             (push (match-string-no-properties 1) namespaces))
-          (when (member begin-type (list "class" "module" "interface"))
+          (when (member begin-type (list "class" "module" "interface" "extends"))
             (re-search-forward "[a-zA-Z0-9_]+" nil t)
             (push (match-string-no-properties 0) namespaces)))
         (beginning-of-line)))
@@ -595,8 +603,11 @@ end/endtask/endmodule/etc. also."
        (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
          (if (looking-at "end\\|join")
              (setq depth (1+ depth))
-           (unless (sv-mode-decl-only-p)
-             (setq depth (1- depth)))))
+           (let ((begin-string (match-string-no-properties 0)))
+             (unless (or (sv-mode-decl-only-p)
+                         (and (string= begin-string "extends")
+                              (sv-mode-class-decl-p)))
+               (setq depth (1- depth))))))
        (when (> depth 0)
          (goto-char pos)
          (when (interactive-p)
@@ -865,9 +876,7 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   "end"
   ""
   (lambda()
-    (insert "\n" (sv-mode-determine-end-expr))
-    (sv-mode-indent-line)
-    (forward-line -1)
+    (insert (sv-mode-determine-end-expr))
     (sv-mode-indent-line)))
 
 (define-abbrev sv-mode-abbrev-table
