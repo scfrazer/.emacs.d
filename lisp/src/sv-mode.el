@@ -703,6 +703,55 @@ function/task prototype, and NAMESPACES is the list of namespaces."
     (insert (cdr (assoc 'name proto)))
     (insert "\n")))
 
+(defun sv-mode-electric-star ()
+  "Auto-indent when in comments."
+  (interactive)
+  (insert "*")
+  (when (nth 4 (syntax-ppss))
+    (sv-mode-indent-line)))
+
+(defun sv-mode-indent-new-comment-line ()
+  "Break line at point and indent if in comment."
+  (interactive)
+  (when (nth 4 (syntax-ppss))
+    (let ((single-line (save-excursion
+                         (re-search-backward "//" (line-beginning-position) t))))
+      (newline)
+      (if single-line
+          (insert "// ")
+        (insert "* "))
+      (sv-mode-indent-line))))
+
+(defun sv-mode-fill-paragraph (&optional arg)
+  "Fill paragraph function.
+Optional prefix ARG means justify paragraph as well."
+  (if (not (or (nth 4 (syntax-ppss))
+               (looking-at "\\s-*/[/*]")))
+      t
+    (save-excursion
+      (beginning-of-line)
+      (unless (search-forward "//" (line-end-position) t)
+        (beginning-of-line)
+        (let (fill-prefix from to)
+          (if (search-forward "/*" (line-end-position) t)
+              (progn
+                (setq from (point))
+                (setq fill-prefix nil) ;; TODO Determine what this should be
+                )
+            (re-search-backward "^[* \t]*$\\|/\\*")
+            (unless (looking-at "/\\*")
+              (forward-line 1))
+            (setq from (point))
+            (setq fill-prefix (buffer-substring-no-properties
+                               (point)
+                               (progn (skip-syntax-forward "^w_") (point)))))
+          (re-search-forward "^[* \t]*$\\|\\*/" nil t)
+          (unless (looking-back "\\*/" (line-beginning-position))
+            (beginning-of-line))
+          (setq to (point))
+          (fill-region from to arg)
+          t)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
 
@@ -929,6 +978,8 @@ function/task prototype, and NAMESPACES is the list of namespaces."
 
 (defvar sv-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "*") 'sv-mode-electric-star)
+    (define-key map (kbd "C-M-j") 'sv-mode-indent-new-comment-line)
     (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
     (define-key map (kbd "C-c C-b") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-u") 'sv-mode-beginning-of-scope)
@@ -971,12 +1022,14 @@ Key Bindings:
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'parse-sexp-ignore-comments)
   (make-local-variable 'indent-line-function)
+  (make-local-variable 'fill-paragraph-function)
   (setq comment-start "// "
         comment-end ""
         comment-multi-line t
         comment-start-skip "//[ \t]*"
         parse-sexp-ignore-comments t
-        indent-line-function 'sv-mode-indent-line)
+        indent-line-function 'sv-mode-indent-line
+        fill-paragraph-function 'sv-mode-fill-paragraph)
 
   ;; Font-lock
 
