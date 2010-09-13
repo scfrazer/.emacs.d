@@ -365,6 +365,10 @@ string, or nil if neither."
       (when (nth 3 pps)
         (throw 'return 'string)))))
 
+(defsubst sv-mode-in-comment ()
+  "Return non-nil if inside a comment."
+  (nth 4 (syntax-ppss)))
+
 (defsubst sv-mode-re-search-forward (REGEXP &optional BOUND NOERROR)
   "Like `re-search-forward', but skips over comments and strings.
 Never throws an error; if NOERROR is anything other nil or t
@@ -707,26 +711,26 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   "Auto-indent when in comments."
   (interactive)
   (insert "*")
-  (when (nth 4 (syntax-ppss))
+  (when (sv-mode-in-comment)
     (sv-mode-indent-line)))
 
 (defun sv-mode-indent-new-comment-line ()
   "Break line at point and indent if in comment."
   (interactive)
-  (when (nth 4 (syntax-ppss))
+  (when (sv-mode-in-comment)
     (let ((single-line (save-excursion
                          (re-search-backward "//" (line-beginning-position) t))))
       (newline)
       (if single-line
           (insert "// ")
         (insert "* "))
+      (just-one-space 1)
       (sv-mode-indent-line))))
 
 (defun sv-mode-fill-paragraph (&optional arg)
   "Fill paragraph function.
-Optional prefix ARG means justify paragraph as well."
-  (if (not (or (nth 4 (syntax-ppss))
-               (looking-at "\\s-*/[/*]")))
+Optional ARG means justify paragraph as well."
+  (if (not (sv-mode-in-comment))
       t
     (save-excursion
       (beginning-of-line)
@@ -735,12 +739,12 @@ Optional prefix ARG means justify paragraph as well."
         (let (fill-prefix from to)
           (if (search-forward "/*" (line-end-position) t)
               (progn
+                (backward-char 2)
                 (setq from (point))
-                (setq fill-prefix nil) ;; TODO Determine what this should be
-                )
+                (skip-syntax-forward "^w_")
+                (setq fill-prefix (make-string (current-column) 32)))
             (re-search-backward "^[* \t]*$\\|/\\*")
-            (unless (looking-at "/\\*")
-              (forward-line 1))
+            (forward-line 1)
             (setq from (point))
             (setq fill-prefix (buffer-substring-no-properties
                                (point)
