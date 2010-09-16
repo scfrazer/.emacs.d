@@ -2,21 +2,19 @@
       '((width . 120) (height . 60)))
 
 ;(insert "\n(set-default-font \"" (cdr (assoc 'font (frame-parameters))) "\")\n")
-; (set-default-font "-apple-Fixed-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+(set-default-font "-apple-Menlo-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
 
-(setq grep-program "egrep")
-(setq igrep-program "egrep")
-(setq igrep-find-program "find")
-(setq ispell-program-name "/opt/local/bin/ispell")
-
-;; Clipboard problems
-
-(setq-default save-interprogram-paste-before-kill nil
+(setq-default grep-program "egrep"
+              igrep-program "egrep"
+              igrep-find-program "find"
+              ispell-program-name "/opt/local/bin/ispell"
+              magit-git-executable "/usr/local/git/bin/git"
+              save-interprogram-paste-before-kill nil
               select-active-regions nil)
 
 ;; Theme
 
-(my-theme-deeper-blue)
+(my-theme-whiteboard)
 
 (setq my-set-cursor-color-normal-color "Green3"
       my-set-cursor-color-read-only-color "Yellow3"
