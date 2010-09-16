@@ -285,6 +285,8 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (defalias 'perl-mode 'cperl-mode)
+(defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'sl 'sort-lines)
 
 ;; isearch scroll
 
