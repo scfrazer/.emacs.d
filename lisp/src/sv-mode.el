@@ -65,7 +65,7 @@
   :group 'languages)
 
 ;;;###autoload
-(defcustom sv-mode-basic-offset 4
+(defcustom sv-mode-basic-offset 3
   "*Indentation of statements with respect to containing block."
   :group 'sv-mode
   :type 'integer)
@@ -353,7 +353,7 @@ Otherwise indent them as usual."
   "Gaudy level highlighting for sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Functions
+;; Substitutions
 
 (defsubst sv-mode-in-comment-or-string ()
   "Return 'comment if point is inside a comment, 'string if point is inside a
@@ -400,6 +400,19 @@ move to limit of search and return nil."
       (error
        (goto-char pos)
        nil))))
+
+(defsubst sv-mode-trim-whitespace (string)
+  "Trim leading/trailing whitespace from a string."
+  (when string
+    (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" string)))
+
+(defsubst sv-mode-trim-brackets (string)
+  "Trim any bracketed expression from a string."
+  (when string
+    (replace-regexp-in-string "\\[[^]]*\\]" "" string)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Functions
 
 (defun sv-mode-backward-sexp ()
   "Go backward over s-expression.  Matching of begin/task/module/etc. to
@@ -535,16 +548,6 @@ expression."
             (cons 'name name)
             (cons 'ret ret)
             (cons 'args args))))
-
-(defsubst sv-mode-trim-whitespace (string)
-  "Trim leading/trailing whitespace from a string."
-  (when string
-    (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" string)))
-
-(defsubst sv-mode-trim-brackets (string)
-  "Trim any bracketed expression from a string."
-  (when string
-    (replace-regexp-in-string "\\[[^]]*\\]" "" string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
