@@ -196,7 +196,8 @@ to do."
 (defun etags-select-get-tag-files ()
   "Get tag files."
   (tags-table-check-computed-list)
-  tags-table-computed-list)
+  (or tags-table-computed-list
+      (mapcar 'tags-expand-table-name tags-table-list)))
 
 (defun etags-select-get-completion-table ()
   "Get the tag completion table."
@@ -235,7 +236,8 @@ to do."
     (erase-buffer)
     (insert "Finding tag: " tagname "\n")
     (mapc (lambda (tag-file)
-            (setq tag-count (etags-select-insert-matches tagname tag-file tag-count)))
+            (when (stringp tag-file)
+              (setq tag-count (etags-select-insert-matches tagname tag-file tag-count))))
           tag-files)
     (cond ((= tag-count 0)
            (message (concat "No matches for tag \"" tagname "\""))
