@@ -1082,12 +1082,12 @@ Does not set point.  Does nothing if mark ring is empty."
 (setq etags-table-alist
       (list
        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
-       '("/vob/sse/asic/.*\\.sv?$" "/nfs/luke_scratch/tags/sv/TAGS")
+       '("/vob/sse/asic/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
-       '("/vob/cpp/asic/yoda/.*\\.sv?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
+       '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
 
 ;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
