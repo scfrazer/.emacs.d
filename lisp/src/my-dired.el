@@ -9,11 +9,11 @@
 (setq dired-isearch-filenames 'dwim)
 
 (setq dired-font-lock-keywords
-      '(("^. \\([^\n]+\\)\\(:\\)[\n]" (1 font-lock-variable-name-face))
+      '(("^. \\([^\n]+\\)\\(:\\)[\n]" (1 font-lock-function-name-face))
         ("^[^ \n]" (0 font-lock-constant-face) (".+" (dired-move-to-filename) nil (0 dired-marked-face)))
         ("^. [0-9 	]*d[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-keyword-face)))
         ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
-        ("^. [0-9 	]*...\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-type-face)))
+        ("^. [0-9 	]*...\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
         (eval let ((extensions (mapcar 'regexp-quote dired-boring-extensions)))
               (list
                (concat "\\(" (mapconcat 'identity extensions "\\|") "\\|#\\)$")
