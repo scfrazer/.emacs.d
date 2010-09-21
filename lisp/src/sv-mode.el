@@ -40,7 +40,9 @@
 ;; C-c C-j : Jump to matching begin/end/class/endclass/fork/join/etc.
 ;; C-c C-u : Move up out of the current scope
 ;; C-c C-d : Move down out of the current scope
-;; C-c C-b : Move to beginning of current statement
+;; C-c C-a : Move to beginning of current statement
+;; C-c C-p : Move to beginning of previous block
+;; C-c C-n : Move to end of next block
 ;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
 ;; C-c C-s : Create skeleton task/function implementation in .sv file
 ;;           from prototype on current line in .svh file
@@ -597,6 +599,34 @@ expression."
               (backward-word))))
       (goto-char pos))))
 
+(defun sv-mode-beginning-of-block ()
+  "Go to the beginning of the previous block."
+  (interactive)
+  (beginning-of-line)
+  (when (sv-mode-re-search-backward sv-mode-end-regexp nil 'go)
+    (forward-word)
+    (sv-mode-backward-sexp)
+    (sv-mode-beginning-of-statement)
+    (while (and (looking-at "else") (not (bobp)))
+      (when (sv-mode-re-search-backward sv-mode-end-regexp nil 'go)
+        (forward-word)
+        (sv-mode-backward-sexp)
+        (sv-mode-beginning-of-statement)))
+    (beginning-of-line)))
+
+(defun sv-mode-end-of-block ()
+  "Go to the end of the next block."
+  (interactive)
+  (beginning-of-line)
+  (when (sv-mode-re-search-forward sv-mode-begin-regexp nil 'go)
+    (backward-word)
+    (sv-mode-forward-sexp)
+    (while (and (looking-at "[ \t\n]*else") (not (eobp)))
+      (when (sv-mode-re-search-forward sv-mode-begin-regexp nil 'go)
+        (backward-word)
+        (sv-mode-forward-sexp)))
+    (forward-line)))
+
 (defun sv-mode-beginning-of-scope ()
   "Like `backward-up-list', but matches begin/task/module/etc. and
 end/endtask/endmodule/etc. also."
@@ -988,9 +1018,11 @@ Optional ARG means justify paragraph as well."
     (define-key map (kbd "*") 'sv-mode-electric-star)
     (define-key map (kbd "C-M-j") 'sv-mode-indent-new-comment-line)
     (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
-    (define-key map (kbd "C-c C-b") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-u") 'sv-mode-beginning-of-scope)
     (define-key map (kbd "C-c C-d") 'sv-mode-end-of-scope)
+    (define-key map (kbd "C-c C-a") 'sv-mode-beginning-of-statement)
+    (define-key map (kbd "C-c C-p") 'sv-mode-beginning-of-block)
+    (define-key map (kbd "C-c C-n") 'sv-mode-end-of-block)
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     map)
