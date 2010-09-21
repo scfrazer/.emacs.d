@@ -122,11 +122,11 @@
 (my-theme-create
  whiteboard
  '(
-   (compilation-column-number ((t (:foreground "LightGreen"))))
+   (compilation-column-number ((t (:foreground "DarkGreen"))))
    (compilation-error ((t (:foreground "Red1"))))
-   (compilation-info ((t (:weight normal :foreground "LightSkyBlue"))))
-   (compilation-line-number ((t (:foreground "LightGreen"))))
-   (compilation-warning ((t (:foreground "Yellow"))))
+   (compilation-info ((t (:weight normal :foreground "DeepSkyBlue4"))))
+   (compilation-line-number ((t (:foreground "DarkGreen"))))
+   (compilation-warning ((t (:foreground "Yellow4"))))
    (cperl-array-face ((t (:foreground "yellow2"))))
    (cperl-hash-face ((t (:foreground "coral1"))))
    (cursor ((t (:background "Green3" :foreground "gainsboro"))))
@@ -168,6 +168,8 @@
    (isearch ((t (:background "coral2" :foreground "white"))))
    (isearch-lazy-highlight-face ((t (:background "coral4" :foreground "white"))))
    (lazy-highlight ((t (:background "cadetblue" :foreground "white"))))
+   (magit-item-highlight ((t (:background "gray80"))))
+   (magit-diff-add ((t (:foreground "darkgreen"))))
    (match ((t (:background "DeepPink4"))))
    (minibuffer-prompt ((t (:foreground "DodgerBlue4"))))
    (my-tab-face ((t (:background "MistyRose"))))
@@ -185,7 +187,7 @@
    (secondary-selection ((t (:background "yellow" :foreground "gray10"))))
    (show-paren-match-face ((t (:background "dodgerblue1" :foreground "white"))))
    (show-paren-mismatch-face ((t (:background "red1" :foreground "white"))))
-   (task-bmk-face ((t (:background "#203060"))))
+   (task-bmk-face ((t (:background "SlateGray2"))))
    (tooltip ((t (:background "lightyellow" :foreground "black"))))
    (trailing-whitespace ((t (:background "#181a26"))))
    (widget-button-pressed-face ((t (:foreground "red"))))

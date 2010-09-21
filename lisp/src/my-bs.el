@@ -4,7 +4,7 @@
 
 ;; Ignore buffers
 
-(defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\|shell\\|terminal\\)\\*")
+(defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\|shell\\|terminal\\|magit.+\\)\\*")
   "*Buffer regexps to always show when buffer switching.")
 (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
   "*Buffer regexps to never show when buffer switching.")
