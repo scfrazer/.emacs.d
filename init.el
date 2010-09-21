@@ -287,6 +287,7 @@
 (defalias 'perl-mode 'cperl-mode)
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'sl 'sort-lines)
+(defalias 'fn 'my-put-file-name-on-clipboard)
 
 ;; isearch scroll
 
@@ -879,7 +880,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (eval-after-load "speedbar"
   '(progn
      (speedbar-add-supported-extension ".e")
-     (speedbar-add-supported-extension ".v")))
+     (speedbar-add-supported-extension ".v")
+     (speedbar-add-supported-extension ".sv")
+     (speedbar-add-supported-extension ".svh")
+     (speedbar-add-supported-extension ".aop")))
 
 (eval-after-load "verilog-mode"
   '(require 'my-verilog))

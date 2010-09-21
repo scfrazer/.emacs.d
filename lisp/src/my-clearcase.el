@@ -119,8 +119,8 @@ on the directory element itself is listed, not on its contents."
 
 (define-key clearcase-prefix-map "a" 'clearcase-mkelem-current-buffer)
 (define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
-(define-key clearcase-prefix-map "o" 'clearcase-checkout-current-buffer)
-(define-key clearcase-prefix-map "O" 'clearcase-checkout-unreserved-current-buffer)
+(define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
+(define-key clearcase-prefix-map "O" 'clearcase-checkout-current-buffer)
 (define-key clearcase-prefix-map "L" 'my-clearcase-list-checkouts)
 (define-key clearcase-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-prefix-map "p" 'my-clearcase-lsprivate)
@@ -138,8 +138,8 @@ on the directory element itself is listed, not on its contents."
 
 (define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
-(define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-dired-files)
-(define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-unreserved-dired-files)
+(define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
+(define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-dired-files)
 (define-key clearcase-dired-prefix-map "L" 'my-clearcase-list-checkouts)
 (define-key clearcase-dired-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-dired-prefix-map "p" 'my-clearcase-lsprivate)

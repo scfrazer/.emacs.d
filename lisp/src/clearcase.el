@@ -2192,19 +2192,19 @@ is specified, save it."
 (defun clearcase-checkout-unreserved-current-buffer ()
   "Checkout (unreserved) the file in the current buffer."
   (interactive)
-  (let ((clearcase-checkout-arguments (list "-unreserved")))
+  (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
     (clearcase-commented-checkout buffer-file-name)))
 
 (defun clearcase-checkout-unreserved-dired-files ()
   "Checkout (unreserved) the selected files."
   (interactive)
-  (let ((clearcase-checkout-arguments (list "-unreserved")))
+  (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
     (clearcase-commented-checkout-seq (dired-get-marked-files))))
 
 (defun clearcase-dired-checkout-unreserved-current-dir ()
   "Checkout (unreserved) the current directory."
   (interactive)
-  (let ((clearcase-checkout-arguments (list "-unreserved")))
+  (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
     (clearcase-commented-checkout (dired-current-directory))))
 
 ;;}}}
