@@ -25,15 +25,12 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ahg)
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
 (require 'etags-stack)
 (require 'etags-table)
 (require 'iflipb)
-;; (require 'filladapt)
-(require 'magit)
 (require 'mdabbrev)
 (require 'midnight)
 (require 'motion-and-kill-dwim)
@@ -59,6 +56,7 @@
 (require 'my-imenu)
 (require 'my-increment-number)
 (require 'my-isearch)
+(require 'my-magit)
 (require 'my-occur)
 (require 'my-org)
 (require 'my-pop-back)
@@ -109,8 +107,7 @@
 (tooltip-mode -1)
 (winner-mode 1)
 
-(setq-default ahg-diff-use-git-format nil
-              backup-inhibited t
+(setq-default backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
@@ -148,8 +145,6 @@
               file-template-insert-automatically 'ask
               file-template-paths (list "~/.emacs.d/templates/")
               fill-column 78
-;;               filladapt-mode t
-;;               filladapt-mode-line-string ""
               flyspell-mode-map nil
               highlight-changes-active-string " Chg+"
               highlight-changes-passive-string " Chg-"
@@ -868,9 +863,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (eval-after-load "grep"
   '(define-key grep-mode-map "q" 'my-kill-results-buffer))
 
-(eval-after-load "magit"
-  '(define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit))
-
 (eval-after-load "make-mode"
   '(progn
      (defun my-makefile-mode-hook ()
@@ -973,7 +965,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x k" 'my-kill-buffer)
-; (my-keys-define "C-x m" ahg-global-map) ;; Yes, this one is not quoted
 (my-keys-define "C-x m" 'magit-status)
 (my-keys-define "C-x r a" 'append-to-register)
 (my-keys-define "C-x t" 'task-map)
@@ -1042,8 +1033,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)
-;; (my-keys-define "C-n" 'next-line)
-;; (my-keys-define "C-p" 'previous-line)
 
 (my-keys-define "C-S-n" 'makd-scroll-down)
 (my-keys-define "C-S-p" 'makd-scroll-up)
