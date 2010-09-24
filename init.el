@@ -283,6 +283,7 @@
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'sl 'sort-lines)
 (defalias 'fn 'my-put-file-name-on-clipboard)
+(defalias 'kr 'browse-kill-ring)
 
 ;; isearch scroll
 
@@ -924,7 +925,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-g" 'grep-buffers)
-(my-keys-define "C-c C-k" 'my-kill-ring-pop)
 (my-keys-define "C-c C-l" 'll-debug-renumber)
 (my-keys-define "C-c C-o" 'ff-get-other-file)
 (my-keys-define "C-c G" 'rgrep)
@@ -941,7 +941,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c i" (lambda () (interactive) (find-file "~/.emacs.d/ideas.org")))
 (my-keys-define "C-c j" 'makd-join-line-with-next)
-(my-keys-define "C-c k" 'browse-kill-ring)
+(my-keys-define "C-c k" 'my-kill-ring-pop)
 (my-keys-define "C-c l" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c m" 'compile)
 (my-keys-define "C-c n" (lambda () (interactive (info "scfrazer-notes"))))

@@ -2,7 +2,7 @@
 
 set opts=(`getopt -s csh -o h --long help -- $argv:q`)
 if ($? != 0) then
-    echo "Terminating..." > /dev/stderr
+    echo "getopt failed, terminating" > /dev/stderr
     exit 1
 endif
 
