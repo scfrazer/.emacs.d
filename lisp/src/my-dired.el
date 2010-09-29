@@ -74,6 +74,18 @@
         (dired default-directory))
     (dired default-directory)))
 
+;; Modified find-name-dired
+
+(defun my-find-name-dired (&optional arg)
+  "Same as `find-name-dired', but uses default dir unless
+there is a prefix arg."
+  (interactive "P")
+  (if arg
+      (call-interactively 'find-name-dired)
+    (find-name-dired
+     default-directory
+     (read-from-minibuffer "Find-name (filename wildcard): "))))
+
 ;; Sort directories first
 
 (defun my-dired-sort ()

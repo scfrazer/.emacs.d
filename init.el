@@ -283,7 +283,7 @@
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'find 'find-name-dired)
+(defalias 'find 'my-find-name-dired)
 (defalias 'kr 'browse-kill-ring)
 (defalias 'sl 'sort-lines)
 
