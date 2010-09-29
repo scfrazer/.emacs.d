@@ -4,10 +4,21 @@
 
 ;; Ignore buffers
 
-(defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\|shell\\|terminal\\|magit.+\\)\\*")
+(defvar my-bs-always-show-regexps (list (regexp-opt
+                                         (list "*scratch*"
+                                               "*info*"
+                                               "*grep*"
+                                               "*Find*"
+                                               "*compilation*"
+                                               "*shell*"
+                                               "*terminal*"
+                                               ))
+                                        "*magit.+")
   "*Buffer regexps to always show when buffer switching.")
+
 (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
   "*Buffer regexps to never show when buffer switching.")
+
 (defvar my-ido-ignore-dired-buffers t
   "*If non-nil, buffer switching should ignore dired buffers.")
 
@@ -25,7 +36,8 @@
            (my-bs-str-in-regexp-list name my-bs-never-show-regexps))
       (and my-ido-ignore-dired-buffers
            (with-current-buffer name
-             (equal major-mode 'dired-mode)))))
+             (and (equal major-mode 'dired-mode)
+                  (not (string= name "*Find*")))))))
 
 ;; Toggle buffers
 

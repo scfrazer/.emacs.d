@@ -280,10 +280,12 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (defalias 'perl-mode 'cperl-mode)
+
 (defalias 'bc 'emacs-lisp-byte-compile)
-(defalias 'sl 'sort-lines)
-(defalias 'fn 'my-put-file-name-on-clipboard)
+(defalias 'file 'my-put-file-name-on-clipboard)
+(defalias 'find 'find-name-dired)
 (defalias 'kr 'browse-kill-ring)
+(defalias 'sl 'sort-lines)
 
 ;; isearch scroll
 
@@ -1129,3 +1131,4 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; Disabled commands
 
 (put 'erase-buffer 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
