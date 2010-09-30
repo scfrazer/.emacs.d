@@ -9,7 +9,7 @@
               org-cycle-include-plain-lists t
               org-cycle-separator-lines 1
               org-display-custom-times t
-              org-hide-leading-stars t
+              org-hide-leading-stars nil
               org-id-track-globally nil
               org-log-done 'time
               org-modules nil
