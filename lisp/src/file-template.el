@@ -81,7 +81,7 @@ Suggested values are \" \", \"0\" and \"\"."
   :group 'file-template
   :type 'string)
 
-(defcustom file-template-paths '("~/insert/" "/usr/share/emacs/insert/")
+(defcustom file-template-paths '("~/.emacs.d/templates")
   "*List of directories where templates are."
   :group 'file-template
   :type '(repeat string))
@@ -260,14 +260,18 @@ tags are:
           (eval (car (read-from-string form))))))))
 
 ;;;###autoload
-(defun file-template-insert (template)
+(defun file-template-insert (&optional template)
   "Insert template into buffer, performing tag expansions.
 See `file-template-tag-alist' for list of predefined tags.
 
 Use this function when you don't want to insert the default template
 associated with the file type in `file-template-mapping-alist'.
 Otherwise, use `file-template-auto-insert'."
-  (interactive "fTemplate to insert? ")
+  (interactive)
+  (unless template
+    (setq template (read-file-name "Template to insert? "
+                                   (concat (car file-template-paths) "/")
+                                   nil t)))
   (setq file-template-prompt-start-point nil)
   (setq file-template-prompted-strings '())
   (setq file-template-eval-start-point nil)
