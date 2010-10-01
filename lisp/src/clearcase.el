@@ -3044,7 +3044,8 @@ to enter one."
       ;;    We may need to checkout the directory.
       ;;
       (if dir-checkout-needed
-          (clearcase-commented-checkout containing-dir comment))
+          (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
+            (clearcase-commented-checkout containing-dir comment)))
 
       (clearcase-fprop-unstore-properties file)
 
@@ -3063,7 +3064,8 @@ to enter one."
                                            file
                                            comment
                                            (if clearcase-checkin-on-mkelem
-                                               (list "-ci")))
+                                               (list "-master" "-ci")
+                                             (list "-master")))
         (message "Making element %s...done" file)
 
         ;; Resync.
