@@ -1,6 +1,7 @@
 ;;; my-clearcase.el
 
 (require 'clearcase)
+(require 'cc-status)
 
 (defun my-clearcase-setcs-current ()
   (interactive)
@@ -126,6 +127,7 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "s" 'my-clearcase-setcs-current)
+(define-key clearcase-prefix-map "t" 'cc-status-tree)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
 (define-key clearcase-prefix-map "v" 'my-clearcase-setview)
@@ -145,6 +147,7 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-dired-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "s" 'my-clearcase-setcs-current)
+(define-key clearcase-dired-prefix-map "t" 'cc-status-tree)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
 (define-key clearcase-dired-prefix-map "v" 'my-clearcase-setview)
@@ -201,6 +204,8 @@ on the directory element itself is listed, not on its contents."
     )
   "Keyword highlighting specification for `clearcase-edcs-mode'.")
 
+(make-variable-buffer-local 'clearcase-parent-buffer)
+
 (defun clearcase-edcs-mode ()
   (interactive)
 
@@ -216,8 +221,6 @@ on the directory element itself is listed, not on its contents."
 
   (set (make-local-variable 'font-lock-defaults) '(clearcase-edcs-mode-font-lock-keywords))
   (turn-on-font-lock)
-
-  (make-variable-buffer-local 'clearcase-parent-buffer)
 
   (set-buffer-modified-p nil)
   (setq buffer-file-name nil)
