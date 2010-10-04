@@ -1,5 +1,7 @@
 ;;; cc-status.el
 
+(require 'clearcase)
+
 ;; Variables
 
 (defvar cc-status-item-regexp "^[IUXDA ] \\((\\(unreserved\\|reserved  \\))\\|?           \\) \\([-a-zA-Z0-9_./]+\\)$"
@@ -74,8 +76,25 @@
 (defun cc-status-mode-execute ()
   "Execute commands on marked files."
   (interactive)
-  ;; TODO
-  )
+  (when (y-or-n-p "Operate on marked files? ")
+    (goto-char (point-max))
+    (let (filename)
+      (while (re-search-backward cc-status-item-regexp nil t)
+        (setq filename (concat cc-status-tree-dir-name "/"
+                               (match-string-no-properties 3)))
+        (beginning-of-line)
+        (cond ((= (char-after) ?I)
+               (clearcase-commented-checkin filename))
+              ((= (char-after) ?U)
+               (clearcase-uncheckout filename))
+              ((= (char-after) ?X)
+               (let ((clearcase-keep-uncheckouts nil))
+                 (clearcase-uncheckout filename)))
+              ((= (char-after) ?A)
+               (clearcase-commented-mkelem filename))
+              ((= (char-after) ?D)
+               (delete-file filename)))))
+    (cc-status-tree-refresh)))
 
 (defun cc-status-mode-next ()
   "Go to next file."
