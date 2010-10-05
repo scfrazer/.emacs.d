@@ -4,7 +4,7 @@
 
 ;; Variables
 
-(defvar cc-status-item-regexp "^[IUXDA ] \\((\\(unreserved\\|reserved  \\))\\|?           \\) \\([-a-zA-Z0-9_./]+\\)$"
+(defvar cc-status-item-regexp "^[IUXDA ] \\((\\(unreserved\\|reserved  \\))\\|?           \\) \\(.+\\)$"
   "Item regexp.")
 
 (defvar cc-status-tree-dir-name nil
