@@ -832,8 +832,8 @@ Optional ARG means justify paragraph as well."
           (back-to-indentation)
         (re-search-forward "/\\*")
         (backward-char))
-      (unless (and starts-with-* (= (char-after) ?*))
-        (skip-syntax-forward "^w_" (line-end-position)))
+;;       (unless (and starts-with-* (= (char-after) ?*))
+;;         (skip-syntax-forward "^w_" (line-end-position)))
       (current-column))))
 
 (defun sv-mode-get-indent-if-in-paren ()
@@ -857,7 +857,7 @@ Optional ARG means justify paragraph as well."
               (unless at-closer
                 (forward-char)
                 (if (and (> (skip-syntax-forward " >" (line-end-position)) 0)
-                         (not (looking-at "//\\|/*")))
+                         (not (looking-at "//\\|/\\*")))
                     (setq offset (current-column))
                   (setq offset (1+ offset))))
               offset)))
