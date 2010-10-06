@@ -34,8 +34,7 @@
                                cc-status-tree-dir-name
                                " ; cleartool lspri -other "
                                cc-status-tree-dir-name ")") nil t)
-  (goto-char (point-min))
-  (forward-line 2)
+  (cc-status-tree-goto-first-file-line)
   (while (not (eobp))
     (insert "  ")
     (cond ((looking-at "(reserved)")
@@ -44,8 +43,7 @@
           ((not (looking-at "(unreserved)"))
            (insert          "?            ")))
     (forward-line 1))
-  (goto-char (point-min))
-  (forward-line 2)
+  (cc-status-tree-goto-first-file-line)
   (while (re-search-forward (concat cc-status-tree-dir-name "/") nil t)
     (replace-match ""))
   (goto-char (point-min))
@@ -53,6 +51,11 @@
   (sort-regexp-fields nil cc-status-item-regexp "\\3" (point) (point-max))
   (setq buffer-read-only t)
   (set-buffer-modified-p nil))
+
+(defun cc-status-tree-goto-first-file-line ()
+  "Go to the first line where a file would be."
+  (goto-char (point-min))
+  (forward-line 2))
 
 (defun cc-status-mode-open-file ()
   "Open file."
@@ -77,24 +80,34 @@
   "Execute commands on marked files."
   (interactive)
   (when (y-or-n-p "Operate on marked files? ")
+    (cc-status-tree-goto-first-file-line)
+    (if (not (save-excursion (re-search-forward "^[IA]" nil t)))
+        (cc-status-do-operations)
+      (setq cc-status-prev-window-config (current-window-configuration))
+      (pop-to-buffer cc-status-comment-buffer-name)
+      (cc-status-comment-mode))))
+
+(defun cc-status-do-operations (&optional comment)
+  "Do marked operations."
+  (setq comment (or comment ""))
+  (let (filename)
     (goto-char (point-max))
-    (let (filename)
-      (while (re-search-backward cc-status-item-regexp nil t)
-        (setq filename (concat cc-status-tree-dir-name "/"
-                               (match-string-no-properties 3)))
-        (beginning-of-line)
-        (cond ((= (char-after) ?I)
-               (clearcase-commented-checkin filename))
-              ((= (char-after) ?U)
-               (clearcase-uncheckout filename))
-              ((= (char-after) ?X)
-               (let ((clearcase-keep-uncheckouts nil))
-                 (clearcase-uncheckout filename)))
-              ((= (char-after) ?A)
-               (clearcase-commented-mkelem filename))
-              ((= (char-after) ?D)
-               (delete-file filename)))))
-    (cc-status-tree-refresh)))
+    (while (re-search-backward cc-status-item-regexp nil t)
+      (setq filename (concat cc-status-tree-dir-name "/"
+                             (match-string-no-properties 3)))
+      (beginning-of-line)
+      (cond ((= (char-after) ?I)
+             (clearcase-commented-checkin filename comment))
+            ((= (char-after) ?U)
+             (clearcase-uncheckout filename))
+            ((= (char-after) ?X)
+             (let ((clearcase-keep-uncheckouts nil))
+               (clearcase-uncheckout filename)))
+            ((= (char-after) ?A)
+             (clearcase-commented-mkelem filename t comment))
+            ((= (char-after) ?D)
+             (delete-file filename)))))
+  (cc-status-tree-refresh))
 
 (defun cc-status-mode-next ()
   "Go to next file."
@@ -126,7 +139,7 @@
   (insert " ")
   (setq buffer-read-only t)
   (set-buffer-modified-p nil)
-  (beginning-of-line))
+  (cc-status-mode-next))
 
 (defun cc-status-mode-mark-for-checkin ()
   "Mark file for checkin."
@@ -166,7 +179,27 @@
   (insert mark-letter)
   (setq buffer-read-only t)
   (set-buffer-modified-p nil)
-  (beginning-of-line))
+  (cc-status-mode-next))
+
+;; Commented operations
+
+(defconst cc-status-comment-buffer-name "*cc-status-comment*")
+
+(defvar cc-status-prev-window-config nil)
+
+(define-derived-mode cc-status-comment-mode text-mode "cc-status-comment-mode"
+  "Add comments for checkin or mkelem."
+  (local-set-key (kbd "C-x C-s") 'cc-status-comment-mode-finish))
+
+(defun cc-status-comment-mode-finish ()
+  "Finish entering comment and do the operations."
+  (interactive)
+  (let ((comment (buffer-substring-no-properties (point-min) (point-max))))
+    (if cc-status-prev-window-config
+        (set-window-configuration cc-status-prev-window-config)
+      (delete-windows-on cc-status-comment-buffer-name))
+    (kill-buffer cc-status-comment-buffer-name)
+    (cc-status-do-operations comment)))
 
 ;; Map
 
