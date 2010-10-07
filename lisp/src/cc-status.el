@@ -195,10 +195,9 @@
   "Finish entering comment and do the operations."
   (interactive)
   (let ((comment (buffer-substring-no-properties (point-min) (point-max))))
-    (if cc-status-prev-window-config
-        (set-window-configuration cc-status-prev-window-config)
-      (delete-windows-on cc-status-comment-buffer-name))
     (kill-buffer cc-status-comment-buffer-name)
+    (when cc-status-prev-window-config
+      (set-window-configuration cc-status-prev-window-config))
     (cc-status-do-operations comment)))
 
 ;; Map
