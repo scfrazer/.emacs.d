@@ -1,6 +1,76 @@
 ;;; my-theme.el
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Functions
+
+(defmacro my-theme-create (name face-specs)
+  `(defun ,(intern (concat "my-theme-" (symbol-name name))) ()
+     (interactive)
+     (my-theme-install ,face-specs)))
+
+(defun my-theme-install (face-specs)
+  "Install faces."
+  (my-theme-add-face-specs my-theme-common-face-specs t)
+  (my-theme-add-face-specs face-specs))
+
+(defun my-theme-add-face-specs (face-specs &optional reset)
+  "Add face specs."
+  (let (face spec)
+    (dolist (face-spec face-specs)
+      (setq face (car face-spec)
+            spec (nth 1 face-spec))
+      (unless (facep face)
+        (make-face face))
+      (when reset
+        (face-spec-reset-face face))
+      (face-spec-set face spec))))
+
+;; TODO
+(defun my-theme-dump-faces ()
+  (interactive)
+  (let ((attrs '((:width . "width")
+                 (:height . "height")
+                 (:weight . "weight")
+                 (:slant . "slant")
+                 (:foreground . "foreground")
+                 (:background . "background")
+                 (:underline . "underline")
+                 (:overline . "overline")
+                 (:strike-through . "strike-through")
+                 (:box . "box")
+                 (:inverse-video . "inverse-video")
+                 (:stipple . "stipple")
+                 (:inherit . "inherit")))
+        num-attrs)
+    (with-temp-buffer
+      (dolist (face (face-list))
+        (setq num-attrs 0)
+        (insert " '(" (symbol-name face) " ((t (")
+        (dolist (a attrs)
+          (let ((attr (face-attribute face (car a))))
+            (unless (eq attr 'unspecified)
+              (setq num-attrs (1+ num-attrs))
+              (cond ((member (car a) '(:foreground :background))
+                     (insert ":" (cdr a) (format " \"%s\" " attr)))
+                    ((equal (car a) :box)
+                     (when attr
+                       (insert ":" (cdr a) (format " '%s " attr))))
+                    (t
+                     (insert ":" (cdr a) (format " %s " attr)))))))
+        (if (> num-attrs 0)
+            (progn
+              (delete-char -1)
+              (insert "))))\n"))
+          (beginning-of-line)
+          (kill-line)))
+      (sort-lines nil (point-min) (point-max))
+      (goto-char (point-min))
+      (insert "(custom-set-faces\n")
+      (goto-char (point-max))
+      (insert " )\n")
+      (write-file "~/.emacs.d/custom-faces.el"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Themes
 
 (defvar my-theme-common-face-specs
@@ -251,74 +321,9 @@
 ;;    (widget-single-line-field-face ((t (:background "gray85"))))
    ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Functions
-
-(defmacro my-theme-create (name face-specs)
-  `(defun ,(intern (concat "my-theme-" (symbol-name name))) ()
-     (interactive)
-     (my-theme-install ,face-specs)))
-
-(defun my-theme-install (face-specs)
-  "Install faces."
-  (my-theme-add-face-specs my-theme-common-face-specs t)
-  (my-theme-add-face-specs face-specs))
-
-(defun my-theme-add-face-specs (face-specs &optional reset)
-  "Add face specs."
-  (let (face spec)
-    (dolist (face-spec face-specs)
-      (setq face (car face-spec)
-            spec (nth 1 face-spec))
-      (unless (facep face)
-        (make-face face))
-      (when reset
-        (face-spec-reset-face face))
-      (face-spec-set face spec))))
-
-;; TODO
-(defun my-theme-dump-faces ()
-  (interactive)
-  (let ((attrs '((:width . "width")
-                 (:height . "height")
-                 (:weight . "weight")
-                 (:slant . "slant")
-                 (:foreground . "foreground")
-                 (:background . "background")
-                 (:underline . "underline")
-                 (:overline . "overline")
-                 (:strike-through . "strike-through")
-                 (:box . "box")
-                 (:inverse-video . "inverse-video")
-                 (:stipple . "stipple")
-                 (:inherit . "inherit")))
-        num-attrs)
-    (with-temp-buffer
-      (dolist (face (face-list))
-        (setq num-attrs 0)
-        (insert " '(" (symbol-name face) " ((t (")
-        (dolist (a attrs)
-          (let ((attr (face-attribute face (car a))))
-            (unless (eq attr 'unspecified)
-              (setq num-attrs (1+ num-attrs))
-              (cond ((member (car a) '(:foreground :background))
-                     (insert ":" (cdr a) (format " \"%s\" " attr)))
-                    ((equal (car a) :box)
-                     (when attr
-                       (insert ":" (cdr a) (format " '%s " attr))))
-                    (t
-                     (insert ":" (cdr a) (format " %s " attr)))))))
-        (if (> num-attrs 0)
-            (progn
-              (delete-char -1)
-              (insert "))))\n"))
-          (beginning-of-line)
-          (kill-line)))
-      (sort-lines nil (point-min) (point-max))
-      (goto-char (point-min))
-      (insert "(custom-set-faces\n")
-      (goto-char (point-max))
-      (insert " )\n")
-      (write-file "~/.emacs.d/custom-faces.el"))))
+(defadvice my-theme-whiteboard (after whiteboard-cursor-colors activate)
+  (setq my-set-cursor-color-normal-color "Green3"
+        my-set-cursor-color-read-only-color "Yellow3"
+        my-set-cursor-color-overwrite-color "Red3"))
 
 (provide 'my-theme)

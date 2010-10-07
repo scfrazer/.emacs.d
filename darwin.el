@@ -20,10 +20,6 @@
 
 (my-theme-whiteboard)
 
-(setq my-set-cursor-color-normal-color "Green3"
-      my-set-cursor-color-read-only-color "Yellow3"
-      my-set-cursor-color-overwrite-color "Red3")
-
 (setq-default org-priority-faces '((?A . (:foreground "IndianRed3" :weight bold))
                                    (?B . (:foreground "SteelBlue3" :weight bold))
                                    (?C . (:foreground "SpringGreen3" :weight bold)))
