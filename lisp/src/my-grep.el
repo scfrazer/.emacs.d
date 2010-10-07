@@ -4,6 +4,7 @@
 
 (setq-default grep-highlight-matches t
               grep-find-ignored-directories (list ".git" ".hg" ".bzr" ".svn")
+              grep-find-ignored-files (list ".#*" "*.o" "*~" "*.so" "*.a" "*.elc" "*.lib" "*.lo" "*.la" "*.pyc")
               grep-files-aliases '(("all" . "*")
                                    ("c" . "*.h *.c")
                                    ("cc" . "*.h *.cc")
