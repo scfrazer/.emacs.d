@@ -1011,6 +1011,25 @@ Optional ARG means justify paragraph as well."
     (nreverse item-alist)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Align
+
+(require 'align)
+
+(defvar sv-mode-align-rules-list
+  '(
+    (sv-mode-comment
+     (regexp . "\\(\\s-*\\)/[/*]"))
+
+    (sv-mode-assignment
+     (regexp . "\\(\\s-*\\)[<=]+\\(\\s-*\\)")
+     (group . (1 2)))
+    )
+  "sv-mode alignment rules.")
+
+(defvar sv-mode-align-exclude-rules-list nil
+  "sv-mode alignment exclusion rules.")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode map
 
 (defvar sv-mode-map
@@ -1093,6 +1112,11 @@ Key Bindings:
 
   (setq imenu-generic-expression nil
         imenu-create-index-function 'sv-mode-imenu-create-index-function)
+
+  ;; Align rules
+
+  (setq align-mode-rules-list sv-mode-align-rules-list)
+  (setq align-mode-exclude-rules-list sv-mode-align-exclude-rules-list)
 
   ;; Doxygen
 
