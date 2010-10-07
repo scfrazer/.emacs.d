@@ -607,6 +607,10 @@ Prefix with C-u to fit the `next-window'."
     (beginning-of-line)
     (forward-line 1)))
 
+(defvar my-rotate-case-direction nil
+  "nil => capitalize, uppercase, lowercase,
+ t => lowercase, uppercase, capitalize.")
+
 (defun my-rotate-case ()
   "Rotate case to capitalized, uppercase, lowercase."
   (interactive)
@@ -621,12 +625,34 @@ Prefix with C-u to fit the `next-window'."
           (if (looking-at "[A-Z]")
               (downcase-region beg end)
             (upcase-region beg end))
-        (if (looking-at "[a-z]")
-            (upcase-region beg (1+ beg))
-          (forward-char)
-          (if (re-search-forward "[a-z]" end t)
-              (upcase-region beg end)
-            (downcase-region beg end)))))))
+        (let ((current-state
+               (if (looking-at "[a-z]") 'lowercase
+                 (forward-char)
+                 (if (re-search-forward "[a-z]" end t) 'capitalized
+                   'uppercase)))
+              next-state)
+          (setq next-state
+                (if (equal last-command 'my-rotate-case)
+                    (if my-rotate-case-direction
+                        (cond ((eq current-state 'lowercase) 'uppercase)
+                              ((eq current-state 'uppercase) 'capitalized)
+                              (t 'lowercase))
+                      (cond ((eq current-state 'capitalized) 'uppercase)
+                            ((eq current-state 'uppercase) 'lowercase)
+                            (t 'capitalized)))
+                  (cond ((eq current-state 'lowercase)
+                         (setq my-rotate-case-direction nil)
+                         'capitalized)
+                        ((eq current-state 'capitalized)
+                         (setq my-rotate-case-direction t)
+                         'lowercase)
+                        (t
+                         (setq my-rotate-case-direction nil)
+                         'lowercase))))
+          (cond ((eq next-state 'lowercase) (downcase-region beg end))
+                ((eq next-state 'uppercase) (upcase-region beg end))
+                (t (upcase-region beg (1+ beg))
+                   (downcase-region (1+ beg) end))))))))
 
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
