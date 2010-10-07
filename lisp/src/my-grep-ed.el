@@ -7,7 +7,7 @@
   "Checkout from ClearCase"
   (when (and (string-match "^/vob/" filename)
              (not (file-writable-p filename)))
-    (let ((clearcase-checkout-arguments (list "-unreserved"))
+    (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster"))
           (clearcase-suppress-checkout-comments t))
       (clearcase-commented-checkout filename))))
 
