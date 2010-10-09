@@ -244,7 +244,7 @@
    (lazy-highlight ((t (:background "cadetblue" :foreground "white"))))
    (magit-item-highlight ((t (:background "gray80"))))
    (magit-diff-add ((t (:foreground "darkgreen"))))
-   (match ((t (:background "DeepPink4"))))
+   (match ((t (:background "LightPink1"))))
    (minibuffer-prompt ((t (:foreground "DodgerBlue4"))))
    (my-tab-face ((t (:background "MistyRose"))))
    (my-trailing-space-face ((t (:background "lemonchiffon2"))))
