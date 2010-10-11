@@ -50,6 +50,7 @@
 (require 'my-ediff)
 (require 'my-erc)
 (require 'my-expand)
+(require 'my-ffap)
 (require 'my-grep-ed)
 (require 'my-ido)
 (require 'my-grep)
@@ -78,11 +79,9 @@
 (autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
 (autoload 'elog-mode "elog-mode" nil t)
 (autoload 'expand-abbrev "abbrev" nil t)
-(autoload 'ffap "ffap" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
-(autoload 'find-file-at-point "ffap" nil t)
 (autoload 'find-files-glob "find-files" nil t)
 (autoload 'grep-buffers "grep-buffers" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
@@ -141,7 +140,6 @@
               etags-select-use-short-name-completion t
               etags-table-search-up-depth 10
               even-window-heights nil
-              ffap-url-regexp nil
               file-template-insert-automatically 'ask
               file-template-paths (list "~/.emacs.d/templates/")
               fill-column 78
@@ -226,9 +224,6 @@
               warning-suppress-types (list '(undo discard-info))
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
-
-(add-to-list 'ffap-string-at-point-mode-alist
-             '(file "--:\\\\$+<>@-Z_[:alpha:]~*?{}" "<@" "@>;.,!:"))
 
 (setq frame-title-format "%F")
 
@@ -382,11 +377,6 @@
   (while (search-forward (string ?\C-m) nil t)
     (replace-match ""))
   (goto-char (point-min)))
-
-(defun my-ffap (&optional arg)
-  "ffap, or ffap-other-window when preceded with C-u."
-  (interactive "P")
-  (call-interactively (if arg 'ffap-other-window 'ffap)))
 
 (defun my-fill ()
   "Fill region if active, paragraph if not."
@@ -1145,10 +1135,21 @@ Does not set point.  Does nothing if mark ring is empty."
   (when (file-exists-p extra-config)
     (load-file extra-config)))
 
-;; TODO This is temporary
+;; TODO Temporary stuff
 
 (require 'command-frequency)
 (command-frequency-mode 1)
+
+(defun my-fix-sv ()
+  (interactive)
+  (goto-char (point-min))
+  (while (re-search-forward "#########################################################################" nil t)
+    (forward-line -1)
+    (if (not (looking-at "^\\s-*/\\*"))
+        (forward-line 2)
+      (delete-region (point) (progn (re-search-forward "\\*/" nil 'go) (forward-line 1) (point)))))
+  (my-prettify)
+  (goto-char (point-min)))
 
 ;; Time emacs load time
 
