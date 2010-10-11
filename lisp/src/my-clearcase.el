@@ -161,9 +161,6 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-comment-mode-map (kbd "C-x C-s") 'clearcase-comment-finish)
 (define-key clearcase-comment-mode-map (kbd "C-x C-w") 'clearcase-comment-save)
 
-(define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
-(define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edcs mode
 
@@ -206,6 +203,24 @@ on the directory element itself is listed, not on its contents."
 
 (make-variable-buffer-local 'clearcase-parent-buffer)
 
+(define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
+(define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-element-set-latest-rev)
+
+(defun my-clearcase-cs-element-set-latest-rev ()
+  "Update to latest version of a file/dir."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (when (looking-at "\\s-*\\(include\\|element\\)\\s-+\\(.+\\)@@/.+/\\([0-9]+\\)\\s-*$")
+      (let ((filename (match-string-no-properties 2)) output new-rev)
+        (save-match-data
+          (setq output (shell-command-to-string (concat "cleartool ls -short " filename)))
+          (when (string-match ".+@@/.+/\\([0-9]+\\)\\s-*$" output)
+            (setq new-rev (match-string-no-properties 1 output))))
+        (when new-rev
+          (replace-match new-rev nil nil nil 3))))))
+
 (defun clearcase-edcs-mode ()
   (interactive)
 
@@ -238,6 +253,8 @@ on the directory element itself is listed, not on its contents."
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-start-skip) "#[ \t]*")
+
+  (local-set-key (kbd "C-c C-r") 'my-clearcase-cs-element-set-latest-rev)
 
   (set (make-local-variable 'font-lock-defaults) '(clearcase-edcs-mode-font-lock-keywords))
   (turn-on-font-lock)
