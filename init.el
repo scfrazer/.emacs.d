@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; init.el
 
 ;; Time load time
@@ -257,6 +257,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.sva$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
