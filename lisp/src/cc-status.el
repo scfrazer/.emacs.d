@@ -11,6 +11,12 @@
   "ClearCase status tree directory name.")
 (make-variable-buffer-local 'cc-status-tree-dir-name)
 
+(defvar cc-status-tree-ignore-regexps (list "\\.cmake\\.state"
+                                            "rtl/Makefile\\(\\..+\\)?"
+                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\)"
+                                            "rtl/dump.rdl")
+  "Regexps to ignore in cc-status-tree.")
+
 ;; Functions
 
 (defun cc-status-tree ()
@@ -36,13 +42,19 @@
                                cc-status-tree-dir-name ")") nil t)
   (cc-status-tree-goto-first-file-line)
   (while (not (eobp))
-    (insert "  ")
-    (cond ((looking-at "(reserved)")
-           (forward-sexp)
-           (insert "  "))
-          ((not (looking-at "(unreserved)"))
-           (insert          "?            ")))
-    (forward-line 1))
+    (unless
+        (catch 'killed
+          (dolist (regexp cc-status-tree-ignore-regexps)
+            (when (re-search-forward regexp (line-end-position) t)
+              (delete-region (line-beginning-position) (1+ (line-end-position)))
+              (throw 'killed t))))
+      (insert "  ")
+      (cond ((looking-at "(reserved)")
+             (forward-sexp)
+             (insert "  "))
+            ((not (looking-at "(unreserved)"))
+             (insert          "?            ")))
+      (forward-line 1)))
   (cc-status-tree-goto-first-file-line)
   (while (re-search-forward (concat cc-status-tree-dir-name "/") nil t)
     (replace-match ""))
