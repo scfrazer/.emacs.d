@@ -1,6 +1,6 @@
 ;;; specterx-mode.el --- Verilog with embedded Perl (ugh)
 
-(require 'verilog-mode)
+(require 'sv-mode)
 
 (defgroup specterx-mode nil
   "Verilog with embedded Perl mode."
@@ -24,15 +24,13 @@
   "Face for SpecterX block-connect wires."
   :group 'specterx-mode)
 
-(define-derived-mode specterx-mode verilog-mode "SpecterX"
+(define-derived-mode specterx-mode sv-mode "SpecterX"
   "Mode for editing Verilog with embedded Perl."
   (let ((keywords (list
                    (cons "\\(<%\\|%>\\|@perl\\)"
                          '(0 'specterx-directive-face t))
                    (cons "<[^%].*?>"
                          '(0 'specterx-directive-face t))
-                   (cons "\\(\\.[A-Za-z*%][A-Za-z0-9_*%]+\\)\\s-*("
-                         '(1 font-lock-variable-name-face t))
                    (cons "[a-zA-Z0-9_]+__[a-zA-Z0-9_]+__"
                          '(0 'specterx-block-connect-face t))
                    (cons "[^/]\\([*%]\\)[^/]"
