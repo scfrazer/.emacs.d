@@ -4,7 +4,7 @@
 
 ;; Variables
 
-(defvar cc-status-item-regexp "^[IUXDA ] \\((\\(unreserved\\|reserved  \\))\\|?           \\) \\(.+\\)$"
+(defvar cc-status-item-regexp "^[IUXDA ] \\((unreserved)\\|(reserved)  \\|?           \\) \\(.+\\)$"
   "Item regexp.")
 
 (defvar cc-status-tree-dir-name nil
@@ -257,7 +257,7 @@
      (0 font-lock-variable-name-face))
     ("^[UXD].+"
      (0 font-lock-warning-face))
-    ("(\\(un\\)reserved)"
+    ("(\\(un\\)?reserved)"
      (0 font-lock-keyword-face))
     )
   "Keyword highlighting specification for cc-status.")
