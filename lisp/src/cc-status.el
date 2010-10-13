@@ -4,18 +4,21 @@
 
 ;; Variables
 
+(defvar cc-status-tree-ignore-regexps (list "\\.cmake\\.state"
+                                            "rtl/Makefile\\(\\..+\\)?"
+                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\)"
+                                            "rtl/dump.rdl")
+  "*Regexps to ignore in cc-status-tree.")
+
+(defvar cc-status-tree-filter t
+  "*Use `cc-status-tree-ignore-regexps' to filter files/dirs.")
+
 (defvar cc-status-item-regexp "^[IUXDA ] \\((unreserved)\\|(reserved)  \\|?           \\) \\(.+\\)$"
   "Item regexp.")
 
 (defvar cc-status-tree-dir-name nil
   "ClearCase status tree directory name.")
 (make-variable-buffer-local 'cc-status-tree-dir-name)
-
-(defvar cc-status-tree-ignore-regexps (list "\\.cmake\\.state"
-                                            "rtl/Makefile\\(\\..+\\)?"
-                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\)"
-                                            "rtl/dump.rdl")
-  "Regexps to ignore in cc-status-tree.")
 
 ;; Functions
 
@@ -34,7 +37,9 @@
   (interactive)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (insert cc-status-tree-dir-name ":\n\n")
+  (insert cc-status-tree-dir-name ":"
+          (if cc-status-tree-filter " (filtered)" "")
+          "\n\n")
   (call-process-shell-command (concat
                                "(cleartool lscheckout -me -r -fmt '(%Rf) %n\\n' "
                                cc-status-tree-dir-name
@@ -42,12 +47,8 @@
                                cc-status-tree-dir-name ")") nil t)
   (cc-status-tree-goto-first-file-line)
   (while (not (eobp))
-    (unless
-        (catch 'killed
-          (dolist (regexp cc-status-tree-ignore-regexps)
-            (when (re-search-forward regexp (line-end-position) t)
-              (delete-region (line-beginning-position) (1+ (line-end-position)))
-              (throw 'killed t))))
+    (if (cc-status-tree-ignore-entry)
+        (delete-region (line-beginning-position) (1+ (line-end-position)))
       (insert "  ")
       (cond ((looking-at "(reserved)")
              (forward-sexp)
@@ -64,6 +65,20 @@
   (setq buffer-read-only t)
   (set-buffer-modified-p nil))
 
+(defun cc-status-tree-ignore-entry ()
+  "Return t if current line should be ignored."
+  (and cc-status-tree-filter
+       (catch 'ignore
+         (dolist (regexp cc-status-tree-ignore-regexps)
+           (when (re-search-forward regexp (line-end-position) t)
+             (throw 'ignore t))))))
+
+(defun cc-status-tree-toggle-filter()
+  "Toggle showing all entries."
+  (interactive)
+  (setq cc-status-tree-filter (not cc-status-tree-filter))
+  (cc-status-tree-refresh))
+
 (defun cc-status-tree-goto-first-file-line ()
   "Go to the first line where a file would be."
   (goto-char (point-min))
@@ -76,7 +91,7 @@
   (when (looking-at cc-status-item-regexp)
     (find-file (concat
                 cc-status-tree-dir-name "/"
-                (match-string-no-properties 3)))))
+                (match-string-no-properties 2)))))
 
 (defun cc-status-mode-change-dir (&optional dir)
   "Change directories."
@@ -106,7 +121,7 @@
     (goto-char (point-max))
     (while (re-search-backward cc-status-item-regexp nil t)
       (setq filename (concat cc-status-tree-dir-name "/"
-                             (match-string-no-properties 3)))
+                             (match-string-no-properties 2)))
       (beginning-of-line)
       (cond ((= (char-after) ?I)
              (clearcase-commented-checkin filename comment))
@@ -222,6 +237,7 @@
 
     (define-key map "q" 'bury-buffer)
     (define-key map "g" 'cc-status-tree-refresh)
+    (define-key map "f" 'cc-status-tree-toggle-filter)
 
     (define-key map (kbd "RET") 'cc-status-mode-open-file)
     (define-key map "j" 'cc-status-mode-change-dir)
@@ -251,7 +267,7 @@
 
 (defvar cc-status-mode-font-lock-keywords
   '(
-    ("^\\(.+\\):$"
+    ("^\\(.+\\):"
      (1 font-lock-function-name-face))
     ("^[IA].+"
      (0 font-lock-variable-name-face))
