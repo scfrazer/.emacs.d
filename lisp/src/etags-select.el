@@ -165,7 +165,7 @@ package, if you set this to t you can just type foo<TAB>."
 found, see the `etags-select-no-select-for-one-match' variable to decide what
 to do."
   (interactive)
-  (etags-select-find (find-tag-default)))
+  (etags-select-find (or (find-tag-default) "")))
 
 ;;;###autoload
 (defun etags-select-find-tag ()
@@ -174,7 +174,7 @@ found, see the `etags-select-no-select-for-one-match' variable to decide what
 to do."
   (interactive)
   (setq etags-select-source-buffer (buffer-name))
-  (let* ((default (find-tag-default))
+  (let* ((default (or (find-tag-default) ""))
          (tagname (completing-read
                    (format "Find tag (default %s): " default)
                    'etags-select-complete-tag nil nil nil 'find-tag-history default)))
