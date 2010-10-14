@@ -252,6 +252,7 @@
 (add-to-list 'auto-mode-alist '("\\.g$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
 
