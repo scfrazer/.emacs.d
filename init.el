@@ -935,6 +935,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-S-SPC" 'my-rect-toggle)
 (my-keys-define "C-S-o" 'my-create-or-other-frame)
 (my-keys-define "C-S-s" 'my-isearch-word-at-point)
+(my-keys-define "C-S-y" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "C-^" 'my-pop-back-imenu)
 (my-keys-define "C-`" 'next-error)
 (my-keys-define "C-c #" 'my-convert-to-base)
