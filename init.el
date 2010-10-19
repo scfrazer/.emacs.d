@@ -87,6 +87,7 @@
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'js2-mode "js2" nil t)
 (autoload 'll-debug-insert "ll-debug" nil t)
+(autoload 'lua-mode "lua-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
 (autoload 'my-confluence-highlight "my-confluence" nil t)
 (autoload 'my-confluence-html "my-confluence" nil t)
@@ -225,7 +226,9 @@
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
 
-(setq frame-title-format "%F")
+(setq frame-title-format (concat "%F" (if (and clearcase-servers-online clearcase-setview-viewtag)
+                                          (concat " - " clearcase-setview-viewtag)
+                                        "")))
 
 (setq default-mode-line-format
       '("  " mode-line-modified
