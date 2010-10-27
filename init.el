@@ -7,8 +7,9 @@
 (defun my-get-load-time ()
   "Get current load time."
   (let* ((now (current-time))
-         (start-time (+ (first *emacs-load-start*) (second *emacs-load-start*) (/ (float (third *emacs-load-start*)) 1e6)))
-         (end-time (+ (first now) (second now) (/ (float (third now)) 1e6))))
+         (start-time (+ (car *emacs-load-start*) (cadr *emacs-load-start*)
+                        (/ (float (cadr (cdr *emacs-load-start*))) 1e6)))
+         (end-time (+ (car now) (cadr now) (/ (float (cadr (cdr now))) 1e6))))
     (- end-time start-time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,7 +49,7 @@
 (require 'my-comment)
 (require 'my-doxymacs)
 (require 'my-ediff)
-(require 'my-erc)
+; (require 'my-erc)
 (require 'my-expand)
 (require 'my-ffap)
 (require 'my-grep-ed)
@@ -67,6 +68,8 @@
 (require 'my-sv-mode)
 
 (require 'my-theme)
+
+(message "~/.emacs.d/init.el 0 load time = %.3f s" (my-get-load-time))
 
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
@@ -286,6 +289,8 @@
 (defalias 'find 'my-find-name-dired)
 (defalias 'kr 'browse-kill-ring)
 (defalias 'sl 'sort-lines)
+(defalias 'blue 'my-theme-deeper-blue)
+(defalias 'red 'my-theme-deeper-red)
 
 ;; isearch scroll
 
@@ -294,7 +299,11 @@
 
 ;; Snippets
 
+(message "~/.emacs.d/init.el 1 load time = %.3f s" (my-get-load-time))
+
 (yas/load-directory "~/.emacs.d/lisp/yasnippet/snippets")
+
+(message "~/.emacs.d/init.el 2 load time = %.3f s" (my-get-load-time))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions

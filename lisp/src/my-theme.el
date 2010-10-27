@@ -193,6 +193,8 @@
    (widget-single-line-field-face ((t (:background "dim gray"))))
    ))
 
+(my-theme-create deeper-red '((default ((t (:background "#261a18" :foreground "gainsboro"))))))
+
 (my-theme-create
  whiteboard
  '(
