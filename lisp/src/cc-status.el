@@ -61,7 +61,7 @@
     (replace-match ""))
   (goto-char (point-min))
   (cc-status-mode-next)
-  (sort-regexp-fields nil cc-status-item-regexp "\\3" (point) (point-max))
+  (sort-regexp-fields nil cc-status-item-regexp "\\2" (point) (point-max))
   (setq buffer-read-only t)
   (set-buffer-modified-p nil))
 
