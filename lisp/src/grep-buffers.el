@@ -132,5 +132,25 @@ See variable `compilation-parse-errors-function' for interface."
                               (beginning-of-line)
                               (point-marker))))))))))
 
+;; Next match (Emacs 22)
+
+(defun grep-buffers-next-match (&optional arg reset)
+  (let (match-info)
+    (if reset
+        (setq grep-buffers-match-index 0)
+      (if (= arg 0)
+          (setq grep-buffers-match-index (- (count-lines (point-at-bol) (point-min)) 2))
+        (setq grep-buffers-match-index (+ grep-buffers-match-index arg)))
+      (when (< grep-buffers-match-index 0)
+        (setq grep-buffers-match-index 0))
+      (when (> grep-buffers-match-index (length compilation-error-list))
+        (setq grep-buffers-match-index (length compilation-error-list))))
+    (setq match-info (elt compilation-error-list grep-buffers-match-index))
+    (pop-to-buffer (marker-buffer (car match-info)))
+    (goto-char (marker-position (car match-info)))
+    (setq overlay-arrow-position (point-marker))
+    (pop-to-buffer (marker-buffer (cdr match-info)))
+    (goto-char (marker-position (cdr match-info)))))
+
 (provide 'grep-buffers)
 ;;; grep-buffers.el ends here
