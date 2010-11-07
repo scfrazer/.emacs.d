@@ -36,17 +36,22 @@
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
               org-yank-folded-subtrees nil)
 
+(define-abbrev org-mode-abbrev-table "t" "TODO ")
+
 (defun my-org-insert-heading ()
   "Insert a heading if on a blank line, or goto next line and insert heading."
   (interactive)
   (let ((add-checkbox (org-at-item-checkbox-p))
+        (add-todo (org-entry-is-todo-p))
         (from-eol (eolp)))
     (call-interactively 'org-insert-heading)
     (unless from-eol
       (org-beginning-of-line))
     (when add-checkbox
       (insert "[ ] ")
-      (org-update-checkbox-count))))
+      (org-update-checkbox-count))
+    (when (and add-todo (org-at-heading-p))
+      (insert "TODO "))))
 
 (defun my-org-handle-checkbox ()
   "On a checkbox: Toggle it.
@@ -153,25 +158,28 @@ Otherwise: Add a checkbox and update heading accordingly."
   (kill-new (concat "[[" (buffer-file-name) "::" (number-to-string (line-number-at-pos)) "]]")))
 
 (define-prefix-command 'my-org-mode-map)
-(define-key my-org-mode-map (kbd "RET") 'my-org-insert-heading)
-(define-key my-org-mode-map (kbd "t") 'my-org-set-todo-state)
+(define-key my-org-mode-map (kbd "!") 'my-org-insert-open-time-stamp)
 (define-key my-org-mode-map (kbd "#") 'org-priority)
 (define-key my-org-mode-map (kbd ":") 'org-set-tags)
-(define-key my-org-mode-map (kbd "!") 'my-org-insert-open-time-stamp)
 (define-key my-org-mode-map (kbd "<") 'org-do-promote)
 (define-key my-org-mode-map (kbd ">") 'org-do-demote)
-(define-key my-org-mode-map (kbd "w") 'org-cut-subtree)
-(define-key my-org-mode-map (kbd "y") 'org-paste-subtree)
-(define-key my-org-mode-map (kbd "u") 'my-org-up-heading)
-(define-key my-org-mode-map (kbd "p") 'outline-backward-same-level)
-(define-key my-org-mode-map (kbd "n") 'outline-forward-same-level)
-(define-key my-org-mode-map (kbd "s") 'org-sort-entries-or-items)
-(define-key my-org-mode-map (kbd "x") 'my-org-handle-checkbox)
+(define-key my-org-mode-map (kbd "L") 'org-insert-link)
+(define-key my-org-mode-map (kbd "RET") 'my-org-insert-heading)
 (define-key my-org-mode-map (kbd "TAB") 'org-cycle)
 (define-key my-org-mode-map (kbd "a") 'org-archive-subtree)
+(define-key my-org-mode-map (kbd "f") 'org-open-at-point)
+(define-key my-org-mode-map (kbd "l") 'org-store-link)
+(define-key my-org-mode-map (kbd "n") 'outline-forward-same-level)
+(define-key my-org-mode-map (kbd "p") 'outline-backward-same-level)
+(define-key my-org-mode-map (kbd "s") 'org-sort-entries-or-items)
+(define-key my-org-mode-map (kbd "t") 'my-org-set-todo-state)
+(define-key my-org-mode-map (kbd "u") 'my-org-up-heading)
+(define-key my-org-mode-map (kbd "w") 'org-cut-subtree)
+(define-key my-org-mode-map (kbd "x") 'my-org-handle-checkbox)
+(define-key my-org-mode-map (kbd "y") 'org-paste-subtree)
 
 (defun my-org-mode-hook ()
-  (define-key org-mode-map (kbd "C-v") 'my-org-mode-map)
+  (define-key org-mode-map (kbd "C-;") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end))
 
