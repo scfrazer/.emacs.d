@@ -1018,7 +1018,7 @@ Optional ARG means justify paragraph as well."
 (defvar sv-mode-align-rules-list
   `(
     (sv-mode-class-item
-     (regexp . "\\(\\s-+\\)\\([a-zA-Z0-9_:]+\\)\\s-*\\([(;]\\|\\[$\\]\\)"))
+     (regexp . "\\(\\s-+\\)\\([a-zA-Z0-9_:]+\\)\\s-*\\([(;]\\|\\[.+\\]\\)"))
 
     (sv-mode-assignment
      (regexp . "\\(\\s-*\\)\\(<=\\|=\\)\\(\\s-*\\)")
