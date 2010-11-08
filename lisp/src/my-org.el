@@ -4,6 +4,7 @@
 
 (setq-default org-archive-location "%s_archive::"
               org-archive-mark-done nil
+              org-archive-reversed-order t
               org-archive-save-context-info '(itags ltags olpath)
               org-completion-use-ido t
               org-cycle-include-plain-lists t
