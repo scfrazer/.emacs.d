@@ -37,8 +37,6 @@
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
               org-yank-folded-subtrees nil)
 
-(define-abbrev org-mode-abbrev-table "t" "TODO ")
-
 (defun my-org-insert-heading ()
   "Insert a heading if on a blank line, or goto next line and insert heading."
   (interactive)
@@ -101,57 +99,59 @@ Otherwise: Add a checkbox and update heading accordingly."
   (org-todo '(4)))
 
 (eval-after-load "org"
-  '(defun my-org-beginning-of-line (&optional arg)
-     "Copy of `org-beginning-of-line', but skips over checkboxes as well."
-     (interactive "P")
-     (let ((pos (point))
-           (special (if (consp org-special-ctrl-a/e)
-                        (car org-special-ctrl-a/e)
-                      org-special-ctrl-a/e))
-           refpos)
-       (if (org-bound-and-true-p line-move-visual)
-           (beginning-of-visual-line 1)
-         (beginning-of-line 1))
-       (if (and arg (fboundp 'move-beginning-of-line))
-           (call-interactively 'move-beginning-of-line)
-         (if (bobp)
-             nil
-           (backward-char 1)
-           (if (org-invisible-p)
-               (while (and (not (bobp)) (org-invisible-p))
-                 (backward-char 1)
-                 (beginning-of-line 1))
-             (forward-char 1))))
-       (when special
-         (cond
-          ((and (looking-at org-complex-heading-regexp)
-                (= (char-after (match-end 1)) ?\ ))
-           (setq refpos (min (1+ (or (match-end 3) (match-end 2) (match-end 1)))
-                             (point-at-eol)))
-           (goto-char
-            (if (eq special t)
-                (cond ((> pos refpos) refpos)
-                      ((= pos (point)) refpos)
-                      (t (point)))
-              (cond ((> pos (point)) (point))
-                    ((not (eq last-command this-command)) (point))
-                    (t refpos)))))
-          ((org-at-item-p)
-           (goto-char
-            (if (eq special t)
-                (let ((headline-pos (match-end 4)))
-                  (save-excursion
-                    (goto-char headline-pos)
-                    (when (looking-at "\\[.\\] ")
-                      (setq headline-pos (+ headline-pos 4))))
-                  (cond ((> pos headline-pos) headline-pos)
-                        ((= pos (point)) headline-pos)
-                        (t (point))))
-              (cond ((> pos (point)) (point))
-                    ((not (eq last-command this-command)) (point))
-                    (t (match-end 4))))))))
-       (org-no-warnings
-        (and (featurep 'xemacs) (setq zmacs-region-stays t))))))
+  '(progn
+     (define-abbrev org-mode-abbrev-table "t" "TODO ")
+     (defun my-org-beginning-of-line (&optional arg)
+       "Copy of `org-beginning-of-line', but skips over checkboxes as well."
+       (interactive "P")
+       (let ((pos (point))
+             (special (if (consp org-special-ctrl-a/e)
+                          (car org-special-ctrl-a/e)
+                        org-special-ctrl-a/e))
+             refpos)
+         (if (org-bound-and-true-p line-move-visual)
+             (beginning-of-visual-line 1)
+           (beginning-of-line 1))
+         (if (and arg (fboundp 'move-beginning-of-line))
+             (call-interactively 'move-beginning-of-line)
+           (if (bobp)
+               nil
+             (backward-char 1)
+             (if (org-invisible-p)
+                 (while (and (not (bobp)) (org-invisible-p))
+                   (backward-char 1)
+                   (beginning-of-line 1))
+               (forward-char 1))))
+         (when special
+           (cond
+            ((and (looking-at org-complex-heading-regexp)
+                  (= (char-after (match-end 1)) ?\ ))
+             (setq refpos (min (1+ (or (match-end 3) (match-end 2) (match-end 1)))
+                               (point-at-eol)))
+             (goto-char
+              (if (eq special t)
+                  (cond ((> pos refpos) refpos)
+                        ((= pos (point)) refpos)
+                        (t (point)))
+                (cond ((> pos (point)) (point))
+                      ((not (eq last-command this-command)) (point))
+                      (t refpos)))))
+            ((org-at-item-p)
+             (goto-char
+              (if (eq special t)
+                  (let ((headline-pos (match-end 4)))
+                    (save-excursion
+                      (goto-char headline-pos)
+                      (when (looking-at "\\[.\\] ")
+                        (setq headline-pos (+ headline-pos 4))))
+                    (cond ((> pos headline-pos) headline-pos)
+                          ((= pos (point)) headline-pos)
+                          (t (point))))
+                (cond ((> pos (point)) (point))
+                      ((not (eq last-command this-command)) (point))
+                      (t (match-end 4))))))))
+         (org-no-warnings
+          (and (featurep 'xemacs) (setq zmacs-region-stays t)))))))
 
 (defun my-org-copy-file-link ()
   "Create a file link by line number in the kill ring."
