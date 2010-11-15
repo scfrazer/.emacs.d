@@ -327,7 +327,7 @@ Otherwise indent them as usual."
            ;; Scope resolution
            (cons "\\([a-zA-Z0-9_]+\\)::" '(1 font-lock-type-face))
            ;; Tasks/functions/programs
-           (cons "^\\s-*\\(\\(extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
+           (cons "^\\s-*\\(\\(static\\|extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
            ;; Labels
            (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
