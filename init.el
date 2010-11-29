@@ -280,19 +280,6 @@
   (when (member (car elt) (list "csh" "tcsh"))
     (setcdr elt 'csh-mode)))
 
-;; Aliases
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-(defalias 'perl-mode 'cperl-mode)
-
-(defalias 'bc 'emacs-lisp-byte-compile)
-(defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'find 'my-find-name-dired)
-(defalias 'kr 'browse-kill-ring)
-(defalias 'sl 'sort-lines)
-(defalias 'blue 'my-theme-deeper-blue)
-(defalias 'red 'my-theme-deeper-red)
-
 ;; isearch scroll
 
 (setq isearch-allow-scroll t)
@@ -1138,10 +1125,24 @@ Does not set point.  Does nothing if mark ring is empty."
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Finish up
+;; Custom
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Aliases
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'perl-mode 'cperl-mode)
+
+(defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'file 'my-put-file-name-on-clipboard)
+(defalias 'find 'my-find-name-dired)
+(defalias 'kr 'browse-kill-ring)
+(defalias 'sl 'sort-lines)
+(defalias 'blue 'my-theme-deeper-blue)
+(defalias 'red 'my-theme-deeper-red)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup
@@ -1150,21 +1151,11 @@ Does not set point.  Does nothing if mark ring is empty."
   (when (file-exists-p extra-config)
     (load-file extra-config)))
 
-;; TODO Temporary stuff
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Finish up
 
 (require 'command-frequency)
 (command-frequency-mode 1)
-
-(defun my-fix-sv ()
-  (interactive)
-  (goto-char (point-min))
-  (while (re-search-forward "#########################################################################" nil t)
-    (forward-line -1)
-    (if (not (looking-at "^\\s-*/\\*"))
-        (forward-line 2)
-      (delete-region (point) (progn (re-search-forward "\\*/" nil 'go) (forward-line 1) (point)))))
-  (my-prettify)
-  (goto-char (point-min)))
 
 ;; Time emacs load time
 
