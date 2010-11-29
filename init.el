@@ -66,6 +66,7 @@
 (require 'my-rect)
 (require 'my-set-cursor-color)
 (require 'my-sv-mode)
+(require 'my-vc)
 
 (require 'my-theme)
 
