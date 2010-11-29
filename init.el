@@ -1123,6 +1123,12 @@ Does not set point.  Does nothing if mark ring is empty."
   (setenv "SV_PATH"
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
+(eval-after-load "sv-mode"
+  '(progn
+     (setq compilation-error-regexp-alist
+           (add-to-list 'compilation-error-regexp-alist
+                        '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
