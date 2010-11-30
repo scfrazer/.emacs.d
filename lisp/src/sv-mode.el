@@ -44,8 +44,8 @@
 ;; C-c C-p : Move to beginning of previous block
 ;; C-c C-n : Move to end of next block
 ;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
-;; C-c C-s : Create skeleton task/function implementation in .sv file
-;;           from prototype on current line in .svh file
+;; C-c C-s : Create (or update) skeleton task/function implementation in
+;;           .sv file from prototype on current line in .svh file
 ;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
@@ -688,7 +688,7 @@ end/endtask/endmodule/etc. also."
   "Turn a task/function prototype into a skeleton implementation."
   (interactive)
   (let ((proto (sv-mode-parse-prototype))
-        pos lim next-func-type namespaces next-func-re)
+        pos lim next-func-type namespaces next-func-re this-func-re)
     (save-excursion
       (setq namespaces (sv-mode-get-namespaces))
       (sv-mode-re-search-forward ";" nil t)
@@ -705,31 +705,49 @@ end/endtask/endmodule/etc. also."
         (setq next-func-re (concat next-func-type ".+\\_<" next-func-re "\\_>")))
       (ff-get-other-file)
       (goto-char (point-min))
-      (if (not next-func-re)
-          (goto-char (point-max))
-        (when (sv-mode-re-search-forward next-func-re nil 'go)
-          (sv-mode-beginning-of-statement)
-          (sv-mode-re-search-backward
-           (concat";\\|" (regexp-opt '("`define" "`else" "`elsif" "`endif"
-                                       "`ifdef" "`ifndef" "`include"
-                                       "`timescale" "`undef")) ".+\\|"
-                                       sv-mode-end-regexp))
-          (forward-line 1)))
-      (insert "\n")
-      (insert (cdr (assoc 'type proto)) " ")
-      (when (cdr (assoc 'ret proto))
-        (insert (cdr (assoc 'ret proto)) " "))
+      ;; If task/function already exists, update it
+      (setq this-func-re "\\(task\\|function\\)\\s-+.*?")
       (dolist (ns namespaces)
-        (insert ns "::"))
-      (insert (cdr (assoc 'name proto)) "(")
-      (dolist (arg (cdr (assoc 'args proto)))
-        (insert (cdr arg) " " (car arg) ", "))
-      (when (cdr (assoc 'args proto))
-        (delete-char -2))
-      (insert ");\n")
-      (insert (sv-mode-determine-end-expr) "\n")
-      (forward-line -2)
-      (funcall sv-mode-finish-skeleton-function proto namespaces))))
+        (setq this-func-re (concat this-func-re ns "::")))
+      (setq this-func-re (concat this-func-re (cdr (assoc 'name proto)) "\\s-*[(;]"))
+      (if (sv-mode-re-search-forward this-func-re nil t)
+          (progn
+            (sv-mode-re-search-backward "task\\|function" nil t)
+            (beginning-of-line)
+            (setq pos (point))
+            (sv-mode-re-search-forward ";" nil t)
+            (delete-region pos (point))
+            (sv-mode-insert-prototype proto namespaces))
+        ;; Task/function doesn't exist, insert a blank one
+        (if (not next-func-re)
+            (goto-char (point-max))
+          (when (sv-mode-re-search-forward next-func-re nil 'go)
+            (sv-mode-beginning-of-statement)
+            (sv-mode-re-search-backward
+             (concat";\\|" (regexp-opt '("`define" "`else" "`elsif" "`endif"
+                                         "`ifdef" "`ifndef" "`include"
+                                         "`timescale" "`undef")) ".+\\|"
+                                         sv-mode-end-regexp))
+            (forward-line 1)))
+        (insert "\n")
+        (sv-mode-insert-prototype proto namespaces)
+        (insert "\n" (sv-mode-determine-end-expr) "\n")
+        (forward-line -2)
+        (funcall sv-mode-finish-skeleton-function proto namespaces)))))
+
+(defun sv-mode-insert-prototype (proto namespaces)
+  "Insert prototype"
+  (insert (cdr (assoc 'type proto)) " ")
+  (when (cdr (assoc 'ret proto))
+    (insert (cdr (assoc 'ret proto)) " "))
+  (dolist (ns namespaces)
+    (insert ns "::"))
+  (insert (cdr (assoc 'name proto)) "(")
+  (dolist (arg (cdr (assoc 'args proto)))
+    (insert (cdr arg) " " (car arg) ", "))
+  (when (cdr (assoc 'args proto))
+    (delete-char -2))
+  (insert ");"))
 
 (defun sv-mode-default-finish-skeleton-function (proto namespaces)
   "Default finish task/function skeleton function.  PROTO is the parsed
