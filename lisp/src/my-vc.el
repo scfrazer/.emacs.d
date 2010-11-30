@@ -69,9 +69,6 @@
   (delete-window)
   (kill-buffer "*vc-change-log*"))
 
-(define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit)
-(define-key magit-mode-map "q" 'my-magit-quit)
-
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'my-vc-ediff))
 
