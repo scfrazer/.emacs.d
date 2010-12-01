@@ -236,11 +236,24 @@ Otherwise: Add a checkbox and update heading accordingly."
         (replace-match ""))
       (goto-char (point-min)))))
 
-;; TODO
-;; To: recipients
-;; From: scfrazer@cisco.com
-;; Subject: title
-;; Content-type: text/html;
+(defun my-org-export-and-email ()
+  "Export and email the file."
+  (interactive)
+  (save-excursion
+    (org-export-as-html 3 nil nil "*exported-html*"))
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^#\\+EMAIL_ADDRS: \\(.+\\)$" nil t)
+      (let ((email-addrs (match-string-no-properties 1)))
+        (with-current-buffer "*exported-html*"
+          (goto-char (point-min))
+          (insert "To: " email-addrs "\n")
+          (insert "From: " (getenv "USER") "\n")
+          (let ((pos (point)))
+            (when (re-search-forward "<title>\\(.+\\)</title>" nil t)
+              (goto-char pos)
+              (insert "Subject: " (match-string-no-properties 1) "\n")))
+          (insert "Content-type: text/html;\n"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
