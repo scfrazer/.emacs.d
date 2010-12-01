@@ -206,9 +206,23 @@ Otherwise: Add a checkbox and update heading accordingly."
 (defun my-org-export-html-final-hook ()
   "Export html final hook."
   (save-excursion
+
     (goto-char (point-min))
-    (while (re-search-forward "<h3.*?>" nil t)
-      (insert "&#8226"))))
+    (while (re-search-forward "<h[3-6].*?>" nil t)
+      (insert "<div style='float:left'>&bull; "))
+
+    (goto-char (point-min))
+    (while (re-search-forward "</h[3-6]>" nil t)
+      (insert "<div style='clear:both'></div>")
+      (goto-char (match-beginning 0))
+      (insert "</div>")
+      (forward-char 5))
+
+    (goto-char (point-min))
+    (while (re-search-forward "<span class=\"tag\">" nil t)
+      (goto-char (match-beginning 0))
+      (insert "</div><div style='float:right'>")
+      (re-search-forward "<span class=\"tag\">" nil t))))
 
 (add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
 
@@ -269,24 +283,20 @@ Otherwise: Add a checkbox and update heading accordingly."
 <style type=\"text/css\">
 body {
     margin: 1em;
-    border-right: 5px solid #bbb;
-    border-bottom: 5px solid #bbb;
     padding: 0;
-    background: #ddd none repeat scroll 0 0;
-    border: 1px solid #000;
     margin: 0;
-    padding: 2em;
     color: #000;
     font-family: \"Bitstream Vera Sans\", Verdana, sans-serif;
     font-size: 85%;
 }
 
 code {
-    color: #00f;
+    border: 1px solid #ccc;
+    background: #eee;
+    padding: 1px;
 }
 
 div#content {
-    border: 1px solid #bbb;
     background: #fff;
     margin: 0;
     padding: 2em;
@@ -335,10 +345,8 @@ div.title {
 }
 
 h1 {
-    background: #369 none repeat scroll 0 0;
-    color: #fff;
     font-family: \"BitStream Vera Sans\", Verdana;
-    font-size: 200%;
+    font-size: 180%;
     margin: -1em -1em .2em;
     padding: 0.75em 1em;
 }
@@ -364,7 +372,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 tt {
-    color: #00f;
+    border: 1px solid #ccc;
+    background: #eee;
 }
 
 .verbatim {
@@ -450,7 +459,7 @@ span.underline {
 
 /* Todo List Styles */
 
-.title { text-align: center; }
+/* .title { text-align: center; } */
 .todo  { color: red; text-align: right }
 .done { color: green; }
 .timestamp { color: gray }
