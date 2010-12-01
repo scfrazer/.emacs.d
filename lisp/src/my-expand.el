@@ -50,6 +50,11 @@
   (lambda() (insert (if buffer-file-name (file-name-nondirectory buffer-file-name) "*NOFILE*"))))
 
 (define-abbrev global-abbrev-table
+  "date"
+  ""
+  (lambda() (insert (format-time-string "%m/%d/%Y"))))
+
+(define-abbrev global-abbrev-table
   "td"
   ""
   (lambda() (insert comment-start "TODO")))
