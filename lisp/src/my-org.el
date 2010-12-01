@@ -41,6 +41,8 @@
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
               org-yank-folded-subtrees nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun my-org-insert-heading ()
   "Insert a heading if on a blank line, or goto next line and insert heading."
   (interactive)
@@ -102,65 +104,131 @@ Otherwise: Add a checkbox and update heading accordingly."
   (interactive)
   (org-todo '(4)))
 
-(eval-after-load "org"
-  '(progn
-     (define-abbrev org-mode-abbrev-table "t" "TODO ")
-     (defun my-org-beginning-of-line (&optional arg)
-       "Copy of `org-beginning-of-line', but skips over checkboxes as well."
-       (interactive "P")
-       (let ((pos (point))
-             (special (if (consp org-special-ctrl-a/e)
-                          (car org-special-ctrl-a/e)
-                        org-special-ctrl-a/e))
-             refpos)
-         (if (org-bound-and-true-p line-move-visual)
-             (beginning-of-visual-line 1)
-           (beginning-of-line 1))
-         (if (and arg (fboundp 'move-beginning-of-line))
-             (call-interactively 'move-beginning-of-line)
-           (if (bobp)
-               nil
-             (backward-char 1)
-             (if (org-invisible-p)
-                 (while (and (not (bobp)) (org-invisible-p))
-                   (backward-char 1)
-                   (beginning-of-line 1))
-               (forward-char 1))))
-         (when special
-           (cond
-            ((and (looking-at org-complex-heading-regexp)
-                  (= (char-after (match-end 1)) ?\ ))
-             (setq refpos (min (1+ (or (match-end 3) (match-end 2) (match-end 1)))
-                               (point-at-eol)))
-             (goto-char
-              (if (eq special t)
-                  (cond ((> pos refpos) refpos)
-                        ((= pos (point)) refpos)
-                        (t (point)))
-                (cond ((> pos (point)) (point))
-                      ((not (eq last-command this-command)) (point))
-                      (t refpos)))))
-            ((org-at-item-p)
-             (goto-char
-              (if (eq special t)
-                  (let ((headline-pos (match-end 4)))
-                    (save-excursion
-                      (goto-char headline-pos)
-                      (when (looking-at "\\[.\\] ")
-                        (setq headline-pos (+ headline-pos 4))))
-                    (cond ((> pos headline-pos) headline-pos)
-                          ((= pos (point)) headline-pos)
-                          (t (point))))
-                (cond ((> pos (point)) (point))
-                      ((not (eq last-command this-command)) (point))
-                      (t (match-end 4))))))))
-         (org-no-warnings
-          (and (featurep 'xemacs) (setq zmacs-region-stays t)))))))
+(defun my-org-beginning-of-line (&optional arg)
+  "Copy of `org-beginning-of-line', but skips over checkboxes as well."
+  (interactive "P")
+  (let ((pos (point))
+        (special (if (consp org-special-ctrl-a/e)
+                     (car org-special-ctrl-a/e)
+                   org-special-ctrl-a/e))
+        refpos)
+    (if (org-bound-and-true-p line-move-visual)
+        (beginning-of-visual-line 1)
+      (beginning-of-line 1))
+    (if (and arg (fboundp 'move-beginning-of-line))
+        (call-interactively 'move-beginning-of-line)
+      (if (bobp)
+          nil
+        (backward-char 1)
+        (if (org-invisible-p)
+            (while (and (not (bobp)) (org-invisible-p))
+              (backward-char 1)
+              (beginning-of-line 1))
+          (forward-char 1))))
+    (when special
+      (cond
+       ((and (looking-at org-complex-heading-regexp)
+             (= (char-after (match-end 1)) ?\ ))
+        (setq refpos (min (1+ (or (match-end 3) (match-end 2) (match-end 1)))
+                          (point-at-eol)))
+        (goto-char
+         (if (eq special t)
+             (cond ((> pos refpos) refpos)
+                   ((= pos (point)) refpos)
+                   (t (point)))
+           (cond ((> pos (point)) (point))
+                 ((not (eq last-command this-command)) (point))
+                 (t refpos)))))
+       ((org-at-item-p)
+        (goto-char
+         (if (eq special t)
+             (let ((headline-pos (match-end 4)))
+               (save-excursion
+                 (goto-char headline-pos)
+                 (when (looking-at "\\[.\\] ")
+                   (setq headline-pos (+ headline-pos 4))))
+               (cond ((> pos headline-pos) headline-pos)
+                     ((= pos (point)) headline-pos)
+                     (t (point))))
+           (cond ((> pos (point)) (point))
+                 ((not (eq last-command this-command)) (point))
+                 (t (match-end 4))))))))
+    (org-no-warnings
+     (and (featurep 'xemacs) (setq zmacs-region-stays t)))))
 
 (defun my-org-copy-file-link ()
   "Create a file link by line number in the kill ring."
   (interactive)
   (kill-new (concat "[[" (buffer-file-name) "::" (number-to-string (line-number-at-pos)) "]]")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(eval-after-load "org"
+  '(progn
+
+     (define-abbrev org-mode-abbrev-table
+       "t"
+       "TODO ")
+
+     (define-abbrev org-mode-abbrev-table
+       "head"
+       "#+TITLE: \n#+OPTIONS: author:nil email:nil creator:nil timestamp:nil toc:nil num:nil\n"
+       (lambda ()
+         (search-backward "TITLE:")
+         (forward-char 7)))
+
+     (define-abbrev org-mode-abbrev-table
+       "new"
+       "<new></new>"
+       (lambda () (backward-char 6)))
+
+     ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar my-org-export-preprocess-replacement-alist
+  '(("<new>" . "@<font color='blue'>")
+    ("</new>" . "@</font>"))
+  "*Export preprocess replacements")
+
+(defun my-org-export-preprocess-hook ()
+  "Export preprocess hook."
+  (goto-char (point-min))
+  (dolist (item my-org-export-preprocess-replacement-alist)
+    (let ((key (car item))
+          (repl (cdr item)))
+      (while (search-forward key nil t)
+        (replace-match repl)))
+    (goto-char (point-min))))
+
+(add-hook 'org-export-preprocess-hook 'my-org-export-preprocess-hook)
+
+(defun my-org-export-html-final-hook ()
+  "Export html final hook."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "<h3.*?>" nil t)
+      (insert "&#8226"))))
+
+(add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
+
+(defun my-org-strip-new ()
+  "Strip <new></new> from file."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (dolist (item (list "<new>" "</new>"))
+      (while (search-forward item nil t)
+        (replace-match ""))
+      (goto-char (point-min)))))
+
+;; TODO
+;; To: recipients
+;; From: scfrazer@cisco.com
+;; Subject: title
+;; Content-type: text/html;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-prefix-command 'my-org-mode-map)
 (define-key my-org-mode-map (kbd "!") 'my-org-insert-open-time-stamp)
@@ -172,10 +240,12 @@ Otherwise: Add a checkbox and update heading accordingly."
 (define-key my-org-mode-map (kbd "RET") 'my-org-insert-heading)
 (define-key my-org-mode-map (kbd "TAB") 'org-cycle)
 (define-key my-org-mode-map (kbd "a") 'org-archive-subtree)
+(define-key my-org-mode-map (kbd "e") 'org-export-as-html)
 (define-key my-org-mode-map (kbd "f") 'org-open-at-point)
 (define-key my-org-mode-map (kbd "l") 'org-store-link)
 (define-key my-org-mode-map (kbd "n") 'outline-forward-same-level)
 (define-key my-org-mode-map (kbd "p") 'outline-backward-same-level)
+(define-key my-org-mode-map (kbd "r") 'org-renumber-ordered-list)
 (define-key my-org-mode-map (kbd "s") 'org-sort-entries-or-items)
 (define-key my-org-mode-map (kbd "t") 'my-org-set-todo-state)
 (define-key my-org-mode-map (kbd "u") 'my-org-up-heading)
@@ -184,7 +254,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 (define-key my-org-mode-map (kbd "y") 'org-paste-subtree)
 
 (defun my-org-mode-hook ()
-  (define-key org-mode-map (kbd "C-f") 'my-org-mode-map)
+  (define-key org-mode-map (kbd "C-x o") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end))
 
@@ -269,30 +339,28 @@ h1 {
     color: #fff;
     font-family: \"BitStream Vera Sans\", Verdana;
     font-size: 200%;
-    font-weight: bold;
-    letter-spacing: 0.1em;
     margin: -1em -1em .2em;
     padding: 0.75em 1em;
 }
 
 h2 {
-    font-size: 180%;
-    border-bottom: 1px solid #ccc;
+    font-size: 150%;
+    font-weight: normal;
     padding: .2em;
+    border-bottom: 1px solid #888;
 }
 
 h3 {
     font-size: 120%;
-    border-bottom: 1px solid #eee;
+    font-weight: normal;
 }
 
 h4 {
     font-size: 110%;
-    border-bottom: 1px solid #eee;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    text-transform: capitalize;
+    /* text-transform: capitalize; */
 }
 
 tt {
@@ -383,11 +451,11 @@ span.underline {
 /* Todo List Styles */
 
 .title { text-align: center; }
-.todo  { color: red; }
+.todo  { color: red; text-align: right }
 .done { color: green; }
 .timestamp { color: gray }
 .timestamp-kwd { color: #f59ea0; }
-.tag { background-color:#add8e6; font-weight:normal }
+.tag { color: red; font-weight:normal }
 .target { background-color: #551a8b; }
 pre {
        border: 1pt solid #AEBDCC;
