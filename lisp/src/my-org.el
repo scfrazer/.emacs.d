@@ -172,7 +172,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 
      (define-abbrev org-mode-abbrev-table
        "head"
-       "#+TITLE: \n#+OPTIONS: author:nil email:nil creator:nil timestamp:nil toc:nil num:nil\n"
+       "#+TITLE: \n#+OPTIONS: author:nil email:nil creator:nil timestamp:nil toc:nil num:nil\n#+EMAIL_ADDRS: scfrazer\n"
        (lambda ()
          (search-backward "TITLE:")
          (forward-char 7)))
@@ -253,7 +253,9 @@ Otherwise: Add a checkbox and update heading accordingly."
             (when (re-search-forward "<title>\\(.+\\)</title>" nil t)
               (goto-char pos)
               (insert "Subject: " (match-string-no-properties 1) "\n")))
-          (insert "Content-type: text/html;\n"))))))
+          (insert "Content-type: text/html;\n")
+          (call-process-region (point-min) (point-max) "/usr/sbin/sendmail" nil t nil email-addrs))
+        (kill-buffer "*exported-html*")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
