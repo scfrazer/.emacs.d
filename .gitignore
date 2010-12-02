@@ -2,4 +2,5 @@
 .hgignore
 auto-save-list
 doc
+*.html
 tasks
