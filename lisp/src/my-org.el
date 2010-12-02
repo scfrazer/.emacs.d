@@ -232,13 +232,24 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (add-hook 'org-export-preprocess-hook 'my-org-export-preprocess-hook)
 
+(defvar my-org-add-bullets nil)
+
+(defadvice org-export-as-html (before my-org-export-as-html activate)
+  "Hook to see if section numbers are going to be added."
+  (let ((opt-plist
+         (org-export-process-option-filters
+          (org-combine-plists (org-default-export-plist)
+                              ext-plist
+                              (org-infile-export-plist)))))
+    (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
+
 (defun my-org-export-html-final-hook ()
   "Export html final hook."
   (save-excursion
 
     (goto-char (point-min))
     (while (re-search-forward "<h[3-6].*?>" nil t)
-      (insert "<div style='float:left'>&bull; "))
+      (insert "<div style='float:left'>" (if my-org-add-bullets "&bull; " "")))
 
     (goto-char (point-min))
     (while (re-search-forward "</h[3-6]>" nil t)
