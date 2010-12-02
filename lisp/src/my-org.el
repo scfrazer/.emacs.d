@@ -363,7 +363,7 @@ h1 {
     font-family: \"BitStream Vera Sans\", Verdana;
     font-size: 180%;
     margin: -1em -1em .2em;
-    padding: 0.75em 1em;
+    padding: 0.75em 1em 0em 1em;
 }
 
 h2 {
@@ -421,9 +421,10 @@ div#postamble p {
 }
 
 table {
+    border: 1px solid #777;
     font-size: 100%;
     border-collapse: collapse;
-    margin: .5em 0;
+    margin: 1em 0;
 }
 
 th, td {
@@ -473,6 +474,7 @@ span.underline {
 }
 
 /* Todo List Styles */
+ul { list-style-type: square; }
 
 /* .title { text-align: center; } */
 .todo  { color: red; text-align: right }
