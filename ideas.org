@@ -1,20 +1,18 @@
-* TODO C++ mode [0/2]
-  - [ ] Handle void type in doxymacs
-  - [ ] Automatic switching files and choosing insertion location for doxygen
+#+TITLE: Emacs Ideas
 
-* TODO Blog ideas [0/9]
-  - [ ] Minor mode for key customization
-  - [ ] Ido w/ recentf and imenu
-  - [ ] Etags-select and etags-table and etags-stack
-  - [ ] Writing a major mode
-  - [ ] CUA rectangles
-  - [ ] Grep-ed and igrep
-  - [ ] Pop-back from ffap and imenu
-  - [ ] Abbrev and yasnippet
+** TODO C++ mode [0/2]
+   - [ ] Handle void type in doxymacs
+   - [ ] Automatic switching files and choosing insertion location for doxygen
 
-* TODO ClearCase [0/6]
-  - [ ] Buffer showing all view private files
-  - [ ] Open/add/delete/diff/unco/goto-dir-and-switch-modes files
-  - [ ] Switch mode to buffer showing ct ls --recursive
-  - [ ] Open/diff/unco/checkin/switch-modes files/dirs
-  - [ ] cc_label
+** TODO Blog ideas [0/9]
+   - [ ] Minor mode for key customization
+   - [ ] Ido w/ recentf and imenu
+   - [ ] Etags-select and etags-table and etags-stack
+   - [ ] Writing a major mode
+   - [ ] CUA rectangles
+   - [ ] Grep-ed and igrep
+   - [ ] Pop-back from ffap and imenu
+   - [ ] Abbrev and yasnippet
+
+** TODO SV mode [0/1]
+   - [ ] Handle parameterized classes/functions/properties/etc.
