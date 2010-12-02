@@ -10,6 +10,11 @@
               org-cycle-include-plain-lists t
               org-cycle-separator-lines 1
               org-display-custom-times t
+              org-export-author-info nil
+              org-export-creator-info nil
+              org-export-time-stamp-file nil
+              org-export-with-toc nil
+              org-export-with-section-numbers nil
               org-export-html-inline-images t
               org-export-html-style-include-default nil
               org-export-htmlize-output-type 'inline-css
@@ -167,20 +172,40 @@ Otherwise: Add a checkbox and update heading accordingly."
   '(progn
 
      (define-abbrev org-mode-abbrev-table
-       "t"
+       "td"
        "TODO ")
 
      (define-abbrev org-mode-abbrev-table
-       "head"
-       "#+TITLE: \n#+OPTIONS: author:nil email:nil creator:nil timestamp:nil toc:nil num:nil\n#+EMAIL_ADDRS: scfrazer\n"
-       (lambda ()
-         (search-backward "TITLE:")
-         (forward-char 7)))
+       "title"
+       "#+TITLE: \n"
+       (lambda () (backward-char 1)))
+
+     (define-abbrev org-mode-abbrev-table
+       "toc"
+       "#+OPTIONS: toc:t num:t\n")
+
+     (define-abbrev org-mode-abbrev-table
+       "email"
+       "#+EMAIL_ADDRS: scfrazer\n")
 
      (define-abbrev org-mode-abbrev-table
        "new"
        "<new></new>"
        (lambda () (backward-char 6)))
+
+     (define-abbrev org-mode-abbrev-table
+       "pre"
+       "<pre>\n\n</pre>"
+       (lambda () (backward-char 7)))
+
+     (define-abbrev org-mode-abbrev-table
+       "src"
+       "<src >\n\n</src>"
+       (lambda ()
+         (let ((mode (read-from-minibuffer "Mode? ")))
+           (backward-char 9)
+           (insert mode)
+           (forward-char 2))))
 
      ))
 
@@ -188,7 +213,11 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (defvar my-org-export-preprocess-replacement-alist
   '(("<new>" . "@<font color='blue'>")
-    ("</new>" . "@</font>"))
+    ("</new>" . "@</font>")
+    ("<pre>" . "#+BEGIN_EXAMPLE")
+    ("</pre>" . "#+END_EXAMPLE")
+    ("<src\\s-+\\(.+\\)>" . "#+BEGIN_SRC \\1")
+    ("</src>" . "#+END_SRC"))
   "*Export preprocess replacements")
 
 (defun my-org-export-preprocess-hook ()
@@ -197,7 +226,7 @@ Otherwise: Add a checkbox and update heading accordingly."
   (dolist (item my-org-export-preprocess-replacement-alist)
     (let ((key (car item))
           (repl (cdr item)))
-      (while (search-forward key nil t)
+      (while (re-search-forward key nil t)
         (replace-match repl)))
     (goto-char (point-min))))
 
@@ -305,37 +334,13 @@ body {
     font-size: 85%;
 }
 
-code {
-    border: 1px solid #ccc;
-    background: #eee;
-    padding: 1px;
-}
-
 div#content {
     background: #fff;
     margin: 0;
     padding: 2em;
 }
 
-a {
-    color: #139;
-    text-decoration: none;
-    padding: 1px;
-    border: 1px solid #e0e0e0;
-}
-
-a:hover {
-    border: 1px solid #000;
-}
-
-/*
-a:visited {
-    color: #939;
-}
-*/
-
 #table-of-contents {
-    margin: 1em 0;
     padding: .1em;
 }
 
@@ -345,18 +350,6 @@ a:visited {
 #table-of-contents li a:hover {
     border: 0;
     color: #139;
-}
-
-div.title {
-    margin: -1em -1em 0;
-    font-size: 200%;
-    font-weight: bold;
-    background: #369;
-    color: #fff;
-    padding: .75em 1em;
-    font-family: \"BitStream Vera Sans\", Verdana;
-    letter-spacing: .1em;
-    /* border-bottom: 4px solid #f00; */
 }
 
 h1 {
@@ -382,42 +375,33 @@ h4 {
     font-size: 110%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    /* text-transform: capitalize; */
+a {
+    color: #139;
+    text-decoration: none;
+    padding: 1px;
+    border: 1px solid #e0e0e0;
 }
 
-tt {
-    border: 1px solid #ccc;
-    background: #eee;
+a:hover {
+    border: 1px solid #000;
 }
 
-.verbatim {
-    margin: .5em 0;
+span.underline {
+    text-decoration: underline;
 }
+
 pre {
-    border: 1px solid #ccc;
-    background: #eee;
-    padding: .5em;
     overflow: auto;
-}
-.verbatim pre {
-    margin: 0;
-}
-.verbatim-caption {
-    border: 1px solid #ccc;
-    border-bottom: 0;
-    background: #fff;
-    display: block;
-    font-size: 80%;
-    padding: .2em;
+    border: 1pt solid #AEBDCC;
+    background-color: #F3F5F7;
+    padding: 5pt;
+    font-family: courier, monospace;
 }
 
-div#postamble p {
-    text-align: left;
-    color: #888;
-    font-size: 80%;
-    padding: 0;
-    margin: 0;
+code {
+    border: 1px solid #ccc;
+    background: #eee;
+    padding: 1px;
 }
 
 table {
@@ -431,68 +415,21 @@ th, td {
     border: 1px solid #777;
     padding: .3em;
     margin: 2px;
+    vertical-align: top;
 }
+
 th {
     background: #eee;
 }
 
-span.underline {
-    text-decoration: underline;
-}
-
-.fixme {
-    background: #ff0;
-    font-weight: bold;
-}
-.ra {
-    text-align: right;
-}
-
-.sidebar {
-  float: right;
-  width: 25em;
-  background-color: #a02f6c;
-  color: #fff;
-  margin: 2em -2em 2em 2em;
-  padding: 1em;
-}
-.sidebar a {
-  border: none;
-}
-
-.sidebar a:link {
-  color: #3ff;
-}
-.sidebar a:visited {
-  color: #3cc;
-}
-.sidebar a:hover {
-  color: #ff6;
-}
-.sidebar a:active {
-  color: #900;
-}
-
-/* Todo List Styles */
 ul { list-style-type: square; }
 
-/* .title { text-align: center; } */
-.todo  { color: red; text-align: right }
+.todo { color: red; }
 .done { color: green; }
 .timestamp { color: gray }
 .timestamp-kwd { color: #f59ea0; }
 .tag { color: red; font-weight:normal }
 .target { background-color: #551a8b; }
-pre {
-       border: 1pt solid #AEBDCC;
-       background-color: #F3F5F7;
-       padding: 5pt;
-       font-family: courier, monospace;
-}
-table { border-collapse: collapse; }
-td, th {
-  vertical-align: top;
-}
 </style>
 ")
 
