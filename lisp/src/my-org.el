@@ -74,7 +74,10 @@ Otherwise: Add a checkbox and update heading accordingly."
          (my-org-add-or-update-checkbox-count))
         (t
          (back-to-indentation)
-         (insert "- [ ] ")
+         (if (looking-at "- ")
+             (forward-char 2)
+           (insert "- "))
+         (insert "[ ] ")
          (indent-according-to-mode)
          (save-excursion
            (org-back-to-heading)
@@ -372,18 +375,33 @@ h1 {
 
 h2 {
     font-size: 150%;
-    font-weight: normal;
     padding: .2em;
     border-bottom: 1px solid #888;
 }
 
 h3 {
     font-size: 120%;
-    font-weight: normal;
+}
+
+.outline-text-3 {
+    margin: 0em 1em;
 }
 
 h4 {
     font-size: 110%;
+}
+
+.outline-4 {
+    margin: 0em 1em;
+}
+
+.outline-text-4 {
+    margin: 0em 2em;
+}
+
+h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    margin: 1em 0;
 }
 
 a {
