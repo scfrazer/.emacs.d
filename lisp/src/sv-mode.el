@@ -532,8 +532,9 @@ expression."
           (setq ret nil))
         (re-search-forward "[(;]"))
       (when (= (char-before) ?\()
-        (re-search-forward "\\(.*\\))\\s-*;")
-        (let ((arg-string (match-string-no-properties 1))
+        (setq pos (point))
+        (re-search-forward ")\\s-*;")
+        (let ((arg-string (buffer-substring-no-properties pos (match-beginning 0)))
               arg-strings arg-name arg-type)
           (setq arg-string (replace-regexp-in-string "\n" " " arg-string))
           (with-temp-buffer
