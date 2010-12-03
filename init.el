@@ -1128,7 +1128,11 @@ Does not set point.  Does nothing if mark ring is empty."
   '(progn
      (setq compilation-error-regexp-alist
            (add-to-list 'compilation-error-regexp-alist
-                        '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))))
+                        '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))
+     (setq compilation-error-regexp-alist
+           (add-to-list 'compilation-error-regexp-alist
+                        '("^Error-.+\n\\(.+\\),\\s-+\\([0-9]+\\)" 1 2)))
+     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
