@@ -582,6 +582,47 @@ Prefix with C-u to fit the `next-window'."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-reformat-comma-delimited-items ()
+  "Put all comma-delimited items on one line, or each on its own line."
+  (interactive)
+  (save-excursion
+    (backward-up-list)
+    (let ((start (1+ (point))) end
+          (start-line (line-number-at-pos))
+          (items '()) collect)
+      (forward-sexp)
+      (setq end (1- (point)))
+      ;; Parse items
+      (let ((item-string
+             (replace-regexp-in-string "\n" " " (buffer-substring-no-properties start end)))
+            (item-strings '()) pos)
+        (with-temp-buffer
+          (insert item-string)
+          (goto-char (point-min))
+          (setq pos (point))
+          (while (not (eobp))
+            (forward-sexp)
+            (when (looking-at "\\s-*,")
+              (push (buffer-substring-no-properties pos (point)) item-strings)
+              (search-forward ",")
+              (setq pos (point))))
+          (push (buffer-substring-no-properties pos (point)) item-strings))
+        (dolist (str item-strings)
+          (let ((trimmed-str (and str (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" str))))
+            (when trimmed-str
+              (push trimmed-str items)))))
+      ;; Collect or disperse items
+      (goto-char start)
+      (setq collect (not (= start-line (line-number-at-pos end))))
+      (delete-region start end)
+      (dolist (item items)
+        (insert item ",")
+        (if collect
+            (insert " ")
+          (indent-according-to-mode)
+          (insert "\n")))
+      (delete-char -2))))
+
 (defun my-regexp-backward (regexp)
   "Skip lines backward containing a regexp."
   (interactive "sSkip lines backward containing regexp: ")
@@ -912,10 +953,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<C-f4>" 'my-apply-macro-to-region-lines)
 (my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "<C-tab>" 'other-window)
-(my-keys-define "<M-S-return>" 'makd-open-line-below)
-(my-keys-define "<M-return>" 'makd-open-line-above)
+(my-keys-define "<M-return>" 'makd-open-line-below)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
+(my-keys-define "<S-return>" 'makd-open-line-above)
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "<f2>" 'undefined)
 (my-keys-define "<f5>" 'task-bmk-toggle)
@@ -943,6 +984,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c ;" 'my-insert-comment-line)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region)
+(my-keys-define "C-c C-," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-g" 'grep-buffers)
