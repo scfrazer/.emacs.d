@@ -179,7 +179,7 @@ Otherwise: Add a checkbox and update heading accordingly."
        "TODO ")
 
      (define-abbrev org-mode-abbrev-table
-       "title"
+       "ti"
        "#+TITLE: \n"
        (lambda () (backward-char 1)))
 
