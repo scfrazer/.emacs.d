@@ -198,17 +198,17 @@ Otherwise: Add a checkbox and update heading accordingly."
 
      (define-abbrev org-mode-abbrev-table
        "pre"
-       "<pre>\n\n</pre>"
-       (lambda () (backward-char 7)))
+       "#+BEGIN_EXAMPLE\n\n#+END_EXAMPLE"
+       (lambda () (backward-char 14)))
 
      (define-abbrev org-mode-abbrev-table
        "src"
-       "<src >\n\n</src>"
+       "#+BEGIN_SRC \n\n#+END_SRC"
        (lambda ()
          (let ((mode (read-from-minibuffer "Mode? ")))
-           (backward-char 9)
+           (backward-char 11)
            (insert mode)
-           (forward-char 2))))
+           (forward-char 1))))
 
      ))
 
@@ -216,11 +216,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (defvar my-org-export-preprocess-replacement-alist
   '(("<new>" . "@<font color='blue'>")
-    ("</new>" . "@</font>")
-    ("<pre>" . "#+BEGIN_EXAMPLE")
-    ("</pre>" . "#+END_EXAMPLE")
-    ("<src\\s-+\\(.+\\)>" . "#+BEGIN_SRC \\1")
-    ("</src>" . "#+END_SRC"))
+    ("</new>" . "@</font>"))
   "*Export preprocess replacements")
 
 (defun my-org-export-preprocess-hook ()
