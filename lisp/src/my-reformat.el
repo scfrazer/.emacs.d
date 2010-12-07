@@ -3,6 +3,15 @@
 (defun my-reformat-comma-delimited-items ()
   "Put all comma-delimited items on one line, or each on its own line."
   (interactive)
+  (my-reformat-delimited-items ","))
+
+(defun my-reformat-semi-delimited-items ()
+  "Put all semi-delimited items on one line, or each on its own line."
+  (interactive)
+  (my-reformat-delimited-items ";"))
+
+(defun my-reformat-delimited-items (str)
+  "Put all STR-delimited items on one line, or each on its own line."
   (save-excursion
     (backward-up-list)
     (let ((start (1+ (point))) end
@@ -15,14 +24,14 @@
              (replace-regexp-in-string "\n" " " (buffer-substring-no-properties start end)))
             (item-strings '()) pos)
         (with-temp-buffer
-          (insert item-string)
+          (insert (replace-regexp-in-string "[ \t]+" " " item-string))
           (goto-char (point-min))
           (setq pos (point))
           (while (not (eobp))
             (forward-sexp)
-            (when (looking-at "\\s-*,")
+            (when (looking-at (concat "\\s-*" str))
               (push (buffer-substring-no-properties pos (point)) item-strings)
-              (search-forward ",")
+              (search-forward str)
               (setq pos (point))))
           (push (buffer-substring-no-properties pos (point)) item-strings))
         (dolist (str item-strings)
@@ -34,7 +43,7 @@
       (setq collect (not (= start-line (line-number-at-pos end))))
       (delete-region start end)
       (dolist (item items)
-        (insert item ",")
+        (insert item str)
         (if collect
             (insert " ")
           (indent-according-to-mode)
