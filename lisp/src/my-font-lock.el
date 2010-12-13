@@ -24,9 +24,9 @@
 
 ;; Font size faces and functions
 
-(defface my-small-face
-  '((t (:height 0.78)))
-  "Small face."
+(defface my-buffer-face-mode-face
+  '((t (:height 1.17)))
+  "buffer-face-mode face."
   :group 'faces)
 
 (defun my-font-small ()

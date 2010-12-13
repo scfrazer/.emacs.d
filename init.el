@@ -122,7 +122,7 @@
               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
               browse-kill-ring-separator-face (quote font-lock-keyword-face)
               browse-kill-ring-use-fontification t
-              buffer-face-mode-face 'my-small-face
+              buffer-face-mode-face 'my-buffer-face-mode-face
               case-fold-search t
               column-number-mode t
               comment-column 0
@@ -869,7 +869,6 @@ Does not set point.  Does nothing if mark ring is empty."
   '(progn
      (defun my-elog-mode-hook ()
        (my-whitespace-off-hook)
-       (buffer-face-mode 1)
        (setq truncate-lines 'one-line-each))
      (add-hook 'elog-mode-hook 'my-elog-mode-hook)))
 
