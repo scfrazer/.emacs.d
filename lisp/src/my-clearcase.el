@@ -190,13 +190,13 @@ on the directory element itself is listed, not on its contents."
   "Syntax table for `clearcase-edcs-mode'.")
 
 ; (concat "\\<" (regexp-opt '("include" "element") t) "\\>")
-; (concat "\\<" (regexp-opt '("CHECKEDOUT" "LATEST") t) "\\>")
+; (concat "\\<" (regexp-opt '("CHECKEDOUT" "LATEST" "INLINE" "DISCARD") t) "\\>")
 
 (defvar clearcase-edcs-mode-font-lock-keywords
   '(
     ("^\\s-*\\<\\(element\\|include\\)\\>"
      (1 font-lock-keyword-face))
-    ("\\<\\(\\(?:CHECKEDOU\\|LATES\\)T\\)\\>"
+    ("\\<\\(CHECKEDOUT\\|DISCARD\\|INLINE\\|LATEST\\)\\>"
      (1 font-lock-builtin-face))
     )
   "Keyword highlighting specification for `clearcase-edcs-mode'.")
@@ -262,5 +262,6 @@ on the directory element itself is listed, not on its contents."
   (run-hooks 'text-mode-hook))
 
 (add-to-list 'auto-mode-alist '("\\.cs$" . clearcase-cs-mode))
+(add-to-list 'auto-mode-alist '("\\.template$" . clearcase-cs-mode))
 
 (provide 'my-clearcase)

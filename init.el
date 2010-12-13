@@ -1135,6 +1135,8 @@ Does not set point.  Does nothing if mark ring is empty."
                         '("^Error-.+\n\\(.+\\),\\s-+\\([0-9]+\\)" 1 2)))
      ))
 
+(add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
