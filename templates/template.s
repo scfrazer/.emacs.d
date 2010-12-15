@@ -5,7 +5,7 @@
 //   Language : Verilog (with SpecterX)
 //   Author   : %u
 //
-//   Description : %[Description: %]%q
+//   Description : %1
 //
 // ----------------------------------------------------------------------------
 // Copyright (c) %Y by Cisco Systems, Inc
