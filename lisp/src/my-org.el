@@ -214,6 +214,10 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;TODO defface and colorize <new> and </new>
+;;TODO Bind remove-new and strip-all-new to keys
+;;TODO Add function and bind adding <new></new> around active region
+
 (defvar my-org-export-preprocess-replacement-alist
   '(("<new>" . "@<font color='blue'>")
     ("</new>" . "@</font>"))
@@ -265,7 +269,17 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
 
-(defun my-org-strip-new ()
+(defun my-org-remove-new ()
+  "Remove the current new's."
+  (interactive)
+  (save-excursion
+    (unless (looking-at "<new>")
+      (re-search-backward "<new>"))
+    (delete-char 5)
+    (re-search-forward "</new>")
+    (delete-char -6)))
+
+(defun my-org-strip-all-new ()
   "Strip <new></new> from file."
   (interactive)
   (save-excursion
