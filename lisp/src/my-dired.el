@@ -69,6 +69,7 @@
             (let ((dir default-directory))
               (switch-to-buffer (cdr dbuf))
               (when arg
+                (setq my-dired-prev-dir (dired-current-directory))
                 (find-alternate-file dir)))
             (throw 'done t)))
         (dired default-directory))
