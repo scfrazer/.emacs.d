@@ -441,6 +441,12 @@ Prefix with C-u to fit the `next-window'."
       (my-increment-number-hexadecimal)
     (my-increment-number-decimal)))
 
+(defun my-indent ()
+  "Indent entire buffer."
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max))))
+
 (defun my-insert-comment-line ()
   "Insert an 80-column comment line"
   (interactive)
@@ -740,6 +746,12 @@ Only works if there are exactly two windows."
     (if (region-active-p)
         (fill-region (region-beginning) (region-end))
       (fill-paragraph 1))))
+
+(defun my-untabity ()
+  "Untabify entire buffer."
+  (interactive)
+  (save-excursion
+    (untabify (point-min) (point-max))))
 
 (defun unpop-to-mark-command ()
   "Unpop off mark ring into the buffer's actual mark.
@@ -1156,6 +1168,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'sl 'sort-lines)
 (defalias 'blue 'my-theme-deeper-blue)
 (defalias 'red 'my-theme-deeper-red)
+(defalias 'unt 'my-untabity)
+(defalias 'ind 'my-indent)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup

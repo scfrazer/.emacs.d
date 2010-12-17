@@ -35,8 +35,6 @@
 
 (add-hook 'isearch-mode-hook 'my-isearch-mode-hook)
 
-(define-key isearch-mode-map (kbd "C-n") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "C-p") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "<C-return>") 'my-isearch-exit-other-end)
+(define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
 
 (provide 'my-isearch)
