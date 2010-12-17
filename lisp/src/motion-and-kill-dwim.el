@@ -437,6 +437,8 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?m) (kill-sexp 1))
        ((eq c ?M) (kill-sexp -1))
 
+       ((eq c ? ) (kill-region (point) (or (mark) (point))))
+
        ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
         (kill-region (point-at-bol) (point-at-bol 2))))
 
@@ -482,6 +484,8 @@ This is a utility function, you probably want `makd-backward-word-section'."
 
                   ((eq c ?m) (forward-sexp 1))
                   ((eq c ?M) (forward-sexp -1))
+
+                  ((eq c ? ) (goto-char (or (mark) (point))))
 
                   ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
                    (setq beg (point-at-bol)) (forward-line) (beginning-of-line)))
