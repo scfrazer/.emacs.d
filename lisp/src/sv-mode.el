@@ -330,9 +330,9 @@ Otherwise indent them as usual."
            (cons "^\\s-*\\(\\(static\\|extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
            ;; Instances
-           (cons "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\([a-zA-Z0-9_]+\\)\\s-*("
+           (cons "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\(#\\s-*([^)]*)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*("
                  '((1 font-lock-type-face)
-                   (2 font-lock-variable-name-face)))
+                   (3 font-lock-variable-name-face)))
            ;; Labels
            (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
                  '(2 font-lock-constant-face t))))
@@ -1054,9 +1054,9 @@ Optional ARG means justify paragraph as well."
               item-alist)))
     ;; Look for instances
     (goto-char (point-min))
-    (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\([a-zA-Z0-9_]+\\)\\s-*(" nil 'go)
+    (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\s-*([^)]*?)[ \t\n]+\\)?\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
       (setq item-type (match-string-no-properties 1))
-      (setq item (cons (concat (match-string-no-properties 2) " <instance>") (match-beginning 2)))
+      (setq item (cons (concat (match-string-no-properties 3) " <instance>") (match-beginning 3)))
       (unless (string-match sv-mode-keywords item-type)
         (push item item-alist)))
     (nreverse item-alist)))
