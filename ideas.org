@@ -1,5 +1,10 @@
 #+TITLE: Emacs Ideas
 
+** TODO sv-mode [0/3]
+   - [ ] Var for fcn for determining plain verilog, e.g. add no labels
+   - [ ] Copy module (at point or above) defn, then be able to paste inst or wires
+   - [ ] Copy task/fcn (at point or above) defn (expand existing parse?), then paste call
+
 ** TODO C++ mode [0/2]
    - [ ] Handle void type in doxymacs
    - [ ] Automatic switching files and choosing insertion location for doxygen

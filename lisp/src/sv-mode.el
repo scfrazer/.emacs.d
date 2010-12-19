@@ -329,6 +329,10 @@ Otherwise indent them as usual."
            ;; Tasks/functions/programs
            (cons "^\\s-*\\(\\(static\\|extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
+           ;; Instances
+           (cons "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\([a-zA-Z0-9_]+\\)\\s-*("
+                 '((1 font-lock-type-face)
+                   (2 font-lock-variable-name-face)))
            ;; Labels
            (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
                  '(2 font-lock-constant-face t))))
@@ -1028,8 +1032,8 @@ Optional ARG means justify paragraph as well."
 
 (defun sv-mode-imenu-create-index-function ()
   "Create sv-mode Imenu index."
-  (let ((item-alist '())
-        item-type)
+  (let ((item-alist '()) item-type item)
+    ;; Look for verification items
     (goto-char (point-min))
     (while (sv-mode-re-search-forward
             "\\_<\\(class\\|struct\\|enum\\|module\\|interface\\|task\\|function\\|program\\)\\_>"
@@ -1048,6 +1052,13 @@ Optional ARG means justify paragraph as well."
         (push (cons (concat (match-string-no-properties 2) " <" item-type ">")
                     (match-beginning 2))
               item-alist)))
+    ;; Look for instances
+    (goto-char (point-min))
+    (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\([a-zA-Z0-9_]+\\)\\s-*(" nil 'go)
+      (setq item-type (match-string-no-properties 1))
+      (setq item (cons (concat (match-string-no-properties 2) " <instance>") (match-beginning 2)))
+      (unless (string-match sv-mode-keywords item-type)
+        (push item item-alist)))
     (nreverse item-alist)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
