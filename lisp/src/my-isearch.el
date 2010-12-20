@@ -27,14 +27,22 @@
       (isearch-yank-string
        (buffer-substring-no-properties (progn (skip-syntax-backward "w_") (point))
                                        (save-excursion (skip-syntax-forward "w_") (point))))
-    (when (and transient-mark-mode mark-active)
+    (when (and transient-mark-mode mark-active (/= (region-beginning) (region-end)))
       (when (= (point) (region-end))
         (exchange-point-and-mark))
-      (isearch-yank-string (buffer-substring (point) (region-end))))
-    (setq mark-active nil)))
+      (isearch-yank-string (buffer-substring (point) (region-end)))
+      (setq mark-active nil))))
 
 (add-hook 'isearch-mode-hook 'my-isearch-mode-hook)
 
+(defun my-isearch-yank-sexp ()
+  "Pull next sexp from buffer into search string."
+  (interactive)
+  (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+
 (define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
+(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
+(define-key isearch-mode-map (kbd "C-d") 'isearch-del-char)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 
 (provide 'my-isearch)
