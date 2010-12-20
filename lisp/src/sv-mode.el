@@ -1032,7 +1032,7 @@ Optional ARG means justify paragraph as well."
 
 (defun sv-mode-imenu-create-index-function ()
   "Create sv-mode Imenu index."
-  (let ((item-alist '()) item-type item)
+  (let ((item-alist '()) item-type item-name item)
     ;; Look for verification items
     (goto-char (point-min))
     (while (sv-mode-re-search-forward
@@ -1054,9 +1054,17 @@ Optional ARG means justify paragraph as well."
               item-alist)))
     ;; Look for instances
     (goto-char (point-min))
-    (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\s-*([^)]*?)[ \t\n]+\\)?\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
+;     (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\s-*([^)]*?)[ \t\n]+\\)?\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
+    (while (sv-mode-re-search-forward
+            "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
       (setq item-type (match-string-no-properties 1))
-      (setq item (cons (concat (match-string-no-properties 3) " <instance>") (match-beginning 3)))
+      (setq item-name (match-string-no-properties 2))
+      (if (not (string= item-name "#"))
+          (setq item (cons (concat item-name " <" item-type ">") (match-beginning 2)))
+        (backward-char)
+        (forward-sexp)
+        (re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)" nil t)
+        (setq item (cons (concat (match-string-no-properties 1) " <" item-type ">") (match-beginning 1))))
       (unless (string-match sv-mode-keywords item-type)
         (push item item-alist)))
     (nreverse item-alist)))
