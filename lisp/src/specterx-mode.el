@@ -26,10 +26,10 @@
 
 (define-derived-mode specterx-mode sv-mode "SpecterX"
   "Mode for editing Verilog with embedded Perl."
+  :abbrev-table nil
+  :syntax-table nil
   (let ((keywords (list
                    (cons "\\(<%\\|%>\\|@perl\\)"
-                         '(0 'specterx-directive-face t))
-                   (cons "<[^%].*?>"
                          '(0 'specterx-directive-face t))
                    (cons "[a-zA-Z0-9_]+__[a-zA-Z0-9_]+__"
                          '(0 'specterx-block-connect-face t))
