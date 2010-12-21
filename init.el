@@ -962,7 +962,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-l" 'll-debug-renumber)
 (my-keys-define "C-c C-o" 'ff-get-other-file)
 (my-keys-define "C-c G" 'rgrep)
-(my-keys-define "C-c H" 'unhighlight-regexp)
 (my-keys-define "C-c L" 'll-debug-revert)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c SPC" 'my-delete-whitespace-after-cursor)
@@ -1163,14 +1162,15 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'perl-mode 'cperl-mode)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'blue 'my-theme-deeper-blue)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'find 'my-find-name-dired)
-(defalias 'kr 'browse-kill-ring)
-(defalias 'sl 'sort-lines)
-(defalias 'blue 'my-theme-deeper-blue)
-(defalias 'red 'my-theme-deeper-red)
-(defalias 'unt 'my-untabity)
+(defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
+(defalias 'kr 'browse-kill-ring)
+(defalias 'red 'my-theme-deeper-red)
+(defalias 'sl 'sort-lines)
+(defalias 'unt 'my-untabity)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup

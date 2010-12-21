@@ -18,6 +18,3 @@
    - [ ] Grep-ed and igrep
    - [ ] Pop-back from ffap and imenu
    - [ ] Abbrev and yasnippet
-
-** TODO SV mode [0/1]
-   - [ ] Handle parameterized classes/functions/properties/etc.

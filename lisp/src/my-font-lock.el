@@ -92,7 +92,7 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
       (my-font-lock-add-whitespace))))
 
 (defun my-font-lock-find-file-hook ()
-  (when buffer-read-only
+  (when (or buffer-read-only (string-match "\.el\.gz$" (buffer-file-name)))
     (my-font-lock-show-whitespace -1)))
 
 (defadvice toggle-read-only (after my-font-lock-toggle-read-only activate)
