@@ -864,18 +864,15 @@ Optional ARG means justify paragraph as well."
 
 (defun sv-mode-get-indent-in-comment ()
   "Get amount to indent when in comment."
-  (let ((starts-with-* (looking-at "\\s-*\\*")))
-    (save-excursion
-      (forward-line -1)
-      (while (and (looking-at "^\\s-*$") (not (bobp)))
-        (forward-line -1))
-      (if (sv-mode-in-comment-or-string)
-          (back-to-indentation)
-        (re-search-forward "/\\*")
-        (backward-char))
-;;       (unless (and starts-with-* (= (char-after) ?*))
-;;         (skip-syntax-forward "^w_" (line-end-position)))
-      (current-column))))
+  (save-excursion
+    (forward-line -1)
+    (while (and (looking-at "^\\s-*$") (not (bobp)))
+      (forward-line -1))
+    (if (sv-mode-in-comment-or-string)
+        (back-to-indentation)
+      (re-search-forward "/\\*")
+      (backward-char))
+    (current-column)))
 
 (defun sv-mode-get-indent-if-in-paren ()
   "Get amount to indent if in parentheses, brackets, or braces"
@@ -1054,7 +1051,6 @@ Optional ARG means justify paragraph as well."
               item-alist)))
     ;; Look for instances
     (goto-char (point-min))
-;     (while (sv-mode-re-search-forward "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\s-*([^)]*?)[ \t\n]+\\)?\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
     (while (sv-mode-re-search-forward
             "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
       (setq item-type (match-string-no-properties 1))
