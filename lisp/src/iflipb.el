@@ -207,7 +207,7 @@ minibuffer."
   (let ((name (buffer-name buffer)))
     (when (eq current-buffer buffer)
       (setq name (format "[%s]" name))
-      (add-text-properties 1 (1- (length name)) '(face font-lock-type-face) name))
+      (add-text-properties 1 (1- (length name)) '(face font-lock-variable-name-face) name))
     name))
 
 (defun iflipb-format-buffers (current-buffer buffers)

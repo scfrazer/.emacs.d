@@ -1,6 +1,8 @@
 #+TITLE: Emacs Ideas
 
-** TODO sv-mode [0/3]
+** TODO sv-mode [0/5]
+   - [ ] Work on hdl-dbg.el
+   - [ ] Speedbar special display mode
    - [ ] Var for fcn for determining plain verilog, e.g. add no labels
    - [ ] Copy module (at point or above) defn, then be able to paste inst or wires
    - [ ] Copy task/fcn (at point or above) defn (expand existing parse?), then paste call
