@@ -214,9 +214,10 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;TODO defface and colorize <new> and </new>
-;;TODO Bind remove-new and strip-all-new to keys
-;;TODO Add function and bind adding <new></new> around active region
+(defface my-org-new-face
+  '((t (:background "navy")))
+  "Visible tab chars."
+  :group 'faces)
 
 (defvar my-org-export-preprocess-replacement-alist
   '(("<new>" . "@<font color='blue'>")
@@ -269,6 +270,18 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
 
+(defun my-org-add-new ()
+  "Add news around region if active, or add template."
+  (interactive)
+  (if (and transient-mark-mode mark-active)
+      (save-excursion
+        (goto-char (region-end))
+        (insert "</new>")
+        (goto-char (region-beginning))
+        (insert "<new>"))
+    (insert "<new></new>")
+    (backward-char 6)))
+
 (defun my-org-remove-new ()
   "Remove the current new's."
   (interactive)
@@ -313,32 +326,37 @@ Otherwise: Add a checkbox and update heading accordingly."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-prefix-command 'my-org-mode-map)
-(define-key my-org-mode-map (kbd "!") 'my-org-insert-open-time-stamp)
-(define-key my-org-mode-map (kbd "#") 'org-priority)
-(define-key my-org-mode-map (kbd ":") 'org-set-tags)
-(define-key my-org-mode-map (kbd "<") 'org-do-promote)
-(define-key my-org-mode-map (kbd ">") 'org-do-demote)
-(define-key my-org-mode-map (kbd "L") 'org-insert-link)
-(define-key my-org-mode-map (kbd "RET") 'my-org-insert-heading)
-(define-key my-org-mode-map (kbd "TAB") 'org-cycle)
-(define-key my-org-mode-map (kbd "a") 'org-archive-subtree)
+
 (define-key my-org-mode-map (kbd "e") 'org-export-as-html)
-(define-key my-org-mode-map (kbd "f") 'org-open-at-point)
-(define-key my-org-mode-map (kbd "l") 'org-store-link)
-(define-key my-org-mode-map (kbd "n") 'outline-forward-same-level)
-(define-key my-org-mode-map (kbd "p") 'outline-backward-same-level)
 (define-key my-org-mode-map (kbd "r") 'org-renumber-ordered-list)
 (define-key my-org-mode-map (kbd "s") 'org-sort-entries-or-items)
-(define-key my-org-mode-map (kbd "t") 'my-org-set-todo-state)
-(define-key my-org-mode-map (kbd "u") 'my-org-up-heading)
-(define-key my-org-mode-map (kbd "w") 'org-cut-subtree)
-(define-key my-org-mode-map (kbd "x") 'my-org-handle-checkbox)
-(define-key my-org-mode-map (kbd "y") 'org-paste-subtree)
+
+(define-key my-org-mode-map (kbd "n") 'my-org-add-new)
+(define-key my-org-mode-map (kbd "N") 'my-org-remove-new)
+(define-key my-org-mode-map (kbd "C-n") 'my-org-strip-all-new)
 
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-x o") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
-  (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end))
+  (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
+  (define-key org-mode-map (kbd "C-c #") 'org-priority)
+  (define-key org-mode-map (kbd "C-c :") 'org-set-tags)
+  (define-key org-mode-map (kbd "C-c <") 'org-do-promote)
+  (define-key org-mode-map (kbd "C-c >") 'org-do-demote)
+  (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
+  (define-key org-mode-map (kbd "C-c C-a") 'org-archive-subtree)
+  (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
+  (define-key org-mode-map (kbd "C-c C-l") 'org-store-link)
+  (define-key org-mode-map (kbd "C-c C-L") 'org-insert-link)
+  (define-key org-mode-map (kbd "C-c C-j") 'org-open-at-point)
+  (define-key org-mode-map (kbd "C-c C-n") 'outline-forward-same-level)
+  (define-key org-mode-map (kbd "C-c C-p") 'outline-backward-same-level)
+  (define-key org-mode-map (kbd "C-c C-t") 'my-org-set-todo-state)
+  (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
+  (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
+  (define-key org-mode-map (kbd "C-c C-y") 'org-paste-subtree)
+  (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
+  (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end))
 
 (add-hook 'org-mode-hook 'my-org-mode-hook)
 
