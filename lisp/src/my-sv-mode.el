@@ -3,7 +3,7 @@
 (defadvice find-tag-default (after my-sv-mode-find-tag-default activate)
   "Remove backtick in sv-mode."
   (when (equal major-mode 'sv-mode)
-    (setq ad-return-value (replace-regexp-in-string "`" "" ad-return-value))))
+    (setq ad-return-value (when ad-return-value (replace-regexp-in-string "`" "" ad-return-value)))))
 
 (defun ffap-sv-mode (name)
   (let ((ffap-sv-mode-path
