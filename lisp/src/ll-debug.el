@@ -503,8 +503,8 @@ is inserted into the current buffer.
                (length (ll-debug-struct-content mode-data))
                major-mode))
      (t
-      (ll-debug-open-fresh-line)
-      (indent-according-to-mode)
+;;       (ll-debug-open-fresh-line)
+;;       (indent-according-to-mode)
       (ll-debug-expand (ll-debug-struct-prefix mode-data))
       (ll-debug-expand (elt (ll-debug-struct-content mode-data) arg))
       (ll-debug-expand (ll-debug-struct-postfix mode-data))))))
@@ -673,6 +673,29 @@ Uses `query-replace-regexp' internally."
    ")\")"
    ("Variable name: "
     "; print " str)))
+
+(defun ll-debug-get-sv-mode-function ()
+  (save-excursion
+    (when (re-search-backward "^\\s-*\\(\\(static\\|extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]" nil t)
+      (match-string 4))))
+
+(ll-debug-register-mode 'sv-mode
+                        "$display(" ");"
+                        '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
+                        '(nil "\"" (ll-debug-create-next-debug-string)
+                              " (" (ll-debug-get-sv-mode-function) ")"
+                              ("Variable name: "
+                               "  " str "="
+                               '(progn
+                                  (if v1
+                                      (setq v1 (concat v1 ", " str))
+                                    (setq v1 str))
+                                  nil)
+                               (let ((fmt (read-string "Format: ")))
+                                 (if (or (string= fmt "h") (string= fmt "H"))
+                                     (concat "0x%" fmt)
+                                   (concat "%" fmt))))
+                              (if v1 "\\n\", " "\\n\"") v1))
 
 (defun ll-debug-renumber ()
   "Renumber the debug messages in order."
