@@ -166,6 +166,7 @@
               line-move-visual t
               line-number-mode t
               ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
+              ll-debug-print-filename nil
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
@@ -873,7 +874,6 @@ Does not set point.  Does nothing if mark ring is empty."
      (require 'my-e-mode)
      (require 'e-mode-dbg)
      (defun my-e-mode-hook ()
-       (setq ll-debug-print-filename nil)
        (set (make-local-variable 'compile-command) "cat $work/test/results/specman.elog"))
      (add-hook 'e-mode-hook 'my-e-mode-hook)))
 
@@ -960,7 +960,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-o" 'ff-get-other-file)
 (my-keys-define "C-c G" 'rgrep)
-(my-keys-define "C-c L" 'll-debug-revert)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c SPC" 'my-delete-whitespace-after-cursor)
 (my-keys-define "C-c TAB" 'indent-region)
@@ -972,7 +971,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c i" (lambda () (interactive) (find-file "~/.emacs.d/ideas.org")))
 (my-keys-define "C-c j" 'makd-join-line-with-next)
 (my-keys-define "C-c k" 'my-kill-ring-pop)
-(my-keys-define "C-c l" (lambda () (interactive) (ll-debug-insert 1)))
+(my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
+(my-keys-define "C-c l d" 'll-debug-revert)
+(my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
 (my-keys-define "C-c n" (lambda () (interactive) (find-file "~/org/Notes.org")))
 (my-keys-define "C-c o" 'my-occur)
@@ -1167,7 +1168,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'gb 'grep-buffers)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
-(defalias 'lr 'll-debug-renumber)
 (defalias 'kr 'browse-kill-ring)
 (defalias 'red 'my-theme-deeper-red)
 (defalias 'sl 'sort-lines)
