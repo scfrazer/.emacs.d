@@ -37,9 +37,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Things to be overridden in simulator extensions
 
-(defvar hdl-dbg-non-source-line-regexp "[ \t]*$"
-  "*Non-source line regular expression, usually indicates a blank or comment-
-only line.")
+(defvar hdl-dbg-bpnt-not-allowed-fcn nil
+  "*Function to call to see if a breakpoint is allowed at the current point
+in the current buffer.  Point will be a the beginning of a line.")
 
 (defvar hdl-dbg-bpnt-str-fcn nil
   "*Function to call to create a breakpoint string for the target buffer.
@@ -133,19 +133,19 @@ Arguments are filename line-num condition time")
   "Toggle a breakpoint on the current line."
   (interactive "P")
   (if (not hdl-dbg-target-buf)
-      (error "No debug target file loaded")
+      (error "No targer file loaded")
     (save-excursion
       (beginning-of-line)
       (let ((bpnt (hdl-dbg-breakpoint-at (point))))
         (if bpnt
             (if arg
                 (hdl-dbg-set-breakpoint-condition-1 (file-name-nondirectory
-                                                        (file-name-sans-extension (buffer-file-name)))
-                                                       (line-number-at-pos)
-                                                       (plist-get (overlay-properties bpnt)
-                                                                  'hdl-dbg-breakpoint-condition)
-                                                       (plist-get (overlay-properties bpnt)
-                                                                  'hdl-dbg-breakpoint-time))
+                                                     (file-name-sans-extension (buffer-file-name)))
+                                                    (line-number-at-pos)
+                                                    (plist-get (overlay-properties bpnt)
+                                                               'hdl-dbg-breakpoint-condition)
+                                                    (plist-get (overlay-properties bpnt)
+                                                               'hdl-dbg-breakpoint-time))
               (hdl-dbg-remove-breakpoint bpnt))
           (let ((condition (when arg (read-from-minibuffer "Break if? " nil nil nil
                                                            hdl-dbg-cond-history))))
@@ -165,10 +165,9 @@ Arguments are filename line-num condition time")
 
 (defun hdl-dbg-set-breakpoint (condition time)
   "Set a breakpoint on the current line."
-  ;; TODO Should be able to call a function to see if in a comment
-  (if (looking-at hdl-dbg-non-source-line-regexp)
+  (if (funcall hdl-dbg-bpnt-not-allowed-fcn)
       (progn
-        (message "Can't set a breakpoint on a non-source (empty, comment-only, etc.) line")
+        (message "Can't set a breakpoint here (empty or comment-only line?)")
         nil)
     (hdl-dbg-add-overlay condition time)
     (hdl-dbg-write-breakpoint condition time)))
@@ -185,7 +184,7 @@ Arguments are filename line-num condition time")
     (overlay-put ovl 'evaporate t)))
 
 (defun hdl-dbg-write-breakpoint (condition time)
-  "Write breakpoint to verbose.txt"
+  "Write breakpoint to target file."
   (hdl-dbg-write-breakpoint-1 (buffer-file-name) (line-number-at-pos) condition time))
 
 (defun hdl-dbg-write-breakpoint-1 (filename line-num condition time)
@@ -203,9 +202,9 @@ Arguments are filename line-num condition time")
 (defun hdl-dbg-remove-breakpoint (bpnt)
   "Remove a breakpoint."
   (hdl-dbg-remove-breakpoint-1 (buffer-file-name (overlay-buffer bpnt))
-                                  (line-number-at-pos (overlay-start bpnt))
-                                  (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-condition)
-                                  (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-time))
+                               (line-number-at-pos (overlay-start bpnt))
+                               (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-condition)
+                               (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-time))
   (delete-overlay bpnt))
 
 (defun hdl-dbg-remove-breakpoint-1 (filename line-num condition time)
@@ -224,7 +223,7 @@ Arguments are filename line-num condition time")
 
 (defun hdl-dbg-find-file-hook ()
   "Stuff to do when a file is loaded."
-  ;; Is it a verbose.txt file?
+  ;; Is it a target file?
   (if (and (buffer-file-name) (string= (file-name-nondirectory (buffer-file-name)) "verbose.txt"))
       (if hdl-dbg-target-buf
           (message "WARNING: A target file is already loaded, this one will be ignored")
@@ -240,7 +239,7 @@ Arguments are filename line-num condition time")
       (hdl-dbg-update-code-buffer (current-buffer)))))
 
 (defun hdl-dbg-parse-target-buffer ()
-  "Parse the verbose.txt target buffer."
+  "Parse the target buffer."
   (setq hdl-dbg-breakpoints nil)
   (setq hdl-dbg-tags nil)
   (with-current-buffer hdl-dbg-target-buf
@@ -273,7 +272,7 @@ Arguments are filename line-num condition time")
 (defun hdl-dbg-after-save-hook ()
   "Stuff to do when a file is saved."
   (when (and hdl-dbg-target-buf (string= (file-name-extension (buffer-file-name)) "e"))
-    ;; Delete all breakpoints for this file from the breakpoint list and verbose.txt
+    ;; Delete all breakpoints for this file from the breakpoint list and target file
     (let ((filename (buffer-file-name)))
       (with-current-buffer hdl-dbg-target-buf
         (goto-char (point-min))
@@ -317,10 +316,10 @@ Arguments are filename line-num condition time")
 ;;; Tags
 
 (defun hdl-dbg-set-tag-verbosity ()
-  "Set verbosity for current tag in verbose.txt"
+  "Set verbosity for current tag in target file."
   (interactive)
   (if (not hdl-dbg-target-buf)
-      (error "No verbose.txt file loaded")
+      (error "No target file loaded")
     (let ((tag (thing-at-point 'symbol))
           (possible-levels (list "NONE" "LOW" "MEDIUM" "HIGH" "FULL"))
           level)
@@ -336,10 +335,10 @@ Arguments are filename line-num condition time")
           (hdl-dbg-update-control-window-and-target))))))
 
 (defun hdl-dbg-remove-tag-verbosity ()
-  "Remove verbosity for current tag in verbose.txt"
+  "Remove verbosity for current tag in target file"
   (interactive)
   (if (not hdl-dbg-target-buf)
-      (error "No verbose.txt file loaded")
+      (error "No target file loaded")
     (let ((tag (thing-at-point 'symbol)))
       (if (not tag)
           (message "Cursor must be on a tag.")
@@ -347,7 +346,7 @@ Arguments are filename line-num condition time")
         (hdl-dbg-update-control-window-and-target)))))
 
 (defun hdl-dbg-remove-tag (tag)
-  "Delete tag from verbose.txt"
+  "Delete tag from target file"
   (with-current-buffer hdl-dbg-target-buf
     (goto-char (point-min))
     (while (re-search-forward (concat "^change .+ set message -logger=sys.logger -add .+ -tags={" tag "}") nil t)
@@ -364,7 +363,7 @@ Arguments are filename line-num condition time")
     (clipboard-kill-region (point-min) (point-max))))
 
 (defun hdl-dbg-add-tag (tag level time)
-  "Add a tag level to verbose.txt"
+  "Add a tag level to target file"
   (with-current-buffer hdl-dbg-target-buf
     (goto-char (point-max))
     (insert "change " time " set message -logger=sys.logger -add -verbosity=" (upcase level) " -tags={" tag "}\n"))
@@ -377,7 +376,7 @@ Arguments are filename line-num condition time")
   "Show the debug control window."
   (interactive)
   (if (not hdl-dbg-target-buf)
-      (error "No verbose.txt file loaded")
+      (error "No target file loaded")
     (let ((module (and (buffer-file-name)
                        (file-name-nondirectory (file-name-sans-extension (buffer-file-name)))))
           (line-num (line-number-at-pos)))
@@ -453,9 +452,9 @@ Arguments are filename line-num condition time")
   (if (not (looking-at "\\(.+\\):\\([0-9]+\\) @ \\([0-9]+ .s\\)\\(\\( if \\(.+\\)\\)\\|$\\)"))
       (error "Cursor not on a breakpoint")
     (hdl-dbg-set-breakpoint-condition-1 (match-string-no-properties 1)
-                                           (string-to-number (match-string-no-properties 2))
-                                           (match-string-no-properties 6)
-                                           (match-string-no-properties 3))))
+                                        (string-to-number (match-string-no-properties 2))
+                                        (match-string-no-properties 6)
+                                        (match-string-no-properties 3))))
 
 (defun hdl-dbg-set-breakpoint-condition-1 (module line-num orig-condition time)
   "Do real work of set-breakpoint-condition."
@@ -487,13 +486,13 @@ Arguments are filename line-num condition time")
   (beginning-of-line)
   (if (looking-at "\\(.+\\):\\([0-9]+\\) @ \\([0-9]+ .s\\)\\(\\( if \\(.+\\)\\)\\|$\\)")
       (hdl-dbg-set-breakpoint-time (match-string-no-properties 1)
-                                      (string-to-number (match-string-no-properties 2))
-                                      (match-string-no-properties 6)
-                                      (match-string-no-properties 3))
+                                   (string-to-number (match-string-no-properties 2))
+                                   (match-string-no-properties 6)
+                                   (match-string-no-properties 3))
     (if (looking-at "^\\([a-zA-Z0-9_]+\\)=\\(.+\\) \\(@\\) \\([0-9]+ .s\\)$")
         (hdl-dbg-set-tag-time (match-string-no-properties 1)
-                                 (match-string-no-properties 2)
-                                 (match-string-no-properties 4))
+                              (match-string-no-properties 2)
+                              (match-string-no-properties 4))
       (error "Cursor not on a breakpoint or tag"))))
 
 (defun hdl-dbg-set-breakpoint-time (module line-num condition orig-time)
@@ -620,16 +619,6 @@ Arguments are filename line-num condition time")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mode startup
-
-(define-key e-mode-map (kbd "<f10>") 'hdl-dbg-toggle-breakpoint)
-(define-key e-mode-map (kbd "S-<f10>") 'hdl-dbg-set-tag-verbosity)
-(define-key e-mode-map (kbd "C-<f10>") 'hdl-dbg-show-control-window)
-(define-key e-mode-map (kbd "M-<f10>") (lambda ()
-                                         (interactive)
-                                         (hdl-dbg-toggle-breakpoint t)))
-
-(define-key e-mode-map (kbd "<left-fringe> <mouse-1>") 'hdl-dbg-mouse-toggle-breakpoint)
-(define-key e-mode-map (kbd "<left-fringe> <M-mouse-1>") 'hdl-dbg-mouse-conditional-breakpoint)
 
 (defun hdl-dbg-mode ()
   "hdl-dbg is a mode for debugging Specman code.\n\n
