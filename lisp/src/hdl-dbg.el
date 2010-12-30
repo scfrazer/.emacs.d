@@ -1,7 +1,6 @@
 ;;; hdl-dbg.el
 
 (require 'custom)
-(require 'e-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom stuff
@@ -35,6 +34,21 @@
   "Face to highlight hdl-dbg conditional fringe markers"
   :group 'hdl-dbg)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Things to be overridden in simulator extensions
+
+(defvar hdl-dbg-non-source-line-regexp "[ \t]*$"
+  "*Non-source line regular expression, usually indicates a blank or comment-
+only line.")
+
+(defvar hdl-dbg-bpnt-str-fcn nil
+  "*Function to call to create a breakpoint string for the target buffer.
+Arguments are filename line-num condition time")
+
+(defvar hdl-dbg-sim-bpnt-str-fcn nil
+  "*Function to call to create a breakpoint string for the simulator.
+Arguments are filename line-num condition time")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variables
 
@@ -62,7 +76,7 @@
   "Font-lock-keywords.")
 
 (defvar hdl-dbg-target-buf nil
-  "Buffer (verbose.txt) that is the target for all breakpoints, etc.")
+  "Buffer that is the target for all breakpoints, etc.")
 
 (defvar hdl-dbg-breakpoints nil
   "Breakpoints.")
@@ -119,7 +133,7 @@
   "Toggle a breakpoint on the current line."
   (interactive "P")
   (if (not hdl-dbg-target-buf)
-      (error "No verbose.txt file loaded")
+      (error "No debug target file loaded")
     (save-excursion
       (beginning-of-line)
       (let ((bpnt (hdl-dbg-breakpoint-at (point))))
@@ -151,9 +165,10 @@
 
 (defun hdl-dbg-set-breakpoint (condition time)
   "Set a breakpoint on the current line."
-  (if (looking-at "[ \t]*\\(//\\|--\\|$\\)")
+  ;; TODO Should be able to call a function to see if in a comment
+  (if (looking-at hdl-dbg-non-source-line-regexp)
       (progn
-        (message "Can't set a breakpoint on an empty or comment-only line")
+        (message "Can't set a breakpoint on a non-source (empty, comment-only, etc.) line")
         nil)
     (hdl-dbg-add-overlay condition time)
     (hdl-dbg-write-breakpoint condition time)))
@@ -178,20 +193,11 @@
   (push (list filename line-num condition time) hdl-dbg-breakpoints)
   (with-current-buffer hdl-dbg-target-buf
     (goto-char (point-max))
-    (insert "change " time " break on line " (number-to-string line-num) " @"
-            (file-name-sans-extension (file-name-nondirectory filename))
-            (if condition
-                (concat " if " condition)
-              "")
-            " -- " filename "\n"))
+    (insert (funcall hdl-dbg-bpnt-str-fcn filename line-num condition time)))
   (with-temp-buffer
     (when (equal this-command 'hdl-dbg-set-breakpoint-condition)
       (clipboard-yank))
-    (insert "break on line " (number-to-string line-num) " @"
-            (file-name-sans-extension (file-name-nondirectory filename)))
-    (when condition
-      (insert " if " condition))
-    (insert "\n")
+    (insert (funcall hdl-dbg-sim-bpnt-str-fcn filename line-num condition time))
     (clipboard-kill-region (point-min) (point-max))))
 
 (defun hdl-dbg-remove-breakpoint (bpnt)
@@ -221,7 +227,7 @@
   ;; Is it a verbose.txt file?
   (if (and (buffer-file-name) (string= (file-name-nondirectory (buffer-file-name)) "verbose.txt"))
       (if hdl-dbg-target-buf
-          (message "WARNING: A verbose.txt file is already loaded, this one will be ignored")
+          (message "WARNING: A target file is already loaded, this one will be ignored")
         (setq hdl-dbg-target-buf (current-buffer))
         (hdl-dbg-parse-target-buffer)
         (dolist (buf (buffer-list))
