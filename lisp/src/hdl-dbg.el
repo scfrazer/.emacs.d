@@ -296,13 +296,14 @@ Arguments are module filename.")
 
 (defun hdl-dbg-update-code-buffer (buf)
   "Update a code buffer."
-  (with-current-buffer buf
-    (let ((filename (buffer-file-name)))
-      (dolist (bpnt hdl-dbg-breakpoints)
-        (when (string= (car bpnt) filename)
-          (hdl-dbg-goto-line (nth 1 bpnt))
-          (beginning-of-line)
-          (hdl-dbg-add-overlay (nth 2 bpnt) (nth 3 bpnt)))))))
+  (save-excursion
+    (with-current-buffer buf
+      (let ((filename (buffer-file-name)))
+        (dolist (bpnt hdl-dbg-breakpoints)
+          (when (string= (car bpnt) filename)
+            (hdl-dbg-goto-line (nth 1 bpnt))
+            (beginning-of-line)
+            (hdl-dbg-add-overlay (nth 2 bpnt) (nth 3 bpnt))))))))
 
 (defun hdl-dbg-after-save-hook ()
   "Stuff to do when a file is saved."
