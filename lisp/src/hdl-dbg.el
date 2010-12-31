@@ -37,17 +37,41 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Things to be overridden in simulator extensions
 
+(defvar hdl-dbg-parse-target-buffer-regexp nil
+  "*Regexp to parse target buffer.
+Important capture groups are in `hdl-dbg-parse-target-buffer-regexp-groups'")
+
+(defvar hdl-dbg-parse-target-buffer-regexp-groups nil
+  "*List of capture group numbers for `hdl-dbg-parse-target-buffer-regexp' that
+correspond to filename line-num condition time.")
+
 (defvar hdl-dbg-bpnt-not-allowed-fcn nil
   "*Function to call to see if a breakpoint is allowed at the current point
 in the current buffer.  Point will be a the beginning of a line.")
 
 (defvar hdl-dbg-bpnt-str-fcn nil
   "*Function to call to create a breakpoint string for the target buffer.
-Arguments are filename line-num condition time")
+Arguments are filename line-num condition time.")
 
 (defvar hdl-dbg-sim-bpnt-str-fcn nil
   "*Function to call to create a breakpoint string for the simulator.
-Arguments are filename line-num condition time")
+Arguments are filename line-num condition time.")
+
+(defvar hdl-dbg-bpnt-regexp-fcn nil
+  "*Function to call to create a breakpoint regexp for the target buffer.
+Arguments are filename line-num condition time.  If an arg is nil substitute an
+empty string where it would be.")
+
+(defvar hdl-dbg-sim-del-bpnt-str-fcn nil
+  "*Function to call to create a delete breakpoint string for the simulator.
+Arguments are filename line-num condition time.")
+
+(defvar hdl-dbg-target-file-p-fcn nil
+  "*Function to call to determine if a file is the target file.
+Argument is filename.")
+
+(defvar hdl-dbg-source-file-p-fcn nil
+  "*Function to call to determine if a file is a source file.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variables
@@ -211,31 +235,29 @@ Arguments are filename line-num condition time")
   "Do real remove-breakpoint work."
   (with-current-buffer hdl-dbg-target-buf
     (goto-char (point-min))
-    (while (re-search-forward
-            (concat "^change [0-9]+ .s break on line " (number-to-string line-num) ".+" filename)
-            nil t)
-      (delete-region (point-at-bol) (1+ (point-at-eol)))))
+    (let ((bpnt-regexp (funcall hdl-dbg-bpnt-regexp-fcn filename line-num condition time)))
+      (while (re-search-forward bpnt-regexp nil t)
+        (delete-region (point-at-bol) (1+ (point-at-eol))))))
   (setq hdl-dbg-breakpoints (delete (list filename line-num condition time) hdl-dbg-breakpoints))
   (with-temp-buffer
-    (insert "delete break \"line " (number-to-string line-num) ".*"
-            (file-name-sans-extension (file-name-nondirectory filename)) "\"\n")
+    (insert (funcall hdl-dbg-sim-del-bpnt-str-fcn filename line-num condition time))
     (clipboard-kill-region (point-min) (point-max))))
 
 (defun hdl-dbg-find-file-hook ()
   "Stuff to do when a file is loaded."
   ;; Is it a target file?
-  (if (and (buffer-file-name) (string= (file-name-nondirectory (buffer-file-name)) "verbose.txt"))
+  (if (and (buffer-file-name) (funcall hdl-dbg-target-file-p-fcn (buffer-file-name)))
       (if hdl-dbg-target-buf
           (message "WARNING: A target file is already loaded, this one will be ignored")
         (setq hdl-dbg-target-buf (current-buffer))
         (hdl-dbg-parse-target-buffer)
         (dolist (buf (buffer-list))
           (when (and (buffer-file-name buf)
-                     (string= (file-name-extension (buffer-file-name buf)) "e"))
+                     (funcall hdl-dbg-source-file-p-fcn (buffer-file-name buf)))
             (hdl-dbg-update-code-buffer buf))))
     ;; If it's a .e file and there is a target buffer, add any breakpoints
     (when (and hdl-dbg-target-buf
-               (string= (file-name-extension (buffer-file-name)) "e"))
+               (funcall hdl-dbg-source-file-p-fcn (buffer-file-name)))
       (hdl-dbg-update-code-buffer (current-buffer)))))
 
 (defun hdl-dbg-parse-target-buffer ()
@@ -245,12 +267,15 @@ Arguments are filename line-num condition time")
   (with-current-buffer hdl-dbg-target-buf
     ;; Breakpoints
     (goto-char (point-min))
-    (while (re-search-forward
-            "^change \\(.+\\) break on line \\([0-9]+\\) @[a-zA-Z0-9_]+ \\(if \\(.+\\) \\)?-- \\(.+\\)" nil t)
-      (push (list (match-string-no-properties 5)
-                  (string-to-number (match-string-no-properties 2))
-                  (match-string-no-properties 4)
-                  (match-string-no-properties 1))
+    (while (re-search-forward hdl-dbg-parse-target-buffer-regexp nil t)
+      (push (list (match-string-no-properties
+                   (nth 0 hdl-dbg-parse-target-buffer-regexp-groups))
+                  (string-to-number (match-string-no-properties
+                                     (nth 1 hdl-dbg-parse-target-buffer-regexp-groups)))
+                  (match-string-no-properties
+                   (nth 1 hdl-dbg-parse-target-buffer-regexp-groups))
+                  (match-string-no-properties
+                   (nth 1 hdl-dbg-parse-target-buffer-regexp-groups)))
             hdl-dbg-breakpoints))
     ;; Tags
     (goto-char (point-min))
@@ -271,13 +296,14 @@ Arguments are filename line-num condition time")
 
 (defun hdl-dbg-after-save-hook ()
   "Stuff to do when a file is saved."
-  (when (and hdl-dbg-target-buf (string= (file-name-extension (buffer-file-name)) "e"))
+  (when (and hdl-dbg-target-buf (funcall hdl-dbg-source-file-p-fcn (buffer-file-name)))
     ;; Delete all breakpoints for this file from the breakpoint list and target file
     (let ((filename (buffer-file-name)))
       (with-current-buffer hdl-dbg-target-buf
         (goto-char (point-min))
-        (while (re-search-forward (concat "^change [0-9]+ .s break on line .+" filename) nil t)
-          (delete-region (point-at-bol) (1+ (point-at-eol)))))
+        (let ((bpnt-regexp (funcall hdl-dbg-bpnt-regexp-fcn filename)))
+          (while (re-search-forward bpnt-regexp nil t)
+            (delete-region (point-at-bol) (1+ (point-at-eol))))))
       (dolist (bpnt hdl-dbg-breakpoints)
         (when (string= filename (car bpnt))
           (setq hdl-dbg-breakpoints (delete bpnt hdl-dbg-breakpoints)))))
@@ -296,11 +322,11 @@ Arguments are filename line-num condition time")
   "Stuff to do when a buffer is killed."
   (when (and hdl-dbg-target-buf
              (buffer-file-name)
-             (string= (file-name-nondirectory (buffer-file-name)) "verbose.txt"))
+             (funcall hdl-dbg-target-file-p-fcn (buffer-file-name)))
     (setq hdl-dbg-target-buf nil)
     (dolist (buf (buffer-list))
       (when (and (buffer-file-name buf)
-                 (string= (file-name-extension (buffer-file-name buf)) "e"))
+                 (funcall hdl-dbg-source-file-p-fcn (buffer-file-name buf)))
         (with-current-buffer buf
           (let ((ovls (overlays-in (point-min) (point-max)))
                 before-string)
