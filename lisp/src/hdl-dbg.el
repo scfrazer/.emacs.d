@@ -1,5 +1,7 @@
 ;;; hdl-dbg.el
 
+;; TODO Tags
+
 (require 'custom)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,6 +74,14 @@ Argument is filename.")
 
 (defvar hdl-dbg-source-file-p-fcn nil
   "*Function to call to determine if a file is a source file.")
+
+(defvar hdl-dbg-filename-to-module-fcn nil
+  "*Function to call to convert a filename into a 'module' name.
+This is just a shortened name to display in the control window.")
+
+(defvar hdl-dbg-module-eq-filename-fcn nil
+  "*Function to call to compare a 'module' name to a filename.
+Arguments are module filename.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variables
@@ -273,9 +283,9 @@ Argument is filename.")
                   (string-to-number (match-string-no-properties
                                      (nth 1 hdl-dbg-parse-target-buffer-regexp-groups)))
                   (match-string-no-properties
-                   (nth 1 hdl-dbg-parse-target-buffer-regexp-groups))
+                   (nth 2 hdl-dbg-parse-target-buffer-regexp-groups))
                   (match-string-no-properties
-                   (nth 1 hdl-dbg-parse-target-buffer-regexp-groups)))
+                   (nth 3 hdl-dbg-parse-target-buffer-regexp-groups)))
             hdl-dbg-breakpoints))
     ;; Tags
     (goto-char (point-min))
@@ -301,7 +311,7 @@ Argument is filename.")
     (let ((filename (buffer-file-name)))
       (with-current-buffer hdl-dbg-target-buf
         (goto-char (point-min))
-        (let ((bpnt-regexp (funcall hdl-dbg-bpnt-regexp-fcn filename)))
+        (let ((bpnt-regexp (funcall hdl-dbg-bpnt-regexp-fcn filename nil nil nil)))
           (while (re-search-forward bpnt-regexp nil t)
             (delete-region (point-at-bol) (1+ (point-at-eol))))))
       (dolist (bpnt hdl-dbg-breakpoints)
@@ -404,7 +414,7 @@ Argument is filename.")
   (if (not hdl-dbg-target-buf)
       (error "No target file loaded")
     (let ((module (and (buffer-file-name)
-                       (file-name-nondirectory (file-name-sans-extension (buffer-file-name)))))
+                       (funcall hdl-dbg-filename-to-module-fcn (buffer-file-name))))
           (line-num (line-number-at-pos)))
       (hdl-dbg-update-control-window)
       (select-window (split-window-vertically))
@@ -490,7 +500,7 @@ Argument is filename.")
       (setq new-condition nil))
     (catch 'break
       (dolist (bpnt hdl-dbg-breakpoints)
-        (when (and (string-match (concat ".+/" module "\\.e$") (car bpnt))
+        (when (and (funcall hdl-dbg-module-eq-filename-fcn module (car bpnt))
                    (= (nth 1 bpnt) line-num))
           (setq filename (car bpnt))
           (hdl-dbg-remove-breakpoint-1 filename line-num orig-condition time)
@@ -529,7 +539,7 @@ Argument is filename.")
       (error "Time format must be a number, a space, and (m|u|n|p|f)s"))
     (catch 'break
       (dolist (bpnt hdl-dbg-breakpoints)
-        (when (and (string-match (concat ".+/" module "\\.e$") (car bpnt))
+        (when (and (funcall hdl-dbg-module-eq-filename-fcn module (car bpnt))
                    (= (nth 1 bpnt) line-num))
           (setq filename (car bpnt))
           (hdl-dbg-remove-breakpoint-1 filename line-num condition orig-time)
