@@ -173,8 +173,9 @@ Arguments are module filename.")
       (let ((bpnt (hdl-dbg-breakpoint-at (point))))
         (if bpnt
             (if arg
-                (hdl-dbg-set-breakpoint-condition-1 (file-name-nondirectory
-                                                     (file-name-sans-extension (buffer-file-name)))
+                (hdl-dbg-set-breakpoint-condition-1 (funcall
+                                                     hdl-dbg-filename-to-module-fcn
+                                                     (buffer-file-name))
                                                     (line-number-at-pos)
                                                     (plist-get (overlay-properties bpnt)
                                                                'hdl-dbg-breakpoint-condition)
@@ -442,7 +443,7 @@ Arguments are module filename.")
                       (< (nth 1 x) (nth 1 y))
                     (string< (car x) (car y))))))
     (dolist (bpnt hdl-dbg-breakpoints)
-      (insert (file-name-sans-extension (file-name-nondirectory (car bpnt)))
+      (insert (funcall hdl-dbg-filename-to-module-fcn (car bpnt))
               ":" (number-to-string (nth 1 bpnt))
               (if (nth 3 bpnt)
                   (concat " @ " (nth 3 bpnt))
