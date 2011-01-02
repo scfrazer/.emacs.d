@@ -31,6 +31,7 @@
 (require 'etags-select)
 (require 'etags-stack)
 (require 'etags-table)
+(require 'hdl-dbg-vcs)
 (require 'iflipb)
 (require 'mdabbrev)
 (require 'midnight)
