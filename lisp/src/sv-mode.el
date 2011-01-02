@@ -1025,10 +1025,19 @@ Optional ARG means justify paragraph as well."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Imenu
 
-;; TODO Make this cooler, e.g. heirarchical in speedbar, find properties, etc.
+(defvar sv-mode-imenu-simple t
+  "*Make a simple imenu display with just classes, tasks, instances, etc.
+nil means create a full tree with properties, show arguments/return values for
+tasks and functions, etc.")
 
 (defun sv-mode-imenu-create-index-function ()
-  "Create sv-mode Imenu index."
+  "Create sv-mode Imneu index."
+  (if sv-mode-imenu-simple
+      (sv-mode-imenu-create-index-function-simple)
+    (sv-mode-imenu-create-index-function-complex)))
+
+(defun sv-mode-imenu-create-index-function-simple ()
+  "Create simple sv-mode Imenu index."
   (let ((item-alist '()) item-type item-name item)
     ;; Look for verification items
     (goto-char (point-min))
@@ -1064,6 +1073,224 @@ Optional ARG means justify paragraph as well."
       (unless (string-match sv-mode-keywords item-type)
         (push item item-alist)))
     (nreverse item-alist)))
+
+(defun sv-mode-sort-alist-by-car-string (alist)
+  (sort alist '(lambda (x y) (string< (car x) (car y)))))
+
+(defun sv-mode-imenu-create-add-item-alist (name item-alist final-alist)
+  (when item-alist
+    (push (imenu--split-menu (sv-mode-sort-alist-by-car-string item-alist) name) final-alist))
+  final-alist)
+
+(defun sv-mode-imenu-create-find-instances-or-modports (end)
+  (save-excursion
+    (let ((instance-alist '()))
+      (while (re-search-forward
+              "^\\s-*\\([a-zA-Z0-9_]+\\)\\([ \t\n]+#(.*)\\)?[ \t\n]+\\([a-zA-Z0-9_]+\\)[ \t\n]*("
+              end t)
+        (condition-case nil
+            (let ((instance-type (match-string-no-properties 1)) (instance-name (match-string-no-properties 3))
+                  (instance-pos (match-beginning 0)))
+              (backward-char)
+              (forward-sexp)
+              (when (looking-at "[ \t\n]*;")
+                (if (string= instance-type "modport")
+                    (push (cons instance-name instance-pos) instance-alist)
+                  (push (cons (concat instance-name " <" instance-type ">") instance-pos) instance-alist))))
+          (error nil)))
+      instance-alist)))
+
+(defun sv-mode-imenu-create-find-data-types (data-type end)
+  (save-excursion
+    (let ((type-alist '()))
+      (while (re-search-forward (concat "^\\s-*\\(typedef\\s-+\\)?\\(" data-type "\\)\\s-*\\([^{;]*?\\)\\s-*\\([{;]\\)") end t)
+        (condition-case nil
+            (let ((type-id (match-string-no-properties 3)) (type-terminator (match-string-no-properties 4))
+                  (type-pos (match-beginning 0)))
+              (if (string= type-terminator "{")
+                  (progn (backward-char)
+                         (forward-sexp)
+                         (re-search-forward "\\([a-zA-Z0-9_]+\\)[ \t\n]*;" end t)
+                         (push (cons (match-string-no-properties 1) type-pos) type-alist))
+                (push (cons (sv-mode-trim-whitespace type-id) type-pos) type-alist)))
+          (error nil)))
+      type-alist)))
+
+(defun sv-mode-imenu-create-parse-entity ()
+  (when (re-search-forward "^\\s-*\\(module\\|interface\\|package\\)[ \t\n]+\\([a-zA-Z0-9_]+\\)" nil t)
+    (let ((entity-type (match-string-no-properties 1)) (entity-name (match-string-no-properties 2))
+          (entity-start (match-beginning 0)) (entity-end) (end 0) (final-alist '())
+          (nested-entity) (found-routine) (routine-type)
+          (instance-alist '()) (modport-alist '()) (module-alist '()) (interface-alist '()) (package-alist '())
+          (enum-alist '()) (struct-alist '()) (union-alist '()) (function-alist '()) (task-alist '()))
+
+      ;; Find entity end
+      (let ((depth 1))
+        (while (progn
+                 (re-search-forward (concat "^\\s-*\\(end" entity-type "\\|" entity-type "\\)") nil t)
+                 (if (string= (match-string-no-properties 1) entity-type)
+                     (setq depth (1+ depth))
+                   (setq depth (1- depth)))
+                 (> depth 0))))
+      (setq entity-end (point-at-eol))
+
+      ;; Work through entity
+      (goto-char entity-start)
+      (end-of-line)
+      (while (< end entity-end)
+
+        ;; Look for a nested entity or routine
+        (save-excursion
+          (if (re-search-forward "^\\s-*\\(module\\|interface\\|package\\|function\\|task\\)[ \t\n]+\\([a-zA-Z0-9_]+\\)" entity-end t)
+              (let ((found-item (match-string-no-properties 1)))
+                (setq end (point-at-bol))
+                (if (or (string= found-item "function") (string= found-item "task"))
+                    (progn
+                      (beginning-of-line)
+                      (re-search-forward "^\\s-*\\(function\\|task\\).*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
+                      (if (string= found-item "function")
+                          (push (cons (match-string-no-properties 2) (point-at-bol)) function-alist)
+                        (push (cons (match-string-no-properties 2) (point-at-bol)) task-alist))
+                      (setq nested-entity nil
+                            found-routine t
+                            routine-type found-item))
+                  (setq nested-entity t
+                        found-routine nil)))
+            (setq nested-entity nil
+                  found-routine nil
+                  end entity-end)))
+
+        ;; Find instances or modports
+        (if (string= entity-type "interface")
+            (setq modport-alist (append modport-alist (sv-mode-imenu-create-find-instances-or-modports end)))
+          (setq instance-alist (append instance-alist (sv-mode-imenu-create-find-instances-or-modports end))))
+
+        ;; Find enums, structs, and unions
+        (setq enum-alist (append enum-alist (sv-mode-imenu-create-find-data-types "enum" end)))
+        (setq struct-alist (append struct-alist (sv-mode-imenu-create-find-data-types "struct" end)))
+        (setq union-alist (append union-alist (sv-mode-imenu-create-find-data-types "union" end)))
+
+        ;; Goto next point of interest
+        (goto-char end)
+
+        ;; If a routine was found, jump over it
+        (when found-routine
+          (re-search-forward (concat "^\\s-*end" routine-type) entity-end t)
+          (end-of-line))
+
+        ;; If a nested entity was found, parse it
+        (when nested-entity
+          (let (sub-entity)
+            (setq sub-entity (sv-mode-imenu-create-parse-entity))
+            (when sub-entity
+              (let ((entity-type (car sub-entity)) (entity-info (cdr sub-entity)))
+                (cond ((string= entity-type "module")
+                       (push entity-info module-alist))
+                      ((string= entity-type "interface")
+                       (push entity-info interface-alist))
+                      ((string= entity-type "package")
+                       (push entity-info package-alist))))))))
+
+      ;; Assemble
+      (push (cons "*Definition*" entity-start) final-alist)
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Instances" instance-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Modports" modport-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Tasks" task-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Functions" function-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Unions" union-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Structs" struct-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Enums" enum-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Packages" package-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Interfaces" interface-alist final-alist))
+      (setq final-alist (sv-mode-imenu-create-add-item-alist "Modules" module-alist final-alist))
+      (goto-char entity-end)
+      (cons entity-type (cons entity-name final-alist)))))
+
+(defun sv-mode-imenu-create-index-function-complex ()
+  "Create complex sv-mode Imenu index."
+  (goto-char (point-min))
+  (let ((final-alist '()) (module-alist '()) (interface-alist '()) (package-alist '())
+        (entity))
+    (while (progn
+             (setq entity (sv-mode-imenu-create-parse-entity))
+             (when entity
+               (let ((entity-type (car entity)) (entity-info (cdr entity)))
+                 (cond ((string= entity-type "module")
+                        (push entity-info module-alist))
+                       ((string= entity-type "interface")
+                        (push entity-info interface-alist))
+                       ((string= entity-type "package")
+                        (push entity-info package-alist)))))))
+    (setq final-alist (sv-mode-imenu-create-add-item-alist "Packages" package-alist final-alist))
+    (setq final-alist (sv-mode-imenu-create-add-item-alist "Interfaces" interface-alist final-alist))
+    (setq final-alist (sv-mode-imenu-create-add-item-alist "Modules" module-alist final-alist))
+    final-alist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Speedbar
+
+(eval-when-compile (require 'speedbar))
+
+(defvar sv-speedbar-key-map nil)
+
+(defun sv-mode-install-speedbar-variables ()
+  "Install speedbar variables."
+  (setq sv-speedbar-key-map (speedbar-make-specialized-keymap)))
+
+(if (featurep 'speedbar)
+    (sv-mode-install-speedbar-variables)
+  (add-hook 'speedbar-load-hook 'sv-mode-install-speedbar-variables))
+
+(defvar sv-speedbar-menu-items nil
+  "Additional menu-items to add to speedbar frame.")
+
+(defun sv-speedbar-buttons (buffer)
+  "Create a speedbar display to browse a SystemVerilog file
+BUFFER is the buffer speedbar is requesting buttons for."
+  (let (imenu-lst)
+    (with-current-buffer buffer
+      (save-restriction
+        (widen)
+        (save-excursion
+          (setq imenu-lst (speedbar-fetch-dynamic-imenu (buffer-file-name))))))
+    (erase-buffer)
+    (goto-char (point-min))
+    (insert "File: " (file-name-nondirectory (buffer-file-name buffer)) "\n")
+    (sv-speedbar-insert-list -1 imenu-lst 'speedbar-tag-expand 'speedbar-tag-find)))
+
+(defun sv-speedbar-insert-list (level lst expand-fun find-fun)
+  ;; Remove imenu rescan button
+  (when (string= (car (car lst)) "*Rescan*")
+    (setq lst (cdr lst)))
+  (let ((expand-button speedbar-generic-list-group-expand-button-type)
+        (tag-button speedbar-generic-list-tag-button-type))
+    ;; Insert the parts
+    (while lst
+      (cond ((null (car-safe lst)) nil) ;this would be a separator
+            ((speedbar-generic-list-tag-p (car lst))
+             (speedbar-make-tag-line tag-button
+                                     nil nil nil ;no expand button data
+                                     (car (car lst)) ;button name
+                                     find-fun ;function
+                                     (cdr (car lst)) ;token is position
+                                     'speedbar-tag-face
+                                     (1+ level)))
+            ((speedbar-generic-list-positioned-group-p (car lst))
+             (speedbar-make-tag-line expand-button
+                                     ?+ expand-fun (cdr (cdr (car lst)))
+                                     (car (car lst)) ;button name
+                                     find-fun ;function
+                                     (car (cdr (car lst))) ;token is posn
+                                     'speedbar-tag-face
+                                     (1+ level)))
+            ((speedbar-generic-list-group-p (car lst))
+             (speedbar-make-tag-line expand-button
+                                     ?+ expand-fun (cdr (car lst))
+                                     (car (car lst)) ;button name
+                                     nil nil 'speedbar-tag-face
+                                     (1+ level)))
+            (t (speedbar-message "speedbar-insert-generic-list: malformed list!")))
+      (setq lst (cdr lst)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Align
