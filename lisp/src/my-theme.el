@@ -240,7 +240,7 @@
    (info-header-xref ((t (:foreground "SeaGreen2"))))
    (info-menu-5 ((t (:foreground "wheat"))))
    (info-node ((t (:foreground "DeepSkyBlue1"))))
-   (info-xref ((t (:foreground "SeaGreen2"))))
+   (info-xref ((t (:foreground "SeaGreen4"))))
    (isearch ((t (:background "coral2" :foreground "white"))))
    (isearch-lazy-highlight-face ((t (:background "coral4" :foreground "white"))))
    (lazy-highlight ((t (:background "cadetblue" :foreground "white"))))
