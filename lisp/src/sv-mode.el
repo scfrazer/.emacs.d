@@ -1104,6 +1104,7 @@ tasks and functions, etc.")
                          (when (= depth 0)
                            (setq sub-limit (match-end 0))
                            (throw 'done t))))))
+                 (sv-mode-re-search-forward ";" nil 'go)
                  (push (cons name (sv-mode-imenu-parse sub-list sub-limit)) item-alist))))
             ;; Includes
             ((string= item-type "`include")
@@ -1121,13 +1122,35 @@ tasks and functions, etc.")
                (forward-line 1)))
             ;; User types
             ((member item-type (list "struct" "enum"))
-             ;; TODO
-             )
+             (unless (looking-at "\\s-*{")
+               (search-forward "{" nil t)
+               (backward-char))
+             (when (looking-at "\\s-*{")
+               (forward-sexp)
+               (when (re-search-forward "\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
+                 (push (cons (concat (match-string-no-properties 1) " : " item-type)
+                             (match-beginning 1)) item-alist)
+                 (sv-mode-re-search-forward ";" nil 'go))))
             ;; Task/function/program
             (t
-             (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
-             (push (cons (concat (match-string-no-properties 2) " : " item-type)
-                         (match-beginning 2)) item-alist)))))
+             (let ((qualifiers ""))
+               (save-excursion
+                 (backward-word)
+                 (catch 'done
+                   (while (backward-word)
+                     (if (looking-at "static\\|extern\\|local\\|protected\\|virtual")
+                         (setq qualifiers
+                               (concat (substring (match-string-no-properties 0) 0 1) qualifiers))
+                       (throw 'done t)))))
+               (unless (string= qualifiers "")
+                 (setq qualifiers (concat " [" qualifiers "]")))
+               (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
+               (push (cons (concat (match-string-no-properties 2) " : " item-type qualifiers)
+                           (match-beginning 2)) item-alist)
+               (when (looking-at "\\s-*(")
+                 (forward-sexp))
+               (unless (string-match "e" qualifiers)
+                 (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go)))))))
   (nreverse item-alist))
 
 (defun sv-mode-imenu-create-index-function-complex ()
@@ -1150,7 +1173,7 @@ tasks and functions, etc.")
 (defun sv-mode-install-speedbar-variables ()
   "Install speedbar variables."
   (setq sv-speedbar-key-map (speedbar-make-specialized-keymap))
-  (define-key sv-speedbar-key-map (kbd "RET") 'sv-speedbar-go)
+  (define-key sv-speedbar-key-map (kbd "RET") 'speedbar-edit-line)
   (define-key sv-speedbar-key-map (kbd "SPC") 'sv-speedbar-expand-line))
 
 (if (featurep 'speedbar)
@@ -1160,25 +1183,24 @@ tasks and functions, etc.")
 (defun sv-speedbar-buttons (buffer)
   "Create a speedbar display to browse a SystemVerilog file
 BUFFER is the buffer speedbar is requesting buttons for."
-  (let (sb-filename parsed-data)
+  (let (sb-filename new-parsed-data)
     (save-excursion
       (goto-char (point-min))
       (setq sb-filename
             (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-    ;; Switched sv-mode buffers?
-    (unless (string= sb-filename (buffer-file-name buffer))
-      (with-current-buffer buffer
-        ;; Already parsed this buffer?
+    (with-current-buffer buffer
+      (unless (and (string= sb-filename (buffer-file-name)) sv-speedbar-parsed-data)
         (unless sv-speedbar-parsed-data
           (save-restriction
             (widen)
             (save-excursion
               (setq sv-speedbar-parsed-data (sv-mode-imenu-create-index-function-complex)))))
-        (setq parsed-data sv-speedbar-parsed-data))
+        (setq new-parsed-data sv-speedbar-parsed-data)))
+    (when new-parsed-data
       (erase-buffer)
       (goto-char (point-min))
       (insert (buffer-file-name buffer) "\n\n")
-      (sv-speedbar-populate parsed-data 0))))
+      (sv-speedbar-populate new-parsed-data 0))))
 
 (defun sv-speedbar-after-save-hook ()
   "Let the speedbar refresh after saving file."
@@ -1204,10 +1226,13 @@ BUFFER is the buffer speedbar is requesting buttons for."
                                 name 'sv-speedbar-go (cdr item)
                                 'speedbar-tag-face level)
       (setq type (match-string 2 name))
-      (cond ((member type (list "task" "program"))
-             (setq face 'font-lock-function-name-face))
-            ((string= type "function")
-             (setq face 'font-lock-function-name-face))
+      (cond ((string-match "task\\|function\\|program" type)
+             (setq face (cond ((string-match "\\[.*l.*\\]" type)
+                               'font-lock-comment-face)
+                              ((string-match "\\[.*p.*\\]" type)
+                               'font-lock-string-face)
+                              (t
+                               'font-lock-function-name-face))))
             ((member type (list "struct" "enum"))
              (setq face 'font-lock-type-face))
             ((string= type "`include")
@@ -1241,29 +1266,19 @@ BUFFER is the buffer speedbar is requesting buttons for."
       ;; Expand
       (progn
         (speedbar-change-expand-button-char ?-)
-        ;; TODO
-        )
+        (forward-line)
+        (speedbar-with-writable
+          (save-excursion
+            (sv-speedbar-populate token (1+ indent)))))
     ;; Contract
     (speedbar-change-expand-button-char ?+)
-    ;; TODO
-    ))
-
-;;     (unless (member token vhdl-speedbar-shown-project-list)
-;;       (setq vhdl-speedbar-shown-project-list
-;;             (cons token vhdl-speedbar-shown-project-list)))
-;;     (speedbar-with-writable
-;;       (save-excursion
-;;         (end-of-line) (forward-char 1)
-;;         (vhdl-speedbar-insert-project-hierarchy token (1+ indent)
-;;                                                 speedbar-power-click))))
-;;    ((string-match "-" text)             ; contract project
-;;     (speedbar-change-expand-button-char ?+)
-;;     (setq vhdl-speedbar-shown-project-list
-;;           (delete token vhdl-speedbar-shown-project-list))
-;;     (speedbar-delete-subblock indent))
-;;    (t (error "Nothing to display")))
-;;   (when (equal (selected-frame) speedbar-frame)
-;;     (speedbar-center-buffer-smartly)))
+    (speedbar-with-writable
+      (save-excursion
+        (forward-line)
+        (while (and (not (eobp))
+                    (looking-at "\\([0-9]+\\):")
+                    (> (string-to-number (match-string-no-properties 1)) indent))
+          (delete-region (point-at-bol) (1+ (point-at-eol))))))))
 
 (defun sv-speedbar-go (text node indent)
   "Goto the current tag."

@@ -313,15 +313,14 @@
   (apply-macro-to-region-lines top bottom)
   (deactivate-mark))
 
-(defun my-create-or-other-frame ()
-  "Switch to other frame, creating one if necessary"
+(defun my-other-frame ()
+  "Switch to other frame."
   (interactive)
-  (if (> (length (frame-list)) 1)
-      (let ((frame (get-other-frame)))
-        (if (eq (frame-visible-p frame) 'icon)
-            (make-frame-visible frame)
-          (other-frame 1)))
-    (make-frame-command)))
+  (when (> (length (frame-list)) 1)
+    (let ((frame (get-other-frame)))
+      (if (eq (frame-visible-p frame) 'icon)
+          (make-frame-visible frame)
+        (other-frame 1)))))
 
 (defun my-clone-file (filename)
   "Clone the current buffer and write it into FILENAME."
@@ -943,7 +942,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-M-w" 'clipboard-kill-ring-save)
 (my-keys-define "C-M-y" 'clipboard-yank)
 (my-keys-define "C-S-SPC" 'my-rect-toggle)
-(my-keys-define "C-S-o" 'my-create-or-other-frame)
+(my-keys-define "C-S-o" 'my-other-frame)
 (my-keys-define "C-S-s" 'my-isearch-word-at-point)
 (my-keys-define "C-S-y" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "C-^" 'my-pop-back-imenu)
