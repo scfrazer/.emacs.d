@@ -579,7 +579,7 @@ expression."
          (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
                          (regexp-opt '("`define" "`else" "`elsif" "`endif"
                                        "`ifdef" "`ifndef" "`include"
-                                       "`timescale" "`undef")) ".+\\|"
+                                       "`timescale" "`undef")) ".*\\|"
                                        sv-mode-end-regexp))
          (matched (sv-mode-re-search-backward regexp nil 'go))
          (end (match-end 0)))
@@ -1076,81 +1076,100 @@ tasks and functions, etc.")
 
 (defun sv-mode-imenu-parse (item-alist limit)
   "Parse the buffer and add items to ITEM-ALIST."
-  (let (item-type item)
-    ;; TODO Parse properties
-    ;; TODO Parse instances
+  (let (item-type item-name item)
     (while (sv-mode-re-search-forward
-            "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
+            (concat
+             "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
+             "\\|"
+             "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(")
             limit 'go)
       (setq item-type (match-string-no-properties 1))
-      (cond ((member item-type (list "class" "module" "interface" "package"))
-             ;; Things with other things inside
-             (when (or (not (string= item-type "class"))
-                       (save-excursion
-                         (backward-word 2)
-                         (not (looking-at "typedef"))))
-               (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
-               (let ((name (match-string-no-properties 1))
-                     sub-list sub-limit
-                     (depth 1)
-                     (regexp (concat "\\_<\\(" item-type "\\|end" item-type "\\)\\_>")))
-                 (push (cons item-type (match-beginning 1)) sub-list)
-                 (save-excursion
-                   (catch 'done
-                     (while (sv-mode-re-search-forward regexp limit 'go)
-                       (if (string= (match-string 1) item-type)
-                           (setq depth (1+ depth))
-                         (setq depth (1- depth))
-                         (when (= depth 0)
-                           (setq sub-limit (match-end 0))
-                           (throw 'done t))))))
-                 (sv-mode-re-search-forward ";" nil 'go)
-                 (push (cons name (sv-mode-imenu-parse sub-list sub-limit)) item-alist))))
-            ;; Includes
-            ((string= item-type "`include")
-             (when (re-search-forward "\".+\"" (line-end-position) 'go)
-               (push (cons (concat (match-string-no-properties 0) " : " item-type)
-                           (point-at-bol)) item-alist)))
-            ;; Defines
-            ((string= item-type "`define")
-             (re-search-forward "\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) 'go)
-             (push (cons (concat (match-string-no-properties 1) " : " item-type)
-                         (match-beginning 1)) item-alist)
-             (while (and (looking-at ".*\\\\\\s-*$") (not (eobp)))
-               (forward-line 1))
-             (unless (bolp)
-               (forward-line 1)))
-            ;; User types
-            ((member item-type (list "struct" "enum"))
-             (unless (looking-at "\\s-*{")
-               (search-forward "{" nil t)
-               (backward-char))
-             (when (looking-at "\\s-*{")
-               (forward-sexp)
-               (when (re-search-forward "\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
-                 (push (cons (concat (match-string-no-properties 1) " : " item-type)
-                             (match-beginning 1)) item-alist)
-                 (sv-mode-re-search-forward ";" nil 'go))))
-            ;; Task/function/program
-            (t
-             (let ((qualifiers ""))
-               (save-excursion
-                 (backward-word)
-                 (catch 'done
-                   (while (backward-word)
-                     (if (looking-at "static\\|extern\\|local\\|protected\\|virtual")
-                         (setq qualifiers
-                               (concat (substring (match-string-no-properties 0) 0 1) qualifiers))
-                       (throw 'done t)))))
-               (unless (string= qualifiers "")
-                 (setq qualifiers (concat " [" qualifiers "]")))
-               (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
-               (push (cons (concat (match-string-no-properties 2) " : " item-type qualifiers)
-                           (match-beginning 2)) item-alist)
-               (when (looking-at "\\s-*(")
-                 (forward-sexp))
-               (unless (string-match "e" qualifiers)
-                 (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go)))))))
+      (cond
+       ;; Includes
+       ((string= item-type "`include")
+        (when (re-search-forward "\".+\"" (line-end-position) 'go)
+                (push (cons (concat (match-string-no-properties 0) " : " item-type)
+                            (point-at-bol)) item-alist)))
+       ;; Defines
+       ((string= item-type "`define")
+        (re-search-forward "\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) 'go)
+        (push (cons (concat (match-string-no-properties 1) " : " item-type)
+                    (match-beginning 1)) item-alist)
+        (while (and (looking-at ".*\\\\\\s-*$") (not (eobp)))
+          (forward-line 1))
+        (unless (bolp)
+          (forward-line 1)))
+       ;; Things with other things inside
+       ((member item-type (list "class" "module" "interface" "package"))
+        (when (or (not (string= item-type "class"))
+                  (save-excursion
+                    (backward-word 2)
+                    (not (looking-at "typedef"))))
+          (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
+          (let ((name (match-string-no-properties 1))
+                sub-list sub-limit
+                (depth 1)
+                (regexp (concat "\\_<\\(" item-type "\\|end" item-type "\\)\\_>")))
+            (push (cons item-type (match-beginning 1)) sub-list)
+            (save-excursion
+              (catch 'done
+                (while (sv-mode-re-search-forward regexp limit 'go)
+                  (if (string= (match-string 1) item-type)
+                      (setq depth (1+ depth))
+                    (setq depth (1- depth))
+                    (when (= depth 0)
+                      (setq sub-limit (match-end 0))
+                      (throw 'done t))))))
+            (sv-mode-re-search-forward ";" nil 'go)
+            (push (cons name (sv-mode-imenu-parse sub-list sub-limit)) item-alist))))
+       ;; User types
+       ((member item-type (list "struct" "enum"))
+        (unless (looking-at "\\s-*{")
+          (search-forward "{" nil t)
+          (backward-char))
+        (when (looking-at "\\s-*{")
+          (forward-sexp)
+          (when (re-search-forward "\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
+            (push (cons (concat (match-string-no-properties 1) " : " item-type)
+                        (match-beginning 1)) item-alist)
+            (sv-mode-re-search-forward ";" nil 'go))))
+       ;; Task/function/program
+       ((member item-type (list "task" "function" "program"))
+        (let ((qualifiers ""))
+          (save-excursion
+            (backward-word)
+            (catch 'done
+              (while (backward-word)
+                (unless (sv-mode-in-comment-or-string)
+                  (if (looking-at "static\\|extern\\|local\\|protected\\|virtual")
+                      (setq qualifiers
+                            (concat (substring (match-string-no-properties 0) 0 1) qualifiers))
+                    (when (looking-back "^\\s-*import.+" (point-at-bol))
+                      (setq qualifiers (concat "i" qualifiers)))
+                    (throw 'done t))))))
+          (unless (string= qualifiers "")
+            (setq qualifiers (concat " [" qualifiers "]")))
+          (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
+          (push (cons (concat (match-string-no-properties 2) " : " item-type qualifiers)
+                      (match-beginning 2)) item-alist)
+          (when (looking-at "\\s-*(")
+            (forward-sexp))
+          (unless (string-match "[ei]" qualifiers)
+            (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go))))
+       ;; Instances
+       (t
+        (setq item-type (match-string-no-properties 2))
+        (setq item-name (match-string-no-properties 3))
+        (if (not (string= item-name "#"))
+            (setq item (cons (concat item-name " : " item-type) (match-beginning 3)))
+          (backward-char)
+          (forward-sexp)
+          (re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)" nil t)
+          (setq item (cons (concat (match-string-no-properties 1) " : " item-type) (match-beginning 1))))
+        (unless (string-match sv-mode-keywords item-type)
+          (push item item-alist)))
+       ;; TODO Parse properties
+       )))
   (nreverse item-alist))
 
 (defun sv-mode-imenu-create-index-function-complex ()
@@ -1167,7 +1186,7 @@ tasks and functions, etc.")
 (defvar sv-speedbar-key-map nil
   "sv-mode speedbar keymap.")
 
-(defvar sv-speedbar-parsed-data nil
+(defvar sv-speedbar-cached-data nil
   "Parsed sv-mode data for the current file.")
 
 (defun sv-mode-install-speedbar-variables ()
@@ -1183,29 +1202,29 @@ tasks and functions, etc.")
 (defun sv-speedbar-buttons (buffer)
   "Create a speedbar display to browse a SystemVerilog file
 BUFFER is the buffer speedbar is requesting buttons for."
-  (let (sb-filename new-parsed-data)
+  (let (sb-filename parsed-data)
     (save-excursion
       (goto-char (point-min))
       (setq sb-filename
             (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
     (with-current-buffer buffer
-      (unless (and (string= sb-filename (buffer-file-name)) sv-speedbar-parsed-data)
-        (unless sv-speedbar-parsed-data
+      (unless (and (string= sb-filename (buffer-file-name)) sv-speedbar-cached-data)
+        (unless sv-speedbar-cached-data
           (save-restriction
             (widen)
             (save-excursion
-              (setq sv-speedbar-parsed-data (sv-mode-imenu-create-index-function-complex)))))
-        (setq new-parsed-data sv-speedbar-parsed-data)))
-    (when new-parsed-data
+              (setq sv-speedbar-cached-data (sv-mode-imenu-create-index-function-complex)))))
+        (setq parsed-data sv-speedbar-cached-data)))
+    (when parsed-data
       (erase-buffer)
       (goto-char (point-min))
       (insert (buffer-file-name buffer) "\n\n")
-      (sv-speedbar-populate new-parsed-data 0))))
+      (sv-speedbar-populate parsed-data 0))))
 
 (defun sv-speedbar-after-save-hook ()
   "Let the speedbar refresh after saving file."
   (when (equal major-mode 'sv-mode)
-    (setq sv-speedbar-parsed-data nil)))
+    (setq sv-speedbar-cached-data nil)))
 
 (add-hook 'after-save-hook 'sv-speedbar-after-save-hook)
 
@@ -1379,7 +1398,7 @@ Key Bindings:
         indent-line-function 'sv-mode-indent-line
         fill-paragraph-function 'sv-mode-fill-paragraph)
 
-  (make-local-variable 'sv-speedbar-parsed-data)
+  (make-local-variable 'sv-speedbar-cached-data)
 
   ;; Font-lock
 
