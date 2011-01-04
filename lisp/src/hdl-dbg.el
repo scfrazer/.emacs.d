@@ -167,7 +167,7 @@ Arguments are module filename.")
   "Toggle a breakpoint on the current line."
   (interactive "P")
   (if (not hdl-dbg-target-buf)
-      (error "No targer file loaded")
+      (error "No target file loaded")
     (save-excursion
       (beginning-of-line)
       (let ((bpnt (hdl-dbg-breakpoint-at (point))))
