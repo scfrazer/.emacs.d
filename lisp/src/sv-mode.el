@@ -1078,10 +1078,10 @@ tasks and functions, etc.")
   "Parse the buffer and add items to ITEM-ALIST."
   (let (item-type item-name item)
     (while (sv-mode-re-search-forward
-            (concat
+;;             (concat
              "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
-             "\\|"
-             "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(")
+;;              "\\|"
+;;              "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(")
             limit 'go)
       (setq item-type (match-string-no-properties 1))
       (cond
@@ -1157,7 +1157,7 @@ tasks and functions, etc.")
           (unless (string-match "[ei]" qualifiers)
             (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go))))
        ;; Instances
-       (t
+       (nil ;; TODO Parse instances
         (setq item-type (match-string-no-properties 2))
         (setq item-name (match-string-no-properties 3))
         (if (not (string= item-name "#"))
