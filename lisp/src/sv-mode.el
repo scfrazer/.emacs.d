@@ -594,13 +594,16 @@ expression."
                 (goto-char (match-end 0))))
             (skip-syntax-forward " >" limit)
             (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
-                        (not (eobp)))
-              (forward-line)
+                        (not (or (eobp) (= (point) limit))))
+              (re-search-forward "\\*/\\|$" limit 'go)
               (skip-syntax-forward " >" limit)))
         ;; The first statement in a file after comments is problematic
         (when (bobp)
           (sv-mode-re-search-forward "[a-zA-Z`]" nil 'go))))
-    (back-to-indentation)))
+    (back-to-indentation)
+    (when (looking-at "/\\*")
+      (re-search-forward "\\*/" limit 'go)
+      (skip-syntax-forward " >" limit))))
 
 (defun sv-mode-jump-other-end ()
   "Jumps to the opposite begin/end expression from the one point is at."
@@ -1115,22 +1118,26 @@ tasks and functions, etc.")
         (push item item-alist)))
     (nreverse item-alist)))
 
-(defun sv-mode-imenu-parse (item-alist limit)
-  "Parse the buffer and add items to ITEM-ALIST."
-  (let (item-type item-name item)
+(defun sv-mode-imenu-parse (item-alist limit parse-type)
+  "Parse the buffer up to LIMIT and add items to ITEM-ALIST.
+PARSE-TYPE is 'class, 'module, or nil for anything else."
+  (let (item-type (start-pos (point)))
     (while (sv-mode-re-search-forward
-;;             (concat
-             "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
-;;              "\\|"
-;;              "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*(")
+            "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
             limit 'go)
       (setq item-type (match-string-no-properties 1))
+      ;; If parsing a class or module, look for other items in the buffer
+      ;; section that was skipped over
+      (if (equal parse-type 'class)
+          (setq item-alist (sv-mode-imenu-parse-properties item-alist start-pos (match-beginning 0)))
+        (when (equal parse-type 'module)
+          (setq item-alist (sv-mode-imenu-parse-instances item-alist start-pos (match-beginning 0)))))
       (cond
        ;; Includes
        ((string= item-type "`include")
         (when (re-search-forward "\".+\"" (line-end-position) 'go)
-                (push (cons (concat (match-string-no-properties 0) " : " item-type)
-                            (point-at-bol)) item-alist)))
+          (push (cons (concat (match-string-no-properties 0) " : " item-type)
+                      (point-at-bol)) item-alist)))
        ;; Defines
        ((string= item-type "`define")
         (re-search-forward "\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) 'go)
@@ -1147,10 +1154,13 @@ tasks and functions, etc.")
                     (backward-word 2)
                     (not (looking-at "typedef"))))
           (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
-          (let ((name (match-string-no-properties 1))
-                sub-list sub-limit
-                (depth 1)
-                (regexp (concat "\\_<\\(" item-type "\\|end" item-type "\\)\\_>")))
+          (let* ((name (match-string-no-properties 1))
+                 (parse-sub-type (cond ((string= item-type "class") 'class)
+                                       ((string= item-type "module") 'module)
+                                       (t nil)))
+                 sub-list sub-limit
+                 (depth 1)
+                 (regexp (concat "\\_<\\(" item-type "\\|end" item-type "\\)\\_>")))
             (push (cons item-type (match-beginning 1)) sub-list)
             (save-excursion
               (catch 'done
@@ -1162,7 +1172,7 @@ tasks and functions, etc.")
                       (setq sub-limit (match-end 0))
                       (throw 'done t))))))
             (sv-mode-re-search-forward ";" nil 'go)
-            (push (cons name (sv-mode-imenu-parse sub-list sub-limit)) item-alist))))
+            (push (cons name (sv-mode-imenu-parse sub-list sub-limit parse-sub-type)) item-alist))))
        ;; User types
        ((member item-type (list "struct" "enum"))
         (unless (looking-at "\\s-*{")
@@ -1193,33 +1203,82 @@ tasks and functions, etc.")
           (sv-mode-re-search-forward "\\(.\\|\n\\)+?\\([a-zA-Z0-9_:]+\\)\\s-*[(;]")
           (push (cons (concat (match-string-no-properties 2) " : " item-type qualifiers)
                       (match-beginning 2)) item-alist)
-          (when (looking-at "\\s-*(")
-            (forward-sexp))
-          (unless (string-match "[ei]" qualifiers)
-            (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go))))
-       ;; Instances
-       (nil ;; TODO Parse instances
-        (setq item-type (match-string-no-properties 2))
-        (setq item-name (match-string-no-properties 3))
-        (if (not (string= item-name "#"))
-            (setq item (cons (concat item-name " : " item-type) (match-beginning 3)))
           (backward-char)
           (forward-sexp)
-          (re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
+          (unless (string-match "[ei]" qualifiers)
+            (sv-mode-re-search-forward (concat "\\_<end" item-type "\\_>") nil 'go)))))
+      (setq start-pos (point)))
+    (if (equal parse-type 'class)
+        (setq item-alist (sv-mode-imenu-parse-properties item-alist start-pos limit))
+      (when (equal parse-type 'module)
+        (setq item-alist (sv-mode-imenu-parse-instances item-alist start-pos limit)))))
+  (nreverse item-alist))
+
+(defun sv-mode-imenu-parse-properties (item-alist start limit)
+  "Look for properties."
+  (save-excursion
+    (goto-char start)
+    (let (item-type item-name item cover-type)
+      (while (sv-mode-re-search-forward
+              "\\([a-zA-Z0-9_:`]+\\(\\s-*\\[[^]]*\\]\\)*\\)\\s-*[=;]\\|\\_<\\(covergroup\\|constraint\\)\\_>"
+              limit 'move)
+        (setq cover-type (match-string-no-properties 3))
+        (cond ((and cover-type (string= cover-type "covergroup"))
+               (backward-sexp)
+               (sv-mode-forward-sexp))
+              ((and cover-type (string= cover-type "constraint"))
+               (forward-sexp 2))
+              (t
+               (let ((name-pos (match-beginning 1)) (qualifiers ""))
+                 (setq item-name (sv-mode-trim-whitespace (match-string-no-properties 1)))
+                 (backward-char)
+                 (save-excursion
+                   (sv-mode-beginning-of-statement)
+                   (setq item-type (replace-regexp-in-string
+                                    "[\t\n]+" " "
+                                    (buffer-substring-no-properties (point) name-pos))))
+                 (dolist (qualifier (list "static" "local" "protected" "rand"))
+                   (when (string-match qualifier item-type)
+                     (setq item-type (replace-regexp-in-string qualifier "" item-type)
+                           qualifiers (concat qualifiers (substring qualifier 0 1)))))
+                 (unless (string= qualifiers "")
+                   (setq qualifiers (concat " [" qualifiers "]")))
+                 (setq item (cons (concat item-name " : "
+                                          (sv-mode-trim-whitespace
+                                           (replace-regexp-in-string " +" " " item-type))
+                                          qualifiers)
+                             name-pos))
+                 (push item item-alist)
+                 (sv-mode-re-search-forward ";" limit 'move)))))))
+  item-alist)
+
+(defun sv-mode-imenu-parse-instances (item-alist start limit)
+  "Look for instances."
+  (save-excursion
+    (goto-char start)
+    (let (item-type item-name item)
+      (while (sv-mode-re-search-forward
+              "^\\s-*\\([a-zA-Z0-9_:]+\\)[ \t\n]+\\(#\\|[a-zA-Z0-9_]+\\)[ \t\n]*("
+              limit 'move)
+        (setq item-type (match-string-no-properties 1))
+        (setq item-name (match-string-no-properties 2))
+        (if (not (string= item-name "#"))
+            (setq item (cons (concat item-name " : " item-type) (match-beginning 2)))
+          (backward-char)
+          (forward-sexp)
+          (sv-mode-re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)[ \t\n]*(" nil 'go)
           (setq item (cons (concat (match-string-no-properties 1) " : " item-type) (match-beginning 1))))
         (unless (string-match sv-mode-keywords item-type)
           (push item item-alist))
         (backward-char)
-        (forward-sexp))
-       ;; TODO Parse properties
-       )))
-  (nreverse item-alist))
+        (forward-sexp))))
+  item-alist)
 
 (defun sv-mode-imenu-create-index-function-complex ()
   "Create complex sv-mode Imenu index."
   (goto-char (point-min))
   (let (item-alist)
-    (sv-mode-imenu-parse item-alist nil)))
+    (sv-mode-imenu-parse item-alist nil nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Speedbar
@@ -1293,6 +1352,8 @@ BUFFER is the buffer speedbar is requesting buttons for."
                                'font-lock-comment-face)
                               ((string-match "\\[.*p.*\\]" type)
                                'font-lock-string-face)
+                              ((string-match "\\[.*s.*\\]" type)
+                               'font-lock-keyword-face)
                               (t
                                'font-lock-function-name-face))))
             ((member type (list "struct" "enum"))
@@ -1302,7 +1363,14 @@ BUFFER is the buffer speedbar is requesting buttons for."
             ((string= type "`define")
              (setq face 'font-lock-constant-face))
             (t
-             (setq face 'font-lock-variable-name-face)))
+             (setq face (cond ((string-match "\\[.*l.*\\]" type)
+                               'font-lock-comment-face)
+                              ((string-match "\\[.*p.*\\]" type)
+                               'font-lock-string-face)
+                              ((string-match "\\[.*s.*\\]" type)
+                               'font-lock-keyword-face)
+                              (t
+                               'font-lock-variable-name-face)))))
       (speedbar-make-tag-line 'statictag
                               nil nil
                               nil
