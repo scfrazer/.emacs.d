@@ -1163,6 +1163,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
+(defalias 'ed 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'find 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
@@ -1171,6 +1172,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'kr 'browse-kill-ring)
 (defalias 'red 'my-theme-deeper-red)
 (defalias 'sl 'sort-lines)
+(defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
