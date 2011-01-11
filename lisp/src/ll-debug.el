@@ -503,8 +503,11 @@ is inserted into the current buffer.
                (length (ll-debug-struct-content mode-data))
                major-mode))
      (t
-;;       (ll-debug-open-fresh-line)
-;;       (indent-according-to-mode)
+      (beginning-of-line)
+      (if (looking-at "\\s-*$")
+          (delete-region (point-at-bol) (point-at-eol))
+        (ll-debug-open-fresh-line))
+      (indent-according-to-mode)
       (ll-debug-expand (ll-debug-struct-prefix mode-data))
       (ll-debug-expand (elt (ll-debug-struct-content mode-data) arg))
       (ll-debug-expand (ll-debug-struct-postfix mode-data))))))
@@ -682,7 +685,7 @@ Uses `query-replace-regexp' internally."
 (ll-debug-register-mode 'sv-mode
                         "$display(" ");"
                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
-                        '(nil "\"" (ll-debug-create-next-debug-string)
+                        '(nil "\"[%t] " (ll-debug-create-next-debug-string)
                               " (" (ll-debug-get-sv-mode-function) ")"
                               ("Variable name: "
                                "  " str "="
@@ -692,10 +695,14 @@ Uses `query-replace-regexp' internally."
                                     (setq v1 str))
                                   nil)
                                (let ((fmt (read-string "Format: ")))
-                                 (if (or (string= fmt "h") (string= fmt "H"))
-                                     (concat "0x%" fmt)
-                                   (concat "%" fmt))))
-                              (if v1 "\\n\", " "\\n\"") v1))
+                                 (cond
+                                  ((string= (downcase fmt) "h")
+                                   (concat "0x%0" fmt))
+                                  ((string= (downcase fmt) "d")
+                                   (concat "%0" fmt))
+                                  (t
+                                   (concat "%" fmt)))))
+                              (if v1 "\", $time, " "\", $time") v1))
 
 (defun ll-debug-renumber ()
   "Renumber the debug messages in order."
