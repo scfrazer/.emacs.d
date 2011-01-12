@@ -21,6 +21,7 @@
               org-export-with-sub-superscripts nil
               org-hide-leading-stars nil
               org-id-track-globally nil
+              org-link-frame-setup '((file . find-file))
               org-log-done 'time
               org-modules nil
               org-priority-faces '((?A . (:foreground "LightPink2" :weight bold))
@@ -28,6 +29,7 @@
                                    (?C . (:foreground "DarkSeaGreen3" :weight bold)))
               org-read-date-popup-calendar nil
               org-replace-disputed-keys t
+              org-return-follows-link t
               org-special-ctrl-a/e t
               org-special-ctrl-k t
               org-startup-folded nil
@@ -347,8 +349,7 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-c C-a") 'org-archive-subtree)
   (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
   (define-key org-mode-map (kbd "C-c C-l") 'org-store-link)
-  (define-key org-mode-map (kbd "C-c C-L") 'org-insert-link)
-  (define-key org-mode-map (kbd "C-c C-j") 'org-open-at-point)
+  (define-key org-mode-map (kbd "C-c C-S-l") 'org-insert-link)
   (define-key org-mode-map (kbd "C-c C-n") 'outline-forward-same-level)
   (define-key org-mode-map (kbd "C-c C-p") 'outline-backward-same-level)
   (define-key org-mode-map (kbd "C-c C-t") 'my-org-set-todo-state)
