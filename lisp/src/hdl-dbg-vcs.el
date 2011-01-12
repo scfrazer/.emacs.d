@@ -4,8 +4,8 @@
 (require 'sv-mode)
 
 (setq hdl-dbg-parse-target-buffer-regexp
-      "^@ \\(.+\\) stop -file \\(.+\\) -line \\([0-9]+\\)"
-      hdl-dbg-parse-target-buffer-regexp-groups (list 2 3 4 1))
+      "^\\s-*stop\\s-+-file\\s-+{\\(.+\\)}\\s-+-line\\s-+{\\([0-9]+\\)}"
+      hdl-dbg-parse-target-buffer-regexp-groups (list 1 2 99 99))
 
 (setq hdl-dbg-bpnt-not-allowed-fcn 'hdl-dbg-vcs-bpnt-not-allowed
       hdl-dbg-bpnt-str-fcn 'hdl-dbg-vcs-bpnt-str
@@ -24,17 +24,17 @@
 
 (defun hdl-dbg-vcs-bpnt-str (filename line-num condition time)
   "Create breakpoint string."
-  (concat "@ " time " stop -file " filename " -line "(number-to-string line-num) "\n"))
+  (concat "stop -file {" filename "} -line {"(number-to-string line-num) "}\n"))
 
 (defun hdl-dbg-vcs-sim-bpnt-str (filename line-num condition time)
   "Create simulator breakpoint string."
-  (concat "stop -file " filename " -line "(number-to-string line-num) "\n"))
+  (concat "stop -file {" filename "} -line {"(number-to-string line-num) "}\n"))
 
 (defun hdl-dbg-vcs-bpnt-regexp (filename line-num condition time)
   "Create regexp to find a breakpoint in the target file."
-  (concat "^@ [0-9]+ .s stop -file "
+  (concat "^\\s-*stop\\s-+-file\\s-+{"
           (or filename "")
-          " -line " (if line-num (number-to-string line-num) "")))
+          "}\\s-+-line\\s-+{" (if line-num (number-to-string line-num) "") "}"))
 
 (defun hdl-dbg-vcs-sim-del-bpnt-str (filename line-num condition time)
   "Create simulator delete breakpoint string."
@@ -42,7 +42,7 @@
 
 (defun hdl-dbg-vcs-target-file-p (filename)
   "Is filename the target file?"
-  (string= (file-name-nondirectory filename) "dbg_in.tcl"))
+  (string= (file-name-nondirectory filename) "breakpoint.tcl"))
 
 (defun hdl-dbg-vcs-source-file-p (filename)
   "Is filename a source file?"

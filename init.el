@@ -78,8 +78,6 @@
 (autoload 'align-regexp "align" nil t)
 (autoload 'all "all" nil t)
 (autoload 'antlr3-mode "antlr3-mode" "ANTLR code editing mode" t)
-(autoload 'ascii-table "ascii-table" nil t)
-(autoload 'ascii-table-hex "ascii-table" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
 (autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
@@ -315,14 +313,24 @@
   (apply-macro-to-region-lines top bottom)
   (deactivate-mark))
 
-(defun my-other-frame ()
-  "Switch to other frame."
+(defun my-ascii-table ()
+  "Display basic ASCII table (0 thru 128)."
   (interactive)
-  (when (> (length (frame-list)) 1)
-    (let ((frame (get-other-frame)))
-      (if (eq (frame-visible-p frame) 'icon)
-          (make-frame-visible frame)
-        (other-frame 1)))))
+  (setq buffer-read-only nil)        ;; Not need to edit the content, just read mode (added)
+  (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
+  (switch-to-buffer "*ASCII*")
+  (erase-buffer)
+  (save-excursion 
+    (let ((i -1))
+      (insert "ASCII characters 0 thru 127.\n\n")
+      (insert "Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char\n")
+      (while (< i 31)
+        (insert (format "0x%-2X %4d %4s | 0x%-2X %4d %4s | 0x%-2X %4d %4s | 0x%-2X %4d %4s\n"
+                        (setq i (+ 1  i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)))
+        (setq i (- i 96))))))
 
 (defun my-clone-file (filename)
   "Clone the current buffer and write it into FILENAME."
@@ -545,6 +553,15 @@ Prefix with C-u to fit the `next-window'."
      (my-minibuffer-forward)
      (point))
    (point)))
+
+(defun my-other-frame ()
+  "Switch to other frame."
+  (interactive)
+  (when (> (length (frame-list)) 1)
+    (let ((frame (get-other-frame)))
+      (if (eq (frame-visible-p frame) 'icon)
+          (make-frame-visible frame)
+        (other-frame 1)))))
 
 (defun my-pop-tag-mark-kill-buffer ()
   "Pop tag mark and kill previous buffer."
