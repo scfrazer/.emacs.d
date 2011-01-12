@@ -39,12 +39,12 @@
   (let (buf (buf-list (buffer-list)))
     ;; Kill Clearcase revision buffers
     (mapc (lambda (x)
-            (when (string-match ".+?@@.+?[0-9]+$" (buffer-name x))
+            (when (and (buffer-name x) (string-match ".+?@@.+?[0-9]+$" (buffer-name x)))
               (kill-buffer x)))
           buf-list)
     ;; Kill vc revision buffers
     (mapc (lambda (x)
-            (when (string-match "\\.~.+~$" (buffer-name x))
+            (when (and (buffer-name x) (string-match "\\.~.+~$" (buffer-name x)))
               (kill-buffer x)))
           buf-list)
     ;; Cleanup ediff buffers

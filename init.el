@@ -151,6 +151,7 @@
               file-template-paths (list "~/.emacs.d/templates/")
               fill-column 78
               flyspell-mode-map nil
+              font-lock-verbose nil
               highlight-changes-active-string " Chg+"
               highlight-changes-passive-string " Chg-"
               highlight-changes-global-modes nil
