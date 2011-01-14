@@ -183,7 +183,7 @@
    (outline-4 ((t (:foreground "turquoise2"))))
    (outline-5 ((t (:foreground "aquamarine1"))))
    (primary-selection ((t (:background "blue3"))))
-   (region ((t (:background "DarkSlateGray"))))
+   (region ((t (:background "#103050"))))
    (secondary-selection ((t (:background "yellow" :foreground "gray10"))))
    (show-paren-match-face ((t (:background "dodgerblue1" :foreground "white"))))
    (show-paren-mismatch-face ((t (:background "red1" :foreground "white"))))

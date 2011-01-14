@@ -603,9 +603,9 @@ Prefix with C-u to fit the `next-window'."
     (cond ((= my-recenter-count 0)
            (recenter))
           ((= my-recenter-count 1)
-           (recenter (/ (* (window-text-height) 4) 5)))
+           (recenter (/ (window-text-height) 5)))
           (t
-           (recenter (/ (window-text-height) 5))))
+           (recenter (/ (* (window-text-height) 4) 5))))
     (setq my-recenter-count (1+ my-recenter-count))
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
