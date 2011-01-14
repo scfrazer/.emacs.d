@@ -5,7 +5,7 @@
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
 ;; Created: 10 Aug 2010
-;; Version: 1.2
+;; Version: 2.0
 ;; Keywords: programming
 ;;
 ;; This file is free software; you can redistribute it and/or modify
@@ -55,7 +55,7 @@
 (require 'custom)
 (require 'find-file)
 
-(defconst sv-mode-version "1.2"
+(defconst sv-mode-version "2.0"
   "Version of sv-mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1118,12 +1118,15 @@ tasks and functions, etc.")
         (push item item-alist)))
     (nreverse item-alist)))
 
+(defvar sv-mode-imenu-parse-ifdef-names nil
+  "Stack of names from finding `ifn?def to fill in for a possible `else.")
+
 (defun sv-mode-imenu-parse (item-alist limit parse-type)
   "Parse the buffer up to LIMIT and add items to ITEM-ALIST.
 PARSE-TYPE is 'class, 'module, or nil for anything else."
   (let (item-type (start-pos (point)))
     (while (sv-mode-re-search-forward
-            "\\_<\\(`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
+            "\\_<\\(`ifn?def\\|`else\\|`endif\\|`include\\|`define\\|class\\|module\\|interface\\|package\\|struct\\|enum\\|task\\|function\\|program\\)\\_>"
             limit 'go)
       (setq item-type (match-string-no-properties 1))
       ;; If parsing a class or module, look for other items in the buffer
@@ -1133,6 +1136,28 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
         (when (equal parse-type 'module)
           (setq item-alist (sv-mode-imenu-parse-instances item-alist start-pos (match-beginning 0)))))
       (cond
+       ;; `ifdefs
+       ((member item-type (list "`ifdef" "`ifndef" "`else"))
+        (let (name (pos (match-beginning 1)) sub-list sub-limit)
+          (save-excursion
+            (beginning-of-line)
+            (sv-mode-forward-ifdef)
+            (setq sub-limit (point)))
+          (if (not (string= item-type "`else"))
+              (progn (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
+                     (setq name (match-string-no-properties 1))
+                     (setq pos (match-beginning 1))
+                     (push (if (string= item-type "`ifdef") (concat "!" name) name)
+                           sv-mode-imenu-parse-ifdef-names))
+            (if sv-mode-imenu-parse-ifdef-names
+                (setq name (car sv-mode-imenu-parse-ifdef-names))
+              (setq name "???")))
+          (push (cons item-type pos) sub-list)
+          (push (cons name (sv-mode-imenu-parse sub-list sub-limit parse-type)) item-alist)))
+       ;; `endif
+       ((string= item-type "`endif")
+        (when sv-mode-imenu-parse-ifdef-names
+          (setq sv-mode-imenu-parse-ifdef-names (cdr sv-mode-imenu-parse-ifdef-names))))
        ;; Includes
        ((string= item-type "`include")
         (when (re-search-forward "\".+\"" (line-end-position) 'go)
@@ -1381,12 +1406,15 @@ BUFFER is the buffer speedbar is requesting buttons for."
   "Make a speedbar container tag line."
   (let* ((type-info (cadr item)) ;; First cons cell in cdr has type/location info
          (name (concat (car item) " : " (car type-info)))
-         (location (cdr type-info)))
+         (location (cdr type-info))
+         (face (if (equal (substring (car type-info) 0 1) "`")
+                   'font-lock-preprocessor-face
+                 'font-lock-type-face)))
     (speedbar-make-tag-line 'curly
                             ?- 'sv-speedbar-expand-line
                             (cddr item)
                             name 'sv-speedbar-go location
-                            'font-lock-type-face level)
+                            face level)
     (sv-speedbar-populate (cddr item) (1+ level))))
 
 (defun sv-speedbar-expand-line (text token indent)
@@ -1415,6 +1443,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
   (interactive)
   (speedbar-select-attached-frame)
   (raise-frame)
+  (select-frame-set-input-focus (selected-frame))
   (goto-char node))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
