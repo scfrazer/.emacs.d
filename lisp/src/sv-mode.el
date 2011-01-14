@@ -1248,33 +1248,35 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
               "\\([a-zA-Z0-9_:`]+\\(\\s-*\\[[^]]*\\]\\)*\\)\\s-*[=;]\\|\\_<\\(covergroup\\|constraint\\)\\_>"
               limit 'move)
         (setq cover-type (match-string-no-properties 3))
-        (cond ((and cover-type (string= cover-type "covergroup"))
-               (backward-sexp)
-               (sv-mode-forward-sexp))
-              ((and cover-type (string= cover-type "constraint"))
-               (forward-sexp 2))
-              (t
-               (let ((name-pos (match-beginning 1)) (qualifiers ""))
-                 (setq item-name (sv-mode-trim-whitespace (match-string-no-properties 1)))
-                 (backward-char)
-                 (save-excursion
-                   (sv-mode-beginning-of-statement)
-                   (setq item-type (replace-regexp-in-string
-                                    "[\t\n]+" " "
-                                    (buffer-substring-no-properties (point) name-pos))))
-                 (dolist (qualifier (list "static" "local" "protected" "rand"))
-                   (when (string-match qualifier item-type)
-                     (setq item-type (replace-regexp-in-string qualifier "" item-type)
-                           qualifiers (concat qualifiers (substring qualifier 0 1)))))
-                 (unless (string= qualifiers "")
-                   (setq qualifiers (concat " [" qualifiers "]")))
-                 (setq item (cons (concat item-name " : "
+        (condition-case nil
+            (cond ((and cover-type (string= cover-type "covergroup"))
+                   (backward-sexp)
+                   (sv-mode-forward-sexp))
+                  ((and cover-type (string= cover-type "constraint"))
+                   (forward-sexp 2))
+                  (t
+                   (let ((name-pos (match-beginning 1)) (qualifiers ""))
+                     (setq item-name (sv-mode-trim-whitespace (match-string-no-properties 1)))
+                     (backward-char)
+                     (save-excursion
+                       (sv-mode-beginning-of-statement)
+                       (setq item-type (replace-regexp-in-string
+                                        "[\t\n]+" " "
+                                        (buffer-substring-no-properties (point) name-pos))))
+                     (dolist (qualifier (list "static" "local" "protected" "rand"))
+                       (when (string-match qualifier item-type)
+                         (setq item-type (replace-regexp-in-string qualifier "" item-type)
+                               qualifiers (concat qualifiers (substring qualifier 0 1)))))
+                     (unless (string= qualifiers "")
+                       (setq qualifiers (concat " [" qualifiers "]")))
+                     (setq item (cons (concat item-name " : "
                                           (sv-mode-trim-whitespace
                                            (replace-regexp-in-string " +" " " item-type))
                                           qualifiers)
                              name-pos))
                  (push item item-alist)
-                 (sv-mode-re-search-forward ";" limit 'move)))))))
+                 (sv-mode-re-search-forward ";" limit 'move))))
+          (error nil)))))
   item-alist)
 
 (defun sv-mode-imenu-parse-instances (item-alist start limit)
