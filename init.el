@@ -1045,7 +1045,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-b" 'task-bmk-show-all)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
-(my-keys-define "M-e" 'makd-select-word-at-point)
 (my-keys-define "M-g" 'goto-line)
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)

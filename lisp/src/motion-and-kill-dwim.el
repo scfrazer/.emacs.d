@@ -668,11 +668,23 @@ end-of-line (and it's not a empty line).  Kills region if active."
   (interactive "*")
   (if (region-active-p)
       (let* ((from (buffer-substring (region-beginning) (region-end)))
-             (to (read-from-minibuffer (format "Query replace %s with: " from) nil nil nil 'query-replace-history)))
+             (to (read-from-minibuffer
+                  (format "Query replace %s with: " from) nil nil nil
+                  'query-replace-history)))
         (goto-char (region-beginning))
         (setq mark-active nil)
         (query-replace from to))
-    (call-interactively 'query-replace)))
+    (let* ((default (buffer-substring-no-properties
+                     (point)
+                     (save-excursion (skip-syntax-forward "w_") (point))))
+           (from-str (read-from-minibuffer
+                      (format "Query replace (default %s): " default) nil nil nil
+                      'query-replace-history default))
+           (from (if (string= from-str "") default from-str))
+           (to (read-from-minibuffer
+                (format "Query replace %s with: " from) nil nil nil
+                'query-replace-history)))
+      (query-replace from to))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling/Paging
