@@ -437,6 +437,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?m) (kill-sexp 1))
        ((eq c ?M) (kill-sexp -1))
 
+       ((eq c ?w) (kill-region (point) (progn (skip-syntax-forward "w_") (point))))
+       ((eq c ?W) (kill-region (point) (progn (skip-syntax-backward"w_") (point))))
+
        ((eq c ? ) (kill-region (point) (or (mark) (point))))
 
        ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
@@ -484,6 +487,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
 
                   ((eq c ?m) (forward-sexp 1))
                   ((eq c ?M) (forward-sexp -1))
+
+                  ((eq c ?w) (skip-syntax-forward "w_"))
+                  ((eq c ?W) (skip-syntax-backward"w_"))
 
                   ((eq c ? ) (goto-char (or (mark) (point))))
 
@@ -663,28 +669,31 @@ end-of-line (and it's not a empty line).  Kills region if active."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Search/Replace
 
-(defun makd-query-replace ()
+(defun makd-query-replace (&optional arg)
   "query-replace ... take from-string from region if it is active"
-  (interactive "*")
-  (if (region-active-p)
-      (let* ((from (buffer-substring (region-beginning) (region-end)))
-             (to (read-from-minibuffer
-                  (format "Query replace %s with: " from) nil nil nil
-                  'query-replace-history)))
-        (goto-char (region-beginning))
-        (setq mark-active nil)
-        (query-replace from to))
-    (let* ((default (buffer-substring-no-properties
-                     (point)
-                     (save-excursion (skip-syntax-forward "w_") (point))))
-           (from-str (read-from-minibuffer
-                      (format "Query replace (default %s): " default) nil nil nil
-                      'query-replace-history default))
-           (from (if (string= from-str "") default from-str))
-           (to (read-from-minibuffer
-                (format "Query replace %s with: " from) nil nil nil
-                'query-replace-history)))
-      (query-replace from to))))
+  (interactive "*P")
+  (if arg
+      (call-interactively 'query-replace)
+    (let (from to)
+      (if (region-active-p)
+          (progn (setq from (buffer-substring (region-beginning) (region-end))
+                       to (read-from-minibuffer
+                           (format "Query replace %s with: " from) nil nil nil
+                           'query-replace-history))
+                 (goto-char (region-beginning))
+                 (setq mark-active nil))
+        (let* ((default (buffer-substring-no-properties
+                         (point)
+                         (save-excursion (skip-syntax-forward "w_") (point))))
+               (from-str (read-from-minibuffer
+                          (format "Query replace (default %s): " default) nil nil nil
+                          'query-replace-history default)))
+          (setq from (if (string= from-str "") default from-str)
+                to (read-from-minibuffer
+                    (format "Query replace %s with: " from) nil nil nil
+                    'query-replace-history))))
+      (query-replace from to)
+      (setq query-replace-defaults (cons from to)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling/Paging

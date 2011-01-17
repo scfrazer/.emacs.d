@@ -1190,6 +1190,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'ind 'my-indent)
 (defalias 'kr 'browse-kill-ring)
 (defalias 'med 'my-font-medium)
+(defalias 'qrr 'query-replace-regexp)
 (defalias 'red 'my-theme-deeper-red)
 (defalias 'sl 'sort-lines)
 (defalias 'small 'my-font-small)
