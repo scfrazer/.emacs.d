@@ -130,6 +130,7 @@
               comment-fill-column 120
               compare-ignore-whitespace t
 ;;               compilation-error-regexp-alist nil
+              completions-format 'vertical
               cperl-break-one-line-blocks-when-indent nil
               cperl-continued-brace-offset -4
               cperl-continued-statement-offset 4
