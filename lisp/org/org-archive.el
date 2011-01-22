@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.35i
+;; Version: 7.4
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -115,7 +115,7 @@ information."
 	 ((or (re-search-backward re nil t)
 	      (re-search-forward re nil t))
 	  (match-string 1))
-	 (t org-archive-location (match-string 1)))))))
+	 (t org-archive-location))))))
 
 (defun org-add-archive-files (files)
   "Splice the archive files into the list of files.
@@ -226,8 +226,7 @@ this heading."
       (save-excursion
 	(org-back-to-heading t)
 	;; Get context information that will be lost by moving the tree
-	(org-refresh-category-properties)
-	(setq category (org-get-category)
+	(setq category (org-get-category nil 'force-refresh)
 	      todo (and (looking-at org-todo-line-regexp)
 			(match-string 2))
 	      priority (org-get-priority
@@ -268,7 +267,7 @@ this heading."
 	      (progn
 		(if (re-search-forward
 		     (concat "^" (regexp-quote heading)
-			     (org-re "[ \t]*\\(:[[:alnum:]_@:]+:\\)?[ \t]*\\($\\|\r\\)"))
+			     (org-re "[ \t]*\\(:[[:alnum:]_@#%:]+:\\)?[ \t]*\\($\\|\r\\)"))
 		     nil t)
 		    (goto-char (match-end 0))
 		  ;; Heading not found, just insert it at the end

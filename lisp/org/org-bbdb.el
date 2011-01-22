@@ -7,7 +7,7 @@
 ;;         Thomas Baumann <thomas dot baumann at ch dot tum dot de>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.35i
+;; Version: 7.4
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -207,7 +207,7 @@ date year)."
 (defun org-bbdb-export (path desc format)
   "Create the export version of a BBDB link specified by PATH or DESC.
 If exporting to either HTML or LaTeX FORMAT the link will be
-italicised, in all other cases it is left unchanged."
+italicized, in all other cases it is left unchanged."
   (cond
    ((eq format 'html) (format "<i>%s</i>" (or desc path)))
    ((eq format 'latex) (format "\\textit{%s}" (or desc path)))
@@ -322,8 +322,8 @@ This is used by Org to re-create the anniversary hash table."
         (when rec
           (let* ((class (or (nth 2 rec)
                             org-bbdb-default-anniversary-format))
-                 (form (or (cdr (assoc class
-                                       org-bbdb-anniversary-format-alist))
+                 (form (or (cdr (assoc-string
+				 class org-bbdb-anniversary-format-alist t))
                            class))	; (as format string)
                  (name (nth 1 rec))
                  (years (- y (car rec)))
@@ -338,8 +338,7 @@ This is used by Org to re-create the anniversary hash table."
                 (setq text (append text (list tmp)))
               (setq text (list tmp)))))
         ))
-    (when text
-      (mapconcat 'identity text "; "))))
+    text))
 
 (defun org-bbdb-complete-link ()
   "Read a bbdb link with name completion."

@@ -1,5 +1,10 @@
 ;;; my-org.el
 
+;; TODO
+;; font-lock src code var
+;; new speed keys at bol headline
+;; capture templates
+
 (require 'org-install)
 
 (setq-default org-archive-location "%s_archive::"
@@ -21,6 +26,7 @@
               org-export-with-sub-superscripts nil
               org-hide-leading-stars nil
               org-id-track-globally nil
+              org-imenu-depth 6
               org-link-frame-setup '((file . find-file))
               org-log-done 'time
               org-modules nil
@@ -30,6 +36,7 @@
               org-read-date-popup-calendar nil
               org-replace-disputed-keys t
               org-return-follows-link t
+              org-src-fontify-natively t
               org-special-ctrl-a/e t
               org-special-ctrl-k t
               org-startup-folded nil
@@ -46,6 +53,7 @@
                                        ("SOMEDAY"    . (:foreground "Yellow4" :weight bold))
                                        ("CANCELED"   . (:foreground "PaleGreen4" :weight bold))
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
+              org-use-speed-commands t
               org-yank-folded-subtrees nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -343,8 +351,8 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
   (define-key org-mode-map (kbd "C-c #") 'org-priority)
   (define-key org-mode-map (kbd "C-c :") 'org-set-tags)
-  (define-key org-mode-map (kbd "C-c <") 'org-do-promote)
-  (define-key org-mode-map (kbd "C-c >") 'org-do-demote)
+  (define-key org-mode-map (kbd "C-c <") 'org-promote-subtree)
+  (define-key org-mode-map (kbd "C-c >") 'org-demote-subtree)
   (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
   (define-key org-mode-map (kbd "C-c C-a") 'org-archive-subtree)
   (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
