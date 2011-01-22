@@ -1,8 +1,6 @@
 ;;; my-org.el
 
 ;; TODO
-;; font-lock src code var
-;; new speed keys at bol headline
 ;; capture templates
 
 (require 'org-install)
@@ -39,6 +37,13 @@
               org-src-fontify-natively t
               org-special-ctrl-a/e t
               org-special-ctrl-k t
+              org-speed-commands-user '(("#" . org-priority)
+                                        (":" . org-set-tags)
+                                        ("<" . org-promote-subtree)
+                                        (">" . org-demote-subtree)
+                                        ("t" . my-org-set-todo-state)
+                                        ("a" . org-archive-subtree)
+                                        ("x" . my-org-handle-checkbox))
               org-startup-folded nil
               org-tags-column -80
               org-time-stamp-custom-formats '("<%a %b %d, %Y>" . "<%a %b %d, %Y %H:%M>")
@@ -338,29 +343,20 @@ Otherwise: Add a checkbox and update heading accordingly."
 (define-prefix-command 'my-org-mode-map)
 
 (define-key my-org-mode-map (kbd "e") 'org-export-as-html)
-(define-key my-org-mode-map (kbd "r") 'org-renumber-ordered-list)
-(define-key my-org-mode-map (kbd "s") 'org-sort-entries-or-items)
-
 (define-key my-org-mode-map (kbd "n") 'my-org-add-new)
 (define-key my-org-mode-map (kbd "N") 'my-org-remove-new)
 (define-key my-org-mode-map (kbd "C-n") 'my-org-strip-all-new)
+(define-key my-org-mode-map (kbd "l") 'org-insert-link)
+(define-key my-org-mode-map (kbd "L") 'org-store-link)
 
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-x o") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
-  (define-key org-mode-map (kbd "C-c #") 'org-priority)
-  (define-key org-mode-map (kbd "C-c :") 'org-set-tags)
-  (define-key org-mode-map (kbd "C-c <") 'org-promote-subtree)
-  (define-key org-mode-map (kbd "C-c >") 'org-demote-subtree)
   (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
-  (define-key org-mode-map (kbd "C-c C-a") 'org-archive-subtree)
   (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
-  (define-key org-mode-map (kbd "C-c C-l") 'org-store-link)
-  (define-key org-mode-map (kbd "C-c C-S-l") 'org-insert-link)
-  (define-key org-mode-map (kbd "C-c C-n") 'outline-forward-same-level)
-  (define-key org-mode-map (kbd "C-c C-p") 'outline-backward-same-level)
-  (define-key org-mode-map (kbd "C-c C-t") 'my-org-set-todo-state)
+  (define-key org-mode-map (kbd "C-c C-r") 'org-renumber-ordered-list)
+  (define-key org-mode-map (kbd "C-c C-s") 'org-sort-entries-or-items)
   (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
   (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
   (define-key org-mode-map (kbd "C-c C-y") 'org-paste-subtree)
