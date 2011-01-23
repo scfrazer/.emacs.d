@@ -323,7 +323,7 @@
   (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
   (switch-to-buffer "*ASCII*")
   (erase-buffer)
-  (save-excursion 
+  (save-excursion
     (let ((i -1))
       (insert "ASCII characters 0 thru 127.\n\n")
       (insert "Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char\n")
@@ -935,6 +935,15 @@ Does not set point.  Does nothing if mark ring is empty."
 (eval-after-load "verilog-mode"
   '(require 'my-verilog))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org mode
+
+(setq-default org-directory "~/Dropbox/org"
+              org-default-notes-file (concat org-directory "/Notes.org"))
+(setq org-capture-templates
+      '(("x" "TodoIt" entry (file+headline "Work.org" "Tasks")
+         "* TODO %?" :empty-lines 1 :kill-buffer t)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 
@@ -990,19 +999,16 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c e" 'my-ediff-buffer-with-file)
 (my-keys-define "C-c f" 'font-lock-fontify-buffer)
 (my-keys-define "C-c g" 'lgrep)
-(my-keys-define "C-c i" (lambda () (interactive) (find-file "~/.emacs.d/ideas.org")))
 (my-keys-define "C-c j" 'makd-join-line-with-next)
 (my-keys-define "C-c k" 'my-kill-ring-pop)
 (my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
-(my-keys-define "C-c n" (lambda () (interactive) (find-file "~/org/Notes.org")))
 (my-keys-define "C-c o" 'my-occur)
 (my-keys-define "C-c p" 'ps-print-buffer-with-faces)
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
-(my-keys-define "C-c t" (lambda () (interactive) (find-file "~/org/Work.org")))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
 (my-keys-define "C-c y" 'yank-target-map)
@@ -1018,6 +1024,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
+(my-keys-define "C-x c" 'org-capture)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'magit-status)
 (my-keys-define "C-x r a" 'append-to-register)
