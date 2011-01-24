@@ -940,9 +940,43 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (setq-default org-directory "~/Dropbox/org"
               org-default-notes-file (concat org-directory "/Notes.org"))
+
 (setq org-capture-templates
-      '(("x" "TodoIt" entry (file+headline "Work.org" "Tasks")
+      '(("t" "Task" entry (function my-org-capture-task-location)
+         "* %?" :empty-lines 1 :kill-buffer t)
+        ("w" "Work" entry (file+headline "Work.org" "Capture")
+         "* TODO %?" :empty-lines 1 :kill-buffer t)
+        ("n" "Note" entry (file+headline "Notes.org" "Capture")
+         "* %?" :empty-lines 1 :kill-buffer t)
+        ("i" "Idea" entry (file+headline "Ideas.org" "Capture")
+         "* %?" :empty-lines 1 :kill-buffer t)
+        ("h" "Home" entry (file+headline "Home.org" "Capture")
+         "* TODO %?" :empty-lines 1 :kill-buffer t)
+        ("b" "Buy" entry (file+headline "Buy.org" "Capture")
          "* TODO %?" :empty-lines 1 :kill-buffer t)))
+
+(defvar my-org-kill-task-notes nil)
+
+(defun my-org-capture-task-location ()
+  "Put point at the end of the current task's notes."
+  (if (null task-current-name)
+      (error "No task loaded")
+    (if (get-buffer task-notes-filename)
+        (set-buffer task-notes-filename)
+      (setq my-org-kill-task-notes t)
+      (set-buffer
+       (find-file-noselect (concat task-top-dir task-current-name "/" task-notes-filename))))
+    (goto-char (point-max))))
+
+(defun my-org-capture-after-finalize-hook ()
+  "Kill task notes buffer if it wasn't loaded before capture."
+  (when my-org-kill-task-notes
+    (setq my-org-kill-task-notes nil)
+    (let ((buf (get-buffer task-notes-filename)))
+      (when buf
+        (kill-buffer buf)))))
+
+(add-hook 'org-capture-after-finalize-hook 'my-org-capture-after-finalize-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
@@ -965,6 +999,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<f6>" 'task-bmk-buf-next)
 (my-keys-define "<f7>" 'task-bmk-all-next)
 (my-keys-define "C-&" 'my-pop-back-ffap-kill-buffer)
+(my-keys-define "C-'" 'org-capture)
 (my-keys-define "C-*" 'my-pop-back-ffap)
 (my-keys-define "C-," 'iflipb-previous-buffer)
 (my-keys-define "C-." 'iflipb-next-buffer)
@@ -1001,8 +1036,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c j" 'makd-join-line-with-next)
 (my-keys-define "C-c k" 'my-kill-ring-pop)
-(my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c l d" 'll-debug-revert)
+(my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
 (my-keys-define "C-c o" 'my-occur)
@@ -1024,7 +1059,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
-(my-keys-define "C-x c" 'org-capture)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'magit-status)
 (my-keys-define "C-x r a" 'append-to-register)

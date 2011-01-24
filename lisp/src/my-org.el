@@ -1,8 +1,5 @@
 ;;; my-org.el
 
-;; TODO
-;; capture templates
-
 (require 'org-install)
 
 (setq-default org-archive-location "%s_archive::"
@@ -366,6 +363,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 (add-hook 'org-mode-hook 'my-org-mode-hook)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
