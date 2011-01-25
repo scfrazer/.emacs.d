@@ -629,6 +629,18 @@ Prefix with C-u to fit the `next-window'."
     (beginning-of-line)
     (forward-line 1)))
 
+(defun my-replace-rectangle (start end string)
+  "Replace text in rectangle."
+  (interactive
+   (progn (barf-if-buffer-read-only)
+          (list (region-beginning) (region-end)
+                (read-string (format "Replacement string (%s): "
+                                     (or (car string-rectangle-history) ""))
+                             nil 'string-rectangle-history
+                             (car string-rectangle-history)))))
+  (kill-rectangle start end)
+  (string-rectangle (mark) (point) string))
+
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
  t => lowercase, uppercase, capitalize.")
@@ -1093,6 +1105,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
+(my-keys-define "M-r c" 'clear-rectangle)
+(my-keys-define "M-r d" 'delete-rectangle)
+(my-keys-define "M-r i" 'string-rectangle)
+(my-keys-define "M-r k" 'kill-rectangle)
+(my-keys-define "M-r o" 'open-rectangle)
+(my-keys-define "M-r r" 'my-replace-rectangle)
+(my-keys-define "M-r y" 'yank-rectangle)
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 
@@ -1240,6 +1259,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'small 'my-font-small)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
+(defalias 'white 'my-theme-whiteboard)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup
