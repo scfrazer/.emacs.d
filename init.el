@@ -37,6 +37,7 @@
 (require 'midnight)
 (require 'motion-and-kill-dwim)
 (require 'protbuf)
+(require 'rect)
 (require 'redo+)
 (require 'revbufs)
 (require 'task)
@@ -139,7 +140,7 @@
               cperl-highlight-variables-indiscriminately t
               cperl-indent-left-aligned-comments nil
               cperl-indent-level 4
-              cperl-invalid-face (quote underline)
+              cperl-invalid-face nil
               cperl-label-offset -4
               cperl-merge-trailing-else nil
               cursor-in-non-selected-windows nil
@@ -1011,7 +1012,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<f6>" 'task-bmk-buf-next)
 (my-keys-define "<f7>" 'task-bmk-all-next)
 (my-keys-define "C-&" 'my-pop-back-ffap-kill-buffer)
-(my-keys-define "C-'" 'org-capture)
 (my-keys-define "C-*" 'my-pop-back-ffap)
 (my-keys-define "C-," 'iflipb-previous-buffer)
 (my-keys-define "C-." 'iflipb-next-buffer)
@@ -1067,6 +1067,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
+(my-keys-define "C-x C-o" 'org-capture)
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
@@ -1255,6 +1256,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'med 'my-font-medium)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'red 'my-theme-deeper-red)
+(defalias 'rb 'my-regexp-backward)
+(defalias 'rf 'my-regexp-forward)
 (defalias 'sl 'sort-lines)
 (defalias 'small 'my-font-small)
 (defalias 'tdoe 'toggle-debug-on-error)

@@ -347,11 +347,11 @@ Otherwise: Add a checkbox and update heading accordingly."
 (define-key my-org-mode-map (kbd "L") 'org-store-link)
 
 (defun my-org-mode-hook ()
-  (define-key org-mode-map (kbd "C-x o") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-a") 'my-org-beginning-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
   (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
   (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
+  (define-key org-mode-map (kbd "C-c C-e") 'my-org-mode-map)
   (define-key org-mode-map (kbd "C-c C-r") 'org-renumber-ordered-list)
   (define-key org-mode-map (kbd "C-c C-s") 'org-sort-entries-or-items)
   (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
