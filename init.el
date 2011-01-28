@@ -726,6 +726,36 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
 
+(defun my-tidy-lines ()
+  "Tidy up lines."
+  (interactive)
+  (let* ((start (if (region-active-p) (region-beginning) (point-at-bol)))
+         (end  (if (region-active-p) (region-end) (point-at-eol)))
+         (num-lines (count-lines start end)))
+    (save-excursion
+      (goto-char start)
+      (dotimes (idx num-lines)
+        (back-to-indentation)
+        (while (re-search-forward "[ \t]\\{2,\\}" (point-at-eol) t)
+          (unless (my-inside-string-or-comment-p (match-beginning 0))
+            (replace-match " ")))
+        (dolist (regexp (list " \\([[(,;]\\)" "\\([[(]\\) " " \\([])]\\)"))
+          (back-to-indentation)
+          (while (re-search-forward regexp (point-at-eol) t)
+            (unless (my-inside-string-or-comment-p (match-beginning 0))
+              (replace-match "\\1"))))
+        (back-to-indentation)
+        (while (re-search-forward ",\\([^ \n]\\)" (point-at-eol) t)
+          (unless (my-inside-string-or-comment-p (match-beginning 0))
+            (replace-match ", \\1")))
+        (forward-line 1)))))
+
+(defun my-inside-string-or-comment-p (pos)
+  "Is POS inside a string or comment?"
+  (save-excursion
+    (let ((ppss (syntax-ppss pos)))
+      (or (nth 4 ppss) (nth 3 ppss)))))
+
 (defun my-tip-of-the-day ()
   "Tip of the day"
   (interactive)
@@ -1056,6 +1086,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c p" 'ps-print-buffer-with-faces)
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
+(my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
 (my-keys-define "C-c y" 'yank-target-map)
