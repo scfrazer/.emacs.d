@@ -48,7 +48,9 @@
         ("\\.cxx$"
          (".hh" ".h"))
         ("\\.cpp$"
-         (".hh" ".h"))))
+         (".hpp" ".h"))
+        ("\\.hpp$"
+         (".cpp"))))
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 

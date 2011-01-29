@@ -1098,7 +1098,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
-(my-keys-define "C-x C-o" 'org-capture)
+(my-keys-define "C-x C-o" (lambda () (interactive) (ido-find-file-in-dir org-directory)))
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
@@ -1229,6 +1229,7 @@ Does not set point.  Does nothing if mark ring is empty."
        '("/vob/sse/asic/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
+       '("/vob/sse/asic/.*\\.[ch]pp$" "/nfs/luke_scratch/tags/sc/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
 
