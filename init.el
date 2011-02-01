@@ -214,6 +214,7 @@
               show-paren-delay 0
               tags-revert-without-query t
               tempo-interactive t
+              truncate-partial-width-windows nil
               uniquify-buffer-name-style 'forward
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               vc-handled-backends nil ;; maybe '(Hg) later
@@ -309,7 +310,10 @@
   (save-excursion
     (if (and transient-mark-mode mark-active)
         (align (region-beginning) (region-end))
-      (align (point-at-bol) (point-at-eol)))))
+      (align (point-at-bol)
+             (save-excursion
+               (forward-paragraph)
+               (point-at-eol))))))
 
 (defun my-apply-macro-to-region-lines (top bottom)
   "Apply macro to region lines and deactivate mark"
@@ -725,6 +729,17 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
         ((and (equal major-mode 'dired-mode) (save-excursion (dired-move-to-filename)))
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
+
+(defun my-sort-lines ()
+  "Sort region or following paragraph."
+  (interactive)
+  (save-excursion
+    (if (and transient-mark-mode mark-active)
+        (sort-lines nil (region-beginning) (region-end))
+      (sort-lines nil (point-at-bol)
+                  (save-excursion
+                    (forward-paragraph)
+                    (point-at-eol))))))
 
 (defun my-tidy-lines ()
   "Tidy up lines."
@@ -1290,7 +1305,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'red 'my-theme-deeper-red)
 (defalias 'rb 'my-regexp-backward)
 (defalias 'rf 'my-regexp-forward)
-(defalias 'sl 'sort-lines)
+(defalias 'sl 'my-sort-lines)
 (defalias 'small 'my-font-small)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
