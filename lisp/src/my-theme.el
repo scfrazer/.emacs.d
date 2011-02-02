@@ -1,5 +1,14 @@
 ;;; my-theme.el
 
+;; (deftheme deeper-blue
+;;   "deeper-blue theme.")
+;;
+;; (let ((foo "#123456"))
+;;   (custom-theme-set-faces
+;;    'deeper-blue
+;;    `(default ((t (:background ,foo))))
+;;    '(cursor ((t (:background "green"))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
 

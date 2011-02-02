@@ -33,8 +33,8 @@
 (defun hdl-dbg-vcs-bpnt-regexp (filename line-num condition time)
   "Create regexp to find a breakpoint in the target file."
   (concat "^\\s-*stop\\s-+-file\\s-+{"
-          (or filename "")
-          "}\\s-+-line\\s-+{" (if line-num (number-to-string line-num) "") "}"))
+          (or filename ".+?")
+          "}\\s-+-line\\s-+{" (if line-num (number-to-string line-num) ".+?") "}"))
 
 (defun hdl-dbg-vcs-sim-del-bpnt-str (filename line-num condition time)
   "Create simulator delete breakpoint string."

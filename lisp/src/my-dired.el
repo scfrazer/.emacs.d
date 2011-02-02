@@ -2,7 +2,7 @@
 
 (require 'dired)
 
-(setq dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".lst" ".log" ".orig" ".keep"))
+(setq dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep"))
 (setq dired-recursive-deletes 'always)
 (setq dired-recursive-copies 'always)
 (setq dired-listing-switches "-al")
