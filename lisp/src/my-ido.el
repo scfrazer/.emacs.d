@@ -166,14 +166,18 @@
   "Goto to an imenu symbol using ido"
   (interactive)
   (imenu--make-index-alist)
-  (let (items initial-input)
+  (let ((items nil)
+        (guess (buffer-substring-no-properties
+                (save-excursion (skip-syntax-backward "w_") (point))
+                (save-excursion (skip-syntax-forward "w_") (point)))))
     (setq items (nreverse (my-ido-imenu-add-symbols nil imenu--index-alist items)))
-    (when (and transient-mark-mode mark-active)
-      (when (= (point) (region-end))
-        (exchange-point-and-mark))
-      (setq initial-input (buffer-substring (point) (region-end)))
-      (setq mark-active nil))
-    (let ((pos (cdr (assoc (ido-completing-read "Goto symbol: " (mapcar 'car items) nil t initial-input) items))))
+    (catch 'done
+      (dotimes (idx (length items))
+        (if (equal guess (caar items))
+            (throw 'done t)
+          (when (cdr items)
+            (setq items (nconc (cdr items) (list (car items))))))))
+    (let ((pos (cdr (assoc (ido-completing-read "Goto symbol: " (mapcar 'car items) nil t) items))))
       (when pos
         (goto-char pos)))))
 
