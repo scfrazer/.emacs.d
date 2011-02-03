@@ -167,13 +167,14 @@
   (interactive)
   (imenu--make-index-alist)
   (let ((items nil)
-        (guess (buffer-substring-no-properties
-                (save-excursion (skip-syntax-backward "w_") (point))
-                (save-excursion (skip-syntax-forward "w_") (point)))))
+        (guess (concat "\\(.+::\\)?"
+                       (buffer-substring-no-properties
+                        (save-excursion (skip-syntax-backward "w_") (point))
+                        (save-excursion (skip-syntax-forward "w_") (point))))))
     (setq items (nreverse (my-ido-imenu-add-symbols nil imenu--index-alist items)))
     (catch 'done
       (dotimes (idx (length items))
-        (if (equal guess (caar items))
+        (if (string-match guess (caar items))
             (throw 'done t)
           (when (cdr items)
             (setq items (nconc (cdr items) (list (car items))))))))
