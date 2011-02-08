@@ -1097,7 +1097,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
-(my-keys-define "C-c o" 'my-occur)
 (my-keys-define "C-c p" 'ps-print-buffer-with-faces)
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
@@ -1159,6 +1158,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r o" 'open-rectangle)
 (my-keys-define "M-r r" 'my-replace-rectangle)
 (my-keys-define "M-r y" 'yank-rectangle)
+(my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 
@@ -1307,6 +1307,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'rf 'my-regexp-forward)
 (defalias 'sl 'my-sort-lines)
 (defalias 'small 'my-font-small)
+(defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
 (defalias 'white 'my-theme-whiteboard)

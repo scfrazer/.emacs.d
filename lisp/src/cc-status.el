@@ -6,7 +6,7 @@
 
 (defvar cc-status-tree-ignore-regexps (list "\\.cmake\\.state"
                                             "rtl/Makefile\\(\\..+\\)?"
-                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\)"
+                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
                                             "rtl/dump.rdl")
   "*Regexps to ignore in cc-status-tree.")
 
