@@ -1333,3 +1333,5 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (put 'erase-buffer 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+(put 'scroll-left 'disabled nil)
+(put 'scroll-right 'disabled nil)
