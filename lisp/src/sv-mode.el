@@ -44,8 +44,7 @@
 ;; C-c C-p : Move to beginning of previous block
 ;; C-c C-n : Move to end of next block
 ;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
-;; C-c C-g : Goto implementation in .sv file from prototype on current
-;;           line in .svh file
+;; C-c C-g : Goto function definition/implementation in "other" file
 ;; C-c C-s : Create (or update) skeleton task/function implementation in
 ;;           .sv file from prototype on current line in .svh file
 ;;
@@ -744,17 +743,27 @@ end/endtask/endmodule/etc. also."
            (error "Unbalanced parentheses or begin/end constructs")))
        done))))
 
-(defun sv-mode-goto-implementation-from-prototype ()
-  "Go to implementation from prototype."
+(defun sv-mode-goto-function-other-file ()
+  "Go to function/task in other file."
   (interactive)
-  (let ((proto (sv-mode-parse-prototype))
-        (namespaces (sv-mode-get-namespaces))
-        (this-func-re "\\(task\\|function\\)\\s-+.*?"))
-    (dolist (ns namespaces)
-      (setq this-func-re (concat this-func-re ns "::")))
-    (setq this-func-re (concat this-func-re (cdr (assoc 'name proto)) "\\s-*[(;]"))
+  (let* ((proto (sv-mode-parse-prototype))
+         (name (cdr (assoc 'name proto)))
+         (in-impl (string-match "::" name))
+         (namespaces nil)
+         (this-func-re "\\(task\\|function\\)\\s-+.*?"))
+    (if (not in-impl)
+        (setq namespaces (sv-mode-get-namespaces))
+      (setq namespaces (split-string name "::" t))
+      (setq name (car (last namespaces)))
+      (setq namespaces (nbutlast namespaces)))
     (ff-get-other-file)
     (goto-char (point-min))
+    (dolist (ns namespaces)
+      (if in-impl
+          (unless (re-search-forward (concat "^\\s-*class\\s-+" ns))
+            (error "Couldn't find function/task implementation"))
+        (setq this-func-re (concat this-func-re ns "::"))))
+    (setq this-func-re (concat this-func-re name "\\s-*[(;]"))
     (if (sv-mode-re-search-forward this-func-re nil t)
         (beginning-of-line)
       (error "Couldn't find function/task implementation"))))
@@ -1510,7 +1519,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
     (define-key map (kbd "C-c C-a") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-p") 'sv-mode-beginning-of-block)
     (define-key map (kbd "C-c C-n") 'sv-mode-end-of-block)
-    (define-key map (kbd "C-c C-g") 'sv-mode-goto-implementation-from-prototype)
+    (define-key map (kbd "C-c C-g") 'sv-mode-goto-function-other-file)
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     map)
