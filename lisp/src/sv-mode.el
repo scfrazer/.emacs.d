@@ -44,7 +44,7 @@
 ;; C-c C-p : Move to beginning of previous block
 ;; C-c C-n : Move to end of next block
 ;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
-;; C-c C-g : Goto function definition/implementation in "other" file
+;; C-c C-l : Look for function definition/implementation in "other" file
 ;; C-c C-s : Create (or update) skeleton task/function implementation in
 ;;           .sv file from prototype on current line in .svh file
 ;;
@@ -1519,7 +1519,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
     (define-key map (kbd "C-c C-a") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-p") 'sv-mode-beginning-of-block)
     (define-key map (kbd "C-c C-n") 'sv-mode-end-of-block)
-    (define-key map (kbd "C-c C-g") 'sv-mode-goto-function-other-file)
+    (define-key map (kbd "C-c C-l") 'sv-mode-goto-function-other-file)
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     map)
