@@ -41,7 +41,7 @@
           (if cc-status-tree-filter " (filtered)" "")
           "\n\n")
   (call-process-shell-command (concat
-                               "(cleartool lscheckout -me -r -fmt '(%Rf) %n\\n' "
+                               "(cleartool lscheckout -me -r -cview -fmt '(%Rf) %n\\n' "
                                cc-status-tree-dir-name
                                " ; cleartool lspri -other "
                                cc-status-tree-dir-name ")") nil t)
