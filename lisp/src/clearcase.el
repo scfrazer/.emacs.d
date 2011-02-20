@@ -5850,57 +5850,58 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
   ;; of changes because of expanded version-control key words.  This is quite
   ;; important since otherwise typeahead won't work as expected.
   ;;
-  (widen)
-  (let ((point-context (clearcase-position-context (point)))
+  (let ((deactivate-mark t))
+    (widen)
+    (let ((point-context (clearcase-position-context (point)))
 
-        ;; Use clearcase-utl-mark-marker to avoid confusion in transient-mark-mode.
-        ;; XEmacs - mark-marker t, FSF Emacs - mark-marker.
-        ;;
-        (mark-context (if (eq (marker-buffer (clearcase-utl-mark-marker))
-                              (current-buffer))
-                          (clearcase-position-context (clearcase-utl-mark-marker))))
-        (camefrom (current-buffer)))
+          ;; Use clearcase-utl-mark-marker to avoid confusion in transient-mark-mode.
+          ;; XEmacs - mark-marker t, FSF Emacs - mark-marker.
+          ;;
+          (mark-context (if (eq (marker-buffer (clearcase-utl-mark-marker))
+                                (current-buffer))
+                            (clearcase-position-context (clearcase-utl-mark-marker))))
+          (camefrom (current-buffer)))
 
-    ;; nyi: Should we run font-lock ?
-    ;; Want to avoid re-doing a buffer that is already correct, such as on
-    ;; check-in/check-out.
-    ;; For now do-nothing.
+      ;; nyi: Should we run font-lock ?
+      ;; Want to avoid re-doing a buffer that is already correct, such as on
+      ;; check-in/check-out.
+      ;; For now do-nothing.
 
-    ;; The actual revisit.
-    ;; For some reason, revert-buffer doesn't recompute whether View Minor Mode
-    ;; should be on, so turn it off and then turn it on if necessary.
-    ;;
-    ;; nyi: Perhaps we should re-find-file ?
-    ;;
-    (or clearcase-xemacs-p
-        (if (fboundp 'view-mode)
-            (view-mode 0)))
-    (revert-buffer t no-confirm t)
-    (or clearcase-xemacs-p
-        (if (and (boundp 'view-read-only)
-                 view-read-only
-                 buffer-read-only)
-            (view-mode 1)))
-
-    ;; Restore point and mark.
-    ;;
-    (let ((new-point (clearcase-find-position-by-context point-context)))
-      (if new-point
-          (goto-char new-point))
-      (if mark-context
-          (let ((new-mark (clearcase-find-position-by-context mark-context)))
-            (if new-mark
-                (set-mark new-mark))))
-
-      ;; Restore a semblance of folded state.
+      ;; The actual revisit.
+      ;; For some reason, revert-buffer doesn't recompute whether View Minor Mode
+      ;; should be on, so turn it off and then turn it on if necessary.
       ;;
-      (if (and (boundp 'folded-file)
-               folded-file)
-          (progn
-            (folding-open-buffer)
-            (folding-whole-buffer)
-            (if new-point
-                (folding-goto-char new-point)))))))
+      ;; nyi: Perhaps we should re-find-file ?
+      ;;
+      (or clearcase-xemacs-p
+          (if (fboundp 'view-mode)
+              (view-mode 0)))
+      (revert-buffer t no-confirm t)
+      (or clearcase-xemacs-p
+          (if (and (boundp 'view-read-only)
+                   view-read-only
+                   buffer-read-only)
+              (view-mode 1)))
+
+      ;; Restore point and mark.
+      ;;
+      (let ((new-point (clearcase-find-position-by-context point-context)))
+        (if new-point
+            (goto-char new-point))
+        (if mark-context
+            (let ((new-mark (clearcase-find-position-by-context mark-context)))
+              (if new-mark
+                  (set-mark new-mark))))
+
+        ;; Restore a semblance of folded state.
+        ;;
+        (if (and (boundp 'folded-file)
+                 folded-file)
+            (progn
+              (folding-open-buffer)
+              (folding-whole-buffer)
+              (if new-point
+                  (folding-goto-char new-point))))))))
 
 ;;}}}
 
