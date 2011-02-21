@@ -185,6 +185,7 @@
    (my-trailing-space-face ((t (:background "steelblue4"))))
    (org-document-title ((t (:height 1.44))))
    (org-hide ((t (:foreground "#181a26"))))
+   (org-table ((t (:foreground "darkseagreen2"))))
    (org-tag ((t (:foreground "salmon"))))
    (org-todo ((t (:foreground "plum2"))))
    (outline-1 ((t (:foreground "SkyBlue1"))))
