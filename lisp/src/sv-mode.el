@@ -484,7 +484,7 @@ expression."
       (when (member begin-type (list "task" "function" "program"))
         (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
         (setq label (match-string-no-properties 1)))
-      (when (member begin-type (list "class" "module" "interface" "extends"))
+      (when (member begin-type (list "class" "module" "interface"))
         (re-search-forward "[a-zA-Z0-9_]+" nil t)
         (setq label (match-string-no-properties 0))))
     (concat end-type (if label (concat " : " label) ""))))
