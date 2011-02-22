@@ -1,11 +1,10 @@
 (setq default-frame-alist
-      '((width . 120) (height . 60)))
+      '((width . 100) (height . 60)))
 
 ;; Exec this line to insert the current font as a setting:
 ;; (insert "\n(set-default-font \"" (cdr (assoc 'font (frame-parameters))) "\")\n")
-
 ;; (set-default-font "-apple-Monaco-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
-(set-default-font "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
+(set-default-font "-apple-Droid_Sans_Mono_Slashed-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
 
 (setq exec-path (append exec-path (list "/usr/local/bin"
                                         "/usr/local/git/bin"
