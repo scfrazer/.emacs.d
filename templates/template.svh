@@ -19,8 +19,6 @@
 //  Initial Version:    %d %M %Y    By: %u
 //
 //--------------------------------------------------------------------------
-//
-// $Id: $
 
 `ifndef _%N_%E_INCLUDED
 `define _%N_%E_INCLUDED

@@ -270,7 +270,7 @@ Otherwise, use `file-template-auto-insert'."
   (interactive)
   (unless template
     (setq template (read-file-name "Template to insert? "
-                                   (concat (car file-template-paths) "/")
+                                   (car file-template-paths)
                                    nil t)))
   (setq file-template-prompt-start-point nil)
   (setq file-template-prompted-strings '())
