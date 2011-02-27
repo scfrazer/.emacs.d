@@ -232,8 +232,8 @@ Otherwise: Add a checkbox and update heading accordingly."
   :group 'faces)
 
 (defvar my-org-export-preprocess-replacement-alist
-  '(("<new>" . "@<font color='blue'>")
-    ("</new>" . "@</font>"))
+  '(("<new>" . "@<span class=\"new\">")
+    ("</new>" . "@</span>"))
   "*Export preprocess replacements")
 
 (defun my-org-export-preprocess-hook ()
@@ -247,6 +247,9 @@ Otherwise: Add a checkbox and update heading accordingly."
     (goto-char (point-min))))
 
 (add-hook 'org-export-preprocess-hook 'my-org-export-preprocess-hook)
+
+(defvar my-org-float-tags t
+  "*Float tags on right side of HTML output")
 
 (defvar my-org-add-bullets nil)
 
@@ -265,20 +268,26 @@ Otherwise: Add a checkbox and update heading accordingly."
 
     (goto-char (point-min))
     (while (re-search-forward "<h[3-6].*?>" nil t)
-      (insert "<div style='float:left'>" (if my-org-add-bullets "&bull; " "")))
+      (insert (if my-org-float-tags "<div style='float:left'>" "")
+              (if my-org-add-bullets "&bull; " "")))
 
-    (goto-char (point-min))
-    (while (re-search-forward "</h[3-6]>" nil t)
-      (insert "<div style='clear:both'></div>")
-      (goto-char (match-beginning 0))
-      (insert "</div>")
-      (forward-char 5))
+    (when my-org-float-tags
+      (goto-char (point-min))
+      (while (re-search-forward "</h[3-6]>" nil t)
+        (insert "<div style='clear:both'></div>")
+        (goto-char (match-beginning 0))
+        (insert "</div>")
+        (forward-char 5)))
 
     (goto-char (point-min))
     (while (re-search-forward "<span class=\"tag\">" nil t)
-      (goto-char (match-beginning 0))
-      (insert "</div><div style='float:right'>")
-      (re-search-forward "<span class=\"tag\">" nil t))))
+      (when my-org-float-tags
+        (goto-char (match-beginning 0))
+        (insert "</div><div style='float:right'>")
+        (re-search-forward "<span class=\"tag\">" nil t))
+      (insert "[")
+      (re-search-forward "</span>" nil t)
+      (insert "]"))))
 
 (add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
 
@@ -287,10 +296,11 @@ Otherwise: Add a checkbox and update heading accordingly."
   (interactive)
   (if (and transient-mark-mode mark-active)
       (save-excursion
-        (goto-char (region-end))
-        (insert "</new>")
-        (goto-char (region-beginning))
-        (insert "<new>"))
+        (let ((beg (region-beginning)) (end (region-end)))
+          (goto-char (max beg end))
+          (insert "</new>")
+          (goto-char (min beg end))
+          (insert "<new>")))
     (insert "<new></new>")
     (backward-char 6)))
 
@@ -313,6 +323,22 @@ Otherwise: Add a checkbox and update heading accordingly."
       (while (search-forward item nil t)
         (replace-match ""))
       (goto-char (point-min)))))
+
+(defun my-org-new (&optional arg)
+  "Add/remove/strip-all <new>."
+  (interactive "P")
+  (if arg
+      (if (equal '(4) arg)
+          (my-org-remove-new)
+        (my-org-strip-all-new))
+    (my-org-add-new)))
+
+(defun my-org-link (&optional arg)
+  "Store or insert link."
+  (interactive "P")
+  (if arg
+      (call-interactively 'org-store-link)
+    (call-interactively 'org-insert-link)))
 
 (defun my-org-export-and-email ()
   "Export and email the file."
@@ -337,14 +363,8 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-prefix-command 'my-org-mode-map)
-
-(define-key my-org-mode-map (kbd "e") 'org-export-as-html)
-(define-key my-org-mode-map (kbd "n") 'my-org-add-new)
-(define-key my-org-mode-map (kbd "N") 'my-org-remove-new)
-(define-key my-org-mode-map (kbd "C-n") 'my-org-strip-all-new)
-(define-key my-org-mode-map (kbd "l") 'org-insert-link)
-(define-key my-org-mode-map (kbd "L") 'org-store-link)
+;; TODO Some better way to do this?
+(defalias 'html 'org-export-as-html)
 
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
@@ -354,12 +374,14 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
   (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
   (define-key org-mode-map (kbd "C-c C-b") 'my-org-handle-checkbox)
-  (define-key org-mode-map (kbd "C-c C-e") 'my-org-mode-map)
+  (define-key org-mode-map (kbd "C-c C-l") 'my-org-link)
+  (define-key org-mode-map (kbd "C-c C-n") 'my-org-new)
   (define-key org-mode-map (kbd "C-c C-r") 'org-renumber-ordered-list)
   (define-key org-mode-map (kbd "C-c C-s") 'org-sort-entries-or-items)
   (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
   (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
   (define-key org-mode-map (kbd "C-c C-y") 'org-paste-subtree)
+  (define-key org-mode-map (kbd "M-m") 'my-org-beginning-of-line)
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
   (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end))
 
@@ -489,9 +511,10 @@ ul { list-style-type: square; }
 
 .todo { color: red; }
 .done { color: green; }
+.new { color: blue; }
 .timestamp { color: gray }
-.timestamp-kwd { color: #f59ea0; }
-.tag { color: red; font-weight:normal }
+.timestamp-kwd { color: #8b4500; }
+.tag { color: blue; font-weight:normal }
 .target { background-color: #551a8b; }
 </style>
 ")
