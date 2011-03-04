@@ -239,35 +239,29 @@ This is a utility function, you probably want `makd-backward-word-section'."
   "Find the region inside paired chars ()[]{}<>"
   (let* ((beg (point))
          (end beg)
-         regex open close)
+         open close)
     (cond ((or (eq char ?() (eq char ?)))
-           (setq regex "[()]"
-                 open  ?\(
-                 close ?\)))
+           (setq open  ?\( close ?\)))
           ((or (eq char ?\[) (eq char ?\]))
-           (setq regex "[][]"
-                 open  ?\[
-                 close ?\]))
+           (setq open  ?\[ close ?\]))
           ((or (eq char ?\{) (eq char ?\}))
-           (setq regex "[{}]"
-                 open  ?\{
-                 close ?\}))
+           (setq open  ?\{ close ?\}))
           ((or (eq char ?\<) (eq char ?\>))
-           (setq regex "[<>]"
-                 open  ?\<
-                 close ?\>)))
+           (setq open  ?\< close ?\>)))
     (save-excursion
       (cond ((equal dir 'backward)
-             (setq beg (makd-backward-paired regex open close)))
+             (setq beg (makd-backward-paired open close)))
             ((equal dir 'forward)
-             (setq end (makd-forward-paired regex open close)))
+             (setq end (makd-forward-paired open close)))
             ((equal dir 'inside)
-             (save-excursion (setq beg (makd-backward-paired regex open close)))
-             (setq end (makd-forward-paired regex open close)))))
+             (save-excursion (setq beg (makd-backward-paired open close)))
+             (setq end (makd-forward-paired open close)))))
     (cons beg end)))
 
-(defun makd-backward-paired (regex open close)
-  (let (done (nesting 0))
+(defun makd-backward-paired (open close)
+  (let ((nesting 0)
+        (regex (concat "[" (char-to-string close) (char-to-string open) "]"))
+        done)
     (while (not (or done (bobp)))
       (when (and (re-search-backward regex nil 'go)
                  (not (memq (get-text-property (point) 'face)
@@ -277,13 +271,15 @@ This is a utility function, you probably want `makd-backward-word-section'."
               ((eq (char-after) open)
                (if (= nesting 0)
                    (setq done t)
-                 (setq nesting (1- nesting))))))))
-  (unless (bobp)
-    (forward-char))
+                 (setq nesting (1- nesting)))))))
+    (when done
+      (forward-char)))
   (point))
 
-(defun makd-forward-paired (regex open close)
-  (let (done (nesting 0))
+(defun makd-forward-paired (open close)
+  (let ((nesting 0)
+        (regex (concat "[" (char-to-string close) (char-to-string open) "]"))
+        done)
     (while (not (or done (eobp)))
       (when (and (re-search-forward regex nil 'go)
                  (not (memq (get-text-property (point) 'face)
@@ -293,9 +289,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
               ((eq (char-before) close)
                (if (= nesting 0)
                    (setq done t)
-                 (setq nesting (1- nesting))))))))
-  (unless (eobp)
-    (backward-char))
+                 (setq nesting (1- nesting)))))))
+    (when done
+      (backward-char)))
   (point))
 
 (defun makd-region-inside-quotes (char dir)
@@ -332,19 +328,22 @@ This is a utility function, you probably want `makd-backward-word-section'."
 (defun makd-forward-kill ()
   "Smart kill forward.
 1. If region is active, kill it
-2. Else if at the beginning of a word, kill the word and trailing whitespace
-3. Else if in the middle of a word, kill the rest of the word
-4. Else if looking at whitespace, kill whitespace forward
-5. Else if looking at punctuation, kill punctuation forward
-6. Else if looking at an open bracket/brace/paren, kill sexp forward
-7. Else if looking at a quotation mark, kill quoted text
-8. Else kill next char"
+2. Else if looking at 'tag', kill tag
+3. Else if at the beginning of a word, kill the word and trailing whitespace
+4. Else if in the middle of a word, kill the rest of the word
+5. Else if looking at whitespace, kill whitespace forward
+6. Else if looking at punctuation, kill punctuation forward
+7. Else if looking at an open bracket/brace/paren, kill sexp forward
+8. Else if looking at a quotation mark, kill quoted text
+9. Else kill next char"
   (interactive)
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
+                   (cond ((looking-at "</?\\s-*[a-zA-Z].*>")
+                          (goto-char (match-end 0)))
+                         ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
                           (skip-syntax-forward " "))
                          ((makd-looking-at-syntax "w_")
@@ -377,18 +376,21 @@ This is a utility function, you probably want `makd-backward-word-section'."
 (defun makd-backward-kill ()
   "Smart kill backward.
 1. If region is active, kill it
-2. Else if looking back at whitespace, kill backward whitespace and word
-3. Else if in the middle of a word, kill backward word
-4. Else if looking at punctuation, kill backward punctuation
-5. Else if looking at an close bracket/brace/paren, kill backward sexp
-6. Else if looking at a quotation mark, kill backward quoted text
-7. Else kill previous char"
+2. Else if looking at 'tag', kill tag
+3. Else if looking back at whitespace, kill backward whitespace and word
+4. Else if in the middle of a word, kill backward word
+5. Else if looking at punctuation, kill backward punctuation
+6. Else if looking at an close bracket/brace/paren, kill backward sexp
+7. Else if looking at a quotation mark, kill backward quoted text
+8. Else kill previous char"
   (interactive)
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((makd-looking-back-syntax " ")
+                   (cond ((looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
+                          (goto-char (match-beginning 0)))
+                         ((makd-looking-back-syntax " ")
                           (skip-syntax-backward " ")
                           (when (makd-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
@@ -434,8 +436,14 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?l) (kill-region (point) (progn (makd-forward-block) (point))))
        ((eq c ?L) (kill-region (point) (progn (makd-backward-block) (point))))
 
-       ((eq c ?m) (kill-sexp 1))
-       ((eq c ?M) (kill-sexp -1))
+       ((eq c ?m)
+        (if (looking-at "</?\\s-*[a-zA-Z].*>")
+            (replace-match "")
+          (kill-sexp 1)))
+       ((eq c ?M)
+        (if (looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
+            (replace-match "")
+          (kill-sexp -1)))
 
        ((eq c ?w) (kill-region (point) (progn (skip-syntax-forward "w_") (point))))
        ((eq c ?W) (kill-region (point) (progn (skip-syntax-backward"w_") (point))))
@@ -485,8 +493,14 @@ This is a utility function, you probably want `makd-backward-word-section'."
                   ((eq c ?l) (makd-forward-block))
                   ((eq c ?L) (makd-backward-block))
 
-                  ((eq c ?m) (forward-sexp 1))
-                  ((eq c ?M) (forward-sexp -1))
+                  ((eq c ?m)
+                   (if (looking-at "</?\\s-*[a-zA-Z].*>")
+                       (goto-char (match-end 0))
+                     (forward-sexp 1)))
+                  ((eq c ?M)
+                   (if (looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
+                       (goto-char (match-beginning 0))
+                     (forward-sexp -1)))
 
                   ((eq c ?w) (skip-syntax-forward "w_"))
                   ((eq c ?W) (skip-syntax-backward"w_"))
@@ -630,70 +644,6 @@ end-of-line (and it's not a empty line).  Kills region if active."
     (exchange-point-and-mark)
     (indent-region (point) (mark 't))
     (exchange-point-and-mark)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Open
-
-(defun makd-open-line-above ()
-  "Open a line above the current one."
-  (interactive)
-  (beginning-of-line)
-  (newline)
-  (forward-line -1))
-
-(defun makd-open-line-below ()
-  "Open a line below the current one."
-  (interactive)
-  (end-of-line)
-  (newline))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Select
-
-(defun makd-select-word-at-point ()
-  "Select the word at point."
-  (interactive)
-  (skip-syntax-forward "w_")
-  (push-mark (point))
-  (skip-syntax-backward "w_")
-  (exchange-point-and-mark))
-
-(defun makd-select-section-at-point ()
-  "Select the section at point."
-  (interactive)
-  (skip-syntax-forward "w")
-  (push-mark (point))
-  (skip-syntax-backward "w")
-  (exchange-point-and-mark))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Search/Replace
-
-(defun makd-query-replace (&optional arg)
-  "query-replace ... take from-string from region if it is active"
-  (interactive "*P")
-  (if arg
-      (call-interactively 'query-replace)
-    (let (from to)
-      (if (region-active-p)
-          (progn (setq from (buffer-substring (region-beginning) (region-end))
-                       to (read-from-minibuffer
-                           (format "Query replace %s with: " from) nil nil nil
-                           'query-replace-history))
-                 (goto-char (region-beginning))
-                 (setq mark-active nil))
-        (let* ((default (buffer-substring-no-properties
-                         (point)
-                         (save-excursion (skip-syntax-forward "w_") (point))))
-               (from-str (read-from-minibuffer
-                          (format "Query replace (default %s): " default) nil nil nil
-                          'query-replace-history default)))
-          (setq from (if (string= from-str "") default from-str)
-                to (read-from-minibuffer
-                    (format "Query replace %s with: " from) nil nil nil
-                    'query-replace-history))))
-      (query-replace from to)
-      (setq query-replace-defaults (cons from to)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling/Paging

@@ -562,6 +562,19 @@ Prefix with C-u to fit the `next-window'."
      (point))
    (point)))
 
+(defun my-open-line-above ()
+  "Open a line above the current one."
+  (interactive)
+  (beginning-of-line)
+  (newline)
+  (forward-line -1))
+
+(defun my-open-line-below ()
+  "Open a line below the current one."
+  (interactive)
+  (end-of-line)
+  (newline))
+
 (defun my-other-frame ()
   "Switch to other frame."
   (interactive)
@@ -596,6 +609,32 @@ Prefix with C-u to fit the `next-window'."
   (my-delete-trailing-whitespace)
   (untabify (point-min) (point-max))
   (indent-region (point-min) (point-max)))
+
+(defun my-query-replace (&optional arg)
+  "query-replace ... take from-string from region if it is active"
+  (interactive "*P")
+  (if arg
+      (call-interactively 'query-replace)
+    (let (from to)
+      (if (region-active-p)
+          (progn (setq from (buffer-substring (region-beginning) (region-end))
+                       to (read-from-minibuffer
+                           (format "Query replace %s with: " from) nil nil nil
+                           'query-replace-history))
+                 (goto-char (region-beginning))
+                 (setq mark-active nil))
+        (let* ((default (buffer-substring-no-properties
+                         (point)
+                         (save-excursion (skip-syntax-forward "w_") (point))))
+               (from-str (read-from-minibuffer
+                          (format "Query replace (default %s): " default) nil nil nil
+                          'query-replace-history default)))
+          (setq from (if (string= from-str "") default from-str)
+                to (read-from-minibuffer
+                    (format "Query replace %s with: " from) nil nil nil
+                    'query-replace-history))))
+      (query-replace from to)
+      (setq query-replace-defaults (cons from to)))))
 
 (defvar my-recenter-count nil)
 (defun my-recenter (&optional arg)
@@ -1047,10 +1086,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<C-f4>" 'my-apply-macro-to-region-lines)
 (my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "<C-tab>" 'other-window)
-(my-keys-define "<M-return>" 'makd-open-line-below)
+(my-keys-define "<M-return>" 'my-open-line-below)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
-(my-keys-define "<S-return>" 'makd-open-line-above)
+(my-keys-define "<S-return>" 'my-open-line-above)
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "<f5>" 'task-bmk-toggle)
 (my-keys-define "<f6>" 'task-bmk-buf-next)
@@ -1119,7 +1158,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-z" 'undo)
 (my-keys-define "C-~" 'previous-error)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
-(my-keys-define "M-%" 'makd-query-replace)
+(my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
 (my-keys-define "M-)" 'delete-pair)
 (my-keys-define "M-*" 'pop-tag-mark)
