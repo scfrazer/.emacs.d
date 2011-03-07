@@ -433,8 +433,8 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?p) (kill-region (point) (progn (makd-forward-paragraph) (point))))
        ((eq c ?P) (kill-region (point) (progn (makd-backward-paragraph) (point))))
 
-       ((eq c ?l) (kill-region (point) (progn (makd-forward-block) (point))))
-       ((eq c ?L) (kill-region (point) (progn (makd-backward-block) (point))))
+       ((eq c ?b) (kill-region (point) (progn (makd-forward-block) (point))))
+       ((eq c ?B) (kill-region (point) (progn (makd-backward-block) (point))))
 
        ((eq c ?m)
         (if (looking-at "</?\\s-*[a-zA-Z].*>")
@@ -490,8 +490,8 @@ This is a utility function, you probably want `makd-backward-word-section'."
                   ((eq c ?p) (makd-forward-paragraph))
                   ((eq c ?P) (makd-backward-paragraph))
 
-                  ((eq c ?l) (makd-forward-block))
-                  ((eq c ?L) (makd-backward-block))
+                  ((eq c ?b) (makd-forward-block))
+                  ((eq c ?B) (makd-backward-block))
 
                   ((eq c ?m)
                    (if (looking-at "</?\\s-*[a-zA-Z].*>")
