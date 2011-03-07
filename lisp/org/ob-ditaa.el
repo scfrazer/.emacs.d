@@ -5,7 +5,7 @@
 ;; Author: Eric Schulte
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
-;; Version: 7.4
+;; Version: 7.5
 
 ;; This file is part of GNU Emacs.
 
@@ -48,7 +48,11 @@
   "Execute a block of Ditaa code with org-babel.
 This function is called by `org-babel-execute-src-block'."
   (let* ((result-params (split-string (or (cdr (assoc :results params)) "")))
-	 (out-file (cdr (assoc :file params)))
+	 (out-file ((lambda (el)
+		      (or el
+			  (error
+			   "ditaa code block requires :file header argument")))
+		    (cdr (assoc :file params))))
 	 (cmdline (cdr (assoc :cmdline params)))
 	 (in-file (org-babel-temp-file "ditaa-"))
 	 (cmd (concat "java -jar "

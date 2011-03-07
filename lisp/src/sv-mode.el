@@ -481,12 +481,15 @@ expression."
       (re-search-forward "\\sw+" (line-end-position) t)
       (setq begin-type (match-string-no-properties 0))
       (setq end-type (cdr (assoc begin-type sv-mode-begin-to-end-alist)))
-      (when (member begin-type (list "task" "function" "program"))
-        (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
-        (setq label (match-string-no-properties 1)))
-      (when (member begin-type (list "class" "module" "interface"))
-        (re-search-forward "[a-zA-Z0-9_]+" nil t)
-        (setq label (match-string-no-properties 0))))
+      ;; No labels allowed in AOP files ... this is hacky
+      (when (and buffer-file-name
+                 (not (equal (file-name-extension buffer-file-name) "aop")))
+        (when (member begin-type (list "task" "function" "program"))
+          (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
+          (setq label (match-string-no-properties 1)))
+        (when (member begin-type (list "class" "module" "interface"))
+          (re-search-forward "[a-zA-Z0-9_]+" nil t)
+          (setq label (match-string-no-properties 0)))))
     (concat end-type (if label (concat " : " label) ""))))
 
 (defun sv-mode-get-namespaces ()

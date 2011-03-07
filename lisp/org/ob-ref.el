@@ -5,7 +5,7 @@
 ;; Author: Eric Schulte, Dan Davison
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
-;; Version: 7.4
+;; Version: 7.5
 
 ;; This file is part of GNU Emacs.
 
@@ -56,7 +56,7 @@
 (declare-function org-remove-if-not "org" (predicate seq))
 (declare-function org-at-table-p "org" (&optional table-type))
 (declare-function org-count "org" (CL-ITEM CL-SEQ))
-(declare-function org-in-item-p "org-list" ())
+(declare-function org-at-item-p "org-list" ())
 
 (defvar org-babel-ref-split-regexp
   "[ \f\t\n\r\v]*\\(.+?\\)[ \f\t\n\r\v]*=[ \f\t\n\r\v]*\\(.+\\)[ \f\t\n\r\v]*")
@@ -84,6 +84,7 @@ the variable."
 (defvar org-babel-library-of-babel)
 (defun org-babel-ref-resolve (ref)
   "Resolve the reference REF and return its value."
+  (save-window-excursion
   (save-excursion
     (let ((case-fold-search t)
           type args new-refere new-header-args new-referent result
@@ -156,7 +157,7 @@ the variable."
 	    (format "%S" result)
 	  (if (and index (listp result))
 	      (org-babel-ref-index-list index result)
-	    result))))))
+	    result)))))))
 
 (defun org-babel-ref-index-list (index lis)
   "Return the subset of LIS indexed by INDEX.
@@ -180,7 +181,10 @@ to \"0:-1\"."
                (open (ls) (if (and (listp ls) (= (length ls) 1)) (car ls) ls)))
           (open
            (mapcar
-            (lambda (sub-lis) (org-babel-ref-index-list remainder sub-lis))
+            (lambda (sub-lis)
+	      (if (listp sub-lis)
+		  (org-babel-ref-index-list remainder sub-lis)
+		sub-lis))
             (if (or (= 0 (length portion)) (string-match ind-re portion))
                 (mapcar
 		 (lambda (n) (nth n lis))
@@ -216,7 +220,7 @@ to \"0:-1\"."
 Return nil if none of the supported reference types are found.
 Supported reference types are tables and source blocks."
   (cond ((org-at-table-p) 'table)
-	((org-in-item-p) 'list)
+	((org-at-item-p) 'list)
         ((looking-at "^[ \t]*#\\+BEGIN_SRC") 'source-block)
         ((looking-at org-bracket-link-regexp) 'file)
         ((looking-at org-babel-result-regexp) 'results-line)))

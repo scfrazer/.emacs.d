@@ -4,7 +4,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.4
+;; Version: 7.5
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -62,6 +62,11 @@ org-agenda-text-search-extra-files
 			      org-agenda-text-search-extra-files))
 	       (repeat :inline t :tag "Additional files"
 		       (file))))
+
+(defcustom org-mobile-files-exclude-regexp ""
+  "A regexp to exclude files from `org-mobile-files'."
+  :group 'org-mobile
+  :type 'regexp)
 
 (defcustom org-mobile-directory ""
   "The WebDAV directory where the interaction with the mobile takes place."
@@ -241,7 +246,8 @@ using `rsync' or `scp'.")
   (setq org-mobile-checksum-files nil))
 
 (defun org-mobile-files-alist ()
-  "Expand the list in `org-mobile-files' to a list of existing files."
+  "Expand the list in `org-mobile-files' to a list of existing files.
+Also exclude files matching `org-mobile-files-exclude-regexp'."
   (let* ((include-archives
 	  (and (member 'org-agenda-text-search-extra-files org-mobile-files)
 	       (member 'agenda-archives	org-agenda-text-search-extra-files)
@@ -263,6 +269,13 @@ using `rsync' or `scp'.")
 		      (list f))
 		     (t nil)))
 		  org-mobile-files)))
+	 (files (delete
+		 nil 
+		 (mapcar (lambda (f)
+			   (unless (and (not (string= org-mobile-files-exclude-regexp ""))
+					(string-match org-mobile-files-exclude-regexp f))
+			     (identity f)))
+			 files)))
 	 (orgdir-uname (file-name-as-directory (file-truename org-directory)))
 	 (orgdir-re (concat "\\`" (regexp-quote orgdir-uname)))
 	 uname seen rtn file link-name)
@@ -660,7 +673,7 @@ The table of checksums is written to the file mobile-checksums."
 	    (org-mobile-escape-olp (nth 4 (org-heading-components))))))
 
 (defun org-mobile-escape-olp (s)
-  (let  ((table '((?: . "%3a") (?\[ . "%5b") (?\] . "%5d") (?/ . "%2f"))))
+  (let  ((table '(?: ?/)))
     (org-link-escape s table)))
 
 ;;;###autoload
@@ -969,11 +982,10 @@ is currently a noop.")
     (if (not (string-match "\\`olp:\\(.*?\\):\\(.*\\)$" link))
 	nil
       (let ((file (match-string 1 link))
-	    (path (match-string 2 link))
-	    (table '((?: . "%3a") (?\[ . "%5b") (?\] . "%5d") (?/ . "%2f"))))
-	(setq file (org-link-unescape file table))
+	    (path (match-string 2 link)))
+	(setq file (org-link-unescape file))
 	(setq file (expand-file-name file org-directory))
-	(setq path (mapcar (lambda (x) (org-link-unescape x table))
+	(setq path (mapcar 'org-link-unescape
 			   (org-split-string path "/")))
 	(org-find-olp (cons file path))))))
 

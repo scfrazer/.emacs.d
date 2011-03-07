@@ -40,17 +40,19 @@
 ;; user to add this class to his or her stylesheet if this div is to
 ;; mean anything.
 
+(require 'org-compat)
+
 (defvar org-special-blocks-ignore-regexp "^\\(LaTeX\\|HTML\\)$"
   "A regexp indicating the names of blocks that should be ignored
 by org-special-blocks.  These blocks will presumably be
 interpreted by other mechanisms.")
 
-(defvar htmlp)
-(defvar latexp)
+(defvar org-export-current-backend) ; dynamically bound in org-exp.el
 (defun org-special-blocks-make-special-cookies ()
   "Adds special cookies when #+begin_foo and #+end_foo tokens are
 seen.  This is run after a few special cases are taken care of."
-  (when (or htmlp latexp)
+  (when (or (eq org-export-current-backend 'html) 
+	    (eq org-export-current-backend 'latex))
     (goto-char (point-min))
     (while (re-search-forward "^[ \t]*#\\+\\(begin\\|end\\)_\\(.*\\)$" nil t)
       (unless (org-string-match-p org-special-blocks-ignore-regexp (match-string 2))

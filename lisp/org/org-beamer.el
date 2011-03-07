@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 ;;
-;; Version: 7.4
+;; Version: 7.5
 ;; Author: Carsten Dominik <carsten.dominik AT gmail DOT com>
 ;; Maintainer: Carsten Dominik <carsten.dominik AT gmail DOT com>
 ;; Keywords: org, wp, tex
@@ -399,7 +399,7 @@ the value will be inserted right after the documentclass statement."
       (insert org-beamer-header-extra)
       (or (bolp) (insert "\n"))))))
 
-(defcustom org-beamer-fragile-re "^[ \t]*\\\\begin{\\(verbatim\\|lstlisting\\)}"
+(defcustom org-beamer-fragile-re "^[ \t]*\\\\begin{\\(verbatim\\|lstlisting\\|minted\\)}"
   "If this regexp matches in a frame, the frame is marked as fragile."
   :group 'org-beamer
   :type 'regexp)

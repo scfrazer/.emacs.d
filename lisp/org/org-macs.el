@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.4
+;; Version: 7.5
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -35,7 +35,14 @@
 
 (eval-and-compile
   (unless (fboundp 'declare-function)
-    (defmacro declare-function (fn file &optional arglist fileonly))))
+    (defmacro declare-function (fn file &optional arglist fileonly)))
+  (if (>= emacs-major-version 23)
+      (defsubst org-char-to-string(c)
+	"Defsubst to decode UTF-8 character values in emacs 23 and beyond."
+	(char-to-string c))
+    (defsubst org-char-to-string (c)
+      "Defsubst to decode UTF-8 character values in emacs 22."
+      (string (decode-char 'ucs c)))))
 
 (declare-function org-add-props "org-compat" (string plist &rest props))
 (declare-function org-string-match-p "org-compat" (&rest args))
@@ -127,11 +134,12 @@ We use a macro so that the test can happen at compilation time."
 
 (defmacro org-with-point-at (pom &rest body)
   "Move to buffer and point of point-or-marker POM for the duration of BODY."
-  `(save-excursion
-     (if (markerp ,pom) (set-buffer (marker-buffer ,pom)))
+  `(let ((pom ,pom))
      (save-excursion
-       (goto-char (or ,pom (point)))
-       ,@body)))
+       (if (markerp pom) (set-buffer (marker-buffer pom)))
+       (save-excursion
+	 (goto-char (or pom (point)))
+	 ,@body))))
 (put 'org-with-point-at 'lisp-indent-function 1)
 
 (defmacro org-no-warnings (&rest body)
@@ -325,6 +333,15 @@ point nowhere."
 		 (and (markerp (cdr c)) (move-marker (cdr c) nil)))
 	       data)))))
 
+(defmacro org-with-wide-buffer (&rest body)
+  "Execute body while temporarily widening the buffer."
+  `(let ((beg (point-min)) (end (point-max)) (pos (point)))
+     (prog2
+	 (widen)
+	 ,@body
+       (narrow-to-region beg end)
+       (goto-char pos))))
+
 (defmacro org-with-limited-levels (&rest body)
   "Execute BODY with limited number of outline levels."
   `(let* ((outline-regexp (org-get-limited-outline-regexp)))
@@ -336,7 +353,6 @@ point nowhere."
   "Return outline-regexp with limited number of levels.
 The number of levels is controlled by `org-inlinetask-min-level'"
   (if (or (not (org-mode-p)) (not (featurep 'org-inlinetask)))
-
       outline-regexp
     (let* ((limit-level (1- org-inlinetask-min-level))
 	   (nstars (if org-odd-levels-only (1- (* limit-level 2)) limit-level)))

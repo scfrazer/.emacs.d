@@ -5,7 +5,7 @@
 ;; Author: Eric Schulte, Dan Davison
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
-;; Version: 7.4
+;; Version: 7.5
 
 ;; This file is part of GNU Emacs.
 
@@ -130,6 +130,7 @@ Emacs-lisp table, otherwise return the results as a string."
   "Return the buffer associated with SESSION."
   (cdr (assoc session org-babel-python-buffers)))
 
+(defvar py-default-interpreter)
 (defun org-babel-python-initiate-session-by-key (&optional session)
   "Initiate a python session.
 If there is not a current inferior-process-buffer in SESSION
@@ -265,7 +266,7 @@ last statement in BODY, as elisp."
 	    (org-babel-python-table-or-string results)))
 	(let ((tmp-file (org-babel-temp-file "python-")))
 	  (org-babel-comint-with-output
-	      (session org-babel-python-eoe-indicator t body)
+	      (session org-babel-python-eoe-indicator nil body)
 	    (let ((comint-process-echoes nil))
 	      (input-body body)
 	      (dump-last-value tmp-file (member "pp" result-params))

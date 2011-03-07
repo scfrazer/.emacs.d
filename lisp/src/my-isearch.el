@@ -42,7 +42,7 @@
 
 (define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
 (define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
-(define-key isearch-mode-map (kbd "C-d") 'isearch-del-char)
+(define-key isearch-mode-map (kbd "C-b") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 
 (provide 'my-isearch)
