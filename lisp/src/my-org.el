@@ -17,8 +17,9 @@
               org-export-with-section-numbers nil
               org-export-html-inline-images t
               org-export-html-style-include-default nil
+              org-export-html-validation-link ""
               org-export-htmlize-output-type 'inline-css
-              org-export-with-sub-superscripts nil
+              org-export-with-sub-superscripts '{}
               org-hide-leading-stars nil
               org-id-track-globally nil
               org-imenu-depth 6
@@ -56,6 +57,7 @@
                                        ("CANCELED"   . (:foreground "PaleGreen4" :weight bold))
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
               org-use-speed-commands t
+              org-use-sub-superscripts '{}
               org-yank-folded-subtrees nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,57 +126,9 @@ Otherwise: Add a checkbox and update heading accordingly."
   (interactive)
   (org-todo '(4)))
 
-(defun my-org-beginning-of-line (&optional arg)
-  "Copy of `org-beginning-of-line', but skips over checkboxes as well."
-  (interactive "P")
-  (let ((pos (point))
-        (special (if (consp org-special-ctrl-a/e)
-                     (car org-special-ctrl-a/e)
-                   org-special-ctrl-a/e))
-        refpos)
-    (if (org-bound-and-true-p line-move-visual)
-        (beginning-of-visual-line 1)
-      (beginning-of-line 1))
-    (if (and arg (fboundp 'move-beginning-of-line))
-        (call-interactively 'move-beginning-of-line)
-      (if (bobp)
-          nil
-        (backward-char 1)
-        (if (org-invisible-p)
-            (while (and (not (bobp)) (org-invisible-p))
-              (backward-char 1)
-              (beginning-of-line 1))
-          (forward-char 1))))
-    (when special
-      (cond
-       ((and (looking-at org-complex-heading-regexp)
-             (= (char-after (match-end 1)) ?\ ))
-        (setq refpos (min (1+ (or (match-end 3) (match-end 2) (match-end 1)))
-                          (point-at-eol)))
-        (goto-char
-         (if (eq special t)
-             (cond ((> pos refpos) refpos)
-                   ((= pos (point)) refpos)
-                   (t (point)))
-           (cond ((> pos (point)) (point))
-                 ((not (eq last-command this-command)) (point))
-                 (t refpos)))))
-       ((org-at-item-p)
-        (goto-char
-         (if (eq special t)
-             (let ((headline-pos (match-end 4)))
-               (save-excursion
-                 (goto-char headline-pos)
-                 (when (looking-at "\\[.\\] ")
-                   (setq headline-pos (+ headline-pos 4))))
-               (cond ((> pos headline-pos) headline-pos)
-                     ((= pos (point)) headline-pos)
-                     (t (point))))
-           (cond ((> pos (point)) (point))
-                 ((not (eq last-command this-command)) (point))
-                 (t (match-end 4))))))))
-    (org-no-warnings
-     (and (featurep 'xemacs) (setq zmacs-region-stays t)))))
+(defadvice org-beginning-of-line (after my-org-beginning-of-line activate)
+  (when (looking-at "\\[.\\] ")
+    (forward-char 4)))
 
 (defun my-org-copy-file-link ()
   "Create a file link by line number in the kill ring."
@@ -368,7 +322,6 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
-  (define-key org-mode-map (kbd "C-S-a") 'my-org-beginning-of-line)
   (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
   (define-key org-mode-map (kbd "C-S-e") 'org-end-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
@@ -381,7 +334,7 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
   (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
   (define-key org-mode-map (kbd "C-c C-y") 'org-paste-subtree)
-  (define-key org-mode-map (kbd "M-m") 'my-org-beginning-of-line)
+  (define-key org-mode-map (kbd "M-m") 'org-beginning-of-line)
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
   (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end))
 
