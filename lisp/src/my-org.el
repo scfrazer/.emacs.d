@@ -57,7 +57,6 @@
                                        ("CANCELED"   . (:foreground "PaleGreen4" :weight bold))
                                        ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
               org-use-speed-commands t
-              org-use-sub-superscripts '{}
               org-yank-folded-subtrees nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
