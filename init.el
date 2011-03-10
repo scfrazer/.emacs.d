@@ -35,6 +35,7 @@
 (require 'iflipb)
 (require 'mdabbrev)
 (require 'midnight)
+(require 'mode-fn)
 (require 'motion-and-kill-dwim)
 (require 'protbuf)
 (require 'rect)
@@ -1340,6 +1341,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
 (defalias 'white 'my-theme-whiteboard)
+
+(mode-fn-map 'html 'org-mode 'org-export-as-html)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup

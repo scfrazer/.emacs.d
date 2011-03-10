@@ -316,9 +316,6 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TODO Some better way to do this?
-(defalias 'html 'org-export-as-html)
-
 (defun my-org-mode-hook ()
   (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
   (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
