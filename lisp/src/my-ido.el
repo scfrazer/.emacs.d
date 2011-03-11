@@ -63,7 +63,9 @@
       (setq ido-exit 'refresh)
       (exit-minibuffer))))
 
-(define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
+(defadvice ido-init-completion-maps (after my-ido-init-map activate)
+  (define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir))
+(ido-init-completion-maps) ;; For pre-23.3 Emacs
 
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)
   (when my-ido-doing-bookmark-dir

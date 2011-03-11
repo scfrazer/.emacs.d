@@ -44,5 +44,6 @@
 (define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
 (define-key isearch-mode-map (kbd "C-b") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
+(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 
 (provide 'my-isearch)
