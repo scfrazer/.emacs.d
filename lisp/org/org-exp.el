@@ -579,12 +579,6 @@ table.el tables."
   :group 'org-export-tables
   :type 'boolean)
 
-
-(defgroup org-export-xml nil
-  "Options specific for XML export of Org-mode files."
-  :tag "Org Export XML"
-  :group 'org-export)
-
 ;;;; Exporting
 
 ;;; Variables, constants, and parameter plists
@@ -1042,7 +1036,7 @@ Pressing `1' will switch between these two options."
   "Alist of code references and line numbers.")
 
 (defun org-export-preprocess-string (string &rest parameters)
-  "Cleanup STRING so that that the true exported has a more consistent source.
+  "Cleanup STRING so that the true exported has a more consistent source.
 This function takes STRING, which should be a buffer-string of an org-file
 to export.  It then creates a temporary buffer where it does its job.
 The result is then again returned as a string, and the exporter works
@@ -2062,7 +2056,7 @@ can work correctly."
     (let* ((rtn
 	    (mapconcat
 	     'identity
-	     (org-split-string s "[^a-zA-Z0-9_\\.-]+") "--"))
+	     (org-split-string s "[^a-zA-Z0-9_\\.-]+") "-"))
 	   (a (assoc rtn alist)))
       (or (cdr a) rtn))))
 
@@ -3084,4 +3078,3 @@ The depends on the variable `org-export-copy-to-kill'."
 ;; arch-tag: 65985fe9-095c-49c7-a7b6-cb4ee15c0a95
 
 ;;; org-exp.el ends here
-
