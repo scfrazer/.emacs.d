@@ -282,7 +282,7 @@ This is a utility function, you probably want `makd-backward-word-section'."
         done)
     (while (not (or done (eobp)))
       (when (and (re-search-forward regex nil 'go)
-                 (not (memq (get-text-property (point) 'face)
+                 (not (memq (get-text-property (1- (point)) 'face)
                             '(font-lock-comment-face font-lock-string-face))))
         (cond ((eq (char-before) open)
                (setq nesting (1+ nesting)))
