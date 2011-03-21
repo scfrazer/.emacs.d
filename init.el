@@ -1181,7 +1181,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
-(my-keys-define "M-r c" 'clear-rectangle)
+(my-keys-define "M-r SPC" 'clear-rectangle)
 (my-keys-define "M-r d" 'delete-rectangle)
 (my-keys-define "M-r i" 'string-rectangle)
 (my-keys-define "M-r k" 'kill-rectangle)
@@ -1308,6 +1308,8 @@ Does not set point.  Does nothing if mark ring is empty."
      ))
 
 (add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
+
+(add-to-list 'my-bs-never-show-regexps "breakpoint.tcl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom

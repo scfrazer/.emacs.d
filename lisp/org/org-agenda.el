@@ -1615,16 +1615,6 @@ category, you can use:
   :group 'org-agenda-column-view
   :type 'boolean)
 
-(defcustom org-agenda-columns-remove-prefix-from-item t
-  "Non-nil means remove the prefix from a headline for agenda column view.
-The special ITEM field in the columns format contains the current line, with
-all information shown in other columns (like the TODO state or a tag).
-When this variable is non-nil, also the agenda prefix will be removed from
-the content of the ITEM field, to make sure as much as possible of the
-headline can be shown in the limited width of the field."
-  :group 'org-agenda
-  :type 'boolean)
-
 (defcustom org-agenda-columns-compute-summary-properties t
   "Non-nil means recompute all summary properties before column view.
 When column view in the agenda is listing properties that have a summary
@@ -4745,7 +4735,7 @@ This function is invoked if `org-agenda-todo-ignore-deadlines',
 	    (setq head (match-string 1))
 	    (setq txt (org-format-agenda-item
 		       (if inactivep org-agenda-inactive-leader nil)
-		       head category tags timestr nil
+		       head category tags timestr
 		       remove-re)))
 	  (setq priority (org-get-priority txt))
 	  (org-add-props txt props
@@ -5114,7 +5104,7 @@ FRACTION is what fraction of the head-warning time has passed."
 				     (- 1 diff)))
 			   head category tags
 			   (if (not (= diff 0)) nil timestr)
-			   nil nil habitp))))
+			   nil habitp))))
 	    (when txt
 	      (setq face
 		    (cond
@@ -5235,7 +5225,7 @@ The flag is set if the currently compiled format contains a `%e'.")
       (return (apply 'create-image (cdr entry)))))))
 
 (defun org-format-agenda-item (extra txt &optional category tags dotime
-				     noprefix remove-re habitp)
+				     remove-re habitp)
   "Format TXT to be inserted into the agenda buffer.
 In particular, it adds the prefix and corresponding text properties.  EXTRA
 must be a string and replaces the `%s' specifier in the prefix format.
@@ -5244,9 +5234,7 @@ category taken from local variable or file name.  It will replace the `%c'
 specifier in the format.  DOTIME, when non-nil, indicates that a
 time-of-day should be extracted from TXT for sorting of this entry, and for
 the `%t' specifier in the format.  When DOTIME is a string, this string is
-searched for a time before TXT is.  NOPREFIX is a flag and indicates that
-only the correctly processes TXT should be returned - this is used by
-`org-agenda-change-all-lines'.  TAGS can be the tags of the headline.
+searched for a time before TXT is.  TAGS can be the tags of the headline.
 Any match of REMOVE-RE will be removed from TXT."
   (save-match-data
     ;; Diary entries sometimes have extra whitespace at the beginning
@@ -5341,38 +5329,39 @@ Any match of REMOVE-RE will be removed from TXT."
 	(while (string-match remove-re txt)
 	  (setq txt (replace-match "" t t txt))))
 
-      ;; Create the final string
-      (if noprefix
-	  (setq rtn txt)
-	;; Prepare the variables needed in the eval of the compiled format
-	(setq time (cond (s2 (concat
-			      (org-agenda-time-of-day-to-ampm-maybe s1)
-			      "-" (org-agenda-time-of-day-to-ampm-maybe s2)
-			      (if org-agenda-timegrid-use-ampm " ")))
-			 (s1 (concat
-			      (org-agenda-time-of-day-to-ampm-maybe s1)
-			      (if org-agenda-timegrid-use-ampm
-				  "........ "
-				"......")))
-			 (t ""))
-	      extra (or (and (not habitp) extra) "")
-	      category (if (symbolp category) (symbol-name category) category)
-	      thecategory (copy-sequence category))
-	(if (string-match org-bracket-link-regexp category)
-	    (progn
-	      (setq l (if (match-end 3)
-			  (- (match-end 3) (match-beginning 3))
-			(- (match-end 1) (match-beginning 1))))
-	      (when (< l (or org-prefix-category-length 0))
-		(setq category (copy-sequence category))
-		(org-add-props category nil
-		  'extra-space (make-string
-				(- org-prefix-category-length l 1) ?\ ))))
-	  (if (and org-prefix-category-max-length
-		   (>= (length category) org-prefix-category-max-length))
-	      (setq category (substring category 0 (1- org-prefix-category-max-length)))))
-	;; Evaluate the compiled format
-	(setq rtn (concat (eval org-prefix-format-compiled) txt)))
+      ;; Set org-heading property on `txt' to mark the start of the
+      ;; heading.
+      (add-text-properties 0 (length txt) '(org-heading t) txt)
+
+      ;; Prepare the variables needed in the eval of the compiled format
+      (setq time (cond (s2 (concat
+			    (org-agenda-time-of-day-to-ampm-maybe s1)
+			    "-" (org-agenda-time-of-day-to-ampm-maybe s2)
+			    (if org-agenda-timegrid-use-ampm " ")))
+		       (s1 (concat
+			    (org-agenda-time-of-day-to-ampm-maybe s1)
+			    (if org-agenda-timegrid-use-ampm
+				"........ "
+			      "......")))
+		       (t ""))
+	    extra (or (and (not habitp) extra) "")
+	    category (if (symbolp category) (symbol-name category) category)
+	    thecategory (copy-sequence category))
+      (if (string-match org-bracket-link-regexp category)
+	  (progn
+	    (setq l (if (match-end 3)
+			(- (match-end 3) (match-beginning 3))
+		      (- (match-end 1) (match-beginning 1))))
+	    (when (< l (or org-prefix-category-length 0))
+	      (setq category (copy-sequence category))
+	      (org-add-props category nil
+		'extra-space (make-string
+			      (- org-prefix-category-length l 1) ?\ ))))
+	(if (and org-prefix-category-max-length
+		 (>= (length category) org-prefix-category-max-length))
+	    (setq category (substring category 0 (1- org-prefix-category-max-length)))))
+      ;; Evaluate the compiled format
+      (setq rtn (concat (eval org-prefix-format-compiled) txt))
 
       ;; And finally add the text properties
       (remove-text-properties 0 (length rtn) '(line-prefix t wrap-prefix t) rtn)
@@ -5381,7 +5370,6 @@ Any match of REMOVE-RE will be removed from TXT."
 	'tags (mapcar 'org-downcase-keep-props tags)
 	'org-highest-priority org-highest-priority
 	'org-lowest-priority org-lowest-priority
-	'prefix-length (- (length rtn) (length txt))
 	'time-of-day time-of-day
 	'duration duration
 	'effort effort
@@ -5590,12 +5578,12 @@ could bind the variable in the options section of a custom command.")
 (defun org-agenda-highlight-todo (x)
   (let ((org-done-keywords org-done-keywords-for-agenda)
 	(case-fold-search nil)
-	 re pl)
+	 re)
     (if (eq x 'line)
 	(save-excursion
 	  (beginning-of-line 1)
 	  (setq re (org-get-at-bol 'org-todo-regexp))
-	  (goto-char (+ (point) (or (org-get-at-bol 'prefix-length) 0)))
+	  (goto-char (or (text-property-any (point-at-bol) (point-at-eol) 'org-heading t) (point)))
 	  (when (looking-at (concat "[ \t]*\\.*\\(" re "\\) +"))
 	    (add-text-properties (match-beginning 0) (match-end 1)
 				 (list 'face (org-get-todo-face 1)))
@@ -5603,21 +5591,21 @@ could bind the variable in the options section of a custom command.")
 	      (delete-region (match-beginning 1) (1- (match-end 0)))
 	      (goto-char (match-beginning 1))
 	      (insert (format org-agenda-todo-keyword-format s)))))
-      (setq re (concat (get-text-property 0 'org-todo-regexp x))
-	    pl (get-text-property 0 'prefix-length x))
-      (when (and re
-		 (equal (string-match (concat "\\(\\.*\\)" re "\\( +\\)")
-				      x (or pl 0)) pl))
-	(add-text-properties
-	 (or (match-end 1) (match-end 0)) (match-end 0)
-	 (list 'face (org-get-todo-face (match-string 2 x)))
+      (let ((pl (text-property-any 0 (length x) 'org-heading t x)))
+	(setq re (get-text-property 0 'org-todo-regexp x))
+	(when (and re
+		   (equal (string-match (concat "\\(\\.*\\)" re "\\( +\\)")
+					x (or pl 0)) pl))
+	  (add-text-properties
+	   (or (match-end 1) (match-end 0)) (match-end 0)
+	   (list 'face (org-get-todo-face (match-string 2 x)))
 	 x)
-	(when (match-end 1)
-	  (setq x (concat (substring x 0 (match-end 1))
-			  (format org-agenda-todo-keyword-format
-				  (match-string 2 x))
+	  (when (match-end 1)
+	    (setq x (concat (substring x 0 (match-end 1))
+			    (format org-agenda-todo-keyword-format
+				    (match-string 2 x))
 			  (org-add-props " " (text-properties-at 0 x))
-			  (substring x (match-end 3))))))
+			  (substring x (match-end 3)))))))
       x)))
 
 (defsubst org-cmp-priority (a b)
@@ -5670,8 +5658,8 @@ could bind the variable in the options section of a custom command.")
 
 (defsubst org-cmp-alpha (a b)
   "Compare the headlines, alphabetically."
-  (let* ((pla (get-text-property 0 'prefix-length a))
-	 (plb (get-text-property 0 'prefix-length b))
+  (let* ((pla (text-property-any 0 (length a) 'org-heading t a))
+	 (plb (text-property-any 0 (length b) 'org-heading t b))
 	 (ta (and pla (substring a pla)))
 	 (tb (and plb (substring b plb))))
     (when pla
@@ -6739,8 +6727,8 @@ at the text of the entry itself."
 	 (buffer (and marker (marker-buffer marker)))
 	 (prefix (buffer-substring
 		  (point-at-bol)
-		  (+ (point-at-bol)
-		     (or (org-get-at-bol 'prefix-length) 0)))))
+		  (or (text-property-any (point-at-bol) (point-at-eol) 'org-heading t)
+		      (point-at-bol)))))
     (cond
      (buffer
       (with-current-buffer buffer
@@ -7056,15 +7044,14 @@ If FORCE-TAGS is non nil, the car of it returns the new tags."
 		dotime (org-get-at-bol 'dotime)
 		cat (org-get-at-bol 'org-category)
 		tags thetags
-		new (org-format-agenda-item "x" newhead cat tags dotime 'noprefix)
-		pl (org-get-at-bol 'prefix-length)
+		new (org-format-agenda-item (org-get-at-bol 'extra)
+					    newhead cat tags dotime)
+		pl (text-property-any (point-at-bol) (point-at-eol) 'org-heading t)
 		undone-face (org-get-at-bol 'undone-face)
 		done-face (org-get-at-bol 'done-face))
-	  (goto-char (+ (point) pl))
-	  ;; (org-move-to-column pl)  FIXME: does the above line work correctly?
+	  (beginning-of-line 1)
 	  (cond
 	   ((equal new "")
-	    (beginning-of-line 1)
 	    (and (looking-at ".*\n?") (replace-match "")))
 	   ((looking-at ".*")
 	    (replace-match new t t)
