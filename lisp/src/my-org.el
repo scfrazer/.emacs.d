@@ -19,7 +19,6 @@
               org-export-html-style-include-default nil
               org-export-html-validation-link ""
               org-export-htmlize-output-type 'inline-css
-              org-export-with-sub-superscripts '{}
               org-hide-leading-stars nil
               org-id-track-globally nil
               org-imenu-depth 6
@@ -317,6 +316,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-mode-hook ()
+  (setq org-use-sub-superscripts '{})
   (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
   (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
   (define-key org-mode-map (kbd "C-S-e") 'org-end-of-line)
