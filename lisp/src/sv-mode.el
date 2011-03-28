@@ -581,6 +581,7 @@ expression."
   (skip-syntax-forward " >")
   (let* ((limit (point))
          (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+                         "\\_<if[ \t\n]*(\\|"
                          (regexp-opt '("`define" "`else" "`elsif" "`endif"
                                        "`ifdef" "`ifndef" "`include"
                                        "`timescale" "`undef")) ".*\\|"
