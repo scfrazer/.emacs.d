@@ -91,7 +91,7 @@ Arguments are module filename.")
 
 (defvar hdl-dbg-font-lock-keywords
   '(
-    ("^\\(Breakpoints\\|Tags\\):"
+    ("^\\(Breakpoints\\):"
      (0 'font-lock-string-face))
     ("^\\(.+\\):\\([0-9]+\\) \\(@\\) [0-9]+ .s \\(if\\) .+$"
      (1 'font-lock-function-name-face)
@@ -102,10 +102,6 @@ Arguments are module filename.")
      (1 'font-lock-function-name-face)
      (2 'font-lock-variable-name-face)
      (3 'font-lock-keyword-face))
-    ("^\\([a-zA-Z0-9_]+\\)=\\(.+\\) \\(@\\) [0-9]+ .s$"
-     (1 'font-lock-constant-face)
-     (2 'font-lock-type-face)
-     (3 'font-lock-keyword-face))
     )
   "Font-lock-keywords.")
 
@@ -114,9 +110,6 @@ Arguments are module filename.")
 
 (defvar hdl-dbg-breakpoints nil
   "Breakpoints.")
-
-(defvar hdl-dbg-tags nil
-  "Tags.")
 
 (defvar hdl-dbg-cond-history nil
   "Conditional breakpoint history.")
@@ -274,7 +267,6 @@ Arguments are module filename.")
 (defun hdl-dbg-parse-target-buffer ()
   "Parse the target buffer."
   (setq hdl-dbg-breakpoints nil)
-  (setq hdl-dbg-tags nil)
   (with-current-buffer hdl-dbg-target-buf
     ;; Breakpoints
     (goto-char (point-min))
@@ -287,13 +279,7 @@ Arguments are module filename.")
                    (nth 2 hdl-dbg-parse-target-buffer-regexp-groups))
                   (match-string-no-properties
                    (nth 3 hdl-dbg-parse-target-buffer-regexp-groups)))
-            hdl-dbg-breakpoints))
-    ;; Tags
-    (goto-char (point-min))
-    (while (re-search-forward "^change \\(.+\\) set message -logger=sys.logger -add -verbosity=\\(.+\\) -tags={\\(.+\\)}" nil t)
-      (push (list (match-string-no-properties 3)
-                  (match-string-no-properties 2)
-                  (match-string-no-properties 1)) hdl-dbg-tags))))
+            hdl-dbg-breakpoints))))
 
 (defun hdl-dbg-update-code-buffer (buf)
   "Update a code buffer."
@@ -351,63 +337,6 @@ Arguments are module filename.")
 (add-hook 'after-save-hook 'hdl-dbg-after-save-hook)
 (add-hook 'kill-buffer-hook 'hdl-dbg-kill-buffer-hook)
 
-;;; Tags
-
-(defun hdl-dbg-set-tag-verbosity ()
-  "Set verbosity for current tag in target file."
-  (interactive)
-  (if (not hdl-dbg-target-buf)
-      (error "No target file loaded")
-    (let ((tag (thing-at-point 'symbol))
-          (possible-levels (list "NONE" "LOW" "MEDIUM" "HIGH" "FULL"))
-          level)
-      (if (not tag)
-          (message "Cursor must be on a tag.")
-        (if (and (boundp 'ido-mode) ido-mode)
-            (setq level (ido-completing-read "Level: " possible-levels nil t))
-          (setq level (read-from-minibuffer "Level? ")))
-        (if (not (member (upcase level) possible-levels))
-            (error (concat "Level must be one of NONE, LOW, MEDIUM, HIGH, or FULL"))
-          (hdl-dbg-remove-tag tag)
-          (hdl-dbg-add-tag tag level "0 ns")
-          (hdl-dbg-update-control-window-and-target))))))
-
-(defun hdl-dbg-remove-tag-verbosity ()
-  "Remove verbosity for current tag in target file"
-  (interactive)
-  (if (not hdl-dbg-target-buf)
-      (error "No target file loaded")
-    (let ((tag (thing-at-point 'symbol)))
-      (if (not tag)
-          (message "Cursor must be on a tag.")
-        (hdl-dbg-remove-tag tag)
-        (hdl-dbg-update-control-window-and-target)))))
-
-(defun hdl-dbg-remove-tag (tag)
-  "Delete tag from target file"
-  (with-current-buffer hdl-dbg-target-buf
-    (goto-char (point-min))
-    (while (re-search-forward (concat "^change .+ set message -logger=sys.logger -add .+ -tags={" tag "}") nil t)
-      (delete-region (point-at-bol) (1+ (point-at-eol)))))
-  (dolist (tag-info hdl-dbg-tags)
-    (when (string= tag (car tag-info))
-      (setq hdl-dbg-tags (delete tag-info hdl-dbg-tags))))
-  (hdl-dbg-tag-to-clipboard tag "MEDIUM"))
-
-(defun hdl-dbg-tag-to-clipboard (tag level)
-  "Put a tag level on the clipboard."
-  (with-temp-buffer
-    (insert "set message -logger=sys.logger -add -verbosity=" (upcase level) " -tags={" tag "}\n")
-    (clipboard-kill-region (point-min) (point-max))))
-
-(defun hdl-dbg-add-tag (tag level time)
-  "Add a tag level to target file"
-  (with-current-buffer hdl-dbg-target-buf
-    (goto-char (point-max))
-    (insert "change " time " set message -logger=sys.logger -add -verbosity=" (upcase level) " -tags={" tag "}\n"))
-  (push (list tag level time) hdl-dbg-tags)
-  (hdl-dbg-tag-to-clipboard tag level))
-
 ;;; Control window
 
 (defun hdl-dbg-show-control-window ()
@@ -423,9 +352,11 @@ Arguments are module filename.")
       (switch-to-buffer hdl-dbg-buffer-name)
       (fit-window-to-buffer)
       (goto-char (point-min))
-      (when module
-        (re-search-forward (concat module ":" (number-to-string line-num)) nil t))
-      (beginning-of-line)
+      (if module
+          (if (re-search-forward (concat module ":" (number-to-string line-num)) nil t)
+              (beginning-of-line)
+            (forward-line 1))
+        (forward-line 1))
       (hdl-dbg-mode))))
 
 (defun hdl-dbg-update-control-window ()
@@ -452,12 +383,6 @@ Arguments are module filename.")
                   (concat " if " (nth 2 bpnt))
                 "")
               "\n"))
-    (insert "\n");
-    (insert "Tags:\n")
-    (let ((start (point)))
-      (dolist (tag hdl-dbg-tags)
-        (insert (nth 0 tag) "=" (nth 1 tag) " @ " (nth 2 tag) "\n"))
-      (sort-lines nil start (point)))
     (setq buffer-read-only t)
     (set-buffer-modified-p nil)))
 
@@ -519,7 +444,7 @@ Arguments are module filename.")
           (throw 'break nil))))))
 
 (defun hdl-dbg-set-time ()
-  "Set breakpoint or tag time."
+  "Set breakpoint time."
   (interactive)
   (beginning-of-line)
   (if (looking-at "\\(.+\\):\\([0-9]+\\) @ \\([0-9]+ .s\\)\\(\\( if \\(.+\\)\\)\\|$\\)")
@@ -527,11 +452,7 @@ Arguments are module filename.")
                                    (string-to-number (match-string-no-properties 2))
                                    (match-string-no-properties 6)
                                    (match-string-no-properties 3))
-    (if (looking-at "^\\([a-zA-Z0-9_]+\\)=\\(.+\\) \\(@\\) \\([0-9]+ .s\\)$")
-        (hdl-dbg-set-tag-time (match-string-no-properties 1)
-                              (match-string-no-properties 2)
-                              (match-string-no-properties 4))
-      (error "Cursor not on a breakpoint or tag"))))
+    (error "Cursor not on a breakpoint")))
 
 (defun hdl-dbg-set-breakpoint-time (module line-num condition orig-time)
   "Set time for breakpoint."
@@ -559,41 +480,8 @@ Arguments are module filename.")
   (interactive)
   (hdl-dbg-jump-to-breakpoint t))
 
-(defun hdl-dbg-raise-tag-verbosity (&optional lower)
-  "Raise (or lower) the verbosity of current tag."
-  (interactive)
-  (beginning-of-line)
-  (if (not (looking-at "\\(.+\\)=\\(.+\\) @ \\([0-9]+ .s\\)"))
-      (error "Cursor not on a tag")
-    (let* ((tag (match-string-no-properties 1))
-           (level (match-string-no-properties 2))
-           (time (match-string-no-properties 3))
-           (possible-levels (if lower
-                                (list "FULL" "HIGH" "MEDIUM" "LOW" "NONE")
-                              (list "NONE" "LOW" "MEDIUM" "HIGH" "FULL")))
-           (level-elt (member level possible-levels)))
-      (if (not (cdr level-elt))
-          (error (concat "Tag level can't go " (if lower "lower" "higher")))
-        (hdl-dbg-remove-tag tag)
-        (hdl-dbg-add-tag tag (cadr level-elt) time)
-        (hdl-dbg-update-control-window-and-target)))))
-
-(defun hdl-dbg-lower-tag-verbosity ()
-  "Lower the verbosity of current tag."
-  (interactive)
-  (hdl-dbg-raise-tag-verbosity t))
-
-(defun hdl-dbg-set-tag-time (tag level orig-time)
-  "Set time for tag."
-  (let ((new-time (read-from-minibuffer "Time? " orig-time)))
-    (unless (string-match "^[0-9]+ .s$" new-time)
-      (error "Time format must be a number, a space, and (m|u|n|p|f)s"))
-    (hdl-dbg-remove-tag tag)
-    (hdl-dbg-add-tag tag level new-time)
-    (hdl-dbg-update-control-window-and-target)))
-
-(defun hdl-dbg-delete-breakpoint-or-tag ()
-  "Delete the current breakpoint or tag."
+(defun hdl-dbg-delete-breakpoint ()
+  "Delete the current breakpoint."
   (interactive)
   (beginning-of-line)
   (if (looking-at "\\(.+\\):\\(.+\\)")
@@ -607,10 +495,7 @@ Arguments are module filename.")
                 (hdl-dbg-goto-line (nth 1 elt))
                 (hdl-dbg-remove-breakpoint (hdl-dbg-breakpoint-at (point))))
             (setq hdl-dbg-breakpoints (delete elt hdl-dbg-breakpoints)))))
-    (if (not (looking-at "\\(.+\\)=\\(.+\\)"))
-        (error "Cursor not on a breakpoint or tag")
-      (when (or (not hdl-dbg-ask-for-confirmation) (y-or-n-p "Delete current tag? "))
-        (hdl-dbg-remove-tag (match-string-no-properties 1)))))
+    (error "Cursor not on a breakpoint"))
   (hdl-dbg-update-control-window-and-target))
 
 (defun hdl-dbg-quit ()
@@ -647,9 +532,7 @@ Arguments are module filename.")
       (define-key map "s" 'hdl-dbg-show-breakpoint-other-window)
       (define-key map "c" 'hdl-dbg-set-breakpoint-condition)
       (define-key map "t" 'hdl-dbg-set-time)
-      (define-key map "+" 'hdl-dbg-raise-tag-verbosity)
-      (define-key map "-" 'hdl-dbg-lower-tag-verbosity)
-      (define-key map "d" 'hdl-dbg-delete-breakpoint-or-tag)
+      (define-key map "d" 'hdl-dbg-delete-breakpoint)
       (define-key map "n" 'next-line)
       (define-key map "p" 'previous-line)
       (define-key map "q" 'hdl-dbg-quit)

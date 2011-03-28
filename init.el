@@ -1325,9 +1325,11 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
+(defalias 'eb 'ediff-buffers)
 (defalias 'ed 'edebug-defun)
+(defalias 'ef 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'find 'my-find-name-dired)
+(defalias 'fn 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
