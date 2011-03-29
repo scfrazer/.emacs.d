@@ -463,7 +463,7 @@ expression."
   (save-excursion
     (let ((pos (point)))
       (sv-mode-beginning-of-statement)
-      (re-search-forward "\\_<\\(extern\\|typedef\\)\\_>" pos t))))
+      (re-search-forward "\\_<\\(extern\\|typedef\\|import\\)\\_>" pos t))))
 
 (defun sv-mode-class-decl-p ()
   "Is the current statement a class declaration?"
