@@ -715,7 +715,8 @@ end/endtask/endmodule/etc. also."
                          (and (string= begin-string "extends")
                               (sv-mode-class-decl-p))
                          (and (string= begin-string "fork")
-                              (looking-back "\\_<disable\\_>\\s-+" (line-beginning-position))))
+                              (looking-back "\\_<\\(disable\\|wait\\)\\_>\\s-+"
+                                            (line-beginning-position))))
                (setq depth (1- depth))))))
        (when (> depth 0)
          (goto-char pos)

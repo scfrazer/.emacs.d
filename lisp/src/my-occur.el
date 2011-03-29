@@ -35,7 +35,8 @@
                                    (when (> (count-windows) 1)
                                      (delete-window))))
   (define-key occur-mode-map "n" 'next-line)
-  (define-key occur-mode-map "p" 'previous-line))
+  (define-key occur-mode-map "p" 'previous-line)
+  (occur-rename-buffer t))
 
 (add-hook 'occur-mode-hook 'my-occur-mode-hook)
 

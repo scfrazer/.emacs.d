@@ -1329,7 +1329,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'ed 'edebug-defun)
 (defalias 'ef 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'fn 'my-find-name-dired)
+(defalias 'fnd 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
