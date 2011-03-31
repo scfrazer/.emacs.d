@@ -1325,12 +1325,14 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
+(defalias 'dec 'my-hex-to-dec)
 (defalias 'eb 'ediff-buffers)
 (defalias 'ed 'edebug-defun)
 (defalias 'ef 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fnd 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
+(defalias 'hex 'my-dec-to-hex)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
 (defalias 'kr 'browse-kill-ring)
@@ -1357,6 +1359,15 @@ Does not set point.  Does nothing if mark ring is empty."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Finish up
+
+;; Turn off tramp
+
+(let (elm)
+  (dolist (handler (list 'tramp-completion-file-name-handler 'tramp-file-name-handler))
+    (when (setq elm (rassq handler file-name-handler-alist))
+      (setq file-name-handler-alist (delq elm file-name-handler-alist)))))
+
+;; Command frequency
 
 (require 'command-frequency)
 (command-frequency-mode 1)
