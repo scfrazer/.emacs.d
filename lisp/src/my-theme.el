@@ -138,7 +138,7 @@
    (cperl-array-face ((t (:foreground "yellow2"))))
    (cperl-hash-face ((t (:foreground "coral1"))))
    (cursor ((t (:background "green" :foreground "black"))))
-   (default ((t (:background "#181a26" :foreground "gainsboro"))))
+   (default ((t (:background "#181a26" :foreground "gray80"))))
    (diff-context ((t (:foreground "seashell4"))))
    (diff-file-header ((t (:background "grey60"))))
    (diff-header ((t (:background "grey45"))))
