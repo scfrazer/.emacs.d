@@ -1299,9 +1299,9 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (eval-after-load "sv-mode"
   '(progn
-     (setq compilation-error-regexp-alist
-           (add-to-list 'compilation-error-regexp-alist
-                        '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))
+;;      (setq compilation-error-regexp-alist
+;;            (add-to-list 'compilation-error-regexp-alist
+;;                         '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))
      (setq compilation-error-regexp-alist
            (add-to-list 'compilation-error-regexp-alist
                         '("^Error-.+\n\\(.+\\),\\s-+\\([0-9]+\\)" 1 2)))
@@ -1310,6 +1310,26 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
 
 (add-to-list 'my-bs-never-show-regexps "breakpoint.tcl")
+
+(eval-after-load 'll-debug
+  '(ll-debug-register-mode 'c++-mode
+                           "vpi_printf(" ");"
+                           '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
+                           '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
+                                 ("Variable name: "
+                                  "  " str "="
+                                  '(progn
+                                     (if v1
+                                         (setq v1 (concat v1 ", " str))
+                                       (setq v1 str))
+                                     nil)
+                                  (let ((fmt (read-string "Format: ")))
+                                    (cond
+                                     ((string= (downcase fmt) "x")
+                                      (concat "0x%" fmt))
+                                     (t
+                                      (concat "%" fmt)))))
+                                 (if v1 "\\n\", " "\\n\"") v1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom

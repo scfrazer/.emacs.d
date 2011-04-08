@@ -504,9 +504,12 @@ expression."
           (when (member begin-type (list "task" "function" "program"))
             (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
             (push (match-string-no-properties 1) namespaces))
-          (when (member begin-type (list "class" "module" "interface" "extends"))
+          (when (member begin-type (list "class" "module" "interface"))
             (re-search-forward "[a-zA-Z0-9_]+" nil t)
-            (push (match-string-no-properties 0) namespaces)))
+            (push (match-string-no-properties 0) namespaces))
+          (when (string= begin-type "extends")
+            (re-search-backward "class[ \t\n]+\\([a-zA-Z0-9_]+\\)" nil t)
+            (push (match-string-no-properties 1) namespaces)))
         (beginning-of-line)))
     namespaces))
 
@@ -765,7 +768,7 @@ end/endtask/endmodule/etc. also."
     (goto-char (point-min))
     (dolist (ns namespaces)
       (if in-impl
-          (unless (re-search-forward (concat "^\\s-*class\\s-+" ns))
+          (unless (re-search-forward (concat "\\_<class\\s-+" ns "\\_>"))
             (error "Couldn't find function/task implementation"))
         (setq this-func-re (concat this-func-re ns "::"))))
     (setq this-func-re (concat this-func-re name "\\s-*[(;]"))
@@ -983,7 +986,9 @@ Optional ARG means justify paragraph as well."
     (when (looking-at "\\_<begin\\_>")
       (skip-syntax-backward " >")
       (back-to-indentation))
-    (current-column)))
+    (if (looking-at "\\_<fork\\_>")
+        (+ (current-column) sv-mode-basic-offset)
+      (current-column))))
 
 (defun sv-mode-get-indent-if-closer ()
   "Get amount to indent if looking at a closing item."
@@ -993,10 +998,14 @@ Optional ARG means justify paragraph as well."
         (sv-mode-beginning-of-statement)
         (current-column))
     (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp))
-      (forward-word)
-      (sv-mode-backward-sexp)
-      (sv-mode-beginning-of-statement)
-      (current-column))))
+      (let ((closer (match-string-no-properties 1)))
+        (forward-word)
+        (sv-mode-backward-sexp)
+        (sv-mode-beginning-of-statement)
+        (if (and (looking-at "\\_<fork\\_>")
+                 (string= closer "end"))
+            (+ (current-column) sv-mode-basic-offset)
+          (current-column))))))
 
 (defun sv-mode-get-normal-indent ()
   "Normal indent for a line."
@@ -1008,7 +1017,8 @@ Optional ARG means justify paragraph as well."
         (setq offset sv-mode-basic-offset))
       (if (not (sv-mode-beginning-of-scope))
           0
-        (sv-mode-beginning-of-statement)
+        (unless (looking-back "^\\s-*" (line-beginning-position))
+          (sv-mode-beginning-of-statement))
         (+ (current-column) sv-mode-basic-offset offset)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
