@@ -43,6 +43,7 @@
                                  "\\|jeeves[ \t]+\\(spec\\|verilog\\)[ \t]+\\(on\\|off\\)"
                                  "\\)")
                          '(0 'specterx-directive-face t)))))
-  (font-lock-add-keywords nil keywords 'add-to-end)))
+    (setq ff-other-file-alist '(("\\.s$" (".v"))))
+    (font-lock-add-keywords nil keywords 'add-to-end)))
 
 (provide 'specterx-mode)

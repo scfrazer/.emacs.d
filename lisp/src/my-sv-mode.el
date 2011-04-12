@@ -11,6 +11,14 @@
            (split-string (getenv "SV_PATH") ":"))))
     (ffap-locate-file name t ffap-sv-mode-path)))
 
+(defun my-sv-mode-hook ()
+  (setq ff-other-file-alist '(("\\.sv$" (".svh"))
+                              ("\\.svh$" (".sv"))
+                              ("\\.s$" (".v"))
+                              ("\\.v$" (".s" ".vh")))))
+
+(add-hook 'sv-mode-hook 'my-sv-mode-hook)
+
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
 (provide 'my-sv-mode)
