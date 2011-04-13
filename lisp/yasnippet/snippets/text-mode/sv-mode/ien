@@ -1,0 +1,5 @@
+#name : iterate over enum
+# --
+for(int idx=0, ${1:enum_type} ${2:enum_val}=$2.first; idx < $2.num; idx++, $2=$2.next) begin$>
+   $0$>
+end$>

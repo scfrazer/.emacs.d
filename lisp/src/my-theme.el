@@ -206,6 +206,14 @@
    (widget-field-face ((t (:background "dim gray"))))
    (widget-inactive-face ((t (:foreground "light gray"))))
    (widget-single-line-field-face ((t (:background "dim gray"))))
+
+   (ediff-current-diff-A ((((class color) (min-colors 16)) (:background "green4" :foreground "white"))))
+   (ediff-current-diff-B ((t (:background "darkorange3" :foreground "white"))))
+   (ediff-even-diff-B ((((class color) (min-colors 16)) (:background "Grey50" :foreground "White"))))
+   (ediff-fine-diff-A ((((class color) (min-colors 16)) (:background "skyblue4" :foreground "white"))))
+   (ediff-fine-diff-B ((((class color) (min-colors 16)) (:background "cyan4" :foreground "white"))))
+   (ediff-odd-diff-A ((((class color) (min-colors 16)) (:background "Grey50" :foreground "White"))))
+
    ))
 
 (my-theme-create deeper-red '((default ((t (:background "#261a18" :foreground "gainsboro"))))))

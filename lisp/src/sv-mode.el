@@ -751,6 +751,44 @@ end/endtask/endmodule/etc. also."
            (error "Unbalanced parentheses or begin/end constructs")))
        done))))
 
+(defun sv-mode-beginning-of-defun (&optional arg)
+  "Go to beginning of function/task/class."
+  (interactive)
+  (let (pos)
+    (save-excursion
+      (end-of-line)
+      (while (not (looking-at "task\\|function\\|class"))
+        (unless (sv-mode-beginning-of-scope)
+          (error "Not inside a defun")))
+      (setq pos (point)))
+    (goto-char pos)
+    (beginning-of-line)
+    t))
+
+(defun sv-mode-end-of-defun (&optional arg)
+  "Go to end of function/task/class."
+  (interactive)
+  (let (pos)
+    (save-excursion
+      (sv-mode-beginning-of-defun)
+      (sv-mode-jump-other-end)
+      (setq pos (line-end-position)))
+    (goto-char pos)
+    t))
+
+(defun sv-mode-narrow-to-block ()
+  "Narrow buffer to enclosing block."
+  (interactive)
+  (let (start)
+    (save-excursion
+      (end-of-line)
+      (unless (sv-mode-beginning-of-scope)
+        (error "Not inside any scope"))
+      (setq start (line-beginning-position))
+      (sv-mode-jump-other-end)
+      (forward-line 1)
+      (narrow-to-region start (point)))))
+
 (defun sv-mode-goto-function-other-file ()
   "Go to function/task in other file."
   (interactive)
@@ -928,17 +966,19 @@ Optional ARG means justify paragraph as well."
 (defun sv-mode-get-indent ()
   "Return how much the current line should be indented."
   (save-excursion
-    (beginning-of-line)
-    (let ((in-comment-or-string (sv-mode-in-comment-or-string)))
-      (cond
-       ((bobp) 0)
-       ((equal in-comment-or-string 'string) 0)
-       ((equal in-comment-or-string 'comment)
-        (sv-mode-get-indent-in-comment))
-       ((sv-mode-get-indent-if-in-paren))
-       ((sv-mode-get-indent-if-opener))
-       ((sv-mode-get-indent-if-closer))
-       ((sv-mode-get-normal-indent))))))
+    (save-restriction
+      (widen)
+      (beginning-of-line)
+      (let ((in-comment-or-string (sv-mode-in-comment-or-string)))
+        (cond
+         ((bobp) 0)
+         ((equal in-comment-or-string 'string) 0)
+         ((equal in-comment-or-string 'comment)
+          (sv-mode-get-indent-in-comment))
+         ((sv-mode-get-indent-if-in-paren))
+         ((sv-mode-get-indent-if-opener))
+         ((sv-mode-get-indent-if-closer))
+         ((sv-mode-get-normal-indent)))))))
 
 (defun sv-mode-get-indent-in-comment ()
   "Get amount to indent when in comment."
@@ -962,11 +1002,15 @@ Optional ARG means justify paragraph as well."
           (if (= (char-after) ?{)
               (progn
                 (sv-mode-beginning-of-statement)
-                (when (looking-at "\\(typedef\\s-+\\)?enum")
-                  (setq offset (current-column))
-                  (unless at-closer
-                    (setq offset (+ offset sv-mode-basic-offset)))
-                  offset))
+;;                 (when (looking-at "\\(typedef\\s-+\\)?enum")
+;;                   (setq offset (current-column))
+;;                   (unless at-closer
+;;                     (setq offset (+ offset sv-mode-basic-offset)))
+;;                   offset))
+                (setq offset (current-column))
+                (unless at-closer
+                  (setq offset (+ offset sv-mode-basic-offset)))
+                offset)
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
                         (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
               (setq offset (current-column))
@@ -1537,6 +1581,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     (define-key map (kbd "C-c C-S-o") 'sv-mode-goto-function-other-file)
+    (define-key map (kbd "C-x n b") 'sv-mode-narrow-to-block)
     map)
   "Keymap used in sv-mode.")
 
@@ -1583,6 +1628,9 @@ Key Bindings:
         fill-paragraph-function 'sv-mode-fill-paragraph)
 
   (make-local-variable 'sv-speedbar-cached-data)
+
+  (set (make-local-variable 'beginning-of-defun-function) 'sv-mode-beginning-of-defun)
+  (set (make-local-variable 'end-of-defun-function) 'sv-mode-end-of-defun)
 
   ;; Font-lock
 

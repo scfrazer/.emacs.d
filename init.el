@@ -1345,6 +1345,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
+(defalias 'color 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'eb 'ediff-buffers)
 (defalias 'ed 'edebug-defun)
