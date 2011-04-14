@@ -776,8 +776,8 @@ end/endtask/endmodule/etc. also."
     (goto-char pos)
     t))
 
-(defun sv-mode-narrow-to-block ()
-  "Narrow buffer to enclosing block."
+(defun sv-mode-narrow-to-scope ()
+  "Narrow buffer to enclosing scope."
   (interactive)
   (let (start)
     (save-excursion
@@ -1581,7 +1581,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'ff-get-other-file)
     (define-key map (kbd "C-c C-S-o") 'sv-mode-goto-function-other-file)
-    (define-key map (kbd "C-x n b") 'sv-mode-narrow-to-block)
+    (define-key map (kbd "C-x n s") 'sv-mode-narrow-to-scope)
     map)
   "Keymap used in sv-mode.")
 

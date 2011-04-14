@@ -40,7 +40,9 @@
                                         (">" . org-demote-subtree)
                                         ("t" . my-org-set-todo-state)
                                         ("a" . org-archive-subtree)
-                                        ("x" . my-org-handle-checkbox))
+                                        ("x" . my-org-handle-checkbox)
+                                        ("w" . org-cut-subtree)
+                                        ("y" . org-paste-subtree))
               org-startup-folded nil
               org-tags-column -80
               org-time-stamp-custom-formats '("<%a %b %d, %Y>" . "<%a %b %d, %Y %H:%M>")
@@ -144,16 +146,16 @@ Otherwise: Add a checkbox and update heading accordingly."
 
      (define-abbrev org-mode-abbrev-table
        "ti"
-       "#+TITLE: \n"
+       "#+title: \n"
        (lambda () (backward-char 1)))
 
      (define-abbrev org-mode-abbrev-table
        "toc"
-       "#+OPTIONS: toc:t num:t\n")
+       "#+options: toc:t num:t\n")
 
      (define-abbrev org-mode-abbrev-table
        "email"
-       "#+EMAIL_ADDRS: scfrazer\n")
+       "#+email_addrs: scfrazer\n")
 
      (define-abbrev org-mode-abbrev-table
        "new"
@@ -162,14 +164,17 @@ Otherwise: Add a checkbox and update heading accordingly."
 
      (define-abbrev org-mode-abbrev-table
        "pre"
-       "#+BEGIN_EXAMPLE\n\n#+END_EXAMPLE"
+       "#+begin_example\n\n#+end_example"
        (lambda () (backward-char 14)))
 
      (define-abbrev org-mode-abbrev-table
        "src"
-       "#+BEGIN_SRC \n\n#+END_SRC"
+       "#+begin_src \n\n#+end_src"
        (lambda ()
          (let ((mode (read-from-minibuffer "Mode? ")))
+           (when (eobp)
+             (insert "\n")
+             (backward-char 1))
            (backward-char 11)
            (insert mode)
            (forward-char 1))))
@@ -299,7 +304,7 @@ Otherwise: Add a checkbox and update heading accordingly."
     (org-export-as-html 3 nil nil "*exported-html*"))
   (save-excursion
     (goto-char (point-min))
-    (when (re-search-forward "^#\\+EMAIL_ADDRS: \\(.+\\)$" nil t)
+    (when (re-search-forward "^#\\+email_addrs: \\(.+\\)$" nil t)
       (let ((email-addrs (match-string-no-properties 1)))
         (with-current-buffer "*exported-html*"
           (goto-char (point-min))
