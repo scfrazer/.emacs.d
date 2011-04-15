@@ -37,6 +37,7 @@
 (require 'midnight)
 (require 'mode-fn)
 (require 'motion-and-kill-dwim)
+(require 'narrow-nested)
 (require 'protbuf)
 (require 'rect)
 (require 'redo+)

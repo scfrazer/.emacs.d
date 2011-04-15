@@ -1,5 +1,7 @@
 ;;; my-sv-mode.el
 
+(require 'narrow-nested)
+
 (defadvice find-tag-default (after my-sv-mode-find-tag-default activate)
   "Remove backtick in sv-mode."
   (when (equal major-mode 'sv-mode)
@@ -20,5 +22,8 @@
 (add-hook 'sv-mode-hook 'my-sv-mode-hook)
 
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
+
+(defadvice sv-mode-narrow-to-scope (before narrow-nested-sv-scope activate)
+  (narrow-nested-save-restriction))
 
 (provide 'my-sv-mode)
