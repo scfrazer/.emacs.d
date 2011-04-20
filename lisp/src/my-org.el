@@ -41,7 +41,7 @@
                                         ("t" . my-org-set-todo-state)
                                         ("a" . org-archive-subtree)
                                         ("x" . my-org-handle-checkbox)
-                                        ("w" . org-cut-subtree)
+                                        ("w" . my-org-cut-subtree)
                                         ("y" . org-paste-subtree))
               org-startup-folded nil
               org-tags-column -80
@@ -61,6 +61,12 @@
               org-yank-folded-subtrees nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my-org-cut-subtree ()
+  "org-cut-subtree then go to next."
+  (interactive)
+  (org-cut-subtree)
+  (skip-syntax-forward " "))
 
 (defun my-org-insert-heading ()
   "Insert a heading if on a blank line, or goto next line and insert heading."

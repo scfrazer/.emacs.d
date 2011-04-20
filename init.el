@@ -246,8 +246,8 @@
 
 (setq default-mode-line-format
       '("  " mode-line-modified
-        (list 'line-number-mode "  L%l/")
-        (list 'line-number-mode (:eval (int-to-string (count-lines (point-min) (point-max)))))
+        (list 'line-number-mode "  L%l")
+;;         (list 'line-number-mode (:eval (int-to-string (count-lines (point-min) (point-max)))))
         "  %p"
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification

@@ -1,4 +1,4 @@
-#!/router/bin/python-2.4.3
+#!/router/bin/python-2.7.1
 
 import sys
 import re
@@ -21,12 +21,12 @@ def main():
     for filename in filenames:
 
         try:
-            thing = open(filename, 'r')
+            file_obj = open(filename, 'r')
         except IOError:
             print "*** ERROR: Couldn't open file '%%s'" %% (filename)
             sys.exit(1)
 
-        thing.close()
+        file_obj.close()
 
 ################################################################################
 
