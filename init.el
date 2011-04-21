@@ -103,6 +103,7 @@
 (autoload 'my-confluence-html "my-confluence" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
+(autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'verilog-mode "verilog-mode" "Verilog mode" t)
