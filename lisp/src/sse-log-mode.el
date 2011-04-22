@@ -18,64 +18,64 @@
 ;; Faces
 
 (defface sse-log-mode-error-face
-    '((((class color) (background dark)) (:foreground "red" :bold t))
-      (((class color) (background light)) (:foreground "red" :bold t)))
-    "Font Lock mode face used to highlight errors."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "red" :bold t))
+    (((class color) (background light)) (:foreground "red" :bold t)))
+  "Font Lock mode face used to highlight errors."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-warning-face
-    '((((class color) (background dark)) (:foreground "yellow2" :bold t))
-      (((class color) (background light)) (:foreground "yellow4" :bold t)))
-    "Font Lock mode face used to highlight warnings."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "yellow2" :bold t))
+    (((class color) (background light)) (:foreground "yellow4" :bold t)))
+  "Font Lock mode face used to highlight warnings."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-debug-face
-    '((((class color) (background dark)) (:foreground "red" :background "yellow" :bold t))
-      (((class color) (background light)) (:foreground "red" :background "yellow" :bold t)))
-    "Font Lock mode face used to highlight debug markers."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "red" :background "yellow" :box t :bold t))
+    (((class color) (background light)) (:foreground "red" :background "yellow" :box t :bold t)))
+  "Font Lock mode face used to highlight debug markers."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-debug-msg-face
-    '((((class color) (background dark)) (:foreground "CadetBlue1"))
-      (((class color) (background light)) (:bold t)))
-    "Font Lock mode face used to highlight debug messages."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "DarkOliveGreen3"))
+    (((class color) (background light)) (:bold t)))
+  "Font Lock mode face used to highlight debug messages."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-timestamp-face
-    '((((class color) (background dark)) (:foreground "plum2"))
-      (((class color) (background light)) (:foreground "purple3")))
-    "Font Lock mode face used to highlight timestamps."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "plum2"))
+    (((class color) (background light)) (:foreground "purple3")))
+  "Font Lock mode face used to highlight timestamps."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-path-face
-    '((((class color) (background dark)) (:foreground "SkyBlue1"))
-      (((class color) (background light)) (:foreground "SteelBlue4")))
-    "Font Lock mode face used to highlight tags."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "SkyBlue1"))
+    (((class color) (background light)) (:foreground "SteelBlue4")))
+  "Font Lock mode face used to highlight tags."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-domain-face
-    '((((class color) (background dark)) (:foreground "LightGoldenrod2" :bold t))
-      (((class color) (background light)) (:bold t)))
-    "Font Lock mode face used to highlight domain advance statements."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "LightGoldenrod2" :bold t))
+    (((class color) (background light)) (:bold t)))
+  "Font Lock mode face used to highlight domain advance statements."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-send-face
-    '((((class color) (background dark)) (:foreground "white" :background "green3" :bold t))
-      (((class color) (background light)) (:foreground "white" :background "green3" :bold t)))
-    "Font Lock mode face used to highlight send statements."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "white" :background "green3" :bold t))
+    (((class color) (background light)) (:foreground "white" :background "green3" :bold t)))
+  "Font Lock mode face used to highlight send statements."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-match-face
-    '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
-      (((class color) (background light)) (:foreground "green3" :bold t)))
-    "Font Lock mode face used to highlight match statements."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
+    (((class color) (background light)) (:foreground "green3" :bold t)))
+  "Font Lock mode face used to highlight match statements."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-pass-face
-    '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
-      (((class color) (background light)) (:foreground "green3" :bold t)))
-    "Font Lock mode face used to highlight pass statements."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
+    (((class color) (background light)) (:foreground "green3" :bold t)))
+  "Font Lock mode face used to highlight pass statements."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-msg-level-face
   '((((class color) (background dark)) (:foreground "cyan3"))
@@ -84,10 +84,10 @@
   :group 'sse-log-mode)
 
 (defface sse-log-mode-msg-face
-    '((((class color) (background dark)) (:foreground "PaleTurquoise2"))
-      (((class color) (background light)) (:foreground "tan4")))
-    "Font Lock mode face used to highlight messages."
-    :group 'sse-log-mode)
+  '((((class color) (background dark)) (:foreground "PaleTurquoise2"))
+    (((class color) (background light)) (:foreground "tan4")))
+  "Font Lock mode face used to highlight messages."
+  :group 'sse-log-mode)
 
 (defface sse-log-mode-highlight-phase-face
   '((((class color) (background dark)) (:foreground "white" :background "slateblue3" :bold t))
@@ -101,14 +101,21 @@
 ;      (0 'sse-log-mode-error-face))
 ;     ("^\\s +\\*\\*\\* Warning.*$"
 ;      (0 'sse-log-mode-warning-face))
-;     ("^\\s *\\(DEBUG.*?:\\)\\(.*\\)$"
-;      (1 'sse-log-mode-debug-face)
-;      (2 'sse-log-mode-debug-msg-face))
+    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(DEBUG-[^ ]+\\)\\s-+\\([^ ]+\\)\\(.*\\)"
+     (1 'sse-log-mode-timestamp-face)
+     (2 'sse-log-mode-debug-face)
+     (3 'sse-log-mode-debug-msg-face)
+     (4 'sse-log-mode-msg-face))
     ("\\*\\{80\\}"
      (0 'sse-log-mode-domain-face))
     ("\\(\\*\\* STARTING PHASE:\\)\\(.+\\)"
      (1 'sse-log-mode-domain-face)
      (2 'sse-log-mode-msg-face))
+    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(FATAL\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
+     (1 'sse-log-mode-timestamp-face)
+     (2 'sse-log-mode-error-face)
+     (3 'sse-log-mode-path-face)
+     (4 'sse-log-mode-msg-face))
     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(WARNING\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
      (1 'sse-log-mode-timestamp-face)
      (2 'sse-log-mode-warning-face)
@@ -192,7 +199,7 @@
 (defun sse-log-mode-hide-phase ()
   "Hide current phase."
   (let ((marker-regexp (concat "^.+?\\(" sse-log-mode-testflow-regexp "\\|" sse-log-mode-config-sep-regexp "\\)"))
-         start end)
+        start end)
     (save-excursion
       (when (re-search-backward marker-regexp nil 'go)
         (if (string= (match-string-no-properties 1) sse-log-mode-testflow-regexp)

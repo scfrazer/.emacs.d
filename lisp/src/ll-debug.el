@@ -685,7 +685,7 @@ Uses `query-replace-regexp' internally."
 (ll-debug-register-mode 'sv-mode
                         "$display(" ");"
                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
-                        '(nil "\"[%t] " (ll-debug-create-next-debug-string)
+                        '(nil "\"%t: " (ll-debug-create-next-debug-string)
                               " (" (ll-debug-get-sv-mode-function) ")"
                               ("Variable name: "
                                "  " str "="
