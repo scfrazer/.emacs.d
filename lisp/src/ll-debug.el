@@ -697,7 +697,7 @@ Uses `query-replace-regexp' internally."
                                (let ((fmt (read-string "Format: ")))
                                  (cond
                                   ((string= (downcase fmt) "h")
-                                   (concat "0x%0" fmt))
+                                   (concat "h'%0" fmt))
                                   ((string= (downcase fmt) "d")
                                    (concat "%0" fmt))
                                   (t

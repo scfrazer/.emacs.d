@@ -281,6 +281,7 @@
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
 
+(add-to-list 'auto-mode-alist '("run.log$" . sse-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))

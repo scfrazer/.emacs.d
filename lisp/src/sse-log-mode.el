@@ -111,7 +111,7 @@
     ("\\(\\*\\* STARTING PHASE:\\)\\(.+\\)"
      (1 'sse-log-mode-domain-face)
      (2 'sse-log-mode-msg-face))
-    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(FATAL\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
+    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(FATAL\\|ERROR\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
      (1 'sse-log-mode-timestamp-face)
      (2 'sse-log-mode-error-face)
      (3 'sse-log-mode-path-face)
@@ -353,7 +353,5 @@
         buffer-invisibility-spec '((t . t)))
 
   (run-mode-hooks 'sse-log-mode-hook))
-
-(setq auto-mode-alist (cons '("run.log$" . sse-log-mode) auto-mode-alist))
 
 (provide 'sse-log-mode)
