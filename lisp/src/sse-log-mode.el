@@ -97,10 +97,10 @@
 
 (defvar sse-log-mode-font-lock-keywords
   '(
-;     ("^\\s +\\*\\*\\* Dut error.*$"
-;      (0 'sse-log-mode-error-face))
-;     ("^\\s +\\*\\*\\* Warning.*$"
-;      (0 'sse-log-mode-warning-face))
+;;     ("^\\s +\\*\\*\\* Dut error.*$"
+;;      (0 'sse-log-mode-error-face))
+;;     ("^\\s +\\*\\*\\* Warning.*$"
+;;      (0 'sse-log-mode-warning-face))
     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(DEBUG-[^ ]+\\)\\s-+\\([^ ]+\\)\\(.*\\)"
      (1 'sse-log-mode-timestamp-face)
      (2 'sse-log-mode-debug-face)
@@ -126,21 +126,21 @@
      (2 'sse-log-mode-msg-level-face)
      (3 'sse-log-mode-path-face)
      (4 'sse-log-mode-msg-face))
-;     ("Sending.*"
-;      (0 'sse-log-mode-send-face))
-;     ("Matched.*$"
-;      (0 'sse-log-mode-match-face))
-;     ("!+ Test has Failed! !+"
-;      (0 'sse-log-mode-error-face t))
-;     ("\\*+ Test has Passed! \\*+"
-;      (0 'sse-log-mode-pass-face t))
-;     ("^\\s *\\([0-9.]+ [fpnum]s\\)\\s *\\[\\(.+?\\)\\] (\\(.+?\\)): \\(.*\\)$"
-;      (1 'sse-log-mode-timestamp-face)
-;      (2 'sse-log-mode-msg-level-face)
-;      (3 'sse-log-mode-path-face)
-;      (4 'sse-log-mode-msg-face))
-;     ("(Err:.+?)"
-;      (0 'sse-log-mode-error-face t))
+;;     ("Sending.*"
+;;      (0 'sse-log-mode-send-face))
+;;     ("Matched.*$"
+;;      (0 'sse-log-mode-match-face))
+;;     ("!+ Test has Failed! !+"
+;;      (0 'sse-log-mode-error-face t))
+;;     ("\\*+ Test has Passed! \\*+"
+;;      (0 'sse-log-mode-pass-face t))
+;;     ("^\\s *\\([0-9.]+ [fpnum]s\\)\\s *\\[\\(.+?\\)\\] (\\(.+?\\)): \\(.*\\)$"
+;;      (1 'sse-log-mode-timestamp-face)
+;;      (2 'sse-log-mode-msg-level-face)
+;;      (3 'sse-log-mode-path-face)
+;;      (4 'sse-log-mode-msg-face))
+;;     ("(Err:.+?)"
+;;      (0 'sse-log-mode-error-face t))
     )
   "Font locking for 'sse-log-mode'.")
 
@@ -318,11 +318,11 @@
 (defvar sse-log-mode-map nil "'sse-log-mode' keymap.")
 (if (not sse-log-mode-map)
     (let ((map (make-keymap)))
-;       (define-key map (kbd "C-x m") 'sse-log-mode-mark-time)
-;       (define-key map (kbd "C-x d") 'sse-log-mode-delta-time)
-;       (define-key map (kbd "<f10>") 'sse-log-mode-toggle-phase)
-;       (define-key map (kbd "<S-f10>") 'sse-log-mode-toggle-all)
-;       (define-key map (kbd "<C-f10>") 'sse-log-mode-toggle-main-test)
+;;       (define-key map (kbd "C-x m") 'sse-log-mode-mark-time)
+;;       (define-key map (kbd "C-x d") 'sse-log-mode-delta-time)
+;;       (define-key map (kbd "<f10>") 'sse-log-mode-toggle-phase)
+;;       (define-key map (kbd "<S-f10>") 'sse-log-mode-toggle-all)
+;;       (define-key map (kbd "<C-f10>") 'sse-log-mode-toggle-main-test)
       (setq sse-log-mode-map map)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -347,6 +347,8 @@
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(sse-log-mode-font-lock-keywords t))
   (turn-on-font-lock)
+
+  (setq imenu-generic-expression (list '(nil "STARTING PHASE:\\s-+\\(.+\\)" 1)))
 
   (make-local-variable 'line-move-ignore-invisible)
   (setq line-move-ignore-invisible t
