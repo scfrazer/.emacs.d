@@ -103,6 +103,7 @@
 (autoload 'my-confluence-html "my-confluence" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
 (autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
@@ -263,6 +264,8 @@
 (nbutlast mode-line-modes 1)
 
 (add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.csh$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
@@ -271,20 +274,17 @@
 (add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
-
 (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.sva$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
-
+(add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
 (add-to-list 'auto-mode-alist '("run.log$" . sse-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
-(add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
-(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
 
 ;; Don't use sh-mode for csh files
 
