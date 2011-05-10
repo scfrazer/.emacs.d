@@ -216,6 +216,7 @@
               scroll-preserve-screen-position t
               select-active-regions t
               show-paren-delay 0
+              split-width-threshold nil
               tags-revert-without-query t
               tempo-interactive t
               truncate-partial-width-windows nil
@@ -565,6 +566,15 @@ Prefix with C-u to fit the `next-window'."
      (my-minibuffer-forward)
      (point))
    (point)))
+
+(defun my-narrow-or-org-edit ()
+  "narrow-to-defun/widen or org-edit-special."
+  (interactive)
+  (if (equal 'major-mode 'org-mode)
+      (org-edit-special)
+    (if (/= (buffer-size) (- (point-max) (point-min)))
+        (widen)
+      (narrow-to-defun))))
 
 (defun my-open-line-above ()
   "Open a line above the current one."
@@ -1112,6 +1122,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-`" 'next-error)
 (my-keys-define "C-c #" 'my-convert-to-base)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
+(my-keys-define "C-c '" 'my-narrow-or-org-edit)
 (my-keys-define "C-c +" 'my-inc-num)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c ;" 'my-insert-comment-line)
