@@ -88,6 +88,18 @@ Otherwise indent them as usual."
   :type 'boolean)
 
 ;;;###autoload
+(defcustom sv-mode-opener-is-electric t
+  "*Non-nil means reindent the current line after entering 'begin' or '{'."
+  :group 'sv-mode
+  :type 'boolean)
+
+;;;###autoload
+(defcustom sv-mode-closer-is-electric t
+  "*Non-nil means reindent the current line after entering 'end' or '}'."
+  :group 'sv-mode
+  :type 'boolean)
+
+;;;###autoload
 (defcustom sv-mode-finish-skeleton-function
   'sv-mode-default-finish-skeleton-function
   "*Function to call to finish task/function skeleton creation."
@@ -904,6 +916,52 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   (when (sv-mode-in-comment)
     (sv-mode-indent-line)))
 
+(defun sv-mode-electric-begin ()
+  "Auto-indent after the word 'begin'."
+  (interactive)
+  (insert "n")
+  (when (and sv-mode-opener-is-electric
+             (looking-back "\\_<begin" (point-at-bol))
+             (not (sv-mode-in-comment-or-string)))
+    (sv-mode-indent-line)))
+
+(defun sv-mode-electric-end ()
+  "Auto-indent after the word 'end'."
+  (interactive)
+  (insert "d")
+  (when (and sv-mode-closer-is-electric
+             (looking-back "\\_<end" (point-at-bol))
+             (not (sv-mode-in-comment-or-string)))
+    (let (indent-line)
+      (save-excursion
+        (save-restriction
+          (widen)
+          (beginning-of-line)
+          (when (looking-at "^[ \t]*end")
+            (forward-word)
+            (sv-mode-backward-sexp)
+            (sv-mode-beginning-of-statement)
+            (setq indent-line (or (> (current-column) 0)
+                                  (looking-at "\\_<fork\\_>"))))))
+      (when indent-line
+        (sv-mode-indent-line)))))
+
+(defun sv-mode-electric-curly-open ()
+  "Auto-indent after entering '{'."
+  (interactive)
+  (insert "{")
+  (when (and sv-mode-opener-is-electric
+             (not (sv-mode-in-comment-or-string)))
+    (sv-mode-indent-line)))
+
+(defun sv-mode-electric-curly-close ()
+  "Auto-indent after entering '}'."
+  (interactive)
+  (insert "}")
+  (when (and sv-mode-closer-is-electric
+             (not (sv-mode-in-comment-or-string)))
+    (sv-mode-indent-line)))
+
 (defun sv-mode-indent-new-comment-line ()
   "Break line at point and indent if in comment."
   (interactive)
@@ -1571,6 +1629,10 @@ BUFFER is the buffer speedbar is requesting buttons for."
 (defvar sv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "*") 'sv-mode-electric-star)
+    (define-key map (kbd "n") 'sv-mode-electric-begin)
+    (define-key map (kbd "d") 'sv-mode-electric-end)
+    (define-key map (kbd "{") 'sv-mode-electric-curly-open)
+    (define-key map (kbd "}") 'sv-mode-electric-curly-close)
     (define-key map (kbd "C-M-j") 'sv-mode-indent-new-comment-line)
     (define-key map (kbd "C-c C-j") 'sv-mode-jump-other-end)
     (define-key map (kbd "C-c C-u") 'sv-mode-beginning-of-scope)

@@ -348,6 +348,7 @@
   (setq font-lock-defaults '(sse-log-mode-font-lock-keywords t))
   (turn-on-font-lock)
 
+  (setq truncate-lines t)
   (setq imenu-generic-expression (list '(nil "STARTING PHASE:\\s-+\\(.+\\)" 1)))
 
   (make-local-variable 'line-move-ignore-invisible)
