@@ -89,6 +89,9 @@ Arguments are module filename.")
 (defvar hdl-dbg-buffer-name "*hdl-dbg*"
   "Buffer name.")
 
+(defvar hdl-dbg-no-target-buffer-name "*hdl-dbg-target*"
+  "If there is no target, use a buffer with this name.")
+
 (defvar hdl-dbg-font-lock-keywords
   '(
     ("^\\(Breakpoints\\):"
@@ -159,26 +162,30 @@ Arguments are module filename.")
 (defun hdl-dbg-toggle-breakpoint (&optional arg)
   "Toggle a breakpoint on the current line."
   (interactive "P")
-  (if (not hdl-dbg-target-buf)
-      (error "No target file loaded")
-    (save-excursion
-      (beginning-of-line)
-      (let ((bpnt (hdl-dbg-breakpoint-at (point))))
-        (if bpnt
-            (if arg
-                (hdl-dbg-set-breakpoint-condition-1 (funcall
-                                                     hdl-dbg-filename-to-module-fcn
-                                                     (buffer-file-name))
-                                                    (line-number-at-pos)
-                                                    (plist-get (overlay-properties bpnt)
-                                                               'hdl-dbg-breakpoint-condition)
-                                                    (plist-get (overlay-properties bpnt)
-                                                               'hdl-dbg-breakpoint-time))
-              (hdl-dbg-remove-breakpoint bpnt))
-          (let ((condition (when arg (read-from-minibuffer "Break if? " nil nil nil
-                                                           hdl-dbg-cond-history))))
-            (hdl-dbg-set-breakpoint condition "0 ns")))
-        (hdl-dbg-update-control-window-and-target)))))
+  (hdl-dbg-ensure-target-buffer)
+  (save-excursion
+    (beginning-of-line)
+    (let ((bpnt (hdl-dbg-breakpoint-at (point))))
+      (if bpnt
+          (if arg
+              (hdl-dbg-set-breakpoint-condition-1 (funcall
+                                                   hdl-dbg-filename-to-module-fcn
+                                                   (buffer-file-name))
+                                                  (line-number-at-pos)
+                                                  (plist-get (overlay-properties bpnt)
+                                                             'hdl-dbg-breakpoint-condition)
+                                                  (plist-get (overlay-properties bpnt)
+                                                             'hdl-dbg-breakpoint-time))
+            (hdl-dbg-remove-breakpoint bpnt))
+        (let ((condition (when arg (read-from-minibuffer "Break if? " nil nil nil
+                                                         hdl-dbg-cond-history))))
+          (hdl-dbg-set-breakpoint condition "0 ns")))
+      (hdl-dbg-update-control-window-and-target))))
+
+(defun hdl-dbg-ensure-target-buffer ()
+  "If a target buffer doesn't exist, create one."
+  (unless hdl-dbg-target-buf
+    (setq hdl-dbg-target-buf (get-buffer-create hdl-dbg-no-target-buffer-name))))
 
 (defun hdl-dbg-breakpoint-at (pos)
   "Is there a breakpoint at POS?"
@@ -259,7 +266,7 @@ Arguments are module filename.")
           (when (and (buffer-file-name buf)
                      (funcall hdl-dbg-source-file-p-fcn (buffer-file-name buf)))
             (hdl-dbg-update-code-buffer buf))))
-    ;; If it's a .e file and there is a target buffer, add any breakpoints
+    ;; If it's a source file and there is a target buffer, add any breakpoints
     (when (and hdl-dbg-target-buf
                (funcall hdl-dbg-source-file-p-fcn (buffer-file-name)))
       (hdl-dbg-update-code-buffer (current-buffer)))))
@@ -292,6 +299,13 @@ Arguments are module filename.")
             (beginning-of-line)
             (hdl-dbg-add-overlay (nth 2 bpnt) (nth 3 bpnt))))))))
 
+(defun hdl-dbg-copy-all-to-clipboard ()
+  "Copy all breakpoints to clipboard."
+  (interactive)
+  (when hdl-dbg-target-buf
+    (with-current-buffer hdl-dbg-target-buf
+      (clipboard-kill-region (point-min) (point-max)))))
+
 (defun hdl-dbg-after-save-hook ()
   "Stuff to do when a file is saved."
   (when (and hdl-dbg-target-buf (funcall hdl-dbg-source-file-p-fcn (buffer-file-name)))
@@ -319,8 +333,8 @@ Arguments are module filename.")
 (defun hdl-dbg-kill-buffer-hook ()
   "Stuff to do when a buffer is killed."
   (when (and hdl-dbg-target-buf
-             (buffer-file-name)
-             (funcall hdl-dbg-target-file-p-fcn (buffer-file-name)))
+             (or (and (buffer-file-name) (funcall hdl-dbg-target-file-p-fcn (buffer-file-name)))
+                 (equal (buffer-name) hdl-dbg-no-target-buffer-name)))
     (setq hdl-dbg-target-buf nil)
     (dolist (buf (buffer-list))
       (when (and (buffer-file-name buf)
@@ -342,22 +356,21 @@ Arguments are module filename.")
 (defun hdl-dbg-show-control-window ()
   "Show the debug control window."
   (interactive)
-  (if (not hdl-dbg-target-buf)
-      (error "No target file loaded")
-    (let ((module (and (buffer-file-name)
-                       (funcall hdl-dbg-filename-to-module-fcn (buffer-file-name))))
-          (line-num (line-number-at-pos)))
-      (hdl-dbg-update-control-window)
-      (select-window (split-window-vertically))
-      (switch-to-buffer hdl-dbg-buffer-name)
-      (fit-window-to-buffer)
-      (goto-char (point-min))
-      (if module
-          (if (re-search-forward (concat module ":" (number-to-string line-num)) nil t)
-              (beginning-of-line)
-            (forward-line 1))
-        (forward-line 1))
-      (hdl-dbg-mode))))
+  (hdl-dbg-ensure-target-buffer)
+  (let ((module (and (buffer-file-name)
+                     (funcall hdl-dbg-filename-to-module-fcn (buffer-file-name))))
+        (line-num (line-number-at-pos)))
+    (hdl-dbg-update-control-window)
+    (select-window (split-window-vertically))
+    (switch-to-buffer hdl-dbg-buffer-name)
+    (fit-window-to-buffer)
+    (goto-char (point-min))
+    (if module
+        (if (re-search-forward (concat module ":" (number-to-string line-num)) nil t)
+            (beginning-of-line)
+          (forward-line 1))
+      (forward-line 1))
+    (hdl-dbg-mode)))
 
 (defun hdl-dbg-update-control-window ()
   "Update the debug control window."
@@ -509,8 +522,11 @@ Arguments are module filename.")
   (when hdl-dbg-target-buf
     (with-current-buffer hdl-dbg-target-buf
       (when (buffer-modified-p)
-        (save-buffer)
-        (message "")))
+        (if (buffer-file-name)
+            (progn
+              (save-buffer)
+              (message ""))
+          (set-buffer-modified-p nil))))
     (let ((buf (get-buffer hdl-dbg-buffer-name)))
       (when buf
         (with-current-buffer buf

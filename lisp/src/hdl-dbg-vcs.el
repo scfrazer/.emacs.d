@@ -60,7 +60,8 @@
 ;; Integrate into sv-mode
 
 (define-key sv-mode-map (kbd "<f10>") 'hdl-dbg-toggle-breakpoint)
-(define-key sv-mode-map (kbd "C-<f10>") 'hdl-dbg-show-control-window)
+(define-key sv-mode-map (kbd "<C-f10>") 'hdl-dbg-show-control-window)
+(define-key sv-mode-map (kbd "<M-f10>") 'hdl-dbg-copy-all-to-clipboard)
 (define-key sv-mode-map (kbd "<left-fringe> <mouse-1>") 'hdl-dbg-mouse-toggle-breakpoint)
 (define-key sv-mode-map (kbd "<left-fringe> <M-mouse-1>") 'hdl-dbg-mouse-conditional-breakpoint)
 
