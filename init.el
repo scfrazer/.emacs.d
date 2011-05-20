@@ -208,6 +208,7 @@
               ps-right-margin 36
               ps-top-margin 36
               ps-underlined-faces (quote (font-lock-string-face))
+              python-check-command "pylint_etc_wrapper.py -c"
               python-continuation-offset 4
               python-indent 4
               rst-mode-lazy nil
