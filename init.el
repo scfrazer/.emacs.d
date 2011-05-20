@@ -67,6 +67,7 @@
 (require 'my-occur)
 (require 'my-org)
 (require 'my-pop-back)
+(require 'my-python)
 (require 'my-recentf)
 (require 'my-rect)
 (require 'my-reformat)
@@ -208,9 +209,6 @@
               ps-right-margin 36
               ps-top-margin 36
               ps-underlined-faces (quote (font-lock-string-face))
-              python-check-command "pylint_etc_wrapper.py -c"
-              python-continuation-offset 4
-              python-indent 4
               rst-mode-lazy nil
               save-abbrevs nil
               save-interprogram-paste-before-kill t
