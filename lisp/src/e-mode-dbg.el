@@ -178,7 +178,10 @@
   (push (list filename line-num condition time) e-mode-dbg-breakpoints)
   (with-current-buffer e-mode-dbg-target-buf
     (goto-char (point-max))
-    (insert "change " time " break on line " (number-to-string line-num) " @"
+    (if (equal time "0 ns")
+        (insert "init")
+      (insert "change " time))
+    (insert " break on line " (number-to-string line-num) " @"
             (file-name-sans-extension (file-name-nondirectory filename))
             (if condition
                 (concat " if " condition)
@@ -207,7 +210,7 @@
   (with-current-buffer e-mode-dbg-target-buf
     (goto-char (point-min))
     (while (re-search-forward
-            (concat "^change [0-9]+ .s break on line " (number-to-string line-num) ".+" filename)
+            (concat "^\\(change [0-9]+ .s\\|init\\) break on line " (number-to-string line-num) ".+" filename)
             nil t)
       (delete-region (point-at-bol) (1+ (point-at-eol)))))
   (setq e-mode-dbg-breakpoints (delete (list filename line-num condition time) e-mode-dbg-breakpoints))
@@ -235,24 +238,27 @@
 
 (defun e-mode-dbg-parse-target-buffer ()
   "Parse the verbose.txt target buffer."
-  (setq e-mode-dbg-breakpoints nil)
-  (setq e-mode-dbg-tags nil)
-  (with-current-buffer e-mode-dbg-target-buf
-    ;; Breakpoints
-    (goto-char (point-min))
-    (while (re-search-forward
-            "^change \\(.+\\) break on line \\([0-9]+\\) @[a-zA-Z0-9_]+ \\(if \\(.+\\) \\)?-- \\(.+\\)" nil t)
-      (push (list (match-string-no-properties 5)
-                  (string-to-number (match-string-no-properties 2))
-                  (match-string-no-properties 4)
-                  (match-string-no-properties 1))
-            e-mode-dbg-breakpoints))
-    ;; Tags
-    (goto-char (point-min))
-    (while (re-search-forward "^change \\(.+\\) set message -logger=sys.logger -add -verbosity=\\(.+\\) -tags={\\(.+\\)}" nil t)
-      (push (list (match-string-no-properties 3)
-                  (match-string-no-properties 2)
-                  (match-string-no-properties 1)) e-mode-dbg-tags))))
+  (let (time)
+    (setq e-mode-dbg-breakpoints nil)
+    (setq e-mode-dbg-tags nil)
+    (with-current-buffer e-mode-dbg-target-buf
+      ;; Breakpoints
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^\\(change \\(.+\\)\\|init\\) break on line \\([0-9]+\\) @[a-zA-Z0-9_]+ \\(if \\(.+\\) \\)?-- \\(.+\\)" nil t)
+        (setq time (or (match-string-no-properties 2) "0 ns"))
+        (push (list (match-string-no-properties 6)
+                    (string-to-number (match-string-no-properties 3))
+                    (match-string-no-properties 5)
+                    time)
+              e-mode-dbg-breakpoints))
+      ;; Tags
+      (goto-char (point-min))
+      (while (re-search-forward "^\\(change \\(.+\\)\\|init\\) set message -logger=sys.logger -add -verbosity=\\(.+\\) -tags={\\(.+\\)}" nil t)
+        (setq time (or (match-string-no-properties 2) "0 ns"))
+        (push (list (match-string-no-properties 3)
+                    (match-string-no-properties 2)
+                    time) e-mode-dbg-tags)))))
 
 (defun e-mode-dbg-update-code-buffer (buf)
   "Update a code buffer."
@@ -271,7 +277,7 @@
     (let ((filename (buffer-file-name)))
       (with-current-buffer e-mode-dbg-target-buf
         (goto-char (point-min))
-        (while (re-search-forward (concat "^change [0-9]+ .s break on line .+" filename) nil t)
+        (while (re-search-forward (concat "^\\(change [0-9]+ .s\\|init\\) break on line .+" filename) nil t)
           (delete-region (point-at-bol) (1+ (point-at-eol)))))
       (dolist (bpnt e-mode-dbg-breakpoints)
         (when (string= filename (car bpnt))
@@ -344,7 +350,7 @@
   "Delete tag from verbose.txt"
   (with-current-buffer e-mode-dbg-target-buf
     (goto-char (point-min))
-    (while (re-search-forward (concat "^change .+ set message -logger=sys.logger -add .+ -tags={" tag "}") nil t)
+    (while (re-search-forward (concat "^\\(change \\|init\\).+ set message -logger=sys.logger -add .+ -tags={" tag "}") nil t)
       (delete-region (point-at-bol) (1+ (point-at-eol)))))
   (dolist (tag-info e-mode-dbg-tags)
     (when (string= tag (car tag-info))
@@ -361,7 +367,10 @@
   "Add a tag level to verbose.txt"
   (with-current-buffer e-mode-dbg-target-buf
     (goto-char (point-max))
-    (insert "change " time " set message -logger=sys.logger -add -verbosity=" (upcase level) " -tags={" tag "}\n"))
+    (if (equal time "0 ns")
+        (insert "init")
+      (insert "change " time))
+    (insert " set message -logger=sys.logger -add -verbosity=" (upcase level) " -tags={" tag "}\n"))
   (push (list tag level time) e-mode-dbg-tags)
   (e-mode-dbg-tag-to-clipboard tag level))
 
