@@ -470,6 +470,8 @@ th {
 ul { list-style-type: square; }
 
 .todo { color: red; }
+.WAITING { color: #cdcd00; }
+.STARTED { color: blue; }
 .done { color: green; }
 .new { color: blue; }
 .timestamp { color: gray }
