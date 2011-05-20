@@ -1156,8 +1156,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-k" 'makd-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
 (my-keys-define "C-w" 'makd-kill-unit)
-(my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x *" 'calculator)
+(my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
@@ -1189,6 +1189,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-[" 'insert-pair)
 (my-keys-define "M-\"" 'insert-pair)
 (my-keys-define "M-^" 'etags-stack-show)
+(my-keys-define "M-`" 'flymake-goto-next-error)
 (my-keys-define "M-b" 'task-bmk-show-all)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
@@ -1206,6 +1207,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
+(my-keys-define "M-~" 'flymake-goto-prev-error)
 
 ;; These have to be in this order
 
