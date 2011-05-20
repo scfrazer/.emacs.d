@@ -16,4 +16,9 @@
 
 (add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" my-flymake-python))
 
+(defun my-python-mode-hook ()
+  (flymake-mode 1))
+
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
 (provide 'my-python)
