@@ -181,7 +181,7 @@ class PylintRunner(LintRunner):
         , "W0702"  # No exception type(s) specified
         #, "I0011"  # Warning locally suppressed using disable-msg
         #, "I0012"  # Warning locally suppressed using disable-msg
-        #, "W0511"  # FIXME/TODO
+        , "W0511"  # FIXME/TODO
         #, "W0142"  # *args or **kwargs magic.
         , "R0904"  # Too many public methods
         , "R0902"  # Too many instance attributes
