@@ -1,7 +1,6 @@
 ;;; my-python.el
 
-(require 'flymake)
-(require 'flymake-cursor)
+(require 'my-flymake)
 
 (setq-default python-check-command "pylint_etc_wrapper.py -c"
               python-continuation-offset 4
@@ -14,7 +13,7 @@
          (local-file (file-relative-name temp-file (file-name-directory buffer-file-name))))
     (list my-python-flymake-checker (list local-file))))
 
-(add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" my-flymake-python))
+(add-to-list 'flymake-allowed-file-name-masks '(python-mode my-flymake-python))
 
 (defun my-python-mode-hook ()
   (flymake-mode 1))
