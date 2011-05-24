@@ -573,7 +573,9 @@ Prefix with C-u to fit the `next-window'."
   (if (equal 'major-mode 'org-mode)
       (org-edit-special)
     (if (/= (buffer-size) (- (point-max) (point-min)))
-        (widen)
+        (progn
+          (widen)
+          (recenter))
       (narrow-to-defun))))
 
 (defun my-open-line-above ()
