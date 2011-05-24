@@ -65,8 +65,7 @@
   (lambda() (insert comment-start "FIXME")))
 
 (defadvice expand-abbrev (around my-expand-abbrev-advice activate)
-  (if (and (member major-mode (list 'c++-mode 'c-mode 'cperl-mode))
-           (looking-back "{"))
+  (if (looking-back "{")
       (progn
         (insert "\n\n}")
         (indent-according-to-mode)
