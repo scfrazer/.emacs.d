@@ -255,7 +255,7 @@
    (font-lock-type-face ((t (:foreground "DeepSkyBlue4"))))
    (font-lock-variable-name-face ((t (:foreground "SeaGreen4"))))
    (font-lock-warning-face ((t (:foreground "red"))))
-   (flymake-warnline ((t (:background nil :underline "orangered3"))))
+   (flymake-warnline ((t (:background nil :underline "magenta3"))))
    (flymake-errline ((t (:background nil :underline "red"))))
    (fringe ((t (:background "gainsboro"))))
    (highlight ((t (:background "SkyBlue1"))))
