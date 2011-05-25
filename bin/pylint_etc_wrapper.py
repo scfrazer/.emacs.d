@@ -175,6 +175,7 @@ class PylintRunner(LintRunner):
         , "C0322"  # Operator not preceded
         , "C0323"  # Operator not followed by a space
         , "E1002"  # Use super on old-style class
+        , "W040"   # Reimport bug in pylint
         , "W0232"  # No __init__
         , "W0621"  # Redefining name 'x' from outer scope
                    # (is sually complaining about dynamic scope, which doesn't matter)

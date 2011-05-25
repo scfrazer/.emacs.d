@@ -1134,6 +1134,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-o" 'ff-get-other-file)
+(my-keys-define "C-c F" 'flymake-start-syntax-check)
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c SPC" 'my-delete-whitespace-after-cursor)
@@ -1255,10 +1256,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "M-J" 'makd-backward-kill-section)
 (my-keys-define "M-K" 'makd-forward-kill-section)
-
-;; Because of file vs. dired mapping
-
-(global-set-key (kbd "C-v") clearcase-prefix-map)
 
 ;; Keybinding minor mode
 
