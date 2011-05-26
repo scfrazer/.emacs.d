@@ -57,12 +57,12 @@
 (define-abbrev global-abbrev-table
   "td"
   ""
-  (lambda() (insert comment-start "TODO")))
+  (lambda() (insert "TODO")))
 
 (define-abbrev global-abbrev-table
   "fix"
   ""
-  (lambda() (insert comment-start "FIXME")))
+  (lambda() (insert "FIXME")))
 
 (defadvice expand-abbrev (around my-expand-abbrev-advice activate)
   (if (looking-back "{")

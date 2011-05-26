@@ -37,7 +37,6 @@
 (require 'midnight)
 (require 'mode-fn)
 (require 'motion-and-kill-dwim)
-(require 'narrow-nested)
 (require 'protbuf)
 (require 'rect)
 (require 'redo+)
@@ -64,6 +63,7 @@
 (require 'my-increment-number)
 (require 'my-isearch)
 (require 'my-magit)
+(require 'my-narrow)
 (require 'my-occur)
 (require 'my-org)
 (require 'my-pop-back)
@@ -567,17 +567,6 @@ Prefix with C-u to fit the `next-window'."
      (point))
    (point)))
 
-(defun my-narrow-or-org-edit ()
-  "narrow-to-defun/widen or org-edit-special."
-  (interactive)
-  (if (equal 'major-mode 'org-mode)
-      (org-edit-special)
-    (if (/= (buffer-size) (- (point-max) (point-min)))
-        (progn
-          (widen)
-          (recenter))
-      (narrow-to-defun))))
-
 (defun my-open-line-above ()
   "Open a line above the current one."
   (interactive)
@@ -914,11 +903,6 @@ Does not set point.  Does nothing if mark ring is empty."
     (let ((matching-text (blink-matching-open)))
       (when matching-text
         (message matching-text)))))
-
-(defadvice narrow-to-region (after my-narrow-to-region activate)
-  "After narrowing to region, deactivate region and go to top."
-  (deactivate-mark)
-  (goto-char (point-min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
