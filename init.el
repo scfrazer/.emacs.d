@@ -904,6 +904,12 @@ Does not set point.  Does nothing if mark ring is empty."
       (when matching-text
         (message matching-text)))))
 
+(defadvice kill-buffer (around my-kill-buffer-advice activate)
+  "Don't kill the *scratch* buffer."
+  (if (equal (ad-get-arg 0) "*scratch*")
+      (bury-buffer)
+    ad-do-it))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 

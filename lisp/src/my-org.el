@@ -169,7 +169,7 @@ Otherwise: Add a checkbox and update heading accordingly."
        (lambda () (backward-char 6)))
 
      (define-abbrev org-mode-abbrev-table
-       "pre"
+       "exam"
        "#+begin_example\n\n#+end_example"
        (lambda () (backward-char 14)))
 
