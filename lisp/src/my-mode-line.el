@@ -1,5 +1,8 @@
 ;;; my-mode-line.el
 
+(require 'my-clearcase)
+(require 'task)
+
 (defvar my-mode-line-buffer-line-count nil)
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
 
