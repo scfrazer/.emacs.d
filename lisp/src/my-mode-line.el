@@ -1,12 +1,14 @@
 ;;; my-mode-line.el
 
-(defvar my-mode-line-buffer-line-count "???")
+(defvar my-mode-line-buffer-line-count nil)
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
 
 (setq-default mode-line-format
       '("  " mode-line-modified
-        (list 'line-number-mode "  L%l/")
-        (list 'line-number-mode my-mode-line-buffer-line-count)
+        (list 'line-number-mode "  L%l")
+        (:eval (if (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
+                   (concat "/" my-mode-line-buffer-line-count)
+                 ""))
         "  %p"
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification
