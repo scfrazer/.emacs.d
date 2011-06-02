@@ -63,6 +63,7 @@
 (require 'my-increment-number)
 (require 'my-isearch)
 (require 'my-magit)
+(require 'my-mode-line)
 (require 'my-narrow)
 (require 'my-occur)
 (require 'my-org)
@@ -246,23 +247,6 @@
 (setq frame-title-format (concat "%F" (if (and clearcase-servers-online clearcase-setview-viewtag)
                                           (concat " - " clearcase-setview-viewtag)
                                         "")))
-
-(setq default-mode-line-format
-      '("  " mode-line-modified
-        (list 'line-number-mode "  L%l")
-;;         (list 'line-number-mode (:eval (int-to-string (count-lines (point-min) (point-max)))))
-        "  %p"
-        (list 'column-number-mode "  C%c")
-        "  " mode-line-buffer-identification
-        "  " mode-line-modes
-        (:eval (if (and clearcase-servers-online clearcase-setview-viewtag)
-                   (concat "  [View: " clearcase-setview-viewtag "]")
-                 ""))
-        (:eval (if (not task-current-name)
-                   ""
-                 (concat "  [Task: " (or task-current-name "NONE") "]")))))
-
-(nbutlast mode-line-modes 1)
 
 (add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
@@ -1271,6 +1255,8 @@ Does not set point.  Does nothing if mark ring is empty."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
+
+(global-set-key (kbd "C-v") clearcase-prefix-map)
 
 (setq etags-table-alist
       (list

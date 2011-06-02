@@ -3,6 +3,8 @@
 (require 'flymake)
 (require 'flymake-cursor)
 
+(setq-default flymake-start-syntax-check-on-find-file nil)
+
 (defun flymake-get-file-name-mode-and-masks (file-name)
   "Return the corresponding entry from `flymake-allowed-file-name-masks'."
   (unless (stringp file-name)
