@@ -448,6 +448,10 @@ This is a utility function, you probably want `makd-backward-word-section'."
        ((eq c ?w) (kill-region (point) (progn (skip-syntax-forward "w_") (point))))
        ((eq c ?W) (kill-region (point) (progn (skip-syntax-backward"w_") (point))))
 
+       ((eq c ?e) (kill-region (point) (point-at-eol)))
+       ((eq c ?a) (kill-region (point) (progn (back-to-indentation) (point))))
+       ((eq c ?A) (kill-region (point) (point-at-bol)))
+
        ((eq c ? ) (kill-region (point) (or (mark) (point))))
 
        ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
@@ -504,6 +508,10 @@ This is a utility function, you probably want `makd-backward-word-section'."
 
                   ((eq c ?w) (skip-syntax-forward "w_"))
                   ((eq c ?W) (skip-syntax-backward"w_"))
+
+                  ((eq c ?e) (end-of-line))
+                  ((eq c ?a) (back-to-indentation))
+                  ((eq c ?A) (beginning-of-line))
 
                   ((eq c ? ) (goto-char (or (mark) (point))))
 
