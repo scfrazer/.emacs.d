@@ -113,6 +113,19 @@ Otherwise: Add a checkbox and update heading accordingly."
       (insert " [/]")
       (org-update-checkbox-count))))
 
+(defun my-checkbox-statistics-hook ()
+  (save-excursion
+    (org-back-to-heading t)
+    (when (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" (point-at-eol) t)
+      (if (match-string 1)
+          (when (equal (match-string 1) "100%")
+            (org-todo 'done))
+        (if (and (> (match-end 2) (match-beginning 2))
+                 (equal (match-string 2) (match-string 3)))
+            (org-todo 'done))))))
+
+(add-hook 'org-checkbox-statistics-hook 'my-checkbox-statistics-hook)
+
 (defun my-org-insert-open-time-stamp ()
   "Put in an opening timestamp."
   (interactive)
