@@ -814,6 +814,11 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                  (where-is command t)
                  (buffer-string)))))))
 
+(defun my-toggle-buffer-modified ()
+  "Toggle buffer modified/unmodified."
+  (interactive)
+  (set-buffer-modified-p (not (buffer-modified-p))))
+
 (defun my-toggle-window-split ()
   "Toggle between horizontal/vertical split.
 Only works if there are exactly two windows."
@@ -1138,6 +1143,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
+(my-keys-define "C-x C-S-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
