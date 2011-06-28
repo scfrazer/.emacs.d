@@ -1,7 +1,6 @@
 ;;; my-flymake.el
 
 (require 'flymake)
-(require 'flymake-cursor)
 
 (setq-default flymake-start-syntax-check-on-find-file nil)
 
@@ -20,5 +19,24 @@
       (setq fnm (cdr fnm)))
     (flymake-log 3 "file %s, init=%s" file-name (car mode-and-masks))
     mode-and-masks))
+
+(defun my-flymake-create-temp (file-name prefix)
+  (unless (stringp file-name)
+    (error "Invalid file-name"))
+  (unless prefix
+    (setq prefix "flymake"))
+  (let* ((name (concat (file-name-nondirectory (file-name-sans-extension file-name)) "_" prefix))
+         (ext (concat "." (file-name-extension file-name)))
+         (temp-name (make-temp-file name nil ext)))
+    (flymake-log 3 "my-flymake-create-temp: file=%s temp=%s" file-name temp-name)
+    temp-name))
+
+(defun my-flymake-show-help ()
+  (when (get-char-property (point) 'flymake-overlay)
+    (let ((help (get-char-property (point) 'help-echo)))
+      (when help
+        (message "%s" help)))))
+
+(add-hook 'post-command-hook 'my-flymake-show-help)
 
 (provide 'my-flymake)
