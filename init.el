@@ -1273,6 +1273,7 @@ Does not set point.  Does nothing if mark ring is empty."
        '("/vob/sse/asic/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
        '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/.*\\.[ch]pp$" "/nfs/luke_scratch/tags/sc/TAGS")
+       '("/vob/sse/asic/.*\\.c$" "/nfs/luke_scratch/tags/sc/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
 
