@@ -1172,7 +1172,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-[" 'insert-pair)
 (my-keys-define "M-\"" 'insert-pair)
 (my-keys-define "M-^" 'etags-stack-show)
-(my-keys-define "M-`" 'flymake-goto-next-error)
+(my-keys-define "M-`" 'my-flymake-goto-next-error)
 (my-keys-define "M-b" 'task-bmk-show-all)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
@@ -1190,7 +1190,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
-(my-keys-define "M-~" 'flymake-goto-prev-error)
+(my-keys-define "M-~" 'my-flymake-goto-prev-error)
 
 ;; These have to be in this order
 
@@ -1345,9 +1345,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
 (defalias 'color 'list-colors-display)
+(defalias 'dbg 'edebug-defun)
 (defalias 'dec 'my-hex-to-dec)
-(defalias 'eb 'ediff-buffers)
-(defalias 'ed 'edebug-defun)
+(defalias 'edb 'ediff-buffers)
 (defalias 'ef 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fly 'flymake-mode)

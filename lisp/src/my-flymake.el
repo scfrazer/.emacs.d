@@ -31,12 +31,24 @@
     (flymake-log 3 "my-flymake-create-temp: file=%s temp=%s" file-name temp-name)
     temp-name))
 
-(defun my-flymake-show-help ()
+(defun my-flymake-goto-next-error ()
+  "Go to next flymake error and show the error in the minibuffer."
+  (interactive)
+  (unless (get-char-property (point) 'flymake-overlay)
+    (forward-line -1))
+  (flymake-goto-next-error)
   (when (get-char-property (point) 'flymake-overlay)
     (let ((help (get-char-property (point) 'help-echo)))
       (when help
         (message "%s" help)))))
 
-(add-hook 'post-command-hook 'my-flymake-show-help)
+(defun my-flymake-goto-prev-error ()
+  "Go to prev flymake error and show the error in the minibuffer."
+  (interactive)
+  (flymake-goto-prev-error)
+  (when (get-char-property (point) 'flymake-overlay)
+    (let ((help (get-char-property (point) 'help-echo)))
+      (when help
+        (message "%s" help)))))
 
 (provide 'my-flymake)
