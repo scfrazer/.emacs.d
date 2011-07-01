@@ -260,7 +260,7 @@ Otherwise indent them as usual."
              "real" "realtime" "reg" "shortint" "shortreal" "signed" "string"
              "time" "tri" "tri0" "tri1" "triand" "trior" "trireg" "unsigned"
              "wand" "wire" "wor"
-             "semaphore" "mailbox"
+             "semaphore" "mailbox" "process"
              ))
           "\\)\\_>"))
 
