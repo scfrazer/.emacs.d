@@ -101,7 +101,7 @@
 ;;      (0 'sse-log-mode-error-face))
 ;;     ("^\\s +\\*\\*\\* Warning.*$"
 ;;      (0 'sse-log-mode-warning-face))
-    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(DEBUG-[^ ]+\\)\\s-+\\([^ ]+\\)\\(.*\\)"
+    ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(DEBUG-[^ ]+\\)\\s-+\\([^ \n]+\\)\\(.*\\)"
      (1 'sse-log-mode-timestamp-face)
      (2 'sse-log-mode-debug-face)
      (3 'sse-log-mode-debug-msg-face)
