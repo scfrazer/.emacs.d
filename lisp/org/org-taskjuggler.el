@@ -126,15 +126,15 @@
 ;;   :END:
 ;; ** Markup Guidelines
 ;;    :PROPERTIES:
-;;    :Effort:   2.0
+;;    :Effort:   2d
 ;;    :END:
 ;; ** Workflow Guidelines
 ;;    :PROPERTIES:
-;;    :Effort:   2.0
+;;    :Effort:   2d
 ;;    :END:
 ;; * Presentation
 ;;   :PROPERTIES:
-;;   :Effort:   2.0
+;;   :Effort:   2d
 ;;   :BLOCKER:  training_material { gapduration 1d } some_other_task
 ;;   :END:
 ;;
@@ -144,7 +144,7 @@
 ;;   - Look at org-file-properties, org-global-properties and
 ;;     org-global-properties-fixed
 ;;   - What about property inheritance and org-property-inherit-p?
-;;   - Use TYP_TODO as an way to assign resources
+;;   - Use TYPE_TODO as an way to assign resources
 ;;   - Make sure multiple dependency definitions (i.e. BLOCKER on
 ;;     previous-sibling and on a specific task_id) in multiple
 ;;     attributes are properly exported.
@@ -418,15 +418,13 @@ deeper), then it's not a leaf."
 (defun org-taskjuggler-assign-resource-ids (resources)
   "Given a list of resources return the same list, assigning a
 unique id to each resource."
-  (cond
-   ((null resources) nil)
-   (t
-    (let* ((resource (car resources))
-	   (unique-id (org-taskjuggler-get-unique-id resource unique-ids)))
-      (push (cons "unique-id" unique-id) resource)
-      (cons resource
-	    (org-taskjuggler-assign-resource-ids (cdr resources)
-						 (cons unique-id unique-ids)))))))
+  (let (unique-ids new-list)
+    (dolist (resource resources new-list)
+      (let ((unique-id (org-taskjuggler-get-unique-id resource unique-ids)))
+	(push (cons "unique-id" unique-id) resource)
+	(push unique-id unique-ids)
+	(push resource new-list)))
+    (nreverse new-list)))
 
 (defun org-taskjuggler-resolve-dependencies (tasks)
   (let ((previous-level 0)
@@ -544,7 +542,12 @@ finally add more underscore characters (\"_\")."
 
 (defun org-taskjuggler-clean-id (id)
   "Clean and return ID to make it acceptable for taskjuggler."
-  (and id (replace-regexp-in-string "[^a-zA-Z0-9_]" "_" id)))
+  (and id
+       ;; replace non-ascii by _
+       (replace-regexp-in-string
+	"[^a-zA-Z0-9_]" "_"
+	;; make sure id doesn't start with a number
+	(replace-regexp-in-string "^\\([0-9]\\)" "_\\1" id))))
 
 (defun org-taskjuggler-open-project (project)
   "Insert the beginning of a project declaration. All valid
@@ -610,20 +613,13 @@ is defined it will calculate a unique id for the resource using
 
 (defun org-taskjuggler-clean-effort (effort)
   "Translate effort strings into a format acceptable to taskjuggler,
-i.e. REAL UNIT. If the effort string is something like 5:30 it
-will be assumed to be hours and will be translated into 5.5h.
-Otherwise if it contains something like 3.0 it is assumed to be
-days and will be translated into 3.0d. Other formats that
-taskjuggler supports (like weeks, months and years) are currently
-not supported."
+i.e. REAL UNIT. A valid effort string can be anything that is
+accepted by `org-duration-string-to-minutes´."
   (cond
    ((null effort) effort)
-   ((string-match "\\([0-9]+\\):\\([0-9]+\\)" effort)
-    (let ((hours (string-to-number (match-string 1 effort)))
-	  (minutes (string-to-number (match-string 2 effort))))
-      (format "%dh" (+ hours (/ minutes 60.0)))))
-   ((string-match "\\([0-9]+\\).\\([0-9]+\\)" effort) (concat effort "d"))
-   (t (error "Not a valid effort (%s)" effort))))
+   (t (let* ((minutes (org-duration-string-to-minutes effort))
+	     (hours (/ minutes 60.0)))
+	(format "%.1fh" hours)))))
 
 (defun org-taskjuggler-get-priority (priority)
   "Return a priority between 1 and 1000 based on PRIORITY, an
@@ -662,8 +658,8 @@ org-mode priority string."
 	  (format " depends %s\n" previous-sibling)
 	(and depends (format " depends %s\n" depends)))
       (and allocate (format " purge %s\n allocate %s\n"
-			    (or (and (org-taskjuggler-targeting-tj3-p) "allocations")
-				"allocate")
+			    (or (and (org-taskjuggler-targeting-tj3-p) "allocate")
+				"allocations")
 			    allocate))
       (and complete (format " complete %s\n" complete))
       (and effort (format " effort %s\n" effort))

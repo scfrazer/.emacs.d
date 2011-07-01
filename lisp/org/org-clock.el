@@ -1,6 +1,6 @@
 ;;; org-clock.el --- The time clocking code for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
@@ -63,6 +63,22 @@ which see."
 	  (integer :tag "When at least N clock entries")
 	  (const :tag "Into LOGBOOK drawer" "LOGBOOK")
 	  (string :tag "Into Drawer named...")))
+
+(defun org-clock-into-drawer ()
+  "Return the value of `org-clock-into-drawer', but let properties overrule.
+If the current entry has or inherits a CLOCK_INTO_DRAWER
+property, it will be used instead of the default value; otherwise
+if the current entry has or inherits a LOG_INTO_DRAWER property,
+it will be used instead of the default value.
+The default is the value of the customizable variable `org-clock-into-drawer',
+which see."
+  (let ((p (org-entry-get nil "CLOCK_INTO_DRAWER" 'inherit))
+	(q (org-entry-get nil "LOG_INTO_DRAWER" 'inherit)))
+    (cond
+     ((or (not (or p q)) (equal p "nil") (equal q "nil")) org-clock-into-drawer)
+     ((or (equal p "t") (equal q "t")) "LOGBOOK")
+     ((not p) q)
+     (t p))))
 
 (defcustom org-clock-out-when-done t
   "When non-nil, clock will be stopped when the clocked entry is marked DONE.
@@ -761,7 +777,8 @@ If necessary, clock-out of the currently active clock."
 
 (defun org-clock-jump-to-current-clock (&optional effective-clock)
   (interactive)
-  (let ((clock (or effective-clock (cons org-clock-marker
+  (let ((org-clock-into-drawer (org-clock-into-drawer))
+	(clock (or effective-clock (cons org-clock-marker
 					 org-clock-start-time))))
     (unless (marker-buffer (car clock))
       (error "No clock is currently running"))
@@ -976,6 +993,16 @@ so long."
 			 60.0))))
 	   org-clock-user-idle-start)))))
 
+(defvar org-clock-current-task nil
+  "Task currently clocked in.")
+(defun org-clock-set-current ()
+  "Set `org-clock-current-task' to the task currently clocked in."
+  (setq org-clock-current-task (nth 4 (org-heading-components))))
+
+(defun org-clock-delete-current ()
+  "Reset `org-clock-current-task' to nil."
+  (setq org-clock-current-task nil))
+
 (defun org-clock-in (&optional select start-time)
   "Start the clock on the current item.
 If necessary, clock-out of the currently active clock.
@@ -1157,16 +1184,6 @@ the clocking selection, associated with the letter `d'."
 	    (message "Clock starts at %s - %s" ts msg-extra)
 	    (run-hooks 'org-clock-in-hook)))))))
 
-(defvar org-clock-current-task nil
-  "Task currently clocked in.")
-(defun org-clock-set-current ()
-  "Set `org-clock-current-task' to the task currently clocked in."
-  (setq org-clock-current-task (nth 4 (org-heading-components))))
-
-(defun org-clock-delete-current ()
-  "Reset `org-clock-current-task' to nil."
-  (setq org-clock-current-task nil))
-
 (defun org-clock-mark-default-task ()
   "Mark current task as default task."
   (interactive)
@@ -1216,16 +1233,17 @@ When FIND-UNCLOSED is non-nil, first check if there is an unclosed clock
 line and position cursor in that line."
   (org-back-to-heading t)
   (catch 'exit
-    (let ((beg (save-excursion
-		 (beginning-of-line 2)
-		 (or (bolp) (newline))
-		 (point)))
-	  (end (progn (outline-next-heading) (point)))
-	  (re (concat "^[ \t]*" org-clock-string))
-	  (cnt 0)
-	  (drawer (if (stringp org-clock-into-drawer)
-		      org-clock-into-drawer "LOGBOOK"))
-	  first last ind-last)
+    (let* ((org-clock-into-drawer (org-clock-into-drawer))
+	   (beg (save-excursion
+		  (beginning-of-line 2)
+		  (or (bolp) (newline))
+		  (point)))
+	   (end (progn (outline-next-heading) (point)))
+	   (re (concat "^[ \t]*" org-clock-string))
+	   (cnt 0)
+	   (drawer (if (stringp org-clock-into-drawer)
+		       org-clock-into-drawer "LOGBOOK"))
+	   first last ind-last)
       (goto-char beg)
       (when (and find-unclosed
 		 (re-search-forward
@@ -1652,7 +1670,10 @@ fontified, and then returned."
 (defun org-clock-report (&optional arg)
   "Create a table containing a report about clocked time.
 If the cursor is inside an existing clocktable block, then the table
-will be updated.  If not, a new clocktable will be inserted.
+will be updated.  If not, a new clocktable will be inserted.  The scope
+of the new clock will be subtree when called from within a subtree, and 
+file elsewhere.
+
 When called with a prefix argument, move to the first clock table in the
 buffer and update it."
   (interactive "P")
@@ -1662,8 +1683,12 @@ buffer and update it."
     (org-show-entry))
   (if (org-in-clocktable-p)
       (goto-char (org-in-clocktable-p))
-    (org-create-dblock (append (list :name "clocktable")
-			       org-clock-clocktable-default-properties)))
+    (let ((props (if (ignore-errors 
+		       (save-excursion (org-back-to-heading)))
+		     (list :name "clocktable" :scope 'subtree)
+		   (list :name "clocktable"))))
+      (org-create-dblock 
+       (org-combine-plists org-clock-clocktable-default-properties props))))
   (org-update-dblock))
 
 (defun org-in-clocktable-p ()
@@ -2052,6 +2077,7 @@ from the dynamic block defintion."
 	 (emph (plist-get params :emphasize))
 	 (level-p (plist-get params :level))
 	 (timestamp (plist-get params :timestamp))
+	 (properties (plist-get params :properties))
 	 (ntcol (max 1 (or (plist-get params :tcolumns) 100)))
 	 (rm-file-column (plist-get params :one-file-with-archives))
 	 (indent (plist-get params :indent))
@@ -2115,6 +2141,7 @@ from the dynamic block defintion."
 	 (if multifile "|" "")          ; file column, maybe
 	 (if level-p   "|" "")          ; level column, maybe
 	 (if timestamp "|" "")          ; timestamp column, maybe
+	 (if properties (make-string (length properties) ?|) "")  ;properties columns, maybe
 	 (format "<%d>| |\n" narrow)))  ; headline and time columns
 
       ;; Insert the table header line
@@ -2123,6 +2150,7 @@ from the dynamic block defintion."
        (if multifile (concat (nth 1 lwords) "|") "")  ; file column, maybe
        (if level-p   (concat (nth 2 lwords) "|") "")  ; level column, maybe
        (if timestamp (concat (nth 3 lwords) "|") "")  ; timestamp column, maybe
+       (if properties (concat (mapconcat 'identity properties "|") "|") "") ;properties columns, maybe
        (concat (nth 4 lwords) "|" 
 	       (nth 5 lwords) "|\n"))                 ; headline and time columns
 
@@ -2134,6 +2162,7 @@ from the dynamic block defintion."
 				         ; file column, maybe
        (if level-p   "|"      "")        ; level column, maybe
        (if timestamp "|"      "")        ; timestamp column, maybe
+       (if properties (make-string (length properties) ?|) "")  ;properties columns, maybe
        (concat "*" (nth 7 lwords) "*| ") ; instead of a headline
        "*"
        (org-minutes-to-hh:mm-string (or total-time 0)) ; the time
@@ -2151,12 +2180,13 @@ from the dynamic block defintion."
 	    (insert-before-markers "|-\n")  ; a hline because a new file starts
 	    ;; First the file time, if we have multiple files
 	    (when multifile
-	      ;; Summarize the time colleted from this file
+	      ;; Summarize the time collected from this file
 	      (insert-before-markers
-	       (format (concat "| %s %s | %s*" (nth 8 lwords) "* | *%s*|\n")
+	       (format (concat "| %s %s | %s%s*" (nth 8 lwords) "* | *%s*|\n")
 		       (file-name-nondirectory (car tbl))
 		       (if level-p   "| " "") ; level column, maybe
 		       (if timestamp "| " "") ; timestamp column, maybe
+		       (if properties (make-string (length properties) ?|) "")  ;properties columns, maybe
 		       (org-minutes-to-hh:mm-string (nth 1 tbl))))) ; the time
 
 	    ;; Get the list of node entries and iterate over it
@@ -2181,6 +2211,11 @@ from the dynamic block defintion."
 	       (if multifile "|" "")    ; free space for file name column?
 	       (if level-p (format "%d|" (car entry)) "")   ; level, maybe
 	       (if timestamp (concat (nth 2 entry) "|") "") ; timestamp, maybe
+	       (if properties
+		   (concat
+		    (mapconcat
+		     (lambda (p) (or (cdr (assoc p (nth 4 entry))) ""))
+		     properties "|") "|") "")  ;properties columns, maybe
 	       (if indent (org-clocktable-indent-string level) "") ; indentation
 	       hlc headline hlc "|"                                ; headline
 	       (make-string (min (1- ntcol) (or (- level 1))) ?|)
@@ -2335,6 +2370,8 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 	 (block (plist-get params :block))
 	 (link (plist-get params :link))
 	 (tags (plist-get params :tags))
+	 (properties (plist-get params :properties))
+	 (inherit-property-p (plist-get params :inherit-props))
 	 (matcher (if tags (cdr (org-make-tags-matcher tags))))
 	 cc range-text st p time level hdl props tsp tbl)
 
@@ -2388,8 +2425,15 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 			  (or (cdr (assoc "SCHEDULED" props))
 			      (cdr (assoc "DEADLINE" props))
 			      (cdr (assoc "TIMESTAMP" props))
-			      (cdr (assoc "TIMESTAMP_IA" props)))))
-	      (when (> time 0) (push (list level hdl tsp time) tbl))))))
+			      (cdr (assoc "TIMESTAMP_IA" props))))
+	    props (when properties
+		    (remove nil
+			    (mapcar
+			     (lambda (p)
+			       (when (org-entry-get (point) p inherit-property-p)
+				 (cons p (org-entry-get (point) p inherit-property-p))))
+			     properties))))
+	      (when (> time 0) (push (list level hdl tsp time props) tbl))))))
       (setq tbl (nreverse tbl))
       (list file org-clock-file-total-minutes tbl))))
 
@@ -2416,6 +2460,8 @@ This function is made for clock tables."
 					   (match-string 1 s)))))
 			tot))))
 	0))))
+
+;; Saving and loading the clock
 
 (defvar org-clock-loaded nil
   "Was the clock file loaded?")

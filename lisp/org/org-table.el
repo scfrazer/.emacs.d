@@ -47,6 +47,7 @@
 (defvar orgtbl-mode-menu) ; defined when orgtbl mode get initialized
 (defvar org-export-html-table-tag) ; defined in org-exp.el
 (defvar constants-unit-system)
+(defvar org-table-follow-field-mode)
 
 (defvar orgtbl-after-send-table-hook nil
   "Hook for functions attaching to `C-c C-c', if the table is sent.
@@ -162,6 +163,16 @@ Only relevant when `org-enable-table-editor' is equal to `optimized'."
   :group 'org-table-editing
   :type 'boolean)
 
+(defcustom org-table-exit-follow-field-mode-when-leaving-table t
+  "Non-nil means automatically exit the follow mode.
+When nil, the follow mode will stay on and be active in any table
+the cursor enters.  Since the table follow filed mode messes with the
+window configuration, it is not recommended to set this variable to nil,
+except maybe locally in a special file that has mostly tables with long
+fields."
+  :group 'org-table
+  :type 'boolean)
+
 (defcustom org-table-fix-formulas-confirm nil
   "Whether the user should confirm when Org fixes formulas."
   :group 'org-table-editing
@@ -171,7 +182,7 @@ Only relevant when `org-enable-table-editor' is equal to `optimized'."
 	  (const :tag "no confirmation" nil)))
 (put 'org-table-fix-formulas-confirm
      'safe-local-variable
-     '(lambda (x) (member x '(yes-or-no-p y-or-n-p))))
+     #'(lambda (x) (member x '(yes-or-no-p y-or-n-p))))
 
 (defcustom org-table-tab-jumps-over-hlines t
   "Non-nil means tab in the last column of a table with jump over a hline.
@@ -1045,7 +1056,7 @@ copying.  In the case of a timestamp, increment by one day."
 	  (org-move-to-column col))
       (error "No non-empty field found"))))
 
-(defun org-table-check-inside-data-field ()
+(defun org-table-check-inside-data-field (&optional noerror)
   "Is point inside a table data field?
 I.e. not on a hline or before the first or after the last column?
 This actually throws an error, so it aborts the current command."
@@ -1053,7 +1064,10 @@ This actually throws an error, so it aborts the current command."
 	  (= (org-table-current-column) 0)
 	  (org-at-table-hline-p)
 	  (looking-at "[ \t]*$"))
-      (error "Not in table data field")))
+      (if noerror
+	  nil
+	(error "Not in table data field"))
+    t))
 
 (defvar org-table-clip nil
   "Clipboard for table regions.")
@@ -1103,7 +1117,7 @@ Return t when the line exists, nil if it does not exist."
   "Blank the current table field or active region."
   (interactive)
   (org-table-check-inside-data-field)
-  (if (and (interactive-p) (org-region-active-p))
+  (if (and (org-called-interactively-p 'any) (org-region-active-p))
       (let (org-table-clip)
 	(org-table-cut-region (region-beginning) (region-end)))
     (skip-chars-backward "^|")
@@ -1128,7 +1142,8 @@ is always the old value."
       (let* ((pos (match-beginning 0))
 	     (val (buffer-substring (1+ pos) (match-end 0))))
 	(if replace
-	    (replace-match (concat "|" replace) t t))
+	    (replace-match (concat "|" (if (equal replace "") " " replace))
+			   t t))
 	(goto-char (min (point-at-eol) (+ 2 pos)))
 	val)
     (forward-char 1) ""))
@@ -1178,27 +1193,30 @@ is always the old value."
 (defun org-table-current-column ()
   "Find out which column we are in."
   (interactive)
-  (if (interactive-p) (org-table-check-inside-data-field))
+  (if (org-called-interactively-p 'any) (org-table-check-inside-data-field))
   (save-excursion
     (let ((cnt 0) (pos (point)))
       (beginning-of-line 1)
       (while (search-forward "|" pos t)
 	(setq cnt (1+ cnt)))
-      (if (interactive-p) (message "In table column %d" cnt))
+      (when (org-called-interactively-p 'interactive)
+	(message "In table column %d" cnt))
       cnt)))
 
 (defun org-table-current-dline ()
   "Find out what table data line we are in.
 Only data lines count for this."
   (interactive)
-  (if (interactive-p) (org-table-check-inside-data-field))
+  (when (org-called-interactively-p 'any)
+    (org-table-check-inside-data-field))
   (save-excursion
     (let ((cnt 0) (pos (point)))
       (goto-char (org-table-begin))
       (while (<= (point) pos)
 	(if (looking-at org-table-dataline-regexp) (setq cnt (1+ cnt)))
 	(beginning-of-line 2))
-      (if (interactive-p) (message "This is table line %d" cnt))
+      (when (org-called-interactively-p 'any)
+	(message "This is table line %d" cnt))
       cnt)))
 
 (defun org-table-goto-column (n &optional on-delim force)
@@ -1525,7 +1543,7 @@ should be done in reverse order."
 	 (thiscol (org-table-current-column))
 	 beg end bcol ecol tend tbeg column lns pos)
     (when (equal thiscol 0)
-      (if (interactive-p)
+      (if (org-called-interactively-p 'any)
 	  (setq thiscol
 		(string-to-number
 		 (read-string "Use column N for sorting: ")))
@@ -1776,21 +1794,32 @@ This is mainly useful for fields that contain hidden parts.
 When called with a \\[universal-argument] prefix, just make the full field visible so that
 it can be edited in place."
   (interactive "P")
-  (if arg
-      (let ((b (save-excursion (skip-chars-backward "^|") (point)))
-	    (e (save-excursion (skip-chars-forward "^|\r\n") (point))))
-	(remove-text-properties b e '(org-cwidth t invisible t
-						 display t intangible t))
-	(if (and (boundp 'font-lock-mode) font-lock-mode)
-	    (font-lock-fontify-block)))
+  (cond
+   ((equal arg '(16))
+    (org-table-follow-field-mode (if org-table-follow-field-mode -1 1)))
+   (arg
+    (let ((b (save-excursion (skip-chars-backward "^|") (point)))
+	  (e (save-excursion (skip-chars-forward "^|\r\n") (point))))
+      (remove-text-properties b e '(org-cwidth t invisible t
+					       display t intangible t))
+      (if (and (boundp 'font-lock-mode) font-lock-mode)
+	  (font-lock-fontify-block))))
+   (t
     (let ((pos (move-marker (make-marker) (point)))
 	  (field (org-table-get-field))
 	  (cw (current-window-configuration))
 	  p)
-      (org-switch-to-buffer-other-window "*Org tmp*")
+      (goto-char pos)
+      (org-switch-to-buffer-other-window "*Org Table Edit Field*")
+      (when (and (local-variable-p 'org-field-marker)
+		 (markerp org-field-marker))
+	(move-marker org-field-marker nil))
       (erase-buffer)
       (insert "#\n# Edit field and finish with C-c C-c\n#\n")
       (let ((org-inhibit-startup t)) (org-mode))
+      (auto-fill-mode -1)
+      (setq truncate-lines nil)
+      (setq word-wrap t)
       (goto-char (setq p (point-max)))
       (insert (org-trim field))
       (remove-text-properties p (point-max)
@@ -1800,7 +1829,7 @@ it can be edited in place."
       (org-set-local 'org-finish-function 'org-table-finish-edit-field)
       (org-set-local 'org-window-configuration cw)
       (org-set-local 'org-field-marker pos)
-      (message "Edit and finish with C-c C-c"))))
+      (message "Edit and finish with C-c C-c")))))
 
 (defun org-table-finish-edit-field ()
   "Finish editing a table data field.
@@ -1824,6 +1853,35 @@ the table and kill the editing buffer."
     (org-table-get-field nil text)
     (org-table-align)
     (message "New field value inserted")))
+
+(define-minor-mode org-table-follow-field-mode
+  "Minor mode to make the table field editor window follow the cursor.
+When this mode is active, the field editor window will always show the
+current field.  The mode exits automatically when the cursor leaves the
+table (but see `org-table-exit-follow-field-mode-when-leaving-table')."
+  nil " TblFollow" nil
+  (if org-table-follow-field-mode
+      (org-add-hook 'post-command-hook 'org-table-follow-fields-with-editor
+		    'append 'local)
+    (remove-hook 'post-command-hook 'org-table-follow-fields-with-editor 'local)
+    (let* ((buf (get-buffer "*Org Table Edit Field*"))
+	   (win (and buf (get-buffer-window buf))))
+      (when win (delete-window win))
+      (when buf
+	(with-current-buffer buf
+	  (move-marker org-field-marker nil))
+	(kill-buffer buf)))))
+
+(defun org-table-follow-fields-with-editor ()
+  (if (and org-table-exit-follow-field-mode-when-leaving-table
+	   (not (org-at-table-p)))
+      ;; We have left the table, exit the follow mode
+      (org-table-follow-field-mode -1)
+    (when (org-table-check-inside-data-field 'noerror)
+      (let ((win (selected-window)))
+	(org-table-edit-field nil)
+	(org-fit-window-to-buffer)
+	(select-window win)))))
 
 (defvar org-timecnt) ; dynamically scoped parameter
 
@@ -1878,7 +1936,7 @@ If NLAST is a number, only the NLAST fields will actually be summed."
 			   s diff)
 		     (format "%d:%02d:%02d" h m s))))
 	(kill-new sres)
-	(if (interactive-p)
+	(if (org-called-interactively-p 'interactive)
 	    (message "%s"
 		     (substitute-command-keys
 		      (format "Sum of %d items: %-20s     (\\[yank] will insert result into buffer)"
@@ -2248,7 +2306,8 @@ of the new mark."
 	  (org-goto-line l1)))
     (if (not (= epos (point-at-eol))) (org-table-align))
     (org-goto-line l)
-    (and (interactive-p) (message "%s" (cdr (assoc new org-recalc-marks))))))
+    (and (org-called-interactively-p 'interactive)
+	 (message "%s" (cdr (assoc new org-recalc-marks))))))
 
 (defun org-table-maybe-recalculate-line ()
   "Recompute the current line if marked for it, and if we haven't just done it."
@@ -2466,7 +2525,7 @@ $1->    %s\n" orig formula form0 form))
 			     (if fmt (format fmt (string-to-number ev)) ev)))))
 	  (setq bw (get-buffer-window "*Substitution History*"))
 	  (org-fit-window-to-buffer bw)
-	  (unless (and (interactive-p) (not ndown))
+	  (unless (and (org-called-interactively-p 'any) (not ndown))
 	    (unless (let (inhibit-redisplay)
 		      (y-or-n-p "Debugging Formula.  Continue to next? "))
 	      (org-table-align)
@@ -3702,14 +3761,14 @@ Use COMMAND to do the motion, repeat if necessary to end up in a data line."
 
 (defun org-table-cleanup-narrow-column-properties ()
   "Remove all properties related to narrow-column invisibility."
-  (let ((s 1))
+  (let ((s (point-min)))
     (while (setq s (text-property-any s (point-max)
 				      'display org-narrow-column-arrow))
       (remove-text-properties s (1+ s) '(display t)))
-    (setq s 1)
+    (setq s (point-min))
     (while (setq s (text-property-any s (point-max) 'org-cwidth 1))
       (remove-text-properties s (1+ s) '(org-cwidth t)))
-    (setq s 1)
+    (setq s (point-min))
     (while (setq s (text-property-any s (point-max) 'invisible 'org-cwidth))
       (remove-text-properties s (1+ s) '(invisible t)))))
 
@@ -3976,7 +4035,7 @@ overwritten, and the table is not marked as requiring realignment."
 	   (looking-at "[^|\n]*  +|"))
       (let (org-table-may-need-update)
 	(goto-char (1- (match-end 0)))
-	(delete-backward-char 1)
+	(delete-char -1)
 	(goto-char (match-beginning 0))
 	(self-insert-command N))
     (setq org-table-may-need-update t)
@@ -4094,7 +4153,7 @@ this table."
   (catch 'exit
     (unless (org-at-table-p) (error "Not at a table"))
     ;; when non-interactive, we assume align has just happened.
-    (when (interactive-p) (org-table-align))
+    (when (org-called-interactively-p 'any) (org-table-align))
     (let ((dests (orgtbl-gather-send-defs))
 	  (txt (buffer-substring-no-properties (org-table-begin)
 					       (org-table-end)))
@@ -4525,7 +4584,7 @@ a \"#+TBLNAME:\" directive.  The first table following this line
 will then be used.  Alternatively, it may be an ID referring to
 any entry, also in a different file.  In this case, the first table
 in that entry will be referenced.
-FORM is a field or range descriptor like \"@2$3\" or or \"B3\" or
+FORM is a field or range descriptor like \"@2$3\" or \"B3\" or
 \"@I$2..@II$2\".  All the references must be absolute, not relative.
 
 The return value is either a single string for a single field, or a

@@ -48,13 +48,13 @@
 (declare-function org-string-match-p "org-compat" (&rest args))
 
 (defmacro org-called-interactively-p (&optional kind)
-  `(if (featurep 'xemacs)
-       (interactive-p)
+  (if (featurep 'xemacs)
+       `(interactive-p)
      (if (or (> emacs-major-version 23)
 	     (and (>= emacs-major-version 23)
 		  (>= emacs-minor-version 2)))
-	 (with-no-warnings (called-interactively-p ,kind)) ;; defined with no argument in <=23.1
-       (interactive-p))))
+	 `(with-no-warnings (called-interactively-p ,kind)) ;; defined with no argument in <=23.1
+       `(interactive-p))))
 
 (if (and (not (fboundp 'with-silent-modifications))
 	 (or (< emacs-major-version 23)
@@ -116,9 +116,9 @@ Also, do not record undo information."
 		       partial-completion-mode)))
      (unwind-protect
 	 (progn
-	   (if pc-mode (partial-completion-mode -1))
+	   (when pc-mode (funcall pc-mode -1))
 	   ,@body)
-       (if pc-mode (partial-completion-mode 1)))))
+       (when pc-mode (funcall pc-mode 1)))))
 
 (defmacro org-maybe-intangible (props)
   "Add '(intangible t) to PROPS if Emacs version is earlier than Emacs 22.
@@ -192,6 +192,7 @@ We use a macro so that the test can happen at compilation time."
 	 ;; remember which buffer to undo
 	 (push (list _cmd _cline _buf1 _c1 _buf2 _c2)
 	       org-agenda-undo-list)))))
+(put 'org-with-remote-undo 'lisp-indent-function 1)
 
 (defmacro org-no-read-only (&rest body)
   "Inhibit read-only for BODY."
@@ -322,16 +323,18 @@ but it also means that the buffer should stay alive
 during the operation, because otherwise all these markers will
 point nowhere."
   (declare (indent 1))
-  `(let ((data (org-outline-overlay-data ,use-markers)))
+  `(let ((data (org-outline-overlay-data ,use-markers))
+	 rtn)
      (unwind-protect
 	 (progn
-	   ,@body
+	   (setq rtn (progn ,@body))
 	   (org-set-outline-overlay-data data))
        (when ,use-markers
 	 (mapc (lambda (c)
 		 (and (markerp (car c)) (move-marker (car c) nil))
 		 (and (markerp (cdr c)) (move-marker (cdr c) nil)))
-	       data)))))
+	       data)))
+     rtn))
 
 (defmacro org-with-wide-buffer (&rest body)
  "Execute body while temporarily widening the buffer."
