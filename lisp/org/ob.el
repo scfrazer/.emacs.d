@@ -5,7 +5,7 @@
 ;; Author: Eric Schulte, Dan Davison
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 
 ;; This file is part of GNU Emacs.
 
@@ -749,31 +749,38 @@ the current subtree."
     (setf (nth 2 info)
 	  (sort (copy-sequence (nth 2 info))
 		(lambda (a b) (string< (car a) (car b)))))
-    ((lambda (hash)
-       (when (org-called-interactively-p 'interactive) (message hash))
-       hash)
-     (sha1 (format "%s-%s"
-		   (mapconcat
-		    #'identity
-		    (delq nil
-			  (mapcar
-			   (lambda (arg)
-			     (let ((v (cdr arg)))
-			       (when (and v (not (and (sequencep v)
-						      (not (consp v))
-						      (= (length v) 0))))
-				 ((lambda (el) (format "%S" el))
-				  (cond
-				   ((and (listp v) ; lists are sorted
-					 (member (car arg) '(:result-params)))
-				    (sort (copy-sequence v) #'string<))
-				   ((and (stringp v) ; strings are sorted
-					 (member (car arg) '(:results :exports)))
-				    (mapconcat #'identity (sort (split-string v)
-								#'string<) " "))
-				   (t v)))))) ; atomic are left untouched
-			   (nth 2 info))) ":")
-		   (nth 1 info))))))
+    (labels ((rm (lst)
+		 (dolist (p '("replace" "silent" "append" "prepend"))
+		   (setq lst (remove p lst)))
+		 lst)
+	     (norm (arg)
+		   (let ((v (if (listp (cdr arg))
+				(copy-seq (cdr arg))
+			      (cdr arg))))
+		     (when (and v (not (and (sequencep v)
+					    (not (consp v))
+					    (= (length v) 0))))
+		       (cond
+			((and (listp v) ; lists are sorted
+			      (member (car arg) '(:result-params)))
+			 (sort (rm v) #'string<))
+			((and (stringp v) ; strings are sorted
+			      (member (car arg) '(:results :exports)))
+			 (mapconcat #'identity (sort (rm (split-string v))
+						     #'string<) " "))
+			(t v))))))
+      ((lambda (hash)
+	 (when (org-called-interactively-p 'interactive) (message hash)) hash)
+       (let ((it (format "%s-%s"
+			 (mapconcat
+			  #'identity
+			  (delq nil (mapcar (lambda (arg)
+					      (let ((normalized (norm arg)))
+						(when normalized
+						  (format "%S" normalized))))
+					    (nth 2 info))) ":")
+			 (nth 1 info))))
+	 (sha1 it))))))
 
 (defun org-babel-result-hash (&optional info)
   "Return the in-buffer hash associated with INFO."
@@ -1716,7 +1723,7 @@ Later elements of PLISTS override the values of previous elements.
 This takes into account some special considerations for certain
 parameters when merging lists."
   (let ((results-exclusive-groups
-	 '(("file" "list" "vector" "table" "scalar" "raw" "org"
+	 '(("file" "list" "vector" "table" "scalar" "verbatim" "raw" "org"
             "html" "latex" "code" "pp" "wrap")
 	   ("replace" "silent" "append" "prepend")
 	   ("output" "value")))
@@ -1948,7 +1955,9 @@ block but are passed literally to the \"example-block\"."
 		  (or (and (string-equal "[" (substring str 0 1))
 			   (string-equal "]" (substring str -1)))
 		      (and (string-equal "{" (substring str 0 1))
-			   (string-equal "}" (substring str -1))))))
+			   (string-equal "}" (substring str -1)))
+		      (and (string-equal "(" (substring str 0 1))
+			   (string-equal ")" (substring str -1))))))
 	 (org-babel-read
 	  (concat
 	   "'"

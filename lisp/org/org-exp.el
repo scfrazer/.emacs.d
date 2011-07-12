@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -1078,7 +1078,8 @@ to export.  It then creates a temporary buffer where it does its job.
 The result is then again returned as a string, and the exporter works
 on this string to produce the exported version."
   (interactive)
-  (let* ((org-export-current-backend (plist-get parameters :for-backend))
+  (let* ((org-export-current-backend (or (plist-get parameters :for-backend)
+					 org-export-current-backend))
 	 (archived-trees (plist-get parameters :archived-trees))
 	 (inhibit-read-only t)
 	 (drawers org-drawers)
@@ -1138,12 +1139,12 @@ on this string to produce the exported version."
 				     (plist-get parameters :exclude-tags))
       (run-hooks 'org-export-preprocess-after-tree-selection-hook)
 
+      ;; Get rid of tasks, depending on configuration
+      (org-export-remove-tasks (plist-get parameters :tasks))
+
       ;; Normalize footnotes
       (when (plist-get parameters :footnotes)
 	(org-footnote-normalize nil 'pre-process-p))
-
-      ;; Get rid of tasks, depending on configuration
-      (org-export-remove-tasks (plist-get parameters :tasks))
 
       ;; Export code blocks
       (org-export-blocks-preprocess)

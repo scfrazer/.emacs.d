@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -195,7 +195,7 @@ identifier."
 
 ;;; Version
 
-(defconst org-version "7.5"
+(defconst org-version "7.6"
   "The version number of the file org.el.")
 
 (defun org-version (&optional here)
@@ -335,6 +335,7 @@ to add the symbol `xyz', and the package must have a call to
 	(const :tag "C  mac-link-grabber   Grab links and URLs from various Mac applications" org-mac-link-grabber)
 	(const :tag "C  man:               Support for links to manpages in Org-mode" org-man)
 	(const :tag "C  mtags:             Support for muse-like tags" org-mtags)
+	(const :tag "C  odt:               OpenDocumentText exporter for Org-mode" org-odt)
 	(const :tag "C  panel:             Simple routines for us with bad memory" org-panel)
 	(const :tag "C  registry:          A registry for Org-mode links" org-registry)
 	(const :tag "C  org2rem:           Convert org appointments into reminders" org2rem)
@@ -1088,10 +1089,10 @@ for the duration of the command."
 (defcustom org-blank-before-new-entry '((heading . auto)
 					(plain-list-item . auto))
   "Should `org-insert-heading' leave a blank line before new heading/item?
-The value is an alist, with `heading' and `plain-list-item' as car,
-and a boolean flag as cdr. The cdr may also be the symbol `auto', and then
-Org will look at the surrounding headings/items and try to make an
-intelligent decision whether to insert a blank line or not.
+The value is an alist, with `heading' and `plain-list-item' as CAR,
+and a boolean flag as CDR.  The cdr may also be the symbol `auto', in 
+which case Org will look at the surrounding headings/items and try to 
+make an intelligent decision whether to insert a blank line or not.
 
 For plain lists, if the variable `org-empty-line-terminates-plain-lists' is
 set, the setting here is ignored and no empty line is inserted, to avoid
@@ -4828,6 +4829,8 @@ The following commands are available:
   (set (make-local-variable 'pcomplete-parse-arguments-function)
        'org-parse-arguments)
   (set (make-local-variable 'pcomplete-termination-string) "")
+  (set (make-local-variable 'face-remapping-alist)
+       '((default org-default)))
 
   ;; If empty file that did not turn on org-mode automatically, make it to.
   (if (and org-insert-mode-line-in-empty-file
@@ -5207,7 +5210,7 @@ will be prompted for."
 	      (add-text-properties end1 (+ end 1) '(face org-meta-line))
 					; for end_src
 	      (cond
-	       ((and lang (not (string= lang "") org-src-fontify-natively))
+	       ((and lang (not (string= lang "")) org-src-fontify-natively)
 		(org-src-font-lock-fontify-block lang block-start block-end)
 		;; remove old background overlays
 		(mapc (lambda (ov)
@@ -5248,7 +5251,8 @@ will be prompted for."
 	    t)
 	   ((or (member dc1 '("begin:" "end:" "caption:" "label:"
 			      "orgtbl:" "tblfm:" "tblname:" "result:"
-			      "results:" "source:" "srcname:" "call:"))
+			      "results:" "source:" "srcname:" "call:"
+			      "data:" "header:" "headers:"))
 		(and (match-end 4) (equal dc3 "attr")))
 	    (add-text-properties
 	     beg (match-end 0)
@@ -7714,6 +7718,19 @@ and still retain the repeater to cover future instances of the task."
     (or (bolp) (insert "\n"))
     (setq end (point))
     (setq template (buffer-substring beg end))
+    ;; Remove clocks and empty drawers
+    (with-temp-buffer
+      (insert template)
+      (goto-char (point-min))
+      (while (re-search-forward 
+	      "^[ \t]*CLOCK:.*$" (save-excursion (org-end-of-subtree t t)) t)
+	(replace-match "")
+	(kill-whole-line))
+      (goto-char (point-min))
+      (while (re-search-forward 
+	      (concat "^[ \t]*:" (regexp-opt org-drawers) ":[ \t]*$") nil t)
+	(mapc (lambda(d) (org-remove-empty-drawer-at d (point))) org-drawers))
+      (setq template (buffer-substring (point-min) (point-max))))
     (when (and doshift
 	       (string-match "<[^<>\n]+ \\+[0-9]+[dwmy][^<>\n]*>" template))
       (delete-region beg end)
@@ -10754,7 +10771,7 @@ This function can be used in a hook."
     "BEGIN_SRC" "END_SRC"
     "BEGIN_RESULT" "END_RESULT"
     "SOURCE:" "SRCNAME:" "FUNCTION:"
-    "RESULTS:"
+    "RESULTS:" "DATA:"
     "HEADER:" "HEADERS:"
     "BABEL:"
     "CATEGORY:" "COLUMNS:" "PROPERTY:"
@@ -11826,7 +11843,6 @@ be removed."
 	    (setq list (cons what remove))
 	    (while list
 	      (setq elt (pop list))
-	      (goto-char (point-min))
 	      (when (or (and (eq elt 'scheduled)
 			     (re-search-forward org-scheduled-time-regexp nil t))
 			(and (eq elt 'deadline)
@@ -11834,10 +11850,8 @@ be removed."
 			(and (eq elt 'closed)
 			     (re-search-forward org-closed-time-regexp nil t)))
 		(replace-match "")
-		(if (looking-at "--+<[^>]+>") (replace-match ""))
-		(skip-chars-backward " ")
-		(if (looking-at " +") (replace-match ""))))
-	    (goto-char (point-max))
+		(if (looking-at "--+<[^>]+>") (replace-match ""))))
+	    (and (looking-at "^[ \t]+") (replace-match ""))
 	    (and org-adapt-indentation (bolp) (org-indent-to-column col))
 	    (when what
 	      (insert
@@ -11852,6 +11866,10 @@ be removed."
 			    (and (eq what 'closed) org-log-done-with-time))
 			(eq what 'closed)
 			nil nil (list org-end-time-was-given)))
+	      (insert 
+	       (if (not (or (bolp) (eq (char-before) ?\ )
+			    (memq (char-after) '(32 10))
+			    (eobp))) " " ""))
 	      (end-of-line 1))
 	    (goto-char (point-min))
 	    (widen)
@@ -14098,12 +14116,13 @@ This is computed according to `org-property-set-functions-alist'."
   "Read a property name."
   (let* ((completion-ignore-case t)
 	 (keys (org-buffer-property-keys nil t t))
-	 (default-prop (save-excursion
-	 		 (save-match-data
-	 		   (beginning-of-line)
-	 		   (and (looking-at "^\\s-*:\\([^:\n]+\\):")
-	 			(null (string= (match-string 1) "END"))
-	 			(match-string 1)))))
+	 (default-prop (or (save-excursion
+			     (save-match-data
+			       (beginning-of-line)
+			       (and (looking-at "^\\s-*:\\([^:\n]+\\):")
+				    (null (string= (match-string 1) "END"))
+				    (match-string 1))))
+			   org-last-set-property))
 	 (property (org-icompleting-read
 		    (concat "Property"
 			    (if default-prop (concat " [" default-prop "]") "")
@@ -14119,6 +14138,7 @@ This is computed according to `org-property-set-functions-alist'."
 			      keys)))
 	  property))))
 
+(defvar org-last-set-property nil)
 (defun org-set-property (property value)
   "In the current entry, set PROPERTY to VALUE.
 When called interactively, this will prompt for a property name, offering
@@ -14129,6 +14149,7 @@ in the current file."
   (interactive (list nil nil))
   (let* ((property (or property (org-read-property-name)))
 	 (value (or value (org-read-property-value property))))
+    (setq org-last-set-property property)
     (unless (equal (org-entry-get nil property) value)
       (org-entry-put nil property value))))
 
@@ -15439,16 +15460,16 @@ hour and minute fields will be nil if not given."
 
 (defun org-timestamp-up (&optional arg)
   "Increase the date item at the cursor by one.
-If the cursor is on the year, change the year.  If it is on the month or
-the day, change that.
+If the cursor is on the year, change the year.  If it is on the month,
+the day or the time, change that.
 With prefix ARG, change by that many units."
   (interactive "p")
   (org-timestamp-change (prefix-numeric-value arg) nil 'updown))
 
 (defun org-timestamp-down (&optional arg)
   "Decrease the date item at the cursor by one.
-If the cursor is on the year, change the year.  If it is on the month or
-the day, change that.
+If the cursor is on the year, change the year.  If it is on the month,
+the day or the time, change that.
 With prefix ARG, change by that many units."
   (interactive "p")
   (org-timestamp-change (- (prefix-numeric-value arg)) nil 'updown))
@@ -16639,6 +16660,8 @@ BEG and END default to the buffer boundaries."
 
 (org-defkey org-mode-map [(control shift right)] 'org-shiftcontrolright)
 (org-defkey org-mode-map [(control shift left)]  'org-shiftcontrolleft)
+(org-defkey org-mode-map [(control shift up)] 'org-shiftcontrolup)
+(org-defkey org-mode-map [(control shift down)]  'org-shiftcontroldown)
 
 ;; Babel keys
 (define-key org-mode-map org-babel-key-prefix org-babel-map)
@@ -17523,6 +17546,24 @@ Depending on context, this does one of the following:
    (org-support-shift-select
     (org-call-for-shift-select 'backward-word))
    (t (org-shiftselect-error))))
+
+(defun org-shiftcontrolup ()
+  "Change timestamps synchronously up in CLOCK log lines."
+  (interactive)
+  (cond ((and (not org-support-shift-select)
+	      (org-at-clock-log-p)
+	      (org-at-timestamp-p t))
+	 (org-clock-timestamps-up))
+	(t (org-shiftselect-error))))
+
+(defun org-shiftcontroldown ()
+  "Change timestamps synchronously down in CLOCK log lines."
+  (interactive)
+  (cond ((and (not org-support-shift-select)
+	      (org-at-clock-log-p)
+	      (org-at-timestamp-p t))
+	 (org-clock-timestamps-down))
+	(t (org-shiftselect-error))))
 
 (defun org-ctrl-c-ret ()
   "Call `org-table-hline-and-move' or `org-insert-heading' dep. on context."
@@ -18911,6 +18952,22 @@ defaults to previous heading or `point-min'."
 	       ;; ... but no end-re between start-re and point.
 	       (not (re-search-forward (eval end-re) pos t)))))))
 
+(defun org-in-block-p (names)
+  "Is point inside any block whose name belongs to NAMES?
+
+NAMES is a list of strings containing names of blocks."
+  (save-match-data
+    (catch 'exit
+      (let ((case-fold-search t))
+	(mapc (lambda (name)
+		(let ((n (regexp-quote name)))
+		  (when (org-in-regexps-block-p
+			 (concat "^[ \t]*#\\+begin_" n)
+			 (concat "^[ \t]*#\\+end_" n))
+		    (throw 'exit t))))
+	      names))
+      nil)))
+
 (defun org-occur-in-agenda-files (regexp &optional nlines)
   "Call `multi-occur' with buffers for all agenda files."
   (interactive "sOrg-files matching: \np")
@@ -20030,11 +20087,18 @@ This will move over empty lines, lines with planning time stamps,
 clocking lines, and drawers."
   (org-back-to-heading t)
   (let ((end (save-excursion (outline-next-heading) (point)))
-	(re (concat "[ \t]*$"
-		    "\\|" org-drawer-regexp 
+	(re (concat "\\(" org-drawer-regexp "\\)"
 		    "\\|" "[ \t]*" org-keyword-time-regexp)))
-    (while (re-search-forward re end 'move) 
-      (forward-line 1))))
+    (forward-line 1)
+    (while (re-search-forward re end t)
+      (if (not (match-end 1))
+	  ;; empty or planning line
+	  (forward-line 1)
+	;; a drawer, find the end
+	(re-search-forward "^[ \t]*:END:" end 'move)
+	(forward-line 1)))
+    (and (re-search-forward "[^\n]" nil t) (backward-char 1))
+    (point)))
 
 (defun org-forward-same-level (arg &optional invisible-ok)
   "Move forward to the arg'th subheading at same level as this one.

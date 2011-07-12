@@ -5,7 +5,7 @@
 ;; Author: Eric Schulte, Dan Davison
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 
 ;; This file is part of GNU Emacs.
 
@@ -58,6 +58,8 @@
 (declare-function org-count "org" (CL-ITEM CL-SEQ))
 (declare-function org-at-item-p "org-list" ())
 (declare-function org-narrow-to-subtree "org" ())
+(declare-function org-id-find-id-in-file "org-id" (id file &optional markerp))
+(declare-function org-show-context "org" (&optional key))
 
 (defvar org-babel-ref-split-regexp
   "[ \f\t\n\r\v]*\\(.+?\\)[ \f\t\n\r\v]*=[ \f\t\n\r\v]*\\(.+\\)[ \f\t\n\r\v]*")
@@ -87,7 +89,15 @@ the variable."
   (let ((rx (regexp-quote id)))
     (or (re-search-forward
 	 (concat "^[ \t]*:CUSTOM_ID:[ \t]+" rx "[ \t]*$") nil t)
-	(condition-case nil (progn (org-id-goto id) t) (error nil)))))
+	(let* ((file (org-id-find-id-file id))
+	       (m (when file (org-id-find-id-in-file id file 'marker))))
+	  (when (and file m)
+	    (message "file:%S" file)
+	    (switch-to-buffer (marker-buffer m))
+	    (goto-char m)
+	    (move-marker m nil)
+	    (org-show-context)
+	    t)))))
 
 (defun org-babel-ref-headline-body ()
   (save-restriction

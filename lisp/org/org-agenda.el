@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -1694,6 +1694,19 @@ all tags will be considered, so that this function will only ever see
 the lower-case version of all tags."
   :group 'org-agenda
   :type 'function)
+
+(defcustom org-agenda-bulk-custom-functions nil
+  "Alist of characters and custom functions for bulk action.
+For example, this value makes those two functions available:
+
+  '((?R set-category)
+    (?C bulk-cut))
+
+With selected entries in an agenda buffer, `B R' will execute
+set-category on the selected entries.  Note that functions in
+this alist don't need to be quoted."
+  :type 'alist
+  :group 'org-agenda)
 
 (eval-when-compile
   (require 'cl))
@@ -4879,11 +4892,8 @@ be skipped.
 
 This function is here only for backward compatibility and it is deprecated,
 please use `org-class' instead."
-  (let* ((date1 (calendar-absolute-from-gregorian
-		 (org-order-calendar-date-args m1 d1 y1)))
-	 (date2 (calendar-absolute-from-gregorian
-		 (org-order-calendar-date-args m2 d2 y2)))
-	 (d (calendar-absolute-from-gregorian date)))
+  (let* ((date1 (org-order-calendar-date-args m1 d1 y1))
+	 (date2 (org-order-calendar-date-args m2 d2 y2)))
     (org-class
      (nth 2 date1) (car date1) (nth 1 date1)
      (nth 2 date2) (car date2) (nth 1 date2)
@@ -8152,7 +8162,13 @@ The prefix arg is passed through to the command if possible."
    org-agenda-bulk-marked-entries)
 
   ;; Prompt for the bulk command
-  (message "Bulk: [r]efile [$]arch [A]rch->sib [t]odo [+/-]tag [s]chd [S]catter [d]eadline [f]unction")
+  (message (concat "Bulk: [r]efile [$]arch [A]rch->sib [t]odo"
+		   " [+/-]tag [s]chd [S]catter [d]eadline [f]unction"
+		   (when org-agenda-bulk-custom-functions
+		     (concat " Custom: ["
+			     (mapconcat (lambda(f) (char-to-string (car f)))
+					org-agenda-bulk-custom-functions "")
+			     "]"))))
   (let* ((action (read-char-exclusive))
 	 (org-log-refile (if org-log-refile 'time nil))
 	 (entries (reverse org-agenda-bulk-marked-entries))
@@ -8245,6 +8261,10 @@ The prefix arg is passed through to the command if possible."
 						 (nth 2 date))))
 			 (org-agenda-schedule nil time))
 		     (error nil)))))))
+
+     ((assoc action org-agenda-bulk-custom-functions)
+      (setq cmd (list (cadr (assoc action org-agenda-bulk-custom-functions)))
+	    redo-at-end t))
 
      ((equal action ?f)
       (setq cmd (list (intern

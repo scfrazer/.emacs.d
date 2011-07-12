@@ -4,7 +4,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -575,8 +575,9 @@ The table of checksums is written to the file mobile-checksums."
 				  " " match "</after>"))
 		    settings))
 	(push (list type match settings) new))
-       ((symbolp (nth 2 e))
-	;; A user-defined function, not sure how to handle that yet
+       ((or (functionp (nth 2 e)) (symbolp (nth 2 e)))
+	;; A user-defined function, which can do anything, so simply
+	;; ignore it.
 	)
        (t
 	;; a block agenda

@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -112,13 +112,15 @@ Also, do not record undo information."
        (org-move-to-column _col))))
 
 (defmacro org-without-partial-completion (&rest body)
-  `(let ((pc-mode (and (boundp 'partial-completion-mode)
-		       partial-completion-mode)))
+  `(if (and (boundp 'partial-completion-mode)
+	    partial-completion-mode
+	    (fboundp 'partial-completion-mode))
      (unwind-protect
 	 (progn
-	   (when pc-mode (funcall pc-mode -1))
+	   (partial-completion-mode -1)
 	   ,@body)
-       (when pc-mode (funcall pc-mode 1)))))
+       (partial-completion-mode 1))
+     ,@body))
 
 (defmacro org-maybe-intangible (props)
   "Add '(intangible t) to PROPS if Emacs version is earlier than Emacs 22.
@@ -358,6 +360,12 @@ The number of levels is controlled by `org-inlinetask-min-level'"
     (let* ((limit-level (1- org-inlinetask-min-level))
 	   (nstars (if org-odd-levels-only (1- (* limit-level 2)) limit-level)))
       (format "\\*\\{1,%d\\} " nstars))))
+
+(defun org-format-seconds (string seconds)
+  "Compatibility function replacing format-seconds"
+  (if (fboundp 'format-seconds)
+      (format-seconds string seconds)
+    (format-time-string string (seconds-to-time seconds))))
 
 (provide 'org-macs)
 

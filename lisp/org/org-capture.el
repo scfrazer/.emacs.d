@@ -5,7 +5,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -113,11 +113,11 @@ type         The type of entry.  Valid types are:
 target       Specification of where the captured item should be placed.
              In Org-mode files, targets usually define a node.  Entries will
              become children of this node, other types will be added to the
-             table or list in the body of this node.  
+             table or list in the body of this node.
 
-             Most target specifications contain a file name.  If that file 
-             name is the empty string, it defaults to `org-default-notes-file'.  
-             A file can also be given as a variable, function, or Emacs Lisp 
+             Most target specifications contain a file name.  If that file
+             name is the empty string, it defaults to `org-default-notes-file'.
+             A file can also be given as a variable, function, or Emacs Lisp
              form.
 
              Valid values are:
@@ -328,8 +328,8 @@ calendar                |  %:type %:date"
 			    ((const :format "%v " :kill-buffer) (const t))))))))
 
 (defcustom org-capture-before-finalize-hook nil
-  "Hook that is run right before a remember process is finalized.
-The remember buffer is still current when this hook runs."
+  "Hook that is run right before a capture process is finalized.
+The capture buffer is still current when this hook runs."
   :group 'org-capture
   :type 'hook)
 
@@ -380,13 +380,13 @@ to avoid conflicts with other active capture processes."
 (defvar org-capture-mode-map (make-sparse-keymap)
   "Keymap for `org-capture-mode', a minor mode.
 Use this map to set additional keybindings for when Org-mode is used
-for a Remember buffer.")
+for a capture buffer.")
 
 (defvar org-capture-mode-hook nil
   "Hook for the minor `org-capture-mode'.")
 
 (define-minor-mode org-capture-mode
-  "Minor mode for special key bindings in a remember buffer."
+  "Minor mode for special key bindings in a capture buffer."
   nil " Rem" org-capture-mode-map
   (org-set-local
    'header-line-format
@@ -551,6 +551,9 @@ captured item after finalizing."
 	      (m2 (org-capture-get :end-marker 'local)))
 	  (if (and m1 m2 (= m1 beg) (= m2 end))
 	      (progn
+		(setq m2 (if (cdr (assoc 'heading org-blank-before-new-entry))
+			     m2 (1+ m2))
+		      m2 (if (< (point-max) m2) (point-max) m2))
 		(setq abort-note 'clean)
 		(kill-region m1 m2))
 	    (setq abort-note 'dirty)))
@@ -576,16 +579,14 @@ captured item after finalizing."
 		   (org-at-table-p))
 	  (if (org-table-get-stored-formulas)
 	      (org-table-recalculate 'all) ;; FIXME: Should we iterate???
-	    (org-table-align)))
-	)
+	    (org-table-align))))
       ;; Store this place as the last one where we stored something
       ;; Do the marking in the base buffer, so that it makes sense after
       ;; the indirect buffer has been killed.
       (org-capture-bookmark-last-stored-position)
 
       ;; Run the hook
-      (run-hooks 'org-capture-before-finalize-hook)
-      )
+      (run-hooks 'org-capture-before-finalize-hook))
 
     ;; Kill the indirect buffer
     (save-buffer)
@@ -665,11 +666,12 @@ already gone.  Any prefix argument will be passed to the refile command."
   (interactive)
   ;; FIXME: This does not do the right thing, we need to remove the new stuff
   ;; By hand it is easy: undo, then kill the buffer
-  (let ((org-note-abort t) (org-capture-before-finalize-hook nil))
+  (let ((org-note-abort t)
+	(org-capture-before-finalize-hook nil))
     (org-capture-finalize)))
 
 (defun org-capture-goto-last-stored ()
-  "Go to the location where the last remember note was stored."
+  "Go to the location where the last capture note was stored."
   (interactive)
   (org-goto-marker-or-bmk org-capture-last-stored-marker
 			  "org-capture-last-stored")

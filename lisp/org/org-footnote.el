@@ -5,7 +5,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -39,7 +39,9 @@
 (require 'org-compat)
 
 (declare-function org-in-commented-line "org" ())
+(declare-function org-in-indented-comment-line "org" ())
 (declare-function org-in-regexp "org" (re &optional nlines visually))
+(declare-function org-in-block-p "org" (names))
 (declare-function org-mark-ring-push "org" (&optional pos buffer))
 (declare-function outline-next-heading "outline")
 (declare-function org-trim "org" (s))
@@ -49,8 +51,9 @@
 (declare-function org-in-verbatim-emphasis "org" ())
 (declare-function org-inside-latex-macro-p "org" ())
 (declare-function org-id-uuid "org" ())
-(declare-function org-fill-paragraph "org" (justify))
+(declare-function org-fill-paragraph "org" (&optional justify))
 (defvar org-odd-levels-only) ;; defined in org.el
+(defvar org-bracket-link-regexp) ; defined in org.el
 (defvar message-signature-separator) ;; defined in message.el
 
 (defconst org-footnote-re
@@ -71,6 +74,10 @@
 (defconst org-footnote-definition-re
   (org-re "^\\(\\[\\([0-9]+\\|fn:[-_[:word:]]+\\)\\]\\)")
   "Regular expression matching the definition of a footnote.")
+
+(defvar org-footnote-forbidden-blocks '("example" "verse" "src" "ascii" "beamer"
+					"docbook" "html" "latex" "odt")
+  "Names of blocks where footnotes are not allowed.")
 
 (defgroup org-footnote nil
   "Footnotes in Org-mode."
@@ -154,18 +161,29 @@ extracted will be filled again."
   :group 'org-footnote
   :type 'boolean)
 
+(defun org-footnote-in-valid-context-p ()
+  "Is point in a context where footnotes are allowed?"
+  (not (or (org-in-commented-line)
+	   (org-in-indented-comment-line)
+	   (org-in-verbatim-emphasis)
+	   ;; No footnote in literal example.
+	   (save-excursion
+	     (beginning-of-line)
+	     (looking-at "[ \t]*:[ \t]+"))
+	   (org-in-block-p org-footnote-forbidden-blocks))))
+
 (defun org-footnote-at-reference-p ()
   "Is the cursor at a footnote reference?
 
 If so, return an list containing its label, beginning and ending
 positions, and the definition, if local."
-  (when (and (not (or (org-in-commented-line)
-		      (org-in-verbatim-emphasis)))
+  (when (and (org-footnote-in-valid-context-p)
 	     (or (looking-at org-footnote-re)
 		 (org-in-regexp org-footnote-re)
 		 (save-excursion (re-search-backward org-footnote-re nil t)))
-	     ;; A footnote reference cannot start at bol.
-	     (/= (match-beginning 0) (point-at-bol)))
+	     ;; Only inline footnotes can start at bol.
+	     (or (eq (char-before (match-end 0)) 58)
+		 (/= (match-beginning 0) (point-at-bol))))
     (let* ((beg (match-beginning 0))
 	   (label (or (match-string 2) (match-string 3)
 		      ;; Anonymous footnotes don't have labels
@@ -176,14 +194,20 @@ positions, and the definition, if local."
 	   ;; get fooled by unrelated closing square brackets.
 	   (end (ignore-errors (scan-sexps beg 1))))
       ;; Point is really at a reference if it's located before true
-      ;; ending of the footnote and isn't within a LaTeX macro. About
-      ;; that case, some special attention should be paid. Indeed,
-      ;; when two footnotes are side by side, once the first one is
-      ;; changed into LaTeX, the second one might then be considered
-      ;; as an optional argument of the command. To prevent that, we
-      ;; have a look at the `org-protected' property of that LaTeX
-      ;; command.
+      ;; ending of the footnote and isn't within a link or a LaTeX
+      ;; macro.  About that case, some special attention should be
+      ;; paid.  Indeed, when two footnotes are side by side, once the
+      ;; first one is changed into LaTeX, the second one might then be
+      ;; considered as an optional argument of the command.  To
+      ;; prevent that, we have a look at the `org-protected' property
+      ;; of that LaTeX command.
       (when (and end (< (point) end)
+		 (not (save-excursion
+			(goto-char beg)
+			(let ((linkp
+			       (save-match-data
+				 (org-in-regexp org-bracket-link-regexp))))
+			  (and linkp (< (point) (cdr linkp))))))
 		 (or (not (org-inside-latex-macro-p))
 		     (and (get-text-property (1- beg) 'org-protected)
 			  (not (get-text-property beg 'org-protected)))))
@@ -257,7 +281,7 @@ If no footnote is found, return nil."
 	  (throw 'exit ref))
 	 ;; Definition: also grab the last square bracket, only
 	 ;; matched in `org-footnote-re' for [1]-like footnotes.
-	 ((= (point-at-bol) (match-beginning 0))
+	 ((save-match-data (org-footnote-at-definition-p))
 	  (let ((end (match-end 0)))
 	    (throw 'exit
 		   (list nil (match-beginning 0)
@@ -326,14 +350,14 @@ If no footnote is found, return nil."
 If WITH-DEFS is non-nil, also associate the definition to each
 label.  The function will then return an alist whose key is label
 and value definition."
-  (let (rtn
-	(push-to-rtn
-	 (function
-	  ;; Depending on WITH-DEFS, store label or (label . def) of
-	  ;; footnote reference/definition given as argument in RTN.
-	  (lambda (el)
-	    (let ((lbl (car el)))
-	      (push (if with-defs (cons lbl (nth 3 el)) lbl) rtn))))))
+  (let* (rtn
+	 (push-to-rtn
+	  (function
+	   ;; Depending on WITH-DEFS, store label or (label . def) of
+	   ;; footnote reference/definition given as argument in RTN.
+	   (lambda (el)
+	     (let ((lbl (car el)))
+	       (push (if with-defs (cons lbl (nth 3 el)) lbl) rtn))))))
     (save-excursion
       (save-restriction
 	(widen)
@@ -373,6 +397,8 @@ This command prompts for a label.  If this is a label referencing an
 existing label, only insert the label.  If the footnote label is empty
 or new, let the user edit the definition of the footnote."
   (interactive)
+  (unless (org-footnote-in-valid-context-p)
+    (error "Cannot insert a footnote here"))
   (let* ((labels (and (not (equal org-footnote-auto-label 'random))
 		      (org-footnote-all-labels)))
 	 (propose (org-footnote-unique-label labels))
@@ -489,6 +515,9 @@ With prefix arg SPECIAL, offer additional commands in a menu."
 
 (defvar org-footnote-insert-pos-for-preprocessor 'point-max
   "See `org-footnote-normalize'.")
+
+(defvar org-export-footnotes-seen nil) ; silence byte-compiler
+(defvar org-export-footnotes-data nil) ; silence byte-compiler
 
 ;;;###autoload
 (defun org-footnote-normalize (&optional sort-only pre-process-p)

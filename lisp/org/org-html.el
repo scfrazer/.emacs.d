@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 7.5
+;; Version: 7.6
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -565,6 +565,7 @@ a file."
     ("<" . "&lt;")
     (">" . "&gt;"))
   "Alist of characters to be converted by `org-html-protect'."
+  :group 'org-export-html
   :type '(repeat (cons (string :tag "Character")
 		       (string :tag "HTML equivalent"))))
 
@@ -611,9 +612,14 @@ with a link to this URL."
 	  (const :tag "Keep internal css" nil)
 	  (string :tag "URL or local href")))
 
-(defcustom org-export-content-div "content"
+(defcustom org-export-html-before-content-div ""
+  "Arbitrary HTML code placed before <div id=\"content\">."
+  :group 'org-export-html
+  :type 'string)
+
+(defcustom org-export-html-content-div "content"
   "The name of the container DIV that holds all the page contents."
-  :group 'org-export-htmlize
+  :group 'org-export-html
   :type 'string)
 
 ;;; Hooks
@@ -1291,6 +1297,7 @@ lang=\"%s\" xml:lang=\"%s\">
 %s
 </head>
 <body>
+%s
 <div id=\"%s\">
 %s
 "
@@ -1308,7 +1315,8 @@ lang=\"%s\" xml:lang=\"%s\">
 		 date author description keywords
 		 style
 		 mathjax
-		 org-export-content-div
+		 org-export-html-before-content-div
+		 org-export-html-content-div
 		 (if (or link-up link-home)
 		     (concat
 		      (format org-export-html-home/up-format

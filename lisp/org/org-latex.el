@@ -4,7 +4,7 @@
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-latex.el
-;; Version: 7.5
+;; Version: 7.6
 ;; Author: Bastien Guerry <bzg AT altern DOT org>
 ;; Maintainer: Carsten Dominik <carsten.dominik AT gmail DOT com>
 ;; Keywords: org, wp, tex
@@ -321,6 +321,32 @@ will be filled with the link, the second with its description."
   :group 'org-export-latex
   :type 'string)
 
+(defcustom org-export-latex-quotes
+  '(("fr" ("\\(\\s-\\|[[(]\\)\"" . "«~") ("\\(\\S-\\)\"" . "~»") ("\\(\\s-\\|(\\)'" . "'"))
+    ("en" ("\\(\\s-\\|[[(]\\)\"" . "``") ("\\(\\S-\\)\"" . "''") ("\\(\\s-\\|(\\)'" . "`")))
+  "Alist for quotes to use when converting english double-quotes.
+
+The CAR of each item in this alist is the language code.
+The CDR of each item in this alist is a list of three CONS:
+- the first CONS defines the opening quote;
+- the second CONS defines the closing quote;
+- the last CONS defines single quotes.
+
+For each item in a CONS, the first string is a regexp
+for allowed characters before/after the quote, the second
+string defines the replacement string for this quote."
+  :group 'org-export-latex
+  :type '(list
+	  (cons :tag "Opening quote"
+		(string :tag "Regexp for char before")
+		(string :tag "Replacement quote     "))
+	  (cons :tag "Closing quote"
+		(string :tag "Regexp for char after ")
+		(string :tag "Replacement quote     "))
+	  (cons :tag "Single quote"
+		(string :tag "Regexp for char before")
+		(string :tag "Replacement quote     "))))
+
 (defcustom org-export-latex-tables-verbatim nil
   "When non-nil, tables are exported verbatim."
   :group 'org-export-latex
@@ -365,7 +391,7 @@ string should be like \"\\end{itemize\"."
 		 (string :tag "Use a section string" :value "\\subparagraph{%s}")))
 
 (defcustom org-export-latex-list-parameters
-  '(:cbon "$\\boxtimes$" :cboff "$\\Box$")
+  '(:cbon "$\\boxtimes$" :cboff "$\\Box$" :cbtrans "$\\boxminus$")
   "Parameters for the LaTeX list exporter.
 These parameters will be passed on to `org-list-to-latex', which in turn
 will pass them (combined with the LaTeX default list parameters) to
@@ -1461,8 +1487,6 @@ If END is non-nil, it is the end of the region."
 
 (defvar org-export-latex-header-defs nil
   "The header definitions that might be used in the LaTeX body.")
-(defvar org-export-latex-header-defs-re nil
-  "The header definitions that might be used in the LaTeX body.")
 
 (defun org-export-latex-content (content &optional exclude-list)
   "Convert CONTENT string to LaTeX.
@@ -1626,21 +1650,18 @@ links, keywords, lists, tables, fixed-width"
 
 (defun org-export-latex-quotation-marks ()
   "Export quotation marks depending on language conventions."
-  (let* ((lang (plist-get org-export-latex-options-plist :language))
-	 (quote-rpl (if (equal lang "fr")
-			'(("\\(\\s-\\)\"" "«~")
-			  ("\\(\\S-\\)\"" "~»")
-			  ("\\(\\s-\\)'" "`"))
-		      '(("\\(\\s-\\|[[(]\\)\"" "``")
-			("\\(\\S-\\)\"" "''")
-			("\\(\\s-\\|(\\)'" "`")))))
-    (mapc (lambda(l) (goto-char (point-min))
-	    (while (re-search-forward (car l) nil t)
-	      (let ((rpl (concat (match-string 1)
-				 (org-export-latex-protect-string
-				  (copy-sequence (cadr l))))))
-		(org-if-unprotected-1
-		 (replace-match rpl t t))))) quote-rpl)))
+  (mapc (lambda(l)
+	  (goto-char (point-min))
+	  (while (re-search-forward (car l) nil t)
+	    (let ((rpl (concat (match-string 1)
+			       (org-export-latex-protect-string
+				(copy-sequence (cdr l))))))
+	      (org-if-unprotected-1
+	       (replace-match rpl t t)))))
+	(cdr (or (assoc (plist-get org-export-latex-options-plist :language)
+			org-export-latex-quotes)
+		 ;; falls back on english
+		 (assoc "en" org-export-latex-quotes)))))
 
 (defun org-export-latex-special-chars (sub-superscript)
   "Export special characters to LaTeX.
@@ -1930,7 +1951,9 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
                   (mapcar
                    (lambda(elem)
                      (or (and (string-match "[ \t]*|-+" elem) 'hline)
-                         (org-split-string (org-trim elem) "|")))
+                         (org-split-string
+			  (progn (set-text-properties 0 (length elem) nil elem)
+				 (org-trim elem)) "|")))
                    lines))
             (when insert
               (insert (org-export-latex-protect-string
@@ -2273,6 +2296,68 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 
 (defun org-export-latex-preprocess (parameters)
   "Clean stuff in the LaTeX export."
+  ;; Replace footnotes.
+  (when (plist-get parameters :footnotes)
+    (goto-char (point-min))
+    (let (ref)
+      (while (setq ref (org-footnote-get-next-reference))
+	(let* ((beg (nth 1 ref))
+	       (lbl (car ref))
+	       (def (nth 1 (assoc (string-to-number lbl)
+				  (mapcar (lambda (e) (cdr e))
+					  org-export-footnotes-seen)))))
+	  ;; Fix body for footnotes ending on a link or a list and
+	  ;; remove definition from buffer.
+	  (setq def
+		(concat def
+			(if (string-match "ORG-LIST-END-MARKER\\'" def)
+			    "\n" " ")))
+	  (org-footnote-delete-definitions lbl)
+	  ;; Compute string to insert (FNOTE), and protect the outside
+	  ;; macro from further transformation.  When footnote at
+	  ;; point is referring to a previously defined footnote, use
+	  ;; \footnotemark. Otherwise, use \footnote.
+	  (let ((fnote (if (member lbl org-export-latex-footmark-seen)
+			   (org-export-latex-protect-string
+			    (format "\\footnotemark[%s]" lbl))
+			 (push lbl org-export-latex-footmark-seen)
+			 (concat (org-export-latex-protect-string "\\footnote{")
+				 def
+				 (org-export-latex-protect-string "}"))))
+		;; Check if another footnote is immediately following.
+		;; If so, add a separator in-between.
+		(sep (org-export-latex-protect-string
+		      (if (save-excursion (goto-char (1- (nth 2 ref)))
+					  (let ((next (org-footnote-get-next-reference)))
+					    (and next (= (nth 1 next) (nth 2 ref)))))
+			  org-export-latex-footnote-separator ""))))
+	    (when (org-on-heading-p)
+	      (setq fnote (concat (org-export-latex-protect-string "\\protect")
+				  fnote)))
+	    ;; Ensure a footnote at column 0 cannot end a list
+	    ;; containing it.
+	    (put-text-property 0 (length fnote) 'original-indentation 1000 fnote)
+	    ;; Replace footnote reference with FNOTE and, maybe, SEP.
+	    ;; `save-excursion' is required if there are two footnotes
+	    ;; in a row.  In that case, point would be left at the
+	    ;; beginning of the second one, and
+	    ;; `org-footnote-get-next-reference' would then skip it.
+	    (goto-char beg)
+	    (delete-region beg (nth 2 ref))
+	    (save-excursion (insert fnote sep)))))))
+
+  ;; Remove footnote section tag for LaTeX
+  (goto-char (point-min))
+  (while (re-search-forward
+	  (concat "^" footnote-section-tag-regexp) nil t)
+    (org-if-unprotected
+     (replace-match "")))
+  ;; Remove any left-over footnote definition.
+  (mapc (lambda (fn) (org-footnote-delete-definitions (car fn)))
+	org-export-footnotes-data)
+  (mapc (lambda (fn) (org-footnote-delete-definitions fn))
+	org-export-latex-footmark-seen)
+
   ;; Preserve line breaks
   (goto-char (point-min))
   (while (re-search-forward "\\\\\\\\" nil t)
@@ -2294,7 +2379,6 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 	 (goto-char (point-at-eol))))))
 
   ;; Preserve math snippets
-
   (let* ((matchers (plist-get org-format-latex-options :matchers))
 	 (re-list org-latex-regexps)
 	 beg end re e m n block off)
@@ -2354,7 +2438,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
     (while (re-search-forward
 	    "^[ \t]*#\\+index:[ \t]*\\([^ \t\r\n].*?\\)[ \t]*$"
 	    nil t)
-      (setq entry 
+      (setq entry
 	    (save-match-data
 	      (org-export-latex-protect-string
 	       (org-export-latex-fontify-headline (match-string 1)))))
@@ -2386,12 +2470,17 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 	     "\\(" (org-create-multibrace-regexp "{" "}" 3) "\\)\\{1,3\\}")))
     (while (re-search-forward re nil t)
       (unless (or
-	       ;; check for comment line
+	       ;; Check for comment line.
 	       (save-excursion (goto-char (match-beginning 0))
 			       (org-in-indented-comment-line))
-	       ;; Check if this is a defined entity, so that is may need conversion
+	       ;; Check if this is a defined entity, so that is may
+	       ;; need conversion.
 	       (org-entity-get (match-string 1))
-	       )
+	       ;; Do not protect interior of footnotes.  Those have
+	       ;; already been taken care of earlier in the function.
+	       ;; Yet, keep looking inside them for more commands.
+	       (and (equal (match-string 1) "footnote")
+		    (goto-char (match-end 1))))
 	(add-text-properties (match-beginning 0) (match-end 0)
 			     '(org-protected t)))))
 
@@ -2427,69 +2516,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
   (goto-char (point-min))
   (while (re-search-forward "@<\\(?:[^\"\n]\\|\".*\"\\)*?>" nil t)
     (org-if-unprotected
-     (replace-match "")))
-
-  ;; When converting to LaTeX, replace footnotes.
-  (when (plist-get opt-plist :footnotes)
-    (goto-char (point-min))
-    (let (ref)
-      (while (setq ref (org-footnote-get-next-reference))
-	(let* ((beg (nth 1 ref))
-	       (lbl (car ref))
-	       (def (nth 1 (assoc (string-to-number lbl)
-				  (mapcar (lambda (e) (cdr e))
-					  org-export-footnotes-seen)))))
-	  ;; Fix body for footnotes ending on a link or a list and
-	  ;; remove definition from buffer.
-	  (setq def
-		(concat def
-			(if (string-match "ORG-LIST-END-MARKER\\'" def)
-			    "\n" " ")))
-	  (org-footnote-delete-definitions lbl)
-	  ;; Compute string to insert (FNOTE), and protect the outside
-	  ;; macro from further transformation. When footnote at point
-	  ;; is referring to a previously defined footnote, use
-	  ;; \footnotemark. Otherwise, use \footnote.
-	  (let ((fnote (if (member lbl org-export-latex-footmark-seen)
-			   (org-export-latex-protect-string
-			    (format "\\footnotemark[%s]" lbl))
-			 (push lbl org-export-latex-footmark-seen)
-			 (concat (org-export-latex-protect-string "\\footnote{")
-				 def
-				 (org-export-latex-protect-string "}"))))
-		;; Check if another footnote is immediately following.
-		;; If so, add a separator in-between.
-		(sep (org-export-latex-protect-string
-		      (if (save-excursion (goto-char (1- (nth 2 ref)))
-					  (let ((next (org-footnote-get-next-reference)))
-					    (and next (= (nth 1 next) (nth 2 ref)))))
-			  org-export-latex-footnote-separator ""))))
-	    (when (org-on-heading-p)
-	      (setq fnote (concat (org-export-latex-protect-string"\\protect")
-				  fnote)))
-	    ;; Ensure a footnote at column 0 cannot end a list
-	    ;; containing it.
-	    (put-text-property 0 (length fnote) 'original-indentation 1000 fnote)
-	    ;; Replace footnote reference with FNOTE and, maybe, SEP.
-	    ;; `save-excursion' is required if there are two footnotes
-	    ;; in a row. In that case, point would be left at the
-	    ;; beginning of the second one, and
-	    ;; `org-footnote-get-next-reference' would then skip it.
-	    (goto-char beg)
-	    (delete-region beg (nth 2 ref))
-	    (save-excursion (insert fnote sep)))))))
-
-  ;; Remove footnote section tag for LaTeX
-  (goto-char (point-min))
-  (while (re-search-forward
-	  (concat "^" footnote-section-tag-regexp) nil t)
-    (org-if-unprotected
-     (replace-match "")))
-  ;; Remove any left-over footnote definition.
-  (mapc (lambda (fn) (org-footnote-delete-definitions (car fn)))
-	org-export-footnotes-data)
-  (mapc (lambda (fn) (org-footnote-delete-definitions fn))
-	org-export-latex-footmark-seen))
+     (replace-match ""))))
 
 (defun org-export-latex-fix-inputenc ()
   "Set the coding system in inputenc to what the buffer is."
