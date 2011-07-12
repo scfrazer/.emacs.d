@@ -154,6 +154,13 @@ Otherwise: Add a checkbox and update heading accordingly."
   (interactive)
   (kill-new (concat "[[" (buffer-file-name) "::" (number-to-string (line-number-at-pos)) "]]")))
 
+(defadvice org-archive-subtree (after my-org-archive-subtree activate)
+  (let* ((location (org-get-local-archive-location))
+         (afile (org-extract-archive-file location))
+         (buf (find-buffer-visiting afile)))
+    (when buf
+      (kill-buffer buf))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-after-load "org"
