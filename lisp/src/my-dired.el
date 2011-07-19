@@ -112,7 +112,7 @@ there is a prefix arg."
       (if (looking-at (char-to-string dired-marker-char))
           (dired-unmark 1)
         (dired-mark 1)))
-    (forward-line 1)))
+    (dired-next-line 1)))
 
 ;; Go up a directory and put cursor on dir we came from
 
