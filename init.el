@@ -603,7 +603,8 @@ Prefix with C-u to fit the `next-window'."
   "query-replace ... take from-string from region if it is active"
   (interactive "*P")
   (if arg
-      (call-interactively 'query-replace)
+      (let ((current-prefix-arg nil))
+        (call-interactively 'query-replace))
     (let (from to)
       (if (region-active-p)
           (progn (setq from (buffer-substring (region-beginning) (region-end))
