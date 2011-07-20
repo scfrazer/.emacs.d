@@ -11,7 +11,9 @@
         (progn
           (widen)
           (recenter))
-      (narrow-to-defun))))
+      (if (region-active-p)
+          (narrow-to-region (region-beginning) (region-end))
+        (narrow-to-defun)))))
 
 (defadvice narrow-to-region (after my-narrow-to-region activate)
   (when (region-active-p)
