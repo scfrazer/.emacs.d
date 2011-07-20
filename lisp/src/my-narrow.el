@@ -7,12 +7,12 @@
   (interactive)
   (if (equal 'major-mode 'org-mode)
       (org-edit-special)
-    (if (/= (buffer-size) (- (point-max) (point-min)))
-        (progn
-          (widen)
-          (recenter))
-      (if (region-active-p)
-          (narrow-to-region (region-beginning) (region-end))
+    (if (region-active-p)
+        (narrow-to-region (region-beginning) (region-end))
+      (if (/= (buffer-size) (- (point-max) (point-min)))
+          (progn
+            (narrow-nested-widen-previous)
+            (recenter))
         (narrow-to-defun)))))
 
 (defadvice narrow-to-region (after my-narrow-to-region activate)
