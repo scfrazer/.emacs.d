@@ -9,13 +9,13 @@
 (setq-default mode-line-format
       '("  " mode-line-modified
         (list 'line-number-mode "  ")
-        (:eval (if line-number-mode
+        (:eval (when line-number-mode
+                 (let ((str "L%l"))
+                   (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
+                     (setq str (concat str "/" my-mode-line-buffer-line-count)))
                    (if (/= (buffer-size) (- (point-max) (point-min)))
-                       (propertize "L%l" 'face 'my-todo-face)
-                     "L%l")))
-        (:eval (if (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
-                   (concat "/" my-mode-line-buffer-line-count)
-                 ""))
+                       (propertize str 'face 'my-todo-face)
+                     str))))
         "  %p"
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification
