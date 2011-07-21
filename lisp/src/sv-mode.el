@@ -158,8 +158,8 @@ Otherwise indent them as usual."
   (concat "\\_<\\("
           (regexp-opt '("begin" "case" "class" "clocking" "config" "fork"
                         "function" "generate" "covergroup" "interface" "module"
-                        "package" "primitive" "program" "property" "specify"
-                        "sequence" "table" "task"
+                        "package" "primitive" "program" "property" "randsequence"
+                        "specify" "sequence" "table" "task"
                         ;; AOP
                         "extends"))
           "\\_>\\)")
@@ -181,6 +181,7 @@ Otherwise indent them as usual."
     ("endprogram" . "program")
     ("endproperty" . "property")
     ("endspecify" . "specify")
+    ("endsequence" . "randsequence")
     ("endsequence" . "sequence")
     ("endtable" . "table")
     ("endtask" . "task")
@@ -206,6 +207,7 @@ Otherwise indent them as usual."
     ("primitive" . "endprimitive")
     ("program" . "endprogram")
     ("property" . "endproperty")
+    ("randsequence" . "endsequence")
     ("specify" . "endspecify")
     ("sequence" . "endsequence")
     ("table" . "endtable")
