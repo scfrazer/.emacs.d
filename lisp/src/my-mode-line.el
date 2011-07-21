@@ -8,7 +8,11 @@
 
 (setq-default mode-line-format
       '("  " mode-line-modified
-        (list 'line-number-mode "  L%l")
+        (list 'line-number-mode "  ")
+        (:eval (if line-number-mode
+                   (if (/= (buffer-size) (- (point-max) (point-min)))
+                       (propertize "L%l" 'face 'my-todo-face)
+                     "L%l")))
         (:eval (if (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
                    (concat "/" my-mode-line-buffer-line-count)
                  ""))
