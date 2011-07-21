@@ -31,5 +31,6 @@
 (add-hook 'find-file-hook 'my-mode-line-count-lines)
 (add-hook 'after-save-hook 'my-mode-line-count-lines)
 (add-hook 'after-revert-hook 'my-mode-line-count-lines)
+(add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
 
 (provide 'my-mode-line)
