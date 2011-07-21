@@ -45,11 +45,9 @@ or narrow-to-defun."
   (if (region-active-p)
       (narrow-to-region (region-beginning) (region-end))
     (if (/= (buffer-size) (- (point-max) (point-min)))
-        (progn
-          (narrow-nested-widen-previous)
-          (recenter))
+        (narrow-nested-widen-previous)
       (narrow-to-defun))))
 
-(global-set-key (kbd "C-x n p") 'narrow-nested-widen-previous)
+(global-set-key (kbd "C-x n u") 'narrow-nested-widen-previous)
 
 (provide 'narrow-nested)
