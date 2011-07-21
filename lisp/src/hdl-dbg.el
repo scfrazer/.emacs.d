@@ -143,6 +143,12 @@ Arguments are module filename.")
   (goto-char (point-min))
   (forward-line (1- line)))
 
+(defun hdl-dbg-line-number-at-pos (&optional pos)
+  "Absolute line-number-at-pos"
+  (save-restriction
+    (widen)
+    (line-number-at-pos pos)))
+
 ;;; Breakpoints
 
 (defun hdl-dbg-mouse-toggle-breakpoint (ev)
@@ -171,7 +177,7 @@ Arguments are module filename.")
               (hdl-dbg-set-breakpoint-condition-1 (funcall
                                                    hdl-dbg-filename-to-module-fcn
                                                    (buffer-file-name))
-                                                  (line-number-at-pos)
+                                                  (hdl-dbg-line-number-at-pos)
                                                   (plist-get (overlay-properties bpnt)
                                                              'hdl-dbg-breakpoint-condition)
                                                   (plist-get (overlay-properties bpnt)
@@ -220,7 +226,7 @@ Arguments are module filename.")
 
 (defun hdl-dbg-write-breakpoint (condition time)
   "Write breakpoint to target file."
-  (hdl-dbg-write-breakpoint-1 (buffer-file-name) (line-number-at-pos) condition time))
+  (hdl-dbg-write-breakpoint-1 (buffer-file-name) (hdl-dbg-line-number-at-pos) condition time))
 
 (defun hdl-dbg-write-breakpoint-1 (filename line-num condition time)
   "Do real write-breakpoint work."
@@ -237,7 +243,7 @@ Arguments are module filename.")
 (defun hdl-dbg-remove-breakpoint (bpnt)
   "Remove a breakpoint."
   (hdl-dbg-remove-breakpoint-1 (buffer-file-name (overlay-buffer bpnt))
-                               (line-number-at-pos (overlay-start bpnt))
+                               (hdl-dbg-line-number-at-pos (overlay-start bpnt))
                                (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-condition)
                                (plist-get (overlay-properties bpnt) 'hdl-dbg-breakpoint-time))
   (delete-overlay bpnt))
@@ -359,7 +365,7 @@ Arguments are module filename.")
   (hdl-dbg-ensure-target-buffer)
   (let ((module (and (buffer-file-name)
                      (funcall hdl-dbg-filename-to-module-fcn (buffer-file-name))))
-        (line-num (line-number-at-pos)))
+        (line-num (hdl-dbg-line-number-at-pos)))
     (hdl-dbg-update-control-window)
     (select-window (split-window-vertically))
     (switch-to-buffer hdl-dbg-buffer-name)
@@ -406,7 +412,7 @@ Arguments are module filename.")
   (if (not (looking-at "\\(.+\\):\\(.+\\)"))
       (error "Cursor not on a breakpoint")
     ;; Breakpoints start on line 2
-    (let* ((idx (- (line-number-at-pos) 2))
+    (let* ((idx (- (hdl-dbg-line-number-at-pos) 2))
            (elt (nth idx hdl-dbg-breakpoints))
            (filename (car elt))
            (line-num (nth 1 elt)))
@@ -500,7 +506,7 @@ Arguments are module filename.")
   (if (looking-at "\\(.+\\):\\(.+\\)")
       ;; Breakpoints start on line 2
       (when (or (not hdl-dbg-ask-for-confirmation) (y-or-n-p "Delete current breakpoint? "))
-        (let* ((idx (- (line-number-at-pos) 2))
+        (let* ((idx (- (hdl-dbg-line-number-at-pos) 2))
                (elt (nth idx hdl-dbg-breakpoints))
                (buf (find-buffer-visiting (car elt))))
           (if buf
