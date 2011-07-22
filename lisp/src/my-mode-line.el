@@ -6,6 +6,11 @@
 (defvar my-mode-line-buffer-line-count nil)
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
 
+(defface my-narrow-face
+  '((t (:box t :foreground "firebrick2" :background "yellow")))
+  "todo/fixme highlighting."
+  :group 'faces)
+
 (setq-default mode-line-format
       '("  " mode-line-modified
         (list 'line-number-mode "  ")
@@ -14,7 +19,7 @@
                    (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
                      (setq str (concat str "/" my-mode-line-buffer-line-count)))
                    (if (/= (buffer-size) (- (point-max) (point-min)))
-                       (propertize str 'face 'my-todo-face)
+                       (propertize str 'face 'my-narrow-face)
                      str))))
         "  %p"
         (list 'column-number-mode "  C%c")
