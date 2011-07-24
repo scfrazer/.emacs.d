@@ -337,7 +337,8 @@
     (while again
       (forward-line -1)
       (setq again (not (bobp)))
-      (unless (= (move-to-column col) col)
+      (unless (and (not (looking-at "^\\s-*$"))
+                   (= (move-to-column col) col))
         (forward-line 1)
         (move-to-column col)
         (setq again nil)))))
@@ -439,7 +440,8 @@ Prefix with C-u to fit the `next-window'."
     (while again
       (forward-line 1)
       (setq again (not (eobp)))
-      (unless (= (move-to-column col) col)
+      (unless (and (not (looking-at "^\\s-*$"))
+                   (= (move-to-column col) col))
         (forward-line -1)
         (move-to-column col)
         (setq again nil)))))
