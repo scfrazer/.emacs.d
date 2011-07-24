@@ -329,6 +329,19 @@
                         (setq i (+ 32 i)) i (single-key-description i)))
         (setq i (- i 96))))))
 
+(defun my-backward-paragraph-rect ()
+  "Move backward to the same column in the first line before a blank line."
+  (interactive)
+  (let ((col (current-column))
+        (again t))
+    (while again
+      (forward-line -1)
+      (setq again (not (bobp)))
+      (unless (= (move-to-column col) col)
+        (forward-line 1)
+        (move-to-column col)
+        (setq again nil)))))
+
 (defun my-clone-file (filename)
   "Clone the current buffer and write it into FILENAME."
   (interactive "FClone to file: ")
@@ -417,6 +430,19 @@ Prefix with C-u to fit the `next-window'."
   (interactive "P")
   (let ((win (if arg (next-window) (get-buffer-window))))
     (fit-window-to-buffer win (/ (frame-height) 4))))
+
+(defun my-forward-paragraph-rect ()
+  "Move forward to the same column in the last line before a blank line."
+  (interactive)
+  (let ((col (current-column))
+        (again t))
+    (while again
+      (forward-line 1)
+      (setq again (not (eobp)))
+      (unless (= (move-to-column col) col)
+        (forward-line -1)
+        (move-to-column col)
+        (setq again nil)))))
 
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
@@ -1143,8 +1169,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
-(my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x C-S-q" 'my-toggle-buffer-modified)
+(my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
@@ -1170,8 +1196,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
-(my-keys-define "M-[" 'insert-pair)
+(my-keys-define "M-[" 'my-backward-paragraph-rect)
 (my-keys-define "M-\"" 'insert-pair)
+(my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'my-flymake-goto-next-error)
 (my-keys-define "M-b" 'task-bmk-show-all)
