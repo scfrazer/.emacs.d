@@ -1383,6 +1383,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
+(defalias 'green 'my-theme-deeper-green)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)

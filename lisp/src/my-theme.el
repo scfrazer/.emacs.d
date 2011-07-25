@@ -219,6 +219,7 @@
    ))
 
 (my-theme-create deeper-red '((default ((t (:background "#261a18" :foreground "gainsboro"))))))
+(my-theme-create deeper-green '((default ((t (:background "#18261a" :foreground "gainsboro"))))))
 
 (my-theme-create
  whiteboard
