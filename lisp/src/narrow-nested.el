@@ -12,8 +12,13 @@
              (/= (buffer-size) (- (point-max) (point-min))))
     (push (cons (point-min-marker) (point-max-marker)) narrow-nested-regions)))
 
-(defadvice narrow-to-region (before narrow-nested-region-advice activate)
-  (narrow-nested-save-restriction)
+(defadvice narrow-to-region (before narrow-nested-region-before-advice activate)
+  (narrow-nested-save-restriction))
+
+(defadvice narrow-to-region (after narrow-nested-region-after-advice activate)
+  (narrow-nested-turn-off-region))
+
+(defun narrow-nested-turn-off-region ()
   (when (and narrow-nested-deactivate-region (region-active-p))
     (deactivate-mark)
     (goto-char (point-min))))
@@ -43,7 +48,9 @@
 or narrow-to-defun."
   (interactive)
   (if (region-active-p)
-      (narrow-to-region (region-beginning) (region-end))
+      (progn
+        (narrow-to-region (region-beginning) (region-end))
+        (narrow-nested-turn-off-region))
     (if (/= (buffer-size) (- (point-max) (point-min)))
         (narrow-nested-widen-previous)
       (narrow-to-defun))))
