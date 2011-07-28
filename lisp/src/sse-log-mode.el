@@ -325,6 +325,48 @@
 ;;       (define-key map (kbd "<C-f10>") 'sse-log-mode-toggle-main-test)
       (setq sse-log-mode-map map)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Syntax table
+
+(defvar sse-log-mode-syntax-table
+  (let ((table (make-syntax-table)))
+
+    (modify-syntax-entry ?_ "_" table)
+
+    (modify-syntax-entry ?{ "(}" table)
+    (modify-syntax-entry ?} "){" table)
+    (modify-syntax-entry ?\( "()" table)
+    (modify-syntax-entry ?\) ")(" table)
+    (modify-syntax-entry ?\[ "(]" table)
+    (modify-syntax-entry ?\] ")[" table)
+
+    (modify-syntax-entry ?! "." table)
+    (modify-syntax-entry ?@ "." table)
+    (modify-syntax-entry ?# "." table)
+    (modify-syntax-entry ?% "." table)
+    (modify-syntax-entry ?^ "." table)
+    (modify-syntax-entry ?& "." table)
+    (modify-syntax-entry ?- "." table)
+    (modify-syntax-entry ?+ "." table)
+    (modify-syntax-entry ?= "." table)
+    (modify-syntax-entry ?< "." table)
+    (modify-syntax-entry ?> "." table)
+    (modify-syntax-entry ?| "." table)
+    (modify-syntax-entry ?\' "." table)
+    (modify-syntax-entry ?? "." table)
+    (modify-syntax-entry ?: "." table)
+    (modify-syntax-entry ?\; "." table)
+    (modify-syntax-entry ?, "." table)
+    (modify-syntax-entry ?. "." table)
+    (modify-syntax-entry ?~ "." table)
+
+    (modify-syntax-entry ?/  ". 124b" table)
+    (modify-syntax-entry ?*  ". 23" table)
+    (modify-syntax-entry ?\n "> b" table)
+
+    table)
+  "Syntax table used in sv-mode buffers.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mode
 
@@ -338,7 +380,7 @@
   (setq major-mode 'sse-log-mode)
   (setq mode-name "sse-log")
 
-  (set-syntax-table text-mode-syntax-table)
+  (set-syntax-table sse-log-mode-syntax-table)
 
   (use-local-map sse-log-mode-map)
 
