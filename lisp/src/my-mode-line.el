@@ -1,5 +1,6 @@
 ;;; my-mode-line.el
 
+(require 'narrow-nested)
 (require 'my-clearcase)
 (require 'task)
 
@@ -16,10 +17,11 @@
         (list 'line-number-mode "  ")
         (:eval (when line-number-mode
                  (let ((str "L%l"))
+                   (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
+                     (setq str (concat str "/" my-mode-line-buffer-line-count)))
                    (if (/= (buffer-size) (- (point-max) (point-min)))
                        (propertize str 'face 'my-narrow-face)
-                     (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
-                       (concat str "/" my-mode-line-buffer-line-count))))))
+                     str))))
         "  %p"
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification
@@ -40,5 +42,9 @@
 (add-hook 'after-save-hook 'my-mode-line-count-lines)
 (add-hook 'after-revert-hook 'my-mode-line-count-lines)
 (add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
+
+(defadvice narrow-nested-dwim (after my-mode-line-nnd activate)
+  (when (not (buffer-modified-p))
+    (my-mode-line-count-lines)))
 
 (provide 'my-mode-line)
