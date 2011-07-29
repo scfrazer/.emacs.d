@@ -16,11 +16,10 @@
         (list 'line-number-mode "  ")
         (:eval (when line-number-mode
                  (let ((str "L%l"))
-                   (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
-                     (setq str (concat str "/" my-mode-line-buffer-line-count)))
                    (if (/= (buffer-size) (- (point-max) (point-min)))
                        (propertize str 'face 'my-narrow-face)
-                     str))))
+                     (when (and (not (buffer-modified-p)) my-mode-line-buffer-line-count)
+                       (concat str "/" my-mode-line-buffer-line-count))))))
         "  %p"
         (list 'column-number-mode "  C%c")
         "  " mode-line-buffer-identification
