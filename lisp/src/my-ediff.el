@@ -20,6 +20,47 @@
     (call-interactively mode)
     (ediff-buffers original-buffer modified-buffer)))
 
+(defadvice ediff-buffers (around my-ediff-buffers activate)
+  "Compare buffers first and don't start ediff if they are identical."
+  (let* ((buf-A (ad-get-arg 0))
+         (buf-A-file-name (buffer-file-name buf-A))
+         (tmp-A-file-name (unless (and buf-A-file-name (file-exists-p buf-A-file-name))
+                            (make-temp-file "buf-A-")))
+         (buf-B (ad-get-arg 1))
+         (buf-B-file-name (buffer-file-name buf-B))
+         (tmp-B-file-name (unless (and buf-B-file-name (file-exists-p buf-B-file-name))
+                            (make-temp-file "buf-B-"))))
+    (when tmp-A-file-name
+      (with-current-buffer buf-A
+        (save-restriction
+          (widen)
+          (write-region (point-min) (point-max) tmp-A-file-name))))
+    (when tmp-B-file-name
+      (with-current-buffer buf-B
+        (save-restriction
+          (widen)
+          (write-region (point-min) (point-max) tmp-B-file-name))))
+    (if (ediff-same-file-contents (or tmp-A-file-name buf-A-file-name)
+                                  (or tmp-B-file-name buf-B-file-name))
+        (progn
+          (dolist (buf (buffer-list))
+            (when (string-match ".+\.~.+~$" (buffer-name buf))
+              (kill-buffer buf)))
+          (message "No differences"))
+      ad-do-it)
+    (when tmp-A-file-name
+      (delete-file tmp-A-file-name))
+    (when tmp-B-file-name
+      (delete-file tmp-B-file-name))))
+
+(defadvice ediff-files (around my-ediff-files activate)
+  "Compare files first and don't start ediff if they are identical."
+  (let ((file-A (ad-get-arg 0))
+        (file-B (ad-get-arg 1)))
+    (if (ediff-same-file-contents file-A file-B)
+        (message "No differences")
+      ad-do-it)))
+
 (defun my-ediff-quit (reverse-default-keep-variants)
   "Don't ask if I really want to quit"
   (interactive "P")
