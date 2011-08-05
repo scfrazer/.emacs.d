@@ -1228,6 +1228,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "C-c h" 'help-command)
 (my-keys-define "C-c h a" 'apropos)
+(my-keys-define "C-c h I" 'info-apropos)
 
 ;; Movement
 
