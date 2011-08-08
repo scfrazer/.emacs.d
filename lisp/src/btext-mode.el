@@ -40,6 +40,7 @@
   :abbrev-table nil
   :syntax-table btext-syntax-table)
 
+(add-to-list 'auto-mode-alist '("\\.txt" . btext-mode))
 (add-to-list 'magic-fallback-mode-alist (cons "." 'btext-mode) 'append)
 
 (provide 'btext-mode)
