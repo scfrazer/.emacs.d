@@ -1,6 +1,7 @@
 ;;; my-python.el
 
 (require 'my-flymake)
+(require 'python)
 
 (setq-default python-check-command "pylint_etc_wrapper.py -c"
               python-continuation-offset 4
