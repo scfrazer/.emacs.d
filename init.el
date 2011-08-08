@@ -787,6 +787,28 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
 
+(defun my-sort-fields (field)
+  "Sort region or following paragraph."
+  (interactive "p")
+  (save-excursion
+    (if (and transient-mark-mode mark-active)
+        (sort-fields field (region-beginning) (region-end))
+      (sort-fields field (point-at-bol)
+                   (save-excursion
+                     (forward-paragraph)
+                     (point-at-eol))))))
+
+(defun my-sort-lines ()
+  "Sort region or following paragraph."
+  (interactive)
+  (save-excursion
+    (if (and transient-mark-mode mark-active)
+        (sort-lines nil (region-beginning) (region-end))
+      (sort-lines nil (point-at-bol)
+                  (save-excursion
+                    (forward-paragraph)
+                    (point-at-eol))))))
+
 (defun my-sort-lines ()
   "Sort region or following paragraph."
   (interactive)
@@ -1397,6 +1419,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'rb 'my-regexp-backward)
 (defalias 'red 'my-theme-deeper-red)
 (defalias 'rf 'my-regexp-forward)
+(defalias 'sf 'my-sort-fields)
 (defalias 'sl 'my-sort-lines)
 (defalias 'small 'my-font-small)
 (defalias 'tail 'auto-revert-tail-mode)
