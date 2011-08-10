@@ -357,6 +357,17 @@
       (my-dec-to-hex)
     (my-hex-to-dec)))
 
+(defun my-count-lines ()
+  "Count lines in region or to next blank line."
+  (interactive)
+  (message "%d"
+           (if (and transient-mark-mode mark-active)
+               (count-lines (region-beginning) (region-end))
+             (count-lines (point-at-bol)
+                          (save-excursion
+                            (forward-paragraph)
+                            (point-at-eol))))))
+
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
   (interactive "*")
@@ -1399,6 +1410,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
+(defalias 'cl 'my-count-lines)
 (defalias 'color 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'ed 'edebug-defun)
