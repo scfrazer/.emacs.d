@@ -38,7 +38,8 @@
 (define-derived-mode btext-mode fundamental-mode "btext"
   "Mode for editing basic text with a sane syntax table"
   :abbrev-table nil
-  :syntax-table btext-syntax-table)
+  :syntax-table btext-syntax-table
+  (setq comment-start "#"))
 
 (add-to-list 'auto-mode-alist '("\\.txt" . btext-mode))
 (add-to-list 'magic-fallback-mode-alist (cons "." 'btext-mode) 'append)
