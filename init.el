@@ -360,13 +360,12 @@
 (defun my-count-lines ()
   "Count lines in region or to next blank line."
   (interactive)
-  (message "%d"
-           (if (and transient-mark-mode mark-active)
-               (count-lines (region-beginning) (region-end))
+  (if (and transient-mark-mode mark-active)
+      (message "%d lines in region"
+               (count-lines (region-beginning) (region-end)))
+    (message "%d lines to end of paragraph"
              (count-lines (point-at-bol)
-                          (save-excursion
-                            (forward-paragraph)
-                            (point-at-eol))))))
+                          (save-excursion (forward-paragraph) (point-at-eol))))))
 
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
@@ -1231,6 +1230,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-?" 'etags-select-find-tag-at-point)
 (my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
 (my-keys-define "M-Q" 'my-unfill)
+(my-keys-define "M-=" 'my-count-lines)
 (my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
@@ -1410,7 +1410,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'blue 'my-theme-deeper-blue)
-(defalias 'cl 'my-count-lines)
 (defalias 'color 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'ed 'edebug-defun)
