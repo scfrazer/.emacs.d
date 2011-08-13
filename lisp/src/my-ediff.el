@@ -22,11 +22,11 @@
 
 (defadvice ediff-buffers (around my-ediff-buffers activate)
   "Compare buffers first and don't start ediff if they are identical."
-  (let* ((buf-A (ad-get-arg 0))
+  (let* ((buf-A (get-buffer (ad-get-arg 0)))
          (buf-A-file-name (buffer-file-name buf-A))
          (tmp-A-file-name (unless (and buf-A-file-name (file-exists-p buf-A-file-name))
                             (make-temp-file "buf-A-")))
-         (buf-B (ad-get-arg 1))
+         (buf-B (get-buffer (ad-get-arg 1)))
          (buf-B-file-name (buffer-file-name buf-B))
          (tmp-B-file-name (unless (and buf-B-file-name (file-exists-p buf-B-file-name))
                             (make-temp-file "buf-B-"))))
