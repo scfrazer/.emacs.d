@@ -14,7 +14,7 @@
                     (format "List lines matching regexp (default %s): " default) nil nil nil
                     'regexp-history default)))
       (setq regexp (if (string= regexp "") default regexp))
-      (occur regexp)))
+      (occur regexp nlines)))
   (my-occur-fit-buffer))
 
 (defun my-occur-fit-buffer ()
