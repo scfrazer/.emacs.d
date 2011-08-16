@@ -589,6 +589,16 @@ Prefix with C-u to fit the `next-window'."
      (point))
    (point)))
 
+(defun my-narrow-nested-dwim (&optional arg)
+  "narrow-nested-dwim, but do something special if there is a prefix arg."
+  (interactive "P")
+  (if arg
+      (cond ((equal major-mode 'sv-mode)
+             (sv-mode-narrow-to-scope))
+            (t
+             (narrow-nested-dwim)))
+    (narrow-nested-dwim)))
+
 (defun my-open-line-above ()
   "Open a line above the current one."
   (interactive)
@@ -1187,7 +1197,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
-(my-keys-define "C-c n" 'narrow-nested-dwim)
+(my-keys-define "C-c n" 'my-narrow-nested-dwim)
 (my-keys-define "C-c o" '(lambda () (interactive) (ido-find-file-in-dir org-directory)))
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
