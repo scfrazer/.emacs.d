@@ -14,7 +14,6 @@
 
     (modify-syntax-entry ?! "." table)
     (modify-syntax-entry ?@ "." table)
-    (modify-syntax-entry ?# "." table)
     (modify-syntax-entry ?% "." table)
     (modify-syntax-entry ?^ "." table)
     (modify-syntax-entry ?& "." table)
@@ -31,6 +30,9 @@
     (modify-syntax-entry ?, "." table)
     (modify-syntax-entry ?. "." table)
     (modify-syntax-entry ?~ "." table)
+
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?# "<" table)
 
     table)
   "Syntax table used in basic text buffers.")
