@@ -100,6 +100,12 @@ Otherwise indent them as usual."
   :type 'boolean)
 
 ;;;###autoload
+(defcustom sv-mode-highlight-match-delay 0.5
+  "*Time in seconds to delay before showing matching scope begin/end."
+  :group 'sv-mode
+  :type 'number)
+
+;;;###autoload
 (defcustom sv-mode-finish-skeleton-function
   'sv-mode-default-finish-skeleton-function
   "*Function to call to finish task/function skeleton creation."
@@ -1010,6 +1016,60 @@ Optional ARG means justify paragraph as well."
           t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Idle matching of begin/end pairs
+
+(defvar sv-mode-idle-timer nil
+  "Idle timer in sv-mode.")
+
+(defvar sv-mode-scope-overlay-1 nil
+  "Overlay 1 used to show scope match.")
+
+(defvar sv-mode-scope-overlay-2 nil
+  "Overlay 2 used to show scope match.")
+
+(defun sv-mode-idle-timer-fcn ()
+  "In sv-mode, show the matching scope begin/end."
+  (when (eq major-mode 'sv-mode)
+    (save-excursion
+      (skip-syntax-backward "w_")
+      (when (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+        (let ((beg-1 (match-beginning 0))
+              (end-1 (match-end 0))
+              beg-2 end-2)
+          (if (looking-at sv-mode-end-regexp)
+              (progn
+                (forward-char)
+                (sv-mode-backward-sexp)
+                (when (looking-at sv-mode-begin-regexp)
+                  (setq beg-2 (match-beginning 0)
+                        end-2 (match-end 0))))
+            (sv-mode-forward-sexp)
+            (skip-syntax-backward "w_")
+            (when (looking-at sv-mode-end-regexp)
+              (setq beg-2 (match-beginning 0)
+                    end-2 (match-end 0))))
+          (if sv-mode-scope-overlay-1
+              (move-overlay sv-mode-scope-overlay-1 beg-1 end-1)
+            (setq sv-mode-scope-overlay-1 (make-overlay beg-1 end-1)))
+          (if beg-2
+              (progn
+                (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-match-face)
+                (if sv-mode-scope-overlay-2
+                    (move-overlay sv-mode-scope-overlay-2 beg-2 end-2)
+                  (setq sv-mode-scope-overlay-2 (make-overlay beg-2 end-2)))
+                (overlay-put sv-mode-scope-overlay-2 'face 'show-paren-match-face))
+            (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-mismatch-face)))
+        (add-hook 'pre-command-hook 'sv-mode-idle-timer-done)))))
+
+(defun sv-mode-idle-timer-done ()
+  "Remove matching scope overlays."
+  (remove-hook 'pre-command-hook 'sv-mode-idle-timer-done)
+  (when sv-mode-scope-overlay-1
+    (delete-overlay sv-mode-scope-overlay-1))
+  (when sv-mode-scope-overlay-2
+    (delete-overlay sv-mode-scope-overlay-2)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indentation
 
 (defun sv-mode-indent-line ()
@@ -1712,6 +1772,13 @@ Key Bindings:
           nil ;; Function to move to beginning of reasonable region to highlight
           ))
   (turn-on-font-lock)
+
+  ;; Idle timer
+
+  (when sv-mode-idle-timer
+    (cancel-timer sv-mode-idle-timer))
+  (setq sv-mode-idle-timer
+        (run-with-idle-timer sv-mode-highlight-match-delay t 'sv-mode-idle-timer-fcn))
 
   ;; Other-file
 
