@@ -83,7 +83,8 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
 ;; Hooks and advice for adding font-lock faces
 
 (defun my-font-lock-mode-hook ()
-  (when (and comment-start (not (equal major-mode 'org-mode)))
+  (when (or (and comment-start font-lock-keywords (not (eq major-mode 'org-mode)))
+            (eq major-mode 'dired-mode))
     (font-lock-add-keywords nil
                             (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\|DEBUG\\)\\>"
                                         (list '(1 'my-todo-face t))))
