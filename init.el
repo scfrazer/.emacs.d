@@ -67,6 +67,7 @@
 (require 'my-mode-line)
 (require 'my-occur)
 (require 'my-org)
+(require 'my-pair)
 (require 'my-pop-back)
 (require 'my-python)
 (require 'my-recentf)
@@ -1232,7 +1233,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
-(my-keys-define "M-)" 'delete-pair)
 (my-keys-define "M-*" 'pop-tag-mark)
 (my-keys-define "M-." 'etags-select-find-tag)
 (my-keys-define "M-/" 'mdabbrev-expand)
@@ -1244,7 +1244,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
-(my-keys-define "M-\"" 'insert-pair)
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'my-flymake-goto-next-error)
@@ -1266,6 +1265,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
+
+(my-keys-define "(" 'my-pair-insert)
+(my-keys-define "[" 'my-pair-insert)
+(my-keys-define "{" 'my-pair-insert)
+(my-keys-define "\"" 'my-pair-insert)
+(my-keys-define "'" 'my-pair-insert)
+(my-keys-define "`" 'my-pair-insert)
 
 ;; These have to be in this order
 
