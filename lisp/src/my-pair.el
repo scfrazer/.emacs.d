@@ -5,31 +5,33 @@
   (interactive "P")
   (let ((char last-input-event)
         (beg (point))
-        end)
+        end
+        lisp-regexp-paren)
     (when (region-active-p)
       (setq beg (region-beginning))
       (setq end (1+ (region-end)))
       (deactivate-mark))
     (goto-char beg)
+    (setq lisp-regexp-paren
+          (and (or (eq major-mode 'emacs-lisp-mode)
+                   (eq major-mode 'lisp-interaction-mode))
+               (= char ?\()
+               (looking-back "\\\\\\\\" (point-at-bol))))
     (insert char)
-    (unless arg
+    (unless (or arg (and (= (char-before beg) ?\\)
+                         (not lisp-regexp-paren)))
       (when end
         (goto-char end))
       (cond
        ;; Open paren
        ((= char ?\()
-        (let (regexp-paren)
-          (when (eq major-mode 'emacs-lisp-mode)
-            (save-excursion
-              (goto-char beg)
-              (setq regexp-paren (looking-back "\\\\" (point-at-bol)))))
-          (if regexp-paren
-              (insert "\\\\)")
-            (insert ?\)))
-          (unless end
-            (if regexp-paren
-                (backward-char 3)
-              (backward-char)))))
+        (if lisp-regexp-paren
+            (insert "\\\\)")
+          (insert ?\)))
+        (unless end
+          (if lisp-regexp-paren
+              (backward-char 3)
+            (backward-char))))
        ;; Open bracket
        ((= char ?\[)
         (insert ?\])
@@ -57,11 +59,18 @@
                 (backward-char))))))
        ;; Backtick
        ((= char ?`)
-        (if (and (eq major-mode 'emacs-lisp-mode)
+        (if (and (or (eq major-mode 'emacs-lisp-mode)
+                     (eq major-mode 'lisp-interaction-mode))
                  (nth 3 (syntax-ppss)))
             (insert ?')
           (insert ?`))
         (unless end
           (backward-char)))))))
+
+(defun my-pair-delete ()
+  "Intelligently delete paired chars."
+  (interactive)
+  ;; TODO
+  )
 
 (provide 'my-pair)
