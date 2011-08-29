@@ -15,52 +15,53 @@
     (unless arg
       (when end
         (goto-char end))
-      (let (ppss)
-        (cond
-
-         ((= char ?\()
-          (let (regexp-paren)
-            (when (eq major-mode 'emacs-lisp-mode)
-              (save-excursion
-                (goto-char beg)
-                (setq regexp-paren (looking-back "\\\\" (point-at-bol)))))
+      (cond
+       ;; Open paren
+       ((= char ?\()
+        (let (regexp-paren)
+          (when (eq major-mode 'emacs-lisp-mode)
+            (save-excursion
+              (goto-char beg)
+              (setq regexp-paren (looking-back "\\\\" (point-at-bol)))))
+          (if regexp-paren
+              (insert "\\\\)")
+            (insert ?\)))
+          (unless end
             (if regexp-paren
-                (insert "\\\\)")
-              (insert ?\)))
-            (unless end
-              (if regexp-paren
-                  (backward-char 3)
-                (backward-char)))))
-
-         ((= char ?\[)
-          (insert ?\])
-          (unless end
-            (backward-char)))
-
-         ((= char ?\{)
-          (insert ?\})
-          (unless end
-            (backward-char)))
-
-         ((= char ?\")
-          (insert ?\")
-          (unless end
-            (backward-char)))
-
-         ((= char ?')
-          (when (eq major-mode 'python-mode)
-            (setq ppss (syntax-ppss))
+                (backward-char 3)
+              (backward-char)))))
+       ;; Open bracket
+       ((= char ?\[)
+        (insert ?\])
+        (unless end
+          (backward-char)))
+       ;; Open curly
+       ((= char ?\{)
+        (insert ?\})
+        (unless end
+          (backward-char)))
+       ;; Double-quote
+       ((= char ?\")
+        (insert ?\")
+        (unless end
+          (backward-char)))
+       ;; Single-quote
+       ((= char ?')
+        (when (eq major-mode 'python-mode)
+          (let (ppss)
+            (save-excursion
+              (setq ppss (syntax-ppss beg)))
             (unless (or (nth 4 ppss) (nth 3 ppss))
               (insert ?')
               (unless end
-                (backward-char)))))
-
-         ((= char ?`)
-          (if (and (eq major-mode 'emacs-lisp-mode)
-                   (nth 3 (syntax-ppss)))
-              (insert ?')
-            (insert ?`))
-          (unless end
-            (backward-char))))))))
+                (backward-char))))))
+       ;; Backtick
+       ((= char ?`)
+        (if (and (eq major-mode 'emacs-lisp-mode)
+                 (nth 3 (syntax-ppss)))
+            (insert ?')
+          (insert ?`))
+        (unless end
+          (backward-char)))))))
 
 (provide 'my-pair)
