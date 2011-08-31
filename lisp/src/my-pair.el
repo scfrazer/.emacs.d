@@ -48,13 +48,13 @@
         (unless end
           (backward-char)))
        ;; Single-quote
-       ((= char ?')
+       ((= char ?\')
         (when (eq major-mode 'python-mode)
           (let (ppss)
             (save-excursion
               (setq ppss (syntax-ppss beg)))
             (unless (or (nth 4 ppss) (nth 3 ppss))
-              (insert ?')
+              (insert ?\')
               (unless end
                 (backward-char))))))
        ;; Backtick
@@ -62,15 +62,39 @@
         (if (and (or (eq major-mode 'emacs-lisp-mode)
                      (eq major-mode 'lisp-interaction-mode))
                  (nth 3 (syntax-ppss)))
-            (insert ?')
-          (insert ?`))
+            (insert ?\')
+          (insert ?\`))
         (unless end
           (backward-char)))))))
 
-(defun my-pair-delete ()
-  "Intelligently delete paired chars."
+(defun my-pair-delete-forward ()
+  "Forward delete paired chars."
   (interactive)
-  ;; TODO
-  )
+  (let ((char (char-after)))
+    (cond ((memq char '(?\( ?\[ ?\{ ?\" ?\'))
+           (save-excursion
+             (forward-sexp)
+             (delete-char -1))
+           (delete-char 1))
+          ((= char ?\`)
+           (save-excursion
+             (when (search-forward "`" nil t)
+               (delete-char -1)))
+           (delete-char 1)))))
+
+(defun my-pair-delete-backward ()
+  "Backward delete paired chars."
+  (interactive)
+  (let ((char (char-before)))
+    (cond ((memq char '(?\) ?\] ?\ ?\" ?\'))
+           (save-excursion
+             (backward-sexp)
+             (delete-char 1))
+           (delete-char -1))
+          ((= char ?\`)
+           (save-excursion
+             (when (search-backward "`" nil t)
+               (delete-char 1)))
+           (delete-char -1)))))
 
 (provide 'my-pair)

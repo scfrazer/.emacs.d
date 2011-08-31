@@ -1150,9 +1150,12 @@ Does not set point.  Does nothing if mark ring is empty."
 (defmacro my-keys-define (key fn)
   (list 'define-key 'my-keys-minor-mode-map (list 'kbd key) fn))
 
+(my-keys-define "'" 'my-pair-insert)
+(my-keys-define "(" 'my-pair-insert)
 (my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-return>" 'my-open-line-below)
+(my-keys-define "<S-backspace>" 'my-pair-delete-backward)
 (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
 (my-keys-define "<S-f7>" 'task-bmk-all-prev)
 (my-keys-define "<S-return>" 'my-open-line-above)
@@ -1168,6 +1171,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-?" 'my-ffap)
 (my-keys-define "C-M-w" 'clipboard-kill-ring-save)
 (my-keys-define "C-M-y" 'clipboard-yank)
+(my-keys-define "C-S-d" 'my-pair-delete-forward)
 (my-keys-define "C-S-o" 'my-other-frame)
 (my-keys-define "C-S-y" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "C-^" 'my-pop-back-imenu)
@@ -1237,10 +1241,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-." 'etags-select-find-tag)
 (my-keys-define "M-/" 'mdabbrev-expand)
 (my-keys-define "M-;" 'comment-indent)
+(my-keys-define "M-=" 'my-count-lines)
 (my-keys-define "M-?" 'etags-select-find-tag-at-point)
 (my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
 (my-keys-define "M-Q" 'my-unfill)
-(my-keys-define "M-=" 'my-count-lines)
 (my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
@@ -1265,13 +1269,11 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
-
-(my-keys-define "(" 'my-pair-insert)
 (my-keys-define "[" 'my-pair-insert)
-(my-keys-define "{" 'my-pair-insert)
 (my-keys-define "\"" 'my-pair-insert)
-(my-keys-define "'" 'my-pair-insert)
 (my-keys-define "`" 'my-pair-insert)
+(my-keys-define "{" 'my-pair-insert)
+
 
 ;; These have to be in this order
 
