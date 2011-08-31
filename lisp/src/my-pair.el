@@ -15,16 +15,16 @@
     (setq lisp-regexp-paren
           (and (or (eq major-mode 'emacs-lisp-mode)
                    (eq major-mode 'lisp-interaction-mode))
-               (= char ?\()
+               (eq char ?\()
                (looking-back "\\\\\\\\" (point-at-bol))))
     (insert char)
-    (unless (or arg (and (= (char-before beg) ?\\)
+    (unless (or arg (and (eq (char-before beg) ?\\)
                          (not lisp-regexp-paren)))
       (when end
         (goto-char end))
       (cond
        ;; Open paren
-       ((= char ?\()
+       ((eq char ?\()
         (if lisp-regexp-paren
             (insert "\\\\)")
           (insert ?\)))
@@ -33,22 +33,22 @@
               (backward-char 3)
             (backward-char))))
        ;; Open bracket
-       ((= char ?\[)
+       ((eq char ?\[)
         (insert ?\])
         (unless end
           (backward-char)))
        ;; Open curly
-       ((= char ?\{)
+       ((eq char ?\{)
         (insert ?\})
         (unless end
           (backward-char)))
        ;; Double-quote
-       ((= char ?\")
+       ((eq char ?\")
         (insert ?\")
         (unless end
           (backward-char)))
        ;; Single-quote
-       ((= char ?\')
+       ((eq char ?\')
         (when (eq major-mode 'python-mode)
           (let (ppss)
             (save-excursion
@@ -58,14 +58,14 @@
               (unless end
                 (backward-char))))))
        ;; Backtick
-       ((= char ?`)
-        (if (and (or (eq major-mode 'emacs-lisp-mode)
-                     (eq major-mode 'lisp-interaction-mode))
+       ((eq char ?`)
+        (if (and (memq major-mode '(emacs-lisp-mode lisp-interaction-mode))
                  (nth 3 (syntax-ppss)))
             (insert ?\')
-          (insert ?\`))
-        (unless end
-          (backward-char)))))))
+          (when (memq major-mode '(cperl-mode csh-mode sh-mode))
+            (insert ?\`)
+            (unless end
+              (backward-char)))))))))
 
 (defun my-pair-delete-forward ()
   "Forward delete paired chars."
@@ -76,7 +76,7 @@
              (forward-sexp)
              (delete-char -1))
            (delete-char 1))
-          ((= char ?\`)
+          ((eq char ?\`)
            (save-excursion
              (when (search-forward "`" nil t)
                (delete-char -1)))
@@ -91,7 +91,7 @@
              (backward-sexp)
              (delete-char 1))
            (delete-char -1))
-          ((= char ?\`)
+          ((eq char ?\`)
            (save-excursion
              (when (search-backward "`" nil t)
                (delete-char 1)))
