@@ -1029,37 +1029,44 @@ Optional ARG means justify paragraph as well."
 
 (defun sv-mode-idle-timer-fcn ()
   "In sv-mode, show the matching scope begin/end."
-  (when (eq major-mode 'sv-mode)
+  (when (and (eq major-mode 'sv-mode)
+             (not (sv-mode-in-comment-or-string)))
     (save-excursion
       (skip-syntax-backward "w_")
-      (when (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
-        (let ((beg-1 (match-beginning 0))
-              (end-1 (match-end 0))
-              beg-2 end-2)
-          (if (looking-at sv-mode-end-regexp)
-              (progn
-                (forward-char)
-                (sv-mode-backward-sexp)
-                (when (looking-at sv-mode-begin-regexp)
-                  (setq beg-2 (match-beginning 0)
-                        end-2 (match-end 0))))
-            (sv-mode-forward-sexp)
-            (skip-syntax-backward "w_")
-            (when (looking-at sv-mode-end-regexp)
-              (setq beg-2 (match-beginning 0)
-                    end-2 (match-end 0))))
-          (if sv-mode-scope-overlay-1
-              (move-overlay sv-mode-scope-overlay-1 beg-1 end-1)
-            (setq sv-mode-scope-overlay-1 (make-overlay beg-1 end-1)))
-          (if beg-2
-              (progn
-                (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-match-face)
-                (if sv-mode-scope-overlay-2
-                    (move-overlay sv-mode-scope-overlay-2 beg-2 end-2)
-                  (setq sv-mode-scope-overlay-2 (make-overlay beg-2 end-2)))
-                (overlay-put sv-mode-scope-overlay-2 'face 'show-paren-match-face))
-            (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-mismatch-face)))
-        (add-hook 'pre-command-hook 'sv-mode-idle-timer-done)))))
+      (let (extern)
+        (when (looking-at "\\_<task\\|function\\_>")
+          (save-excursion
+            (sv-mode-beginning-of-statement)
+            (setq extern (looking-at "\\_<extern\\_>"))))
+        (when (and (not extern)
+                   (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp)))
+          (let ((beg-1 (match-beginning 0))
+                (end-1 (match-end 0))
+                beg-2 end-2)
+            (if (looking-at sv-mode-end-regexp)
+                (progn
+                  (forward-char)
+                  (sv-mode-backward-sexp)
+                  (when (looking-at sv-mode-begin-regexp)
+                    (setq beg-2 (match-beginning 0)
+                          end-2 (match-end 0))))
+              (sv-mode-forward-sexp)
+              (skip-syntax-backward "w_")
+              (when (looking-at sv-mode-end-regexp)
+                (setq beg-2 (match-beginning 0)
+                      end-2 (match-end 0))))
+            (if sv-mode-scope-overlay-1
+                (move-overlay sv-mode-scope-overlay-1 beg-1 end-1)
+              (setq sv-mode-scope-overlay-1 (make-overlay beg-1 end-1)))
+            (if beg-2
+                (progn
+                  (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-match-face)
+                  (if sv-mode-scope-overlay-2
+                      (move-overlay sv-mode-scope-overlay-2 beg-2 end-2)
+                    (setq sv-mode-scope-overlay-2 (make-overlay beg-2 end-2)))
+                  (overlay-put sv-mode-scope-overlay-2 'face 'show-paren-match-face))
+              (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-mismatch-face)))
+          (add-hook 'pre-command-hook 'sv-mode-idle-timer-done))))))
 
 (defun sv-mode-idle-timer-done ()
   "Remove matching scope overlays."
