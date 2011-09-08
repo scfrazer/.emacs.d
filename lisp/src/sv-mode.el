@@ -1036,7 +1036,7 @@ Optional ARG means justify paragraph as well."
       (unless (and (looking-at "\\_<task\\|function\\_>")
                    (save-excursion
                      (sv-mode-beginning-of-statement)
-                     (looking-at "\\_<extern\\|import\\_>")))
+                     (looking-at "\\_<extern\\|import\\|export\\_>")))
         (when (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
           (let ((beg-1 (match-beginning 0))
                 (end-1 (match-end 0))
