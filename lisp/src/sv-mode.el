@@ -1033,13 +1033,11 @@ Optional ARG means justify paragraph as well."
              (not (sv-mode-in-comment-or-string)))
     (save-excursion
       (skip-syntax-backward "w_")
-      (let (extern)
-        (when (looking-at "\\_<task\\|function\\_>")
-          (save-excursion
-            (sv-mode-beginning-of-statement)
-            (setq extern (looking-at "\\_<extern\\_>"))))
-        (when (and (not extern)
-                   (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp)))
+      (unless (and (looking-at "\\_<task\\|function\\_>")
+                   (save-excursion
+                     (sv-mode-beginning-of-statement)
+                     (looking-at "\\_<extern\\|import\\_>")))
+        (when (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
           (let ((beg-1 (match-beginning 0))
                 (end-1 (match-end 0))
                 beg-2 end-2)
