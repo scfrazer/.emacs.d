@@ -101,7 +101,7 @@ Saved before editing the value of a register.")
     nil
   (setq register-list-mode-map (make-keymap))
   (suppress-keymap register-list-mode-map t)
-  (define-key register-list-mode-map "q" 'quit-window)
+  (define-key register-list-mode-map "q" 'register-list-quit)
   (define-key register-list-mode-map "Q" 'register-list-quit)
   (define-key register-list-mode-map [(tab)] 'register-list-tab)
   (define-key register-list-mode-map "d" 'register-list-delete)

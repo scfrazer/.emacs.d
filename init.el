@@ -1229,6 +1229,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x e" 'kmacro-end-or-call-macro)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
+(my-keys-define "C-x r <return>" 'register-list)
 (my-keys-define "C-x t" 'task-map)
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
@@ -1274,7 +1275,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "\"" 'my-pair-insert)
 (my-keys-define "`" 'my-pair-insert)
 (my-keys-define "{" 'my-pair-insert)
-
 
 ;; These have to be in this order
 
