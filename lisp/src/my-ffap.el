@@ -3,7 +3,7 @@
 (require 'ffap)
 
 (setq-default ffap-url-regexp nil)
-(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.@=/$(){}" "" ""))
+(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.@~=/$(){}" "" ""))
 
 (defun my-ffap (&optional arg)
   "ffap, or ffap-other-window when preceded with C-u."

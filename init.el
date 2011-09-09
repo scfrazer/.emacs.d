@@ -41,6 +41,7 @@
 ; (require 'protbuf)
 (require 'rect)
 (require 'redo+)
+(load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
 (require 'revbufs)
 (require 'task)
 (require 'uniquify)
