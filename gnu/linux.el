@@ -20,4 +20,4 @@
 
 ;; Theme
 
-(my-theme-deeper-blue)
+(load-theme 'deeper-blue)

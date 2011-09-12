@@ -79,8 +79,6 @@
 (require 'my-tags-search)
 (require 'my-vc)
 
-(require 'my-theme)
-
 (message "~/.emacs.d/init.el 0 load time = %.3f s" (my-get-load-time))
 
 (autoload 'align "align" nil t)
@@ -154,6 +152,7 @@
               cperl-merge-trailing-else nil
               cursor-in-non-selected-windows nil
               cursor-type 'box
+              custom-theme-directory "~/.emacs.d/themes"
               dabbrev-case-fold-search nil
               dired-auto-revert-buffer t
               etags-select-use-short-name-completion t
@@ -1428,7 +1427,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'perl-mode 'cperl-mode)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
-(defalias 'blue 'my-theme-deeper-blue)
 (defalias 'color 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'ed 'edebug-defun)
@@ -1438,7 +1436,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-find-name-dired)
 (defalias 'gb 'grep-buffers)
-(defalias 'green 'my-theme-deeper-green)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'hre 'my-highlight-regexp)
 (defalias 'ind 'my-indent)
@@ -1447,7 +1444,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'mf 'make-frame-on-display)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'rb 'my-regexp-backward)
-(defalias 'red 'my-theme-deeper-red)
 (defalias 'rf 'my-regexp-forward)
 (defalias 'sf 'my-sort-fields)
 (defalias 'sl 'my-sort-lines)
@@ -1455,7 +1451,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
-(defalias 'white 'my-theme-whiteboard)
 
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 
