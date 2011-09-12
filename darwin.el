@@ -19,7 +19,7 @@
 
 ;; Theme
 
-(my-theme-whiteboard)
+(load-theme 'whiteboard)
 
 (setq-default org-priority-faces '((?A . (:foreground "IndianRed3" :weight bold))
                                    (?B . (:foreground "SteelBlue3" :weight bold))
