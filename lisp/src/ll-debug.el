@@ -611,15 +611,16 @@ Uses `query-replace-regexp' internally."
                         "printf(" ");"
                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
                         '(nil "\"" (ll-debug-create-next-debug-string)
+                              " (" (or (c-defun-name) "UNKNOWN") ")"
                               ("Variable name: "
-                               "  " str ":%"
+                               "  " str "=%"
                                '(progn
                                   (if v1
                                       (setq v1 (concat v1 ", " str))
                                     (setq v1 str))
                                   nil)
                                (read-string "Format: "))
-                              "\\n\", " v1))
+                              (if v1 "\\n\", " "\\n\"") v1))
 
 (ll-debug-register-mode '(java-mode jde-mode)
                         "System.out.println(" ");"
