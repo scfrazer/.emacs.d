@@ -38,7 +38,6 @@
 (require 'mode-fn)
 (require 'motion-and-kill-dwim)
 (require 'narrow-nested)
-; (require 'protbuf)
 (require 'rect)
 (require 'redo+)
 (load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
@@ -55,7 +54,6 @@
 (require 'my-comment)
 (require 'my-doxymacs)
 (require 'my-ediff)
-; (require 'my-erc)
 (require 'my-expand)
 (require 'my-ffap)
 (require 'my-grep-ed)
@@ -72,11 +70,11 @@
 (require 'my-pop-back)
 (require 'my-python)
 (require 'my-recentf)
-; (require 'my-rect)
 (require 'my-reformat)
 (require 'my-set-cursor-color)
 (require 'my-sv-mode)
 (require 'my-tags-search)
+(require 'my-theme)
 (require 'my-vc)
 
 (message "~/.emacs.d/init.el 0 load time = %.3f s" (my-get-load-time))
@@ -211,6 +209,7 @@
               ps-right-margin 36
               ps-top-margin 36
               ps-underlined-faces (quote (font-lock-string-face))
+              redisplay-dont-pause t
               rst-mode-lazy nil
               save-abbrevs nil
               save-interprogram-paste-before-kill t

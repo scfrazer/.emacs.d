@@ -1,5 +1,6 @@
 ;;; my-theme.el
 
+(load-theme 'deeper-blue)
 (let ((class '((class color) (min-colors 89))))
   (custom-theme-set-faces
    'deeper-blue
