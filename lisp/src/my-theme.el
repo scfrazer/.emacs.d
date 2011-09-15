@@ -1,5 +1,7 @@
 ;;; my-theme.el
 
+(setq custom-theme-directory "~/.emacs.d/themes")
+
 (load-theme 'deeper-blue)
 (let ((class '((class color) (min-colors 89))))
   (custom-theme-set-faces

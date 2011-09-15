@@ -150,7 +150,6 @@
               cperl-merge-trailing-else nil
               cursor-in-non-selected-windows nil
               cursor-type 'box
-              custom-theme-directory "~/.emacs.d/themes"
               dabbrev-case-fold-search nil
               dired-auto-revert-buffer t
               etags-select-use-short-name-completion t
