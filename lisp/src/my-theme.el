@@ -16,7 +16,7 @@
    `(my-tab-face ((,class (:background "pink4"))))
    `(my-todo-face ((,class (:weight bold :box t :foreground "firebrick2" :background "yellow"))) t)
    `(my-trailing-space-face ((,class (:background "steelblue4"))))
-   `(org-document-title ((,class (:height 1.44))))
+   `(org-document-title ((,class (:height 1.44 :foreground "cyan3" :weight bold))))
    `(org-hide ((,class (:foreground "#181a26"))))
    `(org-table ((,class (:foreground "darkseagreen2"))))
    `(org-tag ((,class (:foreground "salmon"))))
@@ -34,9 +34,9 @@
    `(widget-inactive-face ((,class (:foreground "light gray"))))
    `(widget-single-line-field-face ((,class (:background "dim gray"))))))
 
-(defalias 'blue (lambda () (interactive) (set-background-color "#181a26")))
-(defalias 'red (lambda () (interactive) (set-background-color "#261a18")))
-(defalias 'green (lambda () (interactive) (set-background-color "#18261a")))
+(defalias 'blue (lambda () (interactive) (load-theme 'deeper-blue) (set-background-color "#181a26")))
+(defalias 'red (lambda () (interactive) (load-theme 'deeper-blue) (set-background-color "#261a18")))
+(defalias 'green (lambda () (interactive) (load-theme 'deeper-blue) (set-background-color "#18261a")))
 
 ;; (my-theme-create
 ;;  whiteboard
