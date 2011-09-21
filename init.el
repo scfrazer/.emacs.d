@@ -975,6 +975,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-after-save-hook ()
   (my-make-script-executable))
 
+(defun my-calc-mode-hook ()
+  (my-keys-minor-mode 0))
+
 (defun my-diff-mode-hook ()
   (define-key diff-mode-map "q" 'my-kill-this-buffer)
   (define-key diff-mode-map "n" 'diff-hunk-next)
@@ -1028,6 +1031,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
+(add-hook 'calculator-mode-hook 'my-calc-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
