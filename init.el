@@ -1152,8 +1152,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defmacro my-keys-define (key fn)
   (list 'define-key 'my-keys-minor-mode-map (list 'kbd key) fn))
 
-(my-keys-define "'" 'my-pair-insert)
-(my-keys-define "(" 'my-pair-insert)
 (my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "<C-tab>" 'other-window)
 (my-keys-define "<M-return>" 'my-open-line-below)
@@ -1272,10 +1270,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'makd-copy-unit)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
-(my-keys-define "[" 'my-pair-insert)
-(my-keys-define "\"" 'my-pair-insert)
-(my-keys-define "`" 'my-pair-insert)
-(my-keys-define "{" 'my-pair-insert)
+
+;; (my-keys-define "'" 'my-pair-insert)
+;; (my-keys-define "(" 'my-pair-insert)
+;; (my-keys-define "[" 'my-pair-insert)
+;; (my-keys-define "\"" 'my-pair-insert)
+;; (my-keys-define "`" 'my-pair-insert)
+;; (my-keys-define "{" 'my-pair-insert)
 
 ;; These have to be in this order
 
