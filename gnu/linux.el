@@ -1,6 +1,7 @@
 ;; Fix backspace/delete
 
 (normal-erase-is-backspace-mode 1)
+(blue)
 
 ;; Work stuff
 
