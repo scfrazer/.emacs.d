@@ -356,7 +356,9 @@ Otherwise indent them as usual."
                    (3 font-lock-variable-name-face)))
            ;; Labels
            (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
-                 '(2 font-lock-constant-face t))))
+                 '(2 font-lock-constant-face t))
+           ;; Parameters
+           (cons "\\(#\\)[^#0-9]" '(1 font-lock-variable-name-face))))
   "Medium level highlighting for sv-mode.")
 
 (defvar sv-mode-font-lock-keywords-3
