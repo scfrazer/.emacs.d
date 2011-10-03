@@ -51,4 +51,10 @@
       (when help
         (message "%s" help)))))
 
+(defadvice flymake-start-syntax-check-process (around my-flymake-start-syntax-check-process-advice activate)
+  "Don't query to kill flymake process."
+  ad-do-it
+  (when (and ad-return-value (processp ad-return-value))
+    (set-process-query-on-exit-flag ad-return-value nil)))
+
 (provide 'my-flymake)
