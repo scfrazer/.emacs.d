@@ -1234,6 +1234,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
+(my-keys-define "M-)" 'my-pair-close-all)
 (my-keys-define "M-*" 'pop-tag-mark)
 (my-keys-define "M-." 'etags-select-find-tag)
 (my-keys-define "M-/" 'mdabbrev-expand)
@@ -1267,11 +1268,11 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
 
-;; (my-keys-define "'" 'my-pair-insert)
+(my-keys-define "'" 'my-pair-insert)
+(my-keys-define "\"" 'my-pair-insert)
+(my-keys-define "`" 'my-pair-insert)
 ;; (my-keys-define "(" 'my-pair-insert)
 ;; (my-keys-define "[" 'my-pair-insert)
-;; (my-keys-define "\"" 'my-pair-insert)
-;; (my-keys-define "`" 'my-pair-insert)
 ;; (my-keys-define "{" 'my-pair-insert)
 
 ;; These have to be in this order

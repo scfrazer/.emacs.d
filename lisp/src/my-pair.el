@@ -97,4 +97,28 @@
                (delete-char 1)))
            (delete-char -1)))))
 
+(defconst my-pair-syntax-table
+  (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?{ "(}" table)
+    (modify-syntax-entry ?} "){" table)
+    (modify-syntax-entry ?\( "()" table)
+    (modify-syntax-entry ?\) ")(" table)
+    (modify-syntax-entry ?\[ "(]" table)
+    (modify-syntax-entry ?\] ")[" table)
+    table))
+
+(defun my-pair-close-all ()
+  "Close all open parens."
+  (interactive)
+  (let ((closers ""))
+    (with-syntax-table my-pair-syntax-table
+      (save-excursion
+        (condition-case nil
+            (while t
+              (backward-up-list)
+              (setq closers
+                    (concat closers (char-to-string (matching-paren (char-after))))))
+          (error nil))))
+    (insert closers)))
+
 (provide 'my-pair)
