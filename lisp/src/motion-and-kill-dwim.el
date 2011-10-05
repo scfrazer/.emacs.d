@@ -419,9 +419,9 @@ This is a utility function, you probably want `makd-backward-word-section'."
                  (makd-backward-section)
                  (point))))
 
-(defun makd-kill-unit ()
-  "Kill over a unit of text."
-  (interactive)
+(defun makd-kill-unit (&optional arg)
+  "Kill over a unit of text.  With a prefix arg, delete instead of kill."
+  (interactive "P")
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (message "Kill:")
@@ -476,7 +476,12 @@ This is a utility function, you probably want `makd-backward-word-section'."
         (unless dir
           (setq dir 'forward))
         (let ((region (makd-region-inside-quotes c dir)))
-          (kill-region (car region) (cdr region)))))))
+          (kill-region (car region) (cdr region))))))
+  (when arg
+    (when kill-ring
+      (setq kill-ring (cdr kill-ring)))
+    (when kill-ring-yank-pointer
+      (setq kill-ring-yank-pointer kill-ring))))
 
 (defun makd-copy-unit ()
   "Copy over a unit of text."
