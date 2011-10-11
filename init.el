@@ -1268,9 +1268,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
 
-(my-keys-define "'" 'my-pair-insert)
-(my-keys-define "\"" 'my-pair-insert)
-(my-keys-define "`" 'my-pair-insert)
+;; (my-keys-define "'" 'my-pair-insert)
+;; (my-keys-define "\"" 'my-pair-insert)
+;; (my-keys-define "`" 'my-pair-insert)
 ;; (my-keys-define "(" 'my-pair-insert)
 ;; (my-keys-define "[" 'my-pair-insert)
 ;; (my-keys-define "{" 'my-pair-insert)
@@ -1360,6 +1360,9 @@ Does not set point.  Does nothing if mark ring is empty."
        '("/vob/sse/asic/.*\\.c$" "/nfs/luke_scratch/tags/sc/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
        '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
+       '("/.+/scfrazer/uvm/.*\\.svh?$"
+         "/auto/luke_user6/scfrazer/uvm/uvm-1.1/src/TAGS"
+         "/auto/luke_user6/scfrazer/uvm/ngdv_test/TAGS")
 
 ;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
 ;;        '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
