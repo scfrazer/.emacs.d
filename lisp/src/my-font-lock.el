@@ -32,17 +32,17 @@
 (defun my-font-small ()
   "Switch to small font."
   (interactive)
-  (set-frame-font "smf-small"))
+  (set-frame-font "-*-terminus-*-*-*-12-*"))
 
 (defun my-font-medium ()
   "Switch to medium font."
   (interactive)
-  (set-frame-font "smf-medium"))
+  (set-frame-font "-frazer-*-medium-*-*-*-14-*"))
 
 (defun my-font-large ()
   "Switch to large font."
   (interactive)
-  (set-frame-font "smf-large"))
+  (set-frame-font "-*-terminus-*-*-*-14-*"))
 
 ;; Show whitespace functionality
 
