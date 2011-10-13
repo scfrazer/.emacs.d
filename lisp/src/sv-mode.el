@@ -308,7 +308,7 @@ Otherwise indent them as usual."
              "typeof" "ungetc" "unsigned" "urandom" "urandom_range" "void"
              "warning" "write" "writememb" "writememh"
              ;; Not in the LRM, but most simulators support
-             "psprintf"))
+             "psprintf" "sformatf"))
           "\\)\\_>"))
 
 (defvar sv-mode-aop-keywords
