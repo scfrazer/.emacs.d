@@ -1417,9 +1417,9 @@ Does not set point.  Does nothing if mark ring is empty."
                                       (concat "%" fmt)))))
                                  (if v1 "\\n\", " "\\n\"") v1)))
 
-(let ((resultsdir (getenv "RESULTSDIR")))
-  (when (and resultsdir (assoc "resultsdir" bookmark-alist))
-    (bookmark-set-filename "resultsdir" (concat resultsdir "/"))))
+;; (let ((resultsdir (getenv "RESULTSDIR")))
+;;   (when (and resultsdir (assoc "resultsdir" bookmark-alist))
+;;     (bookmark-set-filename "resultsdir" (concat resultsdir "/"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
