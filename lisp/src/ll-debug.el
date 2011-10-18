@@ -684,9 +684,8 @@ Uses `query-replace-regexp' internally."
       (match-string 4))))
 
 (ll-debug-register-mode 'sv-mode
-                        "$display(" ");"
-                        '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
-                        '(nil "\"%t: " (ll-debug-create-next-debug-string)
+                        "" ");"
+                        '(nil "$display(\"%t: " (ll-debug-create-next-debug-string)
                               " (" (ll-debug-get-sv-mode-function) ")"
                               ("Variable name: "
                                "  " str "="
@@ -703,7 +702,29 @@ Uses `query-replace-regexp' internally."
                                    (concat "%0" fmt))
                                   (t
                                    (concat "%" fmt)))))
-                              (if v1 "\", $time, " "\", $time") v1))
+                              (if v1 "\", $time, " "\", $time") v1)
+                        '(nil "`uvm_info(\"" (ll-debug-create-next-debug-string)
+                              "\", $sformatf(\"(%s)"
+                              (not (setq v1 (concat "\"" (ll-debug-get-sv-mode-function) "\"")))
+                              ("Variable name: "
+                               "  " str "="
+                               '(progn
+                                  (if v1
+                                      (setq v1 (concat v1 ", " str))
+                                    (setq v1 str))
+                                  nil)
+                               (let ((fmt (read-string "Format: ")))
+                                 (cond
+                                  ((string= (downcase fmt) "h")
+                                   (concat "h'%0" fmt))
+                                  ((string= (downcase fmt) "d")
+                                   (concat "%0" fmt))
+                                  (t
+                                   (concat "%" fmt)))))
+                              (if v1
+                                  "\", "
+                                "\"")
+                              v1 "), UVM_MEDIUM"))
 
 (defun ll-debug-renumber ()
   "Renumber the debug messages in order."

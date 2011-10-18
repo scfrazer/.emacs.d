@@ -501,6 +501,11 @@ Prefix with C-u to fit the `next-window'."
     (setq char (char-before))
     (insert-char char (- 80 (- (point) (point-at-bol))))))
 
+(defun my-ll-debug-insert (&optional arg)
+  "Swap default style of ll-debug-insert."
+  (interactive "P")
+  (ll-debug-insert (if arg nil 1)))
+
 (defun my-kill-buffer (arg buffer)
   "Kill buffer and delete window if there is more than one."
   (interactive "P\nbKill buffer: ")
@@ -1195,7 +1200,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c j" 'makd-join-line-with-next)
 (my-keys-define "C-c k" 'my-kill-ring-pop)
 (my-keys-define "C-c l d" 'll-debug-revert)
-(my-keys-define "C-c l i" (lambda () (interactive) (ll-debug-insert 1)))
+(my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
 (my-keys-define "C-c n" 'my-narrow-nested-dwim)
