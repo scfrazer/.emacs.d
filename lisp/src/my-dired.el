@@ -123,6 +123,15 @@ there is a prefix arg."
     (find-alternate-file "..")
     (dired-goto-file current-dir)))
 
+;; Replace the current sub-dir with one at point
+
+(defun my-dired-replace-sub-dir ()
+  "Replace sub-dir with the one at point."
+  (interactive)
+  (let ((dir (dired-get-filename)))
+    (dired-kill-subdir)
+    (dired-maybe-insert-subdir dir)))
+
 ;; Dired hook
 
 (defun my-dired-mode-hook ()
@@ -130,6 +139,7 @@ there is a prefix arg."
   (define-key dired-mode-map (kbd "C-o") nil)
   (define-key dired-mode-map (kbd "M-o") nil)
   (define-key dired-mode-map "c" 'dired-do-copy)
+  (define-key dired-mode-map "I" 'my-dired-replace-sub-dir)
   (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
   (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
   (define-key dired-mode-map "o" 'my-dired-do-find-file)
