@@ -494,7 +494,7 @@ expression."
   "Is the current statement a class declaration?"
   (save-excursion
     (sv-mode-beginning-of-statement)
-    (looking-at "class")))
+    (looking-at "\\(virtual\\s-+\\)?class")))
 
 (defun sv-mode-determine-end-expr ()
   "Determine what the next appropriate end expression should be."
