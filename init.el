@@ -633,13 +633,15 @@ Prefix with C-u to fit the `next-window'."
     (unless (equal buf (current-buffer))
       (kill-buffer buf))))
 
-(defun my-put-file-name-on-clipboard ()
+(defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name on the clipboard"
-  (interactive)
+  (interactive "P")
   (let ((filename (if (equal major-mode 'dired-mode)
                       default-directory
                     (buffer-file-name))))
     (when filename
+      (when arg
+        (setq filename (file-name-nondirectory filename)))
       (let ((x-select-enable-clipboard t))
         (kill-new filename)
         (message filename)))))
