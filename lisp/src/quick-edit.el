@@ -4,7 +4,7 @@
 ;;
 ;; Author: Scott Frazer <frazer.scott@gmail.com>
 ;; Maintainer: Scott Frazer <frazer.scott@gmail.com>
-;; Created: 01 Jan 2010
+;; Created: 24 Oct 2011
 ;; Version: 1.0
 ;; Keywords: convenience
 ;;
@@ -30,13 +30,10 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Control variables
-
-(defvar qe-highlight-delay 0.5
-  "*How long to highlight.")
+;; Customizable variables
 
 (defvar qe-camelcase-sections t
-  "*Sections can also be camelCase")
+  "*Section commands also work on camelCase")
 
 (make-local-variable 'qe-camelcase-sections)
 
@@ -44,6 +41,19 @@
                                       'lisp-mode
                                       'python-mode)
   "*Major modes where blocks commands should work by indentation")
+
+(defface qe-kill-region-face
+  '((t (:inherit region)))
+  "Face to highlight region that will be killed"
+  :group 'faces)
+
+(defface qe-copy-region-face
+  '((t (:inherit region)))
+  "Face to highlight region that will be copied"
+  :group 'faces)
+
+(defvar qe-highlight-delay 0.5
+  "*How long to highlight.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Motion
@@ -418,11 +428,39 @@ This is a utility function, you probably want `qe-backward-word-section'."
                  (point))))
 
 (defun qe-kill-unit (&optional arg)
-  "Kill over a unit of text.  With a prefix arg, delete instead of kill."
+  "Kill over a unit of text.  With a prefix arg, delete instead of kill.
+If the region is highlighted, it will be killed.  Otherwise, you are prompted
+to enter another character which will cause the following:
+p -- Kill forward paragraph (and trailing whitespace)
+P -- Kill backward paragraph (and trailing whitespace)
+b -- Kill forward block
+B -- Kill backward block
+m -- Kill forward over matching paren/brace/curly/angle-bracket/quotes
+M -- Kill backward over matching paren/brace/curly/angle-bracket/quotes
+w -- Kill foward word
+W -- Kill backward word
+e -- Kill forward to end of line
+a -- Kill backward to beginning of indentation
+A -- Kill backward to beginning of line
+RET -- Kill forward to end of paragraph
+SPC -- Kill to mark
+\" -- Kill forward to double-quotes
+\' -- Kill forward to single-quote
+),],},> -- Kill forward to that char
+\(,[,{,< -- Kill backward to that char
+i -- Start kill inside paren/brace/curly/quotes/angle-bracket.  Another
+  character must then be entered and all the text backward and forward
+  inside the matching parens/brackets/curlies/quotes/angle-brackets is killed
+/ -- Kill to a location using isearch
+? -- Kill backward to a location using isearch
+Anything else -- Kill line.  For example if this function is bound to C-w,
+  a convenient way to kill the current line is C-w C-w"
   (interactive "P")
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
-    (message "Kill:")
+    (if arg
+        (message "Delete:")
+      (message "Kill:"))
     (let ((c (read-char)) dir)
       (cond
        ((eq c ?/) (call-interactively 'qe-kill-to-isearch))
@@ -458,7 +496,9 @@ This is a utility function, you probably want `qe-backward-word-section'."
         (kill-region (point-at-bol) (point-at-bol 2))))
 
       (when (eq c ?i)
-        (message "Kill: i")
+        (if arg
+            (message "Kill: i")
+          (message "Delete: i"))
         (setq c (read-char))
         (setq dir 'inside))
 
@@ -477,6 +517,7 @@ This is a utility function, you probably want `qe-backward-word-section'."
           (setq dir 'forward))
         (let ((region (qe-region-inside-quotes c dir)))
           (kill-region (car region) (cdr region))))))
+
   (when arg
     (when kill-ring
       (setq kill-ring (cdr kill-ring)))
@@ -484,7 +525,33 @@ This is a utility function, you probably want `qe-backward-word-section'."
       (setq kill-ring-yank-pointer kill-ring))))
 
 (defun qe-copy-unit ()
-  "Copy over a unit of text."
+  "Copy over a unit of text.
+If the region is highlighted, it will be copied.  Otherwise, you are prompted
+to enter another character which will cause the following:
+p -- Copy forward paragraph (and trailing whitespace)
+P -- Copy backward paragraph (and trailing whitespace)
+b -- Copy forward block
+B -- Copy backward block
+m -- Copy forward over matching paren/brace/curly/angle-bracket/quotes
+M -- Copy backward over matching paren/brace/curly/angle-bracket/quotes
+w -- Copy foward word
+W -- Copy backward word
+e -- Copy forward to end of line
+a -- Copy backward to beginning of indentation
+A -- Copy backward to beginning of line
+RET -- Copy forward to end of paragraph
+SPC -- Copy to mark
+\" -- Copy forward to double-quotes
+\' -- Copy forward to single-quote
+),],},> -- Copy forward to that char
+\(,[,{,< -- Copy backward to that char
+i -- Start copy inside paren/brace/curly/quotes/angle-bracket.  Another
+  character must then be entered and all the text backward and forward
+  inside the matching parens/brackets/curlies/quotes/angle-brackets is copied
+/ -- Copy to a location using isearch
+? -- Copy backward to a location using isearch
+Anything else -- Copy line.  For example if this function is bound to M-w,
+  a convenient way to copy the current line is M-w M-w"
   (interactive)
   (if (region-active-p)
       (kill-ring-save (region-beginning) (region-end))
@@ -562,16 +629,6 @@ This is a utility function, you probably want `qe-backward-word-section'."
 (defvar qe-isearch-overlay nil)
 (defvar qe-isearch-face nil)
 (defvar qe-isearch-forward nil)
-
-(defface qe-kill-region-face
-  '((t (:inherit region)))
-  "Face to highlight region that will be killed"
-  :group 'faces)
-
-(defface qe-copy-region-face
-  '((t (:inherit region)))
-  "Face to highlight region that will be copied"
-  :group 'faces)
 
 (defun qe-kill-to-isearch ()
   "Kill from point to somewhere else using isearch."
