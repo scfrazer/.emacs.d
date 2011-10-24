@@ -1,4 +1,4 @@
-;;; quick-edit.el
+;;; quick-edit.el --- Quick motion and copy/kill commands
 ;;
 ;; Copyright (C) 2011  Scott Frazer
 ;;
@@ -29,6 +29,7 @@
 
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Control variables
 
 (defvar qe-highlight-delay 0.5
@@ -41,10 +42,8 @@
 
 (defvar qe-block-indented-modes (list 'emacs-lisp-mode
                                       'lisp-mode
-                                      'scheme-mode
-                                      'xml-mode
                                       'python-mode)
-  "*Major modes that forward block should work by indentation")
+  "*Major modes where blocks commands should work by indentation")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Motion
@@ -345,18 +344,18 @@ This is a utility function, you probably want `qe-backward-word-section'."
                          ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
                           (skip-syntax-forward " "))
-                         ((qe-looking-at-syntax "w_")
+                         ((makd-looking-at-syntax "w_")
                           (skip-syntax-forward "w_"))
-                         ((qe-looking-at-syntax " ")
+                         ((makd-looking-at-syntax " ")
                           (skip-syntax-forward " "))
-                         ((qe-looking-at-syntax ".")
+                         ((makd-looking-at-syntax ".")
                           (skip-syntax-forward "."))
-                         ((qe-looking-at-syntax "(")
+                         ((makd-looking-at-syntax "(")
                           (forward-sexp))
-                         ((qe-looking-at-syntax "\"")
+                         ((makd-looking-at-syntax "\"")
                           (let ((c (char-after)) region)
                             (forward-char)
-                            (setq region (qe-region-inside-quotes c 'forward))
+                            (setq region (makd-region-inside-quotes c 'forward))
                             (goto-char (cdr region)))
                           (forward-char))
                          (t
@@ -389,20 +388,20 @@ This is a utility function, you probably want `qe-backward-word-section'."
                  (progn
                    (cond ((looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
                           (goto-char (match-beginning 0)))
-                         ((qe-looking-back-syntax " ")
+                         ((makd-looking-back-syntax " ")
                           (skip-syntax-backward " ")
-                          (when (qe-looking-back-syntax "w_")
+                          (when (makd-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
-                         ((qe-looking-back-syntax "w_")
+                         ((makd-looking-back-syntax "w_")
                           (skip-syntax-backward "w_"))
-                         ((qe-looking-back-syntax ".")
+                         ((makd-looking-back-syntax ".")
                           (skip-syntax-backward "."))
-                         ((qe-looking-back-syntax ")")
+                         ((makd-looking-back-syntax ")")
                           (backward-sexp))
-                         ((qe-looking-back-syntax "\"")
+                         ((makd-looking-back-syntax "\"")
                           (backward-char)
                           (let ((c (char-after)) region)
-                            (setq region (qe-region-inside-quotes c 'backward))
+                            (setq region (makd-region-inside-quotes c 'backward))
                             (goto-char (car region)))
                           (backward-char))
                          (t
@@ -555,27 +554,6 @@ This is a utility function, you probably want `qe-backward-word-section'."
                  (qe-highlight beg end 'qe-copy-region-face)
                  (kill-ring-save beg end))))))))
 
-(defun qe-kill-line (&optional arg)
-  "Like kill-line, but use `qe-join-line-with-next' when at
-end-of-line (and it's not a empty line).  Kills region if active."
-  (interactive "P")
-  (if (region-active-p)
-      (kill-region (region-beginning) (region-end))
-    (if (or arg (not (eolp)) (bolp))
-        (cond ((null arg)
-               (kill-line))
-              ((= arg 0)
-               (kill-region (point) (progn (back-to-indentation) (point))))
-              (t
-               (kill-line arg)))
-      (qe-join-line-with-next))))
-
-(defun qe-join-line-with-next ()
-  "Join current line with next."
-  (interactive)
-  (delete-indentation t)
-  (just-one-space 1))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill/copy with isearch
 
@@ -645,96 +623,6 @@ end-of-line (and it's not a empty line).  Kills region if active."
 (defadvice isearch-dehighlight (after qe-isearch-remove-overlay activate)
   (when qe-isearch-overlay
     (delete-overlay qe-isearch-overlay)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Yank
-
-(defun qe-yank (&optional arg)
-  "Yank and indent."
-  (interactive "P")
-  (when (region-active-p)
-    (kill-region (region-beginning) (region-end))
-    (rotate-yank-pointer 1))
-  (yank)
-  (when (and (not arg) (not (member indent-line-function '(indent-relative sh-basic-indent-line))))
-    (exchange-point-and-mark)
-    (indent-region (point) (mark 't))
-    (exchange-point-and-mark)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Scrolling/Paging
-
-(defun qe-scroll-down (n)
-  "Scroll down without moving point (if possible)."
-  (interactive "p")
-  (let ((col (current-column)))
-    (unless (pos-visible-in-window-p (point-max))
-      (scroll-up n))
-    (forward-line n)
-    (unless (memq last-command (list 'next-line 'previous-line))
-      (setq temporary-goal-column col))
-    (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (+ (car temporary-goal-column)
-                                     (cdr temporary-goal-column))
-                                temporary-goal-column)))
-    (setq this-command 'next-line)))
-
-(defun qe-scroll-up (n)
-  "Scroll up without moving point (if possible)."
-  (interactive "p")
-  (let ((col (current-column)))
-    (unless (pos-visible-in-window-p (point-min))
-      (scroll-down n))
-    (forward-line (- 0 n))
-    (unless (memq last-command (list 'next-line 'previous-line))
-      (setq temporary-goal-column col))
-    (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (+ (car temporary-goal-column)
-                                     (cdr temporary-goal-column))
-                                temporary-goal-column)))
-    (setq this-command 'previous-line)))
-
-(defun qe-page-down ()
-  "Page down and keep column."
-  (interactive)
-  (let ((col (current-column))
-        (lines (- (window-height) 2)))
-    (if (pos-visible-in-window-p (point-max))
-        (goto-char (point-max))
-      (save-excursion
-        (goto-char (window-start))
-        (forward-line lines)
-        (set-window-start (selected-window) (point)))
-      (forward-line lines)
-      (when (eobp)
-        (recenter -1)))
-    (unless (memq last-command (list 'next-line 'previous-line))
-      (setq temporary-goal-column col))
-    (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (+ (car temporary-goal-column)
-                                     (cdr temporary-goal-column))
-                                temporary-goal-column)))
-    (setq this-command 'next-line)))
-
-(defun qe-page-up ()
-  "Page up and keep column."
-  (interactive)
-  (let ((col (current-column))
-        (lines (- 2 (window-height))))
-    (if (pos-visible-in-window-p (point-min))
-        (goto-char (point-min))
-      (save-excursion
-        (goto-char (window-start))
-        (forward-line lines)
-        (set-window-start (selected-window) (point)))
-      (forward-line lines))
-    (unless (memq last-command (list 'next-line 'previous-line))
-      (setq temporary-goal-column col))
-    (move-to-column (truncate (if (consp temporary-goal-column)
-                                  (+ (car temporary-goal-column)
-                                     (cdr temporary-goal-column))
-                                temporary-goal-column)))
-    (setq this-command 'previous-line)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Highlight
