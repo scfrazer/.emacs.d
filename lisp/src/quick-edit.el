@@ -344,7 +344,7 @@ This is a utility function, you probably want `qe-backward-word-section'."
 7. Else if looking at an open bracket/brace/paren, kill sexp forward
 8. Else if looking at a quotation mark, kill quoted text
 9. Else kill next char"
-  (interactive)
+  (interactive "*")
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
@@ -354,18 +354,18 @@ This is a utility function, you probably want `qe-backward-word-section'."
                          ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
                           (skip-syntax-forward " "))
-                         ((makd-looking-at-syntax "w_")
+                         ((qe-looking-at-syntax "w_")
                           (skip-syntax-forward "w_"))
-                         ((makd-looking-at-syntax " ")
+                         ((qe-looking-at-syntax " ")
                           (skip-syntax-forward " "))
-                         ((makd-looking-at-syntax ".")
+                         ((qe-looking-at-syntax ".")
                           (skip-syntax-forward "."))
-                         ((makd-looking-at-syntax "(")
+                         ((qe-looking-at-syntax "(")
                           (forward-sexp))
-                         ((makd-looking-at-syntax "\"")
+                         ((qe-looking-at-syntax "\"")
                           (let ((c (char-after)) region)
                             (forward-char)
-                            (setq region (makd-region-inside-quotes c 'forward))
+                            (setq region (qe-region-inside-quotes c 'forward))
                             (goto-char (cdr region)))
                           (forward-char))
                          (t
@@ -374,7 +374,7 @@ This is a utility function, you probably want `qe-backward-word-section'."
 
 (defun qe-forward-kill-section ()
   "Forward kill pieces of words."
-  (interactive)
+  (interactive "*")
   (kill-region (point)
                (progn
                  (qe-forward-section)
@@ -391,27 +391,27 @@ This is a utility function, you probably want `qe-backward-word-section'."
 6. Else if looking at an close bracket/brace/paren, kill backward sexp
 7. Else if looking at a quotation mark, kill backward quoted text
 8. Else kill previous char"
-  (interactive)
+  (interactive "*")
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
                    (cond ((looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
                           (goto-char (match-beginning 0)))
-                         ((makd-looking-back-syntax " ")
+                         ((qe-looking-back-syntax " ")
                           (skip-syntax-backward " ")
-                          (when (makd-looking-back-syntax "w_")
+                          (when (qe-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
-                         ((makd-looking-back-syntax "w_")
+                         ((qe-looking-back-syntax "w_")
                           (skip-syntax-backward "w_"))
-                         ((makd-looking-back-syntax ".")
+                         ((qe-looking-back-syntax ".")
                           (skip-syntax-backward "."))
-                         ((makd-looking-back-syntax ")")
+                         ((qe-looking-back-syntax ")")
                           (backward-sexp))
-                         ((makd-looking-back-syntax "\"")
+                         ((qe-looking-back-syntax "\"")
                           (backward-char)
                           (let ((c (char-after)) region)
-                            (setq region (makd-region-inside-quotes c 'backward))
+                            (setq region (qe-region-inside-quotes c 'backward))
                             (goto-char (car region)))
                           (backward-char))
                          (t
@@ -420,7 +420,7 @@ This is a utility function, you probably want `qe-backward-word-section'."
 
 (defun qe-backward-kill-section ()
   "Backward kill pieces of words."
-  (interactive)
+  (interactive "*")
   (kill-region (point)
                (progn
                  (skip-syntax-backward "_")
@@ -455,7 +455,7 @@ i -- Start kill inside paren/brace/curly/quotes/angle-bracket.  Another
 ? -- Kill backward to a location using isearch
 Anything else -- Kill line.  For example if this function is bound to C-w,
   a convenient way to kill the current line is C-w C-w"
-  (interactive "P")
+  (interactive "*P")
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (if arg
@@ -632,12 +632,12 @@ Anything else -- Copy line.  For example if this function is bound to M-w,
 
 (defun qe-kill-to-isearch ()
   "Kill from point to somewhere else using isearch."
-  (interactive)
+  (interactive "*")
   (qe-kill-or-copy-isearch t t))
 
 (defun qe-backward-kill-to-isearch ()
   "Kill backward from point to somewhere else using isearch."
-  (interactive)
+  (interactive "*")
   (qe-kill-or-copy-isearch t nil))
 
 (defun qe-copy-to-isearch ()

@@ -36,8 +36,8 @@
 (require 'mdabbrev)
 (require 'midnight)
 (require 'mode-fn)
-(require 'motion-and-kill-dwim)
 (require 'narrow-nested)
+(require 'quick-edit)
 (require 'rect)
 (require 'redo+)
 (load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
@@ -54,6 +54,7 @@
 (require 'my-comment)
 (require 'my-doxymacs)
 (require 'my-ediff)
+(require 'my-edit)
 (require 'my-expand)
 (require 'my-ffap)
 (require 'my-grep-ed)
@@ -1176,7 +1177,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-M-y" 'clipboard-yank)
 (my-keys-define "C-S-d" 'my-pair-delete-forward)
 (my-keys-define "C-S-o" 'my-other-frame)
-(my-keys-define "C-S-y" (lambda () (interactive) (makd-yank t)))
+(my-keys-define "C-S-y" (lambda () (interactive) (my-edit-yank t)))
 (my-keys-define "C-^" 'my-pop-back-imenu)
 (my-keys-define "C-`" 'next-error)
 (my-keys-define "C-c #" 'my-convert-to-base)
@@ -1199,7 +1200,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c c" 'my-comment-region-after-copy)
 (my-keys-define "C-c f" 'font-lock-fontify-buffer)
 (my-keys-define "C-c g" 'lgrep)
-(my-keys-define "C-c j" 'makd-join-line-with-next)
+(my-keys-define "C-c j" 'my-edit-join-line-with-next)
 (my-keys-define "C-c k" 'my-kill-ring-pop)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
@@ -1213,9 +1214,9 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" 'my-font-lock-show-whitespace)
 (my-keys-define "C-c y" 'yank-target-map)
-(my-keys-define "C-k" 'makd-kill-line)
+(my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
-(my-keys-define "C-w" 'makd-kill-unit)
+(my-keys-define "C-w" 'qe-kill-unit)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
@@ -1235,7 +1236,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x t" 'task-map)
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
-(my-keys-define "C-y" 'makd-yank)
+(my-keys-define "C-y" 'my-edit-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "C-~" 'previous-error)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
@@ -1250,7 +1251,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-?" 'etags-select-find-tag-at-point)
 (my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
 (my-keys-define "M-Q" 'my-unfill)
-(my-keys-define "M-S" (lambda () (interactive) (makd-yank t)))
 (my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
@@ -1271,7 +1271,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r r" 'my-replace-rectangle)
 (my-keys-define "M-r y" 'yank-rectangle)
 (my-keys-define "M-s o" 'my-occur)
-(my-keys-define "M-w" 'makd-copy-unit)
+(my-keys-define "M-w" 'qe-copy-unit)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
 
@@ -1297,36 +1297,36 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-M-n" 'up-list)
 (my-keys-define "C-M-p" 'backward-up-list)
 
-(my-keys-define "M-N" 'makd-page-down)
-(my-keys-define "M-P" 'makd-page-up)
+(my-keys-define "M-N" 'my-edit-down)
+(my-keys-define "M-P" 'my-edit-up)
 
-(my-keys-define "M-h" 'makd-backward-word)
-(my-keys-define "M-l" 'makd-forward-word)
-(my-keys-define "M-n" 'makd-forward-paragraph)
-(my-keys-define "M-p" 'makd-backward-paragraph)
+(my-keys-define "M-h" 'qe-backward-word)
+(my-keys-define "M-l" 'qe-forward-word)
+(my-keys-define "M-n" 'qe-forward-paragraph)
+(my-keys-define "M-p" 'qe-backward-paragraph)
 
-(my-keys-define "C->" 'makd-forward-block)
-(my-keys-define "C-<" 'makd-backward-block)
+(my-keys-define "C->" 'qe-forward-block)
+(my-keys-define "C-<" 'qe-backward-block)
 
-(my-keys-define "M-H" 'makd-backward-word-end)
-(my-keys-define "M-L" 'makd-forward-word-end)
+(my-keys-define "M-H" 'qe-backward-word-end)
+(my-keys-define "M-L" 'qe-forward-word-end)
 
-(my-keys-define "C-S-h" 'makd-backward-word-section)
-(my-keys-define "C-S-l" 'makd-forward-word-section)
+(my-keys-define "C-S-h" 'qe-backward-word-section)
+(my-keys-define "C-S-l" 'qe-forward-word-section)
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)
 
-(my-keys-define "C-S-n" 'makd-scroll-down)
-(my-keys-define "C-S-p" 'makd-scroll-up)
+(my-keys-define "C-S-n" 'my-edit-scroll-down)
+(my-keys-define "C-S-p" 'my-edit-scroll-up)
 
 ;; Kill
 
-(my-keys-define "M-j" 'makd-backward-kill)
-(my-keys-define "M-k" 'makd-forward-kill)
+(my-keys-define "M-j" 'qe-backward-kill)
+(my-keys-define "M-k" 'qe-forward-kill)
 
-(my-keys-define "M-J" 'makd-backward-kill-section)
-(my-keys-define "M-K" 'makd-forward-kill-section)
+(my-keys-define "M-J" 'qe-backward-kill-section)
+(my-keys-define "M-K" 'qe-forward-kill-section)
 
 ;; Keybinding minor mode
 
@@ -1336,19 +1336,13 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-minor-mode 1)
 
-(global-set-key (kbd "<C-down-mouse-1>") nil)
-(global-set-key (kbd "<C-mouse-1>") (lambda (event)
-                                      (interactive "e")
-                                      (mouse-set-point event)
-                                      (makd-select-word-at-point)))
-
 (global-set-key (kbd "<mouse-2>") 'mouse-yank-primary)
 
 (global-set-key (kbd "<S-down-mouse-3>") 'imenu)
 (global-set-key (kbd "<C-down-mouse-3>") 'mouse-popup-menubar)
 
-(global-set-key (kbd "<mouse-4>") (lambda () "Scroll up." (interactive) (makd-scroll-up 5)))
-(global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (makd-scroll-down 5)))
+(global-set-key (kbd "<mouse-4>") (lambda () "Scroll up." (interactive) (my-edit-scroll-up 5)))
+(global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (my-edit-scroll-down 5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup

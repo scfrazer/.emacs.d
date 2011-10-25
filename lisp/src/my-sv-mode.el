@@ -32,12 +32,12 @@
   (when (not (buffer-modified-p))
     (my-mode-line-count-lines)))
 
-(defadvice makd-forward-block (around sv-forward-block activate)
+(defadvice qe-forward-block (around sv-forward-block activate)
   (if (equal major-mode 'sv-mode)
       (sv-mode-end-of-block)
     ad-do-it))
 
-(defadvice makd-backward-block (around sv-backward-block activate)
+(defadvice qe-backward-block (around sv-backward-block activate)
   (if (equal major-mode 'sv-mode)
       (sv-mode-beginning-of-block)
     ad-do-it))
