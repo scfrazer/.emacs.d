@@ -19,6 +19,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/org")
 
 (when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (package-initialize))
 
 ;; Need these first to avoid font-lock/dired issues
@@ -40,7 +41,7 @@
 (require 'quick-edit)
 (require 'rect)
 (require 'redo+)
-(load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
+; (load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
 (require 'revbufs)
 (require 'task)
 (require 'uniquify)
