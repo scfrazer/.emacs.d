@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; init.el
 
 ;; Time load time
@@ -41,7 +41,6 @@
 (require 'quick-edit)
 (require 'rect)
 (require 'redo+)
-; (load (expand-file-name "~/.emacs.d/lisp/src/register-list.el")) ;; Ugh, can't compile this yet
 (require 'revbufs)
 (require 'task)
 (require 'uniquify)
@@ -83,7 +82,6 @@
 
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
-(autoload 'all "all" nil t)
 (autoload 'antlr3-mode "antlr3-mode" "ANTLR code editing mode" t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
@@ -106,7 +104,6 @@
 (autoload 'my-confluence-html "my-confluence" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
-(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
 (autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
@@ -260,7 +257,6 @@
 (add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
 (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
