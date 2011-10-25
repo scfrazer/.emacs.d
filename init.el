@@ -1297,8 +1297,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-M-n" 'up-list)
 (my-keys-define "C-M-p" 'backward-up-list)
 
-(my-keys-define "M-N" 'my-edit-down)
-(my-keys-define "M-P" 'my-edit-up)
+(my-keys-define "M-N" 'my-edit-page-down)
+(my-keys-define "M-P" 'my-edit-page-up)
 
 (my-keys-define "M-h" 'qe-backward-word)
 (my-keys-define "M-l" 'qe-forward-word)

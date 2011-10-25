@@ -2,7 +2,7 @@
 
 (require 'narrow-nested)
 (require 'my-mode-line)
-(require 'motion-and-kill-dwim)
+(require 'quick-edit)
 
 (defadvice find-tag-default (after my-sv-mode-find-tag-default activate)
   "Remove backtick in sv-mode."
