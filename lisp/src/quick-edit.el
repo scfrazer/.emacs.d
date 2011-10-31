@@ -194,144 +194,8 @@ depending on the major mode (see `qe-block-indented-modes')."
         (setq done t)
         (beginning-of-line)))))
 
-;;; Utility motion functions
-
-(defun qe-looking-at-syntax (str)
-  "Return non-nil if looking at syntax of a char in STR."
-  (unless (eobp)
-    (let* ((invert (= (string-to-char str) ?^))
-           (syntax-chars (append (if invert (substring str 1) str) nil))
-           (result (member (char-syntax (char-after (point))) syntax-chars)))
-      (if invert (not result) result))))
-
-(defun qe-looking-back-syntax (str)
-  "Return non-nil if looking back at syntax of a char in STR."
-  (unless (bobp)
-    (let* ((invert (= (string-to-char str) ?^))
-           (syntax-chars (append (if invert (substring str 1) str) nil))
-           (result (member (char-syntax (char-before (point))) syntax-chars)))
-      (if invert (not result) result))))
-
-(defun qe-forward-section ()
-  "Move forward a word section.
-This is a utility function, you probably want `qe-forward-word-section'"
-  (let ((case-fold-search nil))
-    (if qe-camelcase-sections
-        (if (looking-at "[a-z0-9]")
-            (skip-chars-forward "a-z0-9")
-          (when (looking-at "[A-Z]")
-            (forward-char)
-            (if (looking-at "[a-z]")
-                (skip-chars-forward "a-z0-9")
-              (skip-chars-forward "A-Z0-9"))))
-      (skip-chars-forward "a-zA-Z0-9"))))
-
-(defun qe-backward-section ()
-  "Move backward a word section.
-This is a utility function, you probably want `qe-backward-word-section'."
-  (let ((case-fold-search nil))
-    (if qe-camelcase-sections
-        (progn
-          (skip-chars-backward "0-9")
-          (if (looking-back "[A-Z]" (1- (point)))
-              (skip-chars-backward "A-Z0-9")
-            (when (looking-back "[a-z]" (1- (point)))
-              (skip-chars-backward "a-z0-9")
-              (when (looking-back "[A-Z]" (1- (point)))
-                (backward-char)))))
-      (skip-chars-backward "a-zA-Z0-9"))))
-
-;; Utility region functions
-
-(defun qe-region-inside-pair (char dir)
-  "Find the region inside paired chars ()[]{}<>"
-  (let* ((beg (point))
-         (end beg)
-         open close)
-    (cond ((or (eq char ?() (eq char ?)))
-           (setq open  ?\( close ?\)))
-          ((or (eq char ?\[) (eq char ?\]))
-           (setq open  ?\[ close ?\]))
-          ((or (eq char ?\{) (eq char ?\}))
-           (setq open  ?\{ close ?\}))
-          ((or (eq char ?\<) (eq char ?\>))
-           (setq open  ?\< close ?\>)))
-    (save-excursion
-      (cond ((equal dir 'backward)
-             (setq beg (qe-backward-paired open close)))
-            ((equal dir 'forward)
-             (setq end (qe-forward-paired open close)))
-            ((equal dir 'inside)
-             (save-excursion (setq beg (qe-backward-paired open close)))
-             (setq end (qe-forward-paired open close)))))
-    (cons beg end)))
-
-(defun qe-backward-paired (open close)
-  (let ((nesting 0)
-        (regex (concat "[" (char-to-string close) (char-to-string open) "]"))
-        done)
-    (while (not (or done (bobp)))
-      (when (and (re-search-backward regex nil 'go)
-                 (not (memq (get-text-property (point) 'face)
-                            '(font-lock-comment-face font-lock-string-face))))
-        (cond ((eq (char-after) close)
-               (setq nesting (1+ nesting)))
-              ((eq (char-after) open)
-               (if (= nesting 0)
-                   (setq done t)
-                 (setq nesting (1- nesting)))))))
-    (when done
-      (forward-char)))
-  (point))
-
-(defun qe-forward-paired (open close)
-  (let ((nesting 0)
-        (regex (concat "[" (char-to-string close) (char-to-string open) "]"))
-        done)
-    (while (not (or done (eobp)))
-      (when (and (re-search-forward regex nil 'go)
-                 (not (memq (get-text-property (1- (point)) 'face)
-                            '(font-lock-comment-face font-lock-string-face))))
-        (cond ((eq (char-before) open)
-               (setq nesting (1+ nesting)))
-              ((eq (char-before) close)
-               (if (= nesting 0)
-                   (setq done t)
-                 (setq nesting (1- nesting)))))))
-    (when done
-      (backward-char)))
-  (point))
-
-(defun qe-region-inside-quotes (char dir)
-  "Find the region inside quote chars \"'"
-  (let* ((beg (point))
-         (end beg)
-         (regex (char-to-string char))
-         done)
-    (unless (equal dir 'forward)
-      (save-excursion
-        (setq done nil)
-        (while (not (or done (bobp)))
-          (when (re-search-backward regex nil 'go)
-            (setq done (not (equal (char-before) ?\\)))))
-        (unless (bobp)
-          (forward-char))
-        (setq beg (point))))
-    (unless (equal dir 'backward)
-      (save-excursion
-        (setq done nil)
-        (while (not (or done (eobp)))
-          (when (re-search-forward regex nil 'go)
-            (backward-char)
-            (setq done (not (equal (char-before) ?\\)))
-            (forward-char)))
-        (unless (eobp)
-          (backward-char))
-        (setq end (point))))
-    (cons beg end)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Kill/copy
+;; Smart kill/copy
 
 (defun qe-forward-kill ()
   "Smart kill forward.
@@ -426,6 +290,9 @@ This is a utility function, you probably want `qe-backward-word-section'."
                  (skip-syntax-backward "_")
                  (qe-backward-section)
                  (point))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Text unit kill/copy
 
 (defun qe-kill-unit (&optional arg)
   "Kill over a unit of text.  With a prefix arg, delete instead of kill.
@@ -523,6 +390,94 @@ Anything else -- Kill line.  For example if this function is bound to C-w,
       (setq kill-ring (cdr kill-ring)))
     (when kill-ring-yank-pointer
       (setq kill-ring-yank-pointer kill-ring))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar qe-unit-common-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "p") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-paragraph)))
+    (define-key map (kbd "P") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-paragraph)))
+    (define-key map (kbd "b") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-block)))
+    (define-key map (kbd "B") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-block)))
+    (define-key map (kbd "w") 'qe-unit-ends-forward-word)
+    (define-key map (kbd "W") 'qe-unit-ends-backward-word)
+    (define-key map (kbd "m") 'qe-unit-ends-forward-matching)
+    (define-key map (kbd "M") 'qe-unit-ends-backward-matching)
+    (define-key map (kbd "e") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))
+    (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
+    (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
+    (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
+    (define-key map (kbd "SPC") 'qe-unit-ends-mark)
+    (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
+    (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
+    (define-key map (kbd ")") (lambda () (qe-region-inside-pair ?\) 'forward)))
+    (define-key map (kbd "]") (lambda () (qe-region-inside-pair ?\] 'forward)))
+    (define-key map (kbd "}") (lambda () (qe-region-inside-pair ?\} 'forward)))
+    (define-key map (kbd ">") (lambda () (qe-region-inside-pair ?\> 'forward)))
+    (define-key map (kbd "(") (lambda () (qe-region-inside-pair ?\) 'backward)))
+    (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
+    (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
+    (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
+    (define-key map (kbd "i") 'qe-unit-ends-inside)
+    map)
+  "Common keymap for unit kill/delete/copy.  Functions should return a cons
+cell with beginning/end of region.  Original point position need not be
+preserved.")
+
+(defvar qe-unit-kill-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "M-w") 'qe-unit-ends-paragraph)
+    (set-keymap-parent map qe-common-unit-map)
+    map)
+  "Keymap for unit kill/delete.  Parent keymap is `qe-unit-common-map', see
+that variable for more information.")
+
+(defun qe-unit-ends-point-to-fcn (fcn)
+  (cons (point) (progn (funcall fcn) (point))))
+
+(defun qe-unit-ends-forward-word ()
+  (cons (point) (progn (skip-syntax-forward "w_") (point))))
+
+(defun qe-unit-ends-backward-word ()
+  (cons (point) (progn (skip-syntax-backward "w_") (point))))
+
+(defun qe-unit-ends-forward-matching ()
+  (let ((beg (point))
+        (table (copy-syntax-table (syntax-table))))
+    (modify-syntax-entry ?< "(>" table)
+    (modify-syntax-entry ?> ")<" table)
+    (with-syntax-table table
+      (forward-sexp 1)
+      (cons beg (point)))))
+
+(defun qe-unit-ends-backward-matching ()
+  (let ((beg (point))
+        (table (copy-syntax-table (syntax-table))))
+    (modify-syntax-entry ?< "(>" table)
+    (modify-syntax-entry ?> ")<" table)
+    (with-syntax-table table
+      (forward-sexp -1)
+      (cons beg (point)))))
+
+(defun qe-unit-ends-mark ()
+  (cons (point) (progn (goto-char (or (mark) (point))) (point))))
+
+(defun qe-unit-ends-inside ()
+  (message "Inside:")
+  (let ((char (read-char)))
+    (if (memq char '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
+        (qe-region-inside-pair char 'inside)
+      (if(memq char '(?\" ?\'))
+          (qe-region-inside-quotes char dir)
+        (error "Unknown char entered for kill inside text unit")))))
+
+;; (let* ((ev (read-event "Key:"))
+;;        (fcn (lookup-key qe-kill-unit-map (vector ev))))
+;;   (when fcn
+;;     (funcall fcn)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun qe-copy-unit ()
   "Copy over a unit of text.
@@ -682,7 +637,120 @@ Anything else -- Copy line.  For example if this function is bound to M-w,
     (delete-overlay qe-isearch-overlay)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Highlight
+;;; Utility functions
+
+(defun qe-looking-at-syntax (str)
+  "Return non-nil if looking at syntax of a char in STR."
+  (unless (eobp)
+    (let* ((invert (= (string-to-char str) ?^))
+           (syntax-chars (append (if invert (substring str 1) str) nil))
+           (result (member (char-syntax (char-after (point))) syntax-chars)))
+      (if invert (not result) result))))
+
+(defun qe-looking-back-syntax (str)
+  "Return non-nil if looking back at syntax of a char in STR."
+  (unless (bobp)
+    (let* ((invert (= (string-to-char str) ?^))
+           (syntax-chars (append (if invert (substring str 1) str) nil))
+           (result (member (char-syntax (char-before (point))) syntax-chars)))
+      (if invert (not result) result))))
+
+(defun qe-forward-section ()
+  "Move forward a word section.
+This is a utility function, you probably want `qe-forward-word-section'"
+  (let ((case-fold-search nil))
+    (if qe-camelcase-sections
+        (if (looking-at "[a-z0-9]")
+            (skip-chars-forward "a-z0-9")
+          (when (looking-at "[A-Z]")
+            (forward-char)
+            (if (looking-at "[a-z]")
+                (skip-chars-forward "a-z0-9")
+              (skip-chars-forward "A-Z0-9"))))
+      (skip-chars-forward "a-zA-Z0-9"))))
+
+(defun qe-backward-section ()
+  "Move backward a word section.
+This is a utility function, you probably want `qe-backward-word-section'."
+  (let ((case-fold-search nil))
+    (if qe-camelcase-sections
+        (progn
+          (skip-chars-backward "0-9")
+          (if (looking-back "[A-Z]" (1- (point)))
+              (skip-chars-backward "A-Z0-9")
+            (when (looking-back "[a-z]" (1- (point)))
+              (skip-chars-backward "a-z0-9")
+              (when (looking-back "[A-Z]" (1- (point)))
+                (backward-char)))))
+      (skip-chars-backward "a-zA-Z0-9"))))
+
+(defun qe-region-inside-pair (char dir)
+  "Find the region inside paired chars ()[]{}<>"
+  (let* ((beg (point))
+         (end beg)
+         (table (copy-syntax-table (syntax-table)))
+         open close)
+    (modify-syntax-entry ?< "(>" table)
+    (modify-syntax-entry ?> ")<" table)
+    (cond ((or (eq char ?() (eq char ?)))
+           (setq open  ?\( close ?\)))
+          ((or (eq char ?\[) (eq char ?\]))
+           (setq open  ?\[ close ?\]))
+          ((or (eq char ?\{) (eq char ?\}))
+           (setq open  ?\{ close ?\}))
+          ((or (eq char ?\<) (eq char ?\>))
+           (setq open  ?\< close ?\>)))
+    (unless (equal dir 'forward)
+      (setq beg (save-excursion
+                  (with-syntax-table table
+                    (catch 'done
+                      (condition-case nil
+                          (while t
+                            (backward-up-list)
+                            (when (= (char-after) char)
+                              (throw 'done (point))))
+                        (error nil))
+                      (point-min))))))
+    (unless (equal dir 'backward)
+      (setq end (save-excursion
+                  (with-syntax-table table
+                    (catch 'done
+                      (condition-case nil
+                          (while t
+                            (up-list)
+                            (when (= (char-before) open)
+                              (throw 'done (point))))
+                        (error nil))
+                      (point-max))))))
+    (cons beg end)))
+
+(defun qe-region-inside-quotes (char dir)
+  "Find the region inside quote chars \"'"
+  (let* ((beg (point))
+         (end beg)
+         (regex (char-to-string char))
+         done)
+    (unless (equal dir 'forward)
+      (save-excursion
+        (setq done nil)
+        (while (not (or done (bobp)))
+          (when (re-search-backward regex nil 'go)
+            (setq done (not (equal (char-before) ?\\)))))
+        (unless (bobp)
+          (forward-char))
+        (setq beg (point))))
+    (unless (equal dir 'backward)
+      (save-excursion
+        (setq done nil)
+        (while (not (or done (eobp)))
+          (when (re-search-forward regex nil 'go)
+            (backward-char)
+            (setq done (not (equal (char-before) ?\\)))
+            (forward-char)))
+        (unless (eobp)
+          (backward-char))
+        (setq end (point))))
+    (cons beg end)))
 
 (defun qe-highlight (beg end &optional face)
   "Highlight a region temporarily."
