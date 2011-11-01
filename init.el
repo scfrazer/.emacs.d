@@ -1213,7 +1213,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
-(my-keys-define "C-w" 'qe-kill-unit)
+(my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
@@ -1268,7 +1268,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r r" 'my-replace-rectangle)
 (my-keys-define "M-r y" 'yank-rectangle)
 (my-keys-define "M-s o" 'my-occur)
-(my-keys-define "M-w" 'qe-copy-unit)
+(my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'my-flymake-goto-prev-error)
 

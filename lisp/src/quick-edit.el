@@ -213,7 +213,7 @@ depending on the major mode (see `qe-block-indented-modes')."
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-at "</?\\s-*[a-zA-Z].*>")
+                   (cond ((looking-at "</?\\s-*[a-zA-Z].*?>")
                           (goto-char (match-end 0)))
                          ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
@@ -260,7 +260,7 @@ depending on the major mode (see `qe-block-indented-modes')."
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
+                   (cond ((looking-back "</?\\s-*[a-zA-Z].*?>" (point-at-bol))
                           (goto-char (match-beginning 0)))
                          ((qe-looking-back-syntax " ")
                           (skip-syntax-backward " ")
@@ -294,105 +294,41 @@ depending on the major mode (see `qe-block-indented-modes')."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit kill/copy
 
-(defun qe-kill-unit (&optional arg)
-  "Kill over a unit of text.  With a prefix arg, delete instead of kill.
-If the region is highlighted, it will be killed.  Otherwise, you are prompted
-to enter another character which will cause the following:
-p -- Kill forward paragraph (and trailing whitespace)
-P -- Kill backward paragraph (and trailing whitespace)
-b -- Kill forward block
-B -- Kill backward block
-m -- Kill forward over matching paren/brace/curly/angle-bracket/quotes
-M -- Kill backward over matching paren/brace/curly/angle-bracket/quotes
-w -- Kill foward word
-W -- Kill backward word
-e -- Kill forward to end of line
-a -- Kill backward to beginning of indentation
-A -- Kill backward to beginning of line
-RET -- Kill forward to end of paragraph
-SPC -- Kill to mark
-\" -- Kill forward to double-quotes
-\' -- Kill forward to single-quote
-),],},> -- Kill forward to that char
-\(,[,{,< -- Kill backward to that char
-i -- Start kill inside paren/brace/curly/quotes/angle-bracket.  Another
-  character must then be entered and all the text backward and forward
-  inside the matching parens/brackets/curlies/quotes/angle-brackets is killed
-/ -- Kill to a location using isearch
-? -- Kill backward to a location using isearch
-Anything else -- Kill line.  For example if this function is bound to C-w,
-  a convenient way to kill the current line is C-w C-w"
+(defun qe-unit-kill (&optional arg)
+  "TODO"
   (interactive "*P")
-  (if (region-active-p)
-      (kill-region (region-beginning) (region-end))
-    (if arg
-        (message "Delete:")
-      (message "Kill:"))
-    (let ((c (read-char)) dir)
-      (cond
-       ((eq c ?/) (call-interactively 'qe-kill-to-isearch))
-       ((eq c ??) (call-interactively 'qe-backward-kill-to-isearch))
+  (let (result)
+    (if (region-active-p)
+        (setq result (cons (region-beginning) (region-end)))
+      (let* ((ev (read-event (if arg "Delete:" "Kill:")))
+             (fcn (lookup-key qe-unit-kill-map (vector ev))))
+        (unless fcn
+          (error "Unknown char entered for kill text unit"))
+        (setq result (funcall fcn))
+        (when (and result
+                   (consp result)
+                   (not (= (car result) (cdr result))))
+          (if arg
+              (delete-region (car result) (cdr result))
+            (kill-region (car result) (cdr result))))))))
 
-       ((eq c ?p) (kill-region (point) (progn (qe-forward-paragraph) (point))))
-       ((eq c ?P) (kill-region (point) (progn (qe-backward-paragraph) (point))))
-
-       ((eq c ?b) (kill-region (point) (progn (qe-forward-block) (point))))
-       ((eq c ?B) (kill-region (point) (progn (qe-backward-block) (point))))
-
-       ((eq c ?m)
-        (if (looking-at "</?\\s-*[a-zA-Z].*>")
-            (replace-match "")
-          (kill-sexp 1)))
-       ((eq c ?M)
-        (if (looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
-            (replace-match "")
-          (kill-sexp -1)))
-
-       ((eq c ?w) (kill-region (point) (progn (skip-syntax-forward "w_") (point))))
-       ((eq c ?W) (kill-region (point) (progn (skip-syntax-backward"w_") (point))))
-
-       ((eq c ?e) (kill-region (point) (point-at-eol)))
-       ((eq c ?a) (kill-region (point) (progn (back-to-indentation) (point))))
-       ((eq c ?A) (kill-region (point) (point-at-bol)))
-
-       ((eq c ?) (kill-region (point) (progn (forward-paragraph) (point))))
-
-       ((eq c ? ) (kill-region (point) (or (mark) (point))))
-
-       ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
-        (kill-region (point-at-bol) (point-at-bol 2))))
-
-      (when (eq c ?i)
-        (if arg
-            (message "Kill: i")
-          (message "Delete: i"))
-        (setq c (read-char))
-        (setq dir 'inside))
-
-      (cond ((memq c '(?\( ?\[ ?\{ ?\<))
-             (unless dir
-               (setq dir 'backward)))
-            ((memq c '(?\) ?\] ?\} ?\>))
-             (unless dir
-               (setq dir 'forward))))
-      (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
-        (let ((region (qe-region-inside-pair c dir)))
-          (kill-region (car region) (cdr region))))
-
-      (when (memq c '(?\" ?\'))
-        (unless dir
-          (setq dir 'forward))
-        (let ((region (qe-region-inside-quotes c dir)))
-          (kill-region (car region) (cdr region))))))
-
-  (when arg
-    (when kill-ring
-      (setq kill-ring (cdr kill-ring)))
-    (when kill-ring-yank-pointer
-      (setq kill-ring-yank-pointer kill-ring))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun qe-unit-copy ()
+  "TODO"
+  (interactive)
+  (let (result)
+    (if (region-active-p)
+        (setq result (cons (region-beginning) (region-end)))
+      (let* ((ev (read-event "Copy:"))
+             (fcn (lookup-key qe-unit-copy-map (vector ev))))
+        (unless fcn
+          (error "Unknown char entered for copy text unit"))
+        (save-excursion
+          (setq result (funcall fcn)))
+        (when (and result
+                   (consp result)
+                   (not (= (car result) (cdr result))))
+          (qe-highlight (car result) (cdr result) 'qe-copy-region-face)
+          (kill-ring-save (car result) (cdr result)))))))
 
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
@@ -427,22 +363,42 @@ preserved.")
 
 (defvar qe-unit-kill-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "M-w") 'qe-unit-ends-paragraph)
-    (set-keymap-parent map qe-common-unit-map)
+    (define-key map (kbd "C-w") 'qe-unit-ends-line)
+    (define-key map (kbd "/") (lambda () (qe-region-using-isearch t t)))
+    (define-key map (kbd "?") (lambda () (qe-region-using-isearch t nil)))
+    (set-keymap-parent map qe-unit-common-map)
     map)
   "Keymap for unit kill/delete.  Parent keymap is `qe-unit-common-map', see
 that variable for more information.")
 
+(defvar qe-unit-copy-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "M-w") 'qe-unit-ends-line)
+    (define-key map (kbd "/") (lambda () (qe-region-using-isearch nil t)))
+    (define-key map (kbd "?") (lambda () (qe-region-using-isearch nil nil)))
+    (set-keymap-parent map qe-unit-common-map)
+    map)
+  "Keymap for unit copy.  Parent keymap is `qe-unit-common-map', see that
+variable for more information.")
+
 (defun qe-unit-ends-point-to-fcn (fcn)
+  "Wrap single function call getting end points."
   (cons (point) (progn (funcall fcn) (point))))
 
+(defun qe-unit-ends-line ()
+  "Text unit ends for current line."
+  (cons (point-at-bol) (point-at-bol 2)))
+
 (defun qe-unit-ends-forward-word ()
+  "Text unit ends for forward word."
   (cons (point) (progn (skip-syntax-forward "w_") (point))))
 
 (defun qe-unit-ends-backward-word ()
+  "Text unit ends for backward word."
   (cons (point) (progn (skip-syntax-backward "w_") (point))))
 
 (defun qe-unit-ends-forward-matching ()
+  "Text unit ends for forward matching parens."
   (let ((beg (point))
         (table (copy-syntax-table (syntax-table))))
     (modify-syntax-entry ?< "(>" table)
@@ -452,6 +408,7 @@ that variable for more information.")
       (cons beg (point)))))
 
 (defun qe-unit-ends-backward-matching ()
+  "Text unit ends for backward matching parens."
   (let ((beg (point))
         (table (copy-syntax-table (syntax-table))))
     (modify-syntax-entry ?< "(>" table)
@@ -461,180 +418,18 @@ that variable for more information.")
       (cons beg (point)))))
 
 (defun qe-unit-ends-mark ()
+  "Text unit ends for mark."
   (cons (point) (progn (goto-char (or (mark) (point))) (point))))
 
 (defun qe-unit-ends-inside ()
+  "Text unit ends for inside quotes/parens."
   (message "Inside:")
   (let ((char (read-char)))
     (if (memq char '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
         (qe-region-inside-pair char 'inside)
       (if(memq char '(?\" ?\'))
-          (qe-region-inside-quotes char dir)
+          (qe-region-inside-quotes char 'inside)
         (error "Unknown char entered for kill inside text unit")))))
-
-;; (let* ((ev (read-event "Key:"))
-;;        (fcn (lookup-key qe-kill-unit-map (vector ev))))
-;;   (when fcn
-;;     (funcall fcn)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun qe-copy-unit ()
-  "Copy over a unit of text.
-If the region is highlighted, it will be copied.  Otherwise, you are prompted
-to enter another character which will cause the following:
-p -- Copy forward paragraph (and trailing whitespace)
-P -- Copy backward paragraph (and trailing whitespace)
-b -- Copy forward block
-B -- Copy backward block
-m -- Copy forward over matching paren/brace/curly/angle-bracket/quotes
-M -- Copy backward over matching paren/brace/curly/angle-bracket/quotes
-w -- Copy foward word
-W -- Copy backward word
-e -- Copy forward to end of line
-a -- Copy backward to beginning of indentation
-A -- Copy backward to beginning of line
-RET -- Copy forward to end of paragraph
-SPC -- Copy to mark
-\" -- Copy forward to double-quotes
-\' -- Copy forward to single-quote
-),],},> -- Copy forward to that char
-\(,[,{,< -- Copy backward to that char
-i -- Start copy inside paren/brace/curly/quotes/angle-bracket.  Another
-  character must then be entered and all the text backward and forward
-  inside the matching parens/brackets/curlies/quotes/angle-brackets is copied
-/ -- Copy to a location using isearch
-? -- Copy backward to a location using isearch
-Anything else -- Copy line.  For example if this function is bound to M-w,
-  a convenient way to copy the current line is M-w M-w"
-  (interactive)
-  (if (region-active-p)
-      (kill-ring-save (region-beginning) (region-end))
-    (message "Copy:")
-    (let ((c (read-char)))
-      (cond ((eq c ?/) (call-interactively 'qe-copy-to-isearch))
-            ((eq c ??) (call-interactively 'qe-backward-copy-to-isearch))
-            (t
-             (let ((beg (point)) end dir)
-               (save-excursion
-                 (cond
-                  ((eq c ?p) (qe-forward-paragraph))
-                  ((eq c ?P) (qe-backward-paragraph))
-
-                  ((eq c ?b) (qe-forward-block))
-                  ((eq c ?B) (qe-backward-block))
-
-                  ((eq c ?m)
-                   (if (looking-at "</?\\s-*[a-zA-Z].*>")
-                       (goto-char (match-end 0))
-                     (forward-sexp 1)))
-                  ((eq c ?M)
-                   (if (looking-back "</?\\s-*[a-zA-Z].*>" (point-at-bol))
-                       (goto-char (match-beginning 0))
-                     (forward-sexp -1)))
-
-                  ((eq c ?w) (skip-syntax-forward "w_"))
-                  ((eq c ?W) (skip-syntax-backward"w_"))
-
-                  ((eq c ?e) (end-of-line))
-                  ((eq c ?a) (back-to-indentation))
-                  ((eq c ?A) (beginning-of-line))
-
-                  ((eq c ?) (forward-paragraph))
-
-                  ((eq c ? ) (goto-char (or (mark) (point))))
-
-                  ((not (memq c '(?i ?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\> ?\" ?\')))
-                   (setq beg (point-at-bol)) (forward-line) (beginning-of-line)))
-
-                 (setq end (point)))
-
-               (when (eq c ?i)
-                 (message "Copy: i")
-                 (setq c (read-char))
-                 (setq dir 'inside))
-
-               (cond ((memq c '(?\( ?\[ ?\{ ?\<))
-                      (unless dir
-                        (setq dir 'backward)))
-                     ((memq c '(?\) ?\] ?\} ?\>))
-                      (unless dir
-                        (setq dir 'forward))))
-               (when (memq c '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
-                 (let ((region (qe-region-inside-pair c dir)))
-                   (setq beg (car region)
-                         end (cdr region))))
-
-               (when (memq c '(?\" ?\'))
-                 (unless dir
-                   (setq dir 'forward))
-                 (let ((region (qe-region-inside-quotes c dir)))
-                   (setq beg (car region)
-                         end (cdr region))))
-
-               (unless (= beg end)
-                 (qe-highlight beg end 'qe-copy-region-face)
-                 (kill-ring-save beg end))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Kill/copy with isearch
-
-(defvar qe-isearch-start nil)
-(defvar qe-isearch-end nil)
-(defvar qe-isearch-overlay nil)
-(defvar qe-isearch-face nil)
-(defvar qe-isearch-forward nil)
-
-(defun qe-kill-to-isearch ()
-  "Kill from point to somewhere else using isearch."
-  (interactive "*")
-  (qe-kill-or-copy-isearch t t))
-
-(defun qe-backward-kill-to-isearch ()
-  "Kill backward from point to somewhere else using isearch."
-  (interactive "*")
-  (qe-kill-or-copy-isearch t nil))
-
-(defun qe-copy-to-isearch ()
-  "Copy from point to somewhere else using isearch."
-  (interactive)
-  (qe-kill-or-copy-isearch nil t))
-
-(defun qe-backward-copy-to-isearch ()
-  "Copy backward from point to somewhere else using isearch."
-  (interactive)
-  (qe-kill-or-copy-isearch nil nil))
-
-(defun qe-kill-or-copy-isearch (kill forward)
-  "Kill or copy from point to somewhere else using isearch."
-  (unwind-protect
-      (save-excursion
-        (setq qe-isearch-start (point))
-        (setq qe-isearch-face (if kill
-                                  'qe-kill-region-face
-                                'qe-copy-region-face))
-        (setq qe-isearch-forward forward)
-        (when (if forward (isearch-forward) (isearch-backward))
-          (if kill
-              (kill-region qe-isearch-start qe-isearch-end)
-            (copy-region-as-kill qe-isearch-start qe-isearch-end))))
-    (setq qe-isearch-start nil)
-    (when qe-isearch-overlay
-      (delete-overlay qe-isearch-overlay))))
-
-(defadvice isearch-highlight (after qe-iseach-add-overlay activate)
-  (when qe-isearch-start
-    (if qe-isearch-forward
-        (setq qe-isearch-end (ad-get-arg 0))
-      (setq qe-isearch-end (ad-get-arg 1)))
-    (if qe-isearch-overlay
-        (move-overlay qe-isearch-overlay qe-isearch-start qe-isearch-end (current-buffer))
-      (setq qe-isearch-overlay (make-overlay qe-isearch-start qe-isearch-end)))
-    (overlay-put qe-isearch-overlay 'face qe-isearch-face)))
-
-(defadvice isearch-dehighlight (after qe-isearch-remove-overlay activate)
-  (when qe-isearch-overlay
-    (delete-overlay qe-isearch-overlay)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utility functions
@@ -656,8 +451,7 @@ Anything else -- Copy line.  For example if this function is bound to M-w,
       (if invert (not result) result))))
 
 (defun qe-forward-section ()
-  "Move forward a word section.
-This is a utility function, you probably want `qe-forward-word-section'"
+  "Move forward a word section."
   (let ((case-fold-search nil))
     (if qe-camelcase-sections
         (if (looking-at "[a-z0-9]")
@@ -670,8 +464,7 @@ This is a utility function, you probably want `qe-forward-word-section'"
       (skip-chars-forward "a-zA-Z0-9"))))
 
 (defun qe-backward-section ()
-  "Move backward a word section.
-This is a utility function, you probably want `qe-backward-word-section'."
+  "Move backward a word section."
   (let ((case-fold-search nil))
     (if qe-camelcase-sections
         (progn
@@ -725,7 +518,7 @@ This is a utility function, you probably want `qe-backward-word-section'."
     (cons beg end)))
 
 (defun qe-region-inside-quotes (char dir)
-  "Find the region inside quote chars \"'"
+  "Find the region inside quote chars."
   (let* ((beg (point))
          (end beg)
          (regex (char-to-string char))
@@ -751,6 +544,43 @@ This is a utility function, you probably want `qe-backward-word-section'."
           (backward-char))
         (setq end (point))))
     (cons beg end)))
+
+(defvar qe-isearch-start nil)
+(defvar qe-isearch-end nil)
+(defvar qe-isearch-overlay nil)
+(defvar qe-isearch-face nil)
+(defvar qe-isearch-forward nil)
+
+(defun qe-region-using-isearch (kill forward)
+  "Get region from point to somewhere else using isearch."
+  (let ((result (cons (point) (point))))
+    (unwind-protect
+        (save-excursion
+          (setq qe-isearch-start (point))
+          (setq qe-isearch-face (if kill
+                                    'qe-kill-region-face
+                                  'qe-copy-region-face))
+          (setq qe-isearch-forward forward)
+          (when (if forward (isearch-forward) (isearch-backward))
+            (setq result (cons qe-isearch-start qe-isearch-end)))))
+    (setq qe-isearch-start nil)
+    (when qe-isearch-overlay
+      (delete-overlay qe-isearch-overlay))
+    result))
+
+(defadvice isearch-highlight (after qe-iseach-add-overlay activate)
+  (when qe-isearch-start
+    (if qe-isearch-forward
+        (setq qe-isearch-end (ad-get-arg 0))
+      (setq qe-isearch-end (ad-get-arg 1)))
+    (if qe-isearch-overlay
+        (move-overlay qe-isearch-overlay qe-isearch-start qe-isearch-end (current-buffer))
+      (setq qe-isearch-overlay (make-overlay qe-isearch-start qe-isearch-end)))
+    (overlay-put qe-isearch-overlay 'face qe-isearch-face)))
+
+(defadvice isearch-dehighlight (after qe-isearch-remove-overlay activate)
+  (when qe-isearch-overlay
+    (delete-overlay qe-isearch-overlay)))
 
 (defun qe-highlight (beg end &optional face)
   "Highlight a region temporarily."
