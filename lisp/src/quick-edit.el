@@ -299,7 +299,9 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive "*P")
   (let (result)
     (if (region-active-p)
-        (setq result (cons (region-beginning) (region-end)))
+        (progn
+          (setq result (cons (region-beginning) (region-end)))
+          (deactivate-mark))
       (let* ((ev (read-event (if arg "Delete:" "Kill:")))
              (fcn (lookup-key qe-unit-kill-map (vector ev))))
         (unless fcn
@@ -317,7 +319,9 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive)
   (let (result)
     (if (region-active-p)
-        (setq result (cons (region-beginning) (region-end)))
+        (progn
+          (setq result (cons (region-beginning) (region-end)))
+          (deactivate-mark))
       (let* ((ev (read-event "Copy:"))
              (fcn (lookup-key qe-unit-copy-map (vector ev))))
         (unless fcn
