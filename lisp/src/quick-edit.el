@@ -306,33 +306,36 @@ depending on the major mode (see `qe-block-indented-modes')."
              (fcn (lookup-key qe-unit-kill-map (vector ev))))
         (unless fcn
           (error "Unknown char entered for kill text unit"))
-        (setq result (funcall fcn))
-        (when (and result
-                   (consp result)
-                   (not (= (car result) (cdr result))))
-          (if arg
-              (delete-region (car result) (cdr result))
-            (kill-region (car result) (cdr result))))))))
+        (setq result (funcall fcn))))
+    (when (and result
+               (consp result)
+               (not (= (car result) (cdr result))))
+      (if arg
+          (delete-region (car result) (cdr result))
+        (kill-region (car result) (cdr result))))))
 
 (defun qe-unit-copy ()
   "TODO"
   (interactive)
-  (let (result)
+  (let (result (do-highlight t))
     (if (region-active-p)
         (progn
           (setq result (cons (region-beginning) (region-end)))
-          (deactivate-mark))
+          (deactivate-mark)
+          (setq do-highlight nil))
       (let* ((ev (read-event "Copy:"))
              (fcn (lookup-key qe-unit-copy-map (vector ev))))
         (unless fcn
           (error "Unknown char entered for copy text unit"))
+        (setq qe-isearch-end nil)
         (save-excursion
-          (setq result (funcall fcn)))
-        (when (and result
-                   (consp result)
-                   (not (= (car result) (cdr result))))
-          (qe-highlight (car result) (cdr result) 'qe-copy-region-face)
-          (kill-ring-save (car result) (cdr result)))))))
+          (setq result (funcall fcn)))))
+    (when (and result
+               (consp result)
+               (not (= (car result) (cdr result))))
+      (when (and do-highlight (not qe-isearch-end))
+        (qe-highlight (car result) (cdr result) 'qe-copy-region-face))
+      (kill-ring-save (car result) (cdr result)))))
 
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
