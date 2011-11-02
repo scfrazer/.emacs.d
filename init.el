@@ -1434,7 +1434,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'color 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
-(defalias 'ed 'edebug-defun)
+(defalias 'edd 'edebug-defun)
 (defalias 'edb 'ediff-buffers)
 (defalias 'ef 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
