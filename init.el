@@ -1302,14 +1302,14 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-n" 'qe-forward-paragraph)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 
+(my-keys-define "C-f" 'qe-forward-not-word)
+(my-keys-define "C-b" 'qe-backward-not-word)
+
 (my-keys-define "C->" 'qe-forward-block)
 (my-keys-define "C-<" 'qe-backward-block)
 
-(my-keys-define "M-H" 'qe-backward-word-end)
-(my-keys-define "M-L" 'qe-forward-word-end)
-
-(my-keys-define "C-S-h" 'qe-backward-word-section)
-(my-keys-define "C-S-l" 'qe-forward-word-section)
+(my-keys-define "M-H" 'qe-backward-word-section)
+(my-keys-define "M-L" 'qe-forward-word-section)
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)

@@ -71,12 +71,15 @@
   (qe-forward-section)
   (skip-chars-forward "^a-zA-Z0-9"))
 
-(defun qe-forward-word-end ()
-  "Forward to end of word."
+(defun qe-forward-not-word ()
+  "Forward to next not-word or whitespace."
   (interactive)
-  (unless (qe-looking-at-syntax "w_")
-    (skip-syntax-forward "^w_"))
-  (skip-syntax-forward "w_"))
+  (when (qe-looking-at-syntax "^w_ ")
+    (forward-char))
+  (when (looking-at "\\s-*$")
+    (forward-line))
+  (while (or (> (skip-syntax-forward "w_ ") 0)
+             (and (looking-at "$") (forward-char) (not (eobp))))))
 
 (defun qe-forward-paragraph ()
   "Like forward-paragraph, but goes to next non-blank line."
@@ -141,12 +144,14 @@ depending on the major mode (see `qe-block-indented-modes')."
   (skip-chars-backward "^a-zA-Z0-9")
   (qe-backward-section))
 
-(defun qe-backward-word-end ()
-  "Backward to end of word."
+(defun qe-backward-not-word ()
+  "Backward to next not-word or whitespace."
   (interactive)
-  (when (qe-looking-back-syntax "w_")
-    (skip-syntax-backward "w_"))
-  (skip-syntax-backward "^w_"))
+  (skip-syntax-backward "w_ ")
+  (backward-char)
+  (while (and (looking-at "$") (not (bobp)))
+    (skip-syntax-backward "w_ ")
+    (backward-char)))
 
 (defun qe-backward-paragraph ()
   "Go to first line after previous blank line."
