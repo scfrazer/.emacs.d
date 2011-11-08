@@ -1375,7 +1375,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (unless (getenv "SPECMAN_PATH")
   (setenv "SPECMAN_PATH"
-          ".:/vob/astro/verification/testbench:/vob/astro/verification/evc_lib:/vob/asicproc/verification/evc_lib"))
+          ".:/vob/sse/asic/luke/ver/io_dv/verification/evc_lib:/vob/sse/asic/luke/ver/io_dv/verification/testbench:/vob/sse/asic/luke/ver/asicproc/verification/evc_lib"))
 
 (unless (getenv "SV_PATH")
   (setenv "SV_PATH"
