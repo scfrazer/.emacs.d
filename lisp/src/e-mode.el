@@ -197,6 +197,50 @@ Returns 'in-code if point is not in a string or comment"
   "Move backward to beginning of code block."
   (re-search-backward "^<'" nil 'move))
 
+(defun e-mode-beginning-of-defun (&optional arg)
+  "Go to beginning of method."
+  (interactive)
+  (let ((pos (point))
+        (done nil))
+    (condition-case nil
+        (while (and (not done) (not (bobp)))
+          (backward-up-list)
+          (when (= (char-after) ?\{)
+            (when (looking-back "is\\(\\s-+\\(also\\|first\\|only\\|empty\\|undefined\\)\\)?[ \t\n]*")
+              (goto-char (match-beginning 0))
+              (beginning-of-line)
+              (setq done t))))
+      (goto-char pos)
+      (error "Not inside a method"))))
+
+(defun e-mode-end-of-defun (&optional arg)
+  "Go to end of method."
+  (interactive)
+  (let ((pos (point)))
+    (e-mode-beginning-of-defun)
+    (if (e-mode-re-search-forward "\\(is\\|also\\|first\\|only\\)[ \t\n]*{" nil t)
+        (progn
+          (backward-char)
+          (forward-sexp)
+          (end-of-line))
+      (goto-char pos)
+      (error "Couldn't find end of method"))))
+
+(defun e-mode-narrow-to-scope ()
+  "Narrow buffer to enclosing scope."
+  (interactive)
+  (let (start)
+    (save-excursion
+      (condition-case nil
+          (while (and (not (backward-up-list))
+                      (not (= (char-after) ?\{))
+                      (not (bobp))))
+        (error "Not inside any scope"))
+      (setq start (point-at-bol))
+      (forward-sexp)
+      (forward-line 1)
+      (narrow-to-region start (point)))))
+
 (defun e-mode-guess-indent ()
   "Try to guess what to set `e-mode-basic-offset' to."
   (let ((offset 0))
@@ -847,6 +891,7 @@ Returns 'in-code if point is not in a string or comment"
   (let ((map (make-sparse-keymap)))
     (define-key map "{" 'e-mode-electric-curly-opener)
     (define-key map "}" 'e-mode-electric-curly-closer)
+    (define-key map (kbd "C-x n s") 'e-mode-narrow-to-scope)
     map)
   "Keymap used in Specman 'e' mode.")
 
@@ -890,6 +935,9 @@ Key Bindings:
         comment-start-skip "\\(//\\|--\\)[ \t]*"
         parse-sexp-ignore-comments t
         indent-line-function 'e-mode-indent-line)
+
+  (set (make-local-variable 'beginning-of-defun-function) 'e-mode-beginning-of-defun)
+  (set (make-local-variable 'end-of-defun-function) 'e-mode-end-of-defun)
 
   ;; Indent
 
