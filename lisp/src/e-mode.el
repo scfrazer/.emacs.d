@@ -198,7 +198,7 @@ Returns 'in-code if point is not in a string or comment"
   (re-search-backward "^<'" nil 'move))
 
 (defun e-mode-beginning-of-defun (&optional arg)
-  "Go to beginning of method."
+  "Go to beginning of method/struct."
   (interactive)
   (let ((pos (point))
         (done nil))
@@ -210,21 +210,18 @@ Returns 'in-code if point is not in a string or comment"
               (goto-char (match-beginning 0))
               (beginning-of-line)
               (setq done t))))
-      (goto-char pos)
-      (error "Not inside a method"))))
+      (error (if (= (char-after) ?\{)
+                 (beginning-of-line)
+               (goto-char pos)
+               (message "Not inside a method/struct"))))))
 
 (defun e-mode-end-of-defun (&optional arg)
-  "Go to end of method."
+  "Go to end of method/struct."
   (interactive)
-  (let ((pos (point)))
-    (e-mode-beginning-of-defun)
-    (if (e-mode-re-search-forward "\\(is\\|also\\|first\\|only\\)[ \t\n]*{" nil t)
-        (progn
-          (backward-char)
-          (forward-sexp)
-          (end-of-line))
-      (goto-char pos)
-      (error "Couldn't find end of method"))))
+  (search-forward "{")
+  (backward-char)
+  (forward-sexp)
+  (end-of-line))
 
 (defun e-mode-narrow-to-scope ()
   "Narrow buffer to enclosing scope."
