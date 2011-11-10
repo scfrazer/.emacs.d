@@ -70,6 +70,7 @@
 (require 'my-pair)
 (require 'my-pop-back)
 (require 'my-python)
+(require 'my-query-replace)
 (require 'my-recentf)
 (require 'my-reformat)
 (require 'my-set-cursor-color)
@@ -650,33 +651,6 @@ Prefix with C-u to fit the `next-window'."
   (my-delete-trailing-whitespace)
   (untabify (point-min) (point-max))
   (indent-region (point-min) (point-max)))
-
-(defun my-query-replace (&optional arg)
-  "query-replace ... take from-string from region if it is active"
-  (interactive "*P")
-  (if arg
-      (let ((current-prefix-arg nil))
-        (call-interactively 'query-replace))
-    (let (from to)
-      (if (region-active-p)
-          (progn (setq from (buffer-substring (region-beginning) (region-end))
-                       to (read-from-minibuffer
-                           (format "Query replace %s with: " from) nil nil nil
-                           'query-replace-history))
-                 (goto-char (region-beginning))
-                 (setq mark-active nil))
-        (let* ((default (buffer-substring-no-properties
-                         (point)
-                         (save-excursion (skip-syntax-forward "w_") (point))))
-               (from-str (read-from-minibuffer
-                          (format "Query replace (default %s): " default) nil nil nil
-                          'query-replace-history default)))
-          (setq from (if (string= from-str "") default from-str)
-                to (read-from-minibuffer
-                    (format "Query replace %s with: " from) nil nil nil
-                    'query-replace-history))))
-      (query-replace from to)
-      (setq query-replace-defaults (cons from to)))))
 
 (defvar my-recenter-count nil)
 (defun my-recenter (&optional arg)
@@ -1302,7 +1276,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-p" 'qe-backward-paragraph)
 
 (my-keys-define "M-;" 'qe-forward-not-word)
-(my-keys-define "M-b" 'qe-backward-not-word)
+(my-keys-define "C-M-;" 'qe-backward-not-word)
 
 (my-keys-define "C->" 'qe-forward-block)
 (my-keys-define "C-<" 'qe-backward-block)
