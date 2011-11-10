@@ -79,7 +79,9 @@
   (when (looking-at "\\s-*$")
     (forward-line))
   (while (or (> (skip-syntax-forward "w_ ") 0)
-             (and (looking-at "$") (forward-char) (not (eobp))))))
+             (and (looking-at "$")
+                  (progn (forward-char) t)
+                  (not (eobp))))))
 
 (defun qe-forward-paragraph ()
   "Like forward-paragraph, but goes to next non-blank line."
