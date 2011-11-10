@@ -1253,7 +1253,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'my-flymake-goto-next-error)
-(my-keys-define "M-b" 'task-bmk-show-all)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-g" 'goto-line)
@@ -1302,8 +1301,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-n" 'qe-forward-paragraph)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 
-(my-keys-define "C-f" 'qe-forward-not-word)
-(my-keys-define "C-b" 'qe-backward-not-word)
+(my-keys-define "M-;" 'qe-forward-not-word)
+(my-keys-define "M-b" 'qe-backward-not-word)
 
 (my-keys-define "C->" 'qe-forward-block)
 (my-keys-define "C-<" 'qe-backward-block)
