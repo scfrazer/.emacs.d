@@ -71,6 +71,13 @@
   (qe-forward-section)
   (skip-chars-forward "^a-zA-Z0-9"))
 
+(defun qe-forward-word-end ()
+  "Forward to end of word."
+  (interactive)
+  (unless (qe-looking-at-syntax "w_")
+    (skip-syntax-forward "^w_"))
+  (skip-syntax-forward "w_"))
+
 (defun qe-forward-not-word ()
   "Forward to next not-word or whitespace."
   (interactive)
@@ -145,6 +152,13 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive)
   (skip-chars-backward "^a-zA-Z0-9")
   (qe-backward-section))
+
+(defun qe-backward-word-end ()
+  "Backward to end of word."
+  (interactive)
+  (when (qe-looking-back-syntax "w_")
+    (skip-syntax-backward "w_"))
+  (skip-syntax-backward "^w_"))
 
 (defun qe-backward-not-word ()
   "Backward to next not-word or whitespace."

@@ -1200,6 +1200,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
+(my-keys-define "C-x c" 'my-rotate-case)
 (my-keys-define "C-x e" 'kmacro-end-or-call-macro)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
@@ -1227,7 +1228,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'my-flymake-goto-next-error)
-(my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-g" 'goto-line)
 (my-keys-define "M-i" 'ido-switch-buffer)
@@ -1264,6 +1264,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "C-M-h" 'backward-sexp)
 (my-keys-define "C-M-l" 'forward-sexp)
+
 (my-keys-define "C-M-n" 'up-list)
 (my-keys-define "C-M-p" 'backward-up-list)
 
@@ -1272,6 +1273,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "M-h" 'qe-backward-word)
 (my-keys-define "M-l" 'qe-forward-word)
+
 (my-keys-define "M-n" 'qe-forward-paragraph)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 
@@ -1286,6 +1288,9 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-l" 'forward-char)
+
+(my-keys-define "C-S-h" 'qe-backward-word-end)
+(my-keys-define "C-S-l" 'qe-forward-word-end)
 
 (my-keys-define "C-S-n" 'my-edit-scroll-down)
 (my-keys-define "C-S-p" 'my-edit-scroll-up)
