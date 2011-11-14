@@ -404,16 +404,18 @@ Returns 'in-code if point is not in a string or comment"
 (defun e-mode-indent-line ()
   "Indent the current line."
   (interactive)
-  (let ((pos (- (point-max) (point)))
-        (indent (e-mode-get-indent)))
-    (unless (= indent (current-indentation))
-      (back-to-indentation)
-      (delete-region (point-at-bol) (point))
-      (indent-to indent))
-    (if (< (- (point) (point-at-bol)) indent)
+  (save-restriction
+    (widen)
+    (let ((pos (- (point-max) (point)))
+          (indent (e-mode-get-indent)))
+      (unless (= indent (current-indentation))
         (back-to-indentation)
-      (when (> (- (point-max) pos) (point))
-        (goto-char (- (point-max) pos))))))
+        (delete-region (point-at-bol) (point))
+        (indent-to indent))
+      (if (< (- (point) (point-at-bol)) indent)
+          (back-to-indentation)
+        (when (> (- (point-max) pos) (point))
+          (goto-char (- (point-max) pos)))))))
 
 (defun e-mode-get-indent ()
   "Return how much the current line should be indented."
