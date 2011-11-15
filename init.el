@@ -42,6 +42,7 @@
 (require 'rect)
 (require 'redo+)
 (require 'revbufs)
+(require 'scf-mode)
 (require 'task)
 (require 'uniquify)
 (require 'yank-target)
