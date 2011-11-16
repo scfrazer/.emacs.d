@@ -182,6 +182,8 @@
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
+              magit-repo-dirs (list "~/.emacs.d" "~/Projects")
+              magit-repo-dirs-depth 2
               make-backup-files nil
               mouse-autoselect-window t
               mouse-highlight 1
