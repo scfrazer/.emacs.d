@@ -972,7 +972,8 @@ Does not set point.  Does nothing if mark ring is empty."
   (hl-line-mode 1))
 
 (defun my-grep-mode-hook ()
-  (define-key grep-mode-map "h" 'hl-line-mode))
+  (define-key grep-mode-map "h" 'hl-line-mode)
+  (define-key grep-mode-map "s" 'scf-mode))
 
 (defun my-minibuffer-setup-hook ()
   (my-keys-minor-mode 0)
