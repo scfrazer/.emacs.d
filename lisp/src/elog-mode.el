@@ -109,7 +109,7 @@
     ("^\\(\\[.*?\\]\\) \\(.*?: \\)"
      (1 'elog-mode-timestamp-face)
      (2 'elog-mode-path-face))
-    ("\\(\\(testflow advancing to:.+\\|\\*\\{10\\}\\).*\\)"
+    (": \\(\\(.+ advancing to .+ phase\\|\\*\\{10\\}\\).*\\)"
      (0 'elog-mode-domain-face))
     ("Sending.*"
      (0 'elog-mode-send-face))
@@ -135,7 +135,7 @@
 (defun elog-mode-next-phase (arg reset)
   "Goto next TESTFLOW phase (or error)."
   (interactive)
-  (let ((phase-or-error-regexp "\\(testflow advancing to:\\|!!!! ERROR ERROR ERROR !!!!\\|\\*\\*\\* Dut error\\)")
+  (let ((phase-or-error-regexp "\\(: .+ advancing to .+ phase\\|!!!! ERROR ERROR ERROR !!!!\\|\\*\\*\\* Dut error\\)")
         ov)
     (if (and arg (< arg 0))
         (re-search-backward phase-or-error-regexp)
