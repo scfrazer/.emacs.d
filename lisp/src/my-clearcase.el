@@ -109,6 +109,32 @@ on the directory element itself is listed, not on its contents."
         (when mode
           (set-auto-mode-0 mode))))))
 
+(defun my-clearcase-ediff-current (&optional arg)
+  "Do ediff of current buffer/dired-file against latest.
+With prefix arg ask for version."
+  (interactive "P")
+  (call-interactively
+   (if (eq major-mode 'dired-mode)
+       (if arg
+           'clearcase-ediff-named-version-dired-file
+         'clearcase-ediff-pred-dired-file)
+     (if arg
+         'clearcase-ediff-named-version-current-buffer
+       'clearcase-ediff-pred-current-buffer))))
+
+(defun my-clearcase-gui-diff-current (&optional arg)
+  "Do GUI diff of current buffer/dired-file against latest.
+With prefix arg ask for version."
+  (interactive "P")
+  (call-interactively
+   (if (eq major-mode 'dired-mode)
+       (if arg
+           'clearcase-gui-diff-named-version-dired-file
+         'clearcase-gui-diff-pred-dired-file)
+     (if arg
+         'clearcase-gui-diff-named-version-current-buffer
+       'clearcase-gui-diff-pred-current-buffer))))
+
 (add-hook 'find-file-hook 'my-clearcase-backup-set-mode)
 
 (setq clearcase-suppress-checkout-comments t)
@@ -131,12 +157,8 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
 (define-key clearcase-prefix-map "v" 'my-clearcase-setview)
-(define-key clearcase-prefix-map "=" 'clearcase-ediff-pred-current-buffer)
-(define-key clearcase-prefix-map "+" 'clearcase-ediff-named-version-current-buffer)
-(define-key clearcase-prefix-map "-" 'clearcase-diff-pred-current-buffer)
-(define-key clearcase-prefix-map "_" 'clearcase-diff-named-version-current-buffer)
-(define-key clearcase-prefix-map (kbd "C-=") 'clearcase-gui-diff-pred-current-buffer)
-(define-key clearcase-prefix-map (kbd "C-+") 'clearcase-gui-diff-named-version-current-buffer)
+(define-key clearcase-prefix-map "=" 'my-clearcase-ediff-current)
+(define-key clearcase-prefix-map (kbd "C-=") 'my-clearcase-gui-diff-current)
 
 (define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
@@ -151,12 +173,8 @@ on the directory element itself is listed, not on its contents."
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
 (define-key clearcase-dired-prefix-map "v" 'my-clearcase-setview)
-(define-key clearcase-dired-prefix-map "=" 'clearcase-ediff-pred-dired-file)
-(define-key clearcase-dired-prefix-map "+" 'clearcase-ediff-named-version-dired-file)
-(define-key clearcase-dired-prefix-map "-" 'clearcase-diff-pred-dired-file)
-(define-key clearcase-dired-prefix-map "_" 'clearcase-diff-named-version-current-buffer)
-(define-key clearcase-dired-prefix-map (kbd "C-=") 'clearcase-gui-diff-pred-dired-file)
-(define-key clearcase-dired-prefix-map (kbd "C-+") 'clearcase-gui-diff-named-version-dired-file)
+(define-key clearcase-dired-prefix-map "=" 'my-clearcase-ediff-current)
+(define-key clearcase-dired-prefix-map (kbd "C-=") 'my-clearcase-gui-diff-current)
 
 (define-key clearcase-comment-mode-map (kbd "C-x C-s") 'clearcase-comment-finish)
 (define-key clearcase-comment-mode-map (kbd "C-x C-w") 'clearcase-comment-save)
