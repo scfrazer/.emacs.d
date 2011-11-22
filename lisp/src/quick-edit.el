@@ -368,6 +368,8 @@ depending on the major mode (see `qe-block-indented-modes')."
     (define-key map (kbd "W") 'qe-unit-ends-backward-word)
     (define-key map (kbd "m") 'qe-unit-ends-forward-matching)
     (define-key map (kbd "M") 'qe-unit-ends-backward-matching)
+    (define-key map (kbd "t") 'qe-unit-ends-forward-to-char)
+    (define-key map (kbd "T") 'qe-unit-ends-backward-to-char)
     (define-key map (kbd "e") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))
     (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
@@ -444,6 +446,26 @@ variable for more information.")
     (with-syntax-table table
       (forward-sexp -1)
       (cons beg (point)))))
+
+(defun qe-unit-ends-forward-to-char ()
+  "Text unit ends for forward to some char."
+  (message "To char:")
+  (let ((char (read-char)))
+    (cons (point)
+          (progn
+            (search-forward (char-to-string char))
+            (backward-char)
+            (point)))))
+
+(defun qe-unit-ends-backward-to-char ()
+  "Text unit ends for backward to some char."
+  (message "Backward to char:")
+  (let ((char (read-char)))
+    (cons (point)
+          (progn
+            (search-backward (char-to-string char))
+            (forward-char)
+            (point)))))
 
 (defun qe-unit-ends-mark ()
   "Text unit ends for mark."
@@ -596,7 +618,7 @@ variable for more information.")
       (delete-overlay qe-isearch-overlay))
     result))
 
-(defadvice isearch-highlight (after qe-iseach-add-overlay activate)
+(defadvice isearch-highlight (after qe-isearch-add-overlay activate)
   (when qe-isearch-start
     (if qe-isearch-forward
         (setq qe-isearch-end (ad-get-arg 0))
