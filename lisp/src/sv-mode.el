@@ -348,7 +348,7 @@ Otherwise indent them as usual."
            ;; Scope resolution
            (cons "\\([a-zA-Z0-9_]+\\)::" '(1 font-lock-type-face))
            ;; Tasks/functions/programs
-           (cons "^\\s-*\\(\\(static\\|extern\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
+           (cons "^\\s-*\\(\\(static\\|extern\\|pure\\|local\\|protected\\|virtual\\|forkjoin\\|before\\|after\\|around\\)\\s-+\\)*\\(task\\|function\\|program\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]"
                  '(4 font-lock-function-name-face t))
            ;; Instances
            (cons "^\\s-*\\([a-zA-Z0-9_:]+\\)\\s-+\\(#\\s-*([^)]*)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*("
@@ -1432,7 +1432,8 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
             (catch 'done
               (while (backward-word)
                 (unless (sv-mode-in-comment-or-string)
-                  (if (looking-at "static\\|extern\\|local\\|protected\\|virtual")
+                  (if (looking-at "static\\|extern\\|pure\\|local\\|protected\\|virtual")
+                      ;; TODO Need some qualifier for 'pure'
                       (setq qualifiers
                             (concat (substring (match-string-no-properties 0) 0 1) qualifiers))
                     (when (looking-back "^\\s-*import.+" (point-at-bol))
