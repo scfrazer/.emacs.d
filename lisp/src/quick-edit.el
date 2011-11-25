@@ -370,6 +370,8 @@ depending on the major mode (see `qe-block-indented-modes')."
     (define-key map (kbd "M") 'qe-unit-ends-backward-matching)
     (define-key map (kbd "t") 'qe-unit-ends-forward-to-char)
     (define-key map (kbd "T") 'qe-unit-ends-backward-to-char)
+    (define-key map (kbd "s") 'qe-unit-ends-forward-starts-char)
+    (define-key map (kbd "S") 'qe-unit-ends-backward-starts-char)
     (define-key map (kbd "e") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))
     (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
@@ -450,21 +452,45 @@ variable for more information.")
 (defun qe-unit-ends-forward-to-char ()
   "Text unit ends for forward to some char."
   (message "To char:")
-  (let ((char (read-char)))
+  (let ((case-fold-search nil)
+        (char (read-char)))
     (cons (point)
           (progn
+            (forward-char)
             (search-forward (char-to-string char))
             (backward-char)
             (point)))))
 
 (defun qe-unit-ends-backward-to-char ()
-  "Text unit ends for backward to some char."
+  "Text unit ends for backward over some char."
   (message "Backward to char:")
-  (let ((char (read-char)))
+  (let ((case-fold-search nil)
+        (char (read-char)))
     (cons (point)
           (progn
             (search-backward (char-to-string char))
+            (point)))))
+
+(defun qe-unit-ends-forward-starts-char ()
+  "Text unit ends for forward to word starting with char."
+  (message "To word starting with char:")
+  (let ((case-fold-search nil)
+        (char (read-char)))
+    (cons (point)
+          (progn
             (forward-char)
+            (re-search-forward (format "\\_<%c" char))
+            (backward-char)
+            (point)))))
+
+(defun qe-unit-ends-backward-starts-char ()
+  "Text unit ends for backward over word starting with char."
+  (message "Backward to word starting with char:")
+  (let ((case-fold-search nil)
+        (char (read-char)))
+    (cons (point)
+          (progn
+            (re-search-backward (format "\\_<%c" char))
             (point)))))
 
 (defun qe-unit-ends-mark ()

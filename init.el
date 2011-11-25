@@ -71,7 +71,6 @@
 (require 'my-pair)
 (require 'my-pop-back)
 (require 'my-python)
-(require 'my-query-replace)
 (require 'my-recentf)
 (require 'my-reformat)
 (require 'my-register-list)
@@ -596,6 +595,18 @@ Prefix with C-u to fit the `next-window'."
      (point))
    (point)))
 
+(defun my-minibuffer-insert-word-after-point ()
+  "Insert the word after point into the minibuffer."
+  (interactive)
+  (let (word beg)
+    (with-current-buffer (window-buffer (minibuffer-selected-window))
+      (save-excursion
+        (setq beg (point))
+        (skip-syntax-forward "w_")
+        (setq word (buffer-substring-no-properties beg (point)))))
+    (when word
+      (insert word))))
+
 (defun my-narrow-nested-dwim (&optional arg)
   "narrow-nested-dwim, but do something special if there is a prefix arg."
   (interactive "P")
@@ -655,6 +666,24 @@ Prefix with C-u to fit the `next-window'."
   (my-delete-trailing-whitespace)
   (untabify (point-min) (point-max))
   (indent-region (point-min) (point-max)))
+
+(defun my-query-replace (&optional arg)
+  "query-replace ... take from-string from region if it is active.
+With prefix arg, call the standard query-replace (good for repeating
+previous replacement)."
+  (interactive "*P")
+  (if (or arg (not (region-active-p)))
+      (let ((current-prefix-arg nil))
+        (call-interactively 'query-replace))
+    (let (from to)
+      (setq from (buffer-substring (region-beginning) (region-end))
+            to (read-from-minibuffer
+                (format "Query replace %s with: " from) nil nil nil
+                'query-replace-history))
+      (goto-char (region-beginning))
+      (setq mark-active nil)
+      (query-replace from to)
+      (setq query-replace-defaults (cons from to)))))
 
 (defvar my-recenter-count nil)
 (defun my-recenter (&optional arg)
@@ -979,8 +1008,9 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defun my-minibuffer-setup-hook ()
   (my-keys-minor-mode 0)
-  (local-set-key "\C-z" 'undo)
-  (local-set-key [(control ?/)] 'dabbrev-expand)
+  (local-set-key (kbd "C-/") 'dabbrev-expand)
+  (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
+  (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-h") 'my-minibuffer-backward)
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
