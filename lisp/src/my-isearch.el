@@ -68,6 +68,7 @@ or jump forward to input char."
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 (define-key isearch-mode-map (kbd "C-.") (lambda ()
                                            (interactive)
+                                           (push (read-char) unread-command-events)
                                            (push ?\* unread-command-events)
                                            (push ?\. unread-command-events)))
 
