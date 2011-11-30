@@ -1360,6 +1360,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (global-set-key (kbd "<mouse-4>") (lambda () "Scroll up." (interactive) (my-edit-scroll-up 5)))
 (global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (my-edit-scroll-down 5)))
 
+;; Translations
+
+(define-key key-translation-map (kbd "C-c N") (kbd "C-x n s"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
