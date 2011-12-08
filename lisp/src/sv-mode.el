@@ -365,7 +365,7 @@ Otherwise indent them as usual."
   (append sv-mode-font-lock-keywords-2
           (list
            ;; Warn you about hex ... since I do it all the time
-           (cons "\\_<0x[0-9a-FA-F]+\\_>"
+           (cons "\\_<0x[0-9a-fA-F]+\\_>"
                  '(0 font-lock-warning-face))
            ;; AOP keywords
            (cons sv-mode-aop-keywords '(0 font-lock-keyword-face keep))
