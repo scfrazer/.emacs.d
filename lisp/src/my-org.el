@@ -147,7 +147,9 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (defadvice org-beginning-of-line (after my-org-beginning-of-line activate)
   (when (looking-at "\\[.\\] ")
-    (forward-char 4)))
+    (forward-char 4))
+  (when (looking-at "^\\s-*")
+    (back-to-indentation)))
 
 (defun my-org-copy-file-link ()
   "Create a file link by line number in the kill ring."
