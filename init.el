@@ -1278,8 +1278,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r i" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r l" 'register-list)
-(my-keys-define "M-r r" 'string-rectangle)
 (my-keys-define "M-r s" 'copy-to-register)
+(my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-r y" 'yank-rectangle)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'qe-unit-copy)
@@ -1379,18 +1379,18 @@ Does not set point.  Does nothing if mark ring is empty."
        '("/vob/sse/asic/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/.*\\.[ch]pp$" "/nfs/luke_scratch/tags/sc/TAGS")
        '("/vob/sse/asic/.*\\.c$" "/nfs/luke_scratch/tags/sc/TAGS")
-       '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
-       '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
        '("/.+/scfrazer/uvm/.*\\.svh?$"
          "/auto/luke_user6/scfrazer/uvm/uvm-1.1/src/TAGS"
          "/auto/luke_user6/scfrazer/uvm/ngdv_test/TAGS")
 
+;;       '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
+;;       '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
 ;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
 ;;        '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
 ;;        '("/vob/astro/.*\\.vh?$" "/nfs/astro_scratch/tags/rtl/TAGS")
 ;;        '("/vob/astro/.*\\.s$" "/nfs/astro_scratch/tags/rtl/TAGS")
-;;        '("/vob/wolverine/.*\\.e$" "/nfs/wolverine_scratch/tags/dv/TAGS")
-;;        '("/vob/wolverine/.*\\.v$" "/nfs/wolverine_scratch/tags/rtl/TAGS")
+       '("/vob/wolverine/.*\\.e$" "/nfs/wolverine_scratch/tags/dv/TAGS")
+       '("/vob/wolverine/.*\\.v$" "/nfs/wolverine_scratch/tags/rtl/TAGS")
 ;;        '("/vob/hkp/.*\\.e$" "/nfs/hkp_scratch/tags/dv/TAGS")
 ;;        '("/vob/hkp/.*\\.v$" "/nfs/hkp_scratch/tags/rtl/TAGS")
 
