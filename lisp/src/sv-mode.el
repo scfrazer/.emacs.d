@@ -48,6 +48,8 @@
 ;; C-c C-s : Create (or update) skeleton task/function implementation in
 ;;           .sv file from prototype on current line in .svh file
 ;;
+;; TODO C-x n s, M-a, M-e and such
+;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
 
@@ -603,6 +605,7 @@ expression."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
 
+;; TODO Add specified macros with no semicolons
 (defun sv-mode-beginning-of-statement ()
   "Move to beginning of statement."
   (interactive)
