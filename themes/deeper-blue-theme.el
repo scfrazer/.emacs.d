@@ -94,7 +94,7 @@
    `(match ((,class (:background "DeepPink4"))))
    `(minibuffer-prompt ((,class (:foreground "CadetBlue1"))))
    `(mode-line ((,class (:background "gray75" :foreground "black" :box (:line-width 1 :style released-button)))))
-   `(mode-line-buffer-id ((,class (:weight bold :background nil :foreground "blue4"))))
+   `(mode-line-buffer-id ((,class (:background nil :foreground "blue3"))))
    `(mode-line-inactive ((,class (:background "gray40" :foreground "black" :box (:line-width 1 :color "gray40" :style nil)))))
    `(outline-1 ((,class (:foreground "SkyBlue1"))))
    `(outline-2 ((,class (:foreground "CadetBlue1"))))
