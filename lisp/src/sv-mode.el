@@ -912,17 +912,17 @@ end/endtask/endmodule/etc. also."
 function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (end-of-line)
-    (insert "\n// @todo Implement this " (cdr (assoc 'type proto)))
+    (insert "\n//! @todo Implement this " (cdr (assoc 'type proto)))
     (sv-mode-indent-line)
     (forward-line -2)
     (insert "\n")
     (sv-mode-indent-line)
     (insert-char ?/ (- 80 (- (point) (point-at-bol))))
-    (insert "\n// ")
-    (sv-mode-indent-line)
-    (dolist (ns namespaces)
-      (insert ns "::"))
-    (insert (cdr (assoc 'name proto)))
+;;     (insert "\n// ")
+;;     (sv-mode-indent-line)
+;;     (dolist (ns namespaces)
+;;       (insert ns "::"))
+;;     (insert (cdr (assoc 'name proto)))
     (insert "\n")))
 
 (defun sv-mode-electric-star ()
