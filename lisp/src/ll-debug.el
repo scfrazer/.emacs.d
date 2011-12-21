@@ -724,7 +724,7 @@ Uses `query-replace-regexp' internally."
                               (if v1
                                   "\", "
                                 "\"")
-                              v1 "), UVM_MEDIUM"))
+                              v1 "), UVM_LOW"))
 
 (defun ll-debug-renumber ()
   "Renumber the debug messages in order."
