@@ -16,7 +16,7 @@
      `(magit-item-highlight ((,class (:background "gray25"))))
      `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
      `(my-tab-face ((,class (:background "pink4"))))
-     `(my-todo-face ((,class (:weight bold :box t :foreground "firebrick2" :background "yellow"))) t)
+     `(my-todo-face ((,class (:box t :foreground "firebrick2" :background "yellow"))) t)
      `(my-trailing-space-face ((,class (:background "steelblue4"))))
      `(org-document-title ((,class (:height 1.44 :foreground "cyan3" :weight bold))))
      `(org-hide ((,class (:foreground "#181a26"))))

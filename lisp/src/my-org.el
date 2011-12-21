@@ -23,11 +23,11 @@
               org-id-track-globally nil
               org-imenu-depth 6
               org-link-frame-setup '((file . find-file))
-              org-log-done 'time
+              org-log-done nil
               org-modules nil
-              org-priority-faces '((?A . (:foreground "LightPink2" :weight bold))
-                                   (?B . (:foreground "SkyBlue1" :weight bold))
-                                   (?C . (:foreground "DarkSeaGreen3" :weight bold)))
+              org-priority-faces '((?A . (:foreground "LightPink2"))
+                                   (?B . (:foreground "SkyBlue1"))
+                                   (?C . (:foreground "DarkSeaGreen3")))
               org-read-date-popup-calendar nil
               org-replace-disputed-keys t
               org-return-follows-link t
@@ -49,14 +49,14 @@
               org-todo-keywords '((sequence "TODO" "STARTED" "WAITING" "|" "DONE")
                                   (sequence "MAYBE" "SOMEDAY" "|" "CANCELED")
                                   (sequence "|" "REASSIGNED"))
-              org-todo-keyword-faces '(("TODO"       . (:foreground "IndianRed1" :weight bold))
-                                       ("STARTED"    . (:foreground "DeepSkyBlue1" :weight bold))
-                                       ("WAITING"    . (:foreground "Yellow2" :weight bold))
-                                       ("DONE"       . (:foreground "PaleGreen2" :weight bold))
-                                       ("MAYBE"      . (:foreground "DeepSkyBlue4" :weight bold))
-                                       ("SOMEDAY"    . (:foreground "Yellow4" :weight bold))
-                                       ("CANCELED"   . (:foreground "PaleGreen4" :weight bold))
-                                       ("REASSIGNED" . (:foreground "PaleGreen4" :weight bold)))
+              org-todo-keyword-faces '(("TODO"       . (:foreground "IndianRed1"))
+                                       ("STARTED"    . (:foreground "DeepSkyBlue1"))
+                                       ("WAITING"    . (:foreground "Yellow2"))
+                                       ("DONE"       . (:foreground "PaleGreen2"))
+                                       ("MAYBE"      . (:foreground "DeepSkyBlue4"))
+                                       ("SOMEDAY"    . (:foreground "Yellow4"))
+                                       ("CANCELED"   . (:foreground "PaleGreen4"))
+                                       ("REASSIGNED" . (:foreground "PaleGreen4")))
               org-use-speed-commands t
               org-yank-folded-subtrees nil)
 

@@ -18,7 +18,7 @@
   :group 'faces)
 
 (defface my-todo-face
-  '((t (:bold on :weight bold :box t :foreground "firebrick2" :background "yellow")))
+  '((t (:box t :foreground "firebrick2" :background "yellow")))
   "todo/fixme highlighting."
   :group 'faces)
 
