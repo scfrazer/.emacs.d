@@ -116,14 +116,14 @@ Otherwise indent them as usual."
 
 ;;;###autoload
 (defcustom sv-mode-doxymacs-blank-singleline-comment-template
-  '("/** " > p " */" > n )
+  '("//! " > p (unless (looking-at "\\s-*$") 'n))
   "*Doxymacs blank single line comment template."
   :group 'sv-mode
   :type 'sexp)
 
 ;;;###autoload
 (defcustom sv-mode-doxymacs-blank-multiline-comment-template
-  '("/**" > n "* " p > n "*/" > n )
+  '("/*!" > n "* " p > n "*/" > (unless (looking-at "\\s-*$") 'n))
   "*Doxymacs blank multi-line comment template."
   :group 'sv-mode
   :type 'sexp)
@@ -134,15 +134,16 @@ Otherwise indent them as usual."
            (args (cdr (assoc 'args proto)))
            (ret (cdr (assoc 'ret proto))))
       (list 'l
-            "/**" '> 'n
-            " * " 'p '> 'n
+            "/*!" '> 'n
+            " * \\brief " 'p '> 'n
             (when args
               '(l " *" '> 'n))
             (doxymacs-parm-tempo-element (mapcar 'car args))
             (when (and ret (not (string= ret "void")))
               '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
                   "return " (p "Returns: ") > n))
-            " */" '> 'n 'n)))
+            " */" '>
+            (unless (looking-at "\\s-*$") 'n))))
   "*Doxymacs function comment template."
   :group 'sv-mode
   :type 'sexp)
@@ -912,7 +913,7 @@ end/endtask/endmodule/etc. also."
 function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (end-of-line)
-    (insert "\n//! @todo Implement this " (cdr (assoc 'type proto)))
+    (insert "\n//! \todo Implement this " (cdr (assoc 'type proto)))
     (sv-mode-indent-line)
     (forward-line -2)
     (insert "\n")
@@ -1808,13 +1809,13 @@ Key Bindings:
 
   ;; Doxygen
 
-  (set (make-local-variable 'doxymacs-JavaDoc-blank-singleline-comment-template)
+  (set (make-local-variable 'doxymacs-Qt-blank-singleline-comment-template)
        sv-mode-doxymacs-blank-singleline-comment-template)
 
-  (set (make-local-variable 'doxymacs-JavaDoc-blank-multiline-comment-template)
+  (set (make-local-variable 'doxymacs-Qt-blank-multiline-comment-template)
        sv-mode-doxymacs-blank-multiline-comment-template)
 
-  (set (make-local-variable 'doxymacs-JavaDoc-function-comment-template)
+  (set (make-local-variable 'doxymacs-Qt-function-comment-template)
        sv-mode-doxymacs-function-comment-template)
 
   ;; Hooks

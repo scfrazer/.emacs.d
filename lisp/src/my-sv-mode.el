@@ -46,7 +46,7 @@
   "tdo"
   ""
   (lambda()
-    (insert "//! @todo ")
+    (insert "//! \todo ")
     (sv-mode-indent-line)))
 
 (defvar my-sv-mode-uvm-tag "CSCO_SB"

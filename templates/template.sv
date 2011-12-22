@@ -16,7 +16,5 @@
 //
 // $Id: $
 
-/** @file */
-
 `include "%n.svh"
 
