@@ -23,6 +23,13 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
+;; * TODO `uvm_* macros deliniate end of statements
+;;   - Precompute and optimize regexp?
+;;   - Should have some sort of list so others can be added e.g. `csco_*
+;; * TODO `uvm_*_begin should indent (like fork?), `uvm_*_end should dedent (like join?)
+;;   - Precompute and optimize regexp?
+;;   - Should have some sort of list so others can be added e.g. `csco_*
+
 ;;; Commentary:
 ;;
 ;; sv-mode is a major mode for editing code written in the SystemVerilog
