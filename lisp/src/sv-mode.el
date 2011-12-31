@@ -97,6 +97,14 @@ Otherwise indent them as usual."
   :type 'boolean)
 
 ;;;###autoload
+
+(defcustom sv-mode-macros-without-semi
+  '("`uvm[a-z_]+")
+  "*List of regexps of macros that do not have to end with a semicolon"
+  :group 'sv-mode
+  :type '(repeat regexp))
+
+;;;###autoload
 (defcustom sv-mode-opener-is-electric t
   "*Non-nil means reindent the current line after entering 'begin' or '{'."
   :group 'sv-mode
@@ -613,19 +621,14 @@ expression."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
 
-;; TODO Add specified macros with no semicolons
+(defvar sv-mode-bos-regexp nil) ;; Calculate this when the mode starts
+
 (defun sv-mode-beginning-of-statement ()
   "Move to beginning of statement."
   (interactive)
   (skip-syntax-forward " >")
   (let* ((limit (point))
-         (regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
-                         "\\_<if[ \t\n]*(\\|"
-                         (regexp-opt '("`define" "`else" "`elsif" "`endif"
-                                       "`ifdef" "`ifndef" "`include"
-                                       "`timescale" "`undef")) ".*\\|"
-                                       sv-mode-end-regexp))
-         (matched (sv-mode-re-search-backward regexp nil 'go))
+         (matched (sv-mode-re-search-backward sv-mode-bos-regexp nil 'go))
          (end (match-end 0)))
     (unless (and (looking-at ";")
                  (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
@@ -633,9 +636,14 @@ expression."
           (unless (looking-at "\\(fork\\|do\\)")
             (if (looking-at "case")
                 (forward-sexp 2)
-              (goto-char end)
-              (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
-                (goto-char (match-end 0))))
+              (if (looking-at (mapconcat 'identity sv-mode-macros-without-semi "\\|"))
+                  (progn
+                    (goto-char end)
+                    (when (looking-at "\\s-*(")
+                      (forward-sexp 1)))
+                (goto-char end)
+                (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
+                  (goto-char (match-end 0)))))
             (skip-syntax-forward " >" limit)
             (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
                         (not (or (eobp) (= (point) limit))))
@@ -1792,6 +1800,15 @@ Key Bindings:
           ))
   (turn-on-font-lock)
 
+  ;; Only calculate this regexp when the mode is started
+
+  (setq sv-mode-bos-regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+                                   "\\_<if[ \t\n]*(\\|"
+                                   (regexp-opt '("`define" "`else" "`elsif" "`endif"
+                                                 "`ifdef" "`ifndef" "`include"
+                                                 "`timescale" "`undef"))
+                                   ".*\\|" sv-mode-end-regexp "\\|"
+                                   (mapconcat 'identity sv-mode-macros-without-semi "\\|")))
   ;; Idle timer
 
   (when sv-mode-idle-timer
