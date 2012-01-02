@@ -23,13 +23,6 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
-;; * TODO `uvm_* macros deliniate end of statements
-;;   - Precompute and optimize regexp?
-;;   - Should have some sort of list so others can be added e.g. `csco_*
-;; * TODO `uvm_*_begin should indent (like fork?), `uvm_*_end should dedent (like join?)
-;;   - Precompute and optimize regexp?
-;;   - Should have some sort of list so others can be added e.g. `csco_*
-
 ;;; Commentary:
 ;;
 ;; sv-mode is a major mode for editing code written in the SystemVerilog
@@ -92,6 +85,13 @@ Otherwise indent them as usual."
 ;;;###autoload
 (defcustom sv-mode-line-up-paren t
   "*Non-nil means indent items in parentheses relative to the '('.
+Otherwise indent them as usual."
+  :group 'sv-mode
+  :type 'boolean)
+
+;;;###autoload
+(defcustom sv-mode-line-up-brace t
+  "*Non-nil means indent items in parentheses relative to the '{'.
 Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
@@ -627,35 +627,48 @@ expression."
   "Move to beginning of statement."
   (interactive)
   (skip-syntax-forward " >")
-  (let* ((limit (point))
-         (matched (sv-mode-re-search-backward sv-mode-bos-regexp nil 'go))
-         (end (match-end 0)))
-    (unless (and (looking-at ";")
-                 (re-search-backward "\\_<for\\_>\\s-*(" (line-beginning-position) t))
-      (if matched
-          (unless (looking-at "\\(fork\\|do\\)")
-            (if (looking-at "case")
-                (forward-sexp 2)
-              (if (looking-at (mapconcat 'identity sv-mode-macros-without-semi "\\|"))
-                  (progn
-                    (goto-char end)
-                    (when (looking-at "\\s-*(")
-                      (forward-sexp 1)))
-                (goto-char end)
-                (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
-                  (goto-char (match-end 0)))))
-            (skip-syntax-forward " >" limit)
-            (while (and (or (looking-at "//\\|/\\*") (sv-mode-in-comment-or-string))
-                        (not (or (eobp) (= (point) limit))))
-              (re-search-forward "\\*/\\|$" limit 'go)
-              (skip-syntax-forward " >" limit)))
-        ;; The first statement in a file after comments is problematic
-        (when (bobp)
-          (sv-mode-re-search-forward "[a-zA-Z`]" nil 'go))))
-    (back-to-indentation)
-    (when (looking-at "/\\*")
-      (re-search-forward "\\*/" limit 'go)
-      (skip-syntax-forward " >" limit))))
+  ;; TODO Optimize this by narrowing buffer to current class/function/task/etc.
+  (condition-case nil (backward-up-list 1000) (error nil))
+  (let ((limit (point)) matched end)
+    ;; Look for previous statement or delimiter
+    (while (not (or matched (bobp)))
+      (setq matched (sv-mode-re-search-backward sv-mode-bos-regexp nil 'go))
+      (when matched
+        (setq end (match-end 0))
+        ;; Go backward over sexp's to avoid problems with 'for', constraints, and macros
+        (when (looking-at "[})]")
+          (forward-char)
+          (backward-sexp)
+          (if (= (char-after) ?\()
+              (setq matched nil)
+            ;; Constraints can end with just a curly brace and no semicolon
+            (backward-sexp 2)
+            (if (looking-at "constraint")
+                (forward-sexp 3)
+              (set matched nil))))))
+    ;; Found an anchor?
+    (when matched
+      (cond
+       ;; Case
+       ((looking-at "case")
+        (forward-sexp 2))
+       ;; Macros without semicolons
+       ((looking-at (mapconcat 'identity sv-mode-macros-without-semi "\\|"))
+        (goto-char end)
+        (let ((num-sexps 1))
+          (when (looking-at "\\s-*(")
+            (forward-sexp 1)
+            (setq num-sexps 2))
+          ;; If started inside the current macro, go back to beginning
+          (when (> (point) limit)
+            (backward-sexp num-sexps))))
+       ;; Everything else
+       (t
+        (goto-char end)
+        (when (looking-at "\\s-*:\\s-*[a-zA-Z0-9_]+")
+          (goto-char (match-end 0))))))
+    ;; Skip over comments and whitespace
+    (forward-comment (buffer-size))))
 
 (defun sv-mode-jump-other-end ()
   "Jumps to the opposite begin/end expression from the one point is at."
@@ -1149,28 +1162,25 @@ Optional ARG means justify paragraph as well."
               offset)
           (backward-up-list)
           (if (= (char-after) ?{)
-              (progn
-                (sv-mode-beginning-of-statement)
-;;                 (when (looking-at "\\(typedef\\s-+\\)?enum")
-;;                   (setq offset (current-column))
-;;                   (unless at-closer
-;;                     (setq offset (+ offset sv-mode-basic-offset)))
-;;                   offset))
-                (setq offset (current-column))
-                (unless at-closer
-                  (setq offset (+ offset sv-mode-basic-offset)))
-                offset)
+              (if (save-excursion (backward-sexp 2) (looking-at "constraint"))
+                  nil ;; TODO Inside constraint block
+                (when sv-mode-line-up-brace
+                  (sv-mode-get-paren-lined-up-offset at-closer)))
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
                         (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
-              (setq offset (current-column))
-              (unless at-closer
-                (forward-char)
-                (if (and (> (skip-syntax-forward " >" (line-end-position)) 0)
-                         (not (looking-at "//\\|/\\*")))
-                    (setq offset (current-column))
-                  (setq offset (1+ offset))))
-              offset)))
+              (sv-mode-get-paren-lined-up-offset at-closer))))
       (error nil))))
+
+(defun sv-mode-get-paren-lined-up-offset (at-closer)
+  "Get amount to indent in a lined-up paren block."
+  (let ((offset (current-column)))
+    (unless at-closer
+      (forward-char)
+      (if (and (> (skip-syntax-forward " >" (line-end-position)) 0)
+               (not (looking-at "//\\|/\\*")))
+          (setq offset (current-column))
+        (setq offset (1+ offset))))
+    offset))
 
 (defun sv-mode-get-indent-if-opener ()
   "Get amount to indent if looking at a opening item."
@@ -1195,6 +1205,7 @@ Optional ARG means justify paragraph as well."
         (forward-word)
         (sv-mode-backward-sexp)
         (sv-mode-beginning-of-statement)
+        (back-to-indentation)
         (if (and (looking-at "\\_<fork\\_>")
                  (string= closer "end"))
             (+ (current-column) sv-mode-basic-offset)
@@ -1211,7 +1222,8 @@ Optional ARG means justify paragraph as well."
       (if (not (sv-mode-beginning-of-scope))
           0
         (unless (looking-back "^\\s-*" (line-beginning-position))
-          (sv-mode-beginning-of-statement))
+          (sv-mode-beginning-of-statement)
+          (back-to-indentation))
         (+ (current-column) sv-mode-basic-offset offset)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1220,9 +1232,10 @@ Optional ARG means justify paragraph as well."
 (defvar sv-mode-syntax-table
   (let ((table (make-syntax-table)))
 
-    (modify-syntax-entry ?_ "_" table)
+    (modify-syntax-entry ?@ "_" table)
     (modify-syntax-entry ?\$ "_" table)
     (modify-syntax-entry ?\` "_" table)
+    (modify-syntax-entry ?_ "_" table)
 
     (modify-syntax-entry ?{ "(}" table)
     (modify-syntax-entry ?} "){" table)
@@ -1232,7 +1245,6 @@ Optional ARG means justify paragraph as well."
     (modify-syntax-entry ?\] ")[" table)
 
     (modify-syntax-entry ?! "." table)
-    (modify-syntax-entry ?@ "." table)
     (modify-syntax-entry ?# "." table)
     (modify-syntax-entry ?% "." table)
     (modify-syntax-entry ?^ "." table)
@@ -1765,6 +1777,7 @@ Key Bindings:
   (make-local-variable 'sv-mode-continued-line-offset)
   (make-local-variable 'sv-mode-line-up-bracket)
   (make-local-variable 'sv-mode-line-up-paren)
+  (make-local-variable 'sv-mode-line-up-brace)
 
   (make-local-variable 'comment-start)
   (make-local-variable 'comment-end)
@@ -1802,13 +1815,13 @@ Key Bindings:
 
   ;; Only calculate this regexp when the mode is started
 
-  (setq sv-mode-bos-regexp (concat "[;{}]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
-                                   "\\_<if[ \t\n]*(\\|"
-                                   (regexp-opt '("`define" "`else" "`elsif" "`endif"
-                                                 "`ifdef" "`ifndef" "`include"
-                                                 "`timescale" "`undef"))
-                                   ".*\\|" sv-mode-end-regexp "\\|"
+  (setq sv-mode-bos-regexp (concat "[;})]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+                                   (regexp-opt '("`define" "`else" "`elsif"
+                                                 "`endif" "`ifdef" "`ifndef"
+                                                 "`include" "`timescale" "`undef")) ".*\\|"
+                                   sv-mode-end-regexp "\\|"
                                    (mapconcat 'identity sv-mode-macros-without-semi "\\|")))
+
   ;; Idle timer
 
   (when sv-mode-idle-timer
