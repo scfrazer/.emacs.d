@@ -1459,7 +1459,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'edd 'edebug-defun)
 (defalias 'edb 'ediff-buffers)
-(defalias 'ef 'my-ediff-buffer-with-file)
+(defalias 'edf 'my-ediff-buffer-with-file)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)

@@ -7,10 +7,11 @@
               ediff-split-window-function 'split-window-vertically
               ediff-window-setup-function 'ediff-setup-windows-plain)
 
-(defun my-ediff-buffer-with-file ()
+(defun my-ediff-buffer-with-file (arg)
   "View the differences between current buffer and it's associated file using ediff."
-  (interactive)
-  (let* ((modified-buffer (current-buffer))
+  (interactive "P")
+  (let* ((ediff-ignore-similar-regions (not arg))
+         (modified-buffer (current-buffer))
          (filename (or (buffer-file-name modified-buffer)
                        (error "Buffer %s has no associated file" modified-buffer)))
          (mode major-mode)
