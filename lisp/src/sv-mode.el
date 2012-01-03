@@ -138,7 +138,7 @@ Otherwise indent them as usual."
 (defcustom sv-mode-macros-end-to-begin-alist
   '(("`uvm_field_utils_end" . "`uvm_field_utils_begin")
     ("`uvm_object_utils_end" . "`uvm_object_\\(param_\\)?utils_begin")
-    ("`uvm_component_utils_end" . "`uvm_component_\\(param_\\)?utils_end"))
+    ("`uvm_component_utils_end" . "`uvm_component_\\(param_\\)?utils_begin"))
   "*Alist mapping end macros to begin macros."
   :group 'sv-mode
   :type 'alist)
@@ -211,11 +211,20 @@ Otherwise indent them as usual."
 (defvar sv-mode-end-regexp nil
   "End keyword regexp (calculated at mode start).")
 
+(defvar sv-mode-begin-end-regexp nil
+  "Begin/end regexp (calculated at mode start).")
+
 (defvar sv-mode-begin-to-end-alist nil
   "Alist from beginning keyword to end regexp (calculated at mode start).")
 
 (defvar sv-mode-end-to-begin-alist nil
   "Alist from ending keyword to begin regexp (calculated at mode start).")
+
+(defvar sv-mode-macros-without-semi-regexp nil
+  "Macros without semicolon regexp (calculated at mode start).")
+
+(defvar sv-mode-eos-regexp nil
+  "End of scope regexp (calculated at mode start).")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font lock
@@ -635,7 +644,7 @@ expression."
        ((looking-at "case")
         (forward-sexp 2))
        ;; Macros without semicolons
-       ((looking-at (mapconcat 'identity sv-mode-macros-without-semi "\\|"))
+       ((looking-at sv-mode-macros-without-semi-regexp)
         (goto-char end)
         (let ((num-sexps 1))
           (when (looking-at "\\s-*(")
@@ -657,8 +666,7 @@ expression."
   (interactive)
   (let ((pos (point)))
     (skip-syntax-backward "w_")
-    (if (re-search-forward
-         (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp) nil t)
+    (if (re-search-forward sv-mode-begin-end-regexp nil t)
         (progn
           (skip-syntax-backward "w_")
           (if (looking-at sv-mode-end-regexp)
@@ -747,11 +755,9 @@ end/endtask/endmodule/etc. also."
       (progn (backward-up-list) t)
     (error
      (let ((pos (point))
-           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
-           (end-regexp (concat "end\\|join\\|" (mapconcat 'identity sv-mode-macros-end-indent "\\|")))
            (depth 1))
-       (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
-         (if (looking-at end-regexp)
+       (while (and (> depth 0) (sv-mode-re-search-backward sv-mode-begin-end-regexp nil t))
+         (if (looking-at sv-mode-eos-regexp)
              (setq depth (1+ depth))
            (let ((begin-string (match-string-no-properties 0)))
              (unless (or (sv-mode-decl-only-p)
@@ -774,10 +780,8 @@ end/endtask/endmodule/etc. also."
   (condition-case nil
       (progn (up-list) t)
     (error
-     (let ((pos (point))
-           (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
-           done)
-       (while (and (not done) (sv-mode-re-search-forward regexp nil t))
+     (let ((pos (point)) done)
+       (while (and (not done) (sv-mode-re-search-forward sv-mode-begin-end-regexp nil t))
          (backward-word)
          (if (not (looking-at "end\\|join"))
              (if (sv-mode-decl-only-p)
@@ -1054,7 +1058,7 @@ Optional ARG means justify paragraph as well."
                    (save-excursion
                      (sv-mode-beginning-of-statement)
                      (looking-at "\\_<extern\\|import\\|export\\_>")))
-        (when (looking-at (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+        (when (looking-at sv-mode-begin-end-regexp)
           (let ((beg-1 (match-beginning 0))
                 (end-1 (match-end 0))
                 beg-2 end-2)
@@ -1190,8 +1194,7 @@ Optional ARG means justify paragraph as well."
         (backward-up-list)
         (sv-mode-beginning-of-statement)
         (current-column))
-    (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp "\\|"
-                              (mapconcat 'identity sv-mode-macros-end-indent "\\|")))
+    (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp))
       (let ((closer (match-string-no-properties 1)))
         (forward-word)
         (sv-mode-backward-sexp)
@@ -1883,12 +1886,18 @@ Key Bindings:
                       '("endextends" . "extends"))
                 sv-mode-macros-end-to-begin-alist))
 
+  (setq sv-mode-begin-end-regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+
   (setq sv-mode-bos-regexp (concat "[;})]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
                                    (regexp-opt '("`define" "`else" "`elsif"
                                                  "`endif" "`ifdef" "`ifndef"
                                                  "`include" "`timescale" "`undef")) ".*\\|"
                                    sv-mode-end-regexp "\\|"
                                    (mapconcat 'identity sv-mode-macros-without-semi "\\|")))
+
+  (setq sv-mode-eos-regexp (concat "end\\|join\\|" (mapconcat 'identity sv-mode-macros-end "\\|")))
+
+  (setq sv-mode-macros-without-semi-regexp (mapconcat 'identity sv-mode-macros-without-semi "\\|"))
 
   ;; Idle timer
 
