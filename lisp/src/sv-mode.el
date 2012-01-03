@@ -97,12 +97,51 @@ Otherwise indent them as usual."
   :type 'boolean)
 
 ;;;###autoload
-
 (defcustom sv-mode-macros-without-semi
-  '("`uvm[a-z_]+")
+  '("`uvm_[a-z_]+")
   "*List of regexps of macros that do not have to end with a semicolon"
   :group 'sv-mode
   :type '(repeat regexp))
+
+;;;###autoload
+(defcustom sv-mode-macros-begin
+  '("`uvm_field_utils_begin"
+    "`uvm_object_utils_begin"
+    "`uvm_object_param_utils_begin"
+    "`uvm_component_utils_begin"
+    "`uvm_component_param_utils_begin")
+  "*List of macros that start a block"
+  :group 'sv-mode
+  :type '(repeat string))
+
+;;;###autoload
+(defcustom sv-mode-macros-end
+  '("`uvm_field_utils_end"
+    "`uvm_object_utils_end"
+    "`uvm_component_utils_end")
+  "*List of macros that end a block"
+  :group 'sv-mode
+  :type '(repeat string))
+
+;;;###autoload
+(defcustom sv-mode-macros-begin-to-end-alist
+  '(("`uvm_field_utils_begin" . "`uvm_field_utils_end")
+    ("`uvm_object_utils_begin" . "`uvm_object_utils_end")
+    ("`uvm_object_param_utils_begin" . "`uvm_object_utils_end")
+    ("`uvm_component_utils_begin" . "`uvm_component_utils_end")
+    ("`uvm_component_param_utils_begin" . "`uvm_component_utils_end"))
+  "*Alist mapping begin macros to end macros."
+  :group 'sv-mode
+  :type 'alist)
+
+;;;###autoload
+(defcustom sv-mode-macros-end-to-begin-alist
+  '(("`uvm_field_utils_end" . "`uvm_field_utils_begin")
+    ("`uvm_object_utils_end" . "`uvm_object_\\(param_\\)?utils_begin")
+    ("`uvm_component_utils_end" . "`uvm_component_\\(param_\\)?utils_end"))
+  "*Alist mapping end macros to begin macros."
+  :group 'sv-mode
+  :type 'alist)
 
 ;;;###autoload
 (defcustom sv-mode-opener-is-electric t
@@ -166,80 +205,17 @@ Otherwise indent them as usual."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variables/constants
 
-(defconst sv-mode-end-regexp
-  (concat "\\_<\\("
-          (regexp-opt '("end" "endcase" "endclass" "endclocking" "endconfig"
-                        "join" "join_any" "join_none" "endfunction"
-                        "endgenerate" "endgroup" "endinterface" "endmodule"
-                        "endpackage" "endprimitive" "endprogram" "endproperty"
-                        "endspecify" "endsequence" "endtable" "endtask"
-                        ;; AOP
-                        "endextends"))
-          "\\_>\\)")
-  "End keyword regexp.")
+(defvar sv-mode-begin-regexp nil
+  "Begin keyword regexp (calculated at mode start).")
 
-(defconst sv-mode-begin-regexp
-  (concat "\\_<\\("
-          (regexp-opt '("begin" "case" "class" "clocking" "config" "fork"
-                        "function" "generate" "covergroup" "interface" "module"
-                        "package" "primitive" "program" "property" "randsequence"
-                        "specify" "sequence" "table" "task"
-                        ;; AOP
-                        "extends"))
-          "\\_>\\)")
-  "Begin keyword regexp.")
+(defvar sv-mode-end-regexp nil
+  "End keyword regexp (calculated at mode start).")
 
-(defconst sv-mode-end-to-begin-alist
-  '(("end" . "begin")
-    ("endcase" . "case")
-    ("endclass" . "class")
-    ("endclocking" . "clocking")
-    ("endconfig" . "config")
-    ("endfunction" . "function")
-    ("endgenerate" . "generate")
-    ("endgroup" . "covergroup")
-    ("endinterface" . "interface")
-    ("endmodule" . "module")
-    ("endpackage" . "package")
-    ("endprimitive" . "primitive")
-    ("endprogram" . "program")
-    ("endproperty" . "property")
-    ("endspecify" . "specify")
-    ("endsequence" . "randsequence")
-    ("endsequence" . "sequence")
-    ("endtable" . "table")
-    ("endtask" . "task")
-    ("join" . "fork")
-    ("join_any" . "fork")
-    ("join_none" . "fork")
-    ;; AOP
-    ("endextends" . "extends"))
-  "Alist from ending keyword to begin regexp.")
+(defvar sv-mode-begin-to-end-alist nil
+  "Alist from beginning keyword to end regexp (calculated at mode start).")
 
-(defconst sv-mode-begin-to-end-alist
-  '(("begin" . "end")
-    ("case" . "endcase")
-    ("class" . "endclass")
-    ("clocking" . "endclocking")
-    ("config" . "endconfig")
-    ("function" . "endfunction")
-    ("generate" . "endgenerate")
-    ("covergroup" . "endgroup")
-    ("interface" . "endinterface")
-    ("module" . "endmodule")
-    ("package" . "endpackage")
-    ("primitive" . "endprimitive")
-    ("program" . "endprogram")
-    ("property" . "endproperty")
-    ("randsequence" . "endsequence")
-    ("specify" . "endspecify")
-    ("sequence" . "endsequence")
-    ("table" . "endtable")
-    ("task" . "endtask")
-    ("fork" . "join\\|join_any\\|join_none")
-    ;; AOP
-    ("extends" . "endextends"))
-  "Alist from beginning keyword to end regexp.")
+(defvar sv-mode-end-to-begin-alist nil
+  "Alist from ending keyword to begin regexp (calculated at mode start).")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font lock
@@ -373,8 +349,14 @@ Otherwise indent them as usual."
                  '((1 font-lock-type-face)
                    (3 font-lock-variable-name-face)))
            ;; Labels
-           (cons (concat sv-mode-end-regexp "\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
-                 '(2 font-lock-constant-face t))
+           (cons (concat "\\_<"
+                         (regexp-opt '("begin" "end" "fork" "join" "join_any" "join_none"
+                                       "endclass" "endclocking" "endconfig" "endfunction"
+                                       "endgroup" "endinterface" "endmodule" "endpackage"
+                                       "endprimitive" "endprogram" "endproperty"
+                                       "endsequence" "endtask"))
+                         "\\_>\\s-*:\\s-*\\([a-zA-Z0-9_]+\\)")
+                 '(1 font-lock-constant-face t))
            ;; Parameters
            (cons "\\(#\\)[^#0-9]" '(1 font-lock-variable-name-face))))
   "Medium level highlighting for sv-mode.")
@@ -645,7 +627,7 @@ expression."
             (backward-sexp 2)
             (if (looking-at "constraint")
                 (forward-sexp 3)
-              (set matched nil))))))
+              (setq matched nil))))))
     ;; Found an anchor?
     (when matched
       (cond
@@ -766,9 +748,10 @@ end/endtask/endmodule/etc. also."
     (error
      (let ((pos (point))
            (regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
+           (end-regexp (concat "end\\|join\\|" (mapconcat 'identity sv-mode-macros-end-indent "\\|")))
            (depth 1))
        (while (and (> depth 0) (sv-mode-re-search-backward regexp nil t))
-         (if (looking-at "end\\|join")
+         (if (looking-at end-regexp)
              (setq depth (1+ depth))
            (let ((begin-string (match-string-no-properties 0)))
              (unless (or (sv-mode-decl-only-p)
@@ -1162,14 +1145,21 @@ Optional ARG means justify paragraph as well."
               offset)
           (backward-up-list)
           (if (= (char-after) ?{)
-              (if (save-excursion (backward-sexp 2) (looking-at "constraint"))
-                  nil ;; TODO Inside constraint block
+              (if (save-excursion
+                    (sv-mode-beginning-of-statement)
+                    (setq offset (current-column))
+                    (looking-at "\\(default\\s-+\\|static\\s-+\\)?constraint"))
+                  (sv-mode-get-indent-in-constraint offset)
                 (when sv-mode-line-up-brace
                   (sv-mode-get-paren-lined-up-offset at-closer)))
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
                         (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
               (sv-mode-get-paren-lined-up-offset at-closer))))
       (error nil))))
+
+(defun sv-mode-get-indent-in-constraint (base-offset)
+  ;; TODO
+  (+ base-offset sv-mode-basic-offset))
 
 (defun sv-mode-get-paren-lined-up-offset (at-closer)
   "Get amount to indent in a lined-up paren block."
@@ -1200,7 +1190,8 @@ Optional ARG means justify paragraph as well."
         (backward-up-list)
         (sv-mode-beginning-of-statement)
         (current-column))
-    (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp))
+    (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp "\\|"
+                              (mapconcat 'identity sv-mode-macros-end-indent "\\|")))
       (let ((closer (match-string-no-properties 1)))
         (forward-word)
         (sv-mode-backward-sexp)
@@ -1813,7 +1804,84 @@ Key Bindings:
           ))
   (turn-on-font-lock)
 
-  ;; Only calculate this regexp when the mode is started
+  ;; Only calculate these when the mode starts
+
+  (setq sv-mode-begin-regexp
+        (concat "\\_<\\("
+                (regexp-opt
+                 (append (list "begin" "case" "class" "clocking" "config" "fork"
+                               "function" "generate" "covergroup" "interface" "module"
+                               "package" "primitive" "program" "property" "randsequence"
+                               "specify" "sequence" "table" "task"
+                               ;; AOP
+                               "extends")
+                         sv-mode-macros-begin))
+                "\\_>\\)"))
+
+  (setq sv-mode-end-regexp
+        (concat "\\_<\\("
+                (regexp-opt
+                 (append (list "end" "endcase" "endclass" "endclocking" "endconfig"
+                               "join" "join_any" "join_none" "endfunction"
+                               "endgenerate" "endgroup" "endinterface" "endmodule"
+                               "endpackage" "endprimitive" "endprogram" "endproperty"
+                               "endspecify" "endsequence" "endtable" "endtask"
+                               ;; AOP
+                               "endextends")
+                         sv-mode-macros-end))
+                "\\_>\\)"))
+
+  (setq sv-mode-begin-to-end-alist
+        (append (list '("begin" . "end")
+                      '("case" . "endcase")
+                      '("class" . "endclass")
+                      '("clocking" . "endclocking")
+                      '("config" . "endconfig")
+                      '("function" . "endfunction")
+                      '("generate" . "endgenerate")
+                      '("covergroup" . "endgroup")
+                      '("interface" . "endinterface")
+                      '("module" . "endmodule")
+                      '("package" . "endpackage")
+                      '("primitive" . "endprimitive")
+                      '("program" . "endprogram")
+                      '("property" . "endproperty")
+                      '("randsequence" . "endsequence")
+                      '("specify" . "endspecify")
+                      '("sequence" . "endsequence")
+                      '("table" . "endtable")
+                      '("task" . "endtask")
+                      '("fork" . "join\\|join_any\\|join_none")
+                      ;; AOP
+                      '("extends" . "endextends"))
+                sv-mode-macros-begin-to-end-alist))
+
+  (setq sv-mode-end-to-begin-alist
+        (append (list '("end" . "begin")
+                      '("endcase" . "case")
+                      '("endclass" . "class")
+                      '("endclocking" . "clocking")
+                      '("endconfig" . "config")
+                      '("endfunction" . "function")
+                      '("endgenerate" . "generate")
+                      '("endgroup" . "covergroup")
+                      '("endinterface" . "interface")
+                      '("endmodule" . "module")
+                      '("endpackage" . "package")
+                      '("endprimitive" . "primitive")
+                      '("endprogram" . "program")
+                      '("endproperty" . "property")
+                      '("endspecify" . "specify")
+                      '("endsequence" . "randsequence")
+                      '("endsequence" . "sequence")
+                      '("endtable" . "table")
+                      '("endtask" . "task")
+                      '("join" . "fork")
+                      '("join_any" . "fork")
+                      '("join_none" . "fork")
+                      ;; AOP
+                      '("endextends" . "extends"))
+                sv-mode-macros-end-to-begin-alist))
 
   (setq sv-mode-bos-regexp (concat "[;})]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
                                    (regexp-opt '("`define" "`else" "`elsif"
