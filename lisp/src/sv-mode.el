@@ -928,7 +928,7 @@ end/endtask/endmodule/etc. also."
 function/task prototype, and NAMESPACES is the list of namespaces."
   (save-excursion
     (end-of-line)
-    (insert "\n//! \todo Implement this " (cdr (assoc 'type proto)))
+    (insert "\n//! \\todo Implement this " (cdr (assoc 'type proto)))
     (sv-mode-indent-line)
     (forward-line -2)
     (insert "\n")
