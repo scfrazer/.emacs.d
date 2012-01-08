@@ -1187,6 +1187,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-," 'iflipb-previous-buffer)
 (my-keys-define "C-." 'iflipb-next-buffer)
 (my-keys-define "C-/" 'dabbrev-expand)
+(my-keys-define "C-:" 'my-isearch-backward-dwim)
 (my-keys-define "C-;" 'my-isearch-forward-dwim)
 (my-keys-define "C-?" 'my-ffap)
 (my-keys-define "C-M-w" 'clipboard-kill-ring-save)

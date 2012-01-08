@@ -23,7 +23,7 @@
   (call-interactively 'isearch-forward))
 
 (defun my-isearch-forward-dwim ()
-  "Read char, then isearch-foward-word if alphanumeric,
+  "Read char, then isearch-foward at word boundaries if alphanumeric,
 or jump forward to input char."
   (interactive)
   (message "Forward: ")
@@ -40,6 +40,23 @@ or jump forward to input char."
       (push ?\< unread-command-events)
       (push ?\\ unread-command-events)
       (isearch-forward-regexp))))
+
+(defun my-isearch-backward-dwim ()
+  "Read char, then isearch-backward at word boundaries if alphanumeric,
+or jump forward to input char."
+  (interactive)
+  (message "Backward: ")
+  (let ((char (read-char)))
+    (if (not (string-match "[a-zA-Z0-9_]" (char-to-string char)))
+        (let ((pos (point))
+              (case-fold-search nil))
+          (unless (search-backward (char-to-string char) nil t)
+            (goto-char pos)
+            (error "No matching char found.")))
+      (push char unread-command-events)
+      (push ?\< unread-command-events)
+      (push ?\\ unread-command-events)
+      (isearch-backward-regexp))))
 
 (defun my-isearch-mode-hook ()
   "Special setup for isearch."
