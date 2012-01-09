@@ -72,7 +72,7 @@ matching tag."
 
 ;;;###autoload
 (defface etags-select-highlight-tag-face
-  '((t (:foreground "white" :background "cadetblue4" :bold t)))
+  '((t (:foreground "white" :background "cadetblue4")))
   "Font Lock mode face used to highlight tags."
   :group 'etags-select-mode)
 
