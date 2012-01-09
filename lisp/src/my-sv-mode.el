@@ -23,6 +23,8 @@
 
 (add-hook 'sv-mode-hook 'my-sv-mode-hook)
 
+(add-to-list 'sv-mode-macros-without-semi "`csco_[a-z_]+")
+
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
 (defadvice sv-mode-narrow-to-scope (before narrow-nested-sv-scope-before activate)
