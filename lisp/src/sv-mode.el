@@ -1146,14 +1146,16 @@ Optional ARG means justify paragraph as well."
   (save-excursion
     (condition-case nil
         (let ((at-closer (looking-at "[ \t]*[])}]"))
-              offset)
+              (pos (point))
+              beg offset)
           (backward-up-list)
           (if (= (char-after) ?{)
               (if (save-excursion
                     (sv-mode-beginning-of-statement)
-                    (setq offset (current-column))
+                    (setq beg (line-beginning-position)
+                          offset (current-column))
                     (looking-at "\\(default\\s-+\\|static\\s-+\\)?constraint"))
-                  (sv-mode-get-indent-in-constraint offset)
+                  (sv-mode-get-indent-in-constraint offset beg pos at-closer)
                 (when sv-mode-line-up-brace
                   (sv-mode-get-paren-lined-up-offset at-closer)))
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
@@ -1161,9 +1163,28 @@ Optional ARG means justify paragraph as well."
               (sv-mode-get-paren-lined-up-offset at-closer))))
       (error nil))))
 
-(defun sv-mode-get-indent-in-constraint (base-offset)
-  ;; TODO
-  (+ base-offset sv-mode-basic-offset))
+(defun sv-mode-get-indent-in-constraint (offset beg pos at-closer)
+  "Get amount to indent if in a constraint."
+  (goto-char pos)
+  (let ((at-opener (looking-at "\\s-*\\({\\|\\<else\\>\\)")))
+    (forward-comment -1)
+    (unless (or at-opener at-closer (looking-back "[{;,]\\s-*"))
+      (setq offset (+ offset sv-mode-basic-offset))))
+  (goto-char pos)
+  (save-restriction
+    (narrow-to-region beg pos)
+    (condition-case nil
+        (while t
+          (backward-up-list)
+          (when (looking-at "{\\s-*\\(.\\)")
+            (goto-char (match-beginning 1))
+            (setq offset (current-column))
+            (error nil))
+          (setq offset (+ offset sv-mode-basic-offset)))
+      (error nil))
+    (when at-closer
+      (setq offset (- offset sv-mode-basic-offset))))
+  offset)
 
 (defun sv-mode-get-paren-lined-up-offset (at-closer)
   "Get amount to indent in a lined-up paren block."
