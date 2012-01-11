@@ -393,6 +393,8 @@
   (setq truncate-lines t)
   (setq imenu-generic-expression (list '(nil "STARTING PHASE:\\s-+\\(.+\\)" 1)))
 
+  (buffer-face-mode 1)
+
   (make-local-variable 'line-move-ignore-invisible)
   (setq line-move-ignore-invisible t
         buffer-invisibility-spec '((t . t)))

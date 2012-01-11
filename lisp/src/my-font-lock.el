@@ -25,7 +25,7 @@
 ;; Font size faces and functions
 
 (defface my-buffer-face-mode-face
-  '((t (:height 1.17)))
+  '((t (:family "terminus" :height 12)))
   "buffer-face-mode face."
   :group 'faces)
 

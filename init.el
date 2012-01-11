@@ -1454,6 +1454,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'perl-mode 'cperl-mode)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'bf 'buffer-face-mode)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'diff-b 'ediff-buffers)
