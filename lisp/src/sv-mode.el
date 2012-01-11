@@ -1166,9 +1166,9 @@ Optional ARG means justify paragraph as well."
 (defun sv-mode-get-indent-in-constraint (offset beg pos at-closer)
   "Get amount to indent if in a constraint."
   (goto-char pos)
-  (let ((at-opener (looking-at "\\s-*\\({\\|\\<else\\>\\)")))
-    (forward-comment -1)
-    (unless (or at-opener at-closer (looking-back "[{;,]\\s-*"))
+  (let ((at-opener (looking-at "\\s-*{")))
+    (forward-comment (* -1 (buffer-size)))
+    (unless (or at-opener at-closer (looking-back "[{};,]\\s-*"))
       (setq offset (+ offset sv-mode-basic-offset))))
   (goto-char pos)
   (save-restriction
