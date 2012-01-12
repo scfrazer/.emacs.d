@@ -17,10 +17,7 @@
   (when isearch-forward (goto-char isearch-other-end))
   (isearch-exit))
 
-(defun my-isearch-word-at-point ()
-  "Search for word at point"
-  (interactive)
-  (call-interactively 'isearch-forward))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-isearch-forward-dwim ()
   "Read char, then isearch-foward at word boundaries if alphanumeric,
@@ -58,6 +55,13 @@ or jump forward to input char."
       (push ?\\ unread-command-events)
       (isearch-backward-regexp))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my-isearch-word-at-point ()
+  "Search for word at point"
+  (interactive)
+  (call-interactively 'isearch-forward))
+
 (defun my-isearch-mode-hook ()
   "Special setup for isearch."
   (cond ((equal this-command 'my-isearch-word-at-point)
@@ -72,6 +76,23 @@ or jump forward to input char."
            (setq mark-active nil)))))
 
 (add-hook 'isearch-mode-hook 'my-isearch-mode-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar my-isearch-last-regexp nil)
+
+(defadvice isearch-mode (before my-isearch-mode activate)
+  "Remember if last isearch was regular or regexp."
+  (setq my-isearch-last-regexp isearch-regexp))
+
+(defadvice isearch-repeat (before my-isearch-repeat activate)
+  "If last isearch was a regexp, do it this time even if normal isearch was called."
+  (setq isearch-regexp (or isearch-regexp
+                           (and (eq isearch-forward (eq direction 'forward))
+                                (equal isearch-string "")
+                                my-isearch-last-regexp))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-isearch-yank-sexp ()
   "Pull next sexp from buffer into search string."
