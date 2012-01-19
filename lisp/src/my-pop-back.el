@@ -63,6 +63,7 @@
   (interactive)
   (when my-pop-back-imenu-stack
     (goto-char (car my-pop-back-imenu-stack))
+    (recenter)
     (setq my-pop-back-imenu-stack (cdr my-pop-back-imenu-stack))))
 
 (provide 'my-pop-back)
