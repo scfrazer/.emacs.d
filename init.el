@@ -965,6 +965,20 @@ Does not set point.  Does nothing if mark ring is empty."
         (goto-char (mark t)))
       (deactivate-mark))))
 
+(defvar my-push-marker (make-marker))
+(defun my-push-mark-and-marker (&optional arg)
+  "Push mark and create/move a marker.  With ARG, pop to mark/marker."
+  (interactive "P")
+  (if arg
+      (when (and (marker-buffer my-push-marker)
+                 (marker-position my-push-marker))
+        (switch-to-buffer (marker-buffer my-push-marker))
+        (goto-char (marker-position my-push-marker)))
+    (push-mark)
+    (setq my-push-marker (point-marker))
+    (set-marker-insertion-type my-push-marker t)
+    (message "Mark pushed")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
 
@@ -1266,7 +1280,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-?" 'etags-select-find-tag-at-point)
 (my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
 (my-keys-define "M-Q" 'my-unfill)
-(my-keys-define "M-SPC" (lambda () (interactive) (push-mark)))
+(my-keys-define "M-SPC" 'my-push-mark-and-marker)
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
