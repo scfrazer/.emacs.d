@@ -380,15 +380,13 @@
     (save-excursion
       (save-restriction
         (widen)
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+$" nil t)
-          (replace-match "" nil nil))
+        (delete-trailing-whitespace)
         (goto-char (point-min))
         (while (re-search-forward "\n\n\n+" nil t)
-          (replace-match "\n\n" nil nil))
-        (goto-char (point-min))
-        (when (re-search-forward "\n\n+\\'" nil t)
-          (replace-match "\n" nil nil))
+          (backward-char)
+          (delete-blank-lines))
+        (goto-char (point-max))
+        (delete-blank-lines)
         (message "Trailing whitespace and excess blank lines removed.")))))
 
 (defun my-diff-buffer-with-file ()
@@ -722,22 +720,9 @@ previous replacement)."
     (beginning-of-line)
     (forward-line 1)))
 
-(defun my-replace-rectangle (start end string)
-  "Replace text in rectangle."
-  (interactive
-   (progn (barf-if-buffer-read-only)
-          (list (region-beginning) (region-end)
-                (read-string (format "Replacement string (%s): "
-                                     (or (car string-rectangle-history) ""))
-                             nil 'string-rectangle-history
-                             (car string-rectangle-history)))))
-  (kill-rectangle start end)
-  (string-rectangle (mark) (point) string))
-
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
  t => lowercase, uppercase, capitalize.")
-
 (defun my-rotate-case ()
   "Rotate case to capitalized, uppercase, lowercase."
   (interactive)
@@ -881,21 +866,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (let ((ppss (syntax-ppss pos)))
       (or (nth 4 ppss) (nth 3 ppss)))))
 
-(defun my-tip-of-the-day ()
-  "Tip of the day"
-  (interactive)
-  (with-output-to-temp-buffer "*Tip of the day*"
-    (let* ((commands (loop for s being the symbols
-                           when (commandp s) collect s))
-           (command (nth (random (length commands)) commands)))
-      (princ
-       (concat "Your tip of the day is:\n========================\n\n"
-               (describe-function command)
-               "\n\nInvoke with:\n\n"
-               (with-temp-buffer
-                 (where-is command t)
-                 (buffer-string)))))))
-
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
   (interactive)
@@ -977,7 +947,7 @@ Does not set point.  Does nothing if mark ring is empty."
     (push-mark)
     (setq my-push-marker (point-marker))
     (set-marker-insertion-type my-push-marker t)
-    (message "Mark pushed")))
+    (message "Mark set")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
