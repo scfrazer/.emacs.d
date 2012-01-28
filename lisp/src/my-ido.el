@@ -164,9 +164,12 @@
                  (push (cons (concat (when my-ido-imenu-prefix-symbols prefix) symbol) pos) result)))))))
   result)
 
-(defun my-ido-imenu-goto-symbol ()
+(defun my-ido-imenu-goto-symbol (&optional arg)
   "Goto to an imenu symbol using ido"
-  (interactive)
+  (interactive "P")
+  (when arg
+    (imenu--cleanup)
+    (setq imenu--index-alist nil))
   (imenu--make-index-alist)
   (let ((items nil)
         (guess (concat "\\(.+::\\)?"

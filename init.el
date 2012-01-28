@@ -1263,7 +1263,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r i" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r l" 'register-list)
-(my-keys-define "M-r s" 'copy-to-register)
+(my-keys-define "M-r s" (lambda () (interactive) (call-interactively 'copy-to-register) (deactivate-mark)))
 (my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-r y" 'yank-rectangle)
 (my-keys-define "M-s o" 'my-occur)
