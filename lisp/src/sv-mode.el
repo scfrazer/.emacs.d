@@ -47,8 +47,12 @@
 ;; C-c C-O : Look for function definition/implementation in "other" file
 ;; C-c C-s : Create (or update) skeleton task/function implementation in
 ;;           .sv file from prototype on current line in .svh file
+;; TODO C-c C-r: Rename function in .svh/.sv -- fix endfunction and any super calls
 ;;
 ;; TODO C-x n s, M-a, M-e and such
+;; TODO UVM utils and end/super etc insertion
+;; TODO Package/tag guessing functions
+;; TODO Abbrevs
 ;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
@@ -162,6 +166,30 @@ Otherwise indent them as usual."
   :type 'number)
 
 ;;;###autoload
+(defcustom sv-mode-guess-package-name-function 'sv-mode-guess-package-name
+  "*Function to guess the package name for the current file."
+  :group 'sv-mode
+  :type 'function)
+
+;;;###autoload
+(defcustom sv-mode-guess-uvm-tag-function 'sv-mode-guess-uvm-tag
+  "*Function to guess the UVM message tag for the current file."
+  :group 'sv-mode
+  :type 'function)
+
+;;;###autoload
+(defcustom sv-mode-uvm-info-function 'sv-mode-uvm-info
+  "*Function to call to insert a `uvm_info message."
+  :group 'sv-mode
+  :type 'function)
+
+;;;###autoload
+(defcustom sv-mode-uvm-err-function 'sv-mode-uvm-err
+  "*Function to call to insert a `uvm_(warning|error|fatal) message."
+  :group 'sv-mode
+  :type 'function)
+
+;;;###autoload
 (defcustom sv-mode-finish-skeleton-function
   'sv-mode-default-finish-skeleton-function
   "*Function to call to finish task/function skeleton creation."
@@ -225,6 +253,14 @@ Otherwise indent them as usual."
 
 (defvar sv-mode-eos-regexp nil
   "End of scope regexp (calculated at mode start).")
+
+(defvar sv-mode-package-name nil
+  "Package name for current file.")
+(make-variable-buffer-local 'sv-mode-package-name)
+
+(defvar sv-mode-uvm-tag nil
+  "Tag to use in UVM messages.")
+(make-variable-buffer-local 'sv-mode-uvm-tag)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font lock
@@ -512,7 +548,7 @@ expression."
       (sv-mode-beginning-of-scope)
       (when (looking-at "[[({]")
         (error "Inside open parentheses, backets, or braces"))
-      (re-search-forward "\\sw+" (line-end-position) t)
+      (re-search-forward "[`a-zA-Z0-9_]+" (line-end-position) t)
       (setq begin-type (match-string-no-properties 0))
       (setq end-type (cdr (assoc begin-type sv-mode-begin-to-end-alist)))
       ;; No labels allowed in AOP files ... this is hacky
@@ -546,6 +582,23 @@ expression."
             (push (match-string-no-properties 1) namespaces)))
         (beginning-of-line)))
     namespaces))
+
+(defun sv-mode-get-class-type ()
+  "Return the enclosing class type and any parameters."
+  (let (name parameters)
+    (save-excursion
+      (save-restriction
+        (widen)
+        (sv-mode-beginning-of-defun)
+        (when (looking-at "\\(virtual\\s-+\\)?class\\s-+\\([a-zA-Z0-9_]+\\)")
+          (setq name (match-string-no-properties 2))
+          (goto-char (match-end 0))
+          (when (looking-at "\\s-*#\\s-*(")
+            (goto-char (1- (match-end 0)))
+            (let ((end-pos (save-excursion (forward-sexp) (point))))
+              (while (re-search-forward "type\\s-+\\([`a-zA-Z0-9_]+\\)" end-pos t)
+                (push (match-string-no-properties 1) parameters)))))))
+    (list name (nreverse parameters))))
 
 (defun sv-mode-parse-prototype ()
   "Parse a function/task prototype and return an alist with the structure:
@@ -608,6 +661,73 @@ expression."
           (cons 'name name)
           (cons 'ret ret)
           (cons 'args args))))
+
+(defun sv-mode-guess-package-name ()
+  "Guess the package name for the current file.
+By default assumes if a file named '*_pkg.sv' exists in the current directory,
+that is the package name.  Users should change
+`sv-mode-guess-package-name-function' to point to their own function."
+  (unless sv-mode-package-name
+    (let ((filenames (file-expand-wildcards "*_pkg.sv")))
+      (if filenames
+          (progn
+            (string-match "\\(.+\\)\.sv" (car filenames))
+            (setq sv-mode-package-name (match-string 1 (car filenames))))
+        (setq sv-mode-package-name "")))))
+
+(defun sv-mode-get-package-name (&optional with-scope-resolution)
+  "Return the package name.  If WITH-SCOPE-RESOLUTION is non-nil, suffix it
+with the :: operator (if there is a package)."
+  (sv-mode-guess-package-name)
+  (if with-scope-resolution
+      (if (string= sv-mode-package-name "")
+          ""
+        (concat sv-mode-package-name "::"))
+    sv-mode-package-name))
+
+(defun sv-mode-guess-uvm-tag ()
+  "Guess the UVM message tag for the current file.
+By default looks for a already existing tag in the current file, then
+uses the package name if one can be found (see
+`sv-mode-guess-package-name-function'), then gives up and returns a
+default.  Users should change `sv-mode-guess-uvm-tag-function' to point
+to their own function."
+  ;; Look in file first
+  (unless sv-mode-uvm-tag
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (when (re-search-forward "`uvm_\\(info\\|warning\\|error\\|fatal\\).+?\"\\([a-zA-Z0-9_]+\\)" nil t)
+          (setq sv-mode-uvm-tag (match-string-no-properties 2))))))
+  ;; Use the package name if one can be found
+  (unless sv-mode-uvm-tag
+    (let ((pkg (sv-mode-get-package-name)))
+      (unless (string= pkg "")
+        (setq sv-mode-uvm-tag (upcase pkg)))))
+  ;; Give up
+  (unless sv-mode-uvm-tag
+    (setq sv-mode-uvm-tag "MSG")))
+
+(defun sv-mode-uvm-info (verbosity)
+  "Insert a `uvm_info message.
+Users should change `sv-mode-uvm-info-function' to point to their
+own function.  This function can be called through abbrevs."
+  (interactive "sVerbosity? ")
+  (sv-mode-guess-uvm-tag)
+  (insert "`uvm_info(\"" sv-mode-uvm-tag "\", \"TODO\", " verbosity ");")
+  (sv-mode-indent-line)
+  (search-backward "TODO"))
+
+(defun sv-mode-uvm-err (type)
+  "Insert a `uvm_(warning|error|fatal) message.
+Users should change `sv-mode-uvm-err-function' to point to their
+own function.  This function can be called through abbrevs."
+  (interactive "sType? ")
+  (sv-mode-guess-uvm-tag)
+  (insert "`uvm_" type "(\"" sv-mode-uvm-tag "\", \"TODO\");")
+  (sv-mode-indent-line)
+  (search-backward "TODO"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Interactive functions
@@ -885,6 +1005,7 @@ end/endtask/endmodule/etc. also."
         (setq this-func-re (concat this-func-re ns "::")))
       (setq this-func-re (concat this-func-re (cdr (assoc 'name proto)) "\\s-*[(;]"))
       (if (sv-mode-re-search-forward this-func-re nil t)
+          ;; TODO Fix any super calls
           (progn
             (sv-mode-re-search-backward "task\\|function" nil t)
             (beginning-of-line)
@@ -1035,6 +1156,88 @@ Optional ARG means justify paragraph as well."
           (setq to (point))
           (fill-region from to arg)
           t)))))
+
+(defun sv-mode-insert-end ()
+  "Insert the appropriate end statement."
+  (interactive)
+  (insert (sv-mode-determine-end-expr))
+  (sv-mode-indent-line))
+
+(defun sv-mode-insert-super ()
+  "Insert the appropriate super statement."
+  (interactive)
+  (insert "super." (car (last (sv-mode-get-namespaces))) "(")
+  (let (args)
+    (save-excursion
+      (while (and (sv-mode-beginning-of-scope)
+                  (not (looking-at "task\\|function"))))
+      (setq args (cdr (assoc 'args (sv-mode-parse-prototype)))))
+    (dolist (arg args)
+      (insert (sv-mode-trim-brackets (car arg)) ", "))
+    (when args
+      (delete-char -2))
+    (insert ");")))
+
+(defun sv-mode-insert-type ()
+  "Insert the class type as a typedef."
+  (interactive)
+  (let* ((class-type (sv-mode-get-class-type))
+         (name (nth 0 class-type))
+         (param-list (nth 1 class-type))
+         parameters)
+    (when param-list
+      (setq parameters "#(")
+      (dolist (param param-list)
+        (setq parameters (concat parameters param ",")))
+      (setq parameters (concat (substring parameters 0 -1) ")")))
+    (insert "typedef "
+            (sv-mode-get-package-name t)
+            name)
+    (when parameters
+      (insert parameters))
+    (insert " this_t;")))
+
+(defun sv-mode-uvm-component-utils (&optional begin)
+  "Insert the appropriate UVM component utils declaration.
+If BEGIN is non-nil, insert begin/end pair."
+  (interactive "P")
+  (sv-mode-uvm-utils "component" begin))
+
+(defun sv-mode-uvm-object-utils (&optional begin)
+  "Insert the appropriate UVM object utils declaration.
+If BEGIN is non-nil, insert begin/end pair."
+  (interactive "P")
+  (sv-mode-uvm-utils "object" begin))
+
+(defun sv-mode-uvm-utils (type begin)
+  "Insert the appropriate UVM component/object utils declaration.
+TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
+  (let* ((class-type (sv-mode-get-class-type))
+         (name (nth 0 class-type))
+         (param-list (nth 1 class-type))
+         parameters)
+    (when param-list
+      (setq parameters "#(")
+      (dolist (param param-list)
+        (setq parameters (concat parameters param ",")))
+      (setq parameters (concat (substring parameters 0 -1) ")")))
+    (insert
+     "`uvm_" type
+     (if parameters "_param_utils" "_utils")
+     (if begin "_begin(" "(")
+     (sv-mode-get-package-name t)
+     name
+     (if parameters parameters "")
+     ")")
+    (sv-mode-indent-line)
+    (when begin
+      (let (pos)
+        (insert "\n")
+        (sv-mode-indent-line)
+        (setq pos (point))
+        (insert "\n`uvm_" type "_utils_end")
+        (sv-mode-indent-line)
+        (goto-char pos)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Idle matching of begin/end pairs
@@ -1296,7 +1499,7 @@ Optional ARG means justify paragraph as well."
 (define-abbrev sv-mode-abbrev-table
   "beg"
   ""
-  (lambda()
+  (lambda ()
     (insert "begin")
     (sv-mode-indent-line)
     (insert "\n\nend")
@@ -1307,25 +1510,82 @@ Optional ARG means justify paragraph as well."
 (define-abbrev sv-mode-abbrev-table
   "end"
   ""
-  (lambda()
-    (insert (sv-mode-determine-end-expr))
-    (sv-mode-indent-line)))
+  (lambda() (sv-mode-insert-end)))
 
 (define-abbrev sv-mode-abbrev-table
   "sup"
   ""
-  (lambda()
-    (insert "super." (car (last (sv-mode-get-namespaces))) "(")
-    (let (args)
-      (save-excursion
-        (while (and (sv-mode-beginning-of-scope)
-                    (not (looking-at "task\\|function"))))
-        (setq args (cdr (assoc 'args (sv-mode-parse-prototype)))))
-      (dolist (arg args)
-        (insert (sv-mode-trim-brackets (car arg)) ", "))
-      (when args
-        (delete-char -2))
-      (insert ");"))))
+  (lambda () (sv-mode-insert-super)))
+
+(define-abbrev sv-mode-abbrev-table
+  "pkg"
+  ""
+  (lambda () (insert (sv-mode-get-package-name))))
+
+(define-abbrev sv-mode-abbrev-table
+  "tt"
+  ""
+  (lambda () (sv-mode-insert-type)))
+
+(define-abbrev sv-mode-abbrev-table
+  "infn"
+  ""
+  (lambda() (funcall sv-mode-uvm-info-function "UVM_NONE")))
+
+(define-abbrev sv-mode-abbrev-table
+  "infl"
+  ""
+  (lambda() (funcall sv-mode-uvm-info-function "UVM_LOW")))
+
+(define-abbrev sv-mode-abbrev-table
+  "infm"
+  ""
+  (lambda() (funcall sv-mode-uvm-info-function "UVM_MEDIUM")))
+
+(define-abbrev sv-mode-abbrev-table
+  "infh"
+  ""
+  (lambda() (funcall sv-mode-uvm-info-function "UVM_HIGH")))
+
+(define-abbrev sv-mode-abbrev-table
+  "inff"
+  ""
+  (lambda() (funcall sv-mode-uvm-info-function "UVM_FULL")))
+
+(define-abbrev sv-mode-abbrev-table
+  "war"
+  ""
+  (lambda() (funcall sv-mode-uvm-err-function "warning")))
+
+(define-abbrev sv-mode-abbrev-table
+  "err"
+  ""
+  (lambda() (funcall sv-mode-uvm-err-function "error")))
+
+(define-abbrev sv-mode-abbrev-table
+  "fat"
+  ""
+  (lambda() (funcall sv-mode-uvm-err-function "fatal")))
+
+(define-abbrev sv-mode-abbrev-table
+  "cu"
+  ""
+  (lambda() (sv-mode-uvm-component-utils)))
+
+(define-abbrev sv-mode-abbrev-table
+  "cub"
+  ""
+  (lambda() (sv-mode-uvm-component-utils t)))
+
+(define-abbrev sv-mode-abbrev-table
+  "ou"
+  ""
+  (lambda() (sv-mode-uvm-object-utils)))
+
+(define-abbrev sv-mode-abbrev-table
+  "oub"
+  ""
+  (lambda() (sv-mode-uvm-object-utils t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Imenu
