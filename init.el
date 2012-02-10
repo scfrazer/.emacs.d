@@ -109,6 +109,7 @@
 (autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
+(autoload 'uvm-log-mode "uvm-log-mode" nil t)
 (autoload 'verilog-mode "verilog-mode" "Verilog mode" t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
@@ -144,11 +145,11 @@
               cperl-continued-statement-offset 4
               cperl-fix-hanging-brace-when-indent nil
               cperl-highlight-variables-indiscriminately t
-              cperl-indent-left-aligned-comments nil
+              cperl-indent-left-aligned-comments t
               cperl-indent-level 4
               cperl-invalid-face nil
               cperl-label-offset -4
-              cperl-merge-trailing-else nil
+              cperl-merge-trailing-else t
               cursor-in-non-selected-windows nil
               cursor-type 'box
               dabbrev-case-fold-search nil
@@ -269,7 +270,7 @@
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
-(add-to-list 'auto-mode-alist '("run.log$" . sse-log-mode))
+(add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 
 ;; Don't use sh-mode for csh files
@@ -964,6 +965,10 @@ Does not set point.  Does nothing if mark ring is empty."
   (if (equal (ad-get-arg 0) "*scratch*")
       (bury-buffer)
     ad-do-it))
+
+;; (defadvice quit-window (before advise-quit-window activate)
+;;   (when (called-interactively-p 'any)
+;;     (ad-set-arg 0 (not (ad-get-arg 0)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
