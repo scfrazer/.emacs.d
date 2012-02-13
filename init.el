@@ -69,6 +69,7 @@
 (require 'my-occur)
 (require 'my-org)
 (require 'my-pair)
+(require 'my-perl)
 (require 'my-pop-back)
 (require 'my-python)
 (require 'my-recentf)
@@ -140,16 +141,6 @@
               compare-ignore-whitespace t
 ;;               compilation-error-regexp-alist nil
               completions-format 'vertical
-              cperl-break-one-line-blocks-when-indent nil
-              cperl-continued-brace-offset -4
-              cperl-continued-statement-offset 4
-              cperl-fix-hanging-brace-when-indent nil
-              cperl-highlight-variables-indiscriminately t
-              cperl-indent-left-aligned-comments t
-              cperl-indent-level 4
-              cperl-invalid-face nil
-              cperl-label-offset -4
-              cperl-merge-trailing-else t
               cursor-in-non-selected-windows nil
               cursor-type 'box
               dabbrev-case-fold-search nil
@@ -976,11 +967,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-after-save-hook ()
   (my-make-script-executable))
 
-(defun my-cperl-mode-hook ()
-  (require 'flymake-perlcritic)
-  (setq flymake-perlcritic-severity 1)
-  (flymake-mode 1))
-
 (defun my-diff-mode-hook ()
   (define-key diff-mode-map "q" 'my-kill-this-buffer)
   (define-key diff-mode-map "n" 'diff-hunk-next)
@@ -1045,7 +1031,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
-(add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
@@ -1446,7 +1431,6 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; Aliases
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(defalias 'perl-mode 'cperl-mode)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
 (defalias 'bf 'buffer-face-mode)
