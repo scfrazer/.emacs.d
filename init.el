@@ -145,6 +145,7 @@
               cursor-type 'box
               dabbrev-case-fold-search nil
               dired-auto-revert-buffer t
+              echo-keystrokes 0.1
               etags-select-use-short-name-completion t
               etags-table-search-up-depth 10
               even-window-heights nil
@@ -715,16 +716,24 @@ previous replacement)."
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
  t => lowercase, uppercase, capitalize.")
-(defun my-rotate-case ()
+
+(defun my-rotate-case (&optional beg end)
   "Rotate case to capitalized, uppercase, lowercase."
   (interactive)
-  (let ((case-fold-search nil) beg end)
+  (let ((case-fold-search nil))
     (save-excursion
-      (skip-syntax-forward "w_")
-      (setq end (point))
-      (skip-syntax-backward "w_")
-      (skip-chars-forward "^a-zA-Z")
-      (setq beg (point))
+      (if (region-active-p)
+          (if (< (region-beginning) (region-end))
+              (setq beg (region-beginning)
+                    end (region-end))
+            (setq end (region-beginning)
+                  beg (region-end)))
+        (skip-syntax-forward "w_")
+        (setq end (point))
+        (skip-syntax-backward "w_")
+        (skip-chars-forward "^a-zA-Z")
+        (setq beg (point)))
+      (goto-char beg)
       (if (< (- end beg) 2)
           (if (looking-at "[A-Z]")
               (downcase-region beg end)

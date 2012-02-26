@@ -25,9 +25,9 @@
 
 ;;; Commentary:
 ;;
-;; This package lets you edit the results of a 'grep' by pressing "\C-c\C-e",
-;; then write the results back to the files by pressing "\C-c\C-s" (or
-;; aborting by pressing "\C-c\C-e" again).
+;; This package lets you edit the results of a 'grep' by pressing "\C-x\C-q",
+;; then write the results back to the files by pressing "\C-x\C-s" (or
+;; aborting by pressing "\C-x\C-q" again).
 ;;
 ;; The variable `grep-ed-save-after-changes' determines if the changes will be
 ;; written back automatically or if you have to do it manually.  The variable
@@ -219,11 +219,11 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mode
 
-(define-key grep-mode-map "\C-c\C-e" 'grep-ed-start)
+(define-key grep-mode-map "\C-x\C-q" 'grep-ed-start)
 
 (defvar grep-ed-mode-map (make-keymap) "'grep-ed-mode' keymap.")
-(define-key grep-ed-mode-map "\C-c\C-e" 'grep-ed-exit)
-(define-key grep-ed-mode-map "\C-c\C-s" 'grep-ed-save-changes-and-exit)
+(define-key grep-ed-mode-map "\C-x\C-q" 'grep-ed-exit)
+(define-key grep-ed-mode-map "\C-x\C-s" 'grep-ed-save-changes-and-exit)
 
 (provide 'grep-ed)
 ;;; grep-ed.el ends here
