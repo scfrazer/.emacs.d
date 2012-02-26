@@ -16,7 +16,7 @@
 //
 // $Id: $
 
-`ifndef _%N_%E_INCLUDED
-`define _%N_%E_INCLUDED
+`ifndef _%n_INCLUDED
+`define _%n_INCLUDED
 
 `endif

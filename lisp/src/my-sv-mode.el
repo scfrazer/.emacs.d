@@ -18,6 +18,7 @@
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
 (defun my-sv-mode-hook ()
+  (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))
