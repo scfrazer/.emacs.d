@@ -608,6 +608,19 @@ Prefix with C-u to fit the `next-window'."
              (narrow-nested-dwim)))
     (narrow-nested-dwim)))
 
+(defun my-new-scratch ()
+  "Recreate the *scratch* buffer."
+  (interactive)
+  (get-buffer-create "*scratch*")
+  (switch-to-buffer "*scratch*")
+  (erase-buffer)
+  (insert ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+")
+  (set-buffer-modified-p nil))
+
 (defun my-open-line-above ()
   "Open a line above the current one."
   (interactive)
