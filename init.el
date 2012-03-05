@@ -1483,6 +1483,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'ws 'my-font-lock-show-whitespace)
 
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
+(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup

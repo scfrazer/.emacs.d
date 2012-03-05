@@ -23,4 +23,16 @@
 
 (add-to-list 'flymake-allowed-file-name-masks '(cperl-mode flymake-perlcritic-init flymake-perlcritic-cleanup))
 
+(defun my-perl-tidy (&optional beg end)
+  "Run perltidy on marked region, or entire buffer."
+  (interactive "*")
+  (let ((pos (point)))
+    (if (region-active-p)
+        (setq beg (region-beginning)
+              end (region-end))
+      (setq beg (point-min)
+            end (point-max)))
+    (shell-command-on-region beg end "perltidy -q" nil t)
+    (goto-char pos)))
+
 (provide 'my-perl)
