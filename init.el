@@ -885,6 +885,19 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive)
   (set-buffer-modified-p (not (buffer-modified-p))))
 
+(defun my-toggle-quotes ()
+  "Toggle between single/double quotes."
+  (interactive)
+  (let ((pos (point))
+        (char (if (= (char-after) ?') ?\" ?')))
+    (forward-sexp)
+    (delete-char -1)
+    (insert char)
+    (goto-char pos)
+    (delete-char 1)
+    (insert char)
+    (backward-char)))
+
 (defun my-toggle-window-split ()
   "Toggle between horizontal/vertical split.
 Only works if there are exactly two windows."
@@ -1201,6 +1214,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-`" 'next-error)
 (my-keys-define "C-c #" 'my-convert-to-base)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
+(my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c +" 'my-inc-num)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c ;" 'my-insert-comment-line)
