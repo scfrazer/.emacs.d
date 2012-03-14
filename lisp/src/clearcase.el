@@ -7386,6 +7386,7 @@ its ClearCase servers. Used for a non-LT system."
                                     "-long"))
             (timeout-occurred nil))
 
+        (set-process-query-on-exit-flag process nil)
         ;; Now wait a little while, if necessary, for some output.
         ;;
         (while (and (null result)
@@ -7424,6 +7425,7 @@ its ClearCase servers. Used for LT system."
                                     "-inquire"))
             (timeout-occurred nil))
 
+        (set-process-query-on-exit-flag process nil)
         ;; Now wait a little while, if necessary, for some output.
         ;;
         (while (and (null result)
