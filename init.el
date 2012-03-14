@@ -361,6 +361,20 @@
              (count-lines (point-at-bol)
                           (save-excursion (forward-paragraph) (point-at-eol))))))
 
+(defun my-create-scratch ()
+  "Recreate the *scratch* buffer."
+  (interactive)
+  (get-buffer-create "*scratch*")
+  (switch-to-buffer "*scratch*")
+  (erase-buffer)
+  (insert ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+")
+  (emacs-lisp-mode)
+  (set-buffer-modified-p nil))
+
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
   (interactive "*")
@@ -607,19 +621,6 @@ Prefix with C-u to fit the `next-window'."
             (t
              (narrow-nested-dwim)))
     (narrow-nested-dwim)))
-
-(defun my-new-scratch ()
-  "Recreate the *scratch* buffer."
-  (interactive)
-  (get-buffer-create "*scratch*")
-  (switch-to-buffer "*scratch*")
-  (erase-buffer)
-  (insert ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
-
-")
-  (set-buffer-modified-p nil))
 
 (defun my-open-line-above ()
   "Open a line above the current one."
