@@ -129,6 +129,11 @@
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-match-face)
      (6 'uvm-log-mode-msg-face))
+    ("^\\s-*\\([0-9.]+[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\([^ ]+\\) \\(.*\\)"
+     (1 'uvm-log-mode-timestamp-face)
+     (2 'font-lock-warning-face)
+     (3 'uvm-log-mode-path-face)
+     (4 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+[fpnum]?s\\) . \\([a-zA-Z0-9_:]+\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)

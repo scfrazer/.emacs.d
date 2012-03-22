@@ -20,5 +20,6 @@
       (set-cursor-color (setq my-set-cursor-color color)))))
 
 (add-hook 'post-command-hook 'my-set-cursor-color-according-to-mode)
+(add-hook 'find-file-hook 'my-set-cursor-color-according-to-mode)
 
 (provide 'my-set-cursor-color)

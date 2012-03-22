@@ -1080,6 +1080,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'sv-mode-hook 'doxymacs-mode)
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
+(add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
