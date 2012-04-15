@@ -1241,7 +1241,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'compile)
 (my-keys-define "C-c n" 'my-narrow-nested-dwim)
-(my-keys-define "C-c o" '(lambda () (interactive) (ido-find-file-in-dir org-directory)))
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
@@ -1391,6 +1390,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (setq etags-table-alist
       (list
        '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
+       '("/nfs/luke_user6/scfrazer/uvm/uvm-1.1/src/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/luke/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")

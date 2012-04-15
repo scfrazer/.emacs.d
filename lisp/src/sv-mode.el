@@ -554,7 +554,7 @@ expression."
       ;; No labels allowed in AOP files ... this is hacky
       (when (and buffer-file-name
                  (not (equal (file-name-extension buffer-file-name) "aop")))
-        (when (member begin-type (list "task" "function" "program"))
+        (when (member begin-type (list "task" "function" "program" "package"))
           (re-search-forward "\\([a-zA-Z0-9_]+\\)\\s-*[(;]" nil t)
           (setq label (match-string-no-properties 1)))
         (when (member begin-type (list "class" "module" "interface"))
