@@ -74,4 +74,46 @@
 
 (setq-default doxymacs-doxygen-style "Qt")
 
+(defun my-doxymacs-make-toc ()
+  "Create a table of contents since doxygen \tableofcontents doesn't seem to work."
+  (interactive)
+  (insert " <ul>\n <\\ul>")
+  (beginning-of-line)
+  (let ((toc ""))
+    (save-excursion
+      (let ((prev-heading "section")
+            curr-heading
+            ref)
+        (while (re-search-forward "^\\s-*[\\]\\(section\\|subsection\\|subsubsection\\)\\s-+\\(.+?\\)\\(\\s-\\|$\\)" nil t)
+          (setq curr-heading (match-string-no-properties 1)
+                ref (match-string-no-properties 2))
+
+          (cond ((string= curr-heading "section")
+                 (if (string= prev-heading "subsection")
+                     (setq toc (concat toc "    <\\ul>\n"))
+                   (when (string= prev-heading "subsubsection")
+                     (setq toc (concat toc "       <\\ul>\n    <\\ul>\n"))))
+                 (setq toc (concat toc " <li> \\ref " ref "\n")))
+
+                ((string= curr-heading "subsection")
+                 (if (string= prev-heading "section")
+                     (setq toc (concat toc "    <ul>\n"))
+                   (when (string= prev-heading "subsubsection")
+                     (setq toc (concat toc "       <\\ul>\n"))))
+                 (setq toc (concat toc "    <li> \\ref " ref "\n")))
+
+                (t
+                 (when (string= prev-heading "subsection")
+                   (setq toc (concat toc "       <ul>\n")))
+                 (setq toc (concat toc "       <li> \\ref " ref "\n"))))
+
+          (setq prev-heading curr-heading))
+
+        (if (string= curr-heading "subsection")
+            (setq toc (concat toc "    <\\ul>\n"))
+          (when (string= curr-heading "subsubsection")
+            (setq toc (concat toc "       <\\ul>\n    <\\ul>\n"))))))
+
+    (insert toc)))
+
 (provide 'my-doxymacs)
