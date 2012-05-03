@@ -2,23 +2,18 @@
 
 import sys
 import re
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 def main():
 
-    opt_parser = OptionParser(usage="usage: %%prog [options] filename(s)")
+    parser = ArgumentParser(description='TBD description')
 
-    opt_parser.add_option('-q', '--quit',
-                          action='store_true', dest='quit',
-                          help="Immediately quit")
+    parser.add_argument('-q', '--quit', action='store_true', help='Immediately quit')
+    parser.add_argument('filename', nargs='+', help='File to process')
 
-    (options, filenames) = opt_parser.parse_args()
+    args = parser.parse_args()
 
-    if not filenames:
-        opt_parser.print_help()
-        sys.exit(1)
-
-    for filename in filenames:
+    for filename in args.filename:
 
         try:
             file_obj = open(filename, 'r')

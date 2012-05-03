@@ -116,4 +116,33 @@
 
     (insert toc)))
 
+(defun my-doxymacs-html (start end)
+  "HTMLize a region and format it for insertion into a doxygen doc."
+  (interactive "r")
+  (deactivate-mark)
+  (let ((buf (htmlize-region start end)))
+    (pop-to-buffer buf)
+    (goto-char (point-min))
+    (re-search-forward "<pre>")
+    (delete-region (point-min) (1+ (point)))
+    (insert " \\htmlonly\n<div class=\"fragment\"><pre class=\"fragment\">\n")
+    (re-search-forward "</pre>")
+    (backward-char 6)
+    (delete-region (point) (point-max))
+    (insert "</pre></div>\n \\endhtmlonly\n")
+    (kill-region (point-min) (point-max))
+    (kill-buffer)
+    (delete-window)))
+
+(defun my-doxymacs-tt ()
+  "Put <tt></tt> around the current/previous word."
+  (interactive)
+  (skip-syntax-backward "w_()")
+  (insert "<tt>")
+  (skip-syntax-forward "w_()")
+  (insert "</tt>"))
+
+(define-key doxymacs-mode-map "\C-cdh" 'my-doxymacs-html)
+(define-key doxymacs-mode-map "\C-cdt" 'my-doxymacs-tt)
+
 (provide 'my-doxymacs)
