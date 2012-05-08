@@ -885,6 +885,9 @@ end/endtask/endmodule/etc. also."
                               (sv-mode-class-decl-p))
                          (and (string= begin-string "fork")
                               (looking-back "\\_<\\(disable\\|wait\\)\\_>\\s-+"
+                                            (line-beginning-position)))
+                         (and (string= begin-string "function")
+                              (looking-back "\\_<with\\_>\\s-+"
                                             (line-beginning-position))))
                (setq depth (1- depth))))))
        (when (> depth 0)
@@ -1260,7 +1263,7 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
       (unless (and (looking-at "\\_<task\\|function\\_>")
                    (save-excursion
                      (sv-mode-beginning-of-statement)
-                     (looking-at "\\_<extern\\|import\\|export\\_>")))
+                     (looking-at "\\_<extern\\|import\\|export\\|covergroup\\_>")))
         (when (looking-at sv-mode-begin-end-regexp)
           (let ((beg-1 (match-beginning 0))
                 (end-1 (match-end 0))
