@@ -557,7 +557,7 @@ Uses `query-replace-regexp' internally."
                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")
                         '(nil "\"" (ll-debug-create-next-debug-string)
                               ("Variable: "
-                               "  \\" str ":" str)
+                               "  \\" str "=" str)
                               "\\n\"")
                         '(nil "\"" (ll-debug-create-next-debug-string)
                               " \", Data::Dumper->Dump(["

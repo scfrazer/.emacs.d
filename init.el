@@ -701,7 +701,11 @@ previous replacement)."
     (unless (equal last-command 'my-recenter)
       (setq my-recenter-count 0))
     (cond ((= my-recenter-count 0)
-           (recenter))
+           (let ((pos (window-start)))
+             (recenter)
+             (when (= pos (window-start))
+               (recenter (/ (window-text-height) 5))
+               (setq my-recenter-count 1))))
           ((= my-recenter-count 1)
            (recenter (/ (window-text-height) 5)))
           (t

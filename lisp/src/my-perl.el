@@ -6,12 +6,14 @@
 (defalias 'perl-mode 'cperl-mode)
 
 (setq-default cperl-break-one-line-blocks-when-indent nil
+              cperl-close-paren-offset -4
               cperl-continued-brace-offset -4
               cperl-continued-statement-offset 4
               cperl-fix-hanging-brace-when-indent nil
               cperl-highlight-variables-indiscriminately t
               cperl-indent-left-aligned-comments t
               cperl-indent-level 4
+              cperl-indent-parens-as-block t
               cperl-invalid-face nil
               cperl-label-offset -4
               cperl-merge-trailing-else t

@@ -128,6 +128,8 @@ package, if you set this to t you can just type foo<TAB>."
                            "\\)"))
         (case-fold-search (etags-select-case-fold-search))
         full-tagname tag-line filename current-filename)
+    (unless tag-table-buffer
+      (error "No tag table found"))
     (set-buffer tag-table-buffer)
     (modify-syntax-entry ?_ "w")
     (goto-char (point-min))
