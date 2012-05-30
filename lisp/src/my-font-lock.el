@@ -2,7 +2,8 @@
 
 (require 'font-lock)
 
-(setq-default lazy-lock-mode nil)
+(setq-default show-trailing-whitespace t
+              lazy-lock-mode nil)
 (global-font-lock-mode t)
 
 ;; Extra font-lock faces
@@ -10,11 +11,6 @@
 (defface my-tab-face
   '((t (:background "seashell")))
   "Visible tab chars."
-  :group 'faces)
-
-(defface my-trailing-space-face
-  '((t (:background "lemonchiffon")))
-  "Visible trailing space."
   :group 'faces)
 
 (defface my-todo-face
@@ -46,50 +42,38 @@
 
 ;; Show whitespace functionality
 
-(defvar my-font-lock-show-whitespace t
-  "*Show whitespace")
-(make-variable-buffer-local 'my-font-lock-show-whitespace)
-
 (defun my-font-lock-show-whitespace (&optional arg)
   "Toggle display of whitespace.
 Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
   (interactive "P")
   (unless (string-match "\\s-*\\*.+\\*" (buffer-name))
-    (let ((prev-val my-font-lock-show-whitespace))
+    (let ((prev-val show-trailing-whitespace))
       (if arg
           (if (> arg 0)
-              (setq my-font-lock-show-whitespace t)
-            (setq my-font-lock-show-whitespace nil))
-        (setq my-font-lock-show-whitespace (not my-font-lock-show-whitespace)))
-      (unless (equal prev-val my-font-lock-show-whitespace)
-        (if my-font-lock-show-whitespace
+              (setq show-trailing-whitespace t)
+            (setq show-trailing-whitespace nil))
+        (setq show-trailing-whitespace (not show-trailing-whitespace)))
+      (unless (equal prev-val show-trailing-whitespace)
+        (if show-trailing-whitespace
             (my-font-lock-add-whitespace)
           (my-font-lock-remove-whitespace))
         (font-lock-fontify-buffer)))))
 
 (defun my-font-lock-add-whitespace ()
   (unless (string-match "\\s-*\\*.+\\*" (buffer-name))
-    (font-lock-add-keywords nil
-                            '(("\t+" (0 'my-tab-face t))
-                              ("[ \t]+$" (0 'my-trailing-space-face t)))
-                            'add-to-end)))
+    (font-lock-add-keywords nil '(("\t+" (0 'my-tab-face prepend))) 'add-to-end)))
 
 (defun my-font-lock-remove-whitespace ()
   (unless (string-match "\\s-*\\*.+\\*" (buffer-name))
-    (font-lock-remove-keywords nil
-                               '(("\t+" (0 'my-tab-face t))
-                                 ("[ \t]+$" (0 'my-trailing-space-face t))))))
+    (font-lock-remove-keywords nil '(("\t+" (0 'my-tab-face prepend))))))
 
 ;; Hooks and advice for adding font-lock faces
 
 (defun my-font-lock-mode-hook ()
   (when (or (and comment-start font-lock-keywords (not (eq major-mode 'org-mode)))
             (eq major-mode 'dired-mode))
-    (font-lock-add-keywords nil
-                            (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\|DEBUG\\)\\>"
-                                        (list '(1 'my-todo-face t))))
-                            'add-to-end)
-    (when my-font-lock-show-whitespace
+    (font-lock-add-keywords nil (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\|DEBUG\\)\\>" (list '(1 'my-todo-face t)))) 'add-to-end)
+    (when show-trailing-whitespace
       (my-font-lock-add-whitespace))))
 
 (defun my-font-lock-find-file-hook ()

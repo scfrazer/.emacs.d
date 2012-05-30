@@ -76,7 +76,7 @@
   :group 'sse-log-mode)
 
 (defface uvm-log-mode-sb-match-face
-  '((((class color) (background dark)) (:foreground "PaleGreen2"))
+  '((((class color) (background dark)) (:foreground "chartreuse2"))
     (((class color) (background light)) (:foreground "green3")))
   "Font Lock mode face used to highlight match statements."
   :group 'uvm-log-mode)
