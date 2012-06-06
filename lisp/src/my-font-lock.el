@@ -60,12 +60,14 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
         (font-lock-fontify-buffer)))))
 
 (defun my-font-lock-add-whitespace ()
-  (unless (string-match "\\s-*\\*.+\\*" (buffer-name))
+  (if (string-match "\\s-*\\*.+\\*" (buffer-name))
+      (setq show-trailing-whitespace nil)
     (font-lock-add-keywords nil '(("\t+" (0 'my-tab-face prepend))) 'add-to-end)))
 
 (defun my-font-lock-remove-whitespace ()
   (unless (string-match "\\s-*\\*.+\\*" (buffer-name))
-    (font-lock-remove-keywords nil '(("\t+" (0 'my-tab-face prepend))))))
+    (font-lock-remove-keywords nil '(("\t+" (0 'my-tab-face prepend))))
+    (setq show-trailing-whitespace nil)))
 
 ;; Hooks and advice for adding font-lock faces
 
