@@ -74,6 +74,13 @@
   (let ((add-checkbox (org-at-item-checkbox-p))
         (add-todo (org-entry-is-todo-p))
         (from-eol (eolp)))
+    (unless (org-at-item-p)
+      (save-excursion
+        (condition-case nil
+            (progn
+              (org-previous-item)
+              (setq add-checkbox (org-at-item-checkbox-p)))
+          (error nil))))
     (call-interactively 'org-insert-heading)
     (unless from-eol
       (org-beginning-of-line))
@@ -383,7 +390,7 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
   (define-key org-mode-map (kbd "C-S-e") 'org-end-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
-  (define-key org-mode-map (kbd "C-c RET") 'my-org-insert-heading)
+  (define-key org-mode-map (kbd "C-c C-h") 'my-org-insert-heading)
   (define-key org-mode-map (kbd "C-c C-l") 'my-org-link)
   (define-key org-mode-map (kbd "C-c C-n") 'my-org-new)
   (define-key org-mode-map (kbd "C-c C-r") 'org-renumber-ordered-list)

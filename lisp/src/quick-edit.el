@@ -323,8 +323,8 @@ depending on the major mode (see `qe-block-indented-modes')."
         (progn
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark))
-      (let* ((ev (read-event (if arg "Delete:" "Kill:")))
-             (fcn (lookup-key qe-unit-kill-map (vector ev))))
+      (let* ((seq (read-key-sequence (if arg "Delete:" "Kill:")))
+             (fcn (lookup-key qe-unit-kill-map seq)))
         (unless fcn
           (error "Unknown char entered for kill text unit"))
         (setq result (funcall fcn))))
@@ -344,8 +344,8 @@ depending on the major mode (see `qe-block-indented-modes')."
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark)
           (setq do-highlight nil))
-      (let* ((ev (read-event "Copy:"))
-             (fcn (lookup-key qe-unit-copy-map (vector ev))))
+      (let* ((seq (read-key-sequence "Copy:"))
+             (fcn (lookup-key qe-unit-copy-map seq)))
         (unless fcn
           (error "Unknown char entered for copy text unit"))
         (setq qe-isearch-end nil)
