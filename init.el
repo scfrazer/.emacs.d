@@ -34,6 +34,7 @@
 (require 'etags-table)
 (require 'hdl-dbg-vcs)
 (require 'iflipb)
+(require 'jump-to-prev-pos)
 (require 'mdabbrev)
 (require 'midnight)
 (require 'mode-fn)
@@ -212,6 +213,7 @@
               scroll-conservatively 10000
               scroll-preserve-screen-position t
               select-active-regions t
+              shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
               tags-revert-without-query t
@@ -1214,6 +1216,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c SPC" 'my-delete-whitespace-after-cursor)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
+(my-keys-define "C-c b" 'jump-to-prev-pos)
 (my-keys-define "C-c c" 'my-comment-region-after-copy)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
@@ -1518,8 +1521,8 @@ Does not set point.  Does nothing if mark ring is empty."
 
 ;; Command frequency
 
-(require 'command-frequency)
-(command-frequency-mode 1)
+;; (require 'command-frequency)
+;; (command-frequency-mode 1)
 
 ;; Time emacs load time
 

@@ -37,46 +37,31 @@
 (defvar jtpp-stack-depth 16
   "*Stack depth for jump-to-prev-pos.")
 
-(defvar jtpp-ignore-commands (list 'self-insert-command
-                                   'newline
-                                   'newline-and-indent
-                                   'jump-to-prev-pos
-                                   'jump-to-next-pos
-                                   'next-line
-                                   'previous-line
-                                   'forward-char
-                                   'backward-char
-                                   'pager-row-up
-                                   'pager-row-down)
-  "*Default list of commands to ignore when recording point")
-
-(defun jtpp-ignore-movement ()
-  (equal (point) (car jtpp-prev-pos-stack)))
-
 (defun jtpp-remember-position ()
-  (unless (or (jtpp-ignore-movement)
-              (member this-command jtpp-ignore-commands))
-    (setq jtpp-next-pos-stack nil)
+  "Remember current position."
+  (unless (or (equal (point) (car jtpp-prev-pos-stack))
+              (equal this-command 'jump-to-prev-pos))
     (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))
     (when (> (length jtpp-prev-pos-stack) jtpp-stack-depth)
-      (nbutlast jtpp-prev-pos-stack))))
+      (nbutlast jtpp-prev-pos-stack))
+    (when (> (length jtpp-next-pos-stack) jtpp-stack-depth)
+      (nbutlast jtpp-next-pos-stack))))
+
 (add-hook 'pre-command-hook 'jtpp-remember-position)
 
-(defun jump-to-prev-pos ()
-  "Jump to previous position."
-  (interactive)
-  (when jtpp-prev-pos-stack
-    (goto-char (car jtpp-prev-pos-stack))
-    (setq jtpp-prev-pos-stack (cdr jtpp-prev-pos-stack))
-    (setq jtpp-next-pos-stack (cons (point) jtpp-next-pos-stack))))
-
-(defun jump-to-next-pos ()
-  "Jump to next position."
-  (interactive)
-  (when jtpp-next-pos-stack
-    (goto-char (car jtpp-next-pos-stack))
-    (setq jtpp-next-pos-stack (cdr jtpp-next-pos-stack))
-    (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))))
+(defun jump-to-prev-pos (&optional arg)
+  "Jump to previous saved position.  With ARG, jump to previous
+saved position."
+  (interactive "P")
+  (if arg
+      (when jtpp-next-pos-stack
+        (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))
+        (goto-char (car jtpp-next-pos-stack))
+        (setq jtpp-next-pos-stack (cdr jtpp-next-pos-stack)))
+    (when jtpp-prev-pos-stack
+      (setq jtpp-next-pos-stack (cons (point) jtpp-next-pos-stack))
+      (goto-char (car jtpp-prev-pos-stack))
+      (setq jtpp-prev-pos-stack (cdr jtpp-prev-pos-stack)))))
 
 (provide 'jump-to-prev-pos)
 ;;; jump-to-prev-pos.el ends here

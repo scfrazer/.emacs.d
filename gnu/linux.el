@@ -1,10 +1,8 @@
 ;; Fix backspace/delete
 
+(blue)
 (if window-system
-    (progn
-      (normal-erase-is-backspace-mode 1)
-      (blue))
-  (blue)
+    (normal-erase-is-backspace-mode 1)
   (set-face-background 'default "color-235")
   (set-face-foreground 'font-lock-comment-face "color-244")
   (set-face-foreground 'font-lock-comment-delimiter-face "color-244")
@@ -12,6 +10,7 @@
   (set-face-background 'isearch "color-166")
   (set-face-foreground 'isearch-lazy-highlight-face "color-253")
   (set-face-background 'isearch-lazy-highlight-face "color-23")
+  (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
 
 ;; Work stuff
