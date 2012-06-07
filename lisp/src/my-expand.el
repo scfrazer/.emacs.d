@@ -13,7 +13,7 @@
   (interactive)
   (yas/exit-snippet (car (yas/snippets-at-point))))
 
-(define-key yas/keymap (kbd "<return>") 'my-yasnippet-exit-current)
+;; (define-key yas/keymap (kbd "<return>") 'my-yasnippet-exit-current)
 
 (defun my-expand-yasnippet-or-abbrev ()
   "Try to expand yasnippet, then expand abbrev if it fails."

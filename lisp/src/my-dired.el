@@ -146,6 +146,7 @@ there is a prefix arg."
   (define-key dired-mode-map "r" 'dired-do-rename)
   (define-key dired-mode-map "u" 'my-dired-up-dir)
   (define-key dired-mode-map "w" 'wdired-change-to-wdired-mode)
+  (define-key dired-mode-map (kbd "RET") 'my-dired-open)
   (define-key dired-mode-map (kbd "<return>") 'my-dired-open)
   (toggle-truncate-lines))
 

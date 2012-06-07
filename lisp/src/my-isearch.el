@@ -100,6 +100,7 @@ or jump forward to input char."
   (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
 
 (define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
+(define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
 (define-key isearch-mode-map (kbd "S-<return>") 'isearch-exit)
 (define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
 (define-key isearch-mode-map (kbd "C-b") 'isearch-del-char)
