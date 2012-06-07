@@ -102,9 +102,9 @@
 ;;      (4 'uvm-log-mode-msg-face))
     ("\\*\\{80\\}"
      (0 'uvm-log-mode-phase-face))
-    ("\\(\\*\\* Starting phase:\\)\\(.+\\)"
+    ("\\(\\*\\* Starting phase:\\)\\s-+\\([a-zA-Z0-9_]+\\)"
      (1 'uvm-log-mode-phase-face)
-     (2 'uvm-log-mode-msg-face))
+     (2 'font-lock-function-name-face))
 ;;     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(FATAL\\|ERROR\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
 ;;      (1 'uvm-log-mode-timestamp-face)
 ;;      (2 'uvm-log-mode-error-face)

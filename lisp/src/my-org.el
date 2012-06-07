@@ -386,9 +386,9 @@ Otherwise: Add a checkbox and update heading accordingly."
   (modify-syntax-entry ?? ".")
   (modify-syntax-entry ?/ ".")
 
-  (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
-  (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
+  (define-key org-mode-map (kbd "<M-return>") nil)
   (define-key org-mode-map (kbd "C-S-e") 'org-end-of-line)
+  (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
   (define-key org-mode-map (kbd "C-c C-h") 'my-org-insert-heading)
   (define-key org-mode-map (kbd "C-c C-l") 'my-org-link)
@@ -399,7 +399,9 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
   (define-key org-mode-map (kbd "C-c C-x") 'my-org-handle-checkbox)
   (define-key org-mode-map (kbd "C-c C-y") 'org-paste-subtree)
+  (define-key org-mode-map (kbd "C-e") 'move-end-of-line)
   (define-key org-mode-map (kbd "M-m") 'org-beginning-of-line)
+
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
   (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end))
 
