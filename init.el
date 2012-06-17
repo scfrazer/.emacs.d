@@ -1384,7 +1384,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(global-set-key (kbd "C-v") clearcase-prefix-map)
+(global-set-key (kbd "C-x v") clearcase-prefix-map)
 
 (setq etags-table-alist
       (list

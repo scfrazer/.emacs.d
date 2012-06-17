@@ -18,6 +18,15 @@
   (or (aref (clearcase-fprop-get-properties file) 10)
       clearcase-setview-viewtag))
 
+(defun my-clearcase-list-hist-or-co (&optional arg)
+  "List the history or (with prefix arg) checkouts of the current file."
+  (interactive "P")
+  (if arg
+      (my-clearcase-list-checkouts)
+    (if (equal major-mode 'dired-mode)
+        (clearcase-list-history-dired-file)
+      (clearcase-list-history-current-buffer))))
+
 (defun my-clearcase-list-checkouts ()
   "List the checkouts of FILE.
 FILE can be a file or a directory. If it is a directory, only the information
@@ -148,7 +157,7 @@ With prefix arg ask for version."
 (define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
 (define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
 (define-key clearcase-prefix-map "O" 'clearcase-checkout-current-buffer)
-(define-key clearcase-prefix-map "L" 'my-clearcase-list-checkouts)
+(define-key clearcase-prefix-map "l" 'my-clearcase-list-hist-or-co)
 (define-key clearcase-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
@@ -164,7 +173,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
 (define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
 (define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-dired-files)
-(define-key clearcase-dired-prefix-map "L" 'my-clearcase-list-checkouts)
+(define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-hist-or-co)
 (define-key clearcase-dired-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-dired-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)

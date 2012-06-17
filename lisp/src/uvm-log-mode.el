@@ -115,14 +115,14 @@
 ;;      (2 'uvm-log-mode-warning-face)
 ;;      (3 'uvm-log-mode-path-face)
 ;;      (4 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+[fpnum]?s\\) . \\([a-zA-Z0-9_:]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Added upstream item #[0-9]+ from:\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+[fpnum]?s\\) . \\([a-zA-Z0-9_:]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Added upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-add-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+[fpnum]?s\\) . \\([a-zA-Z0-9_:]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Matched upstream item #[0-9]+ to:\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+[fpnum]?s\\) . \\([a-zA-Z0-9_:]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
