@@ -1241,6 +1241,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-S-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
+(my-keys-define "C-x C-n" 'other-window)
+(my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'kill-buffer)
