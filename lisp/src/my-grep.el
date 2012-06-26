@@ -23,4 +23,26 @@
 
 (add-hook 'grep-setup-hook 'my-grep-setup-hook)
 
+(defun grep-read-files (regexp)
+  "Read files arg for interactive grep."
+  (let* ((bn (or (buffer-file-name)
+                 (replace-regexp-in-string "<[0-9]+>\\'" "" (buffer-name))))
+         (fn (and bn
+                  (stringp bn)
+                  (file-name-nondirectory bn)))
+         (default "*")
+         (files (completing-read
+                 (concat "Search for \"" regexp
+                         "\" in files"
+                         (if default (concat " (default " default ")"))
+                         ": ")
+                 'read-file-name-internal
+                 nil nil nil 'grep-files-history
+                 (delete-dups
+                  (delq nil (append (list default)
+                                    (mapcar 'car grep-files-aliases)))))))
+    (and files
+         (or (cdr (assoc files grep-files-aliases))
+             files))))
+
 (provide 'my-grep)

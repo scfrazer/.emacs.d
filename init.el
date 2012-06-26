@@ -212,7 +212,6 @@
               save-interprogram-paste-before-kill t
               scroll-conservatively 10000
               scroll-preserve-screen-position t
-              select-active-regions t
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
@@ -241,6 +240,11 @@
               warning-suppress-types (list '(undo discard-info))
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
+
+(setq-default select-active-regions t ;; nil
+              mouse-drag-copy-region t
+              x-select-enable-primary t
+              x-select-enable-clipboard nil)
 
 (setq frame-title-format (concat "%F" (if (and clearcase-servers-online clearcase-setview-viewtag)
                                           (concat " - " clearcase-setview-viewtag)

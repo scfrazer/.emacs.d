@@ -1,6 +1,23 @@
-;; Fix backspace/delete
+;; Theme
 
 (blue)
+(let ((class '((class color) (min-colors 89))))
+  (custom-theme-set-faces
+   'deeper-blue
+   `(cperl-array-face ((,class (:foreground "yellow2"))))
+   `(cperl-hash-face ((,class (:foreground "coral1"))))
+   `(ediff-current-diff-A ((,class (:background "darkslategray"))))
+   `(ediff-current-diff-B ((,class (:background "darkslategray"))))
+   `(ediff-fine-diff-A ((,class (:background "dodgerblue2" :foreground "white"))))
+   `(ediff-fine-diff-B ((,class (:background "dodgerblue2" :foreground "white"))))
+   `(ediff-even-diff-A ((,class (:background "Grey25"))))
+   `(ediff-odd-diff-A ((,class (:background "Grey25"))))
+   `(ediff-even-diff-B ((,class (:background "Grey25"))))
+   `(ediff-odd-diff-B ((,class (:background "Grey25"))))
+   ))
+
+;; X vs. terminal
+
 (if window-system
     (normal-erase-is-backspace-mode 1)
   (set-face-background 'default "color-235")
