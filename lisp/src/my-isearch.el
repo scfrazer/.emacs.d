@@ -19,6 +19,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun my-isearch-dwim (&optional arg)
+  "Do `my-isearch-forward-dwim' or, with prefix arg, `my-isearch-backward-dwim'."
+  (interactive "P")
+  (call-interactively (if arg 'my-isearch-backward-dwim 'my-isearch-forward-dwim)))
+
 (defun my-isearch-forward-dwim ()
   "Read char, then isearch-foward at word boundaries if alphanumeric,
 or jump forward to input char."
