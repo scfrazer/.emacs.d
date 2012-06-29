@@ -248,6 +248,15 @@ With prefix arg ask for version."
         (when new-rev
           (replace-match new-rev nil nil nil 3))))))
 
+(defvar clearcase-cs-mode-abbrev-table nil
+  "*Abbrev table in use in ClearCase config spec buffers.")
+
+(define-abbrev-table 'clearcase-cs-mode-abbrev-table ())
+
+(define-abbrev clearcase-cs-mode-abbrev-table
+  "lat"
+  "/main/LATEST")
+
 (defun clearcase-edcs-mode ()
   (interactive)
 
@@ -256,6 +265,7 @@ With prefix arg ask for version."
   (setq mode-name "ClearCase/edcs")
 
   (set-syntax-table clearcase-edcs-mode-syntax-table)
+  (setq local-abbrev-table clearcase-cs-mode-abbrev-table)
 
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")
@@ -276,6 +286,7 @@ With prefix arg ask for version."
   (setq mode-name "ClearCase/cs")
 
   (set-syntax-table clearcase-edcs-mode-syntax-table)
+  (setq local-abbrev-table clearcase-cs-mode-abbrev-table)
 
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")

@@ -48,6 +48,15 @@
             filename
           (file-name-directory filename))))))
 
+(defun my-ido-insert-bookmark-dir ()
+  "Insert the directory of a bookmark."
+  (interactive)
+  (let ((dir (my-ido-get-bookmark-dir)))
+    (when dir
+      (insert (if my-ido-exiting-with-slash
+                  (ido-read-directory-name "Directory: " dir nil t)
+                dir)))))
+
 (defun my-ido-dired-mode-hook ()
   (define-key dired-mode-map "$" 'my-ido-bookmark-jump))
 
