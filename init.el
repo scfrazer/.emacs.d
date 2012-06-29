@@ -1242,6 +1242,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
+(my-keys-define "C-x /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
 (my-keys-define "C-x C-S-q" 'my-toggle-buffer-modified)
