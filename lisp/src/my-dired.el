@@ -132,22 +132,58 @@ there is a prefix arg."
     (dired-kill-subdir)
     (dired-maybe-insert-subdir dir)))
 
+;; Smarter movement
+
+(defun my-dired-next-line ()
+  "Smarter `dired-next-line'."
+  (interactive)
+  (forward-line)
+  (unless (looking-at "..[-d]")
+    (forward-line -1))
+  (dired-move-to-filename))
+
+(defun my-dired-previous-line ()
+  "Smarter `dired-previous-line'."
+  (interactive)
+  (forward-line -1)
+  (unless (looking-at "..[-d]")
+    (forward-line 1))
+  (dired-move-to-filename))
+
+(defun my-dired-beginning-of-buffer ()
+  "Smarter `beginning-of-buffer'."
+  (interactive)
+  (call-interactively 'beginning-of-buffer)
+  (when (re-search-forward "^..[-d]" nil t)
+    (dired-move-to-filename)))
+
+(defun my-dired-end-of-buffer ()
+  "Smarter `end-of-buffer'."
+  (interactive)
+  (call-interactively 'end-of-buffer)
+  (when (re-search-backward "^..[-d]" nil t)
+    (dired-move-to-filename)))
+
 ;; Dired hook
 
 (defun my-dired-mode-hook ()
   (define-key dired-mode-map " " 'my-dired-toggle-mark)
-  (define-key dired-mode-map (kbd "C-o") nil)
-  (define-key dired-mode-map (kbd "M-o") nil)
-  (define-key dired-mode-map "c" 'dired-do-copy)
   (define-key dired-mode-map "I" 'my-dired-replace-sub-dir)
-  (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
   (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
+  (define-key dired-mode-map "c" 'dired-do-copy)
+  (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
+  (define-key dired-mode-map "n" 'my-dired-next-line)
   (define-key dired-mode-map "o" 'my-dired-do-find-file)
+  (define-key dired-mode-map "p" 'my-dired-previous-line)
   (define-key dired-mode-map "r" 'dired-do-rename)
   (define-key dired-mode-map "u" 'my-dired-up-dir)
   (define-key dired-mode-map "w" 'wdired-change-to-wdired-mode)
-  (define-key dired-mode-map (kbd "RET") 'my-dired-open)
   (define-key dired-mode-map (kbd "<return>") 'my-dired-open)
+  (define-key dired-mode-map (kbd "C-o") nil)
+  (define-key dired-mode-map (kbd "M-<") 'my-dired-beginning-of-buffer)
+  (define-key dired-mode-map (kbd "M->") 'my-dired-end-of-buffer)
+  (define-key dired-mode-map (kbd "M-o") nil)
+  (define-key dired-mode-map (kbd "RET") 'my-dired-open)
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)

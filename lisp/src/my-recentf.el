@@ -2,7 +2,7 @@
 
 (require 'recentf)
 
-(setq recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" "[0-9]+")))
+(setq recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" ".*/[0-9]+$")))
 (setq recentf-max-menu-items 100)
 (setq recentf-max-saved-items 100)
 (setq recentf-menu-filter nil)
