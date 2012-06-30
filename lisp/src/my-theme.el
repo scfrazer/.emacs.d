@@ -8,7 +8,18 @@
   (let ((class '((class color) (min-colors 89))))
     (custom-theme-set-faces
      'deeper-blue
+
+     `(cperl-array-face ((,class (:foreground "yellow2"))))
+     `(cperl-hash-face ((,class (:foreground "coral1"))))
      `(custom-face-tag ((,class (:family "helv" :height 1.2))))
+     `(ediff-current-diff-A ((,class (:background "darkslategray"))))
+     `(ediff-current-diff-B ((,class (:background "darkslategray"))))
+     `(ediff-even-diff-A ((,class (:background "Grey25"))))
+     `(ediff-even-diff-B ((,class (:background "Grey25"))))
+     `(ediff-fine-diff-A ((,class (:background "dodgerblue2" :foreground "white"))))
+     `(ediff-fine-diff-B ((,class (:background "dodgerblue2" :foreground "white"))))
+     `(ediff-odd-diff-A ((,class (:background "Grey25"))))
+     `(ediff-odd-diff-B ((,class (:background "Grey25"))))
      `(highlight-changes ((,class (:background "SteelBlue4" :foreground "white"))))
      `(highlight-changes-delete ((,class (:background "firebrick"))))
      `(magit-diff-add ((,class (:foreground "SeaGreen2"))))
@@ -32,7 +43,8 @@
      `(widget-documentation-face ((,class (:foreground "lime green"))))
      `(widget-field-face ((,class (:background "dim gray"))))
      `(widget-inactive-face ((,class (:foreground "light gray"))))
-     `(widget-single-line-field-face ((,class (:background "dim gray")))))))
+     `(widget-single-line-field-face ((,class (:background "dim gray"))))))
+  )
 
 (defalias 'red (lambda () (interactive) (blue) (set-background-color "#261a18")))
 (defalias 'green (lambda () (interactive) (blue) (set-background-color "#18261a")))

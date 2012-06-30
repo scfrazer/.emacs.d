@@ -721,6 +721,25 @@ previous replacement)."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-rectangle-number-lines (start end start-at &optional format)
+  "Like `rectangle-number-lines' but with better defaults.
+
+START-AT, if non-nil, should be a number from which to begin
+counting.  FORMAT, if non-nil, should be a format string to pass
+to `format' along with the line count.  When called interactively
+with a prefix argument, prompt for START-AT and FORMAT."
+  (interactive
+   (if current-prefix-arg
+       (let* ((start (region-beginning))
+              (end   (region-end))
+              (start-at (read-number "Number to count from: " 0)))
+         (list start end start-at
+               (read-string "Format string: " "%d")))
+     (list (region-beginning) (region-end) 0 "%d")))
+  (let ((rectangle-number-line-counter start-at))
+    (apply-on-rectangle 'rectangle-number-line-callback
+                        start end format)))
+
 (defun my-regexp-backward (regexp)
   "Skip lines backward containing a regexp."
   (interactive "sSkip lines backward containing regexp: ")
@@ -1206,11 +1225,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c +" 'my-inc-num)
+(my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
+(my-keys-define "C-c -" 'my-fit-window)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
+(my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c ;" 'my-insert-comment-line)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region)
-(my-keys-define "C-c C-," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-o" 'ff-get-other-file)
@@ -1241,19 +1262,16 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-o" 'my-bs-toggle)
 (my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x *" 'calculator)
-(my-keys-define "C-x -" 'my-fit-window)
-(my-keys-define "C-x /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
 (my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
-(my-keys-define "C-x C-S-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x C-n" 'other-window)
 (my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'kill-buffer)
+(my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
-(my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x c" 'my-rotate-case)
@@ -1292,12 +1310,11 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
-(my-keys-define "M-r i" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+(my-keys-define "M-r c" (lambda () (interactive) (call-interactively 'copy-to-register) (deactivate-mark)))
+(my-keys-define "M-r i" 'string-rectangle)
 (my-keys-define "M-r k" 'kill-rectangle)
-(my-keys-define "M-r l" 'register-list)
-(my-keys-define "M-r s" (lambda () (interactive) (call-interactively 'copy-to-register) (deactivate-mark)))
-(my-keys-define "M-r t" 'string-rectangle)
-(my-keys-define "M-r y" 'yank-rectangle)
+(my-keys-define "M-r n" 'my-rectangle-number-lines)
+(my-keys-define "M-r p" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
@@ -1401,7 +1418,6 @@ Does not set point.  Does nothing if mark ring is empty."
       (list
        '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
        '("/nfs/luke_user6/scfrazer/uvm/uvm-1.1/src/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
-       '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/luke/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
@@ -1409,23 +1425,7 @@ Does not set point.  Does nothing if mark ring is empty."
        '("/vob/sse/asic/luke/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
        '("/vob/sse/asic/luke/.*\\.[ch]pp$" "/nfs/luke_scratch/tags/sc/TAGS")
        '("/vob/sse/asic/luke/.*\\.c$" "/nfs/luke_scratch/tags/sc/TAGS")
-
-;;       '("/vob/cpp/asic/yoda/.*\\.svh?$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
-;;       '("/vob/cpp/asic/yoda/.*\\.aop$" "/nfs/luke_scratch/tags/yoda_sv/TAGS")
-;;        '("/vob/asicproc/verification/evc_lib/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
-;;        '("/vob/astro/.*\\.e$" "/nfs/astro_scratch/tags/dv/TAGS")
-;;        '("/vob/astro/.*\\.vh?$" "/nfs/astro_scratch/tags/rtl/TAGS")
-;;        '("/vob/astro/.*\\.s$" "/nfs/astro_scratch/tags/rtl/TAGS")
-       '("/vob/wolverine/.*\\.e$" "/nfs/wolverine_scratch/tags/dv/TAGS")
-       '("/vob/wolverine/.*\\.v$" "/nfs/wolverine_scratch/tags/rtl/TAGS")
-;;        '("/vob/hkp/.*\\.e$" "/nfs/hkp_scratch/tags/dv/TAGS")
-;;        '("/vob/hkp/.*\\.v$" "/nfs/hkp_scratch/tags/rtl/TAGS")
-
        ))
-
-(unless (getenv "SPECMAN_PATH")
-  (setenv "SPECMAN_PATH"
-          ".:/vob/sse/asic/luke/ver/io_dv/verification/evc_lib:/vob/sse/asic/luke/ver/io_dv/verification/testbench:/vob/sse/asic/luke/ver/asicproc/verification/evc_lib"))
 
 (unless (getenv "SV_PATH")
   (setenv "SV_PATH"
@@ -1433,9 +1433,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (eval-after-load "sv-mode"
   '(progn
-;;      (setq compilation-error-regexp-alist
-;;            (add-to-list 'compilation-error-regexp-alist
-;;                         '("^Error-[^\"]+\"\\([^\"]+\\)\",\\s-+\\([0-9]+\\)" 1 2)))
      (setq compilation-error-regexp-alist
            (add-to-list 'compilation-error-regexp-alist
                         '("^Error-.+\n\\(.+\\),\\s-+\\([0-9]+\\)" 1 2)))
@@ -1464,10 +1461,6 @@ Does not set point.  Does nothing if mark ring is empty."
                                      (t
                                       (concat "%" fmt)))))
                                  (if v1 "\\n\", " "\\n\"") v1)))
-
-;; (let ((resultsdir (getenv "RESULTSDIR")))
-;;   (when (and resultsdir (assoc "resultsdir" bookmark-alist))
-;;     (bookmark-set-filename "resultsdir" (concat resultsdir "/"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
