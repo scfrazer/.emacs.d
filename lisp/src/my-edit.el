@@ -27,19 +27,22 @@ end-of-line (and it's not a empty line).  Kills region if active."
 
 ;;; Yank
 
-(defun my-edit-yank (&optional arg)
+(defun my-edit-yank ()
   "Yank and indent."
-  (interactive "P")
+  (interactive)
   (when (region-active-p)
     (kill-region (region-beginning) (region-end))
     (rotate-yank-pointer 1))
-  (yank)
-  (when (and (not arg)
-             (not (member indent-line-function '(indent-relative sh-basic-indent-line)))
-             (not (member major-mode '(makefile-mode))))
-    (exchange-point-and-mark)
-    (indent-region (point) (mark 't))
-    (exchange-point-and-mark)))
+  (if (and current-prefix-arg (integerp current-prefix-arg))
+      (dotimes (x current-prefix-arg)
+        (yank))
+    (yank)
+    (when (and (not current-prefix-arg)
+               (not (member indent-line-function '(indent-relative sh-basic-indent-line)))
+               (not (member major-mode '(makefile-mode))))
+      (exchange-point-and-mark)
+      (indent-region (point) (mark 't))
+      (exchange-point-and-mark))))
 
 ;;; Scrolling/Paging
 

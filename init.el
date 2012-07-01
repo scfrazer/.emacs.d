@@ -736,6 +736,7 @@ with a prefix argument, prompt for START-AT and FORMAT."
          (list start end start-at
                (read-string "Format string: " "%d")))
      (list (region-beginning) (region-end) 0 "%d")))
+  (delete-extract-rectangle (region-beginning) (region-end))
   (let ((rectangle-number-line-counter start-at))
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
