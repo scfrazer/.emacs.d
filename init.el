@@ -1,6 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; init.el
 
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(tooltip-mode -1)
+
 ;; Time load time
 
 (defvar *emacs-load-start* (current-time))
@@ -119,9 +123,6 @@
 (delete-selection-mode t)
 (blink-cursor-mode 1)
 (set-scroll-bar-mode nil)
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(tooltip-mode -1)
 (winner-mode 1)
 
 (setq-default backup-inhibited t
@@ -468,6 +469,18 @@ Prefix with C-u to fit the `next-window'."
         (forward-line -1)
         (move-to-column col)
         (setq again nil)))))
+
+(defun my-goto-line-column ()
+  "Goto line:column."
+  (interactive)
+  (let ((line-col (read-from-minibuffer "Goto (line:column): ")) line col)
+    (when (string-match "\\([0-9]+\\)?\\(:\\([0-9]+\\)\\)?" line-col)
+      (setq line (match-string 1 line-col)
+            col (match-string 3 line-col))
+      (when line
+        (goto-line (string-to-number line)))
+      (when col
+        (move-to-column (string-to-number col))))))
 
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
@@ -1307,7 +1320,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
-(my-keys-define "M-g" 'goto-line)
+(my-keys-define "M-g" 'my-goto-line-column)
 (my-keys-define "M-i" 'ido-switch-buffer)
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
