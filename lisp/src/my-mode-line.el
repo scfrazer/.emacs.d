@@ -8,13 +8,18 @@
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
 
 (defface my-narrow-face
-  '((t (:foreground "black" :background "yellow")))
+  '((t (:foreground "black" :background "yellow3")))
   "todo/fixme highlighting."
   :group 'faces)
 
 (defface my-read-only-face
-  '((t (:foreground "black" :background "magenta")))
+  '((t (:foreground "black" :background "orange3")))
   "Read-only buffer highlighting."
+  :group 'faces)
+
+(defface my-modified-face
+  '((t (:foreground "gray80" :background "red4")))
+  "Modified buffer highlighting."
   :group 'faces)
 
 (setq-default
@@ -25,7 +30,9 @@
                        (if (buffer-modified-p) "**" "--"))))
             (if buffer-read-only
                 (propertize str 'face 'my-read-only-face)
-              str)))
+              (if (buffer-modified-p)
+                  (propertize str 'face 'my-modified-face)
+                str))))
    (list 'line-number-mode "  ")
    (:eval (when line-number-mode
             (let ((str "L%l"))
