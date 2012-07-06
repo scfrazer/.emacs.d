@@ -140,7 +140,7 @@ there is a prefix arg."
   "Smarter `dired-next-line'."
   (interactive)
   (forward-line)
-  (unless (looking-at "..[-d]")
+  (unless (looking-at "..[-dl]")
     (forward-line -1))
   (dired-move-to-filename))
 
@@ -148,7 +148,7 @@ there is a prefix arg."
   "Smarter `dired-previous-line'."
   (interactive)
   (forward-line -1)
-  (unless (looking-at "..[-d]")
+  (unless (looking-at "..[-dl]")
     (forward-line 1))
   (dired-move-to-filename))
 
@@ -156,14 +156,14 @@ there is a prefix arg."
   "Smarter `beginning-of-buffer'."
   (interactive)
   (call-interactively 'beginning-of-buffer)
-  (when (re-search-forward "^..[-d]" nil t)
+  (when (re-search-forward "^..[-dl]" nil t)
     (dired-move-to-filename)))
 
 (defun my-dired-end-of-buffer ()
   "Smarter `end-of-buffer'."
   (interactive)
   (call-interactively 'end-of-buffer)
-  (when (re-search-backward "^..[-d]" nil t)
+  (when (re-search-backward "^..[-dl]" nil t)
     (dired-move-to-filename)))
 
 ;; Dired hook
