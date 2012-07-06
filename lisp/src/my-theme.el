@@ -11,6 +11,7 @@
 
      `(cperl-array-face ((,class (:foreground "yellow2"))))
      `(cperl-hash-face ((,class (:foreground "coral1"))))
+     `(cursor ((,class (:background "lawngreen" :foreground "black"))))
      `(custom-face-tag ((,class (:family "helv" :height 1.2))))
      `(ediff-current-diff-A ((,class (:background "darkslategray"))))
      `(ediff-current-diff-B ((,class (:background "darkslategray"))))

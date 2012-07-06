@@ -76,7 +76,7 @@
 (require 'my-recentf)
 (require 'my-reformat)
 (require 'my-register-list)
-(require 'my-set-cursor-color)
+;; (require 'my-set-cursor-color)
 (require 'my-sv-mode)
 (require 'my-tags-search)
 (require 'my-theme)
@@ -1417,8 +1417,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (setq etags-table-alist
       (list
-       '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
-       '("/nfs/luke_user6/scfrazer/uvm/uvm-1.1/src/.*\\.svh?$" "/nfs/luke_user6/scfrazer/uvm/TAGS")
+       '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/auto/antares_user/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")

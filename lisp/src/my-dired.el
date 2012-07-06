@@ -32,12 +32,14 @@
 (defun my-dired-open ()
   "Open directory in current buffer, or file in new buffer."
   (interactive)
-  (save-match-data
-    (save-excursion
-      (beginning-of-line-text)
-      (if (looking-at "d")
-          (find-alternate-file (dired-get-filename))
-        (dired-find-file)))))
+  (let (dir-p)
+    (save-match-data
+      (save-excursion
+        (beginning-of-line-text)
+        (setq dir-p (looking-at "d"))))
+    (if dir-p
+        (find-alternate-file (dired-get-filename))
+      (dired-find-file))))
 
 ;; Jump to directory
 
