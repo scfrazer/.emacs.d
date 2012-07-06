@@ -8,7 +8,6 @@
   (let ((class '((class color) (min-colors 89))))
     (custom-theme-set-faces
      'deeper-blue
-
      `(cperl-array-face ((,class (:foreground "yellow2"))))
      `(cperl-hash-face ((,class (:foreground "coral1"))))
      `(cursor ((,class (:background "lawngreen" :foreground "black"))))
@@ -49,6 +48,14 @@
 
 (defalias 'red (lambda () (interactive) (blue) (set-background-color "#261a18")))
 (defalias 'green (lambda () (interactive) (blue) (set-background-color "#18261a")))
+
+(defun white ()
+  (interactive)
+  (load-theme 'whiteboard)
+  (let ((class '((class color) (min-colors 89))))
+    (custom-theme-set-faces
+     'whiteboard
+     `(task-bmk-face ((,class (:background "gray80")))))))
 
 ;; (my-theme-create
 ;;  whiteboard

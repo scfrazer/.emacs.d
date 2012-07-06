@@ -22,16 +22,9 @@
 
 ;; Theme
 
-(if window-system
-    (load-theme 'whiteboard)
-  (blue)
-  (set-face-background 'default "color-235")
-  (set-face-foreground 'font-lock-comment-face "color-244")
-  (set-face-foreground 'font-lock-comment-delimiter-face "color-244")
-  (set-face-foreground 'isearch "color-253")
-  (set-face-background 'isearch "color-166")
-  (set-face-foreground 'isearch-lazy-highlight-face "color-253")
-  (set-face-background 'isearch-lazy-highlight-face "color-23")
+(white)
+(unless window-system
+  (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
 
 (setq-default org-priority-faces '((?A . (:foreground "IndianRed3"))
