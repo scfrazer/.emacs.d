@@ -4,17 +4,8 @@
 
 ;; X vs. terminal
 
-(if window-system
-    (normal-erase-is-backspace-mode 1)
-  (set-face-background 'default "color-235")
-  (set-face-foreground 'font-lock-comment-face "color-244")
-  (set-face-foreground 'font-lock-comment-delimiter-face "color-244")
-  (set-face-foreground 'isearch "color-253")
-  (set-face-background 'isearch "color-166")
-  (set-face-foreground 'isearch-lazy-highlight-face "color-253")
-  (set-face-background 'isearch-lazy-highlight-face "color-23")
-  (my-keys-define "C-M-z" 'suspend-emacs)
-  (my-keys-define "C-_" 'dabbrev-expand))
+(when window-system
+  (normal-erase-is-backspace-mode 1))
 
 ;; Work stuff
 

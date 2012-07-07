@@ -1518,6 +1518,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; System setup
+
+(unless window-system
+  (my-keys-define "C-M-z" 'suspend-emacs)
+  (my-keys-define "C-_" 'dabbrev-expand))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup
 
 (let ((extra-config (concat "~/.emacs.d/" (symbol-name system-type) ".el")))

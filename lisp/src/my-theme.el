@@ -44,7 +44,14 @@
      `(widget-field-face ((,class (:background "dim gray"))))
      `(widget-inactive-face ((,class (:foreground "light gray"))))
      `(widget-single-line-field-face ((,class (:background "dim gray"))))))
-  )
+  (unless window-system
+    (set-face-background 'default "color-235")
+    (set-face-foreground 'font-lock-comment-face "color-244")
+    (set-face-foreground 'font-lock-comment-delimiter-face "color-244")
+    (set-face-foreground 'isearch "color-253")
+    (set-face-background 'isearch "color-166")
+    (set-face-foreground 'isearch-lazy-highlight-face "color-253")
+    (set-face-background 'isearch-lazy-highlight-face "color-23")))
 
 (defalias 'red (lambda () (interactive) (blue) (set-background-color "#261a18")))
 (defalias 'green (lambda () (interactive) (blue) (set-background-color "#18261a")))
