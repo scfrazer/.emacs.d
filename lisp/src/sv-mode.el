@@ -1018,7 +1018,6 @@ function/task definition/implementation in other file."
         (setq this-func-re (concat this-func-re ns "::")))
       (setq this-func-re (concat this-func-re (cdr (assoc 'name proto)) "\\s-*[(;]"))
       (if (sv-mode-re-search-forward this-func-re nil t)
-          ;; TODO Fix any super calls
           (progn
             (sv-mode-re-search-backward "task\\|function" nil t)
             (beginning-of-line)
@@ -1090,7 +1089,7 @@ default for next `query-replace'."
            (other-buf (and (file-exists-p (ff-other-file-name))
                            (find-file-noselect (ff-other-file-name))))
            (not-found t)
-           at-impl impl-only namespaces new-name)
+           at-impl impl-only namespaces new-name other-modified)
       (sv-mode-beginning-of-statement)
       (setq at-impl (not (looking-at "extern")))
       (if (not at-impl)
@@ -1112,12 +1111,13 @@ default for next `query-replace'."
           (when not-found
             (when (or (not other-buf) (equal other-buf (current-buffer)))
               (error "Couldn't find function/task declaration"))
-            (switch-to-buffer other-buf)))
+            (set-buffer other-buf)))
         (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
           (error "Couldn't find function/task declaration"))
-        (replace-match new-name t nil nil 2))
+        (replace-match new-name t nil nil 2)
+        (setq other-modified (equal other-buf (current-buffer))))
       ;; Now change implementation
-      (switch-to-buffer this-buf)
+      (set-buffer this-buf)
       (goto-char (point-min))
       (setq this-func-re-beg "\\(task\\|function\\)\\s-+.*?")
       (dolist (ns namespaces)
@@ -1126,11 +1126,12 @@ default for next `query-replace'."
       (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
         (unless other-buf
           (error "Couldn't find function/task implementation"))
-        (switch-to-buffer other-buf)
+        (set-buffer other-buf)
         (goto-char (point-min))
         (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
           (error "Couldn't find function/task implementation")))
       (replace-match new-name t nil nil 2)
+      (setq other-modified (or other-modified (equal other-buf (current-buffer))))
       ;; Change end label and super calls
       (re-search-backward "\\(task\\|function\\)" nil t)
       (let ((beg (point)) end)
@@ -1143,9 +1144,11 @@ default for next `query-replace'."
                 (concat "\\_<super[.]\\_<\\(" name this-func-re-end) end t)
           (replace-match new-name t nil nil 1)))
       ;; Done
-      (switch-to-buffer this-buf)
       (when sv-mode-rename-set-query-replace
-        (setq query-replace-defaults (cons name new-name))))))
+        (setq query-replace-defaults (cons name new-name)))
+      (set-buffer this-buf)
+      (when other-modified
+        (message (concat (ff-other-file-name) " was also modified."))))))
 
 (defun sv-mode-electric-star ()
   "Auto-indent when in comments."

@@ -62,6 +62,7 @@
   (let ((class '((class color) (min-colors 89))))
     (custom-theme-set-faces
      'whiteboard
+     `(magit-item-highlight ((,class (:background "gray80"))))
      `(task-bmk-face ((,class (:background "gray80")))))))
 
 ;; (my-theme-create
