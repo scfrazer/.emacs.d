@@ -4,7 +4,7 @@
 
 (setq-default ediff-ignore-similar-regions t
               ediff-keep-variants t
-              ediff-split-window-function 'split-window-horizontally
+              ediff-split-window-function 'split-window-vertically
               ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (defun my-ediff-buffer-with-file (arg)
