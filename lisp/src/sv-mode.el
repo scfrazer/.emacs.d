@@ -44,15 +44,16 @@
 ;; C-c C-p : Move to beginning of previous block
 ;; C-c C-n : Move to end of next block
 ;; C-c C-o : Switch to "other" file, i.e. between .sv <-> .svh files
-;; C-c C-O : Look for function definition/implementation in "other" file
 ;; C-c C-s : Create (or update) skeleton task/function implementation in
 ;;           .sv file from prototype on current line in .svh file
-;; TODO C-c C-r: Rename function in .svh/.sv -- fix endfunction and any super calls
+;; C-c C-r : Rename function in .svh/.sv -- fix endfunction and any super
+;;           calls.  Set old/new names in `query-replace-defaults'.
 ;;
 ;; TODO C-x n s, M-a, M-e and such
 ;; TODO UVM utils and end/super etc insertion
 ;; TODO Package/tag guessing functions
 ;; TODO Abbrevs
+;; TODO Speedbar
 ;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
@@ -164,6 +165,12 @@ Otherwise indent them as usual."
   "*Time in seconds to delay before showing matching scope begin/end."
   :group 'sv-mode
   :type 'number)
+
+;;;###autoload
+(defcustom sv-mode-rename-set-query-replace t
+  "*When using `sv-mode-rename', set defaults for the next `query-replace'."
+  :group 'sv-mode
+  :type 'boolean)
 
 ;;;###autoload
 (defcustom sv-mode-guess-package-name-function 'sv-mode-guess-package-name
@@ -957,8 +964,8 @@ end/endtask/endmodule/etc. also."
       (narrow-to-region start (point)))))
 
 (defun sv-mode-other-file (&optional arg)
-  "Go to other file (.sv <-> .svh), or with prefix arg,
-go to function/task definition/implementation in other file."
+  "Go to other file (.sv <-> .svh).  With prefix arg go to
+function/task definition/implementation in other file."
   (interactive "P")
   (if (not arg)
       (ff-get-other-file)
@@ -1011,7 +1018,6 @@ go to function/task definition/implementation in other file."
         (setq this-func-re (concat this-func-re ns "::")))
       (setq this-func-re (concat this-func-re (cdr (assoc 'name proto)) "\\s-*[(;]"))
       (if (sv-mode-re-search-forward this-func-re nil t)
-          ;; TODO Fix any super calls
           (progn
             (sv-mode-re-search-backward "task\\|function" nil t)
             (beginning-of-line)
@@ -1067,6 +1073,82 @@ function/task prototype, and NAMESPACES is the list of namespaces."
 ;;       (insert ns "::"))
 ;;     (insert (cdr (assoc 'name proto)))
     (insert "\n")))
+
+(defun sv-mode-rename ()
+  "Rename function/task, endfunction/endtask, super() call.
+If `sv-mode-rename-set-query-replace' is non-nil, set old/new name as
+default for next `query-replace'."
+  (interactive)
+  (save-excursion
+    (let* ((proto (sv-mode-parse-prototype))
+           (name (cdr (assoc 'name proto)))
+           (this-func-re-beg "\\(task\\|function\\)\\s-+.*?\\_<\\(")
+           (this-func-re-end "\\)\\_>\\s-*[(;]")
+           (this-buf (current-buffer))
+           (ff-quiet-mode t)
+           (other-buf (and (file-exists-p (ff-other-file-name))
+                           (find-file-noselect (ff-other-file-name))))
+           (not-found t)
+           at-impl impl-only namespaces new-name other-modified)
+      (sv-mode-beginning-of-statement)
+      (setq at-impl (not (looking-at "extern")))
+      (if (not at-impl)
+          (setq namespaces (sv-mode-get-namespaces))
+        (setq impl-only (not (string-match "::" name)))
+        (setq namespaces (split-string name "::" t))
+        (setq name (car (last namespaces)))
+        (setq namespaces (nbutlast namespaces)))
+      (setq new-name (read-string (concat "Rename " name " to: ")))
+      ;; Change declaration first
+      (unless impl-only
+        (while not-found
+          (goto-char (point-min))
+          (setq not-found
+                (catch 'not-found
+                  (dolist (ns namespaces)
+                    (unless (sv-mode-re-search-forward (concat "\\_<class\\s-+" ns "\\_>"))
+                      (throw 'not-found t)))))
+          (when not-found
+            (when (or (not other-buf) (equal other-buf (current-buffer)))
+              (error "Couldn't find function/task declaration"))
+            (set-buffer other-buf)))
+        (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
+          (error "Couldn't find function/task declaration"))
+        (replace-match new-name t nil nil 2)
+        (setq other-modified (equal other-buf (current-buffer))))
+      ;; Now change implementation
+      (set-buffer this-buf)
+      (goto-char (point-min))
+      (setq this-func-re-beg "\\(task\\|function\\)\\s-+.*?")
+      (dolist (ns namespaces)
+        (setq this-func-re-beg (concat this-func-re-beg ns "::")))
+      (setq this-func-re-beg (concat this-func-re-beg "\\_<\\("))
+      (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
+        (unless other-buf
+          (error "Couldn't find function/task implementation"))
+        (set-buffer other-buf)
+        (goto-char (point-min))
+        (unless (sv-mode-re-search-forward (concat this-func-re-beg name this-func-re-end) nil t)
+          (error "Couldn't find function/task implementation")))
+      (replace-match new-name t nil nil 2)
+      (setq other-modified (or other-modified (equal other-buf (current-buffer))))
+      ;; Change end label and super calls
+      (re-search-backward "\\(task\\|function\\)" nil t)
+      (let ((beg (point)) end)
+        (sv-mode-forward-sexp)
+        (setq end (point))
+        (when (looking-at (concat "\\s-*:\\s-*\\_<\\(" name "\\)\\_>"))
+          (replace-match new-name t nil nil 1))
+        (goto-char beg)
+        (while (sv-mode-re-search-forward
+                (concat "\\_<super[.]\\_<\\(" name this-func-re-end) end t)
+          (replace-match new-name t nil nil 1)))
+      ;; Done
+      (when sv-mode-rename-set-query-replace
+        (setq query-replace-defaults (cons name new-name)))
+      (set-buffer this-buf)
+      (when other-modified
+        (message (concat (ff-other-file-name) " was also modified."))))))
 
 (defun sv-mode-electric-star ()
   "Auto-indent when in comments."
@@ -2025,6 +2107,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
     (define-key map (kbd "C-c C-a") 'sv-mode-beginning-of-statement)
     (define-key map (kbd "C-c C-p") 'sv-mode-beginning-of-block)
     (define-key map (kbd "C-c C-n") 'sv-mode-end-of-block)
+    (define-key map (kbd "C-c C-r") 'sv-mode-rename)
     (define-key map (kbd "C-c C-s") 'sv-mode-create-skeleton-from-prototype)
     (define-key map (kbd "C-c C-o") 'sv-mode-other-file)
     (define-key map (kbd "C-x n s") 'sv-mode-narrow-to-scope)

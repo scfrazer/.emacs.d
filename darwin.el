@@ -23,9 +23,6 @@
 ;; Theme
 
 (white)
-(unless window-system
-  (my-keys-define "C-M-z" 'suspend-emacs)
-  (my-keys-define "C-_" 'dabbrev-expand))
 
 (setq-default org-priority-faces '((?A . (:foreground "IndianRed3"))
                                    (?B . (:foreground "SteelBlue3"))
