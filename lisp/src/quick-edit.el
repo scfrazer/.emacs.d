@@ -216,27 +216,26 @@ depending on the major mode (see `qe-block-indented-modes')."
         (beginning-of-line)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Smart kill/copy
+;; Smart kill
 
-(defun qe-forward-kill ()
+(defun qe-forward-kill (&optional arg)
   "Smart kill forward.
 1. If region is active, kill it
-2. Else if looking at 'tag', kill tag
-3. Else if at the beginning of a word, kill the word and trailing whitespace
-4. Else if in the middle of a word, kill the rest of the word
-5. Else if looking at whitespace, kill whitespace forward
-6. Else if looking at punctuation, kill punctuation forward
-7. Else if looking at an open bracket/brace/paren, kill sexp forward
-8. Else if looking at a quotation mark, kill quoted text
-9. Else kill next char"
-  (interactive "*")
+2. Else if at the beginning of a word, kill the word and trailing whitespace
+3. Else if in the middle of a word, kill the rest of the word
+4. Else if looking at whitespace, kill whitespace forward
+5. Else if looking at punctuation, kill punctuation forward
+6. Else if looking at an open bracket/brace/paren, kill sexp forward
+7. Else if looking at a quotation mark, kill quoted text
+8. Else kill next char
+With prefix arg, append kill."
+  (interactive "*P")
+  (when arg (append-next-kill))
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-at "</?\\s-*[a-zA-Z].*?>")
-                          (goto-char (match-end 0)))
-                         ((looking-at "\\<\\(\\sw\\|\\s_\\)")
+                   (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
                           (skip-syntax-forward "w_")
                           (skip-syntax-forward " "))
                          ((qe-looking-at-syntax "w_")
@@ -257,33 +256,34 @@ depending on the major mode (see `qe-block-indented-modes')."
                           (forward-char)))
                    (point)))))
 
-(defun qe-forward-kill-section ()
-  "Forward kill pieces of words."
-  (interactive "*")
+(defun qe-forward-kill-section (&optional arg)
+  "Forward kill pieces of words.
+With prefix arg, append kill."
+  (interactive "*P")
+  (when arg (append-next-kill))
   (kill-region (point)
                (progn
                  (qe-forward-section)
                  (skip-syntax-forward "_")
                  (point))))
 
-(defun qe-backward-kill ()
+(defun qe-backward-kill (&optional arg)
   "Smart kill backward.
 1. If region is active, kill it
-2. Else if looking at 'tag', kill tag
-3. Else if looking back at whitespace, kill backward whitespace and word
-4. Else if in the middle of a word, kill backward word
-5. Else if looking at punctuation, kill backward punctuation
-6. Else if looking at an close bracket/brace/paren, kill backward sexp
-7. Else if looking at a quotation mark, kill backward quoted text
-8. Else kill previous char"
-  (interactive "*")
+2. Else if looking back at whitespace, kill backward whitespace and word
+3. Else if in the middle of a word, kill backward word
+4. Else if looking at punctuation, kill backward punctuation
+5. Else if looking at an close bracket/brace/paren, kill backward sexp
+6. Else if looking at a quotation mark, kill backward quoted text
+7. Else kill previous char
+With prefix arg, append kill."
+  (interactive "*P")
+  (when arg (append-next-kill))
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((looking-back "</?\\s-*[a-zA-Z].*?>" (point-at-bol))
-                          (goto-char (match-beginning 0)))
-                         ((qe-looking-back-syntax " ")
+                   (cond ((qe-looking-back-syntax " ")
                           (skip-syntax-backward " ")
                           (when (qe-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
@@ -303,9 +303,11 @@ depending on the major mode (see `qe-block-indented-modes')."
                           (backward-char)))
                    (point)))))
 
-(defun qe-backward-kill-section ()
-  "Backward kill pieces of words."
-  (interactive "*")
+(defun qe-backward-kill-section (&optional arg)
+  "Backward kill pieces of words.
+With prefix arg, append kill."
+  (interactive "*P")
+  (when arg (append-next-kill))
   (kill-region (point)
                (progn
                  (skip-syntax-backward "_")
@@ -323,7 +325,7 @@ depending on the major mode (see `qe-block-indented-modes')."
         (progn
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark))
-      (let* ((seq (read-key-sequence (if arg "Delete:" "Kill:")))
+      (let* ((seq (read-key-sequence "Kill:"))
              (fcn (lookup-key qe-unit-kill-map seq)))
         (unless fcn
           (error "Unknown char entered for kill text unit"))
@@ -331,13 +333,12 @@ depending on the major mode (see `qe-block-indented-modes')."
     (when (and result
                (consp result)
                (not (= (car result) (cdr result))))
-      (if arg
-          (delete-region (car result) (cdr result))
-        (kill-region (car result) (cdr result))))))
+      (when arg (append-next-kill))
+      (kill-region (car result) (cdr result)))))
 
-(defun qe-unit-copy ()
+(defun qe-unit-copy (&optional arg)
   "TODO"
-  (interactive)
+  (interactive "P")
   (let (result (do-highlight t))
     (if (region-active-p)
         (progn
@@ -356,6 +357,7 @@ depending on the major mode (see `qe-block-indented-modes')."
                (not (= (car result) (cdr result))))
       (when (and do-highlight (not qe-isearch-end))
         (qe-highlight (car result) (cdr result) 'qe-copy-region-face))
+      (when arg (append-next-kill))
       (kill-ring-save (car result) (cdr result)))))
 
 (defvar qe-unit-common-map
