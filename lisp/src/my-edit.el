@@ -28,7 +28,7 @@ end-of-line (and it's not a empty line).  Kills region if active."
 ;;; Yank
 
 (defun my-edit-yank ()
-  "Yank and indent."
+  "Like yank, but with prefix number yank that many times."
   (interactive)
   (when (region-active-p)
     (kill-region (region-beginning) (region-end))
@@ -36,13 +36,16 @@ end-of-line (and it's not a empty line).  Kills region if active."
   (if (and current-prefix-arg (integerp current-prefix-arg))
       (dotimes (x current-prefix-arg)
         (yank))
-    (yank)
-    (when (and (not current-prefix-arg)
-               (not (member indent-line-function '(indent-relative sh-basic-indent-line)))
-               (not (member major-mode '(makefile-mode))))
-      (exchange-point-and-mark)
-      (indent-region (point) (mark 't))
-      (exchange-point-and-mark))))
+    (yank)))
+
+(defun my-edit-yank-pop ()
+  "Pops the last kill of the ring then does a yank."
+  (interactive "*")
+  (when kill-ring
+    (setq kill-ring (cdr kill-ring)))
+  (when kill-ring-yank-pointer
+    (setq kill-ring-yank-pointer kill-ring))
+  (yank))
 
 ;;; Scrolling/Paging
 

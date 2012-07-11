@@ -558,15 +558,6 @@ Prefix with C-u to fit the `next-window'."
       (kill-buffer nil)
       (delete-window))))
 
-(defun my-kill-ring-pop ()
-  "Pop the last kill off the ring."
-  (interactive)
-  (when kill-ring
-    (setq kill-ring (cdr kill-ring)))
-  (when kill-ring-yank-pointer
-    (setq kill-ring-yank-pointer kill-ring))
-  (message "Last kill popped off kill-ring."))
-
 (defun my-kill-this-buffer (arg)
   "Kill buffer and delete window if there is more than one."
   (interactive "P")
@@ -1232,8 +1223,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "C-/" 'dabbrev-expand)
-(my-keys-define "C-M-w" 'clipboard-kill-ring-save)
-(my-keys-define "C-M-y" 'clipboard-yank)
+(my-keys-define "C-M-y" 'my-edit-yank-pop)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c +" 'my-inc-num)
@@ -1256,7 +1246,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c k" 'my-kill-ring-pop)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
