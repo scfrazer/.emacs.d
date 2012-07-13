@@ -1567,7 +1567,7 @@ the user to edit."
   (let ((start (current-buffer))
         (buffer-name (format "*clearcase-config-spec-%s*" tag-name)))
     (kill-buffer (get-buffer-create buffer-name))
-    (pop-to-buffer (get-buffer-create buffer-name))
+    (switch-to-buffer (get-buffer-create buffer-name))
     (auto-save-mode auto-save-default)
     (erase-buffer)
     (insert (clearcase-ct-cleartool-cmd "catcs" "-tag" tag-name))

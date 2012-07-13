@@ -6,6 +6,8 @@
 (defun my-clearcase-setcs-current ()
   (interactive)
   (clearcase-ct-cleartool-cmd "setcs" "-current")
+  (clearcase-ct-cleartool-cmd "setcs" "-current")
+  (clearcase-ct-cleartool-cmd "setcs" "-current")
   (message "ct setcs -curr complete"))
 
 (defun my-clearcase-setview (view)
@@ -232,7 +234,76 @@ With prefix arg ask for version."
 
 (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
 (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-element-set-latest-rev)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-set-latest-release)
+
+(defun my-clearcase-cs-set-latest ()
+  "Set current line to /main/LATEST."
+  (interactive)
+  (my-clearcase-cs-fixup-line)
+  (when (looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
+    (replace-match "/main/LATEST" t t nil 2))
+  (beginning-of-line))
+
+(defun my-clearcase-cs-set-latest-release ()
+  "Set current line to latest release label."
+  (interactive)
+  (my-clearcase-cs-fixup-line)
+  (let (filename beg end output label)
+    (cond ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)/\.\.\.\\s-+\\([^ \t\n]+\\)")
+           (setq filename (match-string-no-properties 1)
+                 beg (match-beginning 2)
+                 end (match-end 2))
+           (setq output (shell-command-to-string
+                         (concat "cleartool lsh -d -last -fmt '%Nl' " filename))))
+          ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\s-+\\([^ \t\n]+\\)")
+           (setq filename (match-string-no-properties 1)
+                 beg (match-beginning 2)
+                 end (match-end 2))
+           (setq output (shell-command-to-string
+                         (concat "ct lsh -d -last -fmt '%Nl'" filename))))
+          (t
+           (error "Couldn't parse current line")))
+    (unless (string-match "^\\([^ \t\n]+\\)" output)
+      (error "Couldn't find/parse release label"))
+    (setq label (match-string-no-properties 1 output))
+    (delete-region beg end)
+    (goto-char beg)
+    (insert label)
+    (beginning-of-line)))
+
+(defun my-clearcase-cs-fixup-line ()
+  "Turn line into a proper config spec line."
+  (interactive)
+  (beginning-of-line)
+  (when (and (looking-at "^\\s-*$") (fboundp 'my-ido-insert-bookmark-dir))
+    (my-ido-insert-bookmark-dir)
+    (beginning-of-line))
+  (unless (looking-at "\\s-*\\(include\\|element\\|#\\)")
+    (delete-region (point) (progn (skip-chars-forward " \t\n") (point)))
+    (if (looking-at "/vob")
+        (progn
+          (end-of-line)
+          (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
+          (when (file-directory-p (buffer-substring (point-at-bol) (point-at-eol)))
+            (unless (equal (char-before) ?/)
+              (insert "/"))
+            (insert "..."))
+          (insert " /main/LATEST")
+          (beginning-of-line)
+          (insert "element "))
+      (if (not (looking-at "\\([A-Z_]+\\)-\\([A-Z_]+?\\)__"))
+          (error "Can't parse this line")
+        (let* ((type (downcase (match-string-no-properties 1)))
+               (name (downcase (match-string-no-properties 2)))
+               (output (shell-command-to-string
+                        (concat "grep '^pkg_dir:' /vob/sse/lib/release/" type "/" name ".urctl")))
+               dir)
+          (unless (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
+            (error "Can't figure out package dir"))
+          (setq dir (match-string-no-properties 1 output))
+          (insert "element " dir "/... "))))
+    (beginning-of-line)))
 
 (defun my-clearcase-cs-element-set-latest-rev ()
   "Update to latest version of a file/dir."
