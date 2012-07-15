@@ -241,8 +241,10 @@ With prefix arg ask for version."
   "Set current line to /main/LATEST."
   (interactive)
   (my-clearcase-cs-fixup-line)
-  (when (looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
-    (replace-match "/main/LATEST" t t nil 2))
+  (if (looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
+      (replace-match "/main/LATEST" t t nil 2)
+    (when (looking-at "\\s-*include\\s-+\\([^@]+\\)@@\\([^ \t\n]+\\)")
+      (replace-match "/main/LATEST" t t nil 2)))
   (beginning-of-line))
 
 (defun my-clearcase-cs-set-latest-release ()
@@ -253,15 +255,21 @@ With prefix arg ask for version."
     (cond ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)/\.\.\.\\s-+\\([^ \t\n]+\\)")
            (setq filename (match-string-no-properties 1)
                  beg (match-beginning 2)
-                 end (match-end 2))
-           (setq output (shell-command-to-string
+                 end (match-end 2)
+                 output (shell-command-to-string
                          (concat "cleartool lsh -d -last -fmt '%Nl' " filename))))
           ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\s-+\\([^ \t\n]+\\)")
            (setq filename (match-string-no-properties 1)
                  beg (match-beginning 2)
-                 end (match-end 2))
-           (setq output (shell-command-to-string
-                         (concat "ct lsh -d -last -fmt '%Nl'" filename))))
+                 end (match-end 2)
+                 output (shell-command-to-string
+                         (concat "cleartool lsh -d -last -fmt '%Nl'" filename))))
+          ((looking-at "\\s-*include\\s-+\\(\\([^@]+\\)@@\\([^ \t\n]+\\)\\)")
+           (setq filename (match-string-no-properties 2)
+                 beg (match-beginning 1)
+                 end (match-end 1)
+                 output (shell-command-to-string
+                         (concat "cleartool ls -short " filename))))
           (t
            (error "Couldn't parse current line")))
     (unless (string-match "^\\([^ \t\n]+\\)" output)
