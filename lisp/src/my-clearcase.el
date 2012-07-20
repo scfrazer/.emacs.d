@@ -289,43 +289,42 @@ With prefix arg ask for version."
     (beginning-of-line))
   (unless (looking-at "\\s-*\\(include\\|element\\|#\\)")
     (delete-region (point) (progn (skip-chars-forward " \t\n") (point)))
-    (if (looking-at "/vob")
-        (progn
-          (end-of-line)
-          (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
-          (when (file-directory-p (buffer-substring (point-at-bol) (point-at-eol)))
-            (unless (equal (char-before) ?/)
-              (insert "/"))
-            (insert "..."))
-          (insert " /main/LATEST")
-          (beginning-of-line)
-          (insert "element "))
-      (if (not (looking-at "\\([A-Z_]+\\)-\\([A-Z_]+?\\)__"))
-          (error "Can't parse this line")
-        (let* ((type (downcase (match-string-no-properties 1)))
-               (name (downcase (match-string-no-properties 2)))
-               (output (shell-command-to-string
-                        (concat "grep '^pkg_dir:' /vob/sse/lib/release/" type "/" name ".urctl")))
-               dir)
-          (unless (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
-            (error "Can't figure out package dir"))
-          (setq dir (match-string-no-properties 1 output))
-          (insert "element " dir "/... "))))
+    (cond
+     ;; Dir/file
+     ((looking-at "/vob")
+      (end-of-line)
+      (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
+      (when (file-directory-p (buffer-substring (point-at-bol) (point-at-eol)))
+        (unless (equal (char-before) ?/)
+          (insert "/"))
+        (insert "..."))
+      (insert " /main/LATEST")
+      (beginning-of-line)
+      (insert "element "))
+     ;; ur release label
+     ((looking-at "\\([A-Z_]+\\)-\\([A-Z_]+?\\)__")
+      (let* ((type (downcase (match-string-no-properties 1)))
+             (name (downcase (match-string-no-properties 2)))
+             (output (shell-command-to-string
+                      (concat "grep '^pkg_dir:' /vob/sse/lib/release/" type "/" name ".urctl")))
+             dir)
+        (unless (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
+          (error "Can't figure out package dir"))
+        (setq dir (match-string-no-properties 1 output))
+        (insert "element " dir "/... ")))
+     ;; Checkin comment
+     ((looking-at "\\s-*Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"")
+      (let ((filename (match-string-no-properties 1))
+            (version (match-string-no-properties 2)))
+        (delete-region (point-at-bol) (point-at-eol))
+        (insert "element")
+        (when (file-directory-p filename)
+          (insert " -directory"))
+        (insert " " filename " " version)))
+     ;; None of the above
+     (t
+      (error "Can't parse this line")))
     (beginning-of-line)))
-
-(defun my-clearcase-cs-element-set-latest-rev ()
-  "Update to latest version of a file/dir."
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (when (looking-at "\\s-*\\(include\\|element\\)\\s-+\\(.+\\)@@/.+/\\([0-9]+\\)\\s-*$")
-      (let ((filename (match-string-no-properties 2)) output new-rev)
-        (save-match-data
-          (setq output (shell-command-to-string (concat "cleartool ls -short " filename)))
-          (when (string-match ".+@@/.+/\\([0-9]+\\)\\s-*$" output)
-            (setq new-rev (match-string-no-properties 1 output))))
-        (when new-rev
-          (replace-match new-rev nil nil nil 3))))))
 
 (defvar clearcase-cs-mode-abbrev-table nil
   "*Abbrev table in use in ClearCase config spec buffers.")
