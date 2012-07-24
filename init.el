@@ -1270,6 +1270,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'kill-buffer)
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
+(my-keys-define "C-x RET" 'my-open-line-below)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
