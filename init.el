@@ -1240,6 +1240,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
+(my-keys-define "C-c _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'jump-to-prev-pos)
 (my-keys-define "C-c c" 'my-comment-region-after-copy)

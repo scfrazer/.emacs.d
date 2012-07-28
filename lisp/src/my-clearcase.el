@@ -320,12 +320,9 @@ With prefix arg ask for version."
         (cond ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
                (setq filename (match-string-no-properties 1)
                      beg (match-beginning 2)
-                     end (match-end 2))
-               (if (file-directory-p filename)
-                   (setq output (shell-command-to-string
-                                 (concat "cleartool ls -short -d " filename)))
-                 (setq output (shell-command-to-string
-                               (concat "cleartool ls -short " filename))))
+                     end (match-end 2)
+                     output (shell-command-to-string
+                             (concat "cleartool describe -fmt '%Nn' " filename "@@/main/LATEST")))
                (when (string-match ".+?@@\\(.+\\)" output)
                  (setq output (match-string-no-properties 1 output))))
               ((looking-at "\\s-*include\\s-+\\(\\([^@]+\\)@@\\([^ \t\n]+\\)\\)")
