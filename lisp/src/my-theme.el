@@ -26,6 +26,7 @@
      `(magit-diff-del ((,class (:foreground "red"))))
      `(magit-item-highlight ((,class (:background "gray25"))))
      `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
+     `(mode-line-buffer-id ((,class (:background nil :foreground "blue3" :bold nil))))
      `(my-tab-face ((,class (:background "pink4"))))
      `(my-todo-face ((,class (:box t :foreground "firebrick2" :background "yellow"))) t)
      `(org-document-title ((,class (:height 1.44 :foreground "cyan3"))))
