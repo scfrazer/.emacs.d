@@ -565,18 +565,6 @@ Prefix with C-u to fit the `next-window'."
   (when (and (not arg) (> (count-windows) 1))
     (delete-window)))
 
-(defun my-make-script-executable ()
-  "If file starts with a shebang, make it executable."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-min))
-      (when (and (looking-at "^#!")
-                 (not (file-executable-p buffer-file-name)))
-        (set-file-modes buffer-file-name
-                        (logior (file-modes buffer-file-name) #o111))
-        (message (concat "Made " buffer-file-name " executable"))))))
-
 (defun my-minibuffer-backward ()
   "Move backward words or path elements in the minibuffer."
   (interactive)
@@ -1034,7 +1022,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; Hooks
 
 (defun my-after-save-hook ()
-  (my-make-script-executable))
+  (executable-make-buffer-file-executable-if-script-p))
 
 (defun my-diff-mode-hook ()
   (define-key diff-mode-map "q" 'my-kill-this-buffer)
@@ -1235,7 +1223,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C" 'my-comment-region)
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
-(my-keys-define "C-c C-o" 'ff-get-other-file)
+(my-keys-define "C-c C-o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c G" 'rgrep)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
@@ -1275,7 +1263,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
-(my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
+;; (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x e" 'kmacro-end-or-call-macro)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
@@ -1298,7 +1286,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-;" 'comment-indent)
 (my-keys-define "M-=" 'my-count-lines)
 (my-keys-define "M-?" (lambda (&optional arg) (interactive "P") (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
-(my-keys-define "M-G" 'my-ido-imenu-goto-symbol)
+(my-keys-define "M-G" (lambda (&optional arg) (interactive "P") (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol))))
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-open-line-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
@@ -1321,33 +1309,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'previous-error)
-
-;; (my-keys-define "<C-return>" 'my-expand-yasnippet-or-abbrev)
-;; (my-keys-define "<M-return>" 'my-open-line-below)
-;; (my-keys-define "<S-backspace>" 'my-pair-delete-backward)
-;; (my-keys-define "<S-f6>" 'task-bmk-buf-prev)
-;; (my-keys-define "<S-f7>" 'task-bmk-all-prev)
-;; (my-keys-define "<S-return>" 'my-open-line-above)
-;; (my-keys-define "<f5>" 'task-bmk-toggle)
-;; (my-keys-define "<f6>" 'task-bmk-buf-next)
-;; (my-keys-define "<f7>" 'task-bmk-all-next)
-;; (my-keys-define "C-&" 'my-pop-back-ffap-kill-buffer)
-;; (my-keys-define "C-*" 'my-pop-back-ffap)
-;; (my-keys-define "C-," 'iflipb-previous-buffer)
-;; (my-keys-define "C-." 'iflipb-next-buffer)
-;; (my-keys-define "C-:" 'my-isearch-backward-dwim)
-;; (my-keys-define "C-;" 'my-isearch-forward-dwim)
-;; (my-keys-define "C-?" 'my-ffap)
-;; (my-keys-define "C-S-d" 'my-pair-delete-forward)
-;; (my-keys-define "C-S-o" 'my-other-frame)
-;; (my-keys-define "C-S-y" (lambda () (interactive) (my-edit-yank t)))
-;; (my-keys-define "C-^" 'my-pop-back-imenu)
-;; (my-keys-define "C-`" 'next-error)
-;; (my-keys-define "C-c #" 'my-convert-to-base)
-;; (my-keys-define "C-c f" 'flymake-start-syntax-check)
-;; (my-keys-define "C-~" 'previous-error)
-;; (my-keys-define "M-)" 'my-pair-close-all)
-;; (my-keys-define "M-." 'etags-select-find-tag)
 
 ;; These have to be in this order
 
@@ -1373,16 +1334,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-n" 'qe-forward-paragraph)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-u" 'my-recenter)
-;; (my-keys-define "C-<" 'qe-backward-block)
-;; (my-keys-define "C->" 'qe-forward-block)
-;; (my-keys-define "C-M-;" 'qe-backward-not-word)
-;; (my-keys-define "C-M-n" 'up-list)
-;; (my-keys-define "C-M-p" 'backward-up-list)
-;; (my-keys-define "C-S-h" 'qe-backward-word-end)
-;; (my-keys-define "C-S-l" 'qe-forward-word-end)
-;; (my-keys-define "C-S-n" 'my-edit-scroll-down)
-;; (my-keys-define "C-S-p" 'my-edit-scroll-up)
-;; (my-keys-define "M-;" 'qe-forward-not-word)
 
 ;; Kill
 
