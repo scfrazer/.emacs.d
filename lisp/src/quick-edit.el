@@ -315,7 +315,7 @@ With prefix arg, append kill."
                  (point))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Text unit kill/copy
+;;; Text unit
 
 (defun qe-unit-kill (&optional arg)
   "TODO"
@@ -360,6 +360,20 @@ With prefix arg, append kill."
       (when arg (append-next-kill))
       (kill-ring-save (car result) (cdr result)))))
 
+(defun qe-unit-move ()
+  "TODO"
+  (interactive)
+  (let* ((seq (read-key-sequence "Move:"))
+         (fcn (lookup-key qe-unit-common-map seq))
+         result)
+    (unless fcn
+      (error "Unknown char entered for move text unit"))
+    (setq result (funcall fcn))
+    (when (and result (consp result))
+      (if (member seq '("(" "[" "{" "<"))
+          (goto-char (car result))
+        (goto-char (cdr result))))))
+
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "p") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-paragraph)))
@@ -390,7 +404,6 @@ With prefix arg, append kill."
     (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
     (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
     (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
-    (define-key map (kbd "i") 'qe-unit-ends-inside)
     map)
   "Common keymap for unit kill/delete/copy.  Functions should return a cons
 cell with beginning/end of region.  Original point position need not be
@@ -401,6 +414,7 @@ preserved.")
     (define-key map (kbd "C-w") 'qe-unit-ends-line)
     (define-key map (kbd "/") (lambda () (qe-region-using-isearch t t)))
     (define-key map (kbd "?") (lambda () (qe-region-using-isearch t nil)))
+    (define-key map (kbd "i") 'qe-unit-ends-inside)
     (set-keymap-parent map qe-unit-common-map)
     map)
   "Keymap for unit kill/delete.  Parent keymap is `qe-unit-common-map', see
@@ -411,6 +425,7 @@ that variable for more information.")
     (define-key map (kbd "M-w") 'qe-unit-ends-line)
     (define-key map (kbd "/") (lambda () (qe-region-using-isearch nil t)))
     (define-key map (kbd "?") (lambda () (qe-region-using-isearch nil nil)))
+    (define-key map (kbd "i") 'qe-unit-ends-inside)
     (set-keymap-parent map qe-unit-common-map)
     map)
   "Keymap for unit copy.  Parent keymap is `qe-unit-common-map', see that

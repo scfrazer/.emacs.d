@@ -1,10 +1,10 @@
 (setq default-frame-alist
-      '((width . 100) (height . 60)))
+      '((width . 120) (height . 56)))
 
 ;; Exec this line to insert the current font as a setting:
 ;; (insert "\n(set-default-font \"" (cdr (assoc 'font (frame-parameters))) "\")")
-(set-default-font "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
-;(set-default-font "-apple-Fixed-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+; (set-default-font "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
+
 ;(set-face-attribute 'my-buffer-face-mode-face nil :family "Terminus" :height 120)
 
 (setq exec-path (append exec-path (list "/usr/local/bin"

@@ -1242,7 +1242,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
-(my-keys-define "C-f" 'my-isearch-dwim)
+(my-keys-define "C-f" 'qe-unit-move)
 (my-keys-define "C-j" 'my-expand-yasnippet-or-abbrev)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-o" 'my-bs-toggle)
