@@ -468,17 +468,20 @@ Prefix with C-u to fit the `next-window'."
         (move-to-column col)
         (setq again nil)))))
 
-(defun my-goto-line-column ()
-  "Goto line:column."
-  (interactive)
-  (let ((line-col (read-from-minibuffer "Goto (line:column): ")) line col)
-    (when (string-match "\\([0-9]+\\)?\\(:\\([0-9]+\\)\\)?" line-col)
-      (setq line (match-string 1 line-col)
-            col (match-string 3 line-col))
-      (when line
-        (goto-line (string-to-number line)))
-      (when col
-        (move-to-column (string-to-number col))))))
+(defun my-goto-line-column (&optional arg)
+  "Goto line:column.
+With a numeric prefix, goto that window line."
+  (interactive "P")
+  (if arg
+      (move-to-window-line arg)
+    (let ((line-col (read-from-minibuffer "Goto (line:column): ")) line col)
+      (when (string-match "\\([0-9]+\\)?\\(:\\([0-9]+\\)\\)?" line-col)
+        (setq line (match-string 1 line-col)
+              col (match-string 3 line-col))
+        (when line
+          (goto-line (string-to-number line)))
+        (when col
+          (move-to-column (string-to-number col)))))))
 
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
@@ -1301,10 +1304,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-q" 'my-fill)
 (my-keys-define "M-r c" (lambda () (interactive) (call-interactively 'copy-to-register) (deactivate-mark)))
-(my-keys-define "M-r i" 'string-rectangle)
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
 (my-keys-define "M-r p" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+(my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
