@@ -2,7 +2,9 @@
 
 (require 'flymake)
 
-(setq-default flymake-start-syntax-check-on-find-file nil)
+(setq-default flymake-no-changes-timeout 2.0
+              flymake-start-syntax-check-on-newline nil
+              flymake-start-syntax-check-on-find-file nil)
 
 (defun flymake-get-file-name-mode-and-masks (file-name)
   "Return the corresponding entry from `flymake-allowed-file-name-masks'."
