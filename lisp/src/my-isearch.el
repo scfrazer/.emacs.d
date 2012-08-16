@@ -99,10 +99,12 @@ or jump forward to input char."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun my-isearch-yank-sexp ()
-  "Pull next sexp from buffer into search string."
-  (interactive)
-  (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+(defun my-isearch-yank-word (&optional arg)
+  "Pull next sexp or, with C-u,  word from buffer into search string."
+  (interactive "P")
+  (if arg
+      (isearch-yank-internal (lambda () (forward-word 1) (point)))
+    (isearch-yank-internal (lambda () (forward-sexp 1) (point)))))
 
 (defun my-isearch-word ()
   "Surround current input with word/symbol delimiters and
@@ -117,7 +119,7 @@ turn on regexp matching."
 (define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
 (define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
 (define-key isearch-mode-map (kbd "S-<return>") 'isearch-exit)
-(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
+(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-word)
 (define-key isearch-mode-map (kbd "C-b") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
