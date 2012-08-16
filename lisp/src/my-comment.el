@@ -61,6 +61,8 @@
       (back-to-indentation)
       (while (looking-at (my-comment-stripped-comment-start))
         (replace-match ""))
+      (when (looking-at " ")
+        (delete-char 1))
       (when (> (length (my-comment-stripped-comment-end)) 0)
         (end-of-line)
         (while (looking-back (concat (my-comment-stripped-comment-end) "\\s-*"))
@@ -68,9 +70,7 @@
           (end-of-line))
         (when (looking-back "\\s-+")
           (replace-match "")))
-      (beginning-of-line)
-      (unless (looking-at "^\\s-*$")
-        (indent-according-to-mode)))))
+      (beginning-of-line))))
 
 ;; Toggle comment on current line
 
