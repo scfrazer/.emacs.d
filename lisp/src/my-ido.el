@@ -25,11 +25,13 @@
 (defvar my-ido-doing-bookmark-dir nil)
 (defvar my-ido-exiting-with-slash nil)
 
-(defun my-ido-bookmark-jump ()
+(defun my-ido-bookmark-jump (&optional arg)
   "Jump to bookmark using ido"
-  (interactive)
+  (interactive "P")
   (let ((dir (my-ido-get-bookmark-dir)))
     (when dir
+      (when arg
+        (setq dir (concat "/view/CPPDVTOOLS.view/" dir)))
       (setq my-dired-prev-dir (dired-current-directory))
       (find-alternate-file (if my-ido-exiting-with-slash
                                (ido-read-directory-name "Jump to dir: " dir nil t)
@@ -62,13 +64,15 @@
 
 (add-hook 'dired-mode-hook 'my-ido-dired-mode-hook)
 
-(defun my-ido-use-bookmark-dir ()
+(defun my-ido-use-bookmark-dir (&optional arg)
   "Get directory of bookmark"
-  (interactive)
+  (interactive "P")
   (let* ((enable-recursive-minibuffers t)
          (dir (my-ido-get-bookmark-dir)))
     (when dir
-      (ido-set-current-directory dir)
+      (if arg
+          (ido-set-current-directory (concat "/view/CPPDVTOOLS.view/" dir))
+        (ido-set-current-directory dir))
       (setq ido-exit 'refresh)
       (exit-minibuffer))))
 
