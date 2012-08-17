@@ -100,18 +100,19 @@ or jump forward to input char."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-isearch-yank-word (&optional arg)
-  "Pull next sexp or, with C-u,  word from buffer into search string."
+  "Pull next sexp or, with C-u, word from buffer into search string."
   (interactive "P")
   (if arg
       (isearch-yank-internal (lambda () (forward-word 1) (point)))
     (isearch-yank-internal (lambda () (forward-sexp 1) (point)))))
 
 (defun my-isearch-word ()
-  "Surround current input with word/symbol delimiters and
-turn on regexp matching."
+  "Surround current input with word/symbol delimiters and turn on regexp matching if necessary."
   (interactive)
-  (isearch-toggle-regexp)
-  (setq isearch-string (concat "\\_<" isearch-string "\\_>"))
+  (unless isearch-regexp
+    (isearch-toggle-regexp))
+  (setq isearch-string (concat "\\_<" isearch-string "\\_>")
+        isearch-message (mapconcat 'isearch-text-char-description isearch-string ""))
   (isearch-search-and-update))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -730,6 +730,11 @@ with a prefix argument, prompt for START-AT and FORMAT."
                (read-string "Format string: " "%d")))
      (list (region-beginning) (region-end) 0 "%d")))
   (delete-extract-rectangle (region-beginning) (region-end))
+  (setq end (point))
+  (when (< end start)
+    (let ((tmp start))
+      (setq start end
+            end tmp)))
   (let ((rectangle-number-line-counter start-at))
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
@@ -1231,7 +1236,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
-(my-keys-define "C-c b" 'jump-to-prev-pos)
 (my-keys-define "C-c c" 'my-comment-region-after-copy)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
@@ -1266,7 +1270,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
-;; (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x e" 'kmacro-end-or-call-macro)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
@@ -1297,6 +1300,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'etags-stack-show)
 (my-keys-define "M-`" 'next-error)
+(my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-g" 'my-goto-line-column)
@@ -1312,6 +1316,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'previous-error)
+;; (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 
 ;; These have to be in this order
 
