@@ -317,19 +317,29 @@ With prefix arg, append kill."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit
 
+(defvar qe-unit-prev-key nil)
+(defvar qe-unit-prev-to-char nil)
+
 (defun qe-unit-kill (&optional arg)
   "TODO"
   (interactive "*P")
   (let (result)
     (if (region-active-p)
         (progn
-          (setq result (cons (region-beginning) (region-end)))
+          (setq result (cons (region-beginning) (region-end))
+                qe-unit-prev-key nil)
           (deactivate-mark))
-      (let* ((seq (read-key-sequence "Kill:"))
-             (fcn (lookup-key qe-unit-kill-map seq)))
-        (unless fcn
-          (error "Unknown char entered for kill text unit"))
-        (setq result (funcall fcn))))
+      (let ((seq (read-key-sequence "Kill:")) fcn)
+        (if (and (equal seq (kbd "C-w"))
+                 (equal real-last-command 'qe-unit-kill)
+                 (member qe-unit-prev-key '("t" "T" "s" "S")))
+            (setq fcn (lookup-key qe-unit-kill-map qe-unit-prev-key)
+                  result (funcall fcn qe-unit-prev-to-char))
+          (setq fcn (lookup-key qe-unit-kill-map seq))
+          (unless fcn
+            (error "Unknown key entered for kill text unit"))
+          (setq result (funcall fcn)
+                qe-unit-prev-key seq))))
     (when (and result
                (consp result)
                (not (= (car result) (cdr result))))
@@ -348,7 +358,7 @@ With prefix arg, append kill."
       (let* ((seq (read-key-sequence "Copy:"))
              (fcn (lookup-key qe-unit-copy-map seq)))
         (unless fcn
-          (error "Unknown char entered for copy text unit"))
+          (error "Unknown key entered for copy text unit"))
         (setq qe-isearch-end nil)
         (save-excursion
           (setq result (funcall fcn)))))
@@ -363,12 +373,19 @@ With prefix arg, append kill."
 (defun qe-unit-move ()
   "TODO"
   (interactive)
-  (let* ((seq (read-key-sequence "Move:"))
-         (fcn (lookup-key qe-unit-common-map seq))
-         result)
-    (unless fcn
-      (error "Unknown char entered for move text unit"))
-    (setq result (funcall fcn))
+  (let ((cmd-keys (this-command-keys))
+        (seq (read-key-sequence "Move:"))
+        fcn result)
+    (if (and (equal seq cmd-keys)
+             (equal real-last-command 'qe-unit-move)
+             (member qe-unit-prev-key '("t" "T" "s" "S")))
+        (setq fcn (lookup-key qe-unit-common-map qe-unit-prev-key)
+              result (funcall fcn qe-unit-prev-to-char))
+      (setq fcn (lookup-key qe-unit-common-map seq))
+      (unless fcn
+        (error "Unknown key entered for move text unit"))
+      (setq result (funcall fcn)
+            qe-unit-prev-key seq))
     (when (and result (consp result))
       (if (member seq '("(" "[" "{" "<"))
           (goto-char (car result))
@@ -471,49 +488,49 @@ variable for more information.")
       (forward-sexp -1)
       (cons beg (point)))))
 
-(defun qe-unit-ends-forward-to-char ()
+(defun qe-unit-ends-forward-to-char (&optional char)
   "Text unit ends for forward to some char."
-  (message "To char:")
-  (let ((case-fold-search nil)
-        (char (read-char)))
-    (cons (point)
-          (progn
-            (forward-char)
-            (search-forward (char-to-string char))
-            (backward-char)
-            (point)))))
+  (let ((case-fold-search nil))
+    (unless char
+      (message "To char:")
+      (setq char (read-char)
+            qe-unit-prev-to-char char))
+    (cons (point) (progn (forward-char)
+                         (search-forward (char-to-string char))
+                         (backward-char)
+                         (point)))))
 
-(defun qe-unit-ends-backward-to-char ()
+(defun qe-unit-ends-backward-to-char (&optional char)
   "Text unit ends for backward over some char."
-  (message "Backward to char:")
-  (let ((case-fold-search nil)
-        (char (read-char)))
-    (cons (point)
-          (progn
-            (search-backward (char-to-string char))
-            (point)))))
+  (let ((case-fold-search nil))
+    (unless char
+      (message "Backward to char:")
+      (setq char (read-char)
+            qe-unit-prev-to-char char))
+    (cons (point) (progn (search-backward (char-to-string char))
+                         (point)))))
 
-(defun qe-unit-ends-forward-starts-char ()
+(defun qe-unit-ends-forward-starts-char (&optional char)
   "Text unit ends for forward to word starting with char."
-  (message "To word starting with char:")
-  (let ((case-fold-search nil)
-        (char (read-char)))
-    (cons (point)
-          (progn
-            (forward-char)
-            (re-search-forward (format "\\_<%c" char))
-            (backward-char)
-            (point)))))
+  (let ((case-fold-search nil))
+    (unless char
+      (message "To word starting with char:")
+      (setq char (read-char)
+            qe-unit-prev-to-char char))
+    (cons (point) (progn (forward-char)
+                         (re-search-forward (format "\\_<%c" char))
+                         (backward-char)
+                         (point)))))
 
-(defun qe-unit-ends-backward-starts-char ()
+(defun qe-unit-ends-backward-starts-char (&optional char)
   "Text unit ends for backward over word starting with char."
-  (message "Backward to word starting with char:")
-  (let ((case-fold-search nil)
-        (char (read-char)))
-    (cons (point)
-          (progn
-            (re-search-backward (format "\\_<%c" char))
-            (point)))))
+  (let ((case-fold-search nil))
+    (unless char
+      (message "Backward to word starting with char:")
+      (setq char (read-char)
+            qe-unit-prev-to-char char))
+    (cons (point) (progn (re-search-backward (format "\\_<%c" char))
+                         (point)))))
 
 (defun qe-unit-ends-mark ()
   "Text unit ends for mark."
