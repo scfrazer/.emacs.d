@@ -1490,6 +1490,13 @@ Does not set point.  Does nothing if mark ring is empty."
     (when (setq elm (rassq handler file-name-handler-alist))
       (setq file-name-handler-alist (delq elm file-name-handler-alist)))))
 
+;; Terminal server in a Clearcase view
+
+(when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
+  (require 'server)
+  (setq-default server-name clearcase-setview-viewtag)
+  (server-start))
+
 ;; Command frequency
 
 ;; (require 'command-frequency)
