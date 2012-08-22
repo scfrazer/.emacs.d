@@ -508,6 +508,7 @@ variable for more information.")
       (setq char (read-char)
             qe-unit-prev-to-char char))
     (cons (point) (progn (search-backward (char-to-string char))
+                         (forward-char)
                          (point)))))
 
 (defun qe-unit-ends-forward-starts-char (&optional char)
