@@ -13,8 +13,18 @@
   "Visible tab chars."
   :group 'faces)
 
+(defface my-debug-face
+  '((t (:foreground "black" :background "darkorange2")))
+  "todo/fixme highlighting."
+  :group 'faces)
+
 (defface my-todo-face
-  '((t (:foreground "firebrick2" :background "yellow")))
+  '((t (:foreground "black" :background "yellow2")))
+  "todo/fixme highlighting."
+  :group 'faces)
+
+(defface my-fixme-face
+  '((t (:foreground "white" :background "red3")))
   "todo/fixme highlighting."
   :group 'faces)
 
@@ -74,7 +84,9 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
 (defun my-font-lock-mode-hook ()
   (when (or (and comment-start font-lock-keywords (not (eq major-mode 'org-mode)))
             (eq major-mode 'dired-mode))
-    (font-lock-add-keywords nil (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\|DEBUG\\)\\>" (list '(1 'my-todo-face t)))) 'add-to-end)
+    (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
+    (font-lock-add-keywords nil (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\)\\>" (list '(1 'my-todo-face t)))) 'add-to-end)
+    (font-lock-add-keywords nil (list (cons "\\<\\([Ff][Ii][Xx][Mm][Ee]\\)\\>" (list '(1 'my-fixme-face t)))) 'add-to-end)
     (when show-trailing-whitespace
       (my-font-lock-add-whitespace))))
 
