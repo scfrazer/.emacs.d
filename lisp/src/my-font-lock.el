@@ -24,7 +24,7 @@
   :group 'faces)
 
 (defface my-fixme-face
-  '((t (:foreground "white" :background "red3")))
+  '((t (:foreground "#ffffff" :background "red3")))
   "todo/fixme highlighting."
   :group 'faces)
 

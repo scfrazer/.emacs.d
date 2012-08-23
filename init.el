@@ -1380,6 +1380,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (setq etags-table-alist
       (list
        '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/auto/antares_user/scfrazer/tags/sv/TAGS")
+       '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/antares_user/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
        '("/vob/sse/asic/luke/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
