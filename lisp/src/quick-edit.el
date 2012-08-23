@@ -409,7 +409,6 @@ With prefix arg, append kill."
     (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
     (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
-    (define-key map (kbd "<return>") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
     (define-key map (kbd "SPC") 'qe-unit-ends-mark)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
