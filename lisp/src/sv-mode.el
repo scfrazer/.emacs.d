@@ -58,6 +58,9 @@
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
 
+;; TODO In imenu parsing, 'rand' in a variable name messes things up
+;; TODO In imenu parsing, put the parent class if one exists
+
 ;;; Code:
 
 (require 'custom)
