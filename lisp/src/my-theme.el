@@ -20,6 +20,7 @@
      `(ediff-fine-diff-B ((,class (:background "dodgerblue2" :foreground "white"))))
      `(ediff-odd-diff-A ((,class (:background "Grey25"))))
      `(ediff-odd-diff-B ((,class (:background "Grey25"))))
+     `(header-line ((,class (:foreground "cyan2" :background "gray30"))))
      `(highlight-changes ((,class (:background "SteelBlue4" :foreground "white"))))
      `(highlight-changes-delete ((,class (:background "firebrick"))))
      `(magit-diff-add ((,class (:foreground "SeaGreen2"))))
