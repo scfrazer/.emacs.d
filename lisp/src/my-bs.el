@@ -110,6 +110,10 @@
     (recenter 4)
     (other-window -1)))
 
+(defadvice bs--redisplay (after my-bs-advice activate)
+  "Turn on hl-line-mode."
+  (hl-line-mode 1))
+
 ;; Done
 
 (provide 'my-bs)

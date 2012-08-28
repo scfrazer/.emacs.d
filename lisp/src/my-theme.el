@@ -23,6 +23,7 @@
      `(header-line ((,class (:foreground "cyan2" :background "gray30"))))
      `(highlight-changes ((,class (:background "SteelBlue4" :foreground "white"))))
      `(highlight-changes-delete ((,class (:background "firebrick"))))
+     `(hl-line ((,class (:background "#183245"))))
      `(magit-diff-add ((,class (:foreground "SeaGreen2"))))
      `(magit-diff-del ((,class (:foreground "red"))))
      `(magit-item-highlight ((,class (:background "gray25"))))
