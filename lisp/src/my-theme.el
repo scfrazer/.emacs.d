@@ -54,6 +54,7 @@
     (set-face-background 'isearch "color-166")
     (set-face-foreground 'isearch-lazy-highlight-face "color-253")
     (set-face-background 'isearch-lazy-highlight-face "color-23")
+    (set-face-background 'hl-line "color-17")
     (dolist (face (list
                    'diff-indicator-added
                    'diff-indicator-changed
