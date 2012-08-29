@@ -3,6 +3,11 @@
 (require 'clearcase)
 (require 'cc-status)
 
+(defun clearcase-fprop-viewtag (file)
+  "For FILE, return its \"viewtag\" ClearCase property."
+  (or (aref (clearcase-fprop-get-properties file) 10)
+      clearcase-setview-viewtag))
+
 (defun my-clearcase-setcs-current ()
   (interactive)
   (clearcase-ct-cleartool-cmd "setcs" "-current")
@@ -15,19 +20,12 @@
   (clearcase-ct-cleartool-cmd "setview" view)
   (message "ct setview complete"))
 
-(defun clearcase-fprop-viewtag (file)
-  "For FILE, return its \"viewtag\" ClearCase property."
-  (or (aref (clearcase-fprop-get-properties file) 10)
-      clearcase-setview-viewtag))
-
-(defun my-clearcase-list-hist-or-co (&optional arg)
-  "List the history or (with prefix arg) checkouts of the current file."
-  (interactive "P")
-  (if arg
-      (my-clearcase-list-checkouts)
-    (if (equal major-mode 'dired-mode)
-        (clearcase-list-history-dired-file)
-      (clearcase-list-history-current-buffer))))
+(defun my-clearcase-list-hist (&optional arg)
+  "List the history of the current file."
+  (interactive)
+  (if (equal major-mode 'dired-mode)
+      (clearcase-list-history-dired-file)
+    (clearcase-list-history-current-buffer)))
 
 (defun my-clearcase-list-checkouts ()
   "List the checkouts of FILE.
@@ -45,7 +43,10 @@ on the directory element itself is listed, not on its contents."
        (list file)
        (function
         (lambda (file)
-          (clearcase-ct-do-cleartool-command "lsco" file 'unused (list "-long" (if (eq mtype 'directory-version) "-d" ""))))))
+          (clearcase-ct-do-cleartool-command "lsco" file 'unused (list (if (eq mtype 'directory-version) "-d" "")
+                                                                       "-areplicas"
+                                                                       "-fmt"
+                                                                       "\"%Sd %u %e %n %f (%Rf %Mf) %[checkout_replica]p\\n\"")))))
       (message "Listing checkouts...done"))))
 
 (defun my-clearcase-lsprivate ()
@@ -109,17 +110,6 @@ on the directory element itself is listed, not on its contents."
             (revert-buffer nil t))))
       (dired-relist-file file))))
 
-(defun my-clearcase-backup-set-mode ()
-  "Set the mode of backup ClearCase files to the mode of the original."
-  (interactive)
-  (let ((backup-regexp "\\.keep\\(\\.[0-9]+\\)?$") mode)
-    (when (and (buffer-file-name) (string-match backup-regexp (buffer-file-name)))
-      (let ((name (replace-regexp-in-string backup-regexp "" (buffer-file-name))))
-        (setq mode (let ((case-fold-search t))
-                     (assoc-default name auto-mode-alist 'string-match)))
-        (when mode
-          (set-auto-mode-0 mode))))))
-
 (defun my-clearcase-ediff-current (&optional arg)
   "Do ediff of current buffer/dired-file against latest.
 With prefix arg ask for version."
@@ -146,46 +136,56 @@ With prefix arg ask for version."
          'clearcase-gui-diff-named-version-current-buffer
        'clearcase-gui-diff-pred-current-buffer))))
 
+(defun my-clearcase-backup-set-mode ()
+  "Set the mode of backup ClearCase files to the mode of the original."
+  (interactive)
+  (let ((backup-regexp "\\.keep\\(\\.[0-9]+\\)?$") mode)
+    (when (and (buffer-file-name) (string-match backup-regexp (buffer-file-name)))
+      (let ((name (replace-regexp-in-string backup-regexp "" (buffer-file-name))))
+        (setq mode (let ((case-fold-search t))
+                     (assoc-default name auto-mode-alist 'string-match)))
+        (when mode
+          (set-auto-mode-0 mode))))))
+
 (add-hook 'find-file-hook 'my-clearcase-backup-set-mode)
 
 (setq clearcase-suppress-checkout-comments t)
 (setq clearcase-diff-gui-tool "tkdiff")
 (setq clearcase-use-normal-diff t)
 
-(define-key clearcase-mode-map (kbd "C-v") clearcase-prefix-map)
-(define-key clearcase-dired-mode-map (kbd "C-v") clearcase-dired-prefix-map)
-
-(define-key clearcase-prefix-map "a" 'clearcase-mkelem-current-buffer)
-(define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
-(define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
+(define-key clearcase-prefix-map "+" 'my-clearcase-gui-diff-current)
+(define-key clearcase-prefix-map "=" 'my-clearcase-ediff-current)
 (define-key clearcase-prefix-map "O" 'clearcase-checkout-current-buffer)
-(define-key clearcase-prefix-map "l" 'my-clearcase-list-hist-or-co)
+(define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
+(define-key clearcase-prefix-map "a" 'clearcase-mkelem-current-buffer)
+(define-key clearcase-prefix-map "c" 'my-clearcase-list-checkouts)
+(define-key clearcase-prefix-map "h" 'my-clearcase-list-hist)
+(define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
 (define-key clearcase-prefix-map "n" 'my-clearcase-unreserve)
+(define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
 (define-key clearcase-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "s" 'my-clearcase-setcs-current)
 (define-key clearcase-prefix-map "t" 'cc-status-tree)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
-(define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
 (define-key clearcase-prefix-map "v" 'my-clearcase-setview)
-(define-key clearcase-prefix-map "=" 'my-clearcase-ediff-current)
-(define-key clearcase-prefix-map (kbd "C-=") 'my-clearcase-gui-diff-current)
 
-(define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
-(define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
-(define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
+(define-key clearcase-dired-prefix-map "+" 'my-clearcase-gui-diff-current)
+(define-key clearcase-dired-prefix-map "=" 'my-clearcase-ediff-current)
 (define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-dired-files)
-(define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-hist-or-co)
+(define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
+(define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
+(define-key clearcase-dired-prefix-map "c" 'my-clearcase-list-checkouts)
+(define-key clearcase-dired-prefix-map "h" 'my-clearcase-list-hist)
+(define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
 (define-key clearcase-dired-prefix-map "n" 'my-clearcase-unreserve)
+(define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
 (define-key clearcase-dired-prefix-map "p" 'my-clearcase-lsprivate)
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "s" 'my-clearcase-setcs-current)
 (define-key clearcase-dired-prefix-map "t" 'cc-status-tree)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
-(define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
 (define-key clearcase-dired-prefix-map "v" 'my-clearcase-setview)
-(define-key clearcase-dired-prefix-map "=" 'my-clearcase-ediff-current)
-(define-key clearcase-dired-prefix-map (kbd "C-=") 'my-clearcase-gui-diff-current)
 
 (define-key clearcase-comment-mode-map (kbd "C-x C-s") 'clearcase-comment-finish)
 (define-key clearcase-comment-mode-map (kbd "C-x C-w") 'clearcase-comment-save)
@@ -193,50 +193,14 @@ With prefix arg ask for version."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edcs mode
 
-(defvar clearcase-edcs-mode-syntax-table
-  (let ((table (copy-syntax-table text-mode-syntax-table)))
-
-    (modify-syntax-entry ?\{ "(}" table)
-    (modify-syntax-entry ?\} "){" table)
-    (modify-syntax-entry ?\( "()" table)
-    (modify-syntax-entry ?\) ")(" table)
-    (modify-syntax-entry ?\[ "(]" table)
-    (modify-syntax-entry ?\] ")[" table)
-
-    (modify-syntax-entry ?\- "." table)
-    (modify-syntax-entry ?\* "." table)
-    (modify-syntax-entry ?\/ "." table)
-    (modify-syntax-entry ?\. "." table)
-
-    (modify-syntax-entry ?\\ "\\" table)
-    (modify-syntax-entry ?\'  "\"" table)
-    (modify-syntax-entry ?\_  "w" table)
-
-    (modify-syntax-entry ?# "<" table)
-    (modify-syntax-entry ?\n ">" table)
-
-    table)
-  "Syntax table for `clearcase-edcs-mode'.")
-
-; (concat "\\<" (regexp-opt '("include" "element") t) "\\>")
-; (concat "\\<" (regexp-opt '("CHECKEDOUT" "LATEST" "INLINE" "DISCARD") t) "\\>")
-
-(defvar clearcase-edcs-mode-font-lock-keywords
-  '(
-    ("^\\s-*\\<\\(element\\|include\\)\\>"
-     (1 font-lock-keyword-face))
-    ("\\<\\(CHECKEDOUT\\|DISCARD\\|INLINE\\|LATEST\\)\\>"
-     (1 font-lock-builtin-face))
-    )
-  "Keyword highlighting specification for `clearcase-edcs-mode'.")
-
-(make-variable-buffer-local 'clearcase-parent-buffer)
-
-(define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
-(define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-set-latest-release)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-n") 'my-clearcase-cs-set-latest-number)
+;; Todo
+;; Go to end of line after any of these
+;; On a blank line, insert element ido-dir/... latest
+;; On a line with dir/file insert element X(/...)? latest
+;; On a line with DIR-PKG__whatever__ insert all dirs with that release
+;; On a line with dir-pkg, insert all dirs with last release (C-u = latest)
+;; On a line with dir-pkg:num, insert all dirs with num release
+;; On a line with include foo@num, update to latest version num
 
 (defun my-clearcase-cs-set-latest ()
   "Set current line to /main/LATEST."
@@ -373,6 +337,10 @@ With prefix arg ask for version."
              dir)
         (unless (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
           (error "Can't figure out package dir"))
+; (let ((result (shell-command-to-string
+;                (concat "grep '^pkg_dir:' /vob/sse/lib/release/shared/common.urctl"))))
+;   (setq result (replace-regexp-in-string "\\s-*pkg_dir:\\s-*" "element " result))
+;   (replace-regexp-in-string "\\s-*$" "/... /main/LATEST" result))
         (setq dir (match-string-no-properties 1 output))
         (insert "element " dir "/... ")))
      ;; Checkin comment
@@ -389,6 +357,56 @@ With prefix arg ask for version."
       (error "Can't parse this line")))
     (beginning-of-line)))
 
+;; Syntax table
+
+(defvar clearcase-edcs-mode-syntax-table
+  (let ((table (copy-syntax-table text-mode-syntax-table)))
+
+    (modify-syntax-entry ?\{ "(}" table)
+    (modify-syntax-entry ?\} "){" table)
+    (modify-syntax-entry ?\( "()" table)
+    (modify-syntax-entry ?\) ")(" table)
+    (modify-syntax-entry ?\[ "(]" table)
+    (modify-syntax-entry ?\] ")[" table)
+
+    (modify-syntax-entry ?\- "." table)
+    (modify-syntax-entry ?\* "." table)
+    (modify-syntax-entry ?\/ "." table)
+    (modify-syntax-entry ?\. "." table)
+
+    (modify-syntax-entry ?\\ "\\" table)
+    (modify-syntax-entry ?\'  "\"" table)
+    (modify-syntax-entry ?\_  "w" table)
+
+    (modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+
+    table)
+  "Syntax table for `clearcase-edcs-mode'.")
+
+;; Font lock
+
+(defvar clearcase-edcs-mode-font-lock-keywords
+  '(
+    ("^\\s-*\\<\\(element\\|include\\)\\>"
+     (1 font-lock-keyword-face))
+    ("@@"
+     (0 font-lock-reference-face))
+    ("\\<\\(CHECKEDOUT\\|LATEST\\)\\>"
+     (1 font-lock-builtin-face))
+    )
+  "Keyword highlighting specification for `clearcase-edcs-mode'.")
+
+(make-variable-buffer-local 'clearcase-parent-buffer)
+
+(define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
+(define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-set-latest-release)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-n") 'my-clearcase-cs-set-latest-number)
+
+;; Abbrevs
+
 (defvar clearcase-cs-mode-abbrev-table nil
   "*Abbrev table in use in ClearCase config spec buffers.")
 
@@ -397,6 +415,8 @@ With prefix arg ask for version."
 (define-abbrev clearcase-cs-mode-abbrev-table
   "lat"
   "/main/LATEST")
+
+;; Modes
 
 (defun clearcase-edcs-mode ()
   (interactive)
@@ -442,5 +462,10 @@ With prefix arg ask for version."
 
 (add-to-list 'auto-mode-alist '("\\.cs$" . clearcase-cs-mode))
 (add-to-list 'auto-mode-alist '("\\.template$" . clearcase-cs-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Leave this in here to not break existing users
+(define-key clearcase-mode-map (kbd "C-v") clearcase-prefix-map)
+(define-key clearcase-dired-mode-map (kbd "C-v") clearcase-dired-prefix-map)
 
 (provide 'my-clearcase)
