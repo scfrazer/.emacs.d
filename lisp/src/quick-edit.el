@@ -387,9 +387,15 @@ With prefix arg, append kill."
       (setq result (funcall fcn)
             qe-unit-prev-key seq))
     (when (and result (consp result))
-      (if (member seq '("(" "[" "{" "<"))
-          (goto-char (car result))
-        (goto-char (cdr result))))))
+      (cond ((member seq '("(" "[" "{" "<"))
+             (goto-char (car result)))
+            ((or (equal seq "T")
+                 (and (equal seq cmd-keys)
+                      (equal real-last-command 'qe-unit-move)
+                      (equal qe-unit-prev-key "T")))
+             (goto-char (1- (cdr result))))
+            (t
+             (goto-char (cdr result)))))))
 
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
