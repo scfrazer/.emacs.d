@@ -58,9 +58,6 @@
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
 
-;; TODO In imenu parsing, 'rand' in a variable name messes things up
-;; TODO In imenu parsing, put the parent class if one exists
-
 ;;; Code:
 
 (require 'custom)
@@ -1792,13 +1789,16 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
                     (not (looking-at "typedef"))))
           (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
           (let* ((name (match-string-no-properties 1))
+                 (loc (match-beginning 1))
                  (parse-sub-type (cond ((string= item-type "class") 'class)
                                        ((string= item-type "module") 'module)
                                        (t nil)))
                  sub-list sub-limit
                  (depth 1)
                  (regexp (concat "\\_<\\(" item-type "\\|end" item-type "\\)\\_>")))
-            (push (cons item-type (match-beginning 1)) sub-list)
+            (if (looking-at "\\s-+extends\\s-+\\([a-zA-Z0-9_:]+\\)")
+                (push (cons (concat item-type " <" (match-string-no-properties 1) ">") loc) sub-list)
+              (push (cons item-type loc) sub-list))
             (save-excursion
               (catch 'done
                 (while (sv-mode-re-search-forward regexp limit 'go)
@@ -1876,10 +1876,10 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
                        (setq item-type (replace-regexp-in-string
                                         "[\t\n]+" " "
                                         (buffer-substring-no-properties (point) name-pos))))
-                     (dolist (qualifier (list "static" "local" "protected" "rand"))
+                     (dolist (qualifier (list "\\_<static\\_>" "\\_<local\\_>" "\\_<protected\\_>" "\\_<rand\\_>"))
                        (when (string-match qualifier item-type)
                          (setq item-type (replace-regexp-in-string qualifier "" item-type)
-                               qualifiers (concat qualifiers (substring qualifier 0 1)))))
+                               qualifiers (concat qualifiers (substring qualifier 3 4)))))
                      (unless (string= qualifiers "")
                        (setq qualifiers (concat " [" qualifiers "]")))
                      (setq item (cons (concat item-name " : "
