@@ -17,6 +17,56 @@
 (defun my-python-mode-hook ()
   (flymake-mode 1))
 
+(defun python-imenu-create-index ()
+  "Fix declaration item and reverse function calls."
+  (unless (boundp 'python-recursing)	; dynamically bound below
+    ;; Normal call from Imenu.
+    (goto-char (point-min))
+    ;; Without this, we can get an infloop if the buffer isn't all
+    ;; fontified.  I guess this is really a bug in syntax.el.  OTOH,
+    ;; _with_ this, imenu doesn't immediately work; I can't figure out
+    ;; what's going on, but it must be something to do with timers in
+    ;; font-lock.
+    ;; This can't be right, especially not when jit-lock is not used.  --Stef
+    ;; (unless (get-text-property (1- (point-max)) 'fontified)
+    ;;   (font-lock-fontify-region (point-min) (point-max)))
+    )
+  (let (index-alist)			; accumulated value to return
+    (while (re-search-forward
+	    (rx line-start (0+ space)	; leading space
+		(or (group "def") (group "class"))	   ; type
+		(1+ space) (group (1+ (or word ?_))))	   ; name
+	    nil t)
+      (unless (python-in-string/comment)
+	(let ((pos (match-beginning 0))
+	      (name (match-string-no-properties 3)))
+	  (if (match-beginning 2)	; def or class?
+	      (setq name (concat "class " name)))
+	  (save-restriction
+	    (narrow-to-defun)
+	    (let* ((python-recursing t)
+		   (sublist (python-imenu-create-index)))
+	      (if sublist
+		  (progn (push (cons "<Declaration>" pos) sublist)
+			 (push (cons name (nreverse sublist)) index-alist))
+		(push (cons name pos) index-alist)))))))
+    (unless (boundp 'python-recursing)
+      ;; Look for module variables.
+      (let (vars)
+	(goto-char (point-min))
+	(while (re-search-forward
+		(rx line-start (group (1+ (or word ?_))) (0+ space) "=")
+		nil t)
+	  (unless (python-in-string/comment)
+	    (push (cons (match-string 1) (match-beginning 1))
+		  vars)))
+	(setq index-alist (nreverse index-alist))
+	(if vars
+	    (push (cons "Module variables"
+			vars);;(nreverse vars))
+		  index-alist))))
+    index-alist))
+
 (define-abbrev python-mode-abbrev-table
   "sup"
   "super"
