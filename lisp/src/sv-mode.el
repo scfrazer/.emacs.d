@@ -435,43 +435,33 @@ Otherwise indent them as usual."
            (cons "^\\s-*\\(\\(typedef\\|virtual\\)\\s-+\\)*\\(class\\|struct\\|enum\\|module\\|interface\\)\\s-+\\([a-zA-Z0-9_]+\\)"
                  '(4 font-lock-type-face))
            (cons "\\_<extends\\s-+\\([a-zA-Z0-9_:]+\\)"
-                 '(1 font-lock-type-face))
-           ;; Encrypted code
-           '(sv-mode-fontify-encrypted-as-comment (0 'font-lock-comment-face t))))
+                 '(1 font-lock-type-face))))
   "Gaudy level highlighting for sv-mode.")
 
-(defun sv-mode-in-encrypted ()
-  "Return point if in encrypted code, else nil."
-  (let ((pos (point)) result)
-    (skip-syntax-backward "w")
-    (unless (and (equal (char-before) ?`)
+;; Fontify encrypted code regions via syntax properties
+
+(defun sv-mode-syntax-propertize-extend-region (start end)
+  "If START and/or END is in the middle of encrypted delimiters, move that edge outside."
+  (let (new-start new-end)
+    (save-excursion
+      (goto-char start)
+      (skip-syntax-backward "w")
+      (when (and (equal (char-before) ?`)
+                 (looking-at "protected"))
+        (setq new-start (1- (point))))
+      (goto-char end)
+      (skip-syntax-backward "w")
+      (when (and (equal (char-before) ?`)
                  (looking-at "endprotected"))
-      (goto-char pos)
-      (when (and (re-search-backward "^\\s-*`\\(end\\)?protected" nil t)
-                 (not (match-beginning 1)))
-        (setq result pos)))
-    (goto-char pos)
-    result))
+        (setq new-end (1+ (match-end 0))))
+      (when (or new-start new-end)
+        (cons (or new-start start)
+              (or new-end end))))))
 
-(defun sv-mode-start-encrypted (limit)
-  "Return point before next encrypted code block if before LIMIT, else nil."
-  (when (re-search-forward "^\\s-*\\(`protected\\)" limit t)
-    (match-end 1)))
-
-(defun sv-mode-end-encrypted (limit)
-  "Return point before end of encrypted code block if before LIMIT, else nil."
-  (when (re-search-forward "^\\s-*\\(`endprotected\\)" limit t)
-    (match-beginning 1)))
-
-(defun sv-mode-fontify-encrypted-as-comment (limit)
-  "Fontify encrypted code as comments."
-  (when (< (point) limit)
-    (let ((start (or (sv-mode-in-encrypted)
-                     (sv-mode-start-encrypted limit))))
-      (when start
-        (let ((end (or (sv-mode-end-encrypted limit) limit)))
-          (set-match-data (list start end))
-          (goto-char end))))))
+(defun sv-mode-syntax-propertize-function (start end)
+  "In encrypted code blocks, set the first/last char syntax properties to comment-start/end."
+  ;; Todo
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Substitutions
@@ -481,16 +471,14 @@ Otherwise indent them as usual."
 string, or nil if neither."
   (let ((pps (syntax-ppss)))
     (catch 'return
-      (when (or (nth 4 pps)
-                (sv-mode-in-encrypted))
+      (when (nth 4 pps)
         (throw 'return 'comment))
       (when (nth 3 pps)
         (throw 'return 'string)))))
 
 (defsubst sv-mode-in-comment ()
   "Return non-nil if inside a comment."
-  (or (nth 4 (syntax-ppss))
-      (sv-mode-in-encrypted)))
+  (nth 4 (syntax-ppss)))
 
 (defsubst sv-mode-re-search-forward (REGEXP &optional BOUND NOERROR)
   "Like `re-search-forward', but skips over comments and strings.
