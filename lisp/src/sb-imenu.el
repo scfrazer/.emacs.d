@@ -29,7 +29,10 @@
       (setq tags (copy-alist imenu--index-alist)))
     (insert buf-name ":\n\n")
     (when tags
-      (sb-imenu-populate tags 0))))
+      (when (string= (caar tags) "*Rescan*")
+        (setq tags (cdr tags)))
+      (when tags
+        (sb-imenu-populate tags 0)))))
 
 (defun sb-imenu-populate (tags level)
   "Populate speedbar from imenu tags."

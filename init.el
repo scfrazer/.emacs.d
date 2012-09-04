@@ -216,6 +216,7 @@
               shift-select-mode nil
               show-paren-delay 0
               speedbar-initial-expansion-list-name "sb-imenu"
+              speedbar-use-images nil
               split-width-threshold nil
               tags-revert-without-query t
               tempo-interactive t
