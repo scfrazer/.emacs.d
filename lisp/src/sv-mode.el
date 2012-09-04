@@ -58,6 +58,8 @@
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
 
+;; Todo Make `protected through `endprotected be considered comments
+
 ;;; Code:
 
 (require 'custom)
@@ -433,8 +435,43 @@ Otherwise indent them as usual."
            (cons "^\\s-*\\(\\(typedef\\|virtual\\)\\s-+\\)*\\(class\\|struct\\|enum\\|module\\|interface\\)\\s-+\\([a-zA-Z0-9_]+\\)"
                  '(4 font-lock-type-face))
            (cons "\\_<extends\\s-+\\([a-zA-Z0-9_:]+\\)"
-                 '(1 font-lock-type-face))))
+                 '(1 font-lock-type-face))
+           ;; Encrypted code
+           '(sv-mode-fontify-encrypted-as-comment (0 'font-lock-comment-face t))))
   "Gaudy level highlighting for sv-mode.")
+
+(defun sv-mode-in-encrypted ()
+  "Return point if in encrypted code, else nil."
+  (let ((pos (point)) result)
+    (skip-syntax-backward "w")
+    (unless (and (equal (char-before) ?`)
+                 (looking-at "endprotected"))
+      (goto-char pos)
+      (when (and (re-search-backward "^\\s-*`\\(end\\)?protected" nil t)
+                 (not (match-beginning 1)))
+        (setq result pos)))
+    (goto-char pos)
+    result))
+
+(defun sv-mode-start-encrypted (limit)
+  "Return point before next encrypted code block if before LIMIT, else nil."
+  (when (re-search-forward "^\\s-*\\(`protected\\)" limit t)
+    (match-end 1)))
+
+(defun sv-mode-end-encrypted (limit)
+  "Return point before end of encrypted code block if before LIMIT, else nil."
+  (when (re-search-forward "^\\s-*\\(`endprotected\\)" limit t)
+    (match-beginning 1)))
+
+(defun sv-mode-fontify-encrypted-as-comment (limit)
+  "Fontify encrypted code as comments."
+  (when (< (point) limit)
+    (let ((start (or (sv-mode-in-encrypted)
+                     (sv-mode-start-encrypted limit))))
+      (when start
+        (let ((end (or (sv-mode-end-encrypted limit) limit)))
+          (set-match-data (list start end))
+          (goto-char end))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Substitutions
@@ -444,14 +481,16 @@ Otherwise indent them as usual."
 string, or nil if neither."
   (let ((pps (syntax-ppss)))
     (catch 'return
-      (when (nth 4 pps)
+      (when (or (nth 4 pps)
+                (sv-mode-in-encrypted))
         (throw 'return 'comment))
       (when (nth 3 pps)
         (throw 'return 'string)))))
 
 (defsubst sv-mode-in-comment ()
   "Return non-nil if inside a comment."
-  (nth 4 (syntax-ppss)))
+  (or (nth 4 (syntax-ppss))
+      (sv-mode-in-encrypted)))
 
 (defsubst sv-mode-re-search-forward (REGEXP &optional BOUND NOERROR)
   "Like `re-search-forward', but skips over comments and strings.
@@ -1721,7 +1760,7 @@ tasks and functions, etc.")
           (setq item (cons (concat item-name " <" item-type ">") (match-beginning 2)))
         (backward-char)
         (forward-sexp)
-        (re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)" nil t)
+        (sv-mode-re-search-forward "[ \t\n]*\\([a-zA-Z0-9_]+\\)" nil t)
         (setq item (cons (concat (match-string-no-properties 1) " <" item-type ">") (match-beginning 1))))
       (unless (string-match sv-mode-keywords item-type)
         (push item item-alist)))
@@ -1769,12 +1808,12 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
           (setq sv-mode-imenu-parse-ifdef-names (cdr sv-mode-imenu-parse-ifdef-names))))
        ;; Includes
        ((string= item-type "`include")
-        (when (re-search-forward "\".+\"" (line-end-position) 'go)
+        (when (sv-mode-re-search-forward "\".+\"" (line-end-position) 'go)
           (push (cons (concat (match-string-no-properties 0) " : " item-type)
                       (point-at-bol)) item-alist)))
        ;; Defines
        ((string= item-type "`define")
-        (re-search-forward "\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) 'go)
+        (sv-mode-re-search-forward "\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) 'go)
         (push (cons (concat (match-string-no-properties 1) " : " item-type)
                     (match-beginning 1)) item-alist)
         (while (and (looking-at ".*\\\\\\s-*$") (not (eobp)))
@@ -1813,11 +1852,11 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
        ;; User types
        ((member item-type (list "struct" "enum"))
         (unless (looking-at "\\s-*{")
-          (search-forward "{" nil t)
+          (sv-mode-re-search-forward "{" nil t)
           (backward-char))
         (when (looking-at "\\s-*{")
           (forward-sexp)
-          (when (re-search-forward "\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
+          (when (sv-mode-re-search-forward "\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
             (push (cons (concat (match-string-no-properties 1) " : " item-type)
                         (match-beginning 1)) item-alist)
             (sv-mode-re-search-forward ";" nil 'go))))
