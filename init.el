@@ -1237,6 +1237,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
+(my-keys-define "C-c b" 'buffer-face-mode)
 (my-keys-define "C-c c" 'my-comment-region-after-copy)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
@@ -1439,7 +1440,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
-(defalias 'bf 'buffer-face-mode)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'diff-b 'ediff-buffers)
