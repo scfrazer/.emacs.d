@@ -329,13 +329,17 @@ With prefix arg, append kill."
           (setq result (cons (region-beginning) (region-end))
                 qe-unit-prev-key nil)
           (deactivate-mark))
-      (let ((seq (read-key-sequence "Kill:")) fcn)
-        (if (and (equal seq (kbd "C-w"))
+      (let ((cmd-keys (this-command-keys))
+            (seq (read-key-sequence "Kill:"))
+            fcn)
+        (if (and (equal seq cmd-keys)
                  (equal real-last-command 'qe-unit-kill)
                  (member qe-unit-prev-key '("t" "T" "s" "S")))
-            (setq fcn (lookup-key qe-unit-kill-map qe-unit-prev-key)
+            (setq fcn (lookup-key qe-unit-common-map qe-unit-prev-key)
                   result (funcall fcn qe-unit-prev-to-char))
-          (setq fcn (lookup-key qe-unit-kill-map seq))
+          (if (equal seq cmd-keys)
+              (setq fcn 'qe-unit-ends-line)
+            (setq fcn (lookup-key qe-unit-common-map seq)))
           (unless fcn
             (error "Unknown key entered for kill text unit"))
           (setq result (funcall fcn)
@@ -355,17 +359,20 @@ With prefix arg, append kill."
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark)
           (setq do-highlight nil))
-      (let* ((seq (read-key-sequence "Copy:"))
-             (fcn (lookup-key qe-unit-copy-map seq)))
+      (let ((cmd-keys (this-command-keys))
+            (seq (read-key-sequence "Copy:"))
+            fcn)
+          (if (equal seq cmd-keys)
+              (setq fcn 'qe-unit-ends-line)
+            (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
           (error "Unknown key entered for copy text unit"))
-        (setq qe-isearch-end nil)
         (save-excursion
           (setq result (funcall fcn)))))
     (when (and result
                (consp result)
                (not (= (car result) (cdr result))))
-      (when (and do-highlight (not qe-isearch-end))
+      (when do-highlight
         (qe-highlight (car result) (cdr result) 'qe-copy-region-face))
       (when arg (append-next-kill))
       (kill-ring-save (car result) (cdr result)))))
@@ -397,6 +404,8 @@ With prefix arg, append kill."
             (t
              (goto-char (cdr result)))))))
 
+;; FIXME TAB whitespace
+
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "p") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-paragraph)))
@@ -405,6 +414,8 @@ With prefix arg, append kill."
     (define-key map (kbd "B") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-block)))
     (define-key map (kbd "w") 'qe-unit-ends-forward-word)
     (define-key map (kbd "W") 'qe-unit-ends-backward-word)
+    (define-key map (kbd "_") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-section)))
+    (define-key map (kbd "-") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-section)))
     (define-key map (kbd "m") 'qe-unit-ends-forward-matching)
     (define-key map (kbd "M") 'qe-unit-ends-backward-matching)
     (define-key map (kbd "t") 'qe-unit-ends-forward-to-char)
@@ -416,6 +427,7 @@ With prefix arg, append kill."
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
     (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
     (define-key map (kbd "SPC") 'qe-unit-ends-mark)
+    (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
     (define-key map (kbd ")") (lambda () (qe-region-inside-pair ?\) 'forward)))
@@ -426,32 +438,11 @@ With prefix arg, append kill."
     (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
     (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
     (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
+    (define-key map (kbd "i") 'qe-unit-ends-inside)
     map)
-  "Common keymap for unit kill/delete/copy.  Functions should return a cons
+  "Common keymap for unit kill/copy/move.  Functions should return a cons
 cell with beginning/end of region.  Original point position need not be
 preserved.")
-
-(defvar qe-unit-kill-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-w") 'qe-unit-ends-line)
-    (define-key map (kbd "/") (lambda () (qe-region-using-isearch t t)))
-    (define-key map (kbd "?") (lambda () (qe-region-using-isearch t nil)))
-    (define-key map (kbd "i") 'qe-unit-ends-inside)
-    (set-keymap-parent map qe-unit-common-map)
-    map)
-  "Keymap for unit kill/delete.  Parent keymap is `qe-unit-common-map', see
-that variable for more information.")
-
-(defvar qe-unit-copy-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "M-w") 'qe-unit-ends-line)
-    (define-key map (kbd "/") (lambda () (qe-region-using-isearch nil t)))
-    (define-key map (kbd "?") (lambda () (qe-region-using-isearch nil nil)))
-    (define-key map (kbd "i") 'qe-unit-ends-inside)
-    (set-keymap-parent map qe-unit-common-map)
-    map)
-  "Keymap for unit copy.  Parent keymap is `qe-unit-common-map', see that
-variable for more information.")
 
 (defun qe-unit-ends-point-to-fcn (fcn)
   "Wrap single function call getting end points."
@@ -541,6 +532,10 @@ variable for more information.")
 (defun qe-unit-ends-mark ()
   "Text unit ends for mark."
   (cons (point) (progn (goto-char (or (mark) (point))) (point))))
+
+(defun qe-unit-ends-forward-whitespace ()
+  "Text unit ends for forward whitespace."
+  (cons (point) (progn (skip-syntax-forward " ") (point))))
 
 (defun qe-unit-ends-inside ()
   "Text unit ends for inside quotes/parens."
@@ -666,43 +661,6 @@ variable for more information.")
           (backward-char))
         (setq end (point))))
     (cons beg end)))
-
-(defvar qe-isearch-start nil)
-(defvar qe-isearch-end nil)
-(defvar qe-isearch-overlay nil)
-(defvar qe-isearch-face nil)
-(defvar qe-isearch-forward nil)
-
-(defun qe-region-using-isearch (kill forward)
-  "Get region from point to somewhere else using isearch."
-  (let ((result (cons (point) (point))))
-    (unwind-protect
-        (save-excursion
-          (setq qe-isearch-start (point))
-          (setq qe-isearch-face (if kill
-                                    'qe-kill-region-face
-                                  'qe-copy-region-face))
-          (setq qe-isearch-forward forward)
-          (when (if forward (isearch-forward) (isearch-backward))
-            (setq result (cons qe-isearch-start qe-isearch-end)))))
-    (setq qe-isearch-start nil)
-    (when qe-isearch-overlay
-      (delete-overlay qe-isearch-overlay))
-    result))
-
-(defadvice isearch-highlight (after qe-isearch-add-overlay activate)
-  (when qe-isearch-start
-    (if qe-isearch-forward
-        (setq qe-isearch-end (ad-get-arg 0))
-      (setq qe-isearch-end (ad-get-arg 1)))
-    (if qe-isearch-overlay
-        (move-overlay qe-isearch-overlay qe-isearch-start qe-isearch-end (current-buffer))
-      (setq qe-isearch-overlay (make-overlay qe-isearch-start qe-isearch-end)))
-    (overlay-put qe-isearch-overlay 'face qe-isearch-face)))
-
-(defadvice isearch-dehighlight (after qe-isearch-remove-overlay activate)
-  (when qe-isearch-overlay
-    (delete-overlay qe-isearch-overlay)))
 
 (defun qe-highlight (beg end &optional face)
   "Highlight a region temporarily."
