@@ -237,8 +237,6 @@
   (setq truncate-lines t)
   (setq imenu-generic-expression (list '(nil "Starting phase: \\(.+\\)" 1)))
 
-  (buffer-face-mode 1)
-
   (run-mode-hooks 'uvm-log-mode-hook))
 
 (provide 'uvm-log-mode)
