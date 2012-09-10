@@ -460,8 +460,14 @@ Otherwise indent them as usual."
 
 (defun sv-mode-syntax-propertize-function (start end)
   "In encrypted code blocks, set the first/last char syntax properties to comment-start/end."
-  ;; Todo
-  )
+  (let ((comment-start 11)
+        (comment-end 12))
+    (save-excursion
+      (goto-char start)
+      (while (re-search-forward "^\\s-*\\(`\\(end\\)?protected\\)" end t)
+        (if (match-beginning 2)
+            (add-text-properties (1- (match-beginning 1)) (match-beginning 1) `(syntax-table ,(cons 12 nil)))
+          (add-text-properties (match-end 1) (1+ (match-end 1)) `(syntax-table ,(cons 11 nil))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Substitutions
@@ -2163,6 +2169,8 @@ Key Bindings:
   (use-local-map sv-mode-map)
 
   (set-syntax-table sv-mode-syntax-table)
+  (add-hook 'syntax-propertize-extend-region-functions 'sv-mode-syntax-propertize-extend-region)
+  (setq syntax-propertize-function 'sv-mode-syntax-propertize-function)
 
   (setq local-abbrev-table sv-mode-abbrev-table)
 
