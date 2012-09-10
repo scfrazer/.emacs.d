@@ -1149,6 +1149,10 @@ Does not set point.  Does nothing if mark ring is empty."
        (modify-syntax-entry ?= ". 14" makefile-mode-syntax-table))
      (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)))
 
+(eval-after-load "quick-edit"
+  '(progn
+    (define-key qe-unit-common-map (kbd "k") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))))
+
 (eval-after-load "speedbar"
   '(progn
      (speedbar-add-supported-extension ".e")
@@ -1214,6 +1218,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "C-/" 'dabbrev-expand)
 (my-keys-define "C-M-h" 'backward-sexp)
+(my-keys-define "C-M-k" 'my-edit-kill-line)
 (my-keys-define "C-M-l" 'forward-sexp)
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
@@ -1257,6 +1262,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-k" 'qe-unit-kill)
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
@@ -1330,6 +1336,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-u" 'my-recenter)
+(my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'previous-error)
 

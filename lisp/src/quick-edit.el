@@ -329,7 +329,7 @@ With prefix arg, append kill."
           (setq result (cons (region-beginning) (region-end))
                 qe-unit-prev-key nil)
           (deactivate-mark))
-      (let ((cmd-keys (this-command-keys))
+      (let ((cmd-keys (substring (this-command-keys) -1))
             (seq (read-key-sequence "Kill:"))
             fcn)
         (if (and (equal seq cmd-keys)
@@ -359,7 +359,7 @@ With prefix arg, append kill."
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark)
           (setq do-highlight nil))
-      (let ((cmd-keys (this-command-keys))
+      (let ((cmd-keys (substring (this-command-keys) -1))
             (seq (read-key-sequence "Copy:"))
             fcn)
           (if (equal seq cmd-keys)
@@ -403,8 +403,6 @@ With prefix arg, append kill."
              (goto-char (1- (cdr result))))
             (t
              (goto-char (cdr result)))))))
-
-;; FIXME TAB whitespace
 
 (defvar qe-unit-common-map
   (let ((map (make-sparse-keymap)))
