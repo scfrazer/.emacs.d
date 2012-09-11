@@ -6,12 +6,15 @@
   "Like kill-line, but use `my-edit-join-line-with-next' when at
 end-of-line (and it's not a empty line).  Kills region if active."
   (interactive "P")
+  (when (and arg (listp arg))
+    (append-next-kill)
+    (setq arg nil))
   (if (region-active-p)
       (kill-region (region-beginning) (region-end))
     (if (or arg (not (eolp)) (bolp))
         (cond ((null arg)
                (kill-line))
-              ((= arg 0)
+              ((and (numberp arg) (= arg 0))
                (kill-region (point) (progn (back-to-indentation) (point))))
               (t
                (kill-line arg)))
