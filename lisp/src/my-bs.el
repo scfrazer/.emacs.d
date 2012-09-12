@@ -96,18 +96,15 @@
   (unless arg
     (other-window 1)
     (my-bs-toggle)
-    (recenter 4)
     (other-window -1)))
 
 (defun my-bs-split-window-horizontally (&optional arg)
   "Split window horizontally, switch to other window and previous buffer."
   (interactive "P")
   (split-window-horizontally)
-  (recenter)
   (unless arg
     (other-window 1)
     (my-bs-toggle)
-    (recenter 4)
     (other-window -1)))
 
 (defadvice bs-show (after my-bs-advice activate)
