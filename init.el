@@ -124,6 +124,8 @@
 (blink-cursor-mode 1)
 (set-scroll-bar-mode nil)
 (winner-mode 1)
+(when (eq emacs-major-version 24)
+  (electric-pair-mode 1))
 
 (setq-default backup-inhibited t
               blink-matching-paren-distance nil
