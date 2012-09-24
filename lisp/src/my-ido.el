@@ -24,6 +24,7 @@
 
 (defvar my-ido-doing-bookmark-dir nil)
 (defvar my-ido-exiting-with-slash nil)
+(defvar my-ido-env-vars-as-bookmarks (list "RESULTSDIR"))
 
 (defun my-ido-bookmark-jump (&optional arg)
   "Jump to bookmark using ido"
@@ -40,15 +41,19 @@
 (defun my-ido-get-bookmark-dir ()
   "Get the directory of a bookmark."
   (let* ((my-ido-doing-bookmark-dir t)
-         (name (ido-completing-read "Use dir of bookmark: " (bookmark-all-names) nil t))
-         (bmk (bookmark-get-bookmark name)))
-    (when bmk
-      (setq bookmark-alist (delete bmk bookmark-alist))
-      (push bmk bookmark-alist)
-      (let ((filename (bookmark-get-filename bmk)))
-        (if (file-directory-p filename)
-            filename
-          (file-name-directory filename))))))
+         (bmk-list (bookmark-all-names))
+         (name (ido-completing-read "Use dir of bookmark: " (append bmk-list my-ido-env-vars-as-bookmarks) nil t))
+         bmk)
+    (if (not (member name bmk-list))
+        (getenv name)
+      (setq bmk (bookmark-get-bookmark name))
+      (when bmk
+        (setq bookmark-alist (delete bmk bookmark-alist))
+        (push bmk bookmark-alist)
+        (let ((filename (bookmark-get-filename bmk)))
+          (if (file-directory-p filename)
+              filename
+            (file-name-directory filename)))))))
 
 (defun my-ido-insert-bookmark-dir ()
   "Insert the directory of a bookmark."

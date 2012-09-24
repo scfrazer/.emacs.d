@@ -60,8 +60,8 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-face
-  '((((class color) (background dark)) (:foreground "red" :background "yellow"))
-    (((class color) (background light)) (:foreground "red" :background "yellow")))
+  '((((class color) (background dark)) (:foreground "black" :background "darkorange2"))
+    (((class color) (background light)) (:foreground "black" :background "darkorange2")))
   "Font Lock mode face used to highlight debug markers."
   :group 'uvm-log-mode)
 
@@ -95,11 +95,6 @@
 
 (defvar uvm-log-mode-font-lock-keywords
   '(
-;;     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(DEBUG-[^ ]+\\)\\s-+\\([^ \n]+\\)\\(.*\\)"
-;;      (1 'uvm-log-mode-timestamp-face)
-;;      (2 'uvm-log-mode-debug-face)
-;;      (3 'uvm-log-mode-debug-msg-face)
-;;      (4 'uvm-log-mode-msg-face))
     ("\\*\\{80\\}"
      (0 'uvm-log-mode-phase-face))
     ("\\(\\*\\* Starting phase:\\)\\s-+\\([a-zA-Z0-9_]+\\)"
@@ -115,6 +110,11 @@
 ;;      (2 'uvm-log-mode-warning-face)
 ;;      (3 'uvm-log-mode-path-face)
 ;;      (4 'uvm-log-mode-msg-face))
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(DEBUG-[a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(.*\\)"
+     (1 'uvm-log-mode-timestamp-face)
+     (2 'uvm-log-mode-debug-face)
+     (3 'uvm-log-mode-path-face)
+     (4 'uvm-log-mode-debug-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Added upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)

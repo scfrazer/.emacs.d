@@ -5819,6 +5819,7 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
   ;;
   (assert (not (eq major-mode 'dired-mode)))
 
+  ;; scfrazer -- This is suspicious
   (setq deactivate-mark t)
   ;; Revert buffer, try to keep point and mark where user expects them in spite
   ;; of changes because of expanded version-control key words.  This is quite
