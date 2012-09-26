@@ -104,10 +104,11 @@ where) decimal point (would be) is."
   (unless num3-mode (num3-mode t)))
 
 (defconst -num3-number-re
-  (concat    "\\(?:0[xX]\\|'h\\)\\([0-9a-fA-F]+\\)" ; 1 hexadecimal
-             "\\|\\(?:0[bB]\\|'b\\)\\([01]+\\)"     ; 2 binary
-             "\\|\\([0-9]+\\)"                      ; 3 decimal
-             "\\|\\.\\([0-9]+\\)"))                 ; 4 fraction
+  (concat "\\(?:0[xX]\\|'h\\)\\([0-9a-fA-F]+\\)" ; 1 hexadecimal
+          "\\|\\(?:0[bB]\\|'b\\)\\([01]+\\)"     ; 2 binary
+          "\\|\\_<\\([0-9]+\\)\\_>"              ; 3 decimal
+          "\\|\\.\\([0-9]+\\)"                   ; 4 fraction
+          ))
 
 (defun -num3-matcher (lim)
   "Function used as a font-lock-keywoard handler used in `num3-mode'.
