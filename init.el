@@ -44,6 +44,7 @@
 (require 'midnight)
 (require 'mode-fn)
 (require 'narrow-nested)
+(require 'num3)
 (require 'quick-edit)
 (require 'rect)
 (require 'redo+)
@@ -126,6 +127,7 @@
 (winner-mode 1)
 (when (eq emacs-major-version 24)
   (electric-pair-mode 1))
+(global-num3-mode 1)
 
 (setq-default backup-inhibited t
               blink-matching-paren-distance nil

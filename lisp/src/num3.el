@@ -55,7 +55,7 @@ font-lock is on."
   :group 'num3)
 
 (defface num3-face-even
-  '((t :background "gray30"))
+  '((t :underline t))
   "Face to add for even groups of digits.
 The default face uses redundant signaling, because this is in
 addition to any other font-lock highlighting."
@@ -74,7 +74,7 @@ groups of digits when font-lock mode is on.
 If a number is longer than `num3-threshold', the mode will split
 it into a group of `num3-group-size' (if number is decimal) or
 4 (if number is hexadecimal) digits.  Hexadecimal number is
-detected as one starting with 0x, 0X or #.
+detected as one starting with 0x, 0X or 'h.
 
 With decimal numbers, fractions are recognised as well and
 grouped from the beginning rathar then from end.  For instance,
@@ -87,7 +87,7 @@ The groups are highlighted alternately using `num3-face-odd' and
 default) is the one used for the group closest to the decimal point,
 ie. groups are counted starting with one outwards from the (place
 where) decimal point (would be) is."
-  nil " num3" nil
+  nil "" nil
   (if num3-mode
       (unless (assoc '-num3-matcher font-lock-keywords)
         (font-lock-add-keywords nil '(-num3-matcher) 'append))
@@ -104,9 +104,10 @@ where) decimal point (would be) is."
   (unless num3-mode (num3-mode t)))
 
 (defconst -num3-number-re
-  (concat    "\\(?:0[xX]\\|#\\)\\([0-9a-fA-F]+\\)"  ; 1 hexadecimal
-             "\\|\\([0-9]+\\)"                      ; 2 decimal
-             "\\|\\.\\([0-9]+\\)"))                 ; 3 fraction
+  (concat    "\\(?:0[xX]\\|'h\\)\\([0-9a-fA-F]+\\)" ; 1 hexadecimal
+             "\\|\\(?:0[bB]\\|'b\\)\\([01]+\\)"     ; 2 binary
+             "\\|\\([0-9]+\\)"                      ; 3 decimal
+             "\\|\\.\\([0-9]+\\)"))                 ; 4 fraction
 
 (defun -num3-matcher (lim)
   "Function used as a font-lock-keywoard handler used in `num3-mode'.
@@ -114,8 +115,9 @@ Performs fontification of numbers from point to LIM."
   (save-excursion
     (while (re-search-forward -num3-number-re lim t)
       (-num3-int  (match-beginning 1) (match-end 1) 4)
-      (-num3-int  (match-beginning 2) (match-end 2) num3-group-size)
-      (-num3-frac (match-beginning 3) (match-end 3) num3-group-size)))
+      (-num3-int  (match-beginning 2) (match-end 2) 4)
+      (-num3-int  (match-beginning 3) (match-end 3) num3-group-size)
+      (-num3-frac (match-beginning 4) (match-end 4) num3-group-size)))
   nil)
 
 (defun -num3-int (lo hi n)
