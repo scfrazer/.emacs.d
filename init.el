@@ -1312,7 +1312,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
 (my-keys-define "M-[" 'my-backward-paragraph-rect)
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
-(my-keys-define "M-^" 'etags-stack-show)
+(my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-rotate-case)
