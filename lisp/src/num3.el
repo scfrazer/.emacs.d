@@ -46,7 +46,7 @@ font-lock is on."
 (defcustom num3-group-size 3
   "Number of digits to group in decimal numbers.")
 
-(defcustom num3-threshold 3
+(defcustom num3-threshold 5
   "Number must be at least that long to start highlighting.")
 
 (defface num3-face-odd
@@ -55,7 +55,7 @@ font-lock is on."
   :group 'num3)
 
 (defface num3-face-even
-  '((t :underline t))
+  '((t :background "gray35" :foreground "gray90" :underline t))
   "Face to add for even groups of digits.
 The default face uses redundant signaling, because this is in
 addition to any other font-lock highlighting."
@@ -111,7 +111,7 @@ where) decimal point (would be) is."
           ))
 
 (defun -num3-matcher (lim)
-  "Function used as a font-lock-keywoard handler used in `num3-mode'.
+  "Function used as a font-lock-keyword handler used in `num3-mode'.
 Performs fontification of numbers from point to LIM."
   (save-excursion
     (while (re-search-forward -num3-number-re lim t)
