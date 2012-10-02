@@ -126,8 +126,7 @@
 (winner-mode 1)
 (when (eq emacs-major-version 24)
   (electric-pair-mode 1)
-  (require 'num3)
-  (global-num3-mode 1))
+  (require 'num3))
 
 (setq-default backup-inhibited t
               blink-matching-paren-distance nil
@@ -528,14 +527,20 @@ With a numeric prefix, goto that window line."
   (save-excursion
     (indent-region (point-min) (point-max))))
 
-(defun my-insert-comment-line ()
-  "Insert an 80-column comment line"
+(defun my-insert-line-comment ()
+  "Insert a comment at the end of the line, or if on a blank line
+inset an 80-column comment line"
   (interactive)
-  (let (char)
-    (insert comment-start)
+  (if (save-excursion (beginning-of-line) (looking-at "\\s-*$"))
+      (let (char)
+        (insert comment-start)
+        (delete-horizontal-space)
+        (setq char (char-before))
+        (insert-char char (- 80 (- (point) (point-at-bol)))))
+    (end-of-line)
+    (insert "  " comment-start)
     (delete-horizontal-space)
-    (setq char (char-before))
-    (insert-char char (- 80 (- (point) (point-at-bol))))))
+    (insert" ")))
 
 (defun my-ll-debug-insert (&optional arg)
   "Swap default style of ll-debug-insert."
@@ -1231,7 +1236,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
-(my-keys-define "C-c ;" 'my-insert-comment-line)
+(my-keys-define "C-c ;" 'my-insert-line-comment)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region)
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)

@@ -117,13 +117,12 @@ or jump forward to input char."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-key isearch-mode-map (kbd "<return>") 'my-isearch-exit-other-end)
-(define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
-(define-key isearch-mode-map (kbd "S-<return>") 'isearch-exit)
-(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-word)
-(define-key isearch-mode-map (kbd "C-b") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
+(define-key isearch-mode-map (kbd "C-g") 'isearch-cancel)
+(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-word)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+(define-key isearch-mode-map (kbd "DEL") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "M-w") 'my-isearch-word)
+(define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
 
 (provide 'my-isearch)

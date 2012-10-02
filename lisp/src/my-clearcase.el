@@ -193,169 +193,47 @@ With prefix arg ask for version."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edcs mode
 
-;; Todo
-;; Go to end of line after any of these
-;; On a blank line, insert element ido-dir/... latest
-;; On a line with dir/file insert element X(/...)? latest
-;; On a line with DIR-PKG__whatever__ insert all dirs with that release
-;; On a line with dir-pkg, insert all dirs with last release (C-u = latest)
-;; On a line with dir-pkg:num, insert all dirs with num release
-;; On a line with include foo@num, update to latest version num
-
-(defun my-clearcase-cs-set-latest ()
-  "Set current line to /main/LATEST."
+(defun my-clearcase-cs-set-latest-dwim ()
   (interactive)
-  (let ((num-lines 1))
-    (when (region-active-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (goto-char beg)
-        (setq num-lines (- (line-number-at-pos end) (line-number-at-pos))
-              mark-active nil)))
-    (dotimes (line-num num-lines)
-      (my-clearcase-cs-fixup-line)
-      (if (looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
-          (replace-match "/main/LATEST" t t nil 2)
-        (when (looking-at "\\s-*include\\s-+\\([^@]+\\)@@\\([^ \t\n]+\\)")
-          (replace-match "/main/LATEST" t t nil 2)))
-      (beginning-of-line)
-      (when (> num-lines 1)
-        (forward-line)))))
-
-(defun my-clearcase-cs-set-latest-release ()
-  "Set current line to latest release label."
-  (interactive)
-  (let ((num-lines 1))
-    (when (region-active-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (goto-char beg)
-        (setq num-lines (- (line-number-at-pos end) (line-number-at-pos))
-              mark-active nil)))
-    (dotimes (line-num num-lines)
-      (my-clearcase-cs-fixup-line)
-      (let (filename beg end output label)
-        (cond ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)/\.\.\.\\s-+\\([^ \t\n]+\\)")
-               (setq filename (match-string-no-properties 1)
-                     beg (match-beginning 2)
-                     end (match-end 2)
-                     output (shell-command-to-string
-                             (concat "cleartool lsh -d -last -fmt '%Nl' " filename))))
-              ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
-               (setq filename (match-string-no-properties 1)
-                     beg (match-beginning 2)
-                     end (match-end 2))
-               (if (file-directory-p filename)
-                   (setq output (shell-command-to-string
-                                 (concat "cleartool lsh -d -last -fmt '%Nl' " filename)))
-                 (setq output (shell-command-to-string
-                               (concat "cleartool lsh -last -fmt '%Nl' " filename)))))
-              ((looking-at "\\s-*include\\s-+\\(\\([^@]+\\)@@\\([^ \t\n]+\\)\\)")
-               (setq filename (match-string-no-properties 2)
-                     beg (match-beginning 1)
-                     end (match-end 1)
-                     output (shell-command-to-string
-                             (concat "cleartool ls -short " filename))))
-              (t
-               (error "Couldn't parse current line")))
-        (unless (string-match "^\\([^ \t\n]+\\)" output)
-          (error "Couldn't find/parse release label"))
-        (setq label (match-string-no-properties 1 output))
-        (delete-region beg end)
-        (goto-char beg)
-        (insert label)
-        (beginning-of-line))
-      (when (> num-lines 1)
-        (forward-line)))))
-
-(defun my-clearcase-cs-set-latest-number ()
-  "Set current line to latest revision number."
-  (interactive)
-  (let ((num-lines 1))
-    (when (region-active-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (goto-char beg)
-        (setq num-lines (- (line-number-at-pos end) (line-number-at-pos))
-              mark-active nil)))
-    (dotimes (line-num num-lines)
-      (my-clearcase-cs-fixup-line)
-      (let (filename beg end output label)
-        (cond ((looking-at "\\s-*element\\s-+\\([^ \t\n]+\\)\\s-+\\([^ \t\n]+\\)")
-               (setq filename (match-string-no-properties 1)
-                     beg (match-beginning 2)
-                     end (match-end 2)
-                     output (shell-command-to-string
-                             (concat "cleartool describe -fmt '%Nn' " filename "@@/main/LATEST")))
-               (when (string-match ".+?@@\\(.+\\)" output)
-                 (setq output (match-string-no-properties 1 output))))
-              ((looking-at "\\s-*include\\s-+\\(\\([^@]+\\)@@\\([^ \t\n]+\\)\\)")
-               (setq filename (match-string-no-properties 2)
-                     beg (match-beginning 1)
-                     end (match-end 1)
-                     output (shell-command-to-string
-                             (concat "cleartool ls -short " filename))))
-              (t
-               (error "Couldn't parse current line")))
-        (unless (string-match "^\\([^ \t\n]+\\)" output)
-          (error "Couldn't find/parse release number"))
-        (setq label (match-string-no-properties 1 output))
-        (delete-region beg end)
-        (goto-char beg)
-        (insert label)
-        (beginning-of-line))
-      (when (> num-lines 1)
-        (forward-line)))))
-
-(defun my-clearcase-cs-fixup-line ()
-  "Turn line into a proper config spec line."
-  (interactive)
-  (beginning-of-line)
-  (when (and (looking-at "^\\s-*$") (fboundp 'my-ido-insert-bookmark-dir))
-    (my-ido-insert-bookmark-dir)
-    (beginning-of-line))
-  (unless (looking-at "\\s-*\\(include\\|element\\|#\\)")
-    (delete-region (point) (progn (skip-chars-forward " \t\n") (point)))
-    (cond
-     ;; Dir/file
-     ((looking-at "/vob")
-      (end-of-line)
-      (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
-      (when (file-directory-p (buffer-substring (point-at-bol) (point-at-eol)))
-        (unless (equal (char-before) ?/)
-          (insert "/"))
-        (insert "..."))
-      (insert " /main/LATEST")
-      (beginning-of-line)
-      (insert "element "))
-     ;; ur release label
-     ((looking-at "\\([A-Z_]+\\)-\\([A-Z_]+?\\)__")
-      (let* ((type (downcase (match-string-no-properties 1)))
-             (name (downcase (match-string-no-properties 2)))
-             (output (shell-command-to-string
-                      (concat "grep '^pkg_dir:' /vob/sse/lib/release/" type "/" name ".urctl")))
-             dir)
-        (unless (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
-          (error "Can't figure out package dir"))
-; (let ((result (shell-command-to-string
-;                (concat "grep '^pkg_dir:' /vob/sse/lib/release/shared/common.urctl"))))
-;   (setq result (replace-regexp-in-string "\\s-*pkg_dir:\\s-*" "element " result))
-;   (replace-regexp-in-string "\\s-*$" "/... /main/LATEST" result))
-        (setq dir (match-string-no-properties 1 output))
-        (insert "element " dir "/... ")))
-     ;; Checkin comment
-     ((looking-at "\\s-*Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"")
-      (let ((filename (match-string-no-properties 1))
-            (version (match-string-no-properties 2)))
-        (delete-region (point-at-bol) (point-at-eol))
-        (insert "element")
-        (when (file-directory-p filename)
-          (insert " -directory"))
-        (insert " " filename " " version)))
-     ;; None of the above
-     (t
-      (error "Can't parse this line")))
-    (beginning-of-line)))
+  (let ((orig-pos (point)))
+    (beginning-of-line)
+    (cond ((and (looking-at "\\s-*$") (fboundp 'my-ido-insert-bookmark-dir))
+           (delete-region (point-at-bol) (point-at-eol))
+           (my-ido-insert-bookmark-dir)
+           (beginning-of-line)
+           (insert "element ")
+           (end-of-line)
+           (insert "... /main/LATEST"))
+          ((looking-at (concat "\\s-*\\([A-Z0-9_]+\\)-\\([A-Z0-9_]+\\)__.+__\\([0-9]+\\)"
+                               "\\|\\s-*\\([a-z0-9_]+\\)-\\([a-z0-9_]+\\)\\(:\\([0-9]+\\)\\)?"))
+           (let* ((dir (downcase (or (match-string-no-properties 1)
+                                     (match-string-no-properties 4))))
+                  (pkg (downcase (or (match-string-no-properties 2)
+                                     (match-string-no-properties 5))))
+                  (release (or (match-string-no-properties 3)
+                               (match-string-no-properties 7)))
+                  output tag result)
+             (delete-region (point-at-bol) (point-at-eol))
+             (setq output (shell-command-to-string (concat "grep '^pkg_dir:' /vob/sse/lib/release/" dir "/" pkg ".urctl")))
+             (setq result (replace-regexp-in-string "pkg_dir:\\s-*" "element " output))
+             (string-match "pkg_dir:\\s-*\\([^ \t\n]+\\)" output)
+             (setq dir (match-string 1 output))
+             (setq output (shell-command-to-string (concat "cleartool describe -fmt '%Nl' " dir "@@/main/LATEST")))
+             (if release
+                 (string-match (concat "[^ ]+__" release "[.][^ ]+") output)
+               (string-match "^[^ ]+" output))
+             (setq tag (match-string 0 output))
+             (setq result (replace-regexp-in-string "\\s-*$" (concat "/... " tag) result))
+             (insert result)
+             (delete-char -1)))
+          ((looking-at "\\s-*include\\s-+\\([^@]+\\)@@[^ \t\n]+")
+           (let ((output (shell-command-to-string (concat "cleartool ls -short " (match-string-no-properties 1)))))
+             (delete-region (point-at-bol) (point-at-eol))
+             (insert "include " output)
+             (delete-char -1)))
+          (t
+           (goto-char orig-pos)
+           (error "Couldn't parse current line")))))
 
 ;; Syntax table
 
@@ -401,9 +279,7 @@ With prefix arg ask for version."
 
 (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
 (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-r") 'my-clearcase-cs-set-latest-release)
-(define-key clearcase-edcs-mode-map (kbd "C-c C-n") 'my-clearcase-cs-set-latest-number)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest-dwim)
 
 ;; Abbrevs
 
@@ -415,6 +291,14 @@ With prefix arg ask for version."
 (define-abbrev clearcase-cs-mode-abbrev-table
   "lat"
   "/main/LATEST")
+
+(define-abbrev clearcase-cs-mode-abbrev-table
+  "el"
+  "element")
+
+(define-abbrev clearcase-cs-mode-abbrev-table
+  "eld"
+  "element -directory")
 
 ;; Modes
 
