@@ -1,5 +1,6 @@
 ;;; my-sv-mode.el
 
+(require 'sv-mode)
 (require 'narrow-nested)
 (require 'my-mode-line)
 (require 'quick-edit)
@@ -17,8 +18,26 @@
 
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
+(defun my-sv-expand-reg ()
+  (interactive)
+  (back-to-indentation)
+  (let* ((orig (buffer-substring-no-properties (point) (point-at-eol)))
+         (pieces (split-string orig "[.]" t)))
+    (kill-region (point-at-bol) (point-at-eol))
+    (sv-mode-indent-line)
+    (dolist (piece pieces)
+      (insert piece "_t::"))
+    (delete-char -2)
+    (insert " " (car (last pieces)) " = m_" (car pieces) "_rmap.")
+    (setq pieces (cdr pieces))
+    (dolist (piece pieces)
+      (insert "m_" piece "."))
+    (delete-char -1)
+    (insert ";")))
+
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
+  (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-expand-reg)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))

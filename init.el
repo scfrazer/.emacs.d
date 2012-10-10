@@ -22,9 +22,13 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "~/.emacs.d/lisp/org")
 
+(message "~/.emacs.d/init.el -3 load time = %.3f s" (my-get-load-time))
+
 (when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (package-initialize))
+
+(message "~/.emacs.d/init.el -2 load time = %.3f s" (my-get-load-time))
 
 ;; Need these first to avoid font-lock/dired issues
 
@@ -52,6 +56,8 @@
 (require 'scf-mode)
 (require 'task)
 (require 'uniquify)
+
+(message "~/.emacs.d/init.el -1 load time = %.3f s" (my-get-load-time))
 
 (require 'my-bs)
 (require 'my-bookmark)
@@ -735,13 +741,24 @@ counting.  FORMAT, if non-nil, should be a format string to pass
 to `format' along with the line count.  When called interactively
 with a prefix argument, prompt for START-AT and FORMAT."
   (interactive
-   (if current-prefix-arg
-       (let* ((start (region-beginning))
-              (end   (region-end))
-              (start-at (read-number "Number to count from: " 0)))
-         (list start end start-at
-               (read-string "Format string: " "%d")))
-     (list (region-beginning) (region-end) 0 "%d")))
+   (cond ((equal current-prefix-arg '(4))
+          (let* ((start (region-beginning))
+                 (end   (region-end))
+                 (start-at (read-string "Start at: "))
+                 (format "%d"))
+            (if (string-match "[a-zA-Z]" start-at)
+                (setq start-at (string-to-char start-at)
+                      format "%c")
+              (setq start-at (string-to-number start-at)))
+            (list start end start-at format)))
+         ((equal current-prefix-arg '(16))
+          (let* ((start (region-beginning))
+                 (end   (region-end))
+                 (start-at (read-number "Start at: ")))
+            (list start end start-at
+                  (read-string "Format string: " "%d"))))
+         (t
+          (list (region-beginning) (region-end) 0 "%d"))))
   (delete-extract-rectangle (region-beginning) (region-end))
   (setq end (point))
   (when (< end start)
@@ -1092,6 +1109,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-whitespace-off-hook ()
   (my-font-lock-show-whitespace -1))
 
+(defun my-word-wrap-on-hook ()
+  (setq truncate-lines nil)
+  (setq word-wrap t))
+
 (defun my-verilog-hook ()
   (define-key verilog-mode-map "`" nil)
   (define-key verilog-mode-map (kbd "RET") nil)
@@ -1113,6 +1134,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'sv-mode-hook 'doxymacs-mode)
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
+(add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1268,6 +1290,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-bs-toggle)
 (my-keys-define "C-w" 'qe-unit-kill)
+(my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
 (my-keys-define "C-x 2" 'my-bs-split-window-vertically)
@@ -1283,8 +1306,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
-(my-keys-define "C-x a" 'kmacro-start-macro-or-insert-counter)
-(my-keys-define "C-x e" 'kmacro-end-or-call-macro)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
 (my-keys-define "C-x t" 'task-map)
