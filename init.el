@@ -56,6 +56,7 @@
 (require 'scf-mode)
 (require 'task)
 (require 'uniquify)
+(require 'vcs-compile)
 
 (message "~/.emacs.d/init.el -1 load time = %.3f s" (my-get-load-time))
 
@@ -131,7 +132,7 @@
 (set-scroll-bar-mode nil)
 (winner-mode 1)
 (when (eq emacs-major-version 24)
-  (electric-pair-mode 1)
+;;  (electric-pair-mode 1)
   (require 'num3))
 
 (setq-default backup-inhibited t
@@ -150,7 +151,7 @@
               comment-column 0
               comment-fill-column 120
               compare-ignore-whitespace t
-;;               compilation-error-regexp-alist nil
+              compilation-scroll-output 'first-error
               completions-format 'vertical
               confirm-kill-emacs 'y-or-n-p
               cursor-in-non-selected-windows nil
@@ -1397,6 +1398,8 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
+(my-keys-define "C-c M" (lambda() (interactive) (vcs-compile "find_fail_log")))
+
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)
 (define-key clearcase-dired-mode-map (kbd "C-v") nil)
@@ -1417,13 +1420,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (unless (getenv "SV_PATH")
   (setenv "SV_PATH"
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
-
-(eval-after-load "sv-mode"
-  '(progn
-     (setq compilation-error-regexp-alist
-           (add-to-list 'compilation-error-regexp-alist
-                        '("^Error-.+\n\\(.+\\),\\s-+\\([0-9]+\\)" 1 2)))
-     ))
 
 (add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
 
