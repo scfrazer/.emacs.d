@@ -534,20 +534,26 @@ With a numeric prefix, goto that window line."
   (save-excursion
     (indent-region (point-min) (point-max))))
 
-(defun my-insert-line-comment ()
-  "Insert a comment at the end of the line, or if on a blank line
-inset an 80-column comment line"
+(defun my-line-comment ()
+  "Goto a line comment if one exists, or insert a comment at the
+end of a non-blank line, or insert an 80-column comment line"
   (interactive)
-  (if (save-excursion (beginning-of-line) (looking-at "\\s-*$"))
-      (let (char)
-        (insert comment-start)
+  (let ((pos (point))
+        (cs (replace-regexp-in-string "\\s-+$" "" comment-start)))
+    (beginning-of-line)
+    (if (re-search-forward cs (point-at-eol) t)
+        (backward-char (length cs))
+      (if (looking-at "\\s-*$")
+          (let (char)
+            (goto-char pos)
+            (insert comment-start)
+            (delete-horizontal-space)
+            (setq char (char-before))
+            (insert-char char (- 80 (- (point) (point-at-bol)))))
+        (end-of-line)
+        (insert "  " comment-start)
         (delete-horizontal-space)
-        (setq char (char-before))
-        (insert-char char (- 80 (- (point) (point-at-bol)))))
-    (end-of-line)
-    (insert "  " comment-start)
-    (delete-horizontal-space)
-    (insert" ")))
+        (insert" ")))))
 
 (defun my-ll-debug-insert (&optional arg)
   "Swap default style of ll-debug-insert."
@@ -1259,7 +1265,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
-(my-keys-define "C-c ;" 'my-insert-line-comment)
+(my-keys-define "C-c ;" 'my-line-comment)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region)
 (my-keys-define "C-c C-c" 'my-comment-region-toggle)
@@ -1398,7 +1404,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(my-keys-define "C-c M" (lambda() (interactive) (vcs-compile "find_fail_log")))
+(my-keys-define "C-c M" (lambda() (interactive) (vcs-compile "cat_fail_log")))
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)

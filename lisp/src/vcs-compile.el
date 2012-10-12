@@ -8,8 +8,8 @@
     (cond ((string-match ".+_run\\(sc\\)?_\\([^-]+\\)-\\(aop\\|sv\\)=\\([^/-]+\\)" filename)
            (let ((block-name (match-string 2 filename))
                  (type (match-string 3 filename))
-                 (path (replace-regexp-in-string ":" "/" (match-string 4 filename))))
-             (concat "/vob/sse/asic/shared/ver/tb/" block-name "/test/" path "." type)))
+                 (path (match-string 4 filename)))
+             (concat "/vob/sse/asic/shared/ver/tb/" block-name "/test/" (replace-regexp-in-string ":" "/" path) "." type)))
           (t
            filename))))
 
