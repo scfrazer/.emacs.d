@@ -86,7 +86,7 @@
      `(magit-diff-add ((,class (:foreground "green3"))))
      `(magit-diff-del ((,class (:foreground "red"))))
      `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
-     `(task-bmk-face ((,class (:background "gray80"))))
+     `(task-bmk-face ((,class (:background "gray95"))))
      `(hl-line ((,class (:background "#e0efe0"))))
      `(uvm-log-mode-msg-face ((,class (:foreground "darkblue"))))
      `(uvm-log-mode-path-face ((,class (:foreground "royalblue"))))
