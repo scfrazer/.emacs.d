@@ -88,6 +88,7 @@
      `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
      `(task-bmk-face ((,class (:background "gray95"))))
      `(hl-line ((,class (:background "#e0efe0"))))
+     `(region ((,class (:background "lightblue"))))
      `(uvm-log-mode-msg-face ((,class (:foreground "darkblue"))))
      `(uvm-log-mode-path-face ((,class (:foreground "royalblue"))))
      `(uvm-log-mode-timestamp-face ((,class (:foreground "plum4"))))

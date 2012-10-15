@@ -1081,7 +1081,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0))
 
-(defun my-etags-select-hook ()
+(defun my-hl-line-hook ()
   (hl-line-mode 1))
 
 (defun my-grep-mode-hook ()
@@ -1130,7 +1130,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-(add-hook 'etags-select-mode-hook 'my-etags-select-hook)
+(add-hook 'etags-select-mode-hook 'my-hl-line-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (add-hook 'grep-mode-hook 'my-grep-mode-hook)
@@ -1142,6 +1142,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
+(add-hook 'uvm-log-mode-hook 'my-hl-line-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1404,7 +1405,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(my-keys-define "C-c M" (lambda() (interactive) (vcs-compile "cat_fail_log")))
+(my-keys-define "C-c M" 'vcs-compile)
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)
