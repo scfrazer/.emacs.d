@@ -1,12 +1,16 @@
 ;; Theme
 
-(setq command-switch-alist (list '("light" . my-theme-light)))
+(setq command-switch-alist (list '("light" . my-theme-light)
+                                 '("dark" . my-theme-dark)))
+
+(defun my-theme-dark (switch)
+  (blue))
 
 (defun my-theme-light (switch)
   (white))
 
-(unless (member "-light" command-line-args)
-  (blue))
+(unless (member "-dark" command-line-args)
+  (white))
 
 ;; X vs. terminal
 

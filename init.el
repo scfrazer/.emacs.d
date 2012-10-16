@@ -1452,6 +1452,9 @@ Does not set point.  Does nothing if mark ring is empty."
                                       (concat "%" fmt)))))
                                  (if v1 "\\n\", " "\\n\"") v1)))
 
+(when (string-match "lx30" (getenv "HOST"))
+  (setq-default python-python-command "python-2.7.1"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
