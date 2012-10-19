@@ -2101,19 +2101,12 @@ BUFFER is the buffer speedbar is requesting buttons for."
 
 (defvar sv-mode-align-rules-list
   `(
-    (sv-mode-class-item
-     (regexp . "\\(\\s-+\\)\\([a-zA-Z0-9_:]+\\)\\s-*\\([(;]\\|\\[.+\\]\\)"))
+;;     (sv-mode-class-item
+;;      (regexp . "\\(\\s-+\\)\\([a-zA-Z0-9_:]+\\)\\s-*\\([(;]\\|\\[.+\\]\\)"))
 
     (sv-mode-assignment
-     (regexp . "\\(\\s-*\\)\\(<=\\|=\\)\\(\\s-*\\)")
-     (group . (1 3))
-     (valid . ,(function
-                (lambda ()
-                  (condition-case nil
-                      (save-excursion
-                        (backward-up-list)
-                        (not (= (char-after) ?\()))
-                    (error t))))))
+     (regexp . "\\(\\s-+\\)[<=-+*/&|^!]?=\\(\\s-+\\)")
+     (group . (1 2)))
 
     (sv-mode-doxygen
      (regexp . "@param\\s-+[a-zA-Z0-9_]+\\(\\s-+\\)."))

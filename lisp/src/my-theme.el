@@ -83,6 +83,7 @@
     (custom-theme-set-faces
      'whiteboard
      `(button ((,class (:foreground "darkcyan"))))
+     `(default ((,class (:background "#ffffff" :foreground "black"))))
      `(flymake-errline ((t (:underline "red" :weight normal))))
      `(flymake-warnline ((t (:underline "magenta" :weight normal))))
      `(hl-line ((,class (:background "#e0efe0"))))

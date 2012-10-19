@@ -1314,6 +1314,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
+(my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'my-kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
 (my-keys-define "C-x t" 'task-map)
