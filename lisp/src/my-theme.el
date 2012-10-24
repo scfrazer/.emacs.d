@@ -89,17 +89,12 @@
      `(font-lock-comment-face ((,class (:foreground "gray66"))))
      `(font-lock-comment-delimiter-face ((,class (:foreground "gray66"))))
      `(hl-line ((,class (:background "#e0efe0"))))
-     `(isearch ((,class (:foreground "#ffffff"))))
-     `(isearch-fail ((,class (:foreground "#ffffff"))))
-     `(isearch-lazy-highlight-face ((,class (:foreground "#ffffff"))))
      `(magit-diff-add ((,class (:foreground "green3"))))
      `(magit-diff-del ((,class (:foreground "red"))))
      `(magit-item-highlight ((,class (:background "gray95"))))
      `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
      `(mode-line-buffer-id ((t (:foreground "blue3"))))
      `(region ((,class (:background "lightblue"))))
-     `(show-paren-match-face ((,class (:foreground "#ffffff"))))
-     `(show-paren-match-face ((,class (:foreground "#ffffff"))))
      `(task-bmk-face ((,class (:background "gray95"))))
      `(trailing-whitespace ((,class (:background "#f0f0ff"))))
      `(uvm-log-mode-msg-face ((,class (:foreground "darkblue"))))
@@ -109,6 +104,16 @@
      `(uvm-log-mode-timestamp-face ((,class (:foreground "plum4"))))
      ))
   (unless window-system
+    (dolist (face (list
+                   'isearch
+                   'isearch-fail
+                   'isearch-lazy-highlight-face
+                   'lazy-highlight
+                   'my-fixme-face
+                   'show-paren-match-face
+                   'show-paren-mismatch-face))
+      (set-face-foreground face "#ffffff"))
+    (set-face-background 'trailing-whitespace "color-195")
     (set-face-background 'hl-line "color-230")))
 
 (provide 'my-theme)
