@@ -23,23 +23,3 @@
 ;; Theme
 
 (white)
-
-(setq-default org-priority-faces '((?A . (:foreground "IndianRed3"))
-                                   (?B . (:foreground "SteelBlue3"))
-                                   (?C . (:foreground "SpringGreen3")))
-              org-todo-keyword-faces '(("TODO"       . (:foreground "Red3"))
-                                       ("STARTED"    . (:foreground "Blue"))
-                                       ("WAITING"    . (:foreground "Orange3"))
-                                       ("DONE"       . (:foreground "Green4"))
-                                       ("MAYBE"      . (:foreground "Cyan4"))
-                                       ("SOMEDAY"    . (:foreground "Cyan4"))
-                                       ("CANCELED"   . (:foreground "Green4"))
-                                       ("REASSIGNED" . (:foreground "Green4"))))
-(eval-after-load "org"
-  '(progn
-     (set-face-foreground 'org-tag "RoyalBlue1")
-     (set-face-foreground 'org-checkbox-statistics-todo "HotPink4")
-     (set-face-foreground 'org-checkbox-statistics-done "Green4")
-     (set-face-foreground 'org-special-keyword "DarkOrange4")
-     (set-face-foreground 'org-date "DeepSkyBlue4")
-     (set-face-foreground 'org-document-title "gold4")))

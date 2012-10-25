@@ -46,7 +46,7 @@ on the directory element itself is listed, not on its contents."
           (clearcase-ct-do-cleartool-command "lsco" file 'unused (list (if (eq mtype 'directory-version) "-d" "")
                                                                        "-areplicas"
                                                                        "-fmt"
-                                                                       "\"%Sd %u %e %n %f (%Rf %Mf) %[checkout_replica]p\\n\"")))))
+                                                                       "\"%Sd %u %e %f (%Rf %Mf) %Tf %[checkout_replica]p\\n\"")))))
       (message "Listing checkouts...done"))))
 
 (defun my-clearcase-lsprivate ()
@@ -159,7 +159,7 @@ With prefix arg ask for version."
 (define-key clearcase-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-current-buffer 'discard)))
 (define-key clearcase-prefix-map "a" 'clearcase-mkelem-current-buffer)
 (define-key clearcase-prefix-map "c" 'my-clearcase-list-checkouts)
-(define-key clearcase-prefix-map "h" 'my-clearcase-list-hist)
+(define-key clearcase-prefix-map "l" 'my-clearcase-list-hist)
 (define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
 (define-key clearcase-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
@@ -176,7 +176,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
 (define-key clearcase-dired-prefix-map "a" 'clearcase-mkelem-dired-files)
 (define-key clearcase-dired-prefix-map "c" 'my-clearcase-list-checkouts)
-(define-key clearcase-dired-prefix-map "h" 'my-clearcase-list-hist)
+(define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-hist)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
 (define-key clearcase-dired-prefix-map "n" 'my-clearcase-unreserve)
 (define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)

@@ -25,9 +25,9 @@
               org-link-frame-setup '((file . find-file))
               org-log-done nil
               org-modules nil
-              org-priority-faces '((?A . (:foreground "LightPink2"))
-                                   (?B . (:foreground "SkyBlue1"))
-                                   (?C . (:foreground "DarkSeaGreen3")))
+              org-priority-faces '((?A . (:foreground "IndianRed3"))
+                                   (?B . (:foreground "SteelBlue3"))
+                                   (?C . (:foreground "SpringGreen3")))
               org-read-date-popup-calendar nil
               org-replace-disputed-keys t
               org-return-follows-link t
@@ -49,14 +49,14 @@
               org-todo-keywords '((sequence "TODO" "STARTED" "WAITING" "|" "DONE")
                                   (sequence "MAYBE" "SOMEDAY" "|" "CANCELED")
                                   (sequence "|" "REASSIGNED"))
-              org-todo-keyword-faces '(("TODO"       . (:foreground "IndianRed1"))
-                                       ("STARTED"    . (:foreground "DeepSkyBlue1"))
-                                       ("WAITING"    . (:foreground "Yellow2"))
-                                       ("DONE"       . (:foreground "PaleGreen2"))
-                                       ("MAYBE"      . (:foreground "DeepSkyBlue4"))
-                                       ("SOMEDAY"    . (:foreground "Yellow4"))
-                                       ("CANCELED"   . (:foreground "PaleGreen4"))
-                                       ("REASSIGNED" . (:foreground "PaleGreen4")))
+              org-todo-keyword-faces '(("TODO"       . (:foreground "Red3"))
+                                       ("STARTED"    . (:foreground "Blue"))
+                                       ("WAITING"    . (:foreground "Orange3"))
+                                       ("DONE"       . (:foreground "Green4"))
+                                       ("MAYBE"      . (:foreground "Cyan3"))
+                                       ("SOMEDAY"    . (:foreground "Cyan3"))
+                                       ("CANCELED"   . (:foreground "Green4"))
+                                       ("REASSIGNED" . (:foreground "Green4")))
               org-use-speed-commands t
               org-yank-folded-subtrees nil)
 
