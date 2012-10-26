@@ -18,7 +18,7 @@
 
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
-(defun my-sv-expand-reg ()
+(defun my-sv-mode-expand-reg ()
   (interactive)
   (back-to-indentation)
   (let* ((orig (buffer-substring-no-properties (point) (point-at-eol)))
@@ -35,9 +35,22 @@
     (delete-char -1)
     (insert ";")))
 
+(defun my-sv-mode-bit-vector ()
+  (interactive)
+  (let (num-bits)
+    (skip-chars-backward "0-9")
+    (when (looking-at "[0-9]+")
+      (setq num-bits (match-string-no-properties 0))
+      (delete-char (length num-bits))
+      (setq num-bits (string-to-number num-bits))
+      (when (looking-back "^\\s-*" (point-at-bol))
+        (insert "bit "))
+      (insert "[" (number-to-string (1- num-bits)) ":0] "))))
+
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-expand-reg)
+  (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
+  (define-key sv-mode-map (kbd "C-c C-v") 'my-sv-mode-bit-vector)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))

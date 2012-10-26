@@ -1034,10 +1034,15 @@ Does not set point.  Does nothing if mark ring is empty."
   "Push mark and create/move a marker.  With ARG, pop to mark/marker."
   (interactive "P")
   (if arg
-      (when (and (marker-buffer my-push-marker)
-                 (marker-position my-push-marker))
-        (switch-to-buffer (marker-buffer my-push-marker))
-        (goto-char (marker-position my-push-marker)))
+      (let ((buf (marker-buffer my-push-marker))
+            (pos (marker-position my-push-marker))
+            recenter)
+        (when (and buf pos)
+          (switch-to-buffer buf)
+          (setq recenter (not (pos-visible-in-window-p pos)))
+          (goto-char pos)
+          (when recenter
+            (recenter))))
     (push-mark)
     (setq my-push-marker (point-marker))
     (set-marker-insertion-type my-push-marker t)
@@ -1089,6 +1094,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defun my-minibuffer-setup-hook ()
   (my-keys-minor-mode 0)
+  (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-/") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
   (local-set-key (kbd "C-z") 'undo)
