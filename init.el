@@ -36,6 +36,7 @@
 (require 'my-dired)
 
 (require 'csh-mode)
+(require 'emamux)
 (require 'etags)
 (require 'etags-select)
 (require 'etags-stack)
@@ -1298,6 +1299,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
+(my-keys-define "C-c w" 'emamux:copy-kill-ring)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'qe-unit-move)
 (my-keys-define "C-k" 'my-edit-kill-line)
