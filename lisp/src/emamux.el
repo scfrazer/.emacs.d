@@ -164,13 +164,17 @@
   "Set (car kill-ring) to tmux buffer"
   (interactive "P")
   (emamux:check-tmux-running)
-  (if (null kill-ring)
-      (error "kill-ring is nil!!"))
-  (let ((index (or (and (consp current-prefix-arg) (car current-prefix-arg))
-                   current-prefix-arg
-                   0))
-        (data (substring-no-properties (car kill-ring))))
-    (emamux:set-buffer data index)))
+  (if (region-active-p)
+      (progn
+        (emamux:set-buffer (buffer-substring-no-properties (region-beginning) (region-end)) 0)
+        (deactivate-mark))
+    (if (null kill-ring)
+        (error "kill-ring is nil!!"))
+    (let ((index (or (and (consp current-prefix-arg) (car current-prefix-arg))
+                     current-prefix-arg
+                     0))
+          (data (substring-no-properties (car kill-ring))))
+      (emamux:set-buffer data index))))
 
 (defun emamux:escape (input)
   (emamux:escape-quote (emamux:escape-dollar (emamux:escape-bang input))))

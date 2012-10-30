@@ -328,8 +328,6 @@
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
   (interactive)
-  (setq buffer-read-only nil)        ;; Not need to edit the content, just read mode (added)
-  (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
   (switch-to-buffer "*ASCII*")
   (erase-buffer)
   (save-excursion
@@ -342,7 +340,9 @@
                         (setq i (+ 32 i)) i (single-key-description i)
                         (setq i (+ 32 i)) i (single-key-description i)
                         (setq i (+ 32 i)) i (single-key-description i)))
-        (setq i (- i 96))))))
+        (setq i (- i 96)))))
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil))
 
 (defun my-backward-paragraph-rect ()
   "Move backward to the same column in the first line before a blank line."
