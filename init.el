@@ -345,15 +345,14 @@
   (set-buffer-modified-p nil))
 
 (defun my-backward-paragraph-rect ()
-  "Move backward to the same column in the first line before a blank line."
+  "Move backward to first line with a char in the same column."
   (interactive)
   (let ((col (current-column))
         (again t))
     (while again
       (forward-line -1)
       (setq again (not (bobp)))
-      (unless (and (not (looking-at "^\\s-*$"))
-                   (= (move-to-column col) col))
+      (unless (= (move-to-column col) col)
         (forward-line 1)
         (move-to-column col)
         (setq again nil)))))
@@ -470,15 +469,14 @@ Prefix with C-u to fit the `next-window'."
     (fit-window-to-buffer win (/ (frame-height) 4))))
 
 (defun my-forward-paragraph-rect ()
-  "Move forward to the same column in the last line before a blank line."
+  "Move forward to the last line with a char in the same column."
   (interactive)
   (let ((col (current-column))
         (again t))
     (while again
       (forward-line 1)
       (setq again (not (eobp)))
-      (unless (and (not (looking-at "^\\s-*$"))
-                   (= (move-to-column col) col))
+      (unless (= (move-to-column col) col)
         (forward-line -1)
         (move-to-column col)
         (setq again nil)))))
@@ -1355,7 +1353,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-open-line-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
-(my-keys-define "M-[" 'my-backward-paragraph-rect)
 (my-keys-define "M-]" 'my-forward-paragraph-rect)
 (my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
@@ -1509,6 +1506,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; System setup
 
 (unless window-system
+  (xterm-mouse-mode 1)
   (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
 
