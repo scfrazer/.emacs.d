@@ -1353,7 +1353,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-open-line-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
-(my-keys-define "M-]" 'my-forward-paragraph-rect)
+(my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-b" 'jump-to-prev-pos)

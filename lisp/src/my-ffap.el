@@ -29,6 +29,9 @@
             (delete-char 1))
           (when (and (stringp env-var) (getenv env-var))
             (insert (getenv env-var)))))
+      (goto-char (point-min))
+      (while (re-search-forward "[$(){}]" nil t)
+        (replace-match ""))
       (setq ad-return-value (buffer-substring (point-min) (point-max)))
       (setq ffap-string-at-point ad-return-value))))
 
