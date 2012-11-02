@@ -84,6 +84,8 @@
      'whiteboard
 
      `(button ((,class (:foreground "darkcyan"))))
+     `(compilation-error ((,class (:foreground "red"))))
+     `(compilation-line-number ((,class (:foreground "blue4"))))
      `(default ((,class (:background "#ffffff" :foreground "black"))))
      `(flymake-errline ((,class (:underline "red" :weight normal))))
      `(flymake-warnline ((,class (:underline "magenta" :weight normal))))

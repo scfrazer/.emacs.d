@@ -18,7 +18,8 @@
   (set (make-local-variable 'compilation-error-regexp-alist)
 ;;        (list '("^Error-\\[.+?\\].+\n\\s-*\\(.+\\),[ \t\n]+\\([0-9]+\\)" 1 2)
 ;;              '("^Error-\\[.+?\\].+\n\\(.+\n\\)+\\s-*\"\\(.+\\)\",[ \t\n]+\\([0-9]+\\)" 2 3)))
-       (list '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3)))
+       (list '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3)
+             '("^Error - .+?spec:\\([^:]+\\):" 1)))
   (set (make-local-variable 'compilation-parse-errors-filename-function) 'vcs-compile-find-file))
 
 (defun vcs-compilation-read-command (command)
