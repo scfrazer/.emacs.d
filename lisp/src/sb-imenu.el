@@ -17,22 +17,44 @@
 
 (speedbar-add-expansion-list '("sb-imenu" nil sb-imenu-key-map sb-imenu-buttons))
 
+(defvar sb-imenu-active-buffer nil)
+
 (defun sb-imenu-buttons (dir depth)
   "Show imenu tags for current buffer."
-  (let (tags buf-name)
-    (with-selected-frame (dframe-select-attached-frame (speedbar-current-frame))
-      (setq buf-name (or (buffer-file-name) (buffer-name)))
-      (setq imenu--index-alist nil)
-      (condition-case nil
-          (imenu--make-index-alist t)
-        (error nil))
-      (setq tags (copy-alist imenu--index-alist)))
-    (insert buf-name ":\n\n")
-    (when tags
-      (when (string= (caar tags) "*Rescan*")
-        (setq tags (cdr tags)))
+  (let (tags buf buf-name)
+    (sb-imenu-get-active-buffer)
+    (when sb-imenu-active-buffer
+      (with-current-buffer sb-imenu-active-buffer
+        (setq buf-name (or (buffer-file-name) (buffer-name)))
+        (setq imenu--index-alist nil)
+        (condition-case nil
+            (imenu--make-index-alist t)
+          (error nil))
+        (setq tags (copy-alist imenu--index-alist)))
+      (insert buf-name ":\n\n")
       (when tags
-        (sb-imenu-populate tags 0)))))
+        (when (string= (caar tags) "*Rescan*")
+          (setq tags (cdr tags)))
+        (when tags
+          (sb-imenu-populate tags 0))))))
+
+(defun sb-imenu-get-active-buffer ()
+  "Get the active buffer."
+  (setq sb-imenu-active-buffer nil)
+  (condition-case nil
+      (with-selected-frame (dframe-select-attached-frame (speedbar-current-frame))
+        (sb-imenu-get-interesting-buffer))
+    (error nil))
+  (unless sb-imenu-active-buffer
+    (sb-imenu-get-interesting-buffer)))
+
+(defun sb-imenu-get-interesting-buffer ()
+  "Get an interesting buffer."
+  (catch 'done
+    (dolist (buffer (buffer-list))
+      (unless (string-match "^[ *]" (buffer-name buffer))
+        (setq sb-imenu-active-buffer buffer)
+        (throw 'done buffer)))))
 
 (defun sb-imenu-populate (tags level)
   "Populate speedbar from imenu tags."
@@ -76,9 +98,22 @@
 (defun sb-imenu-go (text node indent)
   "Goto the current tag."
   (interactive)
-  (speedbar-select-attached-frame)
-  (raise-frame)
-  (select-frame-set-input-focus (selected-frame))
+  (condition-case nil
+      (progn
+        (speedbar-select-attached-frame)
+        (raise-frame)
+        (select-frame-set-input-focus (selected-frame)))
+    (error nil))
+ (switch-to-buffer sb-imenu-active-buffer)
   (goto-char node))
+
+(defun sb-imenu-refresh ()
+  "Refresh the speedbar."
+  (let ((buf sb-imenu-active-buffer))
+    (sb-imenu-get-active-buffer)
+    (unless (equal buf sb-imenu-active-buffer)
+      (speedbar-refresh))))
+
+(add-hook 'speedbar-timer-hook 'sb-imenu-refresh)
 
 (provide 'sb-imenu)
