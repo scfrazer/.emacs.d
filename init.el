@@ -227,6 +227,7 @@
               scroll-preserve-screen-position t
               shift-select-mode nil
               show-paren-delay 0
+              speedbar-indentation-width 2
               speedbar-initial-expansion-list-name "sb-imenu"
               speedbar-use-images nil
               split-width-threshold nil
@@ -564,7 +565,8 @@ end of a non-blank line, or insert an 80-column comment line"
   "Kill buffer and delete window if there is more than one."
   (interactive "P\nbKill buffer: ")
   (kill-buffer buffer)
-  (delete-window))
+  (when (> (count-windows) 1)
+    (delete-window)))
 
 (defun my-kill-frame-or-emacs ()
   "Kill a frame or emacs"
