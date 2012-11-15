@@ -1087,6 +1087,13 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0))
 
+(defun my-find-file-hook ()
+  (when (or (equal (buffer-name) "config_tree.txt")
+            (equal (buffer-name) "topology.txt"))
+    (my-hl-line-hook)
+    (my-whitespace-off-hook)
+    (my-word-wrap-on-hook)))
+
 (defun my-hl-line-hook ()
   (hl-line-mode 1))
 
@@ -1103,6 +1110,10 @@ Does not set point.  Does nothing if mark ring is empty."
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
+  (local-set-key (kbd "M-w") (lambda ()
+                               (interactive)
+                               (insert "\\_<\\_>")
+                               (backward-char 3)))
   (local-set-key (kbd "M-$") (lambda ()
                                (interactive)
                                (let* ((enable-recursive-minibuffers t)
@@ -1138,6 +1149,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'etags-select-mode-hook 'my-hl-line-hook)
+(add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (add-hook 'grep-mode-hook 'my-grep-mode-hook)
@@ -1509,7 +1521,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; System setup
 
 (unless window-system
-  (xterm-mouse-mode 1)
+;;  (xterm-mouse-mode 1)
   (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
 

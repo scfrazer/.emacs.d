@@ -18,80 +18,64 @@
 ;; Faces
 
 (defface uvm-log-mode-timestamp-face
-  '((((class color) (background dark)) (:foreground "plum2"))
-    (((class color) (background light)) (:foreground "purple3")))
+  '((t (:foreground "plum4")))
   "Font Lock mode face used to highlight timestamps."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-id-face
-  '((((class color) (background dark)) (:foreground "cyan3"))
-    (((class color) (background light)) (:foreground "cyan3")))
+  '((t (:foreground "paleturquoise4")))
   "Font Lock mode face used to highlight messages IDs."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-path-face
-  '((((class color) (background dark)) (:foreground "SkyBlue1"))
-    (((class color) (background light)) (:foreground "SteelBlue4")))
+  '((t (:foreground "royalblue4")))
   "Font Lock mode face used to highlight the component path."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-face
-  '((((class color) (background dark)) (:foreground "PaleTurquoise2"))
-    (((class color) (background light)) (:foreground "tan4")))
+  '((t (:foreground "darkblue")))
   "Font Lock mode face used to highlight messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-phase-face
-  '((((class color) (background dark)) (:foreground "hotpink2"))
-    (((class color) (background light)) (:bold t)))
+  '((t (:foreground "hotpink4")))
   "Font Lock mode face used to highlight phase change messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-error-face
-  '((((class color) (background dark)) (:foreground "red"))
-    (((class color) (background light)) (:foreground "red")))
+  '((t (:foreground "red")))
   "Font Lock mode face used to highlight errors."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-warning-face
-  '((((class color) (background dark)) (:foreground "yellow2"))
-    (((class color) (background light)) (:foreground "yellow4")))
+  '((t (:foreground "yellow4")))
   "Font Lock mode face used to highlight warnings."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-face
-  '((((class color) (background dark)) (:foreground "black" :background "darkorange2"))
-    (((class color) (background light)) (:foreground "black" :background "darkorange2")))
+  '((t (:foreground "black" :background "darkorange2")))
   "Font Lock mode face used to highlight debug markers."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-msg-face
-  '((((class color) (background dark)) (:foreground "DarkOliveGreen3")))
+  '((t (:foreground "darkorange3")))
   "Font Lock mode face used to highlight debug messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-sb-add-face
-  '((((class color) (background dark)) (:foreground "gold3")))
+  '((t (:foreground "gold4")))
   "Font Lock mode face used to highlight send statements."
   :group 'sse-log-mode)
 
 (defface uvm-log-mode-sb-match-face
-  '((((class color) (background dark)) (:foreground "chartreuse2"))
-    (((class color) (background light)) (:foreground "green3")))
+  '((t (:foreground "chartreuse3")))
   "Font Lock mode face used to highlight match statements."
   :group 'uvm-log-mode)
 
-;; (defface uvm-log-mode-pass-face
-;;   '((((class color) (background dark)) (:foreground "PaleGreen2"))
-;;     (((class color) (background light)) (:foreground "green3")))
-;;   "Font Lock mode face used to highlight pass statements."
-;;   :group 'uvm-log-mode)
-;;
-;; (defface uvm-log-mode-highlight-phase-face
-;;   '((((class color) (background dark)) (:foreground "white" :background "slateblue3"))
-;;     (((class color) (background light)) (:foreground "white" :background "slateblue3")))
-;;   "Font Lock mode face used to highlight tags."
-;;   :group 'uvm-log-mode)
+(defface uvm-log-mode-highlight-phase-face
+  '((t (:background "lightsteelblue")))
+  "Font Lock mode face used to highlight tags."
+  :group 'uvm-log-mode)
 
 (defvar uvm-log-mode-font-lock-keywords
   '(
@@ -100,16 +84,6 @@
     ("\\(\\*\\* Starting phase:\\)\\s-+\\([a-zA-Z0-9_]+\\)"
      (1 'uvm-log-mode-phase-face)
      (2 'font-lock-function-name-face))
-;;     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(FATAL\\|ERROR\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
-;;      (1 'uvm-log-mode-timestamp-face)
-;;      (2 'uvm-log-mode-error-face)
-;;      (3 'uvm-log-mode-path-face)
-;;      (4 'uvm-log-mode-msg-face))
-;;     ("^\\([0-9.]+[fpnum]?s\\):\\s-+\\(WARNING\\):\\s-+\\([^ ]+\\)\\s-+\\(.*\\)"
-;;      (1 'uvm-log-mode-timestamp-face)
-;;      (2 'uvm-log-mode-warning-face)
-;;      (3 'uvm-log-mode-path-face)
-;;      (4 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(DEBUG-[a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-debug-face)
@@ -155,6 +129,7 @@
       (end-of-line)
       (re-search-forward phase-or-error-regexp))
     (beginning-of-line)
+    (recenter)
     (let ((ov (make-overlay (point-at-bol) (point-at-eol))))
       (overlay-put ov 'face 'uvm-log-mode-highlight-phase-face)
       (sit-for 1)

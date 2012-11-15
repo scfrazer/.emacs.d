@@ -28,17 +28,20 @@
                           '(compile-history . 1)
                         'compile-history)))
 
+(defvar vcs-compile-command "find_fail_log -c"
+  "*Default VCS compile command")
+
 (defun vcs-compile (command &optional comint)
   "VCS compile."
   (interactive
    (list
-    (let ((command (eval compile-command)))
+    (let ((command (eval vcs-compile-command)))
       (if (or compilation-read-command current-prefix-arg)
           (vcs-compilation-read-command command)
         command))
     (consp current-prefix-arg)))
-  (unless (equal command (eval compile-command))
-    (setq compile-command command))
+  (unless (equal command (eval vcs-compile-command))
+    (setq vcs-compile-command command))
   (save-some-buffers (not compilation-ask-about-save)
                      compilation-save-buffers-predicate)
   (setq-default compilation-directory default-directory)

@@ -60,6 +60,16 @@
 
 (add-to-list 'sv-mode-macros-without-semi "`csco_[a-z_]+")
 
+(defadvice sv-mode-create-skeleton-from-prototype (before ct-co-sv-mode-create-proto activate)
+  (ff-get-other-file)
+  (let ((filename (buffer-file-name)))
+    (when (and (string-match "^/vob/" filename)
+               (not (file-writable-p filename)))
+      (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster"))
+            (clearcase-suppress-checkout-comments t))
+        (clearcase-commented-checkout filename)))
+    (switch-to-buffer (other-buffer))))
+
 (defadvice sv-mode-narrow-to-scope (before narrow-nested-sv-scope-before activate)
   (narrow-nested-save-restriction))
 

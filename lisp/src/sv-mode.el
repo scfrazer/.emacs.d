@@ -29,7 +29,7 @@
 ;; language.
 ;;
 ;; Put this file on your Emacs-Lisp load path, add following into your
-;; ~/.emacs startup file
+;; startup file:
 ;;
 ;; (autoload 'sv-mode "sv-mode" "SystemVerilog code editing mode" t)
 ;; (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
@@ -49,16 +49,18 @@
 ;; C-c C-r : Rename function in .svh/.sv -- fix endfunction and any super
 ;;           calls.  Set old/new names in `query-replace-defaults'.
 ;;
-;; TODO C-x n s, M-a, M-e and such
-;; TODO UVM utils and end/super etc insertion
-;; TODO Package/tag guessing functions
-;; TODO Abbrevs
-;; TODO Speedbar
+;; The standard C-M-a (beginning of function) and C-M-e (end of function) keys
+;; are supported.
+;;
+;; To use with the speedbar add this to your startup file:
+;;
+;; (eval-after-load "speedbar"
+;;   '(progn
+;;      (speedbar-add-supported-extension ".sv")
+;;      (speedbar-add-supported-extension ".svh")))
 ;;
 ;; This mode supports the insertion of Doxygen comments if you use the
 ;; doxymacs package.
-
-;; Todo Make `protected through `endprotected be considered comments
 
 ;;; Code:
 

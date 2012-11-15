@@ -85,6 +85,7 @@
 
      `(button ((,class (:foreground "darkcyan"))))
      `(compilation-error ((,class (:foreground "red"))))
+     `(compilation-info ((,class (:foreground "green4"))))
      `(compilation-line-number ((,class (:foreground "blue4"))))
      `(default ((,class (:background "#ffffff" :foreground "black"))))
      `(flymake-errline ((,class (:underline "red" :weight normal))))
@@ -113,11 +114,6 @@
      `(region ((,class (:background "lightblue"))))
      `(task-bmk-face ((,class (:background "gray95"))))
      `(trailing-whitespace ((,class (:background "#f0f0ff"))))
-     `(uvm-log-mode-msg-face ((,class (:foreground "darkblue"))))
-     `(uvm-log-mode-msg-id-face ((,class (:foreground "paleturquoise4"))))
-     `(uvm-log-mode-path-face ((,class (:foreground "royalblue"))))
-     `(uvm-log-mode-phase-face ((,class (:foreground "hotpink4"))))
-     `(uvm-log-mode-timestamp-face ((,class (:foreground "plum4"))))
 
      ))
   (unless window-system
