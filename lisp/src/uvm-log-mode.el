@@ -23,12 +23,12 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-id-face
-  '((t (:foreground "paleturquoise4")))
+  '((t (:foreground "royalblue")))
   "Font Lock mode face used to highlight messages IDs."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-path-face
-  '((t (:foreground "royalblue4")))
+  '((t (:foreground "paleturquoise4")))
   "Font Lock mode face used to highlight the component path."
   :group 'uvm-log-mode)
 
@@ -89,14 +89,14 @@
      (2 'uvm-log-mode-debug-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-debug-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Added upstream item #[0-9]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-add-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\[[0-9]+\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
@@ -104,6 +104,11 @@
      (5 'uvm-log-mode-sb-match-face)
      (6 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\([^ ]+\\) \\(.*\\)"
+     (1 'uvm-log-mode-timestamp-face)
+     (2 'font-lock-warning-face)
+     (3 'uvm-log-mode-path-face)
+     (4 'uvm-log-mode-msg-face))
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'font-lock-warning-face)
      (3 'uvm-log-mode-path-face)

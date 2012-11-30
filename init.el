@@ -184,6 +184,7 @@
               large-file-warning-threshold nil
               line-move-visual t
               line-number-mode t
+              line-number-display-limit-width 1000
               ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
               ll-debug-print-filename nil
               lpr-command "lpr"
@@ -1521,7 +1522,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; System setup
 
 (unless window-system
-;;  (xterm-mouse-mode 1)
+  (my-keys-define "<f1>" 'xterm-mouse-mode)
   (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
 

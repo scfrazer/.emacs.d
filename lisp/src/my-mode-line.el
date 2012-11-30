@@ -44,6 +44,8 @@
    "  %p"
    (list 'column-number-mode "  C%c")
    "  " mode-line-buffer-identification
+   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode)
+            (concat "  " (propertize "Mouse" 'face 'my-narrow-face))))
    "  " mode-line-modes
    (:eval (if (and clearcase-servers-online clearcase-setview-viewtag)
               (concat "  [View: " clearcase-setview-viewtag "]")
