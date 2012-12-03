@@ -177,7 +177,7 @@
       (emamux:set-buffer data index))))
 
 (defun emamux:escape (input)
-  (emamux:escape-quote (emamux:escape-dollar (emamux:escape-bang input))))
+  (emamux:escape-dollar (emamux:escape-quote (emamux:escape-bang (emamux:escape-newline input)))))
 
 (defun emamux:escape-quote (input)
   (replace-regexp-in-string "\\\"" "\"'\"'\"" input))
@@ -187,6 +187,9 @@
 
 (defun emamux:escape-bang (input)
   (replace-regexp-in-string "!" "\\\\!" input))
+
+(defun emamux:escape-newline (input)
+  (replace-regexp-in-string "\n" "\\\\\n" input))
 
 (defun* emamux:send-keys (input &optional (target (emamux:target-session)))
   (let ((cmd (format "send-keys -t %s \"%s\" C-m"
