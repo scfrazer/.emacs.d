@@ -6,8 +6,9 @@
 
 (defun my-interprogram-cut-function (text)
   "If in a tmux session, also copy TEXT to a tmux buffer."
-  (when (getenv "TMUX")
-    (emamux:set-buffer text 0))
-  (x-select-text text))
+  (unless executing-kbd-macro
+    (when (getenv "TMUX")
+      (emamux:set-buffer text 0))
+    (x-select-text text)))
 
 (provide 'my-tmux)

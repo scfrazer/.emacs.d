@@ -1222,9 +1222,6 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org mode
 
-(setq-default org-directory "~/Dropbox/org"
-              org-default-notes-file (concat org-directory "/Notes.org"))
-
 (setq org-capture-templates
       '(("t" "Task" entry (function my-org-capture-task-location)
          "* %?" :empty-lines 1 :kill-buffer t)
@@ -1546,10 +1543,10 @@ Does not set point.  Does nothing if mark ring is empty."
 
 ;; Terminal server in a Clearcase view
 
-(when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
-  (require 'server)
-  (setq-default server-name clearcase-setview-viewtag)
-  (server-start))
+;; (when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
+;;   (require 'server)
+;;   (setq-default server-name clearcase-setview-viewtag)
+;;   (server-start))
 
 ;; Command frequency
 

@@ -206,7 +206,7 @@
     (format "-b %d" index)))
 
 (defun emamux:set-buffer (data index)
-  (let ((cmd (format "set-buffer %s \"%s\""
+  (let ((cmd (format "set-buffer %s -- \"%s\""
                      (emamux:buffer-index-option index) (emamux:escape data))))
     (emamux:tmux-run-command cmd)))
 
