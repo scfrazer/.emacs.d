@@ -22,10 +22,21 @@ end-of-line (and it's not a empty line).  Kills region if active."
 
 ;;; Jump-to-char
 
+(defvar my-edit-jump-prev-str nil)
+(defvar my-edit-jump-prev-arg nil)
+
 (defun my-edit-jump-to-char (&optional arg)
   "Jump to the next entered char.  To start of word if [a-zA-Z]."
   (interactive "P")
-  (let ((str (char-to-string (read-char (if arg "Jump backward to char:" "Jump to char:")))))
+  (let ((case-fold-search nil)
+        (cmd-keys (this-command-keys))
+        (str (char-to-string (read-char (if arg "Jump backward to char:" "Jump to char:")))))
+    (if (string= str cmd-keys)
+        (setq str my-edit-jump-prev-str
+              arg my-edit-jump-prev-arg)
+      (setq my-edit-jump-prev-str str
+            my-edit-jump-prev-arg arg))
+    (forward-char)
     (when (string-match "[a-zA-Z]" str)
       (setq str (concat "\\_<" str)))
     (if arg
