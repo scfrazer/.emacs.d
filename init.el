@@ -650,18 +650,46 @@ end of a non-blank line, or insert an 80-column comment line"
              (narrow-nested-dwim)))
     (narrow-nested-dwim)))
 
-(defun my-open-line-above ()
-  "Open a line above the current one."
-  (interactive)
-  (beginning-of-line)
-  (newline)
-  (forward-line -1))
-
-(defun my-open-line-below ()
-  "Open a line below the current one."
-  (interactive)
+(defun my-newline-and-indent ()
+  "Go to end-of-line first, and if repeated adds a blank line above"
+  (interactive "*")
   (end-of-line)
-  (newline))
+  (if (looking-back "^\\s-+" (point-at-bol))
+      (save-excursion
+        (beginning-of-line)
+        (newline))
+    (newline-and-indent)))
+
+(defun my-newline-and-indent-above ()
+  "Like `my-newline-and-indent' but goes up instead of down."
+  (interactive "*")
+  (beginning-of-line)
+  (if (looking-at "\\s-+$")
+      (save-excursion
+        (end-of-line)
+        (newline))
+    (beginning-of-line)
+    (newline)
+    (forward-line -1))
+  (indent-according-to-mode))
+
+(defun my-newline-and-indent-around ()
+  "Newline and indent, with blank lines above and below."
+  (interactive "*")
+  (beginning-of-line)
+  (unless (looking-at "\\s-*$")
+    (newline)
+    (forward-line -1))
+  (indent-according-to-mode)
+  (save-excursion
+    (forward-line)
+    (unless (looking-at "\\s-*$")
+      (newline)))
+  (save-excursion
+    (forward-line -1)
+    (unless (looking-at "\\s-*$")
+      (end-of-line)
+      (newline))))
 
 (defun my-other-frame ()
   "Switch to other frame."
@@ -1270,6 +1298,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "C-/" 'dabbrev-expand)
 (my-keys-define "C-M-h" 'backward-sexp)
+(my-keys-define "C-M-j" 'my-newline-and-indent-around)
 (my-keys-define "C-M-j" 'qe-unit-copy)
 (my-keys-define "C-M-k" 'qe-unit-kill)
 (my-keys-define "C-M-l" 'forward-sexp)
@@ -1310,10 +1339,11 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-h" 'backward-char)
-(my-keys-define "C-j" 'qe-unit-move)
+(my-keys-define "C-j" 'my-newline-and-indent)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-t" 'my-edit-jump-to-char)
 (my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
@@ -1327,7 +1357,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'my-kill-buffer)
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
-(my-keys-define "C-x RET" 'my-open-line-below)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
@@ -1362,7 +1391,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-N" 'my-edit-page-down)
 (my-keys-define "M-P" 'my-edit-page-up)
 (my-keys-define "M-Q" 'my-unfill)
-(my-keys-define "M-RET" 'my-open-line-above)
+(my-keys-define "M-RET" 'my-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)

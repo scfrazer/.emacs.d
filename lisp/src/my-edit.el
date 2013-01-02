@@ -20,6 +20,19 @@ end-of-line (and it's not a empty line).  Kills region if active."
                (kill-line arg)))
       (my-edit-join-line-with-next))))
 
+;;; Jump-to-char
+
+(defun my-edit-jump-to-char (&optional arg)
+  "Jump to the next entered char.  To start of word if [a-zA-Z]."
+  (interactive "P")
+  (let ((str (char-to-string (read-char (if arg "Jump backward to char:" "Jump to char:")))))
+    (when (string-match "[a-zA-Z]" str)
+      (setq str (concat "\\_<" str)))
+    (if arg
+        (re-search-backward str nil t)
+      (when (re-search-forward str nil t)
+        (backward-char)))))
+
 ;;; Join
 
 (defun my-edit-join-line-with-next ()

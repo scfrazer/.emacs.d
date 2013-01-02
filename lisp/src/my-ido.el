@@ -202,7 +202,10 @@
             (setq items (nconc (cdr items) (list (car items))))))))
     (let ((pos (cdr (assoc (ido-completing-read "Goto symbol: " (mapcar 'car items) nil t) items))))
       (when pos
-        (goto-char pos)))))
+        (let ((recenter (not (pos-visible-in-window-p pos))))
+          (goto-char pos)
+          (when recenter
+            (recenter)))))))
 
 ;; ido + tags
 
