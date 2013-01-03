@@ -332,6 +332,8 @@ With prefix arg, append kill."
       (let ((cmd-keys (this-command-keys))
             (seq (read-key-sequence "Kill:"))
             fcn)
+        (when arg
+          (setq cmd-keys (substring cmd-keys 1)))
         (if (and (equal seq cmd-keys)
                  (equal real-last-command 'qe-unit-kill)
                  (member qe-unit-prev-key '("t" "T" "s" "S")))
@@ -362,6 +364,8 @@ With prefix arg, append kill."
       (let ((cmd-keys (this-command-keys))
             (seq (read-key-sequence "Copy:"))
             fcn)
+        (when arg
+          (setq cmd-keys (substring cmd-keys 1)))
         (if (equal seq cmd-keys)
             (setq fcn 'qe-unit-ends-line)
           (setq fcn (lookup-key qe-unit-common-map seq)))
