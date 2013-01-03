@@ -312,21 +312,26 @@
 ;; Functions
 
 (defun my-align ()
-  "Align declarations, etc."
-  (interactive)
-  (save-excursion
+  "Align to an entered char.
+Works on region if marked, or to end of paragraph."
+  (interactive "*")
+  (let ((regexp (concat "\\(\\s-*\\)" (char-to-string (read-char "Align to char:"))))
+        beg end)
     (if (and transient-mark-mode mark-active)
-        (align (region-beginning) (region-end))
-      (align (point-at-bol)
-             (save-excursion
-               (forward-paragraph)
-               (point-at-eol))))))
+        (setq beg (region-beginning)
+              end (region-end))
+      (setq beg (point-at-bol)
+            end (save-excursion
+                  (forward-paragraph)
+                  (point-at-eol))))
+    (save-excursion
+      (align-regexp beg end regexp 1 align-default-spacing))))
 
 (defun my-apply-macro-to-region-lines (top bottom)
   "Apply macro to region lines and deactivate mark"
-  (interactive "r")
-  (apply-macro-to-region-lines top bottom)
-  (deactivate-mark))
+ (interactive "*r")
+ (apply-macro-to-region-lines top bottom)
+ (deactivate-mark))
 
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
@@ -369,7 +374,7 @@
 
 (defun my-convert-to-base (arg)
   "Convert to decimal, or with prefix arg to hex."
-  (interactive "P")
+  (interactive "*P")
   (if arg
       (my-dec-to-hex)
     (my-hex-to-dec)))
@@ -436,7 +441,7 @@
 
 (defun my-dos2unix ()
   "Remove ^M's from file."
-  (interactive)
+  (interactive "*")
   (goto-char (point-min))
   (while (search-forward (string ?\C-m) nil t)
     (replace-match ""))
@@ -444,14 +449,14 @@
 
 (defun my-fill ()
   "Fill region if active, paragraph if not."
-  (interactive)
+  (interactive "*")
   (if (region-active-p)
       (fill-region (region-beginning) (region-end))
     (fill-paragraph nil)))
 
 (defun my-fill-sentence ()
   "Fill sentence separated by punctuation or blank lines."
-  (interactive)
+  (interactive "*")
   (let (start end)
     (save-excursion
       (re-search-backward "\\(^\\s-*$\\|[.?!]\\)" nil t)
@@ -525,21 +530,21 @@ With a numeric prefix, goto that window line."
 
 (defun my-inc-num (arg)
   "Increment decimal number, or with arg hex number"
-  (interactive "P")
+  (interactive "*P")
   (if arg
       (my-increment-number-hexadecimal)
     (my-increment-number-decimal)))
 
 (defun my-indent ()
   "Indent entire buffer."
-  (interactive)
+  (interactive "*")
   (save-excursion
     (indent-region (point-min) (point-max))))
 
 (defun my-line-comment ()
   "Goto a line comment if one exists, or insert a comment at the
 end of a non-blank line, or insert an 80-column comment line"
-  (interactive)
+  (interactive "*")
   (let ((pos (point))
         (cs (replace-regexp-in-string "\\s-+$" "" comment-start)))
     (beginning-of-line)
@@ -559,7 +564,7 @@ end of a non-blank line, or insert an 80-column comment line"
 
 (defun my-ll-debug-insert (&optional arg)
   "Swap default style of ll-debug-insert."
-  (interactive "P")
+  (interactive "*P")
   (ll-debug-insert (if arg nil 1)))
 
 (defun my-kill-buffer (arg buffer)
@@ -682,7 +687,7 @@ end of a non-blank line, or insert an 80-column comment line"
 
 (defun my-prettify ()
   "Remove trailing space, untabify, reindent."
-  (interactive)
+  (interactive "*")
   (my-delete-trailing-whitespace)
   (untabify (point-min) (point-max))
   (indent-region (point-min) (point-max)))
@@ -788,7 +793,7 @@ with a prefix argument, prompt for START-AT and FORMAT."
 
 (defun my-rotate-case (&optional beg end)
   "Rotate case to capitalized, uppercase, lowercase."
-  (interactive)
+  (interactive "*")
   (let ((case-fold-search nil))
     (save-excursion
       (if (region-active-p)
@@ -875,7 +880,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 
 (defun my-sort-fields (field)
   "Sort region or following paragraph."
-  (interactive "p")
+  (interactive "*p")
   (save-excursion
     (if (and transient-mark-mode mark-active)
         (sort-fields field (region-beginning) (region-end))
@@ -886,18 +891,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 
 (defun my-sort-lines ()
   "Sort region or following paragraph."
-  (interactive)
-  (save-excursion
-    (if (and transient-mark-mode mark-active)
-        (sort-lines nil (region-beginning) (region-end))
-      (sort-lines nil (point-at-bol)
-                  (save-excursion
-                    (forward-paragraph)
-                    (point-at-eol))))))
-
-(defun my-sort-lines ()
-  "Sort region or following paragraph."
-  (interactive)
+  (interactive "*")
   (save-excursion
     (if (and transient-mark-mode mark-active)
         (sort-lines nil (region-beginning) (region-end))
@@ -908,7 +902,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 
 (defun my-tidy-lines ()
   "Tidy up lines."
-  (interactive)
+  (interactive "*")
   (let* ((start (if (region-active-p) (region-beginning) (point-at-bol)))
          (end  (if (region-active-p) (region-end) (point-at-eol)))
          (num-lines (count-lines start end)))
@@ -943,7 +937,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 
 (defun my-toggle-quotes ()
   "Toggle between single/double quotes."
-  (interactive)
+  (interactive "*")
   (let ((pos (point))
         (char (if (= (char-after) ?') ?\" ?')))
     (forward-sexp)
@@ -990,7 +984,7 @@ Only works if there are exactly two windows."
 
 (defun my-unfill ()
   "Unfill region if active, paragraph if not."
-  (interactive)
+  (interactive "*")
   (let ((fill-column (point-max)))
     (if (region-active-p)
         (fill-region (region-beginning) (region-end))
@@ -998,7 +992,7 @@ Only works if there are exactly two windows."
 
 (defun my-untabity ()
   "Untabify entire buffer."
-  (interactive)
+  (interactive "*")
   (save-excursion
     (untabify (point-min) (point-max))))
 
