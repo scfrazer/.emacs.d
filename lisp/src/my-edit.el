@@ -5,7 +5,7 @@
 (defun my-edit-kill-line (&optional arg)
   "Like kill-line, but use `my-edit-join-line-with-next' when at
 end-of-line (and it's not a empty line).  Kills region if active."
-  (interactive "P")
+  (interactive "*P")
   (when (and arg (listp arg))
     (append-next-kill)
     (setq arg nil))
@@ -19,6 +19,74 @@ end-of-line (and it's not a empty line).  Kills region if active."
               (t
                (kill-line arg)))
       (my-edit-join-line-with-next))))
+
+;;; Insert lines
+
+(defun my-edit-newline-and-indent (&optional arg)
+  "Go to end-of-line first, and if repeated adds a blank line above.
+With prefix arg, insert a blank line below if one doesn't exist."
+  (interactive "*P")
+  (if arg
+      (save-excursion
+        (forward-line 1)
+        (unless (looking-at "\\s-*$")
+          (insert "\n")))
+    (end-of-line)
+    (if (looking-back "^\\s-+" (point-at-bol))
+        (save-excursion
+          (beginning-of-line)
+          (newline))
+      (newline-and-indent))))
+
+(defun my-edit-newline-and-indent-above (&optional arg)
+  "Like `my-newline-and-indent' but goes up instead of down.
+With prefix arg, insert a blank line above if one doesn't exist."
+  (interactive "*P")
+  (if arg
+      (save-excursion
+        (forward-line -1)
+        (unless (looking-at "\\s-*$")
+          (end-of-line)
+          (insert "\n")))
+    (beginning-of-line)
+    (if (looking-at "\\s-+$")
+        (save-excursion
+          (end-of-line)
+          (newline))
+      (beginning-of-line)
+      (newline)
+      (forward-line -1))
+    (indent-according-to-mode)))
+
+(defun my-edit-newline-and-indent-around (&optional arg)
+  "Newline and indent, with blank lines above and below.
+With prefix arg, insert blank lines above and below if they doesn't exist."
+  (interactive "*P")
+  (if arg
+      (progn
+        (save-excursion
+          (forward-line -1)
+          (unless (looking-at "\\s-*$")
+            (end-of-line)
+            (insert "\n")))
+        (save-excursion
+          (forward-line 1)
+          (unless (looking-at "\\s-*$")
+            (insert "\n"))))
+    (beginning-of-line)
+    (unless (looking-at "\\s-*$")
+      (newline)
+      (forward-line -1))
+    (indent-according-to-mode)
+    (save-excursion
+      (forward-line)
+      (unless (looking-at "\\s-*$")
+        (newline)))
+    (save-excursion
+      (forward-line -1)
+      (unless (looking-at "\\s-*$")
+        (end-of-line)
+        (newline)))))
 
 ;;; Jump-to-char
 
@@ -48,7 +116,7 @@ end-of-line (and it's not a empty line).  Kills region if active."
 
 (defun my-edit-join-line-with-next ()
   "Join current line with next."
-  (interactive)
+  (interactive "*")
   (delete-indentation t)
   (just-one-space 1))
 
@@ -56,7 +124,7 @@ end-of-line (and it's not a empty line).  Kills region if active."
 
 (defun my-edit-yank ()
   "Like yank, but with prefix number yank that many times."
-  (interactive)
+  (interactive "*")
   (when (region-active-p)
     (kill-region (region-beginning) (region-end))
     (rotate-yank-pointer 1))
