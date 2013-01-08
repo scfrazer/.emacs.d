@@ -87,6 +87,8 @@
      `(compilation-error ((,class (:foreground "red"))))
      `(compilation-info ((,class (:foreground "green4"))))
      `(compilation-line-number ((,class (:foreground "blue4"))))
+     `(cperl-array-face ((t (:foreground "SlateBlue3" :weight normal))))
+     `(cperl-hash-face ((t (:foreground "turquoise3" :slant normal :weight normal))))
      `(default ((,class (:background "#ffffff" :foreground "black"))))
      `(flymake-errline ((,class (:underline "red" :weight normal))))
      `(flymake-warnline ((,class (:underline "magenta" :weight normal))))
