@@ -128,6 +128,8 @@
                    'show-paren-match-face
                    'show-paren-mismatch-face))
       (set-face-foreground face "#ffffff"))
+    (set-face-background 'flymake-errline "color-224")
+    (set-face-background 'flymake-warnline "color-222")
     (set-face-background 'trailing-whitespace "color-195")
     (set-face-background 'hl-line "color-230")))
 

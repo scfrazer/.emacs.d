@@ -1483,7 +1483,10 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
                     (looking-at "\\(default\\s-+\\|static\\s-+\\)?constraint"))
                   (sv-mode-get-indent-in-constraint offset beg pos at-closer)
                 (when sv-mode-line-up-brace
-                  (sv-mode-get-paren-lined-up-offset at-closer)))
+                  (if (looking-at "{\\s-*$")
+                      (+ (save-excursion (back-to-indentation) (current-column))
+                         (if at-closer 0 sv-mode-basic-offset))
+                    (sv-mode-get-paren-lined-up-offset at-closer))))
             (unless (or (and (= (char-after) ?\[) (not sv-mode-line-up-bracket))
                         (and (= (char-after) ?\() (not sv-mode-line-up-paren)))
               (sv-mode-get-paren-lined-up-offset at-closer))))

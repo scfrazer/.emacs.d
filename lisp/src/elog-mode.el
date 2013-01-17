@@ -18,64 +18,59 @@
 ;; Faces
 
 (defface elog-mode-error-face
-    '((((class color) (background dark)) (:foreground "red" :bold t))
-      (((class color) (background light)) (:foreground "red" :bold t)))
-    "Font Lock mode face used to highlight errors."
-    :group 'elog-mode)
+  '((t (:foreground "red")))
+  "Font Lock mode face used to highlight errors."
+  :group 'elog-mode)
 
 (defface elog-mode-warning-face
-    '((((class color) (background dark)) (:foreground "yellow2" :bold t))
-      (((class color) (background light)) (:foreground "yellow4" :bold t)))
-    "Font Lock mode face used to highlight warnings."
-    :group 'elog-mode)
+  '((t (:foreground "yellow4")))
+  "Font Lock mode face used to highlight warnings."
+  :group 'elog-mode)
 
 (defface elog-mode-debug-face
-    '((((class color) (background dark)) (:foreground "red" :background "yellow" :bold t))
-      (((class color) (background light)) (:foreground "red" :background "yellow" :bold t)))
-    "Font Lock mode face used to highlight debug markers."
-    :group 'elog-mode)
+  '((((class color) (background dark)) (:foreground "red" :background "yellow" :bold t))
+    (((class color) (background light)) (:foreground "red" :background "yellow" :bold t)))
+  "Font Lock mode face used to highlight debug markers."
+  :group 'elog-mode)
 
 (defface elog-mode-debug-msg-face
-    '((((class color) (background dark)) (:foreground "CadetBlue1"))
-      (((class color) (background light)) (:bold t)))
-    "Font Lock mode face used to highlight debug messages."
-    :group 'elog-mode)
+  '((((class color) (background dark)) (:foreground "CadetBlue1"))
+    (((class color) (background light)) (:bold t)))
+  "Font Lock mode face used to highlight debug messages."
+  :group 'elog-mode)
 
 (defface elog-mode-timestamp-face
-    '((((class color) (background dark)) (:foreground "plum2"))
-      (((class color) (background light)) (:foreground "purple3")))
-    "Font Lock mode face used to highlight timestamps."
-    :group 'elog-mode)
+  '((t (:foreground "plum4")))
+  "Font Lock mode face used to highlight timestamps."
+  :group 'elog-mode)
 
 (defface elog-mode-path-face
-    '((((class color) (background dark)) (:foreground "SkyBlue1"))
-      (((class color) (background light)) (:foreground "SteelBlue4")))
-    "Font Lock mode face used to highlight tags."
-    :group 'elog-mode)
+  '((t (:foreground "paleturquoise4")))
+  "Font Lock mode face used to highlight tags."
+  :group 'elog-mode)
 
 (defface elog-mode-domain-face
-    '((((class color) (background dark)) (:foreground "LightGoldenrod2" :bold t))
-      (((class color) (background light)) (:bold t)))
-    "Font Lock mode face used to highlight domain advance statements."
-    :group 'elog-mode)
+  '((t (:foreground "hotpink4")))
+  "Font Lock mode face used to highlight domain advance statements."
+  :group 'elog-mode)
 
 (defface elog-mode-send-face
-    '((((class color) (background dark)) (:foreground "white" :background "green3" :bold t))
-      (((class color) (background light)) (:foreground "white" :background "green3" :bold t)))
-    "Font Lock mode face used to highlight send statements."
-    :group 'elog-mode)
+  '((((class color) (background dark)) (:foreground "white" :background "green3" :bold t))
+    (((class color) (background light)) (:foreground "white" :background "green3" :bold t)))
+  "Font Lock mode face used to highlight send statements."
+  :group 'elog-mode)
 
 (defface elog-mode-match-face
-    '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
-      (((class color) (background light)) (:foreground "green3" :bold t)))
-    "Font Lock mode face used to highlight match statements."
-    :group 'elog-mode)
+  '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
+    (((class color) (background light)) (:foreground "green3" :bold t)))
+  "Font Lock mode face used to highlight match statements."
+  :group 'elog-mode)
 
 (defface elog-mode-pass-face
-    '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
-      (((class color) (background light)) (:foreground "green3" :bold t)))
-    "Font Lock mode face used to highlight pass statements."
-    :group 'elog-mode)
+  '((((class color) (background dark)) (:foreground "PaleGreen2" :bold t))
+    (((class color) (background light)) (:foreground "green3" :bold t)))
+  "Font Lock mode face used to highlight pass statements."
+  :group 'elog-mode)
 
 (defface elog-mode-msg-level-face
   '((((class color) (background dark)) (:foreground "cyan3"))
@@ -84,10 +79,9 @@
   :group 'elog-mode)
 
 (defface elog-mode-msg-face
-    '((((class color) (background dark)) (:foreground "PaleTurquoise2"))
-      (((class color) (background light)) (:foreground "tan4")))
-    "Font Lock mode face used to highlight messages."
-    :group 'elog-mode)
+  '((t (:foreground "darkblue")))
+  "Font Lock mode face used to highlight messages."
+  :group 'elog-mode)
 
 (defface elog-mode-highlight-phase-face
   '((((class color) (background dark)) (:foreground "white" :background "slateblue3" :bold t))
@@ -109,7 +103,7 @@
     ("^\\(\\[.*?\\]\\) \\(.*?: \\)"
      (1 'elog-mode-timestamp-face)
      (2 'elog-mode-path-face))
-    (": \\(\\(.+ advancing to .+ phase\\|\\*\\{10\\}\\).*\\)"
+    (": \\(\\(.+ advancing to.+\\|\\*\\{10\\}\\).*\\)"
      (0 'elog-mode-domain-face))
     ("Sending.*"
      (0 'elog-mode-send-face))
@@ -135,7 +129,7 @@
 (defun elog-mode-next-phase (arg reset)
   "Goto next TESTFLOW phase (or error)."
   (interactive)
-  (let ((phase-or-error-regexp "\\(: .+ advancing to .+ phase\\|!!!! ERROR ERROR ERROR !!!!\\|\\*\\*\\* Dut error\\)")
+  (let ((phase-or-error-regexp "\\(: .+ advancing to\\|!!!! ERROR ERROR ERROR !!!!\\|\\*\\*\\* Dut error\\)")
         ov)
     (if (and arg (< arg 0))
         (re-search-backward phase-or-error-regexp)
@@ -184,7 +178,7 @@
 (defun elog-mode-hide-phase ()
   "Hide current phase."
   (let ((marker-regexp (concat "^.+?\\(" elog-mode-testflow-regexp "\\|" elog-mode-config-sep-regexp "\\)"))
-         start end)
+        start end)
     (save-excursion
       (when (re-search-backward marker-regexp nil 'go)
         (if (string= (match-string-no-properties 1) elog-mode-testflow-regexp)
