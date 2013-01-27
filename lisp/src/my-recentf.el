@@ -16,6 +16,11 @@
   (hl-line-mode 1))
 (add-hook 'recentf-dailog-mode-hook 'my-recentf-dialog-mode-hook)
 
+(defun recentf-load-list ()
+  (interactive))
+(defun recentf-save-list ()
+  (interactive))
+
 (recentf-mode t)
 
 (provide 'my-recentf)

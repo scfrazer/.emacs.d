@@ -1479,6 +1479,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'gb 'grep-buffers)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'ind 'my-indent)
+(defalias 'init (lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/init.el"))))
 (defalias 'kr 'browse-kill-ring)
 (defalias 'med 'my-font-medium)
 (defalias 'mf 'make-frame-on-display)
