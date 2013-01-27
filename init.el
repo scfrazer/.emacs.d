@@ -61,6 +61,7 @@
 
 (message "~/.emacs.d/init.el -1 load time = %.3f s" (my-get-load-time))
 
+(require 'my-abbrev)
 (require 'my-bs)
 (require 'my-bookmark)
 (require 'my-calculator)
@@ -70,7 +71,6 @@
 (require 'my-doxymacs)
 (require 'my-ediff)
 (require 'my-edit)
-(require 'my-expand)
 (require 'my-ffap)
 (require 'my-grep-ed)
 (require 'my-ido)
@@ -304,7 +304,7 @@
 
 (message "~/.emacs.d/init.el 1 load time = %.3f s" (my-get-load-time))
 
-(yas/load-directory "~/.emacs.d/lisp/yasnippet/snippets")
+;; (yas/load-directory "~/.emacs.d/lisp/yasnippet/snippets")
 
 (message "~/.emacs.d/init.el 2 load time = %.3f s" (my-get-load-time))
 
@@ -1259,7 +1259,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
 (my-keys-define "C-M-y" 'my-edit-yank-pop)
-(my-keys-define "C-\\" 'my-expand-yasnippet-or-abbrev)
+(my-keys-define "C-\\" 'expand-abbrev)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c +" 'my-inc-num)

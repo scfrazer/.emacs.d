@@ -119,4 +119,28 @@
   (forward-char 1))
 (setq sv-mode-uvm-err-function 'my-sv-mode-uvm-err)
 
+(define-abbrev sv-mode-abbrev-table
+  "for"
+  "for"
+  (lambda()
+    (let ((var (read-from-minibuffer "Loop variable? " "idx"))
+          (limit (read-from-minibuffer "Limit? ")))
+      (insert "(int " var " = 0; " var " < " limit "; " var "++) begin\n")
+      (sv-mode-indent-line)
+      (save-excursion
+        (insert "\nend")
+        (sv-mode-indent-line)))))
+
+(define-abbrev sv-mode-abbrev-table
+  "forenum"
+  "for"
+  (lambda()
+    (let ((type (read-from-minibuffer "Enum type? "))
+          (var (read-from-minibuffer "Loop variable? ")))
+      (insert "(int idx=0, " type " " var "=" var ".first; idx < " var ".num; idx++, " var "=" var ".next) begin\n")
+      (sv-mode-indent-line)
+      (save-excursion
+        (insert "\nend")
+        (sv-mode-indent-line)))))
+
 (provide 'my-sv-mode)
