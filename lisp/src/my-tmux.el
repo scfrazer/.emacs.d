@@ -1,17 +1,18 @@
 ;;; my-tmux.el
 
-(setq-default interprogram-cut-function 'my-interprogram-cut-function)
-
 (defvar my-tmux-max-copy-length 5000
   "*Max length of string to copy to tmux in `my-interprogram-cut-function'.")
 
 (defun my-interprogram-cut-function (text)
   "Don't copy if in a keyboard macro, and if in a tmux session also copy TEXT to a tmux buffer (if it's not too big)."
   (unless executing-kbd-macro
-    (x-select-text text)
+    (when (display-graphic-p)
+      (x-select-text text))
     (when (and (getenv "TMUX")
                (<= (length text) my-tmux-max-copy-length))
       (my-tmux-copy text))))
+
+(setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
 (defun my-tmux-copy-region (beg end)
   "Copy region to tmux buffer."
