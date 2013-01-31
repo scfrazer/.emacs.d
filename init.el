@@ -1493,6 +1493,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
+(defalias 'work (lambda () (interactive) (find-file (expand-file-name "~/Documents/Org/Work.org"))))
 (defalias 'ws 'my-font-lock-show-whitespace)
 
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
