@@ -1030,21 +1030,21 @@ function/task definition/implementation in other file."
   "Turn a task/function prototype into a skeleton implementation."
   (interactive)
   (let ((proto (sv-mode-parse-prototype))
-        pos lim next-func-type namespaces next-func-re this-func-re)
+        pos lim prev-func-type namespaces prev-func-re this-func-re)
     (save-excursion
       (setq namespaces (sv-mode-get-namespaces))
-      (sv-mode-re-search-forward ";" nil t)
+      (back-to-indentation)
       (setq pos (point))
-      (sv-mode-end-of-scope)
+      (sv-mode-beginning-of-scope)
       (setq lim (point))
       (goto-char pos)
-      (when (sv-mode-re-search-forward
+      (when (sv-mode-re-search-backward
              "\\(task\\|function\\)\\s-+.*?\\([a-zA-Z0-9_]+\\)\\s-*[(;]" lim t)
-        (setq next-func-type (match-string-no-properties 1))
-        (setq next-func-re (match-string-no-properties 2))
+        (setq prev-func-type (match-string-no-properties 1))
+        (setq prev-func-re (match-string-no-properties 2))
         (dolist (ns (reverse namespaces))
-          (setq next-func-re (concat ns "::" next-func-re)))
-        (setq next-func-re (concat next-func-type ".+\\_<" next-func-re "\\_>")))
+          (setq prev-func-re (concat ns "::" prev-func-re)))
+        (setq prev-func-re (concat prev-func-type ".+\\_<" prev-func-re "\\_>")))
       (ff-get-other-file)
       (goto-char (point-min))
       ;; If task/function already exists, update it
@@ -1061,15 +1061,10 @@ function/task definition/implementation in other file."
             (delete-region pos (point))
             (sv-mode-insert-prototype proto namespaces))
         ;; Task/function doesn't exist, insert a blank one
-        (if (not next-func-re)
+        (if (not prev-func-re)
             (goto-char (point-max))
-          (when (sv-mode-re-search-forward next-func-re nil 'go)
-            (sv-mode-beginning-of-statement)
-            (sv-mode-re-search-backward
-             (concat";\\|" (regexp-opt '("`define" "`else" "`elsif" "`endif"
-                                         "`ifdef" "`ifndef" "`include"
-                                         "`timescale" "`undef")) ".+\\|"
-                                         sv-mode-end-regexp))
+          (when (sv-mode-re-search-forward prev-func-re nil 'go)
+            (sv-mode-re-search-forward (concat "end" prev-func-type ".+"))
             (forward-line 1)))
         (insert "\n")
         (sv-mode-insert-prototype proto namespaces)
