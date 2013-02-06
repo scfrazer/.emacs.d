@@ -32,6 +32,11 @@
       (goto-char (point-min))
       (while (re-search-forward "[$(){}]" nil t)
         (replace-match ""))
+      (goto-char (point-min))
+      ;; Remove @<line number> from end ... these can be accidentally pulled
+      ;; in while trying to get @@/main/LATEST ClearCase type things
+      (when (re-search-forward "@[0-9]+$" nil t)
+        (replace-match ""))
       (setq ad-return-value (buffer-substring (point-min) (point-max)))
       (setq ffap-string-at-point ad-return-value))))
 
