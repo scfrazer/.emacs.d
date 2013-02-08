@@ -23,6 +23,8 @@
    `(cperl-hash-face ((t (:foreground "cyan" :slant normal :weight normal))))
    `(cperl-nonoverridable-face ((,class (:foreground "color-170"))))
    `(cursor ((,class (:background "color-28"))))
+   `(custom-group-tag ((,class (:foreground "color-75"))))
+   `(custom-variable-tag ((,class (:foreground "color-75"))))
    `(dired-marked ((,class (:background "color-32" :foreground "color-231"))))
    `(flymake-errline ((,class (:background "color-224"))))
    `(flymake-warnline ((,class (:background "color-230"))))

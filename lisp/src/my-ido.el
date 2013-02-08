@@ -7,10 +7,9 @@
 (require 'imenu)
 (require 'etags)
 
-(ido-mode 1)
-
 (setq ido-enable-flex-matching t
       ido-ignore-extensions t
+      ido-save-directory-list-file nil
       ido-max-dir-file-cache 0
       ido-max-directory-size 300000
       ido-max-prospects 10
@@ -19,6 +18,8 @@
       ido-enter-matching-directory 'first
       ido-auto-merge-work-directories-length -1
       ido-ignore-buffers '(my-bs-ignore-buffer))
+
+(ido-mode 1)
 
 ;; ido + bookmarks
 
