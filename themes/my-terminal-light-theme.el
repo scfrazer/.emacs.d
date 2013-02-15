@@ -1,12 +1,3 @@
-(defun my-x-color-to-tty-color ()
-  (interactive)
-  (let (x-color end)
-    (skip-chars-backward "a-zA-Z0-9")
-    (setq end (save-excursion (skip-chars-forward "a-zA-Z0-9") (point)))
-    (setq x-color (buffer-substring-no-properties (point) end))
-    (kill-region (point) end)
-    (insert "color-" (number-to-string (tty-color-translate x-color)))))
-
 (deftheme my-terminal-light
   "Terminal with light background.")
 

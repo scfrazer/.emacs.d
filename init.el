@@ -675,6 +675,25 @@ end of a non-blank line, or insert an 80-column comment line"
     (unless (equal buf (current-buffer))
       (kill-buffer buf))))
 
+(defvar my-push-marker (make-marker))
+(defun my-push-mark-and-marker (&optional arg)
+  "Push mark and create/move a marker.  With ARG, pop to mark/marker."
+  (interactive "P")
+  (if arg
+      (let ((buf (marker-buffer my-push-marker))
+            (pos (marker-position my-push-marker))
+            recenter)
+        (when (and buf pos)
+          (switch-to-buffer buf)
+          (setq recenter (not (pos-visible-in-window-p pos)))
+          (goto-char pos)
+          (when recenter
+            (recenter))))
+    (push-mark)
+    (setq my-push-marker (point-marker))
+    (set-marker-insertion-type my-push-marker t)
+    (message "Mark set")))
+
 (defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name on the clipboard"
   (interactive "P")
@@ -684,9 +703,8 @@ end of a non-blank line, or insert an 80-column comment line"
     (when filename
       (when arg
         (setq filename (file-name-nondirectory filename)))
-      (let ((x-select-enable-clipboard t))
-        (kill-new filename)
-        (message filename)))))
+      (funcall interprogram-cut-function filename)
+      (message filename))))
 
 (defun my-prettify ()
   "Remove trailing space, untabify, reindent."
@@ -1015,24 +1033,15 @@ Does not set point.  Does nothing if mark ring is empty."
         (goto-char (mark t)))
       (deactivate-mark))))
 
-(defvar my-push-marker (make-marker))
-(defun my-push-mark-and-marker (&optional arg)
-  "Push mark and create/move a marker.  With ARG, pop to mark/marker."
-  (interactive "P")
-  (if arg
-      (let ((buf (marker-buffer my-push-marker))
-            (pos (marker-position my-push-marker))
-            recenter)
-        (when (and buf pos)
-          (switch-to-buffer buf)
-          (setq recenter (not (pos-visible-in-window-p pos)))
-          (goto-char pos)
-          (when recenter
-            (recenter))))
-    (push-mark)
-    (setq my-push-marker (point-marker))
-    (set-marker-insertion-type my-push-marker t)
-    (message "Mark set")))
+(defun my-x-color-to-tty-color ()
+  (interactive)
+  (let (color-num end)
+    (skip-chars-backward "a-zA-Z0-9")
+    (setq end (save-excursion (skip-chars-forward "a-zA-Z0-9") (point)))
+    (setq color-num (tty-color-translate (buffer-substring-no-properties (point) end)))
+    (when (> color-num 15)
+      (kill-region (point) end)
+      (insert "color-" (number-to-string color-num)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
