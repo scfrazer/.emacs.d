@@ -1,145 +1,218 @@
 ;;; cc-status.el
 
 (require 'clearcase)
+(eval-when-compile (require 'cl))
 
-;; Status tree
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar cc-status-tree-ignore-regexps (list "\\.cmake\\.state"
-                                            "rtl/Makefile\\(\\..+\\)?"
-                                            "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
-                                            "rtl/dump.rdl")
-  "*Regexps to ignore in cc-status-tree.")
+(defvar cc-status-ignore-regexps (list "ver/build"
+                                       "/obj\\(64\\)?"
+                                       "\\.cmake\\.state"
+                                       "rtl/Makefile\\(\\..+\\)?"
+                                       "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
+                                       "rtl/dump.rdl")
+  "*Regexps of view-private elements to ignore.")
 
-(defvar cc-status-tree-filter t
-  "*Use `cc-status-tree-ignore-regexps' to filter files/dirs.")
+(defvar cc-status-filter t
+  "*Use `cc-status-ignore-regexps' to filter view-private elements.")
 
-(defvar cc-status-tree-dir-name nil
-  "ClearCase status tree directory name.")
-(make-variable-buffer-local 'cc-status-tree-dir-name)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun cc-status-tree ()
-  "Create ClearCase status tree."
+(defstruct cc-status-elm filename private reserved successor mastered)
+
+(defun cc-status ()
+  "ClearCase status."
   (interactive)
-  (let ((buf (get-buffer-create "*cc-status-tree*")))
+  (let ((buf (get-buffer-create "*cc-status*")))
     (set-buffer buf)
-    (unless cc-status-tree-dir-name
-      (cc-status-tree-change-dir default-directory)
-      (cc-status-tree-mode))
+    (cc-status-refresh)
+    (cc-status-mode)
     (switch-to-buffer buf)))
 
-(defun cc-status-tree-change-dir (&optional dir)
-  "Change directories."
-  (interactive)
-  (setq dir (or dir cc-status-tree-dir-name))
-  (setq cc-status-tree-dir-name
-        (replace-regexp-in-string
-         "/$" ""
-         (read-directory-name "ClearCase status for dir? " dir nil t)))
-  (cc-status-tree-refresh))
-
-(defun cc-status-tree-refresh ()
-  "Refresh the cc-status tree buffer."
+(defun cc-status-refresh ()
+  "Refresh the cc-status buffer."
   (interactive)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (insert cc-status-tree-dir-name ":"
-          (if cc-status-tree-filter " (filtered)" "")
-          "\n\n")
-  (call-process-shell-command (concat
-                               "(cleartool lscheckout -me -r -cview -fmt '(%Rf) %n\\n' "
-                               cc-status-tree-dir-name
-                               " ; cleartool lspri -other "
-                               cc-status-tree-dir-name ")") nil t)
-  (cc-status-goto-first-file-line)
-  (while (not (eobp))
-    (if (cc-status-tree-ignore-entry)
-        (delete-region (line-beginning-position) (1+ (line-end-position)))
-      (insert "  ")
-      (cond ((looking-at "(reserved)")
-             (forward-sexp)
-             (insert "  "))
-            ((not (looking-at "(unreserved)"))
-             (insert          "?            ")))
-      (forward-line 1)))
-  (cc-status-goto-first-file-line)
-  (while (re-search-forward (concat cc-status-tree-dir-name "/") nil t)
-    (replace-match ""))
-  (goto-char (point-min))
-  (cc-status-mode-next)
-  (sort-regexp-fields nil cc-status-item-regexp "\\2" (point) (point-max))
+  (message "Refreshing ClearCase status ...")
+  (insert "ClearCase Status:\n\n")
+  (insert "  PRSM  Filename\n")
+  (insert "  ----  ------------------------------------------------------------------------\n")
+  (save-excursion
+    (call-process-shell-command "cleartool lspri -long -co -other" nil t))
+  (let (elms filename version reserved successor mastered)
+    (while (not (eobp))
+      (cond ((looking-at "view private object\\s-+\\(.+\\)")
+             (setq filename (match-string-no-properties 1))
+             (unless (and cc-status-filter
+                          (catch 'ignore
+                            (dolist (regexp cc-status-ignore-regexps)
+                              (when (string-match regexp filename)
+                                (throw 'ignore t)))))
+               (push (make-cc-status-elm :filename filename :private t) elms)))
+            ((looking-at "version\\s-+\\([^@]+\\).+ from \\([^ \t]+\\)")
+             (setq filename (match-string-no-properties 1)
+                   version (match-string-no-properties 2))
+             ;; TODO Check if it's reserved, has a successor, and if mastered elsewhere
+             (push (make-cc-status-elm :filename filename :reserved reserved :successor successor :mastered mastered) elms)))
+      (delete-region (point) (progn (forward-line 1) (point))))
+    (setq elms (sort elms #'(lambda (x y) (string< (cc-status-elm-filename x) (cc-status-elm-filename y)))))
+    (dolist (elm elms)
+      (insert "  "
+              (if (cc-status-elm-private elm) "P" " ")
+              (if (cc-status-elm-reserved elm) "R" " ")
+              (if (cc-status-elm-successor elm) "S" " ")
+              (if (cc-status-elm-mastered elm) "M" " ")
+              "  " (cc-status-elm-filename elm) "\n")))
+  (cc-status-goto-first-file)
   (setq buffer-read-only t)
-  (set-buffer-modified-p nil))
+  (set-buffer-modified-p nil)
+  (message ""))
 
-(defun cc-status-tree-ignore-entry ()
-  "Return t if current line should be ignored."
-  (and cc-status-tree-filter
-       (catch 'ignore
-         (dolist (regexp cc-status-tree-ignore-regexps)
-           (when (re-search-forward regexp (line-end-position) t)
-             (throw 'ignore t))))))
-
-(defun cc-status-tree-toggle-filter()
-  "Toggle showing all entries."
+(defun cc-status-goto-first-file ()
+  "Go to the first file."
   (interactive)
-  (setq cc-status-tree-filter (not cc-status-tree-filter))
-  (cc-status-tree-refresh))
-
-;; Status checkouts
-
-(defun cc-status-checkouts ()
-  "Create ClearCase status for checkouts."
-  (interactive)
-  (let ((buf (get-buffer-create "*cc-status-checkouts*")))
-    (set-buffer buf)
-    (cc-status-checkouts-refresh)
-    (cc-status-checkouts-mode)
-    (switch-to-buffer buf)))
-
-(defun cc-status-checkouts-refresh ()
-  "Refresh the cc-status checkouts buffer."
-  (interactive)
-  (setq buffer-read-only nil)
-  (erase-buffer)
-  (insert "Checkouts:\n\n")
-  (call-process-shell-command "cleartool lspri -co -short | xargs cleartool describe -fmt '(%Rf) %n\\n'" nil t)
-  (cc-status-goto-first-file-line)
-  (while (not (eobp))
-    (insert "  ")
-    (when (looking-at "(reserved)")
-      (forward-sexp)
-      (insert "  "))
-    (forward-line 1))
-  (cc-status-goto-first-file-line)
   (goto-char (point-min))
-  (cc-status-mode-next)
-  (sort-regexp-fields nil cc-status-item-regexp "\\2" (point) (point-max))
-  (setq buffer-read-only t)
-  (set-buffer-modified-p nil))
+  (forward-line 4))
 
-;; Common
+(defun cc-status-goto-last-file ()
+  "Go to the last file."
+  (interactive)
+  (goto-char (point-max))
+  (forward-line -1))
 
-(defvar cc-status-item-regexp "^[IUXDA ] \\((unreserved)\\|(reserved)  \\|?           \\) \\(.+\\)$"
-  "Item regexp.")
+(defun cc-status-next-file ()
+  "Go to next file."
+  (interactive)
+  (forward-line 1)
+  (when (looking-at "^$")
+    (forward-line -1)))
 
-(defun cc-status-goto-first-file-line ()
-  "Go to the first line where a file would be."
-  (goto-char (point-min))
-  (forward-line 2))
+(defun cc-status-prev-file ()
+  "Go to previous file."
+  (interactive)
+  (forward-line -1)
+  (when (looking-at "\\s-+-")
+    (forward-line 1)))
 
-(defun cc-status-mode-open-file ()
+(defun cc-status-open-file ()
   "Open file."
   (interactive)
   (beginning-of-line)
-  (when (looking-at cc-status-item-regexp)
-    (find-file (concat
-                cc-status-tree-dir-name "/" ; TODO
-                (match-string-no-properties 2)))))
+  (when (looking-at "[^/]+\\(/.+\\)$")
+    (find-file (match-string-no-properties 1))))
 
-(defun cc-status-mode-execute ()
+(defun cc-status-ediff ()
+  "Ediff the current file."
+  (interactive)
+  (beginning-of-line)
+  (if (looking-at ".  [^/]+\\(/.+\\)$")
+      (let ((filename (match-string-no-properties 1)))
+        (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename)))
+    (error "Can't diff a view-private file.")))
+
+(defun cc-status-mark-for-unreserve ()
+  "Mark for unreserve."
+  (interactive)
+  (when (looking-at "\\s-+P")
+    (error "Can't unreserve a view-private file."))
+  (unless (looking-at "\\s-+R")
+    (error "File is already unreserved."))
+  (cc-status-mark "R"))
+
+(defun cc-status-mark-for-merge-with-successor ()
+  "Mark for merging with successor."
+  (interactive)
+  (when (looking-at "\\s-+P")
+    (error "File is view-private."))
+  (unless (looking-at "\\s-+R")
+    (error "File does not have a successor."))
+  (cc-status-mark "S"))
+
+(defun cc-status-mark-for-master ()
+  "Mark for local mastering."
+  (interactive)
+  (when (looking-at "\\s-+P")
+    (error "File is view-private."))
+  (unless (looking-at "\\s-+M")
+    (error "File is already locally mastered."))
+  (cc-status-mark "M"))
+
+(defun cc-status-mark-for-checkin ()
+  "Mark file for checkin."
+  (interactive)
+  (when (looking-at "\\s-+\\([PRSM]\\)")
+    (let ((problem (match-string-no-properties 1)))
+      (cond ((string= problem "P")
+             (error "Can't checkin a view-private file."))
+            ((string= problem "R")
+             (error "Someone has this element checked out reserved."))
+            ((string= problem "S")
+             (error "There is a successor to this element."))
+            ((string= problem "M")
+             (error "This element is mastered elsewhere.")))))
+  (cc-status-mark "I"))
+
+(defun cc-status-mark-for-checkout-keep ()
+  "Mark file for checkout with keep."
+  (interactive)
+  (when (looking-at "\\s-+P")
+    (error "Can't uncheckout a view-private file."))
+  (cc-status-mark "U"))
+
+(defun cc-status-mark-for-checkout-rm ()
+  "Mark file for checkout with rm."
+  (interactive)
+  (when (looking-at "\\s-+P")
+    (error "Can't uncheckout a view-private file."))
+  (cc-status-mark "!"))
+
+(defun cc-status-mark-for-mkelem ()
+  "Mark file for mkelem."
+  (interactive)
+  (unless (looking-at "\\s-+P")
+    (error "This ClearCase element already exists."))
+  (cc-status-mark "A"))
+
+(defun cc-status-mark-for-delete ()
+  "Mark file for deletion."
+  (interactive)
+  (unless (looking-at "\\s-+P")
+    (error "Can't delete a ClearCase element."))
+  (cc-status-mark "D"))
+
+(defun cc-status-mark (mark-letter)
+  "Mark a file."
+  (setq buffer-read-only nil)
+  (delete-char 1)
+  (insert mark-letter)
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil)
+  (cc-status-next-file))
+
+(defun cc-status-unmark ()
+  "Unmark file."
+  (interactive)
+  (beginning-of-line)
+  (setq buffer-read-only nil)
+  (delete-char 1)
+  (insert " ")
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil)
+  (cc-status-next-file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defconst cc-status-comment-buffer-name "*cc-status-comment*")
+
+(defvar cc-status-cs-changes nil)
+(defvar cc-status-prev-window-config nil)
+
+(defun cc-status-execute ()
   "Execute commands on marked files."
   (interactive)
   (when (y-or-n-p "Operate on marked files? ")
-    (cc-status-goto-first-file-line)
+    (cc-status-goto-first-file)
     (if (not (save-excursion (re-search-forward "^[IA]" nil t)))
         (cc-status-do-operations)
       (setq cc-status-prev-window-config (current-window-configuration))
@@ -148,103 +221,72 @@
 
 (defun cc-status-do-operations (&optional comment)
   "Do marked operations."
-  (setq comment (or comment ""))
-  (let (filename)
-    (goto-char (point-max))
-    (while (re-search-backward cc-status-item-regexp nil t)
-      (setq filename (concat cc-status-tree-dir-name "/" ; TODO
-                             (match-string-no-properties 2)))
-      (beginning-of-line)
-      (cond ((= (char-after) ?I)
-             (clearcase-commented-checkin filename comment))
-            ((= (char-after) ?U)
+  (setq comment (or comment "")
+        cc-status-cs-changes nil)
+  (cc-status-goto-first-file)
+  (let (operation filename)
+    (when (and (not (eobp))
+               (looking-at "\\([RSMIU!AD]\\)[^/]+\\(/.+\\)$"))
+      (setq operation (match-string-no-properties 1)
+            filename (match-string-no-properties 2))
+      (cond ((string= operation "R")
+             (cc-status-unreserve filename))
+            ((string= operation "S")
+             nil) ;; TODO
+            ((string= operation "M")
+             nil) ;; TODO
+            ((string= operation "I")
+             (cc-status-checkin filename comment))
+            ((string= operation "U")
              (clearcase-uncheckout filename))
-            ((= (char-after) ?X)
+            ((string= operation "!")
              (let ((clearcase-keep-uncheckouts nil))
                (clearcase-uncheckout filename)))
-            ((= (char-after) ?A)
-             (clearcase-commented-mkelem filename t comment))
-            ((= (char-after) ?D)
-             (delete-file filename)))))
-  (cc-status-tree-refresh))
+            ((string= operation "A")
+             nil) ;; TODO (clearcase-commented-mkelem filename t comment))
+            ((string= operation "D")
+             (delete-file filename)))
+      (forward-line 1)))
+  (cc-status-refresh)
+  (when cc-status-cs-changes
+    (kill-new cc-status-cs-changes)
+    (message "Your config spec needs to be updated, changes are in the kill-ring.")))
 
-(defun cc-status-mode-next ()
-  "Go to next file."
-  (interactive)
-  (end-of-line)
-  (re-search-forward cc-status-item-regexp nil t)
-  (beginning-of-line))
+(defun cc-status-unreserve (filename)
+  "Unreserve file."
+  (message (concat "Unreserving " filename " ..."))
+  (let (view)
+    (with-temp-buffer
+      (insert (clearcase-ct-blocking-call "lsco" "-l" filename))
+      (goto-char (point-min))
+      (when (re-search-forward "(reserved)" nil t)
+        (when (re-search-forward "by view:.+?:\\(.+?\\)\"" nil t)
+          (setq view (match-string 1)))))
+    (if (not view)
+        (message (concat filename " is not reserved by anyone"))
+      (clearcase-ct-blocking-call "unres" "-view" view filename)
+      (let ((buf (get-file-buffer filename)))
+        (when buf
+          (with-current-buffer buf
+            (revert-buffer nil t))))))
+  (message ""))
 
-(defun cc-status-mode-prev ()
-  "Go to previous file."
-  (interactive)
-  (re-search-backward cc-status-item-regexp nil t)
-  (beginning-of-line))
-
-(defun cc-status-mode-ediff ()
-  "Ediff the current file."
-  (interactive)
-  (let ((truename (clearcase-fprop-truename (dired-get-filename)))) ; TODO
-    (clearcase-ediff-file-with-version truename (clearcase-fprop-predecessor-version truename)))
-
-(defun cc-status-mode-unmark ()
-  "Unmark file."
-  (interactive)
-  (beginning-of-line)
-  (unless (looking-at cc-status-item-regexp)
-    (error "Must be on a line with a file"))
-  (setq buffer-read-only nil)
-  (delete-char 1)
-  (insert " ")
-  (setq buffer-read-only t)
-  (set-buffer-modified-p nil)
-  (cc-status-mode-next))
-
-(defun cc-status-mode-mark-for-checkin ()
-  "Mark file for checkin."
-  (interactive)
-  (cc-status-mode-mark t "I"))
-
-(defun cc-status-mode-mark-for-checkout-keep ()
-  "Mark file for checkout with keep."
-  (interactive)
-  (cc-status-mode-mark t "U"))
-
-(defun cc-status-mode-mark-for-checkout-rm ()
-  "Mark file for checkout with rm."
-  (interactive)
-  (cc-status-mode-mark t "X"))
-
-(defun cc-status-mode-mark-for-mkelem ()
-  "Mark file for mkelem."
-  (interactive)
-  (cc-status-mode-mark nil "A"))
-
-(defun cc-status-mode-mark-for-delete ()
-  "Mark file for deletion."
-  (interactive)
-  (cc-status-mode-mark nil "D"))
-
-(defun cc-status-mode-mark (must-be-co mark-letter)
-  "Mark a file."
-  (beginning-of-line)
-  (if must-be-co
-      (unless (looking-at ". (")
-        (error "Must be on a line with a checked-out file"))
-    (when (looking-at ". (")
-      (error "Must be on a line with a uncatalogued file")))
-  (setq buffer-read-only nil)
-  (delete-char 1)
-  (insert mark-letter)
-  (setq buffer-read-only t)
-  (set-buffer-modified-p nil)
-  (cc-status-mode-next))
-
-;; Comment operations
-
-(defconst cc-status-comment-buffer-name "*cc-status-comment*")
-
-(defvar cc-status-prev-window-config nil)
+(defun cc-status-checkin (filename comment)
+  "Check in file and gather config spec changes."
+  (message (concat "Checking in " filename " ..."))
+  (with-temp-buffer
+    (if (not comment)
+        (insert (clearcase-ct-blocking-call "ci" "-nc" filename))
+      (let ((temp-file (make-temp-file "cc-status-comment-")))
+        (with-temp-file temp-file
+          (insert comment))
+        (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file filename))
+        (delete-file temp-file)))
+    (goto-char (point-min))
+    (when (re-search-forward "Checked in .+ version \"\\(.+\\)\"" nil t)
+      (setq cc-status-cs-changes
+            (concat cc-status-cs-changes "element " filename " " (match-string-no-properties 1) "\n"))))
+  (message ""))
 
 (define-derived-mode cc-status-comment-mode text-mode "cc-status-comment-mode"
   "Add comments for checkin or mkelem."
@@ -259,87 +301,80 @@
       (set-window-configuration cc-status-prev-window-config))
     (cc-status-do-operations comment)))
 
-;; Map
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar cc-status-tree-mode-map nil
+;; Keymap
+
+(defvar cc-status-mode-map nil
   "`cc-status-mode' keymap.")
 
-(unless cc-status-tree-mode-map
+(unless cc-status-mode-map
   (let ((map (make-sparse-keymap)))
 
     (define-key map "q" 'bury-buffer)
-    (define-key map "g" 'cc-status-tree-refresh)
-    (define-key map "f" 'cc-status-tree-toggle-filter)
+    (define-key map "g" 'cc-status-refresh)
 
-    (define-key map (kbd "RET") 'cc-status-mode-open-file)
-    (define-key map "j" 'cc-status-tree-change-dir)
-    (define-key map "x" 'cc-status-mode-execute)
+    (define-key map "n" 'cc-status-next-file)
+    (define-key map "p" 'cc-status-prev-file)
+    (define-key map (kbd "C-n") 'cc-status-next-file)
+    (define-key map (kbd "C-p") 'cc-status-prev-file)
+    (define-key map (kbd "<down>") 'cc-status-next-file)
+    (define-key map (kbd "<up>") 'cc-status-prev-file)
 
-    (define-key map (kbd "<down>") 'cc-status-mode-next)
-    (define-key map (kbd "<up>") 'cc-status-mode-prev)
-    (define-key map (kbd "C-n") 'cc-status-mode-next)
-    (define-key map (kbd "C-p") 'cc-status-mode-prev)
-    (define-key map "n" 'cc-status-mode-next)
-    (define-key map "p" 'cc-status-mode-prev)
+    (define-key map (kbd "RET") 'cc-status-open-file)
+    (define-key map "=" 'cc-status-ediff)
 
-    (define-key map "=" 'cc-status-mode-ediff)
+    ;; TODO (define-key map "r" 'cc-status-mark-for-unreserve)
+    ;; TODO (define-key map "s" 'cc-status-mark-for-merge-with-successor)
+    ;; TODO (define-key map "m" 'cc-status-mark-for-master)
+    (define-key map "i" 'cc-status-mark-for-checkin)
+    (define-key map "u" 'cc-status-mark-for-checkout-keep)
+    (define-key map "!" 'cc-status-mark-for-checkout-rm)
+    ;; TODO (define-key map "a" 'cc-status-mark-for-mkelem)
+    (define-key map "d" 'cc-status-mark-for-delete)
+    (define-key map (kbd "SPC") 'cc-status-unmark)
+    (define-key map "x" 'cc-status-execute)
 
-    (define-key map (kbd "SPC") 'cc-status-mode-unmark)
+    (define-key map (kbd "M-<") 'cc-status-goto-first-file)
+    (define-key map (kbd "M->") 'cc-status-goto-last-file)
 
-    (define-key map "i" 'cc-status-mode-mark-for-checkin)
-    (define-key map "u" 'cc-status-mode-mark-for-checkout-keep)
-    (define-key map "U" 'cc-status-mode-mark-for-checkout-rm)
-
-    (define-key map "a" 'cc-status-mode-mark-for-mkelem)
-    (define-key map "d" 'cc-status-mode-mark-for-delete)
-
-    (setq cc-status-tree-mode-map map)))
+    (setq cc-status-mode-map map)))
 
 ;; Font-lock
 
 (defvar cc-status-mode-font-lock-keywords
   '(
-    ("^\\(.+\\):"
-     (1 font-lock-function-name-face))
+    ("^ClearCase Status:"
+     (0 font-lock-function-name-face))
     ("^[IA].+"
      (0 font-lock-variable-name-face))
-    ("^[UXD].+"
+    ("^[U!D].+"
      (0 font-lock-warning-face))
-    ("(\\(un\\)?reserved)"
+    ("^\\s-+P\\s-+/[^ \t]+$"
+     (0 font-lock-comment-face))
+    ("^\\s-+[RSM]\\s-+/[^ \t]+$"
+     (0 font-lock-preprocessor-face))
+    ("^\\s-+/[^ \t]+$"
      (0 font-lock-keyword-face))
     )
   "Keyword highlighting specification for cc-status.")
 
-;; Modes
+;; Mode
 
-(defun cc-status-tree-mode ()
-  "Major mode for working with ClearCase tree status.
-
-Key Bindings:
-
-\\{cc-status-tree-mode-map}"
-  (interactive)
-  (setq truncate-lines t)
-  (setq major-mode 'cc-status-tree-mode)
-  (setq mode-name "cc-status-tree")
-  (use-local-map cc-status-tree-mode-map)
-  (set (make-local-variable 'font-lock-defaults) '(cc-status-mode-font-lock-keywords))
-  (turn-on-font-lock)
-  (run-hooks 'cc-status-tree-mode-hook))
-
-(defun cc-status-checkouts-mode ()
-  "Major mode for working with ClearCase checkouts status.
+(defun cc-status-mode ()
+  "Major mode for working with ClearCase status.
 
 Key Bindings:
 
-\\{cc-status-tree-mode-map}"
+\\{cc-status-mode-map}"
+
   (interactive)
   (setq truncate-lines t)
-  (setq major-mode 'cc-status-checkouts-mode)
-  (setq mode-name "cc-status-checkouts")
-  (use-local-map cc-status-checkout-mode-map)
+  (setq major-mode 'cc-status-mode)
+  (setq mode-name "cc-status")
+  (use-local-map cc-status-mode-map)
   (set (make-local-variable 'font-lock-defaults) '(cc-status-mode-font-lock-keywords))
   (turn-on-font-lock)
-  (run-hooks 'cc-status-checkout-mode-hook))
+  (run-hooks 'cc-status-mode-hook))
 
 (provide 'cc-status)
