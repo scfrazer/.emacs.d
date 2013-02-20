@@ -703,6 +703,7 @@ end of a non-blank line, or insert an 80-column comment line"
     (when filename
       (when arg
         (setq filename (file-name-nondirectory filename)))
+      (kill-new filename)
       (funcall interprogram-cut-function filename)
       (message filename))))
 
