@@ -5,7 +5,7 @@
 (setq dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep"))
 (setq dired-recursive-deletes 'always)
 (setq dired-recursive-copies 'always)
-(setq dired-listing-switches "-al")
+(setq dired-listing-switches "-alv")
 (setq dired-isearch-filenames 'dwim)
 
 (setq dired-font-lock-keywords
