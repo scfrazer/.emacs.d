@@ -23,10 +23,12 @@
 (defun cc-status ()
   "ClearCase status."
   (interactive)
-  (let ((buf (get-buffer-create "*cc-status*")))
-    (set-buffer buf)
-    (cc-status-refresh)
-    (cc-status-mode)
+  (let ((buf (get-buffer "*cc-status*")))
+    (unless buf
+      (setq buf (get-buffer-create "*cc-status*"))
+      (set-buffer buf)
+      (cc-status-refresh)
+      (cc-status-mode))
     (switch-to-buffer buf)))
 
 (defun cc-status-refresh ()
@@ -204,8 +206,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defconst cc-status-comment-buffer-name "*cc-status-comment*")
-
-(defvar cc-status-cs-changes nil)
 (defvar cc-status-prev-window-config nil)
 
 (defun cc-status-execute ()
@@ -221,36 +221,38 @@
 
 (defun cc-status-do-operations (&optional comment)
   "Do marked operations."
-  (setq comment (or comment "")
-        cc-status-cs-changes nil)
   (cc-status-goto-first-file)
-  (let (operation filename)
-    (when (and (not (eobp))
-               (looking-at "\\([RSMIU!AD]\\)[^/]+\\(/.+\\)$"))
-      (setq operation (match-string-no-properties 1)
-            filename (match-string-no-properties 2))
-      (cond ((string= operation "R")
-             (cc-status-unreserve filename))
-            ((string= operation "S")
-             nil) ;; TODO
-            ((string= operation "M")
-             nil) ;; TODO
-            ((string= operation "I")
-             (cc-status-checkin filename comment))
-            ((string= operation "U")
-             (clearcase-uncheckout filename))
-            ((string= operation "!")
-             (let ((clearcase-keep-uncheckouts nil))
-               (clearcase-uncheckout filename)))
-            ((string= operation "A")
-             nil) ;; TODO (clearcase-commented-mkelem filename t comment))
-            ((string= operation "D")
-             (delete-file filename)))
-      (forward-line 1)))
-  (cc-status-refresh)
-  (when cc-status-cs-changes
-    (kill-new cc-status-cs-changes)
-    (message "Your config spec needs to be updated, changes are in the kill-ring.")))
+  (let (operation filename files-to-pull files-to-ci files-to-unco-keep files-to-unco-rm cs-changes)
+    (while (not (eobp))
+      (when (looking-at "\\([RSMIU!AD]\\)[^/]+\\(/.+\\)$")
+        (setq operation (match-string-no-properties 1)
+              filename (match-string-no-properties 2))
+        (cond ((string= operation "R")
+               (cc-status-unreserve filename))
+              ((string= operation "S")
+               nil) ;; TODO Merge with successor
+              ((string= operation "M")
+               (push filename files-to-pull))
+              ((string= operation "I")
+               (push filename files-to-ci))
+              ((string= operation "U")
+               (push filename files-to-unco-keep))
+              ((string= operation "!")
+               (push filename files-to-unco-rm))
+              ((string= operation "A")
+               nil) ;; TODO (clearcase-commented-mkelem filename t comment))
+              ((string= operation "D")
+               (delete-file filename))))
+      (forward-line 1))
+    (cc-status-pull files-to-pull)
+    (setq cs-changes (cc-status-ci files-to-ci comment))
+    (cc-status-unco files-to-unco-keep t)
+    (cc-status-unco files-to-unco-rm nil)
+    (cc-status-refresh)
+    (when cs-changes
+      (kill-new cs-changes)
+      (clearcase-edcs-edit clearcase-setview-viewtag)
+      (message "Some files are no longer visible, config spec changes are in the kill-ring."))))
 
 (defun cc-status-unreserve (filename)
   "Unreserve file."
@@ -271,22 +273,41 @@
             (revert-buffer nil t))))))
   (message ""))
 
-(defun cc-status-checkin (filename comment)
-  "Check in file and gather config spec changes."
-  (message (concat "Checking in " filename " ..."))
-  (with-temp-buffer
-    (if (not comment)
-        (insert (clearcase-ct-blocking-call "ci" "-nc" filename))
-      (let ((temp-file (make-temp-file "cc-status-comment-")))
-        (with-temp-file temp-file
-          (insert comment))
-        (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file filename))
-        (delete-file temp-file)))
-    (goto-char (point-min))
-    (when (re-search-forward "Checked in .+ version \"\\(.+\\)\"" nil t)
-      (setq cc-status-cs-changes
-            (concat cc-status-cs-changes "element " filename " " (match-string-no-properties 1) "\n"))))
-  (message ""))
+;; TODO Pull mastership and sync
+(defun cc-status-pull (files)
+  "Pull file mastership to local VOB."
+  nil)
+
+(defun cc-status-ci (files comment)
+  "Check in files and gather config spec changes."
+  (message "Checking files in ...")
+  (let (cs-changes)
+    (with-temp-buffer
+      (if (not comment)
+          (insert (clearcase-ct-blocking-call "ci" "-nc" (mapconcat 'identity files " ")))
+        (let ((temp-file (make-temp-file "cc-status-comment-")))
+          (with-temp-file temp-file
+            (insert comment))
+          (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file (mapconcat 'identity files " ")))
+          (delete-file temp-file)))
+      (goto-char (point-min))
+      ;; TODO Should look for file not visible warning
+      (when (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
+        (setq cs-changes
+              (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
+    (dolist (filename files)
+      (when (find-buffer-visiting filename)
+        (clearcase-sync-from-disk filename t)))
+    (message "")
+    cs-changes))
+
+(defun cc-status-unco (files keep)
+  "Uncheckout files."
+  (message (concat "Uncheckout files " (if keep "(keep)" "(rm)") " ..."))
+  (clearcase-ct-blocking-call "unco" (if keep "-keep" "-rm") (mapconcat 'identity files " "))
+  (dolist (filename files)
+    (when (find-buffer-visiting filename)
+      (clearcase-sync-from-disk filename t))))
 
 (define-derived-mode cc-status-comment-mode text-mode "cc-status-comment-mode"
   "Add comments for checkin or mkelem."
@@ -296,9 +317,12 @@
   "Finish entering comment and do the operations."
   (interactive)
   (let ((comment (buffer-substring-no-properties (point-min) (point-max))))
+    (when (string= comment "")
+      (setq comment nil))
     (kill-buffer cc-status-comment-buffer-name)
     (when cc-status-prev-window-config
-      (set-window-configuration cc-status-prev-window-config))
+      (set-window-configuration cc-status-prev-window-config)
+      (setq cc-status-prev-window-config nil))
     (cc-status-do-operations comment)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -344,8 +368,6 @@
 
 (defvar cc-status-mode-font-lock-keywords
   '(
-    ("^ClearCase Status:"
-     (0 font-lock-function-name-face))
     ("^[IA].+"
      (0 font-lock-variable-name-face))
     ("^[U!D].+"
