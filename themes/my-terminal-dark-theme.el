@@ -217,6 +217,7 @@
    `(primary-selection ((,class (:background "color-20"))))
 ;;   `(region ((,class (:background "color-152")))) ;; Light
    `(region ((,class (:background "color-25"))))
+;;   `(sh-quoted-exec ((,class (:foreground "color-141")))) ;; Light
 ;;   `(show-paren-match-face ((,class (:background "color-33" :foreground "color-231")))) ;; Light
    `(show-paren-match-face ((,class (:background "color-33" :foreground "white"))))
 ;;   `(show-paren-mismatch-face ((,class (:background "brightred" :foreground "color-231")))) ;; Light

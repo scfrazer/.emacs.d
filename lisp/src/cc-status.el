@@ -276,38 +276,41 @@
 ;; TODO Pull mastership and sync
 (defun cc-status-pull (files)
   "Pull file mastership to local VOB."
-  nil)
+  (when files
+    nil))
 
 (defun cc-status-ci (files comment)
   "Check in files and gather config spec changes."
-  (message "Checking files in ...")
-  (let (cs-changes)
-    (with-temp-buffer
-      (if (not comment)
-          (insert (clearcase-ct-blocking-call "ci" "-nc" (mapconcat 'identity files " ")))
-        (let ((temp-file (make-temp-file "cc-status-comment-")))
-          (with-temp-file temp-file
-            (insert comment))
-          (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file (mapconcat 'identity files " ")))
-          (delete-file temp-file)))
-      (goto-char (point-min))
-      ;; TODO Should look for file not visible warning
-      (when (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
-        (setq cs-changes
-              (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
-    (dolist (filename files)
-      (when (find-buffer-visiting filename)
-        (clearcase-sync-from-disk filename t)))
-    (message "")
-    cs-changes))
+  (when files
+    (message "Checking files in ...")
+    (let (cs-changes)
+      (with-temp-buffer
+        (if (not comment)
+            (insert (clearcase-ct-blocking-call "ci" "-nc" (mapconcat 'identity files " ")))
+          (let ((temp-file (make-temp-file "cc-status-comment-")))
+            (with-temp-file temp-file
+              (insert comment))
+            (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file (mapconcat 'identity files " ")))
+            (delete-file temp-file)))
+        (goto-char (point-min))
+        ;; TODO Should look for file not visible warning
+        (when (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
+          (setq cs-changes
+                (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
+      (dolist (filename files)
+        (when (find-buffer-visiting filename)
+          (clearcase-sync-from-disk filename t)))
+      (message "")
+      cs-changes)))
 
 (defun cc-status-unco (files keep)
   "Uncheckout files."
-  (message (concat "Uncheckout files " (if keep "(keep)" "(rm)") " ..."))
-  (clearcase-ct-blocking-call "unco" (if keep "-keep" "-rm") (mapconcat 'identity files " "))
-  (dolist (filename files)
-    (when (find-buffer-visiting filename)
-      (clearcase-sync-from-disk filename t))))
+  (when files
+    (message (concat "Uncheckout files " (if keep "(keep)" "(rm)") " ..."))
+    (clearcase-ct-blocking-call "unco" (if keep "-keep" "-rm") (mapconcat 'identity files " "))
+    (dolist (filename files)
+      (when (find-buffer-visiting filename)
+        (clearcase-sync-from-disk filename t)))))
 
 (define-derived-mode cc-status-comment-mode text-mode "cc-status-comment-mode"
   "Add comments for checkin or mkelem."
