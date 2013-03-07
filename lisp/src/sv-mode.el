@@ -794,11 +794,15 @@ own function.  This function can be called through abbrevs."
           (backward-sexp)
           (if (= (char-after) ?\()
               (setq matched nil)
-            ;; Constraints can end with just a curly brace and no semicolon
+            ;; Constraints and coverpoints/crosses can end with just a curly brace and no semicolon
             (backward-sexp 2)
             (if (looking-at "constraint")
                 (forward-sexp 3)
-              (setq matched nil))))))
+              (if (save-excursion
+                    (back-to-indentation)
+                    (looking-at "\\([a-zA-Z0-9_]+\\s-*:\\s-+\\)\\(coverpoint\\|cross\\)\\s-+"))
+                  (forward-sexp 2)
+                (setq matched nil)))))))
     ;; Found an anchor?
     (when matched
       (cond
