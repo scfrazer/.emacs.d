@@ -106,13 +106,21 @@
    `(diff-removed ((,class (nil))))
 ;;   `(dired-marked ((,class (:background "color-32" :foreground "color-231")))) ;; Light
    `(dired-marked ((,class (:background "color-32" :foreground "white"))))
+;;   `(ediff-current-diff-A ((,class (:background "color-179" :foreground "black")))) ;; Light
    `(ediff-current-diff-A ((,class (:background "color-23"))))
+;;   `(ediff-current-diff-B ((,class (:background "color-152" :foreground "black")))) ;; Light
    `(ediff-current-diff-B ((,class (:background "color-23"))))
+;;   `(ediff-even-diff-A ((,class (:background "color-254" :foreground "Black")))) ;; Light
    `(ediff-even-diff-A ((,class (:background "color-238"))))
+;;   `(ediff-even-diff-B ((,class (:background "color-254" :foreground "black")))) ;; Light
    `(ediff-even-diff-B ((,class (:background "color-238"))))
+;;   `(ediff-fine-diff-A ((,class (:background "color-221")))) ;; Light
    `(ediff-fine-diff-A ((,class (:background "color-33" :foreground "white"))))
+;;   `(ediff-fine-diff-B ((,class (:background "color-81")))) ;; Light
    `(ediff-fine-diff-B ((,class (:background "color-33" :foreground "white"))))
+;;   `(ediff-odd-diff-A ((,class (:background "color-251" :foreground "black")))) ;; Light
    `(ediff-odd-diff-A ((,class (:background "color-238"))))
+;;   `(ediff-odd-diff-B ((,class (:background "color-251" :foreground "Black")))) ;; Light
    `(ediff-odd-diff-B ((,class (:background "color-238"))))
 ;;   `(flymake-errline ((,class (:background "color-224")))) ;; Light
 ;;   `(flymake-warnline ((,class (:background "color-230")))) ;; Light
