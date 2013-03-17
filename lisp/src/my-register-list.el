@@ -4,9 +4,7 @@
 
 (defun my-register-list-quit ()
   (interactive)
-  (kill-buffer nil)
-  (when (> (count-windows) 1)
-    (delete-window)))
+  (kill-buffer nil))
 
 (defun my-register-list-insert ()
   (interactive)
