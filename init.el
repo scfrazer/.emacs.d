@@ -544,18 +544,6 @@ With a numeric prefix, goto that window line."
   (save-excursion
     (indent-region (point-min) (point-max))))
 
-(defvar my-last-kill-text nil)
-(defun my-last-kill-save ()
-  "Save last kill off to the side."
-  (interactive)
-  (setq my-last-kill-text (current-kill 0 t))
-  (message "Last kill saved"))
-(defun my-last-kill-yank ()
-  "Yank last saved kill."
-  (interactive)
-  (when my-last-kill-text
-    (insert my-last-kill-text)))
-
 (defun my-line-comment ()
   "Goto a line comment if one exists, or insert a comment at the
 end of a non-blank line, or insert an 80-column comment line"
@@ -820,6 +808,18 @@ with a prefix argument, prompt for START-AT and FORMAT."
   (while (and (not (eobp)) (re-search-forward regexp (line-end-position) t))
     (beginning-of-line)
     (forward-line 1)))
+
+(defun my-register-save ()
+  "Save active region or last kill to a register."
+  (interactive)
+  (let ((use-region (region-active-p)))
+    (set-register
+     (read-char (if use-region "Copy region to register:" "Copy last kill to register:"))
+     (if use-region
+         (buffer-substring (region-beginning) (region-end))
+       (current-kill 0 t)))
+    (when use-region
+      (deactivate-mark))))
 
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
@@ -1315,8 +1315,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
-(my-keys-define "C-c w" 'my-last-kill-save)
-(my-keys-define "C-c y" 'my-last-kill-yank)
+(my-keys-define "C-c w" 'my-register-save)
+(my-keys-define "C-c y" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'my-edit-newline-and-indent)
@@ -1390,10 +1390,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-o" 'bs-show)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-q" 'my-fill)
-(my-keys-define "M-r c" (lambda () (interactive) (call-interactively 'copy-to-register) (deactivate-mark)))
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
-(my-keys-define "M-r p" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-u" 'my-recenter)
@@ -1514,6 +1512,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'regb 'my-regexp-backward)
 (defalias 'regf 'my-regexp-forward)
+(defalias 'rl 'register-list)
 (defalias 'sb 'sr-speedbar-toggle)
 (defalias 'sf 'my-sort-fields)
 (defalias 'sl 'my-sort-lines)
