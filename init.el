@@ -24,9 +24,9 @@
 
 (message "~/.emacs.d/init.el -3 load time = %.3f s" (my-get-load-time))
 
-(when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (package-initialize))
+(require 'package)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
 
 (message "~/.emacs.d/init.el -2 load time = %.3f s" (my-get-load-time))
 
@@ -543,6 +543,18 @@ With a numeric prefix, goto that window line."
   (interactive "*")
   (save-excursion
     (indent-region (point-min) (point-max))))
+
+(defvar my-last-kill-text nil)
+(defun my-last-kill-save ()
+  "Save last kill off to the side."
+  (interactive)
+  (setq my-last-kill-text (current-kill 0 t))
+  (message "Last kill saved"))
+(defun my-last-kill-yank ()
+  "Yank last saved kill."
+  (interactive)
+  (when my-last-kill-text
+    (insert my-last-kill-text)))
 
 (defun my-line-comment ()
   "Goto a line comment if one exists, or insert a comment at the
@@ -1303,6 +1315,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
+(my-keys-define "C-c w" 'my-last-kill-save)
+(my-keys-define "C-c y" 'my-last-kill-yank)
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'my-edit-newline-and-indent)
