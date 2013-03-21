@@ -43,7 +43,7 @@
    `(font-lock-warning-face ((,class (:foreground "red"))))
    `(fringe ((,class (:background "color-254"))))
    `(highlight ((,class (:background "color-117" :foreground "black"))))
-   `(hl-line ((,class (:background "color-230"))))
+   `(hl-line ((,class (:inherit nil :background "color-230"))))
    `(ido-first-match ((,class (:weight normal :foreground "color-166"))))
    `(ido-only-match ((,class (:foreground "color-29"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))

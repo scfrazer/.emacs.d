@@ -52,18 +52,19 @@
           (push (make-cc-status-elm :filename filename :private t) elms))
         (forward-line 1)))
     ;; Checked out files
-    (let (user version reserved mastered view location master-replica latest-version successor)
+    (let (elm user version reserved mastered view location master-replica latest-version successor)
       (with-temp-buffer
         (call-process-shell-command "cleartool lspri -co -short" nil t)
         (goto-char (point-min))
         (while (not (eobp))
           (setq filename (buffer-substring-no-properties (point) (point-at-eol)))
+          (setq elm (make-cc-status-elm :filename filename))
           (with-temp-buffer
             (call-process-shell-command
-             (concat "cleartool lsco -areplicas -fmt \"%u %f %Rf %Mf %Tf %[checkout_replica]p\\n\" " filename))
+             (concat "cleartool lsco -areplicas -fmt \"%u %f %Rf %Mf %Tf %[checkout_replica]p\\n\" " filename) nil t)
             (goto-char (point-min))
             (while (not (eobp))
-              (looking-at "\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\)")
+              (looking-at "\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\(.+\\)")
               (setq user (match-string-no-properties 1)
                     version (match-string-no-properties 2)
                     reserved (match-string-no-properties 3)
@@ -74,12 +75,16 @@
                   (progn
                     (setq master-replica (shell-command-to-string (concat "cleartool describe -fmt \"%[master]p\" " filename "@@/main")))
                     (setq latest-version (shell-command-to-string (concat "cleartool describe -fmt \"%Vn\" " filename "@@/main/LATEST")))
-                    (setq location (if (string= location master-replica) nil (concat "Needs to be pulled from " master-replica)))
-                    (setq successor (if (string= version latest-version) nil (concat "Checked out version " version ", /main/LATEST is version " latest-version))))
-                (setq reserved (if (string= reserved "reserved") (concat "Reserved by " user " in view " view) nil))
-                (setq mastered (if (string= mastered "mastered") (concat "Mastered by " user " in view " view) nil)))
+                    (unless (string= location master-replica)
+                      (setf (cc-status-elm-location elm) (concat "Needs to be pulled from " master-replica)))
+                    (unless (string= version latest-version)
+                      (setf (cc-status-elm-successor elm) (concat "Checked out version " version ", /main/LATEST is version " latest-version))))
+                (when (string= reserved "reserved")
+                  (setf (cc-status-elm-reserved elm) (concat "Reserved by " user " in view " view)))
+                (when (string= mastered "mastered")
+                  (setf (cc-status-elm-mastered elm) (concat "Mastered by " user " in view " view))))
               (forward-line 1)))
-          (push (make-cc-status-elm :filename filename :reserved reserved :mastered mastered :location location :successor successor) elms)
+          (push elm elms)
           (forward-line 1))))
     ;; Update buffer
     (erase-buffer)
@@ -386,14 +391,14 @@
     ("^  P.+"
      (0 'font-lock-comment-face))
     ("^   [RMLS ]+.+"
-     (0 'font-lock-preprocessor-face))
+     (0 'font-lock-warning-face))
     ("^\\([*]\\) \\(P\\)      \\(.+\\)"
      (1 'dired-mark)
      (2 'font-lock-comment-face)
      (3 'dired-marked))
     ("^\\([*]\\)  \\(....\\)  \\(.+\\)"
      (1 'dired-mark)
-     (2 'font-lock-preprocessor-face)
+     (2 'font-lock-warning-face)
      (3 'dired-marked))
     )
   "Keyword highlighting specification for cc-status.")
