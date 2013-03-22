@@ -53,8 +53,8 @@
    `(ediff-odd-diff-A ((,class (:background "color-238"))))
 ;;   `(ediff-odd-diff-B ((,class (:background "color-251" :foreground "Black")))) ;; Light
    `(ediff-odd-diff-B ((,class (:background "color-238"))))
-;;   `(flymake-errline ((,class (:background "color-224")))) ;; Light
-;;   `(flymake-warnline ((,class (:background "color-230")))) ;; Light
+;;   `(flymake-errline ((,class (:inherit nil :background "color-224")))) ;; Light
+;;   `(flymake-warnline ((,class (:inherit nil :background "color-230")))) ;; Light
 ;;   `(font-lock-builtin-face ((,class (:foreground "color-166")))) ;; Light
    `(font-lock-builtin-face ((,class (:foreground "color-210"))))
 ;;   `(font-lock-comment-delimiter-face ((,class (:foreground "color-248")))) ;; Light

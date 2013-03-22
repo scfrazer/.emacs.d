@@ -809,8 +809,8 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (beginning-of-line)
     (forward-line 1)))
 
-(defun my-register-save ()
-  "Save active region or last kill to a register."
+(defun my-register-copy-into ()
+  "Copy active region or last kill to a register."
   (interactive)
   (let ((use-region (region-active-p)))
     (set-register
@@ -819,6 +819,19 @@ with a prefix argument, prompt for START-AT and FORMAT."
          (buffer-substring (region-beginning) (region-end))
        (current-kill 0 t)))
     (when use-region
+      (deactivate-mark))))
+
+(defun my-register-kill-into ()
+  "Kill active region or last kill to a register."
+  (interactive)
+  (let ((use-region (region-active-p)))
+    (set-register
+     (read-char (if use-region "Kill region to register:" "Copy last kill to register:"))
+     (if use-region
+         (buffer-substring (region-beginning) (region-end))
+       (current-kill 0 t)))
+    (when use-region
+      (delete-region (region-beginning) (region-end))
       (deactivate-mark))))
 
 (defvar my-rotate-case-direction nil
@@ -1305,6 +1318,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
+(my-keys-define "C-c k" 'my-register-kill-into)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
@@ -1315,7 +1329,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c s" 'my-rotate-window-buffers)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
-(my-keys-define "C-c w" 'my-register-save)
+(my-keys-define "C-c w" 'my-register-copy-into)
 (my-keys-define "C-c y" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
