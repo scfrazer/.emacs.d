@@ -1564,6 +1564,7 @@ the user to edit."
                                  'clearcase-edcs-tag-history)))
        (read-string "View Tag: "))))
 
+  (set (make-local-variable 'clearcase-comment-window-config) (current-window-configuration))
   (let ((start (current-buffer))
         (buffer-name (format "*clearcase-config-spec-%s*" tag-name)))
     (kill-buffer (get-buffer-create buffer-name))
@@ -1607,8 +1608,11 @@ the user to edit."
   (let ((old-buffer (current-buffer)))
     (clearcase-edcs-save)
     ;;    (bury-buffer nil)
-    (delete-windows-on old-buffer)
-    (kill-buffer old-buffer)))
+    (kill-buffer old-buffer))
+    (let ((old-window-config clearcase-comment-window-config))
+      (delete-windows-on old-buffer)
+      (kill-buffer old-buffer)
+      (if old-window-config (set-window-configuration old-window-config))))
 
 ;;}}}
 
