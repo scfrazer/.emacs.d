@@ -696,6 +696,8 @@ Uses `query-replace-regexp' internally."
                                   nil)
                                (let ((fmt (read-string "Format: ")))
                                  (cond
+                                  ((string= (downcase fmt) "x")
+                                   (concat "0x%0" fmt))
                                   ((string= (downcase fmt) "h")
                                    (concat "'h%0" fmt))
                                   ((string= (downcase fmt) "d")
@@ -715,6 +717,8 @@ Uses `query-replace-regexp' internally."
                                   nil)
                                (let ((fmt (read-string "Format: ")))
                                  (cond
+                                  ((string= (downcase fmt) "x")
+                                   (concat "0x%0" fmt))
                                   ((string= (downcase fmt) "h")
                                    (concat "'h%0" fmt))
                                   ((string= (downcase fmt) "d")
