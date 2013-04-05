@@ -90,6 +90,7 @@
    `(outline-5 ((,class (:foreground "color-39"))))
    `(primary-selection ((,class (:background "color-20"))))
    `(region ((,class (:background "color-152"))))
+   `(sh-heredoc ((,class (:foreground "color-136"))))
    `(sh-quoted-exec ((,class (:foreground "color-141"))))
    `(show-paren-match-face ((,class (:background "color-33" :foreground "color-231"))))
    `(show-paren-mismatch-face ((,class (:background "brightred" :foreground "color-231"))))
