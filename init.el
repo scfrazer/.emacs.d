@@ -40,7 +40,6 @@
 (require 'etags-select)
 (require 'etags-stack)
 (require 'etags-table)
-(require 'hdl-dbg-vcs)
 (require 'hl-line)
 (require 'iflipb)
 (require 'jump-to-prev-pos)
@@ -131,12 +130,12 @@
 
 (show-paren-mode t)
 (delete-selection-mode t)
-(blink-cursor-mode 1)
+(global-hl-line-mode 1)
 (set-scroll-bar-mode nil)
 (winner-mode 1)
-(when (eq emacs-major-version 24)
+;; (when (eq emacs-major-version 24)
 ;;  (electric-pair-mode 1)
-  (require 'num3))
+;;   (require 'num3))
 
 (setq-default backup-inhibited t
               blink-matching-paren-distance nil
@@ -1110,7 +1109,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
             (equal (buffer-name) "topology.txt"))
-    (my-hl-line-hook)
+;;    (my-hl-line-hook)
     (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
 
@@ -1168,7 +1167,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-(add-hook 'etags-select-mode-hook 'my-hl-line-hook)
+;;(add-hook 'etags-select-mode-hook 'my-hl-line-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
@@ -1181,7 +1180,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
-(add-hook 'uvm-log-mode-hook 'my-hl-line-hook)
+;;(add-hook 'uvm-log-mode-hook 'my-hl-line-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1216,7 +1215,8 @@ Does not set point.  Does nothing if mark ring is empty."
      (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
-     (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))))
+     (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
+     (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))))
 
 (eval-after-load "grep"
   '(define-key grep-mode-map "q" 'my-kill-results-buffer))
@@ -1445,6 +1445,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;; Cisco setup
 
 (my-keys-define "C-c M" 'vcs-compile)
+(setq-default vcs-compile-command "l2q antares_targ_build_pit /build_user/")
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)

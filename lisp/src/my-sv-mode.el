@@ -43,7 +43,7 @@
       (setq num-bits (match-string-no-properties 0))
       (delete-char (length num-bits))
       (setq num-bits (string-to-number num-bits))
-      (when (looking-back "^\\s-*" (point-at-bol))
+      (unless (looking-back "[a-zA-Z_]\\s-*" (point-at-bol))
         (insert "bit "))
       (insert "[" (number-to-string (1- num-bits)) ":0] "))))
 
@@ -51,7 +51,6 @@
   (setq tab-width 3)
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
-  (define-key sv-mode-map (kbd "C-c C-v") 'my-sv-mode-bit-vector)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))
@@ -88,20 +87,6 @@
       (sv-mode-beginning-of-block)
     ad-do-it))
 
-(define-abbrev sv-mode-abbrev-table
-  "tdo"
-  ""
-  (lambda()
-    (insert "//! \\todo ")
-    (sv-mode-indent-line)))
-
-(define-abbrev sv-mode-abbrev-table
-  "sfor"
-  ""
-  (lambda ()
-    (insert "$sformatf(\"\", )")
-    (backward-char 4)))
-
 (defun my-sv-mode-uvm-info (verbosity)
   (interactive "sVerbosity? ")
   (sv-mode-guess-uvm-tag)
@@ -119,6 +104,19 @@
   (search-backward ":")
   (forward-char 1))
 (setq sv-mode-uvm-err-function 'my-sv-mode-uvm-err)
+
+(defadvice expand-abbrev (around my-sv-expand-abbrev-advice activate)
+  (if (and (equal major-mode 'sv-mode)
+           (looking-back "[0-9]"))
+      (my-sv-mode-bit-vector)
+    ad-do-it))
+
+(define-abbrev sv-mode-abbrev-table
+  "sfor"
+  ""
+  (lambda ()
+    (insert "$sformatf(\"\", )")
+    (backward-char 4)))
 
 (define-abbrev sv-mode-abbrev-table
   "for"
