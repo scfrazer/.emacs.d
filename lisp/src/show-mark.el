@@ -32,15 +32,14 @@
 
 (define-minor-mode show-mark-mode
   "Minor mode to show the mark."
-  t " Mark" nil
+  t " mark" nil
   (if show-mark-mode
       (progn
         (show-mark-update)
         (add-hook 'post-command-hook 'show-mark-update nil t))
     (when show-mark-overlay
       (delete-overlay show-mark-overlay)
-      (setq show-mark-overlay nil
-            show-mark-pos nil))
+      (setq show-mark-overlay nil))
     (remove-hook 'post-command-hook 'show-mark-update t)))
 
 (define-global-minor-mode global-show-mark-mode show-mark-mode
