@@ -1125,6 +1125,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (defun my-minibuffer-setup-hook ()
   (my-keys-minor-mode 0)
+  (show-mark-mode 0)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-/") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
@@ -1429,7 +1430,7 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
-  t " my-keys" 'my-keys-minor-mode-map)
+  t " My-Keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
 

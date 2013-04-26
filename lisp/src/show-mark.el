@@ -9,28 +9,30 @@
   "Face for showing the mark."
   :group 'show-mark)
 
+(defface show-mark-face-eol
+  '((t :foreground "color-154" :underline t))
+  "Face for showing the mark at the end of a line."
+  :group 'show-mark)
+
 (defvar show-mark-overlay nil
   "Overlay for showing the mark.")
 (make-variable-buffer-local 'show-mark-overlay)
-
-(defvar show-mark-pos nil
-  "Position of the show-mark overlay")
-(make-variable-buffer-local 'show-mark-pos)
 
 (defun show-mark-update ()
   "Update the show-mark overlay."
   (let ((mark-pos (mark t)))
     (when mark-pos
       (if show-mark-overlay
-          (unless (= mark-pos show-mark-pos)
-            (move-overlay show-mark-overlay mark-pos (1+ mark-pos)))
-        (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos)))
-        (overlay-put show-mark-overlay 'face 'show-mark-face))
-      (setq show-mark-pos mark-pos))))
+          (move-overlay show-mark-overlay mark-pos (1+ mark-pos))
+        (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos))))
+      (overlay-put show-mark-overlay 'face
+                   (if (save-excursion (goto-char mark-pos) (eolp))
+                       'show-mark-face-eol
+                     'show-mark-face)))))
 
 (define-minor-mode show-mark-mode
   "Minor mode to show the mark."
-  t " sm" nil
+  t " Mark" nil
   (if show-mark-mode
       (progn
         (show-mark-update)
