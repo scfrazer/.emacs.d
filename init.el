@@ -35,6 +35,7 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
+(require 'ace-jump-mode)
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
@@ -1393,6 +1394,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
 (my-keys-define "M-\"" (lambda () (interactive) (my-push-mark-and-marker t)))
+(my-keys-define "M-\\" 'ace-jump-mode)
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)

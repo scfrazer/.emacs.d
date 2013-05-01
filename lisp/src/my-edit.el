@@ -99,12 +99,15 @@ With prefix arg, insert blank lines above and below if they doesn't exist."
   (let ((case-fold-search nil)
         (cmd-keys (this-command-keys))
         (str (regexp-quote (char-to-string (read-char (if arg "Jump backward to char:" "Jump to char:"))))))
+    (when arg
+      (setq cmd-keys (substring cmd-keys 1)))
     (if (string= str cmd-keys)
         (setq str my-edit-jump-prev-str
               arg my-edit-jump-prev-arg)
       (setq my-edit-jump-prev-str str
             my-edit-jump-prev-arg arg))
-    (forward-char)
+    (unless arg
+      (forward-char))
     (when (string-match "[a-zA-Z]" str)
       (setq str (concat "\\_<" str)))
     (if arg

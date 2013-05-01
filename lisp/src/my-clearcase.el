@@ -139,7 +139,7 @@ With prefix arg ask for version."
 (defun my-clearcase-backup-set-mode ()
   "Set the mode of backup ClearCase files to the mode of the original."
   (interactive)
-  (let ((backup-regexp "\\.keep\\(\\.[0-9]+\\)?$") mode)
+  (let ((backup-regexp "\\.\\(keep\\|contrib\\)\\(\\.[0-9]+\\)?$") mode)
     (when (and (buffer-file-name) (string-match backup-regexp (buffer-file-name)))
       (let ((name (replace-regexp-in-string backup-regexp "" (buffer-file-name))))
         (setq mode (let ((case-fold-search t))
