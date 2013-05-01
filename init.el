@@ -141,7 +141,9 @@
 ;;  (electric-pair-mode 1)
 ;;   (require 'num3))
 
-(setq-default backup-inhibited t
+(setq-default ace-jump-mode-case-fold nil
+              ace-jump-mode-scope 'window
+              backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
