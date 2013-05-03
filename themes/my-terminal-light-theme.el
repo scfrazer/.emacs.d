@@ -96,6 +96,7 @@
    `(show-paren-mismatch-face ((,class (:background "brightred" :foreground "color-231"))))
    `(task-bmk-face ((,class (:background "color-254"))))
    `(trailing-whitespace ((,class (:background "color-195"))))
+   `(vertical-border ((,class (:foreground "color-248"))))
    `(warning ((,class (:foreground "color-100"))))
 
    ))

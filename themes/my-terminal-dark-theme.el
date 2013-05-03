@@ -164,6 +164,7 @@
    `(show-paren-mismatch-face ((,class (:background "red" :foreground "white"))))
 ;;   `(task-bmk-face ((,class (:background "color-254")))) ;; Light
 ;;   `(trailing-whitespace ((,class (:background "color-195")))) ;; Light
+;;   `(vertical-border ((,class (:foreground "color-248"))) ;; Light
 ;;   `(warning ((,class (:foreground "color-100")))) ;; Light
 
    ))

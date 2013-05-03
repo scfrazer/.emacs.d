@@ -1362,6 +1362,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
+(my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'kill-buffer)
 (my-keys-define "C-x m" 'my-magit-status)
@@ -1395,8 +1396,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-push-mark-and-marker)
-(my-keys-define "M-\"" (lambda () (interactive) (my-push-mark-and-marker t)))
-(my-keys-define "M-\\" 'ace-jump-mode)
+(my-keys-define "M-\"" 'ace-jump-mode)
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
@@ -1421,8 +1421,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-~" 'previous-error)
-
-;; (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 
 ;; These have to be in this order
 
