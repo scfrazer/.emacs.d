@@ -169,6 +169,8 @@
               echo-keystrokes 0.1
               etags-select-use-short-name-completion t
               etags-table-search-up-depth 10
+              eval-expression-print-length nil
+              eval-expression-print-level nil
               even-window-heights nil
               file-template-insert-automatically 'ask
               file-template-paths (list "~/.emacs.d/templates/")

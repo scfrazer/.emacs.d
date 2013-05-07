@@ -13,9 +13,10 @@
                                                "*shell*"
                                                "*terminal*"
                                                ))
-                                        "*magit.+"
-                                        "*clearcase-config-spec.+"
-                                        "*cc-status.+")
+                                        "[*]Occur.*"
+                                        "[*]magit.+"
+                                        "[*]clearcase-config-spec.+"
+                                        "[*]cc-status.+")
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
