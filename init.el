@@ -375,6 +375,15 @@ Works on region if marked, or to end of paragraph."
         (move-to-column col)
         (setq again nil)))))
 
+(defun my-backward-regexp (regexp)
+  "Skip lines backward containing a regexp."
+  (interactive "sSkip lines backward containing regexp: ")
+  (beginning-of-line)
+  (forward-line -1)
+  (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
+    (beginning-of-line)
+    (forward-line -1)))
+
 (defun my-clone-file (filename)
   "Clone the current buffer and write it into FILENAME."
   (interactive "FClone to file: ")
@@ -499,6 +508,14 @@ Prefix with C-u to fit the `next-window'."
         (forward-line -1)
         (move-to-column col)
         (setq again nil)))))
+
+(defun my-forward-regexp (regexp)
+  "Skip lines containing a regexp."
+  (interactive "sSkip lines containing regexp: ")
+  (beginning-of-line)
+  (while (and (not (eobp)) (re-search-forward regexp (line-end-position) t))
+    (beginning-of-line)
+    (forward-line 1)))
 
 (defun my-goto-line-column (&optional arg)
   "Goto line:column.
@@ -799,23 +816,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
   (let ((rectangle-number-line-counter start-at))
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
-
-(defun my-regexp-backward (regexp)
-  "Skip lines backward containing a regexp."
-  (interactive "sSkip lines backward containing regexp: ")
-  (beginning-of-line)
-  (forward-line -1)
-  (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
-    (beginning-of-line)
-    (forward-line -1)))
-
-(defun my-regexp-forward (regexp)
-  "Skip lines containing a regexp."
-  (interactive "sSkip lines containing regexp: ")
-  (beginning-of-line)
-  (while (and (not (eobp)) (re-search-forward regexp (line-end-position) t))
-    (beginning-of-line)
-    (forward-line 1)))
 
 (defun my-register-copy-into ()
   "Copy active region or last kill to a register."
@@ -1516,6 +1516,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'diff-b 'ediff-buffers)
@@ -1525,17 +1526,16 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-find-name-dired)
+(defalias 'fre 'my-forward-regexp)
 (defalias 'gb 'grep-buffers)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
-(defalias 'init (lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/init.el"))))
+(defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'kr 'browse-kill-ring)
 (defalias 'med 'my-font-medium)
 (defalias 'mf 'make-frame-on-display)
 (defalias 'qrr 'query-replace-regexp)
-(defalias 'regb 'my-regexp-backward)
-(defalias 'regf 'my-regexp-forward)
 (defalias 'rl 'register-list)
 (defalias 'sb 'sr-speedbar-toggle)
 (defalias 'sf 'my-sort-fields)
