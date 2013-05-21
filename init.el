@@ -22,16 +22,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic settings
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'load-path "~/.emacs.d/lisp/org")
-
-(message "~/.emacs.d/init.el -3 load time = %.3f s" (my-get-load-time))
+(add-to-list 'load-path (concat user-emacs-directory "lisp"))
+(add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
-(message "~/.emacs.d/init.el -2 load time = %.3f s" (my-get-load-time))
+(message "init -4 load time = %.3f s" (my-get-load-time))
 
 ;; Need these first to avoid font-lock/dired issues
 
@@ -63,7 +61,7 @@
 (require 'uniquify)
 (require 'vcs-compile)
 
-(message "~/.emacs.d/init.el -1 load time = %.3f s" (my-get-load-time))
+(message "init -3 load time = %.3f s" (my-get-load-time))
 
 (require 'my-abbrev)
 (require 'my-bs)
@@ -99,7 +97,7 @@
 (require 'my-tmux)
 (require 'my-vc)
 
-(message "~/.emacs.d/init.el 0 load time = %.3f s" (my-get-load-time))
+(message "init -2 load time = %.3f s" (my-get-load-time))
 
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
@@ -141,9 +139,6 @@
   (set-scroll-bar-mode nil))
 (global-show-mark-mode 1)
 (winner-mode 1)
-;; (when (eq emacs-major-version 24)
-;;  (electric-pair-mode 1)
-;;   (require 'num3))
 
 (setq-default ace-jump-mode-case-fold nil
               ace-jump-mode-scope 'window
@@ -177,7 +172,7 @@
               eval-expression-print-level nil
               even-window-heights nil
               file-template-insert-automatically 'ask
-              file-template-paths (list "~/.emacs.d/templates/")
+              file-template-paths (list (concat user-emacs-directory "templates/"))
               fill-column 78
               flyspell-mode-map nil
               font-lock-verbose nil
@@ -313,13 +308,7 @@
 (setq isearch-allow-scroll t)
 (put 'my-recenter 'isearch-scroll t)
 
-;; Snippets
-
-(message "~/.emacs.d/init.el 1 load time = %.3f s" (my-get-load-time))
-
-;; (yas/load-directory "~/.emacs.d/lisp/yasnippet/snippets")
-
-(message "~/.emacs.d/init.el 2 load time = %.3f s" (my-get-load-time))
+(message "init -1 load time = %.3f s" (my-get-load-time))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -1181,7 +1170,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-;;(add-hook 'etags-select-mode-hook 'my-hl-line-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
@@ -1194,7 +1182,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
-;;(add-hook 'uvm-log-mode-hook 'my-hl-line-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1511,7 +1498,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1565,7 +1552,7 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup
 
-(let ((extra-config (concat "~/.emacs.d/" (symbol-name system-type) ".el")))
+(let ((extra-config (concat user-emacs-directory (symbol-name system-type) ".el")))
   (when (file-exists-p extra-config)
     (load-file extra-config)))
 
@@ -1588,14 +1575,9 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;   (setq-default server-name clearcase-setview-viewtag)
 ;;   (server-start))
 
-;; Command frequency
-
-;; (require 'command-frequency)
-;; (command-frequency-mode 1)
-
 ;; Time emacs load time
 
-(message "~/.emacs.d/init.el load time = %.3f s" (my-get-load-time))
+(message "init load time = %.3f s" (my-get-load-time))
 
 ;; Disabled commands
 

@@ -1,6 +1,6 @@
 ;;; my-theme.el
 
-(setq custom-theme-directory "~/.emacs.d/themes")
+(setq custom-theme-directory (concat user-emacs-directory "themes"))
 
 (defun my-theme-light ()
   (interactive)
