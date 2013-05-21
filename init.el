@@ -1,9 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; init.el
 
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(tooltip-mode -1)
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode 0))
+(when (fboundp 'menu-bar-mode)
+  (menu-bar-mode 0))
+(when (fboundp 'tooltip-mode)
+  (tooltip-mode -1))
 
 ;; Time load time
 
@@ -134,7 +137,8 @@
 (show-paren-mode t)
 (delete-selection-mode t)
 (global-hl-line-mode 1)
-(set-scroll-bar-mode nil)
+(when (fboundp 'set-scroll-bar-mode)
+  (set-scroll-bar-mode nil))
 (global-show-mark-mode 1)
 (winner-mode 1)
 ;; (when (eq emacs-major-version 24)
