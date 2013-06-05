@@ -384,6 +384,14 @@ Works on region if marked, or to end of paragraph."
     (widen)
     (write-region (point-min) (point-max) filename nil nil nil 'confirm)))
 
+(defun my-compile ()
+  "Call the appropriate compile command."
+  (interactive)
+  (cond ((eq major-mode 'sv-mode)
+         (call-interactively 'vcs-compile))
+        (t
+         (call-interactively 'compile))))
+
 (defun my-convert-to-base (arg)
   "Convert to decimal, or with prefix arg to hex."
   (interactive "*P")
@@ -1323,7 +1331,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
-(my-keys-define "C-c m" 'compile)
+(my-keys-define "C-c m" 'my-compile)
 (my-keys-define "C-c n" 'my-narrow-nested-dwim)
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
@@ -1444,7 +1452,6 @@ Does not set point.  Does nothing if mark ring is empty."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(my-keys-define "C-c M" 'vcs-compile)
 (setq-default vcs-compile-command "l2q antares_targ_build_pit /build_user/")
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
