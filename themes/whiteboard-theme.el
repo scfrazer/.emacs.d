@@ -62,6 +62,7 @@
    `(font-lock-warning-face ((,class (:foreground "red"))))
    `(fringe ((,class (:background "gainsboro"))))
    `(highlight ((,class (:background "SkyBlue1"))))
+   `(hl-line ((,class (:inherit nil :background "white"))))
    `(ido-first-match ((,class (:weight normal :foreground "DarkOrange3"))))
    `(ido-only-match ((,class (:foreground "SeaGreen4"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))

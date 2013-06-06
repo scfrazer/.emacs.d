@@ -5,7 +5,7 @@
 (defun my-theme-light ()
   (interactive)
   (if (display-graphic-p)
-      (load-theme 'whiteboard t)
+      (load-theme 'my-window-light t)
     (load-theme 'my-terminal-light t)))
 
 (defun my-theme-dark ()
