@@ -284,6 +284,7 @@
 (add-to-list 'auto-mode-alist '("\\.g$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
@@ -1501,6 +1502,15 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (when (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
   (setq-default python-python-command "python-2.7.1"))
+
+
+(eval-after-load "js2-mode"
+  '(progn
+     (defun my-js2-format-json ()
+       (interactive)
+       (let ((b (if mark-active (min (point) (mark)) (point-min)))
+             (e (if mark-active (max (point) (mark)) (point-max))))
+         (shell-command-on-region b e "/router/bin/python-2.7.4 -mjson.tool" (current-buffer) t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom

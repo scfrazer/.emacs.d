@@ -1,6 +1,14 @@
 ;;; my-recentf.el
 
 (require 'recentf)
+(require 'clearcase)
+
+(setq recentf-save-file
+      (convert-standard-filename
+       (let ((view (and clearcase-servers-online clearcase-setview-viewtag)))
+         (if view
+             (concat "~/.recentf-" view)
+           "~/.recentf"))))
 
 (setq recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" ".*/[0-9]+$")))
 (setq recentf-max-menu-items 100)
@@ -11,15 +19,6 @@
 (defun my-recentf-clear-list ()
   (interactive)
   (setq recentf-list nil))
-
-(defun my-recentf-dialog-mode-hook ()
-  (hl-line-mode 1))
-(add-hook 'recentf-dailog-mode-hook 'my-recentf-dialog-mode-hook)
-
-(defun recentf-load-list ()
-  (interactive))
-(defun recentf-save-list ()
-  (interactive))
 
 (recentf-mode t)
 
