@@ -104,6 +104,8 @@
    `(region ((,class (:background "#AFD7D7"))))
    `(sh-heredoc ((,class (:foreground "#AF8700"))))
    `(sh-quoted-exec ((,class (:foreground "#AF87FF"))))
+   `(show-mark-face ((,class (:background "#AFFF00" :foreground "#000000"))))
+   `(show-mark-face-eol ((,class (:background "#AFFF00" :foreground "#000000"))))
    `(show-paren-match-face ((,class (:background "#0087FF" :foreground "#FFFFFF"))))
    `(show-paren-mismatch-face ((,class (:background "#FF0000" :foreground "#FFFFFF"))))
    `(task-bmk-face ((,class (:background "#E4E4E4"))))
