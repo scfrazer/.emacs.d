@@ -19,7 +19,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defstruct cc-status-elm filename private reserved mastered location successor)
+(defstruct cc-status-elm filename ok private reserved mastered pull merge)
 
 (defun cc-status ()
   "ClearCase status."
@@ -32,15 +32,18 @@
       (cc-status-mode))
     (switch-to-buffer buf)))
 
+(defvar cc-status-elms nil)
 (defun cc-status-refresh ()
   "Refresh the cc-status buffer."
   (interactive)
   (setq buffer-read-only nil)
   (message "Refreshing ClearCase status ...")
-  (let (elms filename)
+  (setq cc-status-elms nil)
+  (let (filename)
     ;; Private files
     (with-temp-buffer
       (call-process-shell-command "cleartool lspri -other" nil t)
+      (message "Checking view-private files ...")
       (goto-char (point-min))
       (while (not (eobp))
         (setq filename (buffer-substring-no-properties (point) (point-at-eol)))
@@ -49,10 +52,10 @@
                        (dolist (regexp cc-status-ignore-regexps)
                          (when (string-match regexp filename)
                            (throw 'ignore t)))))
-          (push (make-cc-status-elm :filename filename :private t) elms))
+          (push (make-cc-status-elm :filename filename :private t) cc-status-elms))
         (forward-line 1)))
     ;; Checked out files
-    (let (elm user version reserved mastered view location master-replica latest-version successor)
+    (let (elm user version reserved mastered view location master-replica latest-version)
       (with-temp-buffer
         (call-process-shell-command "cleartool lspri -co -short" nil t)
         (goto-char (point-min))
@@ -60,6 +63,7 @@
           (setq filename (buffer-substring-no-properties (point) (point-at-eol)))
           (setq elm (make-cc-status-elm :filename filename))
           (with-temp-buffer
+            (message (concat "Updating status for " filename " ..."))
             (call-process-shell-command
              (concat "cleartool lsco -areplicas -fmt \"%u %f %Rf %Mf %Tf %[checkout_replica]p\\n\" " filename) nil t)
             (goto-char (point-min))
@@ -76,30 +80,45 @@
                     (setq master-replica (shell-command-to-string (concat "cleartool describe -fmt \"%[master]p\" " filename "@@/main")))
                     (setq latest-version (shell-command-to-string (concat "cleartool describe -fmt \"%Vn\" " filename "@@/main/LATEST")))
                     (unless (string= location master-replica)
-                      (setf (cc-status-elm-location elm) (concat "Needs to be pulled from " master-replica)))
+                      (setf (cc-status-elm-pull elm) (concat "[Needs pull: " master-replica "]")))
                     (unless (string= version latest-version)
-                      (setf (cc-status-elm-successor elm) (concat "Checked out version " version ", /main/LATEST is version " latest-version))))
+                      (with-temp-buffer
+                        (call-process-shell-command
+                         (concat "cleartool desc -fmt \"%[hlink:Merge]p\\n\" " filename) nil t)
+                        (goto-char (point-min))
+                        (while (not (eobp))
+                          (when (looking-at (concat ".+Merge.+\"" filename "@@" latest-version "\""))
+                            (setf (cc-status-elm-ok elm) (concat "{Merged to: " latest-version "}")))
+                          (forward-line 1)))
+                      (unless (cc-status-elm-ok elm)
+                        (setf (cc-status-elm-merge elm) (concat "[Checked out: " version ", /main/LATEST: " latest-version "]")))))
                 (when (string= reserved "reserved")
-                  (setf (cc-status-elm-reserved elm) (concat "Reserved by " user " in view " view)))
+                  (setf (cc-status-elm-reserved elm) (concat "[Reserved: " user ":" view "]")))
                 (when (string= mastered "mastered")
-                  (setf (cc-status-elm-mastered elm) (concat "Mastered by " user " in view " view))))
+                  (setf (cc-status-elm-mastered elm) (concat "[Mastered: " user ":" view "]"))))
               (forward-line 1)))
-          (push elm elms)
+          (unless (or (cc-status-elm-ok elm)
+                      (cc-status-elm-private elm)
+                      (cc-status-elm-reserved elm)
+                      (cc-status-elm-mastered elm)
+                      (cc-status-elm-pull elm)
+                      (cc-status-elm-merge elm))
+            (setf (cc-status-elm-ok elm) "{OK}"))
+          (push elm cc-status-elms)
           (forward-line 1))))
     ;; Update buffer
     (erase-buffer)
     (insert "ClearCase Status:\n\n")
-    (insert "  PRMLS  Filename\n")
-    (insert "  -----  ------------------------------------------------------------------------\n")
-    (setq elms (sort elms #'(lambda (x y) (string< (cc-status-elm-filename x) (cc-status-elm-filename y)))))
-    (dolist (elm elms)
-      (insert "  "
-              (if (cc-status-elm-private elm) "P" " ")
-              (if (cc-status-elm-reserved elm) "R" " ")
-              (if (cc-status-elm-mastered elm) "M" " ")
-              (if (cc-status-elm-location elm) "L" " ")
-              (if (cc-status-elm-successor elm) "S" " ")
-              "  " (cc-status-elm-filename elm) "\n")))
+    (setq cc-status-elms (sort cc-status-elms #'(lambda (x y) (string< (cc-status-elm-filename x) (cc-status-elm-filename y)))))
+    (dolist (elm cc-status-elms)
+      (insert "  " (cc-status-elm-filename elm) " "
+              (if (cc-status-elm-ok elm) (concat " " (cc-status-elm-ok elm)) "")
+              (if (cc-status-elm-private elm) " (Private)" "")
+              (if (cc-status-elm-reserved elm) (concat " " (cc-status-elm-reserved elm)) "")
+              (if (cc-status-elm-mastered elm) (concat " " (cc-status-elm-mastered elm)) "")
+              (if (cc-status-elm-pull elm) (concat " " (cc-status-elm-pull elm)) "")
+              (if (cc-status-elm-merge elm) (concat " " (cc-status-elm-merge elm)) "")
+              "\n")))
   (cc-status-goto-first-file)
   (setq buffer-read-only t)
   (set-buffer-modified-p nil)
@@ -109,7 +128,7 @@
   "Go to the first file."
   (interactive)
   (goto-char (point-min))
-  (forward-line 4))
+  (forward-line 2))
 
 (defun cc-status-goto-last-file ()
   "Go to the last file."
@@ -128,28 +147,53 @@
   "Go to previous file."
   (interactive)
   (forward-line -1)
-  (when (looking-at "\\s-+-")
+  (when (looking-at "^$")
     (forward-line 1)))
 
 (defun cc-status-open-file ()
   "Open file."
   (interactive)
   (beginning-of-line)
-  (when (looking-at "[^/]+\\(/.+\\)$")
+  (when (looking-at ". \\(/[^ ]+\\) .+$")
     (find-file (match-string-no-properties 1))))
 
 (defun cc-status-ediff ()
   "Ediff the current file."
   (interactive)
   (beginning-of-line)
-  (if (looking-at ".  [^/]+\\(/.+\\)$")
+  (if (looking-at ". \\(/[^ ]+\\)  [[{].+$")
       (let ((filename (match-string-no-properties 1)))
         (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename)))
     (error "Can't diff a view-private file.")))
 
-;; TODO
-(defun cc-status-show-status ()
-  (interactive))
+(defun cc-status-mark (op)
+  "Mark a file."
+  (beginning-of-line)
+  (let* ((elm-num (- (line-number-at-pos) 3))
+         (elm (elt cc-status-elms elm-num)))
+    (cond ((= op ?p)
+           (unless (cc-status-elm-pull elm)
+             (error "File doesn't need to be pulled")))
+          ((= op ?m)
+           (unless (cc-status-elm-merge elm)
+             (error "File doesn't need to be merged")))
+          ((= op ?i)
+           (when (cc-status-elm-private elm)
+             (error "File is view-private")))
+          ((= op ?u)
+           (when (cc-status-elm-private elm)
+             (error "File is view-private")))
+          ((= op ?d)
+           (unless (cc-status-elm-private elm)
+             (error "You can only delete private files")))
+          (t
+           nil))
+    (setq buffer-read-only nil)
+    (delete-char 1)
+    (insert (upcase op))
+    (setq buffer-read-only t)
+    (set-buffer-modified-p nil)
+    (cc-status-next-file)))
 
 ;; TODO
 (defun cc-status-unreserve ()
@@ -171,7 +215,7 @@
 ;;             (revert-buffer nil t))))))
 ;;   (message ""))
 
-;; TODO Pull mastership and sync
+;; TODO
 (defun cc-status-pull ()
   (interactive))
 
@@ -192,53 +236,8 @@
   (interactive))
 
 ;; TODO
-(defun cc-status-mkelem ()
-  (interactive))
-
-;; TODO
 (defun cc-status-delete ()
   (interactive))
-
-(defun cc-status-toggle-mark ()
-  "Mark/unmark a file."
-  (interactive)
-  (setq buffer-read-only nil)
-  (beginning-of-line)
-  (if (looking-at "\\*")
-      (progn (delete-char 1)
-             (insert " "))
-    (delete-char 1)
-    (insert "*"))
-  (setq buffer-read-only t)
-  (set-buffer-modified-p nil)
-  (cc-status-next-file))
-
-(defun cc-status-unmark-all ()
-  "Unmark file."
-  (interactive)
-  (setq buffer-read-only nil)
-  (save-excursion
-    (cc-status-goto-first-file)
-    (while (not (eobp))
-      (delete-char 1)
-      (insert " ")
-      (forward-line 1)))
-  (set-buffer-modified-p nil)
-  (setq buffer-read-only t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun cc-status-get-marked-files ()
-  (let (files)
-    (save-excursion
-      (cc-status-goto-first-file)
-      (while (not (eobp))
-        (when (looking-at "\\*[^/]+\\(/.+\\)")
-          (push (match-string-no-properties 1) files))))
-    (unless files
-      (when (looking-at "[^/]+\\(/.+\\)")
-        (push (match-string-no-properties 1) files)))
-    files))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -353,8 +352,6 @@
     (define-key map "q" 'bury-buffer)
     (define-key map "g" 'cc-status-refresh)
 
-    (define-key map "n" 'cc-status-next-file)
-    (define-key map "p" 'cc-status-prev-file)
     (define-key map (kbd "C-n") 'cc-status-next-file)
     (define-key map (kbd "C-p") 'cc-status-prev-file)
     (define-key map (kbd "<down>") 'cc-status-next-file)
@@ -362,18 +359,13 @@
 
     (define-key map (kbd "RET") 'cc-status-open-file)
     (define-key map "=" 'cc-status-ediff)
-    (define-key map "?" 'cc-status-show-status)
 
-    (define-key map "R" 'cc-status-unreserve)
-    (define-key map "P" 'cc-status-pull)
-    (define-key map "M" 'cc-status-merge)
-    (define-key map "I" 'cc-status-checkin)
-    (define-key map "U" 'cc-status-uncheckout-keep)
-    (define-key map "!" 'cc-status-uncheckout-rm)
-    (define-key map "A" 'cc-status-mkelem)
-    (define-key map "D" 'cc-status-delete)
-    (define-key map (kbd "SPC") 'cc-status-toggle-mark)
-    (define-key map "C" 'cc-status-unmark-all)
+    (define-key map (kbd "p") (lambda () (interactive) (cc-status-mark ?p)))
+    (define-key map (kbd "m") (lambda () (interactive) (cc-status-mark ?m)))
+    (define-key map (kbd "i") (lambda () (interactive) (cc-status-mark ?i)))
+    (define-key map (kbd "u") (lambda () (interactive) (cc-status-mark ?u)))
+    (define-key map (kbd "d") (lambda () (interactive) (cc-status-mark ?d)))
+    (define-key map (kbd "SPC") (lambda () (interactive) (cc-status-mark nil)))
 
     (define-key map (kbd "M-<") 'cc-status-goto-first-file)
     (define-key map (kbd "M->") 'cc-status-goto-last-file)
@@ -384,22 +376,15 @@
 
 (defvar cc-status-mode-font-lock-keywords
   '(
-    ("^  PRMLS  Filename"
+    ("^. "
      (0 'font-lock-keyword-face))
-    ("^       .+"
-     (0 'default))
-    ("^  P.+"
-     (0 'font-lock-comment-face))
-    ("^   [RMLS ]+.+"
+    ("^\\(.\\) \\(.+ (.+)\\)"
+     (1 'font-lock-keyword-face)
+     (2 'font-lock-comment-face))
+    ("{.+}"
+     (0 'font-lock-variable-name-face))
+    ("\\[.+\\]"
      (0 'font-lock-warning-face))
-    ("^\\([*]\\) \\(P\\)      \\(.+\\)"
-     (1 'dired-mark)
-     (2 'font-lock-comment-face)
-     (3 'dired-marked))
-    ("^\\([*]\\)  \\(....\\)  \\(.+\\)"
-     (1 'dired-mark)
-     (2 'font-lock-warning-face)
-     (3 'dired-marked))
     )
   "Keyword highlighting specification for cc-status.")
 

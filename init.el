@@ -958,6 +958,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                     (forward-paragraph)
                     (point-at-eol))))))
 
+(defun my-server()
+  "Start an Emacs server in a ClearCase view."
+  (interactive)
+  (when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
+    (require 'server)
+    (setq-default server-name clearcase-setview-viewtag)
+    (server-start)))
+
 (defun my-tidy-lines ()
   "Tidy up lines."
   (interactive "*")
@@ -1547,6 +1555,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
+(defalias 'serve 'my-server)
 (defalias 'sf 'my-sort-fields)
 (defalias 'sl 'my-sort-lines)
 (defalias 'small 'my-font-small)
@@ -1585,13 +1594,6 @@ Does not set point.  Does nothing if mark ring is empty."
   (dolist (handler (list 'tramp-completion-file-name-handler 'tramp-file-name-handler))
     (when (setq elm (rassq handler file-name-handler-alist))
       (setq file-name-handler-alist (delq elm file-name-handler-alist)))))
-
-;; Terminal server in a Clearcase view
-
-;; (when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
-;;   (require 'server)
-;;   (setq-default server-name clearcase-setview-viewtag)
-;;   (server-start))
 
 ;; Time emacs load time
 
