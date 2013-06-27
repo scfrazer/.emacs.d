@@ -123,7 +123,14 @@
   (cc-status-goto-first-file)
   (setq buffer-read-only t)
   (set-buffer-modified-p nil)
+  (cc-status-sync)
   (message "Done"))
+
+(defun cc-status-get-current-elm ()
+  "Get the element on the current line."
+  (let* ((elm-num (- (line-number-at-pos) 3))
+         (elm (elt cc-status-elms elm-num)))
+    elm))
 
 (defun cc-status-goto-first-file ()
   "Go to the first file."
@@ -155,23 +162,24 @@
   "Open file."
   (interactive)
   (beginning-of-line)
-  (when (looking-at ". \\(/[^ ]+\\) .+$")
-    (find-file (match-string-no-properties 1))))
+  (find-file (cc-status-elm-filename (cc-status-get-current-elm))))
 
-(defun cc-status-ediff ()
+(defun cc-status-ediff (&optional arg)
   "Ediff the current file."
-  (interactive)
+  (interactive "P")
   (beginning-of-line)
-  (if (looking-at ". \\(/[^ ]+\\)  [[{].+$")
-      (let ((filename (match-string-no-properties 1)))
-        (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename)))
-    (error "Can't diff a view-private file.")))
+  (let* ((elm (cc-status-get-current-elm))
+         (filename (cc-status-elm-filename elm)))
+    (if (cc-status-elm-private elm)
+        (error "Can't diff a view-private file.")
+      (if arg
+          (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename))
+        (clearcase-ediff-file-with-version filename "/main/LATEST")))))
 
 (defun cc-status-mark (op)
   "Mark a file."
   (beginning-of-line)
-  (let* ((elm-num (- (line-number-at-pos) 3))
-         (elm (elt cc-status-elms elm-num)))
+  (let ((elm (cc-status-get-current-elm)))
     (cond ((= op ?p)
            (unless (cc-status-elm-pull elm)
              (error "File doesn't need to be pulled")))
@@ -199,6 +207,36 @@
     (set-buffer-modified-p nil)
     (cc-status-next-file)))
 
+(defun cc-status-mark-all (op)
+  "Mark all files that can have some operation performed."
+  (save-excursion
+    (cc-status-goto-first-file)
+    (let (mark-it)
+      (dolist (elm cc-status-elms)
+        (cond ((= op ?p)
+               (setq mark-it (cc-status-elm-pull elm)))
+              ((= op ?m)
+               (setq mark-it (cc-status-elm-merge elm)))
+              ((= op ?i)
+               (setq mark-it (not (cc-status-elm-private elm))))
+              ((= op ?u)
+               (setq mark-it (not (cc-status-elm-private elm))))
+              ((= op ?r)
+               (setq mark-it (not (cc-status-elm-private elm))))
+              ((= op ?d)
+               (setq mark-it (cc-status-elm-private elm))))
+        (if mark-it
+            (cc-status-mark op)
+          (forward-line 1))))))
+
+(defun cc-status-sync ()
+  "Sync files."
+  (let (filename)
+    (dolist (elm cc-status-elms)
+      (setq filename (cc-status-elm-filename elm))
+      (when (find-buffer-visiting filename)
+        (clearcase-sync-from-disk filename t)))))
+
 (defun cc-status-pull (files)
   "Pull files."
   (when files
@@ -216,19 +254,13 @@
   "Uncheckout keeping files."
   (when files
     (message "Uncheckout keeping files ...")
-    (clearcase-ct-blocking-call "unco" "-keep" (mapconcat 'identity files " "))
-    (dolist (filename files)
-      (when (find-buffer-visiting filename)
-        (clearcase-sync-from-disk filename t)))))
+    (clearcase-ct-blocking-call "unco" "-keep" (mapconcat 'identity files " "))))
 
 (defun cc-status-uncheckout-rm (files)
   "Uncheckout removing files."
   (when files
     (message "Uncheckout removing files ...")
-    (clearcase-ct-blocking-call "unco" "-rm" (mapconcat 'identity files " "))
-    (dolist (filename files)
-      (when (find-buffer-visiting filename)
-        (clearcase-sync-from-disk filename t)))))
+    (clearcase-ct-blocking-call "unco" "-rm" (mapconcat 'identity files " "))))
 
 (defun cc-status-delete (files)
   "Delete files."
@@ -250,17 +282,17 @@
       (setq cc-status-files-to-checkin nil)
       (dolist (elm cc-status-elms)
         (setq op (char-after))
-        (cond ((= op ?p)
+        (cond ((= op ?P)
                (push (cc-status-elm-filename elm) files-to-pull))
-              ((= op ?m)
+              ((= op ?M)
                (push (cc-status-elm-filename elm) files-to-merge))
-              ((= op ?i)
+              ((= op ?I)
                (push (cc-status-elm-filename elm) cc-status-files-to-checkin))
-              ((= op ?u)
+              ((= op ?U)
                (push (cc-status-elm-filename elm) files-to-uncheckout-keep))
-              ((= op ?r)
+              ((= op ?R)
                (push (cc-status-elm-filename elm) files-to-uncheckout-rm))
-              ((= op ?d)
+              ((= op ?D)
                (push (cc-status-elm-filename elm) files-to-delete))
               (t
                nil))
@@ -310,9 +342,6 @@
         (when (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
           (setq cs-changes
                 (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
-      (dolist (filename files)
-        (when (find-buffer-visiting filename)
-          (clearcase-sync-from-disk filename t)))
       (message "")
       cs-changes)))
 
@@ -357,7 +386,13 @@
     (define-key map (kbd "u") (lambda () (interactive) (cc-status-mark ?u)))
     (define-key map (kbd "r") (lambda () (interactive) (cc-status-mark ?r)))
     (define-key map (kbd "d") (lambda () (interactive) (cc-status-mark ?d)))
-    (define-key map (kbd "SPC") (lambda () (interactive) (cc-status-mark nil)))
+    (define-key map (kbd "P") (lambda () (interactive) (cc-status-mark-all ?p)))
+    (define-key map (kbd "M") (lambda () (interactive) (cc-status-mark-all ?m)))
+    (define-key map (kbd "I") (lambda () (interactive) (cc-status-mark-all ?i)))
+    (define-key map (kbd "U") (lambda () (interactive) (cc-status-mark-all ?u)))
+    (define-key map (kbd "R") (lambda () (interactive) (cc-status-mark-all ?r)))
+    (define-key map (kbd "D") (lambda () (interactive) (cc-status-mark-all ?d)))
+    (define-key map (kbd "SPC") (lambda () (interactive) (cc-status-mark ?\ )))
     (define-key map (kbd "x") 'cc-status-execute)
 
     (define-key map (kbd "M-<") 'cc-status-goto-first-file)
