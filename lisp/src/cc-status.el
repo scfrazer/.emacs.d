@@ -19,14 +19,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defconst cc-status-buffer-name "*cc-status*")
+(defconst cc-status-output-buffer-name " *cc-status-output*")
+(defconst cc-status-comment-buffer-name "*cc-status-comment*")
+
 (defstruct cc-status-elm filename ok private reserved mastered pull merge)
 
 (defun cc-status ()
   "ClearCase status."
   (interactive)
-  (let ((buf (get-buffer "*cc-status*")))
+  (let ((buf (get-buffer cc-status-buffer-name)))
     (unless buf
-      (setq buf (get-buffer-create "*cc-status*"))
+      (setq buf (get-buffer-create cc-status-buffer-name))
       (set-buffer buf)
       (cc-status-refresh)
       (cc-status-mode))
@@ -125,6 +129,20 @@
   (set-buffer-modified-p nil)
   (cc-status-sync)
   (message "Done"))
+
+(defun cc-status-prep-output-buffer ()
+  "Prepare the output buffer."
+  (with-current-buffer (get-buffer-create cc-status-output-buffer-name)
+    (widen)
+    (goto-char (point-max))
+    (setq buffer-read-only nil)))
+
+(defun cc-status-display-output ()
+  "Show the output from recent ClearCase commands."
+  (interactive)
+  (cc-status-prep-output-buffer)
+  (pop-to-buffer cc-status-output-buffer-name)
+  (setq buffer-read-only nil))
 
 (defun cc-status-get-current-elm ()
   "Get the element on the current line."
@@ -241,26 +259,47 @@
   "Pull files."
   (when files
     (message "Pulling files ...")
-    (shell-command-to-string (concat "cpull " (mapconcat 'identity files " ")))))
+    (cc-status-prep-output-buffer)
+    (let ((cmd (concat "cpull " (mapconcat 'identity files " "))))
+      (with-current-buffer cc-status-output-buffer-name
+        (insert "--> " cmd "\n")
+        (call-process-shell-command cmd nil t)
+        (setq buffer-read-only t)))))
 
 (defun cc-status-merge (files)
   "Merge files."
   (when files
     (message "Merging files ...")
-    (dolist (filename files)
-      (shell-command-to-string (concat "cleartool merge -abort -to " filename " " filename "@@/main/LATEST")))))
+    (cc-status-prep-output-buffer)
+    (let (cmd)
+      (with-current-buffer cc-status-output-buffer-name
+        (dolist (filename files)
+          (setq cmd (concat "cleartool merge -abort -to " filename " " filename "@@/main/LATEST"))
+          (insert "--> " cmd "\n")
+          (call-process-shell-command cmd nil t))
+        (setq buffer-read-only t)))))
 
 (defun cc-status-uncheckout-keep (files)
   "Uncheckout keeping files."
   (when files
     (message "Uncheckout keeping files ...")
-    (clearcase-ct-blocking-call "unco" "-keep" (mapconcat 'identity files " "))))
+    (cc-status-prep-output-buffer)
+    (let ((cmd (concat "cleartool unco -keep " (mapconcat 'identity files " "))))
+      (with-current-buffer cc-status-output-buffer-name
+        (insert "--> " cmd "\n")
+        (call-process-shell-command cmd nil t)
+        (setq buffer-read-only t)))))
 
 (defun cc-status-uncheckout-rm (files)
   "Uncheckout removing files."
   (when files
     (message "Uncheckout removing files ...")
-    (clearcase-ct-blocking-call "unco" "-rm" (mapconcat 'identity files " "))))
+    (cc-status-prep-output-buffer)
+    (let ((cmd (concat "cleartool unco -rm " (mapconcat 'identity files " "))))
+      (with-current-buffer cc-status-output-buffer-name
+        (insert "--> " cmd "\n")
+        (call-process-shell-command cmd nil t)
+        (setq buffer-read-only t)))))
 
 (defun cc-status-delete (files)
   "Delete files."
@@ -269,7 +308,6 @@
     (dolist (filename files)
       (delete-file filename))))
 
-(defconst cc-status-comment-buffer-name "*cc-status-comment*")
 (defvar cc-status-prev-window-config nil)
 (defvar cc-status-files-to-checkin)
 
@@ -329,19 +367,27 @@
   "Check in files and return config spec changes."
   (when files
     (message "Checking in files ...")
-    (let (cs-changes)
-      (with-temp-buffer
+    (cc-status-prep-output-buffer)
+    (let (pos cs-changes)
+      (with-current-buffer cc-status-output-buffer-name
+        (setq pos (point))
         (if (not comment)
-            (insert (shell-command-to-string (concat "cleartool ci -nc " (mapconcat 'identity files " "))))
-          (let ((temp-file (make-temp-file "cc-status-comment-")))
+            (let ((cmd (concat "cleartool ci -nc " (mapconcat 'identity files " "))))
+              (insert "--> " cmd "\n")
+              (call-process-shell-command cmd nil t))
+          (let* ((temp-file (make-temp-file "cc-status-comment-"))
+                 (cmd (concat "cleartool ci -cfile " temp-file " " (mapconcat 'identity files " "))))
             (with-temp-file temp-file
               (insert comment))
-            (insert (shell-command-to-string (concat "cleartool ci -cfile " temp-file (mapconcat 'identity files " "))))
+            (insert "--> " cmd "\n")
+            (call-process-shell-command cmd nil t)
             (delete-file temp-file)))
-        (goto-char (point-min))
+        (goto-char pos)
         (while (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
           (setq cs-changes
-                (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
+                (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n")))
+        (setq buffer-read-only t)
+        (goto-char (point-max)))
       (message "")
       cs-changes)))
 
@@ -350,12 +396,12 @@
   (message "Updating config spec ...")
   (let ((temp-file (make-temp-file "cc-status-config-spec-")))
     (with-temp-file temp-file
-      (insert (clearcase-ct-blocking-call "catcs" "-tag" clearcase-setview-viewtag))
+      (call-process-shell-command (concat "cleartool catcs -tag " clearcase-setview-viewtag) nil t)
       (goto-char (point-min))
       (when (re-search-forward "^\\s-*element\\s-+[*]\\s-+CHECKEDOUT.*$" nil t)
         (forward-line 1)
         (insert "\n" cs-changes "\n")))
-    (clearcase-ct-blocking-call "setcs" "-tag" clearcase-setview-viewtag temp-file)
+    (shell-command-to-string (concat "cleartool setcs -tag " clearcase-setview-viewtag " " temp-file))
     (clearcase-fprop-clear-all-properties)
     (delete-file temp-file)))
 
@@ -397,6 +443,8 @@
 
     (define-key map (kbd "M-<") 'cc-status-goto-first-file)
     (define-key map (kbd "M->") 'cc-status-goto-last-file)
+
+    (define-key map (kbd "$") 'cc-status-display-output)
 
     (setq cc-status-mode-map map)))
 
