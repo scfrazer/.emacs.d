@@ -332,14 +332,14 @@
     (let (cs-changes)
       (with-temp-buffer
         (if (not comment)
-            (insert (clearcase-ct-blocking-call "ci" "-nc" (mapconcat 'identity files " ")))
+            (insert (shell-command-to-string (concat "cleartool ci -nc " (mapconcat 'identity files " "))))
           (let ((temp-file (make-temp-file "cc-status-comment-")))
             (with-temp-file temp-file
               (insert comment))
-            (insert (clearcase-ct-blocking-call "ci" "-cfile" temp-file (mapconcat 'identity files " ")))
+            (insert (shell-command-to-string (concat "cleartool ci -cfile " temp-file (mapconcat 'identity files " "))))
             (delete-file temp-file)))
         (goto-char (point-min))
-        (when (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
+        (while (re-search-forward "Checked in \"\\(.+?\\)\" version \"\\(.+?\\)\"" nil t)
           (setq cs-changes
                 (concat cs-changes "element " (match-string-no-properties 1) " " (match-string-no-properties 2) "\n"))))
       (message "")
