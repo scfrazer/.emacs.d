@@ -16,7 +16,7 @@
                                         "[*]Occur.*"
                                         "[*]magit.+"
                                         "[*]clearcase-config-spec.+"
-                                        "[*]cc-status.+")
+                                        "[*]cc-status[*]")
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")

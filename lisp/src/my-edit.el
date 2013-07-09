@@ -111,9 +111,9 @@ With prefix arg, insert blank lines above and below if they doesn't exist."
     (when (string-match "[a-zA-Z]" str)
       (setq str (concat "\\_<" str)))
     (if arg
-        (re-search-backward str nil t)
-      (when (re-search-forward str nil t)
-        (backward-char)))))
+        (re-search-backward str (point-at-bol) t)
+      (re-search-forward str (point-at-eol) t)
+      (backward-char))))
 
 ;;; Join
 

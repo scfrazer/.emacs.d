@@ -111,7 +111,7 @@ or jump forward to input char."
   (interactive)
   (unless isearch-regexp
     (isearch-toggle-regexp))
-  (setq isearch-string (concat "\\_<" isearch-string "\\_>")
+  (setq isearch-string (concat "\\_<" isearch-string)
         isearch-message (mapconcat 'isearch-text-char-description isearch-string ""))
   (isearch-search-and-update))
 
