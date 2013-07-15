@@ -199,7 +199,7 @@
   (interactive "P")
   (setq buffer-read-only nil)
   (beginning-of-line)
-  (let ((op (string-to-char (substring (this-command-keys) -1))))
+  (let ((op (downcase (string-to-char (substring (this-command-keys) -1)))))
     (if arg
         (save-excursion
           (cc-status-goto-first-file)
@@ -437,6 +437,12 @@
     (define-key map (kbd "u") 'cc-status-mark)
     (define-key map (kbd "r") 'cc-status-mark)
     (define-key map (kbd "d") 'cc-status-mark)
+    (define-key map (kbd "P") 'cc-status-mark)
+    (define-key map (kbd "M") 'cc-status-mark)
+    (define-key map (kbd "I") 'cc-status-mark)
+    (define-key map (kbd "U") 'cc-status-mark)
+    (define-key map (kbd "R") 'cc-status-mark)
+    (define-key map (kbd "D") 'cc-status-mark)
     (define-key map (kbd "SPC") 'cc-status-mark)
     (define-key map (kbd "x") 'cc-status-execute)
 
