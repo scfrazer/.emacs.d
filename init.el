@@ -331,11 +331,21 @@ Works on region if marked, or to end of paragraph."
     (save-excursion
       (align-regexp beg end regexp 1 align-default-spacing))))
 
-(defun my-apply-macro-to-region-lines (top bottom)
-  "Apply macro to region lines and deactivate mark"
- (interactive "*r")
- (apply-macro-to-region-lines top bottom)
- (deactivate-mark))
+(defun my-apply-macro-to-region-lines ()
+  "Apply macro to region if active, or to mark."
+  (interactive "*")
+  (if (region-active-p)
+      (setq top (region-beginning)
+            bottom (region-end))
+    (setq top (mark t)
+          bottom (point)))
+  (when (> top bottom)
+    (let ((tmp top))
+      (setq top bottom
+            bottom tmp)))
+  (apply-macro-to-region-lines top bottom)
+  (when (region-active-p)
+    (deactivate-mark)))
 
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
@@ -1129,7 +1139,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
             (equal (buffer-name) "topology.txt"))
-;;    (my-hl-line-hook)
+    ;;    (my-hl-line-hook)
     (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
 
