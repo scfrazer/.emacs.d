@@ -423,6 +423,8 @@
     (define-key map "q" 'bury-buffer)
     (define-key map "g" 'cc-status-refresh)
 
+    (define-key map (kbd "n") 'cc-status-next-file)
+    (define-key map (kbd "p") 'cc-status-prev-file)
     (define-key map (kbd "C-n") 'cc-status-next-file)
     (define-key map (kbd "C-p") 'cc-status-prev-file)
     (define-key map (kbd "<down>") 'cc-status-next-file)
@@ -431,12 +433,6 @@
     (define-key map (kbd "RET") 'cc-status-open-file)
     (define-key map "=" 'cc-status-ediff)
 
-    (define-key map (kbd "p") 'cc-status-mark)
-    (define-key map (kbd "m") 'cc-status-mark)
-    (define-key map (kbd "i") 'cc-status-mark)
-    (define-key map (kbd "u") 'cc-status-mark)
-    (define-key map (kbd "r") 'cc-status-mark)
-    (define-key map (kbd "d") 'cc-status-mark)
     (define-key map (kbd "P") 'cc-status-mark)
     (define-key map (kbd "M") 'cc-status-mark)
     (define-key map (kbd "I") 'cc-status-mark)
