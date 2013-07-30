@@ -297,6 +297,7 @@
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
 (add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
+(add-to-list 'auto-mode-alist '("dve_gui.log$" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 
 ;; Don't use sh-mode for csh files

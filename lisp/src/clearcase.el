@@ -5880,7 +5880,8 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
             (folding-open-buffer)
             (folding-whole-buffer)
             (if new-point
-                (folding-goto-char new-point)))))))
+                (folding-goto-char new-point))))))
+  (deactivate-mark t))
 
 ;;}}}
 
