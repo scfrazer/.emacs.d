@@ -624,14 +624,14 @@ end of a non-blank line, or insert an 80-column comment line"
     (save-buffers-kill-emacs)))
 
 (defun my-kill-results-buffer ()
-  "Kill a compliation/grep/*whatever* buffer in a second window."
+  "Kill a compliation/grep/*whatever*/cloned buffer in a second window."
   (interactive)
   (when (> (count-windows) 1)
     (other-window 1)
-    (unless (and (not (string= "*scratch*" (buffer-name)))
-                 (posix-string-match "[ *]+.*[ *]+" (buffer-name)))
+    (unless (and (posix-string-match "[ *]+.*[ *]+\\|.+<[0-9]+>$" (buffer-name))
+                 (not (string= "*scratch*" (buffer-name))))
       (other-window 1))
-    (when (and (posix-string-match "[ *]+.*[ *]+" (buffer-name))
+    (when (and (posix-string-match "[ *]+.*[ *]+\\|.+<[0-9]+>$" (buffer-name))
                (not (string= "*scratch*" (buffer-name))))
       (kill-buffer nil)
       (delete-window))))
