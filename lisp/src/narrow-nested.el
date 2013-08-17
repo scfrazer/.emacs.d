@@ -43,11 +43,11 @@
       (setq narrow-nested-regions (cdr narrow-nested-regions))
       (narrow-to-region start end))))
 
-(defun narrow-nested-dwim ()
-  "narrow-to-region if active, widen to previous restriction if already narrowed,
-or narrow-to-defun."
-  (interactive)
-  (if (region-active-p)
+(defun narrow-nested-dwim (&optional arg)
+  "narrow-to-region if active or with prefix arg, widen to
+previous restriction if already narrowed, or narrow-to-defun."
+  (interactive "P")
+  (if (or arg (region-active-p))
       (progn
         (narrow-to-region (region-beginning) (region-end))
         (narrow-nested-turn-off-region))

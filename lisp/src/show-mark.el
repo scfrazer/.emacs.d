@@ -21,7 +21,10 @@
 (defun show-mark-update ()
   "Update the show-mark overlay."
   (let ((mark-pos (mark t)))
-    (when mark-pos
+    (if (not mark-pos)
+        (when show-mark-overlay
+          (delete-overlay show-mark-overlay)
+          (setq show-mark-overlay nil))
       (if show-mark-overlay
           (move-overlay show-mark-overlay mark-pos (1+ mark-pos))
         (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos))))

@@ -36,7 +36,6 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ace-jump-mode)
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
@@ -69,7 +68,6 @@
 (require 'my-calculator)
 (require 'my-cc-mode)
 (require 'my-clearcase)
-(require 'my-comment)
 (require 'my-doxymacs)
 (require 'my-ediff)
 (require 'my-edit)
@@ -135,6 +133,7 @@
 
 (show-paren-mode t)
 (delete-selection-mode t)
+(transient-mark-mode -1)
 (global-hl-line-mode 1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
@@ -317,36 +316,11 @@
 ;; Functions
 
 (defun my-align ()
-  "Align to an entered char.
-Works on region if marked, or to end of paragraph."
+  "Align to an entered char."
   (interactive "*")
-  (let ((regexp (concat "\\(\\s-*\\)" (char-to-string (read-char "Align to char:"))))
-        beg end)
-    (if (and transient-mark-mode mark-active)
-        (setq beg (region-beginning)
-              end (region-end))
-      (setq beg (point-at-bol)
-            end (save-excursion
-                  (forward-paragraph)
-                  (point-at-eol))))
+  (let ((regexp (concat "\\(\\s-*\\)" (char-to-string (read-char "Align to char:")))))
     (save-excursion
-      (align-regexp beg end regexp 1 align-default-spacing))))
-
-(defun my-apply-macro-to-region-lines ()
-  "Apply macro to region if active, or to mark."
-  (interactive "*")
-  (if (region-active-p)
-      (setq top (region-beginning)
-            bottom (region-end))
-    (setq top (mark t)
-          bottom (point)))
-  (when (> top bottom)
-    (let ((tmp top))
-      (setq top bottom
-            bottom tmp)))
-  (apply-macro-to-region-lines top bottom)
-  (when (region-active-p)
-    (deactivate-mark)))
+      (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))
 
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
@@ -405,6 +379,14 @@ Works on region if marked, or to end of paragraph."
         (t
          (call-interactively 'compile))))
 
+(defun my-comment-region-after-copy ()
+  "Insert a copy of the region and comment the original."
+  (interactive "*")
+  (kill-ring-save (region-beginning) (region-end))
+  (comment-region (region-beginning) (region-end))
+  (goto-char (region-end))
+  (yank))
+
 (defun my-convert-to-base (arg)
   "Convert to decimal, or with prefix arg to hex."
   (interactive "*P")
@@ -412,10 +394,10 @@ Works on region if marked, or to end of paragraph."
       (my-dec-to-hex)
     (my-hex-to-dec)))
 
-(defun my-count-lines ()
-  "Count lines in region or to next blank line."
-  (interactive)
-  (if (and transient-mark-mode mark-active)
+(defun my-count-lines (&optional arg)
+  "Count lines to next blank line, or with prefix arg count lines in region."
+  (interactive "P")
+  (if arg
       (message "%d lines in region"
                (count-lines (region-beginning) (region-end)))
     (message "%d lines to end of paragraph"
@@ -480,27 +462,12 @@ Works on region if marked, or to end of paragraph."
     (replace-match ""))
   (goto-char (point-min)))
 
-(defun my-fill ()
-  "Fill region if active, paragraph if not."
-  (interactive "*")
-  (if (region-active-p)
+(defun my-fill (&optional arg)
+  "Fill paragraph, or region with prefix arg."
+  (interactive "*P")
+  (if arg
       (fill-region (region-beginning) (region-end))
     (fill-paragraph nil)))
-
-(defun my-fill-sentence ()
-  "Fill sentence separated by punctuation or blank lines."
-  (interactive "*")
-  (let (start end)
-    (save-excursion
-      (re-search-backward "\\(^\\s-*$\\|[.?!]\\)" nil t)
-      (skip-syntax-forward "^w")
-      (setq start (point-at-bol)))
-    (save-excursion
-      (re-search-forward "\\(^\\s-*$\\|[.?!]\\)" nil t)
-      (setq end (point)))
-    (save-restriction
-      (narrow-to-region start end)
-      (fill-paragraph nil))))
 
 (defun my-fit-window (&optional arg)
   "Fit window to buffer or `frame-height' / 4.
@@ -557,18 +524,6 @@ With a numeric prefix, goto that window line."
                                  "\n")))
              hash)
     str))
-
-(defun my-highlight-regexp ()
-  "highlight-regexp, but use region if active or symbol at point if not."
-  (interactive)
-  (if (and transient-mark-mode mark-active)
-      (progn
-        (highlight-regexp (regexp-quote (buffer-substring (region-beginning) (region-end))) 'hi-pink)
-        (deactivate-mark))
-    (highlight-regexp (read-from-minibuffer "Regexp to highlight: "
-                                            (regexp-quote (substring-no-properties (thing-at-point 'symbol)))
-                                            nil nil nil 'hi-lock-replace-history)
-                      'hi-pink)))
 
 (defun my-inc-num (arg)
   "Increment decimal number, or with arg hex number"
@@ -694,7 +649,7 @@ end of a non-blank line, or insert an 80-column comment line"
       (cond ((equal major-mode 'sv-mode)
              (sv-mode-narrow-to-scope))
             (t
-             (narrow-nested-dwim)))
+             (narrow-nested-dwim arg)))
     (narrow-nested-dwim)))
 
 (defun my-other-frame ()
@@ -713,25 +668,6 @@ end of a non-blank line, or insert an 80-column comment line"
     (pop-tag-mark)
     (unless (equal buf (current-buffer))
       (kill-buffer buf))))
-
-(defvar my-push-marker (make-marker))
-(defun my-push-mark-and-marker (&optional arg)
-  "Push mark and create/move a marker.  With ARG, pop to mark/marker."
-  (interactive "P")
-  (if arg
-      (let ((buf (marker-buffer my-push-marker))
-            (pos (marker-position my-push-marker))
-            recenter)
-        (when (and buf pos)
-          (switch-to-buffer buf)
-          (setq recenter (not (pos-visible-in-window-p pos)))
-          (goto-char pos)
-          (when recenter
-            (recenter))))
-    (push-mark)
-    (setq my-push-marker (point-marker))
-    (set-marker-insertion-type my-push-marker t)
-    (message "Mark set")))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name on the clipboard"
@@ -752,24 +688,6 @@ end of a non-blank line, or insert an 80-column comment line"
   (my-delete-trailing-whitespace)
   (untabify (point-min) (point-max))
   (indent-region (point-min) (point-max)))
-
-(defun my-query-replace (&optional arg)
-  "query-replace ... take from-string from region if it is active.
-With prefix arg, call the standard query-replace (good for repeating
-previous replacement)."
-  (interactive "*P")
-  (if (or arg (not (region-active-p)))
-      (let ((current-prefix-arg nil))
-        (call-interactively 'query-replace))
-    (let (from to)
-      (setq from (buffer-substring (region-beginning) (region-end))
-            to (read-from-minibuffer
-                (format "Query replace %s with: " from) nil nil nil
-                'query-replace-history))
-      (goto-char (region-beginning))
-      (setq mark-active nil)
-      (query-replace from to)
-      (setq query-replace-defaults (cons from to)))))
 
 (defvar my-recenter-count nil)
 (defun my-recenter (&optional arg)
@@ -832,40 +750,20 @@ with a prefix argument, prompt for START-AT and FORMAT."
                         start end format)))
 
 (defun my-register-copy-into ()
-  "Copy active region or last kill to a register."
+  "Copy last kill to a register."
   (interactive)
-  (let ((use-region (region-active-p)))
-    (set-register
-     (read-char (if use-region "Copy region to register:" "Copy last kill to register:"))
-     (if use-region
-         (buffer-substring (region-beginning) (region-end))
-       (current-kill 0 t)))
-    (when use-region
-      (deactivate-mark))))
-
-(defun my-register-kill-into ()
-  "Kill active region or last kill to a register."
-  (interactive)
-  (let ((use-region (region-active-p)))
-    (set-register
-     (read-char (if use-region "Kill region to register:" "Copy last kill to register:"))
-     (if use-region
-         (buffer-substring (region-beginning) (region-end))
-       (current-kill 0 t)))
-    (when use-region
-      (delete-region (region-beginning) (region-end))
-      (deactivate-mark))))
+  (set-register (read-char "Copy last kill to register:") (current-kill 0 t)))
 
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
  t => lowercase, uppercase, capitalize.")
 
-(defun my-rotate-case (&optional beg end)
+(defun my-rotate-case (&optional arg)
   "Rotate case to capitalized, uppercase, lowercase."
   (interactive "*")
-  (let ((case-fold-search nil))
+  (let ((case-fold-search nil) beg end)
     (save-excursion
-      (if (region-active-p)
+      (if arg
           (if (< (region-beginning) (region-end))
               (setq beg (region-beginning)
                     end (region-end))
@@ -924,6 +822,24 @@ with a prefix argument, prompt for START-AT and FORMAT."
         (set-window-buffer w b)
         (set-window-point w p)))))
 
+(defvar my-save-location-marker (make-marker))
+(defun my-save-location (&optional arg)
+  "Create/move a location marker.  With ARG, pop to marker."
+  (interactive "P")
+  (if arg
+      (let ((buf (marker-buffer my-save-location-marker))
+            (pos (marker-position my-save-location-marker))
+            recenter)
+        (when (and buf pos)
+          (switch-to-buffer buf)
+          (setq recenter (not (pos-visible-in-window-p pos)))
+          (goto-char pos)
+          (when recenter
+            (recenter))))
+    (setq my-save-location-marker (point-marker))
+    (set-marker-insertion-type my-save-location-marker t)
+    (message "Saved location")))
+
 (defun my-set-title (title)
   "Set the frame title"
   (interactive "sTitle: ")
@@ -948,21 +864,19 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (shell-command command output-buffer error-buffer))
 
 (defun my-sort-fields (field)
-  "Sort region or following paragraph."
+  "Sort following paragraph by field."
   (interactive "*p")
   (save-excursion
-    (if (and transient-mark-mode mark-active)
-        (sort-fields field (region-beginning) (region-end))
-      (sort-fields field (point-at-bol)
-                   (save-excursion
-                     (forward-paragraph)
-                     (point-at-eol))))))
+    (sort-fields field (point-at-bol)
+                 (save-excursion
+                   (forward-paragraph)
+                   (point-at-eol)))))
 
-(defun my-sort-lines ()
-  "Sort region or following paragraph."
-  (interactive "*")
+(defun my-sort-lines (&optional arg)
+  "Sort following paragraph, or region with prefix arg."
+  (interactive "*P")
   (save-excursion
-    (if (and transient-mark-mode mark-active)
+    (if arg
         (sort-lines nil (region-beginning) (region-end))
       (sort-lines nil (point-at-bol)
                   (save-excursion
@@ -977,11 +891,11 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (setq-default server-name clearcase-setview-viewtag)
     (server-start)))
 
-(defun my-tidy-lines ()
-  "Tidy up lines."
-  (interactive "*")
-  (let* ((start (if (region-active-p) (region-beginning) (point-at-bol)))
-         (end  (if (region-active-p) (region-end) (point-at-eol)))
+(defun my-tidy-lines (&optional arg)
+  "Tidy up current line, or lines in region with prefix arg."
+  (interactive "*P")
+  (let* ((start (if arg (region-beginning) (point-at-bol)))
+         (end  (if arg (region-end) (point-at-eol)))
          (num-lines (count-lines start end)))
     (save-excursion
       (goto-char start)
@@ -1059,11 +973,11 @@ Only works if there are exactly two windows."
           (set-face-attribute face nil :weight 'normal :underline nil))
         (face-list)))
 
-(defun my-unfill ()
-  "Unfill region if active, paragraph if not."
-  (interactive "*")
+(defun my-unfill (&optional arg)
+  "Unfill paragraph, or region with prefix arg."
+  (interactive "*P")
   (let ((fill-column (point-max)))
-    (if (region-active-p)
+    (if arg
         (fill-region (region-beginning) (region-end))
       (fill-paragraph 1))))
 
@@ -1333,8 +1247,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c ;" 'my-line-comment)
 (my-keys-define "C-c A" 'align-regexp)
-(my-keys-define "C-c C" 'my-comment-region)
-(my-keys-define "C-c C-c" (lambda () (interactive) (call-interactively (if (equal major-mode 'shell-mode) 'comint-interrupt-subjob 'my-comment-region-toggle))))
+(my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c G" 'rgrep)
@@ -1343,11 +1256,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'jump-to-prev-pos)
-(my-keys-define "C-c c" 'my-comment-region-after-copy)
+(my-keys-define "C-c c" 'comment-or-uncomment-region)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c k" 'my-register-kill-into)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
@@ -1378,7 +1290,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-x C-n" 'other-window)
 (my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
-(my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
+(my-keys-define "C-x E" 'apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'my-kill-buffer)
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
@@ -1396,7 +1308,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-z" 'undo)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-#" 'task-bmk-toggle)
-(my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
 (my-keys-define "M-'" 'qe-backward-word-end)
 (my-keys-define "M-(" 'task-bmk-buf-prev)
@@ -1417,7 +1328,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-P" 'my-edit-page-up)
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
-(my-keys-define "M-SPC" 'my-push-mark-and-marker)
+(my-keys-define "M-SPC" 'my-save-location)
 (my-keys-define "M-\"" 'ace-jump-mode)
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)

@@ -100,10 +100,10 @@ or jump forward to input char."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-isearch-yank-word (&optional arg)
-  "Pull next sexp or, with C-u, word from buffer into search string."
+  "Pull next sexp or, with C-u, region into search string."
   (interactive "P")
   (if arg
-      (isearch-yank-internal (lambda () (forward-word 1) (point)))
+      (isearch-yank-internal (lambda () (goto-char (mark t)) (point)))
     (isearch-yank-internal (lambda () (forward-sexp 1) (point)))))
 
 (defun my-isearch-word ()
