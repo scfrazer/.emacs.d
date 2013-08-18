@@ -99,12 +99,19 @@ or jump forward to input char."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun my-isearch-yank-word (&optional arg)
-  "Pull next sexp or, with C-u, region into search string."
-  (interactive "P")
-  (if arg
-      (isearch-yank-internal (lambda () (goto-char (mark t)) (point)))
-    (isearch-yank-internal (lambda () (forward-sexp 1) (point)))))
+(defun my-isearch-yank-sexp ()
+  "Yank next sexp."
+  (interactive)
+  (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+
+(defun my-isearch-yank-region ()
+  "Yank region."
+  (interactive)
+  (let ((m (mark t))
+        (p (point)))
+    (when (> p m)
+      (setq isearch-other-end m)))
+  (isearch-yank-string (buffer-substring-no-properties (region-beginning) (region-end))))
 
 (defun my-isearch-word ()
   "Surround current input with word/symbol delimiters and turn on regexp matching if necessary."
@@ -119,7 +126,8 @@ or jump forward to input char."
 
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 (define-key isearch-mode-map (kbd "C-g") 'isearch-cancel)
-(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-word)
+(define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
+(define-key isearch-mode-map (kbd "C-o") 'my-isearch-yank-region)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 (define-key isearch-mode-map (kbd "DEL") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "M-w") 'my-isearch-word)
