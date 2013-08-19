@@ -155,8 +155,6 @@
               buffer-face-mode-face 'my-buffer-face-mode-face
               case-fold-search t
               column-number-mode t
-              comment-column 0
-              comment-fill-column 120
               compare-ignore-whitespace t
               compilation-scroll-output 'first-error
               completions-format 'vertical
@@ -304,6 +302,14 @@
 (dolist (elt interpreter-mode-alist)
   (when (member (car elt) (list "csh" "tcsh"))
     (setcdr elt 'csh-mode)))
+
+;; Comments
+
+(add-to-list 'comment-styles '(my-style t nil t nil))
+(setq-default comment-column 0
+              comment-empty-lines t
+              comment-fill-column 120
+              comment-style 'my-style)
 
 ;; isearch scroll
 
