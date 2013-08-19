@@ -140,9 +140,7 @@
 (global-show-mark-mode 1)
 (winner-mode 1)
 
-(setq-default ace-jump-mode-case-fold nil
-              ace-jump-mode-scope 'window
-              backup-inhibited t
+(setq-default backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
@@ -1348,7 +1346,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-save-location)
-(my-keys-define "M-\"" 'ace-jump-mode)
+(my-keys-define "M-\"" (lambda () (interactive) (forward-comment (point-max))))
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
