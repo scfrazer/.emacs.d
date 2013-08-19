@@ -383,13 +383,24 @@
         (t
          (call-interactively 'compile))))
 
-(defun my-comment-region-after-copy ()
-  "Insert a copy of the region and comment the original."
-  (interactive "*")
-  (kill-ring-save (region-beginning) (region-end))
-  (comment-region (region-beginning) (region-end))
-  (goto-char (region-end))
-  (yank))
+(defun my-comment-or-uncomment-region (&optional arg)
+  "Like `comment-or-uncomment-region', but prefix arg means
+comment current line."
+  (interactive "*P")
+  (comment-or-uncomment-region
+   (if arg (point-at-bol) (region-beginning))
+   (if arg (point-at-bol 2) (region-end))))
+
+(defun my-comment-region-after-copy (&optional arg)
+  "Insert a copy of the region and comment the original.  With
+prefix arg, do current line."
+  (interactive "*P")
+  (let ((beg (if arg (point-at-bol) (region-beginning)))
+        (end (if arg (point-at-bol 2) (region-end))))
+    (kill-ring-save beg end)
+    (goto-char end)
+    (yank)
+    (comment-region beg end)))
 
 (defun my-convert-to-base (arg)
   "Convert to decimal, or with prefix arg to hex."
@@ -1272,7 +1283,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'jump-to-prev-pos)
-(my-keys-define "C-c c" 'comment-or-uncomment-region)
+(my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
