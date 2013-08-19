@@ -713,6 +713,18 @@ end of a non-blank line, or insert an 80-column comment line"
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-query-replace (from-string to-string &optional delimited start end)
+  "Same as `query-replace', but prefix arg means replace in region instead of word."
+  (interactive
+   (let ((common
+          (query-replace-read-args
+           (concat "Query replace" (if current-prefix-arg " in region" ""))
+           nil)))
+     (list (nth 0 common) (nth 1 common) (nth 2 common)
+           (if current-prefix-arg (region-beginning))
+           (if current-prefix-arg (region-end)))))
+  (perform-replace from-string to-string t nil delimited nil nil start end))
+
 (defun my-rectangle-number-lines (start end start-at &optional format)
   "Like `rectangle-number-lines' but with better defaults.
 
@@ -1308,6 +1320,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-z" 'undo)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-#" 'task-bmk-toggle)
+(my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
 (my-keys-define "M-'" 'qe-backward-word-end)
 (my-keys-define "M-(" 'task-bmk-buf-prev)
