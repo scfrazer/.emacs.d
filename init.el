@@ -47,7 +47,6 @@
 (require 'mdabbrev)
 (require 'midnight)
 (require 'mode-fn)
-(require 'narrow-nested)
 (require 'quick-edit)
 (require 'rect)
 (require 'redo+)
@@ -657,15 +656,15 @@ end of a non-blank line, or insert an 80-column comment line"
     (when word
       (insert word))))
 
-(defun my-narrow-nested-dwim (&optional arg)
-  "narrow-nested-dwim, but do something special if there is a prefix arg."
+(defun my-narrow (&optional arg)
+  "Narrow to region, or widen if already narrowed, or with prefix
+arg do something special."
   (interactive "P")
-  (if arg
-      (cond ((equal major-mode 'sv-mode)
-             (sv-mode-narrow-to-scope))
-            (t
-             (narrow-nested-dwim arg)))
-    (narrow-nested-dwim)))
+  (if (and arg (equal major-mode 'sv-mode))
+      (sv-mode-narrow-to-scope)
+    (if (/= (buffer-size) (- (point-max) (point-min)))
+        (widen)
+      (narrow-to-region (region-beginning) (region-end)))))
 
 (defun my-other-frame ()
   "Switch to other frame."
@@ -728,17 +727,19 @@ end of a non-blank line, or insert an 80-column comment line"
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
-(defun my-query-replace (from-string to-string &optional delimited start end)
-  "Same as `query-replace', but prefix arg means replace in region instead of word."
-  (interactive
-   (let ((common
-          (query-replace-read-args
-           (concat "Query replace" (if current-prefix-arg " in region" ""))
-           nil)))
-     (list (nth 0 common) (nth 1 common) (nth 2 common)
-           (if current-prefix-arg (region-beginning))
-           (if current-prefix-arg (region-end)))))
-  (perform-replace from-string to-string t nil delimited nil nil start end))
+(defun my-query-replace (&optional arg)
+  "Same as `query-replace', but prefix arg means take from-string from region."
+  (interactive "*P")
+  (if (not arg)
+      (call-interactively 'query-replace)
+    (let (from to)
+      (setq from (buffer-substring (region-beginning) (region-end))
+            to (read-from-minibuffer
+                (format "Query replace %s with: " from) nil nil nil
+                'query-replace-history))
+      (goto-char (region-beginning))
+      (query-replace from to)
+      (setq query-replace-defaults (cons from to)))))
 
 (defun my-rectangle-number-lines (start end start-at &optional format)
   "Like `rectangle-number-lines' but with better defaults.
@@ -1278,6 +1279,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
 (my-keys-define "C-c C-o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c G" 'rgrep)
+(my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
@@ -1291,7 +1293,7 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'my-compile)
-(my-keys-define "C-c n" 'my-narrow-nested-dwim)
+(my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'shell)
@@ -1403,10 +1405,6 @@ Does not set point.  Does nothing if mark ring is empty."
 
 (global-set-key (kbd "<mouse-4>") (lambda () "Scroll up." (interactive) (my-edit-scroll-up 5)))
 (global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (my-edit-scroll-down 5)))
-
-;; Translations
-
-(define-key key-translation-map (kbd "C-c N") (kbd "C-x n s"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
