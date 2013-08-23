@@ -859,18 +859,21 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
       (goto-char start)
       (dotimes (idx num-lines)
         (back-to-indentation)
+        ;; Multiple spaces
         (while (re-search-forward "[ \t]\\{2,\\}" (point-at-eol) t)
           (unless (my-inside-string-or-comment-p (match-beginning 0))
             (replace-match " ")))
-        (dolist (regexp (list " \\([[(,;]\\)" "\\([[(]\\) " " \\([])]\\)"))
+        ;; Space before, space after, space before
+        (dolist (regexp (list " \\([[(,;]\\)" "\\([[({]\\) " " \\([])}]\\)"))
           (back-to-indentation)
           (while (re-search-forward regexp (point-at-eol) t)
             (unless (my-inside-string-or-comment-p (match-beginning 0))
               (replace-match "\\1"))))
         (back-to-indentation)
-        (while (re-search-forward ",\\([^ \n]\\)" (point-at-eol) t)
+        ;; No space between
+        (while (re-search-forward "\\([,;]\\)\\([^ \n]\\)" (point-at-eol) t)
           (unless (my-inside-string-or-comment-p (match-beginning 0))
-            (replace-match ", \\1")))
+            (replace-match "\\1 \\2")))
         (forward-line 1)))))
 
 (defun my-inside-string-or-comment-p (pos)
@@ -1241,6 +1244,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
 (my-keys-define "M-r t" 'string-rectangle)
 (my-keys-define "M-s o" 'my-occur)
+(my-keys-define "M-t" 'my-tmux-copy-region)
 (my-keys-define "M-u" 'my-recenter)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)

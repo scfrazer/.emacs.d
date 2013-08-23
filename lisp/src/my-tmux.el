@@ -12,12 +12,16 @@
                (<= (length text) my-tmux-max-copy-length))
       (my-tmux-copy text))))
 
-(setq-default interprogram-cut-function 'my-interprogram-cut-function)
+;; Uncomment this to automatically copy to tmux paste buffer
+;; (setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
-(defun my-tmux-copy-region (beg end)
-  "Copy region to tmux buffer."
-  (interactive "r")
-  (my-tmux-copy (buffer-substring-no-properties beg end)))
+(defun my-tmux-copy-region (&optional arg)
+  "Copy region to tmux paste buffer.  With prefix arg, copy last kill."
+  (interactive "P")
+  (my-tmux-copy
+   (if arg
+       (substring-no-properties (current-kill 0 t))
+     (buffer-substring-no-properties (region-beginning) (region-end)))))
 
 (defun my-tmux-copy (text)
   "Copy text to tmux buffer."
