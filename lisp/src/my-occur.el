@@ -1,12 +1,10 @@
 ;;; my-occur.el
 
-(defun my-occur (&optional nlines)
-  "Take the string from the region if it is active."
+(defun my-occur (&optional arg)
+  "Like `occur', but with prefix arg take the string from the region."
   (interactive "P")
-  (if (region-active-p)
-      (progn
-        (occur (buffer-substring (region-beginning) (region-end)) nlines)
-        (deactivate-mark))
+  (if arg
+      (occur (regexp-quote (buffer-substring (region-beginning) (region-end))))
     (let* ((default (buffer-substring-no-properties
                      (point)
                      (save-excursion (skip-syntax-forward "w_") (point))))
@@ -14,7 +12,7 @@
                     (format "List lines matching regexp (default %s): " default) nil nil nil
                     'regexp-history default)))
       (setq regexp (if (string= regexp "") default regexp))
-      (occur regexp nlines)))
+      (occur regexp)))
   (my-occur-fit-buffer))
 
 (defun my-occur-fit-buffer ()

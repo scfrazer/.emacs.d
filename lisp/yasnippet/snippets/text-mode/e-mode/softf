@@ -1,3 +1,0 @@
-#name : keep soft subfield
-# --
-keep soft `(e-mode-abbrev-find-previous-field)`.${1:Field?} == ${2:Value?};$0

@@ -1,3 +1,0 @@
-#name : keep in
-# --
-keep `(e-mode-abbrev-find-previous-field)` in [${1:Range?}];$0

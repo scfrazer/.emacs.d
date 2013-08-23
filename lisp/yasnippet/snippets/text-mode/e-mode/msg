@@ -1,3 +1,0 @@
-#name : message
-# --
-message(`(upcase (e-mode-abbrev-get-prefix))`, ${1:MEDIUM}, "${2:Message?}");$0

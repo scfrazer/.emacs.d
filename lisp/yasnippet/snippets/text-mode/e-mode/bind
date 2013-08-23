@@ -1,3 +1,0 @@
-#name : keep bind
-# --
-keep bind(`(e-mode-abbrev-find-previous-field)`, ${1:empty});$0

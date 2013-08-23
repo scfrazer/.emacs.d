@@ -1,3 +1,0 @@
-#name : keep field
-# --
-keep `(e-mode-abbrev-find-previous-field)` == ${1:Value?};$0

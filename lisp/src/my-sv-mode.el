@@ -1,7 +1,6 @@
 ;;; my-sv-mode.el
 
 (require 'sv-mode)
-(require 'narrow-nested)
 (require 'my-mode-line)
 (require 'quick-edit)
 
@@ -69,13 +68,6 @@
             (clearcase-suppress-checkout-comments t))
         (clearcase-commented-checkout filename)))
     (switch-to-buffer (other-buffer))))
-
-(defadvice sv-mode-narrow-to-scope (before narrow-nested-sv-scope-before activate)
-  (narrow-nested-save-restriction))
-
-(defadvice sv-mode-narrow-to-scope (after narrow-nested-sv-scope-after activate)
-  (when (not (buffer-modified-p))
-    (my-mode-line-count-lines)))
 
 (defadvice qe-forward-block (around sv-forward-block activate)
   (if (equal major-mode 'sv-mode)

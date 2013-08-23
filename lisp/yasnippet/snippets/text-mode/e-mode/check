@@ -1,4 +1,0 @@
-#name : check
-# --
-check `(upcase (e-mode-abbrev-get-prefix))`_${1:Name?} that ${2:BoolExp?}
-$>else dut_error("${3:DutErr?}");$0

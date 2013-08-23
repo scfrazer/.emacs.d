@@ -28,28 +28,6 @@
   "todo/fixme highlighting."
   :group 'faces)
 
-;; Font size faces and functions
-
-(defface my-buffer-face-mode-face
-  '((t (:family "terminus" :height 12)))
-  "buffer-face-mode face."
-  :group 'faces)
-
-(defun my-font-small ()
-  "Switch to small font."
-  (interactive)
-  (set-frame-font "-*-terminus-*-*-*-12-*"))
-
-(defun my-font-medium ()
-  "Switch to medium font."
-  (interactive)
-  (set-frame-font "-frazer-*-medium-*-*-*-14-*"))
-
-(defun my-font-large ()
-  "Switch to large font."
-  (interactive)
-  (set-frame-font "-*-terminus-*-*-*-14-*"))
-
 ;; Show whitespace functionality
 
 (defun my-font-lock-show-whitespace (&optional arg)

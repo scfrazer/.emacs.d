@@ -1,3 +1,0 @@
-#name : keep size
-# --
-keep `(e-mode-abbrev-find-previous-field)`.size() == ${1:Size?};$0

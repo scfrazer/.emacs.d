@@ -1,4 +1,0 @@
-#name : assert
-# --
-assert ${1:Assertion?} else
-$>error("`(upcase (e-mode-abbrev-get-prefix))`_${2:Name?} ${3:Message?}");$0

@@ -432,6 +432,7 @@ With prefix arg, append kill."
     (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
+    (define-key map (kbd "`") (lambda () (qe-region-inside-quotes ?\` 'forward)))
     (define-key map (kbd ")") (lambda () (qe-region-inside-pair ?\) 'forward)))
     (define-key map (kbd "]") (lambda () (qe-region-inside-pair ?\] 'forward)))
     (define-key map (kbd "}") (lambda () (qe-region-inside-pair ?\} 'forward)))

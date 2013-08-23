@@ -1,6 +1,0 @@
-#name : citer
-# --
-for(${1:Type?}::const_iterator it = ${2:Field?}.begin(); it != $2.end(); it++)
-{$>
-$>$0
-}$>

@@ -8,17 +8,6 @@
 (when (fboundp 'tooltip-mode)
   (tooltip-mode -1))
 
-;; Time load time
-
-(defvar *emacs-load-start* (current-time))
-(defun my-get-load-time ()
-  "Get current load time."
-  (let* ((now (current-time))
-         (start-time (+ (car *emacs-load-start*) (cadr *emacs-load-start*)
-                        (/ (float (cadr (cdr *emacs-load-start*))) 1e6)))
-         (end-time (+ (car now) (cadr now) (/ (float (cadr (cdr now))) 1e6))))
-    (- end-time start-time)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic settings
 
@@ -29,8 +18,6 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
-(message "init -4 load time = %.3f s" (my-get-load-time))
-
 ;; Need these first to avoid font-lock/dired issues
 
 (require 'my-font-lock)
@@ -39,7 +26,6 @@
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
-(require 'etags-stack)
 (require 'etags-table)
 (require 'hl-line)
 (require 'iflipb)
@@ -57,13 +43,12 @@
 (require 'sr-speedbar)
 (require 'task)
 (require 'uniquify)
+(require 'yank-target)
 (require 'vcs-compile)
 
-(message "init -3 load time = %.3f s" (my-get-load-time))
-
 (require 'my-abbrev)
-(require 'my-bs)
 (require 'my-bookmark)
+(require 'my-bs)
 (require 'my-calculator)
 (require 'my-cc-mode)
 (require 'my-clearcase)
@@ -71,9 +56,9 @@
 (require 'my-ediff)
 (require 'my-edit)
 (require 'my-ffap)
+(require 'my-grep)
 (require 'my-grep-ed)
 (require 'my-ido)
-(require 'my-grep)
 (require 'my-imenu)
 (require 'my-increment-number)
 (require 'my-isearch)
@@ -90,16 +75,12 @@
 (require 'my-register-list)
 (require 'my-shell)
 (require 'my-sv-mode)
-(require 'my-tags-search)
 (require 'my-theme)
 (require 'my-tmux)
 (require 'my-vc)
 
-(message "init -2 load time = %.3f s" (my-get-load-time))
-
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
-(autoload 'antlr3-mode "antlr3-mode" "ANTLR code editing mode" t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
 (autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
@@ -108,7 +89,6 @@
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
-(autoload 'find-files-glob "find-files" nil t)
 (autoload 'grep-buffers "grep-buffers" nil t)
 (autoload 'highlight-indentation-mode "highlight-indentation" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
@@ -116,10 +96,7 @@
 (autoload 'll-debug-insert "ll-debug" nil t)
 (autoload 'll-debug-revert "ll-debug" nil t)
 (autoload 'll-debug-renumber "ll-debug" nil t)
-(autoload 'lua-mode "lua-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
-(autoload 'my-confluence-highlight "my-confluence" nil t)
-(autoload 'my-confluence-html "my-confluence" nil t)
 (autoload 'php-mode "php-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
@@ -127,7 +104,6 @@
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'uvm-log-mode "uvm-log-mode" nil t)
-(autoload 'verilog-mode "verilog-mode" "Verilog mode" t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
 (show-paren-mode t)
@@ -149,7 +125,6 @@
               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
               browse-kill-ring-separator-face (quote font-lock-keyword-face)
               browse-kill-ring-use-fontification t
-              buffer-face-mode-face 'my-buffer-face-mode-face
               case-fold-search t
               column-number-mode t
               compare-ignore-whitespace t
@@ -200,28 +175,6 @@
               mouse-yank-at-point t
               nxml-sexp-element-flag t
               parens-require-spaces nil
-              protect-buffer-bury-p nil
-              ps-always-build-face-reference t
-              ps-bold-faces (quote (font-lock-keyword-face font-lock-function-name-face))
-              ps-bottom-margin 36
-              ps-build-face-reference nil
-              ps-font-size 8
-              ps-header-font-size 10
-              ps-header-lines 1
-              ps-header-offset 12
-              ps-header-title-font-size 10
-              ps-inter-column 18
-              ps-italic-faces (quote (font-lock-comment-face))
-              ps-left-header (quote (ps-get-buffer-name))
-              ps-left-margin 36
-              ps-n-up-margin 18
-              ps-n-up-printing 2
-              ps-paper-type (quote letter)
-              ps-print-color-p nil
-              ps-right-header (quote ("/pagenumberstring load"))
-              ps-right-margin 36
-              ps-top-margin 36
-              ps-underlined-faces (quote (font-lock-string-face))
               redisplay-dont-pause t
               rst-mode-lazy nil
               save-abbrevs nil
@@ -235,7 +188,6 @@
               speedbar-use-images nil
               split-width-threshold nil
               tags-revert-without-query t
-              tempo-interactive t
               truncate-partial-width-windows nil
               uniquify-buffer-name-style 'forward
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
@@ -280,7 +232,6 @@
 (add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
@@ -312,8 +263,6 @@
 
 (setq isearch-allow-scroll t)
 (put 'my-recenter 'isearch-scroll t)
-
-(message "init -1 load time = %.3f s" (my-get-load-time))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -539,13 +488,6 @@ With a numeric prefix, goto that window line."
              hash)
     str))
 
-(defun my-inc-num (arg)
-  "Increment decimal number, or with arg hex number"
-  (interactive "*P")
-  (if arg
-      (my-increment-number-hexadecimal)
-    (my-increment-number-decimal)))
-
 (defun my-indent ()
   "Indent entire buffer."
   (interactive "*")
@@ -664,16 +606,8 @@ arg do something special."
       (sv-mode-narrow-to-scope)
     (if (/= (buffer-size) (- (point-max) (point-min)))
         (widen)
-      (narrow-to-region (region-beginning) (region-end)))))
-
-(defun my-other-frame ()
-  "Switch to other frame."
-  (interactive)
-  (when (> (length (frame-list)) 1)
-    (let ((frame (get-other-frame)))
-      (if (eq (frame-visible-p frame) 'icon)
-          (make-frame-visible frame)
-        (other-frame 1)))))
+      (narrow-to-region (region-beginning) (region-end))
+      (goto-char (point-min)))))
 
 (defun my-pop-tag-mark-kill-buffer ()
   "Pop tag mark and kill previous buffer."
@@ -777,10 +711,13 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
 
-(defun my-register-copy-into ()
-  "Copy last kill to a register."
-  (interactive)
-  (set-register (read-char "Copy last kill to register:") (current-kill 0 t)))
+(defun my-register-copy-into (&optional arg)
+  "Copy region, or with prefix arg last kill, to a register."
+  (interactive "P")
+  (if arg
+      (set-register (read-char "Copy last kill to register:") (current-kill 0 t))
+    (set-register (read-char "Copy to register:")
+                  (buffer-substring (region-beginning) (region-end)))))
 
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
@@ -867,11 +804,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (setq my-save-location-marker (point-marker))
     (set-marker-insertion-type my-save-location-marker t)
     (message "Saved location")))
-
-(defun my-set-title (title)
-  "Set the frame title"
-  (interactive "sTitle: ")
-  (setq frame-title-format title))
 
 (defun my-set-selective-display (&optional col)
   "Set selective display based on cursor column."
@@ -994,13 +926,6 @@ Only works if there are exactly two windows."
         (select-window first-win)
         (when this-win-2nd (other-window 1))))))
 
-(defun my-unbold ()
-  "Unbold all faces."
-  (interactive)
-  (mapc (lambda (face)
-          (set-face-attribute face nil :weight 'normal :underline nil))
-        (face-list)))
-
 (defun my-unfill (&optional arg)
   "Unfill paragraph, or region with prefix arg."
   (interactive "*P")
@@ -1014,22 +939,6 @@ Only works if there are exactly two windows."
   (interactive "*")
   (save-excursion
     (untabify (point-min) (point-max))))
-
-(defun unpop-to-mark-command ()
-  "Unpop off mark ring into the buffer's actual mark.
-Does not set point.  Does nothing if mark ring is empty."
-  (interactive)
-  (let ((num-times (if (equal last-command 'pop-to-mark-command) 2
-                     (if (equal last-command 'unpop-to-mark-command) 1
-                       (error "Previous command was not a (un)pop-to-mark-command")))))
-    (dotimes (x num-times)
-      (when mark-ring
-        (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-        (set-marker (mark-marker) (+ 0 (car (last mark-ring))) (current-buffer))
-        (when (null (mark t)) (ding))
-        (setq mark-ring (nbutlast mark-ring))
-        (goto-char (mark t)))
-      (deactivate-mark))))
 
 (defun my-x-color-to-tty-color ()
   (interactive)
@@ -1206,49 +1115,6 @@ Does not set point.  Does nothing if mark ring is empty."
      (speedbar-add-supported-extension ".svh")
      (speedbar-add-supported-extension ".aop")))
 
-(eval-after-load "verilog-mode"
-  '(require 'my-verilog))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org mode
-
-(setq org-capture-templates
-      '(("t" "Task" entry (function my-org-capture-task-location)
-         "* %?" :empty-lines 1 :kill-buffer t)
-        ("w" "Work" entry (file+headline "Work.org" "Capture")
-         "* TODO %?" :empty-lines 1 :kill-buffer t)
-        ("n" "Note" entry (file+headline "Notes.org" "Capture")
-         "* %?" :empty-lines 1 :kill-buffer t)
-        ("i" "Idea" entry (file+headline "Ideas.org" "Capture")
-         "* %?" :empty-lines 1 :kill-buffer t)
-        ("h" "Home" entry (file+headline "Home.org" "Capture")
-         "* TODO %?" :empty-lines 1 :kill-buffer t)
-        ("b" "Buy" entry (file+headline "Buy.org" "Capture")
-         "* TODO %?" :empty-lines 1 :kill-buffer t)))
-
-(defvar my-org-kill-task-notes nil)
-
-(defun my-org-capture-task-location ()
-  "Put point at the end of the current task's notes."
-  (if (null task-current-name)
-      (error "No task loaded")
-    (if (get-buffer task-notes-filename)
-        (set-buffer task-notes-filename)
-      (setq my-org-kill-task-notes t)
-      (set-buffer
-       (find-file-noselect (concat task-top-dir task-current-name "/" task-notes-filename))))
-    (goto-char (point-max))))
-
-(defun my-org-capture-after-finalize-hook ()
-  "Kill task notes buffer if it wasn't loaded before capture."
-  (when my-org-kill-task-notes
-    (setq my-org-kill-task-notes nil)
-    (let ((buf (get-buffer task-notes-filename)))
-      (when buf
-        (kill-buffer buf)))))
-
-(add-hook 'org-capture-after-finalize-hook 'my-org-capture-after-finalize-hook)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 
@@ -1269,7 +1135,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-\\" 'expand-abbrev)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
-(my-keys-define "C-c +" 'my-inc-num)
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
@@ -1284,10 +1149,10 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
-(my-keys-define "C-c b" 'jump-to-prev-pos)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
+(my-keys-define "C-c i" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
@@ -1296,12 +1161,11 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
-(my-keys-define "C-c s" 'shell)
+(my-keys-define "C-c s" 'my-register-copy-into)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c u" 'winner-undo)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
-(my-keys-define "C-c w" 'my-register-copy-into)
-(my-keys-define "C-c y" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+(my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'my-edit-newline-and-indent)
@@ -1361,8 +1225,8 @@ Does not set point.  Does nothing if mark ring is empty."
 (my-keys-define "M-SPC" 'my-save-location)
 (my-keys-define "M-\"" (lambda () (interactive) (forward-comment (point-max))))
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
-(my-keys-define "M-^" 'my-pop-back-imenu)
 (my-keys-define "M-`" 'next-error)
+(my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-rotate-case)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-g" 'my-goto-line-column)
@@ -1456,9 +1320,9 @@ Does not set point.  Does nothing if mark ring is empty."
                                       (concat "%" fmt)))))
                                  (if v1 "\\n\", " "\\n\"") v1)))
 
-(when (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
-  (setq-default python-python-command "python-2.7.1"))
-
+(if (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
+    (setq-default python-python-command "/router/bin/python-2.7.4")
+  (setq-default python-python-command "/usr/bin/python"))
 
 (eval-after-load "js2-mode"
   '(progn
@@ -1466,7 +1330,7 @@ Does not set point.  Does nothing if mark ring is empty."
        (interactive)
        (let ((b (if mark-active (min (point) (mark)) (point-min)))
              (e (if mark-active (max (point) (mark)) (point-max))))
-         (shell-command-on-region b e "/router/bin/python-2.7.4 -mjson.tool" (current-buffer) t)))))
+         (shell-command-on-region b e (concat python-python-command " -mjson.tool") (current-buffer) t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
@@ -1483,8 +1347,6 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
-(defalias 'diff-b 'ediff-buffers)
-(defalias 'diff-f 'my-ediff-buffer-with-file)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fl 'font-lock-fontify-buffer)
@@ -1497,16 +1359,12 @@ Does not set point.  Does nothing if mark ring is empty."
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'kr 'browse-kill-ring)
-(defalias 'med 'my-font-medium)
-(defalias 'mf 'make-frame-on-display)
-(defalias 'qrr 'query-replace-regexp)
 (defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
 (defalias 'serve 'my-server)
 (defalias 'sf 'my-sort-fields)
 (defalias 'sl 'my-sort-lines)
-(defalias 'small 'my-font-small)
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
@@ -1542,10 +1400,6 @@ Does not set point.  Does nothing if mark ring is empty."
   (dolist (handler (list 'tramp-completion-file-name-handler 'tramp-file-name-handler))
     (when (setq elm (rassq handler file-name-handler-alist))
       (setq file-name-handler-alist (delq elm file-name-handler-alist)))))
-
-;; Time emacs load time
-
-(message "init load time = %.3f s" (my-get-load-time))
 
 ;; Disabled commands
 

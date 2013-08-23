@@ -75,11 +75,11 @@
                     end (region-end))
             (setq start (point-at-bol)
                   end (point-at-bol 2)))
-        (setq start (min (point) (or (mark) (point-min)))
-              end (max (point) (or (mark) (point-min)))))
+        (setq start (region-beginning)
+              end (region-end)))
       (setq text (buffer-substring start end))
       (when kill
-        (kill-region start end))
+        (delete-region start end))
       (save-excursion
         (with-current-buffer (marker-buffer yank-target-marker)
           (goto-char (marker-position yank-target-marker))
