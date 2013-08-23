@@ -228,8 +228,6 @@
 (add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
 (add-to-list 'auto-mode-alist '("\\.elog$" . elog-mode))
-(add-to-list 'auto-mode-alist '("\\.g$" . antlr3-mode))
-(add-to-list 'auto-mode-alist '("\\.g3.*$" . antlr3-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
@@ -1262,18 +1260,10 @@ Only works if there are exactly two windows."
 
 (my-keys-minor-mode 1)
 
-(global-set-key (kbd "<mouse-2>") 'mouse-yank-primary)
-
-(global-set-key (kbd "<S-down-mouse-3>") 'imenu)
-(global-set-key (kbd "<C-down-mouse-3>") 'mouse-popup-menubar)
-
-(global-set-key (kbd "<mouse-4>") (lambda () "Scroll up." (interactive) (my-edit-scroll-up 5)))
-(global-set-key (kbd "<mouse-5>") (lambda () "Scroll down." (interactive) (my-edit-scroll-down 5)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(setq-default vcs-compile-command "l2q antares_targ_build_pit /build_user/")
+(setq-default vcs-compile-command "l2q antares_targ_build_pitPP /build_user/")
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)
@@ -1297,8 +1287,6 @@ Only works if there are exactly two windows."
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
 (add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
-
-(add-to-list 'my-bs-never-show-regexps "breakpoint.tcl")
 
 (eval-after-load 'll-debug
   '(ll-debug-register-mode 'c++-mode
