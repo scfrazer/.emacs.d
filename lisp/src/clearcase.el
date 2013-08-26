@@ -5582,18 +5582,18 @@ with completion if possible."
     ;; XEmacs change: enable completion on Windows.
     ;; Works fine with use-dialog-box nil.
     ;;
-    (if (clearcase-file-is-in-mvfs-p file)
-        ;; Completion only works in MVFS:
-        ;;
-        (concat "/" (read-file-name prompt
-                                    completing-dir
-                                    (substring predecessor 1)
-                                    ;;nil
-                                    t
-                                    (substring predecessor 1)))
+;;     (if (clearcase-file-is-in-mvfs-p file)
+;;         ;; Completion only works in MVFS:
+;;         ;;
+;;         (concat "/" (read-file-name prompt
+;;                                     completing-dir
+;;                                     (substring predecessor 1)
+;;                                     ;;nil
+;;                                     t
+;;                                     (substring predecessor 1)))
       (concat "/" (read-string prompt
                                (substring predecessor 1)
-                               nil)))))
+                               nil))));;)
 
 ;;}}}
 
