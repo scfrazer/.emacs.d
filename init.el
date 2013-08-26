@@ -1164,7 +1164,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-register-copy-into)
 (my-keys-define "C-c t" 'my-tidy-lines)
-(my-keys-define "C-c u" 'winner-undo)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)

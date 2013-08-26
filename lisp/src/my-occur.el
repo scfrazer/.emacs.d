@@ -4,7 +4,9 @@
   "Like `occur', but with prefix arg take the string from the region."
   (interactive "P")
   (if arg
-      (occur (regexp-quote (buffer-substring (region-beginning) (region-end))))
+      (occur (read-from-minibuffer "List lines matching regexp: "
+                                   (regexp-quote (buffer-substring (region-beginning) (region-end)))
+                                   nil nil 'regexp-history))
     (let* ((default (buffer-substring-no-properties
                      (point)
                      (save-excursion (skip-syntax-forward "w_") (point))))
