@@ -39,7 +39,7 @@ With prefix arg, insert a blank line below if one doesn't exist."
       (newline-and-indent))))
 
 (defun my-edit-newline-and-indent-above (&optional arg)
-  "Like `my-newline-and-indent' but goes up instead of down.
+  "Like `my-edit-newline-and-indent' but goes up instead of down.
 With prefix arg, insert a blank line above if one doesn't exist."
   (interactive "*P")
   (if arg
