@@ -94,7 +94,7 @@
    `(sh-quoted-exec ((,class (:foreground "color-141"))))
    `(show-paren-match-face ((,class (:background "color-33" :foreground "color-231"))))
    `(show-paren-mismatch-face ((,class (:background "brightred" :foreground "color-231"))))
-   `(task-bmk-face ((,class (:background "color-254"))))
+   `(task-bmk-face ((,class (:background "color-187"))))
    `(trailing-whitespace ((,class (:background "color-195"))))
    `(vertical-border ((,class (:foreground "color-248"))))
    `(warning ((,class (:foreground "color-100"))))
