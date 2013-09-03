@@ -1171,6 +1171,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-v" 'my-edit-newline-and-indent)
 (my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
