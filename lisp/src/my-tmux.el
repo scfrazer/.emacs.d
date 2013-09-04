@@ -21,7 +21,10 @@
   (my-tmux-copy
    (if arg
        (substring-no-properties (current-kill 0 t))
-     (buffer-substring-no-properties (region-beginning) (region-end)))))
+     (buffer-substring-no-properties (region-beginning) (region-end))))
+  (if arg
+      (message "Copied last kill to tmux buffer")
+    (message "Copied region to tmux buffer")))
 
 (defun my-tmux-copy (text)
   "Copy text to tmux buffer."
