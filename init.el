@@ -329,23 +329,25 @@
         (t
          (call-interactively 'compile))))
 
-(defun my-comment-or-uncomment-region (&optional arg)
-  "Like `comment-or-uncomment-region', but prefix arg means
-comment current line."
-  (interactive "*P")
-  (comment-or-uncomment-region
-   (if arg (point-at-bol) (region-beginning))
-   (if arg (point-at-bol 2) (region-end))))
+(defun my-comment-or-uncomment-region ()
+  "Like `comment-or-uncomment-region', but always uses lines."
+  (interactive "*")
+  (let ((beg (save-excursion (goto-char (region-beginning)) (point-at-bol)))
+        (end (save-excursion (goto-char (region-end)) (point-at-bol))))
+    (when (= beg end)
+      (setq end (point-at-bol 2)))
+    (comment-or-uncomment-region beg end)))
 
-(defun my-comment-region-after-copy (&optional arg)
-  "Insert a copy of the region and comment the original.  With
-prefix arg, do current line."
-  (interactive "*P")
-  (let ((beg (if arg (point-at-bol) (region-beginning)))
-        (end (if arg (point-at-bol 2) (region-end))))
+(defun my-comment-region-after-copy ()
+  "Insert a copy of the region and comment the original."
+  (interactive "*")
+  (let ((beg (save-excursion (goto-char (region-beginning)) (point-at-bol)))
+        (end (save-excursion (goto-char (region-end)) (point-at-bol))))
+    (when (= beg end)
+      (setq end (point-at-bol 2)))
     (kill-ring-save beg end)
     (goto-char end)
-    (yank)
+    (save-excursion (yank))
     (comment-region beg end)))
 
 (defun my-convert-to-base (arg)
