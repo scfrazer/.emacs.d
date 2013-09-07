@@ -116,7 +116,9 @@
 (global-show-mark-mode 1)
 (winner-mode 1)
 
-(setq-default backup-inhibited t
+(setq-default ace-jump-mode-case-fold nil
+              ace-jump-mode-gray-background nil
+              backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
