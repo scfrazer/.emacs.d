@@ -23,6 +23,7 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
+(require 'ace-jump-mode)
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
@@ -1169,7 +1170,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
-(my-keys-define "C-j" 'my-edit-jump-to-char)
+(my-keys-define "C-j" 'ace-jump-char-mode)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-bs-toggle)
