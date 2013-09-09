@@ -108,6 +108,7 @@ Special behavior for ()[]{}<>\"'`."
               arg my-edit-jump-prev-arg)
       (setq my-edit-jump-prev-str str
             my-edit-jump-prev-arg arg))
+    (push-mark (point) t)
     (cond ((and (not arg) (member char (list ?\) ?\] ?\} ?\>)))
            (my-edit-jump-forward-pair char))
           ((and arg (member char (list ?\( ?\[ ?\{ ?\<)))
