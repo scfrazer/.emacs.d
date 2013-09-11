@@ -1133,6 +1133,7 @@ Only works if there are exactly two windows."
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "C-/" 'dabbrev-expand)
 (my-keys-define "C-M-h" 'backward-sexp)
+(my-keys-define "C-M-j" 'ace-jump-line-mode)
 (my-keys-define "C-M-k" 'qe-unit-kill)
 (my-keys-define "C-M-l" 'forward-sexp)
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
