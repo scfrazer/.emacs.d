@@ -5,6 +5,7 @@
   (custom-theme-set-faces
    'my-terminal-light
 
+   `(ace-jump-face-foreground ((,class (:background "color-254"))))
    `(button ((,class (:foreground "color-30"))))
    `(compilation-column-number ((,class (:foreground "color-22"))))
    `(compilation-error ((,class (:foreground "red"))))
