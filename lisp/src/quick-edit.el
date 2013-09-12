@@ -283,8 +283,10 @@ With prefix arg, append kill."
       (kill-region (region-beginning) (region-end))
     (kill-region (point)
                  (progn
-                   (cond ((qe-looking-back-syntax " ")
-                          (skip-syntax-backward " ")
+                   (cond ((= (char-before) ?\n)
+                          (backward-char))
+                         ((qe-looking-back-syntax " ")
+                          (skip-syntax-backward " " (point-at-bol))
                           (when (qe-looking-back-syntax "w_")
                             (skip-syntax-backward "w_")))
                          ((qe-looking-back-syntax "w_")
