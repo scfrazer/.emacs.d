@@ -665,6 +665,16 @@ arg do something special."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
+(defun my-rename-file-and-buffer ()
+  "Rename the current buffer and file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer is not visiting a file")
+      (let ((new-name (read-file-name "Rename file to: " filename)))
+        (rename-file filename new-name t)
+        (set-visited-file-name new-name t t)))))
+
 (defun my-query-replace (&optional arg)
   "Same as `query-replace', but prefix arg means take from-string from region."
   (interactive "*P")
