@@ -65,7 +65,7 @@
    `(magit-diff-del ((,class (:foreground "red"))))
    `(magit-item-highlight ((,class (:background "color-254"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
-   `(match ((,class (:background "color-217"))))
+   `(match ((,class (:background "color-189"))))
    `(minibuffer-prompt ((,class (:foreground "color-24"))))
    `(mode-line ((,class (:background "white" :foreground "black"))))
    `(mode-line-buffer-id ((,class (:foreground "color-20"))))
