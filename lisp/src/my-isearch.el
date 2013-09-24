@@ -44,7 +44,7 @@
   (interactive)
   (let ((m (mark t))
         (p (point)))
-    (when (> p m)
+    (when (and isearch-forward (> p m))
       (setq isearch-other-end m)))
   (isearch-yank-string (buffer-substring-no-properties (region-beginning) (region-end))))
 
