@@ -1653,64 +1653,64 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
   (lambda () (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-insert-type) (insert "tt"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "infn"
+  "uin"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_NONE") (insert "infn"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_NONE") (insert "uin"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "infl"
+  "uil"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_LOW") (insert "infl"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_LOW") (insert "uil"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "infm"
+  "uim"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_MEDIUM") (insert "infm"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_MEDIUM") (insert "uim"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "infh"
+  "uih"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_HIGH") (insert "infh"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_HIGH") (insert "uih"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "inff"
+  "uif"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_FULL") (insert "inff"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_FULL") (insert "uif"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "war"
+  "uw"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "warning") (insert "war"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "warning") (insert "uw"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "err"
+  "ue"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "error") (insert "err"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "error") (insert "ue"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "fat"
+  "uf"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "fatal") (insert "fat"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-err-function "fatal") (insert "uf"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "cu"
+  "ucu"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-component-utils) (insert "cu"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-component-utils) (insert "ucu"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "cub"
+  "ucub"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-component-utils t) (insert "cub"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-component-utils t) (insert "ucub"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "ou"
+  "uou"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-object-utils) (insert "ou"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-object-utils) (insert "uou"))))
 
 (define-abbrev sv-mode-abbrev-table
-  "oub"
+  "uoub"
   ""
-  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-object-utils t) (insert "oub"))))
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (sv-mode-uvm-object-utils t) (insert "uoub"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Imenu
