@@ -184,6 +184,7 @@
               save-abbrevs nil
               save-interprogram-paste-before-kill t
               scroll-conservatively 10000
+              scroll-error-top-bottom t
               scroll-preserve-screen-position t
               shift-select-mode nil
               show-paren-delay 0
@@ -1235,8 +1236,8 @@ Only works if there are exactly two windows."
 (my-keys-define "M-J" 'qe-backward-kill-section)
 (my-keys-define "M-K" 'qe-forward-kill-section)
 (my-keys-define "M-L" 'qe-forward-word-section)
-(my-keys-define "M-N" 'my-edit-page-down)
-(my-keys-define "M-P" 'my-edit-page-up)
+(my-keys-define "M-N" 'scroll-up-command)
+(my-keys-define "M-P" 'scroll-down-command)
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-save-location)
