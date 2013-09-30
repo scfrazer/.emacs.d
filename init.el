@@ -677,18 +677,25 @@ arg do something special."
         (set-visited-file-name new-name t t)))))
 
 (defun my-query-replace (&optional arg)
-  "Same as `query-replace', but prefix arg means take from-string from region."
+  "Same as `query-replace', but C-u means take from-string from region,
+and a number prefix means replace in region."
   (interactive "*P")
   (if (not arg)
       (call-interactively 'query-replace)
-    (let (from to)
-      (setq from (buffer-substring (region-beginning) (region-end))
-            to (read-from-minibuffer
-                (format "Query replace %s with: " from) nil nil nil
-                'query-replace-history))
-      (goto-char (region-beginning))
-      (query-replace from to)
-      (setq query-replace-defaults (cons from to)))))
+    (if (numberp arg)
+        (let ((common (query-replace-read-args "Query replace in region" nil))
+              (start (region-beginning))
+              (end (region-end)))
+          (goto-char start)
+          (query-replace (nth 0 common) (nth 1 common) nil start end))
+      (let (from to)
+        (setq from (buffer-substring (region-beginning) (region-end))
+              to (read-from-minibuffer
+                  (format "Query replace %s with: " from) nil nil nil
+                  'query-replace-history))
+        (goto-char (region-beginning))
+        (query-replace from to)
+        (setq query-replace-defaults (cons from to))))))
 
 (defun my-rectangle-number-lines (start end start-at &optional format)
   "Like `rectangle-number-lines' but with better defaults.
