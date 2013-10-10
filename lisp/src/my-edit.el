@@ -121,7 +121,7 @@ Special behavior for ()[]{}<>\"'`."
            (unless arg
              (forward-char))
            (when (string-match "[a-zA-Z]" str)
-             (setq str (concat "\\_<" str)))
+             (setq str (concat "\\<" str)))
            (if arg
                (re-search-backward str (point-at-bol) t)
              (re-search-forward str (point-at-eol) t)
