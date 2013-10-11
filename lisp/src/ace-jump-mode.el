@@ -762,7 +762,7 @@ You can constrol whether use the case sensitive via `ace-jump-mode-case-fold'.
 
 (defun ace-jump-quick-exchange ()
   "The function that we can use to quick exhange the current mode between
-word-mode and char-mode"
+line-mode, word-mode, and char-mode"
   (interactive)
   (cond
    ((eq ace-jump-current-mode 'ace-jump-char-mode)
@@ -779,7 +779,8 @@ word-mode and char-mode"
           ;; restore the flag
           (ace-jump-char-mode query-char))))
    ((eq ace-jump-current-mode 'ace-jump-line-mode)
-    nil)
+    (ace-jump-done)
+    (call-interactively 'ace-jump-word-mode))
    (t
     nil)))
 
