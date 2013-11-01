@@ -16,15 +16,15 @@
 ;; (setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
 (defun my-tmux-copy-region (&optional arg)
-  "Copy region to tmux paste buffer.  With prefix arg, copy last kill."
+  "Copy last kill to tmux paste buffer.  With prefix arg, copy region."
   (interactive "P")
   (my-tmux-copy
    (if arg
-       (substring-no-properties (current-kill 0 t))
-     (buffer-substring-no-properties (region-beginning) (region-end))))
+       (buffer-substring-no-properties (region-beginning) (region-end))
+     (substring-no-properties (current-kill 0 t))))
   (if arg
-      (message "Copied last kill to tmux buffer")
-    (message "Copied region to tmux buffer")))
+      (message "Copied region to tmux buffer")
+    (message "Copied last kill to tmux buffer")))
 
 (defun my-tmux-copy (text)
   "Copy text to tmux buffer."
