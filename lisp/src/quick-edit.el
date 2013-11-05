@@ -536,7 +536,7 @@ preserved.")
 
 (defun qe-unit-ends-mark ()
   "Text unit ends for mark."
-  (cons (point) (progn (goto-char (or (mark) (point))) (point))))
+  (cons (region-beginning) (region-end)))
 
 (defun qe-unit-ends-forward-whitespace ()
   "Text unit ends for forward whitespace."
