@@ -127,7 +127,7 @@
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
               browse-kill-ring-quit-action (quote kill-and-delete-window)
-              browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
+;;               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
               browse-kill-ring-separator-face (quote font-lock-keyword-face)
               browse-kill-ring-use-fontification t
               case-fold-search t
