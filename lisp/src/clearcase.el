@@ -5918,6 +5918,7 @@ and display in a separate window."
         (camefrom (current-buffer)))
 
     (set-buffer buf)
+    (setq truncate-lines t)
     (clearcase-view-mode 0 camefrom)
 
     ;; Edit the buffer.

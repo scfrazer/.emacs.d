@@ -298,15 +298,27 @@
   (set-buffer-modified-p nil))
 
 (defun my-backward-paragraph-rect ()
-  "Move backward to first line with a char in the same column."
+  "Move backward over what looks like a similar set of lines."
   (interactive)
-  (let ((col (current-column))
-        (again t))
+  (let* ((col (current-column))
+         (look-fwd (looking-back "^\\s-*" (point-at-bol)))
+         (regexp (regexp-quote
+                  (if look-fwd
+                      (buffer-substring-no-properties
+                       (point)
+                       (save-excursion
+                         (skip-syntax-forward " ")
+                         (unless (eolp) (forward-char 1))
+                         (point)))
+                    (char-to-string (char-before)))))
+         (again t))
     (while again
       (forward-line -1)
       (setq again (not (bobp)))
       (unless (and (= (move-to-column col) col)
-                   (not (looking-at "\\s-*$")))
+                   (if look-fwd
+                       (looking-at regexp)
+                     (looking-back regexp (point-at-bol))))
         (forward-line 1)
         (move-to-column col)
         (setq again nil)))))
@@ -446,15 +458,27 @@ Prefix with C-u to fit the `next-window'."
     (fit-window-to-buffer win (/ (frame-height) 4))))
 
 (defun my-forward-paragraph-rect ()
-  "Move forward to the last line with a char in the same column."
+  "Move forward over what looks like a similar set of lines."
   (interactive)
-  (let ((col (current-column))
-        (again t))
+  (let* ((col (current-column))
+         (look-fwd (looking-back "^\\s-*" (point-at-bol)))
+         (regexp (regexp-quote
+                  (if look-fwd
+                      (buffer-substring-no-properties
+                       (point)
+                       (save-excursion
+                         (skip-syntax-forward " ")
+                         (unless (eolp) (forward-char 1))
+                         (point)))
+                    (char-to-string (char-before)))))
+         (again t))
     (while again
       (forward-line 1)
       (setq again (not (eobp)))
       (unless (and (= (move-to-column col) col)
-                   (not (looking-at "\\s-*$")))
+                   (if look-fwd
+                       (looking-at regexp)
+                     (looking-back regexp (point-at-bol))))
         (forward-line -1)
         (move-to-column col)
         (setq again nil)))))
