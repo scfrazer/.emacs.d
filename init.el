@@ -303,14 +303,16 @@
   (let* ((col (current-column))
          (look-fwd (looking-back "^\\s-*" (point-at-bol)))
          (regexp (regexp-quote
-                  (if look-fwd
-                      (buffer-substring-no-properties
-                       (point)
-                       (save-excursion
-                         (skip-syntax-forward " ")
-                         (unless (eolp) (forward-char 1))
-                         (point)))
-                    (char-to-string (char-before)))))
+                  (buffer-substring-no-properties
+                   (point)
+                   (save-excursion
+                     (if look-fwd
+                         (progn
+                           (skip-syntax-forward " ")
+                           (unless (eolp) (forward-char 1)))
+                       (skip-syntax-backward " ")
+                       (unless (bolp) (backward-char 1)))
+                     (point)))))
          (again t))
     (while again
       (forward-line -1)
@@ -463,14 +465,16 @@ Prefix with C-u to fit the `next-window'."
   (let* ((col (current-column))
          (look-fwd (looking-back "^\\s-*" (point-at-bol)))
          (regexp (regexp-quote
-                  (if look-fwd
-                      (buffer-substring-no-properties
-                       (point)
-                       (save-excursion
-                         (skip-syntax-forward " ")
-                         (unless (eolp) (forward-char 1))
-                         (point)))
-                    (char-to-string (char-before)))))
+                  (buffer-substring-no-properties
+                   (point)
+                   (save-excursion
+                     (if look-fwd
+                         (progn
+                           (skip-syntax-forward " ")
+                           (unless (eolp) (forward-char 1)))
+                       (skip-syntax-backward " ")
+                       (unless (bolp) (backward-char 1)))
+                     (point)))))
          (again t))
     (while again
       (forward-line 1)
