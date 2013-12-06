@@ -119,7 +119,7 @@
 (setq-default ace-jump-mode-case-fold nil
               ace-jump-mode-gray-background nil
               ace-jump-mode-scope 'window
-              ace-jump-mode-submode-list '(ace-jump-line-mode ace-jump-word-mode ace-jump-char-mode)
+              ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
               backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
@@ -1180,7 +1180,7 @@ Only works if there are exactly two windows."
 (my-keys-define "<delete>" 'delete-char)
 (my-keys-define "C-/" 'dabbrev-expand)
 (my-keys-define "C-M-h" 'backward-sexp)
-(my-keys-define "C-M-j" 'ace-jump-word-mode)
+(my-keys-define "C-M-j" 'ace-jump-line-mode)
 (my-keys-define "C-M-k" 'delete-region)
 (my-keys-define "C-M-l" 'forward-sexp)
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
