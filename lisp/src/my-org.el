@@ -19,6 +19,7 @@
               org-export-html-style-include-default nil
               org-export-html-validation-link ""
               org-export-htmlize-output-type 'inline-css
+              org-fontify-emphasized-text nil  ; FIXME To avoid /path/names displayed as italics
               org-hide-leading-stars nil
               org-id-track-globally nil
               org-imenu-depth 6
