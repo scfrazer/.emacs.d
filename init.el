@@ -154,6 +154,7 @@
               highlight-changes-active-string " Chg+"
               highlight-changes-passive-string " Chg-"
               highlight-changes-global-modes nil
+              hscroll-step 1
               htmlize-output-type 'font
               iflipb-ignore-buffers 'my-bs-ignore-buffer
               indicate-buffer-boundaries t
