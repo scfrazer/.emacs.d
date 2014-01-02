@@ -15,21 +15,19 @@
   (let ((pop-up-windows nil))
     (call-interactively 'magit-status)))
 
-(defun magit-password (proc string)
-  "Checks if git/ssh asks for a password and ask the user for it."
-  (when (or (string-match "^Enter passphrase for key '\\\(.*\\\)': $" string)
-            (string-match "^\\\(.*\\\)'s password:" string))
-    (let ((passwd-file "~/.magit-passwd"))
-      (process-send-string proc
-                           (if (file-exists-p passwd-file)
-                               (with-temp-buffer
-                                 (insert-file-contents passwd-file)
-                                 (buffer-substring-no-properties (point-min) (point-max)))
-                             (concat (read-passwd
-                                      (format "Password for '%s': " (match-string 1 string))
-                                      nil) "\n"))))))
+(defun magit-process-password-prompt (proc string)
+  "Forward password prompts to the user."
+  (let ((prompt (magit-process-match-prompt
+                 magit-process-password-prompt-regexps string)))
+    (when prompt
+      (process-send-string proc (concat (let ((passwd-file "~/.magit-passwd"))
+                                          (if (file-exists-p passwd-file)
+                                              (with-temp-buffer
+                                                (insert-file-contents passwd-file)
+                                                (buffer-substring-no-properties (point-min) (point-max)))
+                                            (read-passwd prompt))) "\n")))))
 
-;; (define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit)
+(define-key git-commit-mode-map (kbd "C-x C-s") 'git-commit-commit)
 (define-key magit-mode-map "q" 'my-magit-quit)
 
 (provide 'my-magit)
