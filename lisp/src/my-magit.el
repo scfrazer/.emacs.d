@@ -29,7 +29,7 @@
                                       (format "Password for '%s': " (match-string 1 string))
                                       nil) "\n"))))))
 
-(define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit)
+;; (define-key magit-log-edit-mode-map (kbd "C-x C-s") 'magit-log-edit-commit)
 (define-key magit-mode-map "q" 'my-magit-quit)
 
 (provide 'my-magit)
