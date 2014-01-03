@@ -1247,7 +1247,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'kill-buffer)
-(my-keys-define "C-x m" 'my-magit-status)
+(my-keys-define "C-x m" 'magit-status)
 (my-keys-define "C-x t" 'task-map)
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)

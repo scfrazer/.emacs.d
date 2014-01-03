@@ -2,18 +2,16 @@
 
 (require 'magit)
 
+(setq-default magit-restore-window-configuration t
+              magit-status-buffer-switch-function 'switch-to-buffer
+              magit-status-tags-line-subject 'tag)
+
 (defun my-magit-quit ()
   "Clean up magit buffers when quitting."
   (interactive)
   (dolist (buf (buffer-list))
     (when (string-match "\\s-*\\*magit" (buffer-name buf))
       (kill-buffer buf))))
-
-(defun my-magit-status ()
-  "Don't split window."
-  (interactive)
-  (let ((pop-up-windows nil))
-    (call-interactively 'magit-status)))
 
 (defun magit-process-password-prompt (proc string)
   "Forward password prompts to the user."
@@ -28,6 +26,5 @@
                                             (read-passwd prompt))) "\n")))))
 
 (define-key git-commit-mode-map (kbd "C-x C-s") 'git-commit-commit)
-(define-key magit-mode-map "q" 'my-magit-quit)
 
 (provide 'my-magit)
