@@ -5,7 +5,8 @@
 (setq-default magit-restore-window-configuration t
               magit-set-upstream-on-push 'askifnotset
               magit-status-buffer-switch-function 'switch-to-buffer
-              magit-status-tags-line-subject 'tag)
+              magit-status-tags-line-subject 'tag
+              magit-turn-on-auto-revert-mode nil)
 
 (defun my-magit-quit ()
   "Clean up magit buffers when quitting."
