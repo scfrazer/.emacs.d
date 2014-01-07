@@ -11,7 +11,8 @@
                                        "\\.cmake\\.state"
                                        "rtl/Makefile\\(\\..+\\)?"
                                        "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
-                                       "rtl/dump.rdl")
+                                       "rtl/dump.rdl"
+                                       "\\.pyc")
   "*Regexps of view-private elements to ignore.")
 
 (defvar cc-status-filter t
