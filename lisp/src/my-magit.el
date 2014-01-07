@@ -2,7 +2,8 @@
 
 (require 'magit)
 
-(setq-default magit-restore-window-configuration t
+(setq-default magit-ellipsis ?>
+              magit-restore-window-configuration t
               magit-set-upstream-on-push 'askifnotset
               magit-status-buffer-switch-function 'switch-to-buffer
               magit-status-tags-line-subject 'tag
