@@ -110,7 +110,7 @@
 (show-paren-mode t)
 (delete-selection-mode t)
 (transient-mark-mode -1)
-(global-hl-line-mode 1)
+;; (global-hl-line-mode 1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (global-show-mark-mode 1)
