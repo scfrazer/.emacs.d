@@ -14,7 +14,7 @@
                                                "*terminal*"
                                                ))
                                         "[*]Occur.*"
-                                        "[*]magit.+"
+                                        "[*]magit:.+"
                                         "[*]clearcase-config-spec.+"
                                         "[*]cc-status[*]")
   "*Buffer regexps to always show when buffer switching.")
