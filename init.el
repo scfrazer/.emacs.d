@@ -1332,13 +1332,7 @@ Only works if there are exactly two windows."
       (list
        '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/auto/antares_user/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/antares_user/scfrazer/tags/sv/TAGS")
-       '("/vob/sse/asic/luke/.*\\.svh?$" "/nfs/luke_scratch/tags/sv/TAGS")
-       '("/vob/sse/asic/luke/.*\\.aop$" "/nfs/luke_scratch/tags/sv/TAGS")
-       '("/vob/sse/asic/luke/.*\\.s$" "/nfs/luke_scratch/tags/rtl/TAGS")
-       '("/vob/sse/asic/luke/.*\\.v?$" "/nfs/luke_scratch/tags/rtl/TAGS")
-       '("/vob/sse/asic/luke/.*\\.e$" "/nfs/luke_scratch/tags/e/TAGS")
-       '("/vob/sse/asic/luke/.*\\.[ch]pp$" "/nfs/luke_scratch/tags/sc/TAGS")
-       '("/vob/sse/asic/luke/.*\\.c$" "/nfs/luke_scratch/tags/sc/TAGS")
+       '("/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/.*" "/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/TAGS")
        ))
 
 (unless (getenv "SV_PATH")

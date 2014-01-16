@@ -277,7 +277,7 @@
 ;;; Code:
 
 (require 'skeleton)
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 ;; Struct------------------------------------------------------------------
 (defstruct ll-debug-struct
@@ -599,10 +599,11 @@ Uses `query-replace-regexp' internally."
                                       (ll-debug-get-c++-function-name)
                                       ")")
                               "\"")
-                        '(nil "\"" (concat (ll-debug-create-next-debug-string)
-                                           " \" << __FILE__ << \":\" << __LINE__ << \" ("
-                                           (ll-debug-get-c++-function-name)
-                                           ")")
+                        '(nil "\""
+                              (concat (ll-debug-create-next-debug-string)
+                                      " \" << __FILE__ << \":\" << __LINE__ << \" ("
+                                      (ll-debug-get-c++-function-name)
+                                      ")")
                               "\""
                               ("Variable name: "
                                " << \"  " str ":\" << " str)))
@@ -622,10 +623,26 @@ Uses `query-replace-regexp' internally."
                                (read-string "Format: "))
                               (if v1 "\\n\", " "\\n\"") v1))
 
-(ll-debug-register-mode '(java-mode jde-mode)
-                        "System.out.println(" ");"
-                        '(nil "\"" (ll-debug-create-next-debug-string) "\"")
-                        '(nil "\"" (ll-debug-create-next-debug-string) "\""
+;; (ll-debug-register-mode '(java-mode jde-mode)
+;;                         "System.out.println(" ");"
+;;                         '(nil "\"" (ll-debug-create-next-debug-string) "\"")
+;;                         '(nil "\"" (ll-debug-create-next-debug-string) "\""
+;;                               ("Variable name: "
+;;                                "+\"  " str ":\"+" str)))
+(ll-debug-register-mode 'java-mode
+                        "global.log(" ");"
+                        '(nil "\""
+                              (concat (ll-debug-create-next-debug-string)
+                                      " ("
+                                      (ll-debug-get-c++-function-name)
+                                      ")")
+                              "\"")
+                        '(nil "\""
+                              (concat (ll-debug-create-next-debug-string)
+                                      " ("
+                                      (ll-debug-get-c++-function-name)
+                                      ")")
+                              "\""
                               ("Variable name: "
                                "+\"  " str ":\"+" str)))
 
@@ -642,41 +659,6 @@ Uses `query-replace-regexp' internally."
                         '(nil "'" (ll-debug-create-next-debug-string) "'"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun ll-debug-get-e-mode-function ()
-  (save-excursion
-    (when (re-search-backward "^\\s-*\\(\\(\\(\\(package\\|protected\\|private\\)\\s-+\\)?\\([a-zA-Z0-9_]+\\)\\s-*([^)]*?)\\s-*\\(.*?[ \t\n]+\\)?is\\(\\s-+\\(also\\|first\\|only\\|empty\\|undefined\\)\\)?\\)\\|\\(on\\s-+\\([a-zA-Z0-9_]+\\)\\)\\)[ \t\n]*[{;]" nil t)
-      (let ((function-name (e-mode-match-string 5))
-            (on-name (e-mode-match-string 10))
-            (result))
-        (backward-up-list)
-        (re-search-backward "[ \t\n]+\\([a-zA-Z0-9_]+\\)" nil t)
-        (if function-name
-            (setq result (concat (e-mode-match-string 1) "::" function-name))
-          (setq result (concat (e-mode-match-string 1) " => on " on-name)))
-        (when (re-search-backward "^\\s-*package\\s-+\\([a-zA-Z0-9_]+\\)" nil t)
-          (setq result (concat (e-mode-match-string 1) "::" result)))
-        result))))
-
-(ll-debug-register-mode
- 'e-mode
- "out(" ";"
-
- '(nil
-   "vt.text_style(LIGHT_RED, \""
-   (ll-debug-create-next-debug-string)
-   ": \"), sys.time, \" \", source_location(), \" ("
-   (ll-debug-get-e-mode-function)
-   ")\");")
-
- '(nil
-   "vt.text_style(LIGHT_RED, \""
-   (ll-debug-create-next-debug-string)
-   ": \"), sys.time, \" \", source_location(), \" ("
-   (ll-debug-get-e-mode-function)
-   ")\")"
-   ("Variable name: "
-    "; print " str)))
 
 (defun ll-debug-get-sv-mode-function ()
   (save-excursion
