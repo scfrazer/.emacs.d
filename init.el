@@ -110,7 +110,6 @@
 (show-paren-mode t)
 (delete-selection-mode t)
 (transient-mark-mode -1)
-;; (global-hl-line-mode 1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (global-show-mark-mode 1)
@@ -1046,12 +1045,8 @@ Only works if there are exactly two windows."
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
             (equal (buffer-name) "topology.txt"))
-    ;;    (my-hl-line-hook)
     (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
-
-(defun my-hl-line-hook ()
-  (hl-line-mode 1))
 
 (defun my-grep-mode-hook ()
   (define-key grep-mode-map "s" 'scf-mode))
@@ -1188,6 +1183,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
 (my-keys-define "C-M-y" 'my-edit-yank-pop)
 (my-keys-define "C-\\" 'expand-abbrev)
+(my-keys-define "C-c #" 'hl-line-mode)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
@@ -1409,6 +1405,8 @@ Only works if there are exactly two windows."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'unt 'my-untabity)
+(defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
+(defalias 'vtt (lambda () (interactive) (require 'vtt)))
 (defalias 'work (lambda () (interactive) (find-file (expand-file-name "~/Documents/Org/Work.org"))))
 (defalias 'ws 'my-font-lock-show-whitespace)
 
