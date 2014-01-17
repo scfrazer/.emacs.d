@@ -9,6 +9,8 @@
               magit-status-tags-line-subject 'tag
               magit-turn-on-auto-revert-mode nil)
 
+(setq-default git-commit-summary-max-length 120)
+
 (defun my-magit-file-log (&optional arg)
   "Show log for current file.
 By default shows diff against previous commit.  With prefix arg, show
