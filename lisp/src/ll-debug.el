@@ -623,26 +623,10 @@ Uses `query-replace-regexp' internally."
                                (read-string "Format: "))
                               (if v1 "\\n\", " "\\n\"") v1))
 
-;; (ll-debug-register-mode '(java-mode jde-mode)
-;;                         "System.out.println(" ");"
-;;                         '(nil "\"" (ll-debug-create-next-debug-string) "\"")
-;;                         '(nil "\"" (ll-debug-create-next-debug-string) "\""
-;;                               ("Variable name: "
-;;                                "+\"  " str ":\"+" str)))
-(ll-debug-register-mode 'java-mode
-                        "global.log(" ");"
-                        '(nil "\""
-                              (concat (ll-debug-create-next-debug-string)
-                                      " ("
-                                      (ll-debug-get-c++-function-name)
-                                      ")")
-                              "\"")
-                        '(nil "\""
-                              (concat (ll-debug-create-next-debug-string)
-                                      " ("
-                                      (ll-debug-get-c++-function-name)
-                                      ")")
-                              "\""
+(ll-debug-register-mode '(java-mode jde-mode)
+                        "System.out.println(" ");"
+                        '(nil "\"" (ll-debug-create-next-debug-string) "\"")
+                        '(nil "\"" (ll-debug-create-next-debug-string) "\""
                               ("Variable name: "
                                "+\"  " str ":\"+" str)))
 
