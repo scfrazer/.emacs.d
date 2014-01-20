@@ -6,6 +6,7 @@
 (require 'recentf)
 (require 'imenu)
 (require 'etags)
+(require 'ido-vertical-mode)
 
 (setq ido-enable-flex-matching t
       ido-ignore-extensions t
@@ -20,6 +21,7 @@
       ido-ignore-buffers '(my-bs-ignore-buffer))
 
 (ido-mode 1)
+(ido-vertical-mode 1)
 
 ;; ido + bookmarks
 
