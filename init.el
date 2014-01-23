@@ -620,6 +620,16 @@ end of a non-blank line, or insert an 80-column comment line"
      (point))
    (point)))
 
+(defun my-minibuffer-insert-region ()
+  "Insert the region into the minibuffer."
+  (interactive)
+  (let (region)
+    (with-current-buffer (window-buffer (minibuffer-selected-window))
+      (let ((m (mark t)))
+        (when m
+          (setq region (buffer-substring-no-properties (region-beginning) (region-end))))))
+    (insert region)))
+
 (defun my-minibuffer-insert-word-after-point ()
   "Insert the word after point into the minibuffer."
   (interactive)
@@ -1062,10 +1072,7 @@ Only works if there are exactly two windows."
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
-  (local-set-key (kbd "M-w") (lambda ()
-                               (interactive)
-                               (insert "\\_<\\_>")
-                               (backward-char 3)))
+  (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
   (local-set-key (kbd "M-$") (lambda ()
                                (interactive)
                                (let* ((enable-recursive-minibuffers t)

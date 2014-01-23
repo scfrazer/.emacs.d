@@ -48,24 +48,14 @@
       (setq isearch-other-end m)))
   (isearch-yank-string (buffer-substring-no-properties (region-beginning) (region-end))))
 
-(defun my-isearch-word ()
-  "Surround current input with word/symbol delimiters and turn on regexp matching if necessary."
-  (interactive)
-  (unless isearch-regexp
-    (isearch-toggle-regexp))
-  (setq isearch-string (concat "\\_<" isearch-string)
-        isearch-message (mapconcat 'isearch-text-char-description isearch-string ""))
-  (isearch-search-and-update))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 (define-key isearch-mode-map (kbd "C-g") 'isearch-cancel)
 (define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
-(define-key isearch-mode-map (kbd "C-i") 'my-isearch-yank-region)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 (define-key isearch-mode-map (kbd "DEL") 'isearch-del-char)
-(define-key isearch-mode-map (kbd "M-w") 'my-isearch-word)
+(define-key isearch-mode-map (kbd "M-w") 'my-isearch-yank-region)
 (define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
 
 (provide 'my-isearch)
