@@ -3,12 +3,14 @@
 (require 'ffap)
 
 (setq-default ffap-url-regexp nil)
-(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.@~=/$(){}" "" ""))
+(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.@~=:/$(){}" "" ""))
 
 (defun my-ffap (&optional arg)
   "ffap, or ffap-other-window when preceded with C-u."
   (interactive "P")
   (call-interactively (if arg 'ffap-other-window 'ffap)))
+
+(defvar my-ffap-line-number nil)
 
 (defadvice ffap-string-at-point (around my-ffap-string-at-point activate)
   "Capture and expand $(FOO) or ${FOO} or $FOO from env vars."
@@ -33,11 +35,17 @@
       (while (re-search-forward "[$(){}]" nil t)
         (replace-match ""))
       (goto-char (point-min))
-      ;; Remove @<line number> from end ... these can be accidentally pulled
-      ;; in while trying to get @@/main/LATEST ClearCase type things
-      (when (re-search-forward "@[0-9]+$" nil t)
+      ;; Parse <char><line number> from end as line-number
+      (when (re-search-forward "[@:]\\([0-9]+\\)$" nil t)
+        (setq my-ffap-line-number (string-to-number (match-string 1)))
         (replace-match ""))
       (setq ad-return-value (buffer-substring (point-min) (point-max)))
       (setq ffap-string-at-point ad-return-value))))
+
+(defadvice find-file-at-point (after my-ffap-find-file-at-point activate)
+  "Go to `my-ffap-line-number' if non-nil."
+  (when my-ffap-line-number
+    (goto-line my-ffap-line-number)
+    (setq my-ffap-line-number nil)))
 
 (provide 'my-ffap)
