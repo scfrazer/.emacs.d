@@ -5,7 +5,11 @@
 
 (setq-default python-check-command "pylint_etc_wrapper.py -c"
               python-continuation-offset 4
-              python-indent 4)
+              python-indent 4
+              python-shell-interpreter (if (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
+                                           "/router/bin/python-2.7.4"
+                                         "/usr/bin/python"))
+
 
 (defun my-flymake-python ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy 'my-flymake-create-temp))

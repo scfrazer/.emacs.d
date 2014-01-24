@@ -94,15 +94,16 @@
 (autoload 'highlight-indentation-mode "highlight-indentation" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'js2-mode "js2-mode" nil t)
+(autoload 'json-mode "json-mode" nil t)
 (autoload 'll-debug-insert "ll-debug" nil t)
-(autoload 'll-debug-revert "ll-debug" nil t)
 (autoload 'll-debug-renumber "ll-debug" nil t)
+(autoload 'll-debug-revert "ll-debug" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
 (autoload 'php-mode "php-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
-(autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
+(autoload 'sse-log-mode "sse-log-mode" nil t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'uvm-log-mode "uvm-log-mode" nil t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
@@ -235,7 +236,7 @@
 (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
 (add-to-list 'auto-mode-alist '("\\.elog$" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
@@ -245,8 +246,8 @@
 (add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
-(add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log$" . uvm-log-mode))
+(add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 
 ;; Don't use sh-mode for csh files
@@ -1363,18 +1364,6 @@ Only works if there are exactly two windows."
                                      (t
                                       (concat "%" fmt)))))
                                  (if v1 "\\n\", " "\\n\"") v1)))
-
-(if (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
-    (setq-default python-python-command "/router/bin/python-2.7.4")
-  (setq-default python-python-command "/usr/bin/python"))
-
-(eval-after-load "js2-mode"
-  '(progn
-     (defun my-js2-format-json ()
-       (interactive)
-       (let ((b (if mark-active (min (point) (mark)) (point-min)))
-             (e (if mark-active (max (point) (mark)) (point-max))))
-         (shell-command-on-region b e (concat python-python-command " -mjson.tool") (current-buffer) t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
