@@ -1,5 +1,32 @@
 ;;; my-isearch.el
 
+(defvar my-isearch-region-str nil)
+
+(defun my-isearch-forward (&optional arg)
+  "Same as `isearch-forward', but C-u means take from-string from region,"
+  (interactive "P")
+  (when (and arg (mark t))
+    (let ((start (region-beginning)))
+      (setq my-isearch-region-str (buffer-substring-no-properties start (region-end)))
+      (goto-char start)))
+  (isearch-mode t))
+
+(defun my-isearch-backward (&optional arg)
+  "Same as `isearch-backward', but C-u means take from-string from region,"
+  (interactive "P")
+  (when (and arg (mark t))
+    (let ((start (region-beginning)))
+      (setq my-isearch-region-str (buffer-substring-no-properties start (region-end)))
+      (goto-char start)))
+  (isearch-mode nil))
+
+(defun my-isearch-mode-hook ()
+  (when my-isearch-region-str
+    (isearch-yank-string my-isearch-region-str)
+    (setq my-isearch-region-str nil)))
+
+(add-hook 'isearch-mode-hook 'my-isearch-mode-hook)
+
 (defun my-isearch-buffers ()
   "isearch multiple buffers."
   (interactive)
