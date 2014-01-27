@@ -47,7 +47,7 @@
    `(fringe ((,class (:background "color-254"))))
    `(highlight ((,class (:background "color-117" :foreground "black"))))
    `(hl-line ((,class (:inherit nil :background "color-230"))))
-   `(ido-first-match ((,class (:weight normal :foreground "black" :background "color-151"))))
+   `(ido-first-match ((,class (:weight normal :foreground "black" :background "color-230"))))
    `(ido-only-match ((,class (:weight normal :foreground "black" :background "color-157"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
    `(info-header-node ((,class (:foreground "color-39"))))
