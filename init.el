@@ -75,6 +75,7 @@
 (require 'my-reformat)
 (require 'my-register-list)
 (require 'my-shell)
+(require 'my-sort-lines)
 (require 'my-sv-mode)
 (require 'my-theme)
 (require 'my-tmux)
@@ -884,26 +885,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
         ((and (equal major-mode 'dired-mode) (save-excursion (dired-move-to-filename)))
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
-
-(defun my-sort-fields (field)
-  "Sort following paragraph by field."
-  (interactive "*p")
-  (save-excursion
-    (sort-fields field (point-at-bol)
-                 (save-excursion
-                   (forward-paragraph)
-                   (point-at-eol)))))
-
-(defun my-sort-lines (&optional arg)
-  "Sort following paragraph, or region with prefix arg."
-  (interactive "*P")
-  (save-excursion
-    (if arg
-        (sort-lines nil (region-beginning) (region-end))
-      (sort-lines nil (point-at-bol)
-                  (save-excursion
-                    (forward-paragraph)
-                    (point-at-eol))))))
 
 (defun my-server()
   "Start an Emacs server in a ClearCase view."
