@@ -44,6 +44,9 @@ entire history.  With numeric prefix, show that many commits."
                                                 (buffer-substring-no-properties (point-min) (point-max)))
                                             (read-passwd prompt))) "\n")))))
 
+(define-key magit-mode-map (kbd "{") 'magit-goto-previous-sibling-section)
+(define-key magit-mode-map (kbd "}") 'magit-goto-next-sibling-section)
+
 (define-key git-commit-mode-map (kbd "C-x C-s") 'git-commit-commit)
 
 (provide 'my-magit)
