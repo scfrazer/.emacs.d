@@ -447,6 +447,18 @@
     (replace-match ""))
   (goto-char (point-min)))
 
+(defun my-ediff-dwim (&optional arg)
+  "If buffer is modified, diff against file.  If not modified,
+either do ClearCase diff or Git diff depending on where the file is."
+  (interactive "P")
+  (if (buffer-modified-p)
+      (my-ediff-buffer-with-file)
+    (if (and clearcase-servers-online
+             clearcase-setview-viewtag
+             (clearcase-file-is-in-mvfs-p (buffer-file-name)))
+        (my-clearcase-ediff-current arg)
+      (my-vc-ediff))))
+
 (defun my-fill (&optional arg)
   "Fill paragraph, or region with prefix arg."
   (interactive "*P")
@@ -1179,6 +1191,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c ;" 'my-line-comment)
+(my-keys-define "C-c =" 'my-ediff-dwim)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c C-f" 'my-ido-recentf-file)
