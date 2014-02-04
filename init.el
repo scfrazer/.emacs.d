@@ -452,7 +452,7 @@
 either do ClearCase diff or Git diff depending on where the file is."
   (interactive "P")
   (if (buffer-modified-p)
-      (my-ediff-buffer-with-file)
+      (diff-buffer-with-file)
     (if (and clearcase-servers-online
              clearcase-setview-viewtag
              (clearcase-file-is-in-mvfs-p (buffer-file-name)))
