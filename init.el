@@ -786,14 +786,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
 
-(defun my-register-copy-into (&optional arg)
-  "Copy region, or with prefix arg last kill, to a register."
-  (interactive "P")
-  (if arg
-      (set-register (read-char "Copy last kill to register:") (current-kill 0 t))
-    (set-register (read-char "Copy to register:")
-                  (buffer-substring (region-beginning) (region-end)))))
-
 (defvar my-rotate-case-direction nil
   "nil => capitalize, uppercase, lowercase,
  t => lowercase, uppercase, capitalize.")
@@ -879,6 +871,14 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (setq my-save-location-marker (point-marker))
     (set-marker-insertion-type my-save-location-marker t)
     (message "Saved location")))
+
+(defun my-set-register (&optional arg)
+  "Copy region, or with prefix arg last kill, to a register."
+  (interactive "P")
+  (if arg
+      (set-register (read-char "(Last kill) Set register:") (current-kill 0 t))
+    (set-register (read-char "(Region) Set register:")
+                  (buffer-substring (region-beginning) (region-end)))))
 
 (defun my-set-selective-display (&optional col)
   "Set selective display based on cursor column."
@@ -1205,9 +1205,8 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
-(my-keys-define "C-c i" (lambda () (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+(my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c k" 'my-register-copy-into)
 (my-keys-define "C-c l d" 'll-debug-revert)
 (my-keys-define "C-c l i" 'my-ll-debug-insert)
 (my-keys-define "C-c l r" 'll-debug-renumber)
@@ -1215,6 +1214,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
+(my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c y" 'yank-target-map)
