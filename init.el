@@ -15,7 +15,6 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
 (require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 ;; Need these first to avoid font-lock/dired issues

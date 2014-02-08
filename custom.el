@@ -11,7 +11,7 @@
  '(frame-background-mode (quote dark))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
- '(safe-local-variable-values (quote ((eval modify-syntax-entry 35 "<") (eval modify-syntax-entry 10 ">") (sgml-always-quote-attributes) (sgml-indent-step . 1) (sgml-indent-data . t) (checkdoc-permit-comma-termination-flag . t) (checkdoc-force-docstrings-flag) (folded-file . t) (clearcase-version-stamp-active . t))))
+ '(safe-local-variable-values (quote ((js2-additional-externs "chrome" "url") (eval modify-syntax-entry 35 "<") (eval modify-syntax-entry 10 ">") (sgml-always-quote-attributes) (sgml-indent-step . 1) (sgml-indent-data . t) (checkdoc-permit-comma-termination-flag . t) (checkdoc-force-docstrings-flag) (folded-file . t) (clearcase-version-stamp-active . t))))
  '(speedbar-indentation-width 4))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
