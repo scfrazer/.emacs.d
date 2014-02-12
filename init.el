@@ -1239,7 +1239,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
 (my-keys-define "C-x E" 'apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'my-kill-buffer)
-(my-keys-define "C-x M" 'magit-file-log)
+(my-keys-define "C-x M" (lambda () (interactive) (magit-file-log (buffer-file-name))))
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
