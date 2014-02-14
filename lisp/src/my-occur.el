@@ -24,21 +24,15 @@
     (setq truncate-lines 'one-line-each)
     (fit-window-to-buffer nil (/ (frame-height) 2))))
 
-(defun my-occur-mode-remove-line-numbers ()
-  "Removes line numbers from occur buffer."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (toggle-read-only 0)
-    (while (re-search-forward "^[ \t]*[0-9]+:" nil t)
-      (replace-match "")
-      (forward-line 1))
-    (set-buffer-modified-p nil)
-    (setq buffer-read-only t)))
-
 (defadvice isearch-occur (after my-isearch-occur activate)
   "Tweak occur buffer."
   (my-occur-fit-buffer))
+
+(defface my-occur-prefix-face
+  '((t (:background "white")))
+  "Face for occur line numbers."
+  :group 'faces)
+(setq-default list-matching-lines-prefix-face 'my-occur-prefix-face)
 
 (defun my-occur-mode-hook ()
   (define-key occur-mode-map "q" (lambda ()

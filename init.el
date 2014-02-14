@@ -1338,8 +1338,6 @@ Only works if there are exactly two windows."
   (setenv "SV_PATH"
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
-(add-to-list 'auto-mode-alist '("\\.macro$" . cperl-mode))
-
 (eval-after-load 'll-debug
   '(ll-debug-register-mode 'c++-mode
                            "vpi_printf(" ");"
