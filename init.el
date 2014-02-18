@@ -684,7 +684,8 @@ arg do something special."
       (when arg
         (setq filename (file-name-nondirectory filename)))
       (kill-new filename)
-      (funcall interprogram-cut-function filename)
+      (when interprogram-cut-function
+        (funcall interprogram-cut-function filename))
       (message filename))))
 
 (defun my-prettify ()
