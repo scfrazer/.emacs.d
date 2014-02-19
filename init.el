@@ -1081,13 +1081,6 @@ Only works if there are exactly two windows."
 (defun my-sh-mode-hook ()
   (use-local-map nil))
 
-(defun my-task-after-load-hook ()
-  (when clearcase-setview-viewtag
-    (dolist (buf (buffer-list))
-      (when (buffer-file-name buf)
-        (set-buffer buf)
-        (clearcase-hook-find-file-hook)))))
-
 (defun my-whitespace-off-hook ()
   (my-font-lock-show-whitespace -1))
 
@@ -1113,7 +1106,6 @@ Only works if there are exactly two windows."
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'sv-mode-hook 'doxymacs-mode)
-(add-hook 'task-after-load-hook 'my-task-after-load-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
