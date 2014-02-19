@@ -6,6 +6,7 @@
    'my-terminal-light
 
    `(ace-jump-face-foreground ((,class (:background "color-254"))))
+   `(bm-face ((,class (:foreground nil :background "color-227"))))
    `(button ((,class (:foreground "color-30"))))
    `(compilation-column-number ((,class (:foreground "color-22"))))
    `(compilation-error ((,class (:foreground "red"))))
@@ -98,7 +99,6 @@
    `(sh-quoted-exec ((,class (:foreground "color-141"))))
    `(show-paren-match-face ((,class (:background "color-33" :foreground "color-231"))))
    `(show-paren-mismatch-face ((,class (:background "brightred" :foreground "color-231"))))
-   `(task-bmk-face ((,class (:background "color-187"))))
    `(trailing-whitespace ((,class (:background "color-195"))))
    `(vertical-border ((,class (:foreground "color-248"))))
    `(warning ((,class (:foreground "color-100"))))

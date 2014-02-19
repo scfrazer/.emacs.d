@@ -18,6 +18,7 @@
    `(default ((,class (:background "#f2f2f2"))))
 
    `(ace-jump-face-foreground ((,class (:background "#E4E4E4"))))
+   `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#005F00"))))
    `(compilation-error ((,class (:foreground "#CD0000"))))
@@ -112,7 +113,6 @@
    `(show-mark-face-eol ((,class (:background "#AFFF00" :foreground "#000000"))))
    `(show-paren-match-face ((,class (:background "#0087FF" :foreground "#FFFFFF"))))
    `(show-paren-mismatch-face ((,class (:background "#FF0000" :foreground "#FFFFFF"))))
-   `(task-bmk-face ((,class (:background "#E4E4E4"))))
    `(trailing-whitespace ((,class (:background "#D7FFFF"))))
    `(vertical-border ((,class (:foreground "#A8A8A8"))))
    `(warning ((,class (:foreground "#878700"))))

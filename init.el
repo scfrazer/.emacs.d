@@ -23,6 +23,7 @@
 (require 'my-dired)
 
 (require 'ace-jump-mode)
+(require 'bm)
 (require 'csh-mode)
 (require 'etags)
 (require 'etags-select)
@@ -41,7 +42,6 @@
 (require 'scf-mode)
 (require 'show-mark)
 (require 'sr-speedbar)
-(require 'task)
 (require 'uniquify)
 (require 'yank-target)
 (require 'vcs-compile)
@@ -76,6 +76,7 @@
 (require 'my-shell)
 (require 'my-sort-lines)
 (require 'my-sv-mode)
+(require 'my-task)
 (require 'my-theme)
 (require 'my-tmux)
 (require 'my-vc)
@@ -122,6 +123,9 @@
               ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
               backup-inhibited t
               blink-matching-paren-distance nil
+              bm-goto-position nil
+              bm-recenter t
+              bm-wrap-immediately nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
@@ -1256,12 +1260,12 @@ Only works if there are exactly two windows."
 (my-keys-define "C-y" 'my-edit-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
-(my-keys-define "M-#" 'task-bmk-toggle)
+(my-keys-define "M-#" 'bm-toggle)
 (my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
 (my-keys-define "M-'" 'qe-backward-word-end)
-(my-keys-define "M-(" 'task-bmk-buf-prev)
-(my-keys-define "M-)" 'task-bmk-buf-next)
+(my-keys-define "M-(" 'bm-previous)
+(my-keys-define "M-)" 'bm-next)
 (my-keys-define "M-*" 'pop-tag-mark)
 (my-keys-define "M-," 'iflipb-previous-buffer)
 (my-keys-define "M-." 'iflipb-next-buffer)
