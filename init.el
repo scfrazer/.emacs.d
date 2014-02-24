@@ -192,6 +192,8 @@
               scroll-conservatively 10000
               scroll-error-top-bottom t
               scroll-preserve-screen-position t
+              sgml-basic-offset 4
+              sgml-xml-mode t
               shift-select-mode nil
               show-paren-delay 0
               speedbar-indentation-width 2
