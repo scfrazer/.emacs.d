@@ -6,7 +6,6 @@
               magit-restore-window-configuration t
               magit-set-upstream-on-push 'askifnotset
               magit-status-buffer-switch-function 'switch-to-buffer
-              magit-status-tags-line-subject 'tag
               magit-turn-on-auto-revert-mode nil)
 
 (setq-default git-commit-summary-max-length 120)

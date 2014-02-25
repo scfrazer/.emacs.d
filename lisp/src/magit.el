@@ -4773,8 +4773,8 @@ when asking for user input.
                (concat (if (eq magit-status-tags-line-subject 'tag)
                            (concat " (" (propertize (format "%s" cnt)
                                                     'face 'magit-branch))
-                         (format " (%i" cnt))
-                       " " (if behindp "behind" "ahead") ")"))))
+                         (format " (Currently %i" cnt))
+                       " " (if behindp "behind" "ahead of") " tag)"))))
 
 ;;;; Progress Sections
 

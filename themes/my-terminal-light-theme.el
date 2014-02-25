@@ -47,6 +47,7 @@
    `(font-lock-variable-name-face ((,class (:foreground "color-29"))))
    `(font-lock-warning-face ((,class (:foreground "red"))))
    `(fringe ((,class (:background "color-254"))))
+   `(header-line ((,class (:underline nil :foreground "color-254" :background "color-236"))))
    `(highlight ((,class (:background "color-117" :foreground "black"))))
    `(hl-line ((,class (:inherit nil :background "color-230"))))
    `(ido-first-match ((,class (:weight normal :foreground "black" :background "color-230"))))
