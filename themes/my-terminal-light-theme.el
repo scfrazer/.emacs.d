@@ -30,6 +30,7 @@
    `(ediff-odd-diff-A ((,class (:background "color-251" :foreground "black"))))
    `(ediff-odd-diff-B ((,class (:background "color-251" :foreground "Black"))))
    `(error ((,class (:foreground "red"))))
+   `(etags-select-highlight-tag-face ((,class (:foreground "color-255" :background "color-25"))))
    `(flymake-errline ((,class (:inherit nil :background "color-224"))))
    `(flymake-warnline ((,class (:inherit nil :background "color-230"))))
    `(font-lock-builtin-face ((,class (:foreground "color-166"))))
