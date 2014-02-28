@@ -51,7 +51,7 @@
          "~"))))
 
 (setq ibuffer-saved-filter-groups
-      `(("default"
+      `(("my-groups"
          ("VC" (name . ,my-ibuffer-vc-regexp))
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
@@ -71,7 +71,8 @@
 
 (defun my-ibuffer-mode-hook ()
   (ibuffer-auto-mode 1)
-  (ibuffer-switch-to-saved-filter-groups "default")
+  (ibuffer-switch-to-saved-filter-groups "my-groups")
+  (setq ibuffer-hidden-filter-groups '("Default"))
   (define-key ibuffer-mode-map (kbd "s f") 'ibuffer-do-sort-by-filename-and-dired)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
   (hl-line-mode 1))
