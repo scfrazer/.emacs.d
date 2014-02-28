@@ -52,14 +52,14 @@
 
 (setq ibuffer-saved-filter-groups
       `(("default"
-         ("VC" (name . my-ibuffer-vc-regexp))
+         ("VC" (name . ,my-ibuffer-vc-regexp))
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
          ("VOB" (filename . "/vob"))
          ("Files" (or (mode . dired-mode)
                       (filename . "/[^v][^o][^b]")))
          ("*" (or (mode . Custom-mode)
-                  (name . my-ibuffer-star-regexp)))
+                  (name . ,my-ibuffer-star-regexp)))
          )))
 
 (defun my-ibuffer ()
