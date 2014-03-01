@@ -443,6 +443,8 @@ With prefix arg, append kill."
     (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
     (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
     (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
+    (define-key map (kbd "x") (lambda () (qe-region-inside-xml 'forward)))
+    (define-key map (kbd "X") (lambda () (qe-region-inside-xml 'backward)))
     (define-key map (kbd "i") 'qe-unit-ends-inside)
     map)
   "Common keymap for unit kill/copy/move.  Functions should return a cons
@@ -550,7 +552,9 @@ preserved.")
         (qe-region-inside-pair char 'inside)
       (if(memq char '(?\" ?\'))
           (qe-region-inside-quotes char 'inside)
-        (error "Unknown char entered for kill inside text unit")))))
+        (if (memq char '(?x ?X))
+            (qe-region-inside-xml 'inside)
+          (error "Unknown char entered for kill inside text unit"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utility functions
@@ -666,6 +670,17 @@ preserved.")
           (backward-char))
         (setq end (point))))
     (cons beg end)))
+
+(defun qe-region-inside-xml (dir)
+  "Find the region inside XML tags."
+  (let* ((beg (point))
+         (end beg)
+         (table (copy-syntax-table (syntax-table))))
+    (modify-syntax-entry ?< "(>" table)
+    (modify-syntax-entry ?> ")<" table)
+    (with-syntax-table table
+      ;; TODO
+      )))
 
 (defun qe-highlight (beg end &optional face)
   "Highlight a region temporarily."
