@@ -1,6 +1,7 @@
 ;;; my-ibuffer.el
 
 (require 'ibuffer)
+(require 'my-bookmark)
 
 (setq-default ibuffer-default-sorting-mode 'filename-and-dired
               ibuffer-display-summary nil
@@ -9,9 +10,6 @@
               ibuffer-expert t
               ibuffer-show-empty-filter-groups nil
               ibuffer-use-other-window t)
-
-(add-to-list 'ibuffer-formats
-             '(mark modified read-only "  " (name 18 18 :left :elide) "  " (mode 16 16 :left :elide) "  " filename-and-process))
 
 (defvar my-ibuffer-vc-regexp (regexp-opt (list "*cc-status"
                                                "*clearcase-config-spec"
@@ -26,12 +24,70 @@
                                                  "*shell"
                                                  "*terminal"
                                                  "*scratch")))
+
+(defvar my-ibuffer-bookmark-subs nil)
+
+(defun my-ibuffer-build-bookmark-subs ()
+  "Build bookmark substitutions."
+  (interactive)
+  (setq my-ibuffer-bookmark-subs nil)
+  (bookmark-load bookmark-default-file t t)
+  (let (name filename)
+    (dolist (bmk bookmark-alist)
+      (setq name (bookmark-name-from-full-record bmk)
+            filename (bookmark-get-filename bmk))
+      (when (file-directory-p filename)
+        (unless (string-match "[^a-zA-Z0-9_.~/]" name)
+          (push (cons (concat "^" (expand-file-name filename) "\\(.*\\)")
+                      (concat "$" name))
+                my-ibuffer-bookmark-subs)))))
+  (setq my-ibuffer-bookmark-subs
+        (sort my-ibuffer-bookmark-subs (lambda (x y) (string< (car y) (car x))))))
+
+(my-ibuffer-build-bookmark-subs)
+
+(define-ibuffer-column bmk-filename
+  (:name "Filename" :inline nil)
+  (let ((path (or (buffer-file-name buffer)
+                  (and dired-directory
+                       (expand-file-name dired-directory)))))
+    (if (null path)
+        ""
+      (catch 'done
+        (dolist (sub my-ibuffer-bookmark-subs)
+          (when (string-match (car sub) path)
+            (throw 'done (concat (propertize (cdr sub) 'font-lock-face 'font-lock-variable-name-face)
+                                 "/" (match-string 1 path)))))
+        path))))
+
+(setq ibuffer-formats
+      '((mark modified read-only "  "
+              (name 18 18 :left :elide) "  "
+              (mode 16 16 :left :elide) "  "
+              bmk-filename)
+        (mark modified read-only "  "
+              (name 18 18 :left :elide) "  "
+              (mode 16 16 :left :elide) "  "
+              filename-and-process)))
+
 (setq ibuffer-fontification-alist
       `((4 (eq major-mode 'dired-mode) font-lock-type-face)
         (3 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
                (eq major-mode 'Custom-mode)) font-lock-type-face)
         (2 (string-match "^*" (buffer-name)) font-lock-comment-face)
         (1 buffer-read-only font-lock-doc-face)))
+
+(setq ibuffer-saved-filter-groups
+      `(("my-groups"
+         ("VC" (name . ,my-ibuffer-vc-regexp))
+         ("Org" (mode . org-mode))
+         ("ELisp" (mode . emacs-lisp-mode))
+         ("VOB" (filename . "/vob"))
+         ("Files" (or (mode . dired-mode)
+                      (filename . "/[^v][^o][^b]")))
+         ("*" (or (mode . Custom-mode)
+                  (name . ,my-ibuffer-star-regexp)))
+         )))
 
 (define-ibuffer-sorter filename-and-dired
   "Sort the buffers by their pathname."
@@ -49,18 +105,6 @@
              (expand-file-name dired-directory))
          ;; so that all non pathnames are at the end
          "~"))))
-
-(setq ibuffer-saved-filter-groups
-      `(("my-groups"
-         ("VC" (name . ,my-ibuffer-vc-regexp))
-         ("Org" (mode . org-mode))
-         ("ELisp" (mode . emacs-lisp-mode))
-         ("VOB" (filename . "/vob"))
-         ("Files" (or (mode . dired-mode)
-                      (filename . "/[^v][^o][^b]")))
-         ("*" (or (mode . Custom-mode)
-                  (name . ,my-ibuffer-star-regexp)))
-         )))
 
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
