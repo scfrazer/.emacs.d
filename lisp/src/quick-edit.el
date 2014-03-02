@@ -443,8 +443,8 @@ With prefix arg, append kill."
     (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
     (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
     (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
-    (define-key map (kbd "x") (lambda () (qe-region-inside-xml 'forward)))
-    (define-key map (kbd "X") (lambda () (qe-region-inside-xml 'backward)))
+    (define-key map (kbd "x") (lambda () (qe-region-xml-content 'forward)))
+    (define-key map (kbd "X") (lambda () (qe-region-xml-content 'backward)))
     (define-key map (kbd "i") 'qe-unit-ends-inside)
     map)
   "Common keymap for unit kill/copy/move.  Functions should return a cons
@@ -553,7 +553,7 @@ preserved.")
       (if(memq char '(?\" ?\'))
           (qe-region-inside-quotes char 'inside)
         (if (memq char '(?x ?X))
-            (qe-region-inside-xml 'inside)
+            (qe-region-xml-content 'inside)
           (error "Unknown char entered for kill inside text unit"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -671,16 +671,39 @@ preserved.")
         (setq end (point))))
     (cons beg end)))
 
-(defun qe-region-inside-xml (dir)
-  "Find the region inside XML tags."
+(defvar qe-xml-void-tags
+  (regexp-opt (list "area" "base" "br" "col" "command" "embed" "hr" "img" "input" "keygen" "link" "meta" "param" "source" "track" "wbr"))
+  "XML void tags (i.e. HTML5 void tags.)")
+
+(defun qe-region-xml-content (dir)
+  "Find the region of the the current XML content."
   (let* ((beg (point))
          (end beg)
-         (table (copy-syntax-table (syntax-table))))
+         (table (copy-syntax-table (syntax-table)))
+         depth
+         forward-sexp-function)
     (modify-syntax-entry ?< "(>" table)
     (modify-syntax-entry ?> ")<" table)
     (with-syntax-table table
+      (unless (equal dir 'forward)
+        (save-excursion
+          (setq depth 0)
+          (while (not (or (= -1 depth) (bobp)))
+            (when (re-search-backward ">" nil 'go)
+              (if (= (char-before) ?/)
+                  (progn (forward-char) (backward-sexp))
+                (forward-char)
+                (setq beg (point))
+                (backward-sexp)
+                (if (looking-at "</")
+                    (when (not (looking-at (concat "</" qe-xml-void-tags)))
+                      (setq depth (1+ depth)))
+                  (when (and (looking-at "<[a-zA-Z]")
+                             (not (looking-at (concat "<" qe-xml-void-tags))))
+                    (setq depth (1- depth)))))))))
       ;; TODO
-      )))
+      )
+    (cons beg end)))
 
 (defun qe-highlight (beg end &optional face)
   "Highlight a region temporarily."
