@@ -8,20 +8,19 @@
 (defun my-bookmark-reload ()
   "Reload bookmarks"
   (interactive)
-  (bookmark-load "~/.emacs.bmk" t))
+  (bookmark-load bookmark-default-file t))
 
 (defadvice bookmark-write-file (after my-bookmark-to-shell activate)
   "Convert bookmarks to format bash and tcsh (yuck!) can use."
-  (let (filename)
+  (let (name filename)
     (with-temp-buffer
       (dolist (bmk bookmark-alist)
-        (if (listp (caadr bmk))
-            (setq filename (cdr (assoc 'filename (cadr bmk))))
-          (setq filename (cdr (assoc 'filename (cdr bmk)))))
+        (setq name (bookmark-name-from-full-record bmk)
+              filename (bookmark-get-filename bmk))
         (unless (file-directory-p filename)
           (setq filename (file-name-directory filename)))
-        (unless (string-match "[^a-zA-Z0-9_.~/]" (car bmk))
-          (insert (car bmk) "=" filename)
+        (unless (string-match "[^a-zA-Z0-9_.~/]" name)
+          (insert name "=" filename)
           (delete-char -1)
           (newline)))
       (write-file "~/.bashrc_bmk")
