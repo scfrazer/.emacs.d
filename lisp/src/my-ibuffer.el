@@ -3,7 +3,7 @@
 (require 'ibuffer)
 (require 'my-bookmark)
 
-(setq-default ibuffer-default-sorting-mode 'filename-and-dired
+(setq-default ibuffer-default-sorting-mode 'filename/process
               ibuffer-display-summary nil
               ibuffer-filter-group-name-face 'font-lock-keyword-face
               ibuffer-never-show-predicates '("TAGS$")
@@ -89,23 +89,6 @@
                   (name . ,my-ibuffer-star-regexp)))
          )))
 
-(define-ibuffer-sorter filename-and-dired
-  "Sort the buffers by their pathname."
-  (:description "Filenames plus dired")
-  (string-lessp
-   (with-current-buffer (car a)
-     (or buffer-file-name
-         (if (eq major-mode 'dired-mode)
-             (expand-file-name dired-directory))
-         ;; so that all non pathnames are at the end
-         "~"))
-   (with-current-buffer (car b)
-     (or buffer-file-name
-         (if (eq major-mode 'dired-mode)
-             (expand-file-name dired-directory))
-         ;; so that all non pathnames are at the end
-         "~"))))
-
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
   (interactive)
@@ -117,7 +100,7 @@
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
   (setq ibuffer-hidden-filter-groups '("Default"))
-  (define-key ibuffer-mode-map (kbd "s f") 'ibuffer-do-sort-by-filename-and-dired)
+  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
   (hl-line-mode 1))
 
