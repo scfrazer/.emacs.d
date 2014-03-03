@@ -21,9 +21,9 @@
                                                  "*compilation"
                                                  "*grep"
                                                  "*info"
+                                                 "*scratch"
                                                  "*shell"
-                                                 "*terminal"
-                                                 "*scratch")))
+                                                 "*terminal")))
 
 (defvar my-ibuffer-bookmark-subs nil)
 

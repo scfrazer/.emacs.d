@@ -1,7 +1,8 @@
+
 ;;; my-ido.el
 
 (require 'ido)
-(require 'my-bs)
+(require 'my-buf)
 (require 'bookmark)
 (require 'recentf)
 (require 'imenu)
@@ -18,7 +19,7 @@
       ido-decorations '("{" "}" ", " ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]")
       ido-enter-matching-directory 'first
       ido-auto-merge-work-directories-length -1
-      ido-ignore-buffers '(my-bs-ignore-buffer))
+      ido-ignore-buffers '(my-buf-ignore-buffer))
 
 (ido-mode 1)
 (ido-vertical-mode 1)

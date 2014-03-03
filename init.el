@@ -48,7 +48,7 @@
 
 (require 'my-abbrev)
 (require 'my-bookmark)
-(require 'my-bs)
+(require 'my-buf)
 (require 'my-calculator)
 (require 'my-cc-mode)
 (require 'my-clearcase)
@@ -162,7 +162,7 @@
               highlight-changes-global-modes nil
               hscroll-step 1
               htmlize-output-type 'font
-              iflipb-ignore-buffers 'my-bs-ignore-buffer
+              iflipb-ignore-buffers 'my-buf-ignore-buffer
               indicate-buffer-boundaries t
               indent-tabs-mode nil
               inhibit-startup-message t
@@ -1221,13 +1221,13 @@ Only works if there are exactly two windows."
 (my-keys-define "C-j" 'ace-jump-mode)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-l" 'forward-char)
-(my-keys-define "C-o" 'my-bs-toggle)
+(my-keys-define "C-o" 'my-buf-toggle)
 (my-keys-define "C-r" 'my-isearch-backward)
 (my-keys-define "C-s" 'my-isearch-forward)
 (my-keys-define "C-v" 'my-edit-newline-and-indent)
 (my-keys-define "C-w" 'qe-unit-kill)
-(my-keys-define "C-x 2" 'my-bs-split-window-vertically)
-(my-keys-define "C-x 3" 'my-bs-split-window-horizontally)
+(my-keys-define "C-x 2" 'my-buf-split-window-vertically)
+(my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-fit-window)
