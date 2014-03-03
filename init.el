@@ -74,7 +74,7 @@
 (require 'my-recentf)
 (require 'my-reformat)
 (require 'my-register-list)
-(require 'my-sgml)
+(require 'my-sgml-xml)
 (require 'my-shell)
 (require 'my-sort-lines)
 (require 'my-sv-mode)
@@ -185,7 +185,6 @@
               mouse-autoselect-window t
               mouse-highlight 1
               mouse-yank-at-point t
-              nxml-sexp-element-flag t
               parens-require-spaces nil
               redisplay-dont-pause t
               rst-mode-lazy nil
@@ -1187,7 +1186,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
-(my-keys-define "C-c /" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c ;" 'my-line-comment)
 (my-keys-define "C-c =" 'my-ediff-dwim)
 (my-keys-define "C-c A" 'align-regexp)
@@ -1200,6 +1198,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c a" 'my-align)
+(my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
