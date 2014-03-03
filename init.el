@@ -1242,7 +1242,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x SPC" 'fixup-whitespace)
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
-(my-keys-define "C-x b" 'bs-show)
 (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'kill-buffer)
