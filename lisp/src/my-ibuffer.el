@@ -46,8 +46,12 @@
 
 (my-ibuffer-build-bookmark-subs)
 
+(define-ibuffer-column buffer
+  (:name "Name" :inline nil)
+  (propertize (buffer-name) 'font-lock-face (ibuffer-buffer-name-face buffer mark)))
+
 (define-ibuffer-column bmk-filename
-  (:name "Filename" :inline nil)
+  (:name "Bookmark/Filename" :inline nil)
   (let ((path (or (buffer-file-name buffer)
                   (and dired-directory
                        (expand-file-name dired-directory)))))
@@ -62,13 +66,11 @@
 
 (setq ibuffer-formats
       '((mark modified read-only "  "
-              (name 18 18 :left :elide) "  "
-              (mode 16 16 :left :elide) "  "
+              (buffer 25 25 :left :elide) "  "
               bmk-filename)
         (mark modified read-only "  "
-              (name 18 18 :left :elide) "  "
-              (mode 16 16 :left :elide) "  "
-              filename-and-process)))
+              (buffer 25 25 :left :elide) "  "
+              filename)))
 
 (setq ibuffer-fontification-alist
       `((4 (eq major-mode 'dired-mode) font-lock-type-face)
