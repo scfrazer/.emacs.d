@@ -1,7 +1,7 @@
 ;;; my-ibuffer.el
 
 (require 'ibuffer)
-(require 'my-bookmark)
+(require 'bookmark)
 
 (setq-default ibuffer-default-sorting-mode 'filename/process
               ibuffer-display-summary nil
@@ -66,10 +66,10 @@
 
 (setq ibuffer-formats
       '((mark modified read-only "  "
-              (buffer 25 25 :left :elide) "  "
+              (buffer -1 -1 :left :elide) "  "
               bmk-filename)
         (mark modified read-only "  "
-              (buffer 25 25 :left :elide) "  "
+              (buffer -1 -1 :left :elide) "  "
               filename)))
 
 (setq ibuffer-fontification-alist
@@ -90,6 +90,30 @@
          ("*" (or (mode . Custom-mode)
                   (name . ,my-ibuffer-star-regexp)))
          )))
+
+(defadvice ibuffer-redisplay-engine (around my-ibuffer-redisplay-engine activate)
+  "Dynamically change the width of the 'buffer' column"
+  (let ((bufs (ad-get-arg 0))
+        (max-width 0)
+        formats new-format)
+    (dolist (buf bufs)
+      (setq max-width (max max-width (length (buffer-name (car buf))))))
+    (dolist (old-format ibuffer-formats)
+      (setq new-format nil)
+      (dolist (item old-format)
+        (when (and (listp item) (eq (car item) 'buffer))
+          (setcar (nthcdr 1 item) max-width)
+          (setcar (nthcdr 2 item) max-width))
+        (setq new-format (append new-format (list item))))
+      (push new-format formats))
+    (setq ibuffer-formats (nreverse formats))
+    (ibuffer-recompile-formats)
+    (setq ibuffer-cached-formats ibuffer-formats
+          ibuffer-cached-eliding-string ibuffer-eliding-string
+          ibuffer-cached-elide-long-columns (with-no-warnings ibuffer-elide-long-columns))
+    (when (featurep 'ibuf-ext)
+      (setq ibuffer-cached-filter-formats ibuffer-filter-format-alist)))
+  ad-do-it)
 
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
