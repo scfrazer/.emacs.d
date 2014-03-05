@@ -91,6 +91,7 @@
                   (name . ,my-ibuffer-star-regexp)))
          )))
 
+(defvar my-ibuffer-name-column-width 0)
 (defadvice ibuffer-redisplay-engine (around my-ibuffer-redisplay-engine activate)
   "Dynamically change the width of the 'buffer' column"
   (let ((bufs (ad-get-arg 0))
@@ -98,21 +99,23 @@
         formats new-format)
     (dolist (buf bufs)
       (setq max-width (max max-width (length (buffer-name (car buf))))))
-    (dolist (old-format ibuffer-formats)
-      (setq new-format nil)
-      (dolist (item old-format)
-        (when (and (listp item) (eq (car item) 'buffer))
-          (setcar (nthcdr 1 item) max-width)
-          (setcar (nthcdr 2 item) max-width))
-        (setq new-format (append new-format (list item))))
-      (push new-format formats))
-    (setq ibuffer-formats (nreverse formats))
-    (ibuffer-recompile-formats)
-    (setq ibuffer-cached-formats ibuffer-formats
-          ibuffer-cached-eliding-string ibuffer-eliding-string
-          ibuffer-cached-elide-long-columns (with-no-warnings ibuffer-elide-long-columns))
-    (when (featurep 'ibuf-ext)
-      (setq ibuffer-cached-filter-formats ibuffer-filter-format-alist)))
+    (unless (= my-ibuffer-name-column-width max-width)
+      (setq my-ibuffer-name-column-width max-width)
+      (dolist (old-format ibuffer-formats)
+        (setq new-format nil)
+        (dolist (item old-format)
+          (when (and (listp item) (eq (car item) 'buffer))
+            (setcar (nthcdr 1 item) max-width)
+            (setcar (nthcdr 2 item) max-width))
+          (setq new-format (append new-format (list item))))
+        (push new-format formats))
+      (setq ibuffer-formats (nreverse formats))
+      (ibuffer-recompile-formats)
+      (setq ibuffer-cached-formats ibuffer-formats
+            ibuffer-cached-eliding-string ibuffer-eliding-string
+            ibuffer-cached-elide-long-columns (with-no-warnings ibuffer-elide-long-columns))
+      (when (featurep 'ibuf-ext)
+        (setq ibuffer-cached-filter-formats ibuffer-filter-format-alist))))
   ad-do-it)
 
 (defun my-ibuffer ()
