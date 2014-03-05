@@ -319,6 +319,8 @@ If cursor is not at the end of the user input, move to end of input."
   (define-key ido-completion-map (kbd "C-e") 'my-ido-edit-input)
   (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
+  (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
+  (define-key ido-completion-map (kbd "<up>") 'ido-prev-match)
   (define-key ido-completion-map (kbd "C-t") 'ido-toggle-case))
 
 (add-hook 'ido-setup-hook 'my-ido-setup-hook)
