@@ -6,6 +6,7 @@
 (setq-default ibuffer-default-sorting-mode 'filename/process
               ibuffer-display-summary nil
               ibuffer-filter-group-name-face 'font-lock-keyword-face
+              ibuffer-movement-cycle nil
               ibuffer-never-show-predicates '("TAGS$")
               ibuffer-expert t
               ibuffer-show-empty-filter-groups nil
@@ -126,8 +127,10 @@
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
   (setq ibuffer-hidden-filter-groups '("Default"))
-  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
+  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
+  (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
+  (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
   (hl-line-mode 1))
 
 (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
