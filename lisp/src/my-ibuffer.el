@@ -119,6 +119,14 @@
         (setq ibuffer-cached-filter-formats ibuffer-filter-format-alist))))
   ad-do-it)
 
+(defun my-ibuffer-toggle-filter-group ()
+  "Toggle the current filter group."
+  (interactive)
+  (beginning-of-line)
+  (unless (looking-at "\\[ ")
+    (ibuffer-backward-filter-group))
+  (ibuffer-toggle-filter-group))
+
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
   (interactive)
@@ -130,10 +138,13 @@
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
   (setq ibuffer-hidden-filter-groups '("Default"))
-  (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
-  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
+  (define-key ibuffer-mode-map (kbd "M-<") (lambda () (interactive) (goto-char (point-min)) (forward-line 2)))
+  (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
   (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
+  (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
+  (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
+  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
   (hl-line-mode 1))
 
 (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
