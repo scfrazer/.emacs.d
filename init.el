@@ -1253,7 +1253,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-y" 'my-edit-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
-(my-keys-define "M-#" 'bm-toggle)
+(my-keys-define "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
 (my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
 (my-keys-define "M-'" 'qe-backward-word-end)
