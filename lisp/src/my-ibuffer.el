@@ -12,6 +12,11 @@
               ibuffer-show-empty-filter-groups nil
               ibuffer-use-other-window t)
 
+(defface my-ibuffer-group-name-face
+  '((t (:foreground "black" :background "gray85")))
+  "ibuffer group name face"
+  :group 'faces)
+
 (defvar my-ibuffer-vc-regexp (regexp-opt (list "*cc-status"
                                                "*clearcase-config-spec"
                                                "*magit:")))
