@@ -66,10 +66,10 @@
         path))))
 
 (setq ibuffer-formats
-      '((mark modified read-only "  "
+      '((mark read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               bmk-filename)
-        (mark modified read-only "  "
+        (mark read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               filename)))
 
@@ -91,6 +91,34 @@
          ("*" (or (mode . Custom-mode)
                   (name . ,my-ibuffer-star-regexp)))
          )))
+
+(defvar my-ibuffer-header-line-format nil)
+(defun ibuffer-update-title-and-summary (format)
+  (ibuffer-assert-ibuffer-mode)
+  (setq my-ibuffer-header-line-format nil)
+  (let ((after-change-functions nil))
+    (dolist (element format)
+      (setq my-ibuffer-header-line-format
+            (concat my-ibuffer-header-line-format
+                    (if (stringp element)
+                        element
+                      (pcase-let ((`(,sym ,min ,_max ,align) element))
+                        (when (cl-minusp min)
+                          (setq min (- min)))
+                        (let* ((name (or (get sym 'ibuffer-column-name)
+                                         (error "Unknown column %s in ibuffer-formats" sym)))
+                               (len (length name))
+                               (hmap (get sym 'header-mouse-map))
+                               (strname (if (< len min)
+                                            (ibuffer-format-column name
+                                                                   (- min len)
+                                                                   align)
+                                          name)))
+                          strname))))))))
+(defadvice ibuffer-update (after my-ibuffer-update activate)
+  (setq header-line-format my-ibuffer-header-line-format))
+(defadvice ibuffer-switch-format (after my-ibuffer-switch-format activate)
+  (setq header-line-format my-ibuffer-header-line-format))
 
 (defvar my-ibuffer-name-column-width 0)
 (defadvice ibuffer-redisplay-engine (around my-ibuffer-redisplay-engine activate)
@@ -138,7 +166,6 @@
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
   (setq ibuffer-hidden-filter-groups '("Default"))
-  (define-key ibuffer-mode-map (kbd "M-<") (lambda () (interactive) (goto-char (point-min)) (forward-line 2)))
   (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
   (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
