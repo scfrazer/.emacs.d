@@ -5,7 +5,7 @@
 
 (setq-default ibuffer-default-sorting-mode 'filename/process
               ibuffer-display-summary nil
-              ibuffer-filter-group-name-face 'font-lock-keyword-face
+              ibuffer-filter-group-name-face 'my-ibuffer-group-name-face
               ibuffer-movement-cycle nil
               ibuffer-never-show-predicates '("TAGS$")
               ibuffer-expert t
