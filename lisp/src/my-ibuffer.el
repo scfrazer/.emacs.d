@@ -95,7 +95,7 @@
 (defvar my-ibuffer-header-line-format nil)
 (defun ibuffer-update-title-and-summary (format)
   (ibuffer-assert-ibuffer-mode)
-  (setq my-ibuffer-header-line-format nil)
+  (setq my-ibuffer-header-line-format (propertize " " 'display '((space :align-to 0))))
   (let ((after-change-functions nil))
     (dolist (element format)
       (setq my-ibuffer-header-line-format
