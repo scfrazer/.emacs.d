@@ -1330,6 +1330,7 @@ Only works if there are exactly two windows."
        '("/vob/sse/asic/shared/ver/.*\\.svh?$" "/auto/antares_user/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/antares_user/scfrazer/tags/sv/TAGS")
        '("/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/.*" "/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/TAGS")
+       '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
        ))
 
 (unless (getenv "SV_PATH")

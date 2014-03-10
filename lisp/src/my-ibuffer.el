@@ -7,7 +7,7 @@
               ibuffer-display-summary nil
               ibuffer-filter-group-name-face 'my-ibuffer-group-name-face
               ibuffer-movement-cycle nil
-              ibuffer-never-show-predicates '("TAGS$")
+              ibuffer-never-show-predicates '("^TAGS$")
               ibuffer-expert t
               ibuffer-show-empty-filter-groups nil
               ibuffer-use-other-window t)
