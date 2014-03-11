@@ -52,6 +52,11 @@
 
 (my-ibuffer-build-bookmark-subs)
 
+(defvar my-ibuffer-current-buf)
+(define-ibuffer-column current
+  (:name "C" :inline nil)
+  (if (eq my-ibuffer-current-buf buffer) "." " "))
+
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
   (propertize (buffer-name) 'font-lock-face (ibuffer-buffer-name-face buffer mark)))
@@ -71,10 +76,10 @@
         path))))
 
 (setq ibuffer-formats
-      '((mark read-only modified "  "
+      '((mark current read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               bmk-filename)
-        (mark read-only modified "  "
+        (mark current read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               filename)))
 
@@ -163,9 +168,9 @@
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
   (interactive)
-  (let ((buf (buffer-name)))
-    (ibuffer)
-    (ibuffer-jump-to-buffer buf)))
+  (setq my-ibuffer-current-buf (current-buffer))
+  (ibuffer)
+  (ibuffer-jump-to-buffer (buffer-name my-ibuffer-current-buf)))
 
 (defun my-ibuffer-mode-hook ()
   (ibuffer-auto-mode 1)
