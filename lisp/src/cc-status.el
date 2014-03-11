@@ -12,6 +12,8 @@
                                        "rtl/Makefile\\(\\..+\\)?"
                                        "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
                                        "rtl/dump.rdl"
+                                       "Makefile.chip"
+                                       "bus_struct"
                                        "\\.pyc")
   "*Regexps of view-private elements to ignore.")
 

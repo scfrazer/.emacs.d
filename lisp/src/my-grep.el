@@ -8,6 +8,7 @@
               grep-files-aliases '(("all" . "*")
                                    ("c" . "*.h *.c")
                                    ("cc" . "*.h *.cc")
+                                   ("cpp" . "*.hpp *.cpp")
                                    ("e" . "*.e")
                                    ("el" . "*.el")
                                    ("pl" . "*.pl *.pm")
