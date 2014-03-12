@@ -37,6 +37,7 @@
 (require 'quick-edit)
 (require 'rect)
 (require 'redo+)
+(require 'regman)
 (require 'revbufs)
 (require 'sb-imenu)
 (require 'scf-mode)
