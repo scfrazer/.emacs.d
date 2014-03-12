@@ -7,14 +7,28 @@
 
 (require 'ido)
 
-(defvar regman-program
-  "/vob/sse/asic/shared/ver/build/mmap/chip/regman"
-  "Where regman is.")
+(defgroup regman nil
+  "regman."
+  :group 'tools)
 
-(defvar regman-mode-hook nil
-  "Hook run after regman-mode is loaded.")
+(defcustom regman-tb "chip"
+  "*Testbench to use for regman."
+  :group 'regman
+  :type 'string)
+
+(defcustom regman-mode-hook nil
+  "*List of functions to call on entry to regman-mode."
+  :group 'regman
+  :type 'hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar regman-base-path
+  "/vob/sse/asic/shared/ver/build/mmap"
+  "Base regman path.")
+
+(defvar regman-program nil
+  "Calculated regman program path.")
 
 (defvar regman-buffer-name "*regman*"
   "Buffer name.")
@@ -51,6 +65,7 @@
                      (format "Register (default %s): " guess) nil nil nil 'regman-reg-history)))
         (when (string= reg "")
           (setq reg guess))))
+    (regman-program-deduce)
     (unless (or (string= reg "") multiple)
       (let ((regs (split-string (shell-command-to-string (concat regman-program " -f simple '" reg "'")))))
         (setq reg
@@ -58,6 +73,28 @@
                   (car regs)
                 (ido-completing-read "Register: " regs nil t)))))
     reg))
+
+(defun regman-program-deduce ()
+  "Best effort at deducing `regman-program'."
+  (let ((buf-name (buffer-file-name))
+        (base-path regman-base-path)
+        program)
+    (when (and buf-name (string-match "\\(/view/[^/]+\\)/" buf-name))
+      (setq base-path (concat (match-string 1 buf-name) base-path)))
+    (setq program (concat base-path "/" regman-tb "/regman"))
+    (if (file-exists-p program)
+        (setq regman-program program)
+      (let (tbs)
+        (dolist (name (directory-files base-path))
+          (when (and (file-directory-p (concat base-path "/" name))
+                     (file-exists-p (concat base-path "/" name "/regman")))
+            (push name tbs)))
+        (cond ((= (length tbs) 1)
+               (setq regman-program (concat base-path "/" (car tbs) "/regman")))
+              ((> (length tbs) 1)
+               (setq regman-program (concat base-path "/" (ido-completing-read "regman TB: " tbs nil t) "/regman")))
+              (t
+               (error "Couldn't find any regman executable.")))))))
 
 (defun regman-quit ()
   "Quit regman buffer."
@@ -114,7 +151,7 @@
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(regman-mode-font-lock-keywords t))
   (turn-on-font-lock)
-  (setq truncate-lines nil)
+  (setq truncate-lines t)
   (setq word-wrap t)
   (regman-mode-tidy-buffer)
   (set-buffer-modified-p nil)
@@ -135,6 +172,12 @@
     (beginning-of-line)
     (insert "\n")
     (forward-line))
+  ;; Reformat descriptions
+  (goto-char (point-min))
+  (while (re-search-forward "^Description:" nil t)
+    (forward-line)
+    (delete-horizontal-space)
+    (fill-region (point) (progn (forward-line) (point))))
   ;; Font-lock and reformat field descriptions
   (goto-char (point-min))
   (while (re-search-forward "^Fields:" nil t)
