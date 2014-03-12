@@ -22,6 +22,7 @@
 (defvar regman-reg-history nil
   "Register history.")
 
+;;;###autoload
 (defun regman (&optional multiple)
   "Describe a register."
   (interactive "P")
@@ -80,7 +81,7 @@
      (1 'font-lock-function-name-face))
     (,regman-section-regexp
      (0 'font-lock-keyword-face))
-    ("^\\s-+Field\\s-+[0-9]+\\s-+\\(pad_[0-9_]+\\)\\(\\s-\\|(\\)"
+    ("^\\s-+Field\\s-+[0-9]+\\s-+\\(pad_[0-9_]+\\)"
      (1 'font-lock-comment-face))
     ("^\\s-+Field\\s-+[0-9]+\\s-+\\([a-zA-Z0-9_]+\\)"
      (1 'font-lock-variable-name-face))
