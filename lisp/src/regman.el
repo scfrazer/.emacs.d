@@ -51,10 +51,11 @@
         (when (string= reg "")
           (setq reg guess))))
     (unless (or (string= reg "") multiple)
-      (setq reg
-            (ido-completing-read "Register: "
-                                 (split-string (shell-command-to-string (concat regman-program " -f simple '" reg "'")))
-                                 nil t)))
+      (let ((regs (split-string (shell-command-to-string (concat regman-program " -f simple '" reg "'")))))
+        (setq reg
+              (if (= (length regs) 1)
+                  (car regs)
+                (ido-completing-read "Register: " regs nil t)))))
     reg))
 
 (defun regman-quit ()
@@ -79,7 +80,7 @@
      (1 'font-lock-function-name-face))
     (,regman-section-regexp
      (0 'font-lock-keyword-face))
-    ("^\\s-+Field\\s-+[0-9]+\\s-+\\(pad_[0-9_]+\\)\\s-"
+    ("^\\s-+Field\\s-+[0-9]+\\s-+\\(pad_[0-9_]+\\)\\(\\s-\\|(\\)"
      (1 'font-lock-comment-face))
     ("^\\s-+Field\\s-+[0-9]+\\s-+\\([a-zA-Z0-9_]+\\)"
      (1 'font-lock-variable-name-face))
