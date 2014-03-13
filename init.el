@@ -541,6 +541,25 @@ With a numeric prefix, goto that window line."
              hash)
     str))
 
+(defvar my-highlight-colors (list 'hi-yellow 'hi-pink 'hi-green 'hi-blue))
+(defun my-highlight-symbol (&optional arg)
+  "Highlight the symbol under point, or with prefix arg the region."
+  (interactive "P")
+  (let (beg end face-num)
+    (if (and arg (mark t))
+        (setq beg (region-beginning)
+              end (region-end))
+      (save-excursion
+        (skip-syntax-backward "w_")
+        (setq beg (point))
+        (skip-syntax-forward "w_")
+        (setq end (point))))
+    (setq face-num (mod (length hi-lock-interactive-patterns)
+                        (length my-highlight-colors)))
+    (hi-lock-face-buffer
+     (regexp-quote (buffer-substring-no-properties beg end))
+     (nth face-num my-highlight-colors))))
+
 (defun my-indent ()
   "Indent entire buffer."
   (interactive "*")
@@ -1296,6 +1315,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
 (my-keys-define "M-r t" 'string-rectangle)
+(my-keys-define "M-s h h" 'my-highlight-symbol)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-t" 'my-tmux-copy-region)
 (my-keys-define "M-u" 'my-recenter)
