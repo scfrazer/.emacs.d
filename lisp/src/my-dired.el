@@ -125,15 +125,6 @@ there is a prefix arg."
     (find-alternate-file "..")
     (dired-goto-file current-dir)))
 
-;; Replace the current sub-dir with one at point
-
-(defun my-dired-replace-sub-dir ()
-  "Replace sub-dir with the one at point."
-  (interactive)
-  (let ((dir (dired-get-filename)))
-    (dired-kill-subdir)
-    (dired-maybe-insert-subdir dir)))
-
 ;; Smarter movement
 
 (defun my-dired-next-line ()
@@ -169,23 +160,26 @@ there is a prefix arg."
 ;; Dired hook
 
 (defun my-dired-mode-hook ()
+
   (define-key dired-mode-map " " 'my-dired-toggle-mark)
-  (define-key dired-mode-map "I" 'my-dired-replace-sub-dir)
   (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
-  (define-key dired-mode-map "c" 'dired-do-copy)
   (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
   (define-key dired-mode-map "n" 'my-dired-next-line)
   (define-key dired-mode-map "o" 'my-dired-do-find-file)
   (define-key dired-mode-map "p" 'my-dired-previous-line)
-  (define-key dired-mode-map "r" 'dired-do-rename)
   (define-key dired-mode-map "u" 'my-dired-up-dir)
-  (define-key dired-mode-map "w" 'wdired-change-to-wdired-mode)
   (define-key dired-mode-map (kbd "<return>") 'my-dired-open)
   (define-key dired-mode-map (kbd "C-o") nil)
   (define-key dired-mode-map (kbd "M-<") 'my-dired-beginning-of-buffer)
   (define-key dired-mode-map (kbd "M->") 'my-dired-end-of-buffer)
   (define-key dired-mode-map (kbd "M-o") nil)
   (define-key dired-mode-map (kbd "RET") 'my-dired-open)
+
+  (define-key dired-mode-map "s" nil)
+  (define-key dired-mode-map (kbd "s h") 'dired-hide-subdir)
+  (define-key dired-mode-map (kbd "s i") 'dired-maybe-insert-subdir)
+  (define-key dired-mode-map (kbd "s k") 'dired-kill-subdir)
+
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)
