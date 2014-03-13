@@ -79,8 +79,9 @@
   (let ((buf-name (buffer-file-name))
         (base-path regman-base-path)
         program)
-    (when (and buf-name (string-match "\\(/view/[^/]+\\)/" buf-name))
-      (setq base-path (concat (match-string 1 buf-name) base-path)))
+;; TODO Put this back in if regman stops using absolute paths to find libs
+;;     (when (and buf-name (string-match "\\(/view/[^/]+\\)/" buf-name))
+;;       (setq base-path (concat (match-string 1 buf-name) base-path)))
     (setq program (concat base-path "/" regman-tb "/regman"))
     (if (file-exists-p program)
         (setq regman-program program)
