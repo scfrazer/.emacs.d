@@ -3759,7 +3759,9 @@ instead of the current buffer."
                                'magit-status-mode)))
         (magit-mode-refresh-buffer status))))
   (when (or global-auto-revert-mode auto-revert-buffer-list)
-    (auto-revert-buffers)))
+    (auto-revert-buffers))
+  (when (called-interactively-p 'interactive)
+    (message "Refresh complete")))
 
 (defun magit-refresh-all ()
   "Refresh all Magit buffers of the current repository.
