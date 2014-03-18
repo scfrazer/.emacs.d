@@ -67,7 +67,7 @@
    `(lazy-highlight ((,class (:background "color-73" :foreground "color-231"))))
    `(link ((,class (:foreground "color-20"))))
    `(link-visited ((,class (:inherit link :foreground "brightmagenta"))))
-   `(magit-item-highlight ((,class (:background "color-254"))))
+   `(magit-item-highlight ((,class (:background "color-231"))))
    `(magit-log-author ((,class (:foreground "color-63"))))
    `(magit-log-sha1 ((,class (:foreground "color-130"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))

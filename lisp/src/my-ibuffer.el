@@ -49,9 +49,11 @@
                       (concat "$" name))
                 my-ibuffer-bookmark-subs)))))
   (dolist (var my-ibuffer-env-vars-as-bookmarks)
-    (push (cons (concat "^" (expand-file-name (getenv var)) "/\\(.*\\)")
-                (concat "$" var))
-          my-ibuffer-bookmark-subs))
+    (let ((dir (getenv var)))
+      (when dir
+	(push (cons (concat "^" (expand-file-name dir) "/\\(.*\\)")
+		    (concat "$" var))
+	      my-ibuffer-bookmark-subs))))
   (setq my-ibuffer-bookmark-subs
         (sort my-ibuffer-bookmark-subs (lambda (x y) (string< (car y) (car x))))))
 

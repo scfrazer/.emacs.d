@@ -77,7 +77,7 @@
    `(lazy-highlight ((,class (:background "#5FAFAF" :foreground "#FFFFFF"))))
    `(link ((,class (:foreground "#0000D7"))))
    `(link-visited ((,class (:inherit link :foreground "#FF00FF"))))
-   `(magit-item-highlight ((,class (:background "#E4E4E4"))))
+   `(magit-item-highlight ((,class (:background "#FFFFFF"))))
    `(magit-log-author ((,class (:foreground "#5F5FFF"))))
    `(magit-log-sha1 ((,class (:foreground "#AF5F00"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
