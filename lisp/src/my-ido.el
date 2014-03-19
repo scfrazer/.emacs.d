@@ -94,7 +94,7 @@
     (let ((map (make-sparse-keymap)))
       (setq my-ido-exiting-with-slash nil)
       (define-key map "/" 'my-ido-exit-minibuffer-with-slash)
-      (set-keymap-parent map ido-common-completion-map)
+      (set-keymap-parent map ido-file-completion-map)
       (setq ido-completion-map map))))
 
 (defun my-ido-exit-minibuffer-with-slash ()
