@@ -55,6 +55,18 @@
                               ("Variable name: "
                                ".\"  \\" str ":\".print_r(" str ", true)")))
 
+(defun flymake-php-init ()
+  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+         (local-file  (file-relative-name
+                       temp-file
+                       (file-name-directory buffer-file-name))))
+    (list "/auto/vtt/www/prod/dev/local/bin/php-lint" (list local-file))))
+
+(defun my-php-mode-hook ()
+  (flymake-mode 1))
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
 (setq-default compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
 
 ;; (defun my-vtt-update (&optional arg)
