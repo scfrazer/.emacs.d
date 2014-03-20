@@ -51,9 +51,9 @@
   (dolist (var my-ibuffer-env-vars-as-bookmarks)
     (let ((dir (getenv var)))
       (when dir
-	(push (cons (concat "^" (expand-file-name dir) "/\\(.*\\)")
-		    (concat "$" var))
-	      my-ibuffer-bookmark-subs))))
+        (push (cons (concat "^" (expand-file-name dir) "/\\(.*\\)")
+                    (concat "$" var))
+              my-ibuffer-bookmark-subs))))
   (setq my-ibuffer-bookmark-subs
         (sort my-ibuffer-bookmark-subs (lambda (x y) (string< (car y) (car x))))))
 
@@ -91,20 +91,22 @@
               filename)))
 
 (setq ibuffer-fontification-alist
-      `((4 (eq major-mode 'dired-mode) font-lock-type-face)
-        (3 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
+      `((5 (eq major-mode 'dired-mode) font-lock-type-face)
+        (4 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
                (eq major-mode 'Custom-mode)) font-lock-type-face)
-        (2 (string-match "^*" (buffer-name)) font-lock-comment-face)
+        (3 (string-match "^*" (buffer-name)) font-lock-comment-face)
+        (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
         (1 buffer-read-only font-lock-doc-face)))
 
 (setq ibuffer-saved-filter-groups
       `(("my-groups"
          ("VC" (name . ,my-ibuffer-vc-regexp))
+         ("Dired" (mode . dired-mode))
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
          ("VOB" (filename . "/vob"))
          ("Files" (filename . "."))
-         ("Dired" (mode . dired-mode))
+         ("Temp" (name . "^[^*]"))
          ("*" (or (mode . Custom-mode)
                   (name . ,my-ibuffer-star-regexp)))
          )))
