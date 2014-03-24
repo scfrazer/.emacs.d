@@ -235,7 +235,7 @@
                                         "")))
 
 (add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
-(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . sgml-mode))
 (add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.csh$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))

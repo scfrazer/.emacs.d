@@ -27,6 +27,7 @@
 
 (require 'js)
 (require 'rx)
+(require 'json-reformat)
 
 (defconst json-mode-quoted-string-re
   (rx (group (char ?\")
@@ -78,7 +79,8 @@ With prefix-arg sort the keys."
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
-(define-key json-mode-map (kbd "C-c C-r") 'json-mode-beautify)
+;; (define-key json-mode-map (kbd "C-c C-r") 'json-mode-beautify)
+(define-key json-mode-map (kbd "C-c C-r") 'json-reformat-region)
 
 (provide 'json-mode)
 ;;; json-mode.el ends here
