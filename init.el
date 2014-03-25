@@ -256,6 +256,12 @@
 (add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
 
+(defun major-mode-from-name ()
+  "Choose proper mode for buffers created by switch-to-buffer."
+  (let ((buffer-file-name (or buffer-file-name (buffer-name))))
+    (set-auto-mode)))
+(setq-default major-mode 'major-mode-from-name)
+
 ;; Don't use sh-mode for csh files
 
 (dolist (elt interpreter-mode-alist)

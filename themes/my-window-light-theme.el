@@ -26,7 +26,7 @@
    `(compilation-line-number ((,class (:foreground "#000087"))))
    `(cperl-array-face ((,class (:background nil :foreground "#5F5FD7" :weight normal))))
    `(cperl-hash-face ((,class (:background nil :foreground "#00CDCD" :slant normal :weight normal))))
-   `(cperl-nonoverridable-face ((,class (:foreground "#D75FD7"))))
+   `(cperl-nonoverridable-face ((,class (:foreground "#875F00"))))
    `(cursor ((,class (:background "#008700"))))
    `(custom-group-tag ((,class (:foreground "#5FAFFF"))))
    `(custom-variable-tag ((,class (:foreground "#5FAFFF"))))

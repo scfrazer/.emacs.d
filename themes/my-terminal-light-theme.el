@@ -14,7 +14,7 @@
    `(compilation-line-number ((,class (:foreground "color-18"))))
    `(cperl-array-face ((,class (:background nil :foreground "color-62" :weight normal))))
    `(cperl-hash-face ((,class (:background nil :foreground "cyan" :slant normal :weight normal))))
-   `(cperl-nonoverridable-face ((,class (:foreground "color-170"))))
+   `(cperl-nonoverridable-face ((,class (:foreground "color-94"))))
    `(cursor ((,class (:background "color-28"))))
    `(custom-group-tag ((,class (:foreground "color-75"))))
    `(custom-variable-tag ((,class (:foreground "color-75"))))
