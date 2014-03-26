@@ -1587,23 +1587,23 @@ static char * go_next_xpm[] = {
 "
   "XPM format image used as Next Mark icon")
 
-(defconst sqlplus-kill-image
-  (create-image sqlplus-kill-xpm 'xpm t))
-
-(defconst sqlplus-cancel-image
-  (create-image sqlplus-cancel-xpm 'xpm t))
-
-(defconst sqlplus-commit-image
-  (create-image sqlplus-commit-xpm 'xpm t))
-
-(defconst sqlplus-rollback-image
-  (create-image sqlplus-rollback-xpm 'xpm t))
-
-(defconst plsql-prev-mark-image
-  (create-image plsql-prev-mark-xpm 'xpm t))
-
-(defconst plsql-next-mark-image
-  (create-image plsql-next-mark-xpm 'xpm t))
+;; (defconst sqlplus-kill-image
+;;   (create-image sqlplus-kill-xpm 'xpm t))
+;; 
+;; (defconst sqlplus-cancel-image
+;;   (create-image sqlplus-cancel-xpm 'xpm t))
+;; 
+;; (defconst sqlplus-commit-image
+;;   (create-image sqlplus-commit-xpm 'xpm t))
+;; 
+;; (defconst sqlplus-rollback-image
+;;   (create-image sqlplus-rollback-xpm 'xpm t))
+;; 
+;; (defconst plsql-prev-mark-image
+;;   (create-image plsql-prev-mark-xpm 'xpm t))
+;; 
+;; (defconst plsql-next-mark-image
+;;   (create-image plsql-next-mark-xpm 'xpm t))
 
 (defvar sqlplus-mode-syntax-table nil
   "Syntax table used while in sqlplus-mode.")
@@ -2033,13 +2033,13 @@ static char * go_next_xpm[] = {
   (define-key orcl-mode-map "\C-c\C-i" 'sqlplus-send-interrupt)
   (define-key orcl-mode-map [S-return] 'sqlplus-send-user-string)
   (define-key orcl-mode-map [tool-bar sqlplus-restart-connection]
-    (list 'menu-item "Restart connection" 'sqlplus-restart-connection :image sqlplus-kill-image))
+    (list 'menu-item "Restart connection" 'sqlplus-restart-connection))
   (define-key orcl-mode-map [tool-bar sqlplus-cancel]
-    (list 'menu-item "Cancel" 'sqlplus-send-interrupt :image sqlplus-cancel-image))
+    (list 'menu-item "Cancel" 'sqlplus-send-interrupt))
   (define-key orcl-mode-map [tool-bar sqlplus-rollback]
-    (list 'menu-item "Rollback" 'sqlplus-send-rollback :image sqlplus-rollback-image))
+    (list 'menu-item "Rollback" 'sqlplus-send-rollback))
   (define-key orcl-mode-map [tool-bar sqlplus-commit]
-    (list 'menu-item "Commit" 'sqlplus-send-commit :image sqlplus-commit-image)))
+    (list 'menu-item "Commit" 'sqlplus-send-commit)))
 
 (unless sqlplus-mode-map
   (setq sqlplus-mode-map (make-sparse-keymap))
@@ -4054,9 +4054,7 @@ Possible TYPE values are in 'sqlplus-object-types'."
   (define-key plsql-mode-map "\C-c\C-z" 'plsql-if)
   (define-key plsql-mode-map "\C-c\C-c" 'plsql-compile)
   (define-key plsql-mode-map [tool-bar plsql-prev-mark]
-    (list 'menu-item "Previous mark" 'plsql-prev-mark
-	  :image plsql-prev-mark-image
-	  :enable 'plsql-mark-backward-list)))
+    (list 'menu-item "Previous mark" 'plsql-prev-mark :enable 'plsql-mark-backward-list)))
 
 (defvar plsql-continue-anyway nil
   "Local in input buffer (plsql-mode).")
