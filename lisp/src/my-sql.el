@@ -4,9 +4,6 @@
 
 (eval-after-load "sqlplus"
   '(progn
-     (defadvice orcl-mode (after my-sql-orcl-mode activate)
-       (my-font-lock-show-whitespace -1))
-
      (defun sqlplus-get-potential-connect-string (file-path)
        (save-excursion
          (goto-char (point-min))

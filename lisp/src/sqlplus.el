@@ -403,6 +403,7 @@ Mode Specific Bindings:
   (" " (:eval sqlplus-fan) " " (:eval (connect-string-to-string))) ; mode indicator
   orcl-mode-map                                           ; keymap
   ;; body
+  (setq show-trailing-whitespace nil)
   (setq sqlplus-fan "|")
   (unless (assq 'orcl-mode minor-mode-map-alist)
     (push (cons 'orcl-mode orcl-mode-map) minor-mode-map-alist)))
