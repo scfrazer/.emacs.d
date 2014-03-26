@@ -77,6 +77,7 @@
 (require 'my-sgml-xml)
 (require 'my-shell)
 (require 'my-sort-lines)
+(require 'my-sql)
 (require 'my-sv-mode)
 (require 'my-task)
 (require 'my-theme)

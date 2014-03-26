@@ -51,7 +51,7 @@
    `(header-line ((,class (:underline nil :foreground "color-254" :background "color-236"))))
    `(highlight ((,class (:background "color-117" :foreground "black"))))
    `(hl-line ((,class (:inherit nil :background "color-230"))))
-   `(ido-first-match ((,class (:weight normal :foreground "black" :background "color-227"))))
+   `(ido-first-match ((,class (:weight normal :foreground "black" :background "color-157"))))
    `(ido-only-match ((,class (:weight normal :foreground "color-255" :background "color-28"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
    `(info-header-node ((,class (:foreground "color-39"))))
