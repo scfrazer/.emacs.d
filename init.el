@@ -108,6 +108,7 @@
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sse-log-mode "sse-log-mode" nil t)
+(autoload 'sqlplus "sqlplus" nil t)
 (autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'uvm-log-mode "uvm-log-mode" nil t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
