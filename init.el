@@ -248,6 +248,7 @@
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
+(add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
 (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.sva$" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
