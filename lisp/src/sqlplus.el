@@ -400,7 +400,7 @@ Mode Specific Bindings:
 
 \\{orcl-mode-map}"
   nil                                   ; init value
-  (" " (:eval sqlplus-fan) " " (:eval (connect-string-to-string))) ; mode indicator
+  (" " (:eval sqlplus-fan)) ; mode indicator
   orcl-mode-map                                           ; keymap
   ;; body
   (setq show-trailing-whitespace nil)
@@ -2019,7 +2019,7 @@ static char * go_next_xpm[] = {
   (define-key orcl-mode-map [C-S-down] 'sqlplus-buffer-next-command)
   (define-key orcl-mode-map "\C-c\C-b" 'sqlplus-buffer-scroll-right)
   (define-key orcl-mode-map [C-S-left] 'sqlplus-buffer-scroll-right)
-  (define-key orcl-mode-map "\C-c\C-f" 'sqlplus-buffer-scroll-left)
+;;  (define-key orcl-mode-map "\C-c\C-f" 'sqlplus-buffer-scroll-left)
   (define-key orcl-mode-map [C-S-right] 'sqlplus-buffer-scroll-left)
   (define-key orcl-mode-map "\C-c\M-v" 'sqlplus-buffer-scroll-down)
   (define-key orcl-mode-map "\C-c\C-v" 'sqlplus-buffer-scroll-up)
@@ -2610,7 +2610,10 @@ if not already shown."
     (cons result passwd)))
 
 (defun sqlplus-get-output-buffer-name (connect-string)
-  (concat "*" (car (refine-connect-string connect-string)) "*"))
+;;   (concat "*" (car (refine-connect-string connect-string)) "*"))
+  (let ((str (car (refine-connect-string connect-string))))
+    (string-match "\\(.+?\\)@" str)
+    (concat "*sqlplus:" (match-string 1 str) "*")))
 
 (defun sqlplus-get-input-buffer-name (connect-string)
   (concat (car (refine-connect-string connect-string)) (concat "." sqlplus-session-file-extension)))

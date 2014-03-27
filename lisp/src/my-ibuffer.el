@@ -91,9 +91,10 @@
               filename)))
 
 (setq ibuffer-fontification-alist
-      `((5 (eq major-mode 'dired-mode) font-lock-type-face)
-        (4 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
+      `((6 (eq major-mode 'dired-mode) font-lock-type-face)
+        (5 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
                (eq major-mode 'Custom-mode)) font-lock-type-face)
+        (4 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
         (3 (string-match "^*" (buffer-name)) font-lock-comment-face)
         (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
         (1 buffer-read-only font-lock-doc-face)))
@@ -101,6 +102,8 @@
 (setq ibuffer-saved-filter-groups
       `(("my-groups"
          ("VC" (name . ,my-ibuffer-vc-regexp))
+         ("SQL" (or (mode . sqlplus-mode)
+                    (name . "^*sqlplus:")))
          ("Dired" (mode . dired-mode))
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
