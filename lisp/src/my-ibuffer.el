@@ -177,6 +177,17 @@
     (ibuffer-backward-filter-group))
   (ibuffer-toggle-filter-group))
 
+(defvar my-ibuffer-hidden-filter-groups nil)
+(defun my-ibuffer-toggle-hidden-filter-groups ()
+  "Toggle showing-all/rehiding filter groups."
+  (interactive)
+  (if my-ibuffer-hidden-filter-groups
+      (setq ibuffer-hidden-filter-groups my-ibuffer-hidden-filter-groups
+            my-ibuffer-hidden-filter-groups nil)
+    (setq my-ibuffer-hidden-filter-groups ibuffer-hidden-filter-groups
+          ibuffer-hidden-filter-groups nil))
+  (ibuffer-update nil t))
+
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
   (interactive)
@@ -193,6 +204,7 @@
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
+  (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
   (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
   (hl-line-mode 1))
 
