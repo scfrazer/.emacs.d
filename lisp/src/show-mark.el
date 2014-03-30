@@ -23,11 +23,10 @@
   (let ((mark-pos (mark t)))
     (if (not mark-pos)
         (when show-mark-overlay
-          (delete-overlay show-mark-overlay)
-          (setq show-mark-overlay nil))
+          (delete-overlay show-mark-overlay))
       (if show-mark-overlay
           (move-overlay show-mark-overlay mark-pos (1+ mark-pos))
-        (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos))))
+        (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos) nil t)))
       (overlay-put show-mark-overlay 'face
                    (if (save-excursion (goto-char mark-pos) (eolp))
                        'show-mark-face-eol
@@ -41,8 +40,7 @@
         (show-mark-update)
         (add-hook 'post-command-hook 'show-mark-update nil t))
     (when show-mark-overlay
-      (delete-overlay show-mark-overlay)
-      (setq show-mark-overlay nil))
+      (delete-overlay show-mark-overlay))
     (remove-hook 'post-command-hook 'show-mark-update t)))
 
 (define-global-minor-mode global-show-mark-mode show-mark-mode
