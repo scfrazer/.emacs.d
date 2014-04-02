@@ -5,6 +5,13 @@
 (setq-default sgml-basic-offset 4
               sgml-xml-mode t)
 
+(defvar my-sgml-force-xml nil)
+(defun xml ()
+  "Set buffer as SGML/XML mode."
+  (interactive)
+  (setq my-sgml-force-xml t)
+  (sgml-mode))
+
 (eval-after-load "sgml-mode"
   '(progn
 
@@ -12,7 +19,10 @@
        ad-do-it
        (unless ad-return-value
          (when (string= "html" (file-name-extension (or buffer-file-name "")))
-           (setq ad-return-value t))))
+           (setq ad-return-value t))
+         (when my-sgml-force-xml
+           (setq ad-return-value t
+                 my-sgml-force-xml nil))))
 
      (defun my-sgml-mode-hook ()
        (define-key sgml-mode-map (kbd "C-c >") 'sgml-skip-tag-forward)
