@@ -28,6 +28,7 @@
 (require 'etags)
 (require 'etags-select)
 (require 'etags-table)
+(require 'hi-lock)
 (require 'hl-line)
 (require 'iflipb)
 (require 'jump-to-prev-pos)
