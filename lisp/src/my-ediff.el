@@ -1,13 +1,27 @@
 ;;; my-ediff.el
 
 (require 'ediff)
+(require 'my-clearcase)
+(require 'my-vc)
 
 (setq-default ediff-ignore-similar-regions t
               ediff-keep-variants t
               ediff-split-window-function 'split-window-vertically
               ediff-window-setup-function 'ediff-setup-windows-plain)
 
-(defun my-ediff-buffer-with-file (arg)
+(defun my-ediff-dwim (&optional arg)
+  "If buffer is modified, diff against file.  If not modified,
+either do ClearCase diff or Git diff depending on where the file is."
+  (interactive "P")
+  (if (buffer-modified-p)
+      (my-ediff-buffer-with-file)
+    (if (and clearcase-servers-online
+             clearcase-setview-viewtag
+             (clearcase-file-is-in-mvfs-p (buffer-file-name)))
+        (my-clearcase-ediff-current arg)
+      (my-vc-ediff))))
+
+(defun my-ediff-buffer-with-file (&optional arg)
   "View the differences between current buffer and it's associated file using ediff."
   (interactive "P")
   (let* ((ediff-ignore-similar-regions (not arg))
@@ -16,43 +30,47 @@
                        (error "Buffer %s has no associated file" modified-buffer)))
          (mode major-mode)
          (original-buffer (get-buffer-create "*my-ediff-buffer-with-file*")))
-    (set-buffer original-buffer)
-    (insert-file-contents filename)
-    (call-interactively mode)
+    (with-current-buffer original-buffer
+      (erase-buffer)
+      (insert-file-contents filename)
+      (call-interactively mode))
     (ediff-buffers original-buffer modified-buffer)))
 
 (defadvice ediff-buffers (around my-ediff-buffers activate)
   "Compare buffers first and don't start ediff if they are identical."
   (let* ((buf-A (get-buffer (ad-get-arg 0)))
          (buf-A-file-name (buffer-file-name buf-A))
-         (tmp-A-file-name (unless (and buf-A-file-name (file-exists-p buf-A-file-name))
-                            (make-temp-file "buf-A-")))
          (buf-B (get-buffer (ad-get-arg 1)))
          (buf-B-file-name (buffer-file-name buf-B))
-         (tmp-B-file-name (unless (and buf-B-file-name (file-exists-p buf-B-file-name))
-                            (make-temp-file "buf-B-"))))
-    (when tmp-A-file-name
-      (with-current-buffer buf-A
-        (save-restriction
-          (widen)
-          (write-region (point-min) (point-max) tmp-A-file-name))))
-    (when tmp-B-file-name
-      (with-current-buffer buf-B
-        (save-restriction
-          (widen)
-          (write-region (point-min) (point-max) tmp-B-file-name))))
-    (if (ediff-same-file-contents (or tmp-A-file-name buf-A-file-name)
-                                  (or tmp-B-file-name buf-B-file-name))
-        (progn
-          (dolist (buf (buffer-list))
-            (when (string-match ".+\.~.+~$" (buffer-name buf))
-              (kill-buffer buf)))
-          (message "No differences"))
-      ad-do-it)
-    (when tmp-A-file-name
-      (delete-file tmp-A-file-name))
-    (when tmp-B-file-name
-      (delete-file tmp-B-file-name))))
+         tmp-A-file-name tmp-B-file-name)
+    (if (or (buffer-modified-p buf-A) (buffer-modified-p buf-B))
+        ad-do-it
+      (setq tmp-A-file-name (unless (and buf-A-file-name (file-exists-p buf-A-file-name))
+                              (make-temp-file "buf-A-"))
+            tmp-B-file-name (unless (and buf-B-file-name (file-exists-p buf-B-file-name))
+                              (make-temp-file "buf-B-")))
+      (when tmp-A-file-name
+        (with-current-buffer buf-A
+          (save-restriction
+            (widen)
+            (write-region (point-min) (point-max) tmp-A-file-name))))
+      (when tmp-B-file-name
+        (with-current-buffer buf-B
+          (save-restriction
+            (widen)
+            (write-region (point-min) (point-max) tmp-B-file-name))))
+      (if (ediff-same-file-contents (or tmp-A-file-name buf-A-file-name)
+                                    (or tmp-B-file-name buf-B-file-name))
+          (progn
+            (dolist (buf (buffer-list))
+              (when (string-match ".+\.~.+~$" (buffer-name buf))
+                (kill-buffer buf)))
+            (message "No differences"))
+        ad-do-it)
+      (when tmp-A-file-name
+        (delete-file tmp-A-file-name))
+      (when tmp-B-file-name
+        (delete-file tmp-B-file-name)))))
 
 (defadvice ediff-files (around my-ediff-files activate)
   "Compare files first and don't start ediff if they are identical."

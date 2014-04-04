@@ -2,6 +2,7 @@
 
 (require 'ibuffer)
 (require 'bookmark)
+(require 'my-ediff)
 
 (setq-default ibuffer-default-sorting-mode 'filename/process
               ibuffer-display-summary nil
@@ -181,12 +182,18 @@
 (defun my-ibuffer-toggle-hidden-filter-groups ()
   "Toggle showing-all/rehiding filter groups."
   (interactive)
-  (if my-ibuffer-hidden-filter-groups
-      (setq ibuffer-hidden-filter-groups my-ibuffer-hidden-filter-groups
-            my-ibuffer-hidden-filter-groups nil)
-    (setq my-ibuffer-hidden-filter-groups ibuffer-hidden-filter-groups
-          ibuffer-hidden-filter-groups nil))
+  (if ibuffer-hidden-filter-groups
+      (setq my-ibuffer-hidden-filter-groups ibuffer-hidden-filter-groups
+            ibuffer-hidden-filter-groups nil)
+    (setq ibuffer-hidden-filter-groups my-ibuffer-hidden-filter-groups
+          my-ibuffer-hidden-filter-groups nil))
   (ibuffer-update nil t))
+
+(defun my-ibuffer-diff ()
+  "Smart diff against current buffer."
+  (interactive)
+  (ibuffer-visit-buffer-1-window)
+  (my-ediff-dwim))
 
 (defun my-ibuffer ()
   "Open ibuffer with point on last buffer name."
@@ -199,6 +206,8 @@
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
   (setq ibuffer-hidden-filter-groups '("Default"))
+  (define-key ibuffer-mode-map (kbd "=") 'my-ibuffer-diff)
+  (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
   (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
   (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
