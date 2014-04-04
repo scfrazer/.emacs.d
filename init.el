@@ -150,6 +150,7 @@
               cursor-in-non-selected-windows nil
               cursor-type 'box
               dabbrev-case-fold-search nil
+              diff-switches "-b -u"
               dired-auto-revert-buffer t
               echo-keystrokes 0.1
               etags-select-use-short-name-completion t
@@ -439,21 +440,6 @@
         (goto-char (point-max))
         (delete-blank-lines)
         (message "Trailing whitespace and excess blank lines removed.")))))
-
-(defun my-diff-buffer-with-file ()
-  "View the differences between current buffer and it's associated file."
-  (interactive)
-  (let* ((buffer (current-buffer))
-         (basefile
-          (or (buffer-file-name buffer)
-              (error "Buffer %s has no associated file" buffer)))
-         (tempfile (make-temp-file "buffer-content-")))
-    (with-current-buffer buffer
-      (save-restriction
-        (widen)
-        (write-region (point-min) (point-max) tempfile nil 'silent)))
-    (shell-command (concat "tkdiff " basefile " " tempfile))
-    (delete-file tempfile)))
 
 (defun my-dos2unix ()
   "Remove ^M's from file."
