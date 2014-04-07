@@ -18,7 +18,7 @@
    `(default ((,class (:background "#f2f2f2"))))
 
    `(ace-jump-face-foreground ((,class (:background "#E4E4E4"))))
-   `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
+   `(bm-face ((,class (:foreground nil :background "#FFFF00"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#005F00"))))
    `(compilation-error ((,class (:foreground "#CD0000"))))

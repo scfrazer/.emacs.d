@@ -6,7 +6,7 @@
    'my-terminal-light
 
    `(ace-jump-face-foreground ((,class (:background "color-254"))))
-   `(bm-face ((,class (:foreground nil :background "color-227"))))
+   `(bm-face ((,class (:foreground nil :background "color-226"))))
    `(button ((,class (:foreground "color-30"))))
    `(compilation-column-number ((,class (:foreground "color-22"))))
    `(compilation-error ((,class (:foreground "red"))))
