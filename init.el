@@ -28,7 +28,6 @@
 (require 'etags)
 (require 'etags-select)
 (require 'etags-table)
-(require 'hi-lock)
 (require 'hl-line)
 (require 'iflipb)
 (require 'jump-to-prev-pos)
@@ -530,6 +529,7 @@ With a numeric prefix, goto that window line."
 (defun my-highlight-symbol (&optional arg)
   "Highlight the symbol under point, or with prefix arg the region."
   (interactive "P")
+  (require 'hi-lock nil t)
   (let (beg end face-num)
     (if (and arg (mark t))
         (setq beg (region-beginning)

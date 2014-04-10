@@ -7,14 +7,22 @@
   :group 'languages)
 
 (defface specterx-directive-face
-  '((t (:foreground "tomato3")))
+  '((t (:foreground "#005fff")))
   "Face for SpecterX directives."
   :group 'specterx-mode)
+
+(defvar specterx-mode-syntax-table
+  (let ((table (copy-syntax-table sv-mode-syntax-table)))
+    (modify-syntax-entry ?% ". 23b" table)
+    (modify-syntax-entry ?< ". 1b" table)
+    (modify-syntax-entry ?> ". 4b" table)
+    table)
+  "Syntax table used in specterx-mode buffers.")
 
 (define-derived-mode specterx-mode sv-mode "SpecterX"
   "Mode for editing Verilog with embedded Perl."
   :abbrev-table nil
-  :syntax-table nil
+  :syntax-table specterx-mode-syntax-table
   (let ((keywords (list
                    (cons "\\(<%\\|%>\\|@perl\\)"
                          '(0 'specterx-directive-face t))
