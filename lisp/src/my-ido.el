@@ -316,12 +316,13 @@ If cursor is not at the end of the user input, move to end of input."
 (defun my-ido-setup-hook ()
   "Add my keybindings for ido."
   (define-key (cdr ido-minor-mode-map-entry) [remap kill-buffer] nil)
+  (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
+  (define-key ido-completion-map (kbd "<up>") 'ido-prev-match)
   (define-key ido-completion-map (kbd "C-e") 'my-ido-edit-input)
   (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
-  (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
-  (define-key ido-completion-map (kbd "<up>") 'ido-prev-match)
-  (define-key ido-completion-map (kbd "C-t") 'ido-toggle-case))
+  (define-key ido-completion-map (kbd "C-t") 'ido-toggle-case)
+  (define-key ido-completion-map (kbd "SPC") 'ido-restrict-to-matches))
 
 (add-hook 'ido-setup-hook 'my-ido-setup-hook)
 
