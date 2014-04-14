@@ -5,12 +5,18 @@
   :group 'convenience)
 
 (defface show-mark-face
-  '((t :background "color-154" :foreground "black"))
+  '((((type tty))
+     (:background "color-154" :foreground "black"))
+    (t
+     (:background "#afff00" :foreground "black")))
   "Face for showing the mark."
   :group 'show-mark)
 
 (defface show-mark-face-eol
-  '((t :foreground "color-154" :underline t))
+  '((((type tty))
+     (:foreground "color-154" :underline t))
+    (t
+     (:box (:line-width 1 :color "#afff00"))))
   "Face for showing the mark at the end of a line."
   :group 'show-mark)
 

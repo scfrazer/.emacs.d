@@ -302,10 +302,6 @@ So please turn on this option if you want skip
 
 Default is nil."
   :type 'boolean
-  :set (lambda (symbol value)
-         (set symbol value)
-         (when (ad-advised-definition-p 'other-window)
-           (sr-speedbar-handle-other-window-advice value)))
   :group 'sr-speedbar)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Constant ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
