@@ -5,7 +5,7 @@
   (custom-theme-set-faces
    'my-terminal-light
 
-   `(ace-jump-face-foreground ((,class (:background "color-254"))))
+   `(ace-jump-face-foreground ((,class (:foreground "red" :background "color-254"))))
    `(bm-face ((,class (:foreground nil :background "color-226"))))
    `(button ((,class (:foreground "color-30"))))
    `(compilation-column-number ((,class (:foreground "color-22"))))
@@ -63,7 +63,7 @@
    `(info-xref ((,class (:inherit link :foreground "brightblue"))))
    `(isearch ((,class (:background "color-203" :foreground "color-231"))))
    `(isearch-fail ((,class (:background "red" :foreground "color-231"))))
-   `(isearch-lazy-highlight-face ((,class (:background "color-94" :foreground "color-231"))))
+   `(isearch-lazy-highlight-face ((,class (:background "color-73" :foreground "color-231"))))
    `(lazy-highlight ((,class (:background "color-73" :foreground "color-231"))))
    `(link ((,class (:foreground "color-20"))))
    `(link-visited ((,class (:inherit link :foreground "brightmagenta"))))
@@ -71,7 +71,7 @@
    `(magit-log-author ((,class (:foreground "color-63"))))
    `(magit-log-sha1 ((,class (:foreground "color-130"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
-   `(match ((,class (:background "color-189"))))
+   `(match ((,class (:background "color-153"))))
    `(minibuffer-prompt ((,class (:foreground "color-24"))))
    `(mode-line ((,class (:background "white" :foreground "black"))))
    `(mode-line-buffer-id ((,class (:foreground "color-20"))))

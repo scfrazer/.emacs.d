@@ -17,7 +17,7 @@
 
    `(default ((,class (:background "#f2f2f2"))))
 
-   `(ace-jump-face-foreground ((,class (:background "#E4E4E4"))))
+   `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#E4E4E4"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF00"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#005F00"))))
@@ -75,7 +75,7 @@
    `(info-xref ((,class (:inherit link :foreground "#5C5CFF"))))
    `(isearch ((,class (:background "#FF5F5F" :foreground "#FFFFFF"))))
    `(isearch-fail ((,class (:background "#CD0000" :foreground "#FFFFFF"))))
-   `(isearch-lazy-highlight-face ((,class (:background "#875F00" :foreground "#FFFFFF"))))
+   `(isearch-lazy-highlight-face ((,class (:background "#5FAFAF" :foreground "#FFFFFF"))))
    `(lazy-highlight ((,class (:background "#5FAFAF" :foreground "#FFFFFF"))))
    `(link ((,class (:foreground "#0000D7"))))
    `(link-visited ((,class (:inherit link :foreground "#FF00FF"))))
@@ -83,7 +83,7 @@
    `(magit-log-author ((,class (:foreground "#5F5FFF"))))
    `(magit-log-sha1 ((,class (:foreground "#AF5F00"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
-   `(match ((,class (:background "#D7D7FF"))))
+   `(match ((,class (:background "#AFD7FF"))))
    `(minibuffer-prompt ((,class (:foreground "#005F87"))))
    `(mode-line ((,class (:background "#E5E5E5" :foreground "#000000"))))
    `(mode-line-buffer-id ((,class (:foreground "#0000D7"))))
