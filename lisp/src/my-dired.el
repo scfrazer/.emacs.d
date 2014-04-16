@@ -64,18 +64,26 @@
 (defun my-dired-pop-to-or-create (&optional arg)
   "Pop to first dired buffer, or create one."
   (interactive "P")
-  (if (and (boundp 'dired-buffers) dired-buffers)
-      (catch 'done
-        (dolist (dbuf dired-buffers)
-          (when (buffer-live-p (cdr dbuf))
-            (let ((dir default-directory))
-              (switch-to-buffer (cdr dbuf))
-              (when arg
-                (setq my-dired-prev-dir (dired-current-directory))
-                (find-alternate-file dir)))
-            (throw 'done t)))
-        (dired default-directory))
-    (dired default-directory)))
+  (let ((curr-filename (buffer-file-name))
+        live-buf)
+    (if (and (boundp 'dired-buffers) dired-buffers)
+        (progn
+          (setq live-buf
+                (catch 'done
+                  (dolist (dbuf dired-buffers)
+                    (when (buffer-live-p (cdr dbuf))
+                      (let ((dir default-directory))
+                        (switch-to-buffer (cdr dbuf))
+                        (when arg
+                          (setq my-dired-prev-dir (dired-current-directory))
+                          (find-alternate-file dir)))
+                      (throw 'done t)))))
+          (dired default-directory)
+          (when (and (or arg (not live-buf)) curr-filename)
+            (dired-goto-file curr-filename)))
+      (dired default-directory)
+      (when curr-filename
+        (dired-goto-file curr-filename)))))
 
 ;; Modified find-name-dired
 
