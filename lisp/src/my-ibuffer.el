@@ -8,7 +8,6 @@
               ibuffer-display-summary nil
               ibuffer-filter-group-name-face 'my-ibuffer-group-name-face
               ibuffer-movement-cycle nil
-              ibuffer-never-show-predicates '("^TAGS$")
               ibuffer-expert t
               ibuffer-show-empty-filter-groups nil
               ibuffer-use-other-window t)
@@ -109,11 +108,21 @@
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
          ("VOB" (filename . "/vob"))
-         ("Files" (filename . "."))
-         ("Temp" (name . "^[^*]"))
+         ("Files" (predicate . (my-ibuffer-filter-files)))
+         ("Temp" (predicate . (my-ibuffer-filter-buffers)))
          ("*" (or (mode . Custom-mode)
                   (name . ,my-ibuffer-star-regexp)))
          )))
+
+(defun my-ibuffer-filter-files ()
+  "Filter to match non-TAGS files."
+  (and (buffer-file-name)
+       (not (string-match "^\\(.+/\\)?TAGS$" (buffer-file-name)))))
+
+(defun my-ibuffer-filter-buffers ()
+  "Filter to match temp buffers."
+  (and (not (buffer-file-name))
+       (string-match "^[^*]" (buffer-name))))
 
 (defvar my-ibuffer-header-line-format nil)
 (defun ibuffer-update-title-and-summary (format)
