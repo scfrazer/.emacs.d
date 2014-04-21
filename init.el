@@ -1116,6 +1116,8 @@ Only works if there are exactly two windows."
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
+(remove-hook 'midnight-hook 'clean-buffer-list)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After loads
 
