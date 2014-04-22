@@ -838,7 +838,7 @@ buffer."
     (ace-jump-do (regexp-quote (make-string 1 head-char))))
    (t
     (if (= head-char ?\C-j)
-        (call-interactively 'ace-jump-char-mode)
+        (call-interactively 'ace-jump-line-mode)
       (error "[AceJump] Non-printable character")))))
 
 ;;;###autoload
