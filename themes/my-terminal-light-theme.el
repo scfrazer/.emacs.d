@@ -5,7 +5,7 @@
   (custom-theme-set-faces
    'my-terminal-light
 
-   `(ace-jump-face-foreground ((,class (:foreground "red" :background "color-254"))))
+   `(ace-jump-face-foreground ((,class (:foreground "red" :background "color-253"))))
    `(bm-face ((,class (:foreground nil :background "color-226"))))
    `(button ((,class (:foreground "color-30"))))
    `(compilation-column-number ((,class (:foreground "color-22"))))
@@ -61,10 +61,10 @@
    `(info-title-1 ((,class (:foreground "color-100"))))
    `(info-title-2 ((,class (:foreground "color-106"))))
    `(info-xref ((,class (:inherit link :foreground "brightblue"))))
-   `(isearch ((,class (:background "color-203" :foreground "color-231"))))
+   `(isearch ((,class (:background "color-19" :foreground "color-231"))))
    `(isearch-fail ((,class (:background "red" :foreground "color-231"))))
-   `(isearch-lazy-highlight-face ((,class (:background "color-73" :foreground "color-231"))))
-   `(lazy-highlight ((,class (:background "color-73" :foreground "color-231"))))
+   `(isearch-lazy-highlight-face ((,class (:background "color-68" :foreground "color-231"))))
+   `(lazy-highlight ((,class (:background "color-68" :foreground "color-231"))))
    `(link ((,class (:foreground "color-20"))))
    `(link-visited ((,class (:inherit link :foreground "brightmagenta"))))
    `(magit-item-highlight ((,class (:background "color-231"))))

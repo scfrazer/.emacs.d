@@ -221,6 +221,7 @@
   (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer-1-window)
+  (define-key ibuffer-mode-map (kbd "SPC") (lambda() (interactive) (ido-switch-buffer) (delete-other-windows)))
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
   (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
   (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)

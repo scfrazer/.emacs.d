@@ -17,7 +17,7 @@
 
    `(default ((,class (:background "#f2f2f2"))))
 
-   `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#E4E4E4"))))
+   `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#DADADA"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF00"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#005F00"))))
@@ -73,10 +73,10 @@
    `(info-title-1 ((,class (:foreground "#878700"))))
    `(info-title-2 ((,class (:foreground "#87AF00"))))
    `(info-xref ((,class (:inherit link :foreground "#5C5CFF"))))
-   `(isearch ((,class (:background "#FF5F5F" :foreground "#FFFFFF"))))
-   `(isearch-fail ((,class (:background "#CD0000" :foreground "#FFFFFF"))))
-   `(isearch-lazy-highlight-face ((,class (:background "#5FAFAF" :foreground "#FFFFFF"))))
-   `(lazy-highlight ((,class (:background "#5FAFAF" :foreground "#FFFFFF"))))
+   `(isearch ((,class (:background "#0000AF" :foreground "#FFFFFF"))))
+   `(isearch-fail ((,class (:background "red" :foreground "#FFFFFF"))))
+   `(isearch-lazy-highlight-face ((,class (:background "#5F87D7" :foreground "#FFFFFF"))))
+   `(lazy-highlight ((,class (:background "#5F87D7" :foreground "#FFFFFF"))))
    `(link ((,class (:foreground "#0000D7"))))
    `(link-visited ((,class (:inherit link :foreground "#FF00FF"))))
    `(magit-item-highlight ((,class (:background "#FFFFFF"))))
