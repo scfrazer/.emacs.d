@@ -2883,7 +2883,8 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
       (when (buffer-file-name input-buffer)
         (with-current-buffer input-buffer
           (save-buffer)))
-      (unless dont-kill-input-buffer
+      (unless (or dont-kill-input-buffer
+                  (buffer-file-name input-buffer))
         (kill-buffer input-buffer)))))
 
 (defun sqlplus-magic ()
