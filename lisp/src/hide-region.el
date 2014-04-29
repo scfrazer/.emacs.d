@@ -1,28 +1,27 @@
 ;;; hide-region.el
 
-(defvar hide-region-before-string "@[")
-(defvar hide-region-after-string "]@")
+(defvar hide-region-string "<...>")
 
 (defface hide-region-face
-  '((t (:background "pink1")))
+  '((((type tty))
+     (:background "color-181" :foreground "black"))
+    (t
+     (:background "#D7AFAF" :foreground "black")))
   "Face for hide-region markers."
   :group 'faces)
 
-(defun hide-region ()
-  "Hide the current region."
+(defun hide-region-toggle ()
+  "Hide/unhide region at point."
   (interactive)
-  (let ((ovl (make-overlay (mark) (point))))
-    (overlay-put ovl 'invisible t)
-    (overlay-put ovl 'before-string
-                 (propertize hide-region-before-string 'font-lock-face 'hide-region-face))
-    (overlay-put ovl 'after-string
-                 (propertize hide-region-after-string 'font-lock-face 'hide-region-face))))
-
-(defun unhide-region ()
-  "Unhide the region at point."
-  (interactive)
-  (dolist (ovl (overlays-in (1- (point)) (1+ (point))))
-    (when (string= (plist-get (overlay-properties ovl) 'before-string) hide-region-before-string)
-      (delete-overlay ovl))))
+  (let (unhidden)
+    (dolist (ovl (overlays-in (1- (point)) (1+ (point))))
+      (when (plist-get (overlay-properties ovl) 'hide-region)
+        (delete-overlay ovl)
+        (setq unhidden t)))
+    (unless unhidden
+      (let ((ovl (make-overlay (mark) (point))))
+        (overlay-put ovl 'hide-region t)
+        (overlay-put ovl 'invisible t)
+        (overlay-put ovl 'before-string (propertize hide-region-string 'font-lock-face 'hide-region-face))))))
 
 (provide 'hide-region)
