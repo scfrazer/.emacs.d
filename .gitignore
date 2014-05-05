@@ -3,3 +3,6 @@
 auto-save-list
 *.html
 tasks
+/init-smf.el
+/lisp/src/vc_gen.el
+/lisp/vc_gen.elc
