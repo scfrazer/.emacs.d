@@ -5,7 +5,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar cc-status-ignore-regexps (list "@@"
+(defvar cc-status-ignore-regexps (list "#"
+                                       "~"
+                                       "\\.swp"
+                                       "@@"
                                        "ver/build"
                                        "/obj\\(64\\)?"
                                        "\\.cmake\\.state"
