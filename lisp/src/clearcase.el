@@ -600,7 +600,7 @@ recommended to produce unified diffs, when your
 (defvar clearcase-mode-map (make-sparse-keymap))
 (defvar clearcase-prefix-map (make-sparse-keymap))
 (define-key clearcase-mode-map "\C-xv" clearcase-prefix-map)
-(define-key clearcase-mode-map "\C-x\C-q" 'clearcase-toggle-read-only)
+;;(define-key clearcase-mode-map "\C-x\C-q" 'clearcase-toggle-read-only)
 
 (define-key clearcase-prefix-map "b" 'clearcase-browse-vtree-current-buffer)
 (define-key clearcase-prefix-map "c" 'clearcase-uncheckout-current-buffer)
