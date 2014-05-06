@@ -198,6 +198,12 @@
           my-ibuffer-hidden-filter-groups nil))
   (ibuffer-update nil t))
 
+(defun my-ibuffer-do-delete ()
+  "`ibuffer-do-delete' but stay on the same line."
+  (interactive)
+  (ibuffer-do-delete)
+  (forward-line))
+
 (defun my-ibuffer-diff ()
   "Smart diff against current buffer."
   (interactive)
@@ -217,6 +223,7 @@
   (setq ibuffer-hidden-filter-groups '("Default"))
   (define-key ibuffer-mode-map (kbd "=") 'my-ibuffer-diff)
   (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
+  (define-key ibuffer-mode-map (kbd "D") 'my-ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
   (define-key ibuffer-mode-map (kbd "N") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "P") 'ibuffer-backward-filter-group)
