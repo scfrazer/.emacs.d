@@ -1,6 +1,7 @@
 ;;; my-sql.el
 
-(setq-default sqlplus-command "/usr/cisco/packages/oracle/current/bin/sqlplus")
+(setq-default sqlplus-command "/usr/cisco/packages/oracle/current/bin/sqlplus"
+              sqlplus-multi-output-tables-default-flag nil)
 
 (eval-after-load "sqlplus"
   '(progn
