@@ -1156,7 +1156,8 @@ LINES the number of lines to move backwards."
   (setq header-line-format bm-header)
   (setq major-mode 'bm-show-mode)
   (setq mode-name "bm-bookmarks")
-  (use-local-map bm-show-mode-map))
+  (use-local-map bm-show-mode-map)
+  (setq truncate-lines t))
 
 
 (defun bm-toggle-buffer-persistence nil
