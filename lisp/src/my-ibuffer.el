@@ -4,7 +4,7 @@
 (require 'bookmark)
 (require 'my-ediff)
 
-(setq-default ibuffer-default-sorting-mode 'filename/process
+(setq-default ibuffer-default-sorting-mode 'recency
               ibuffer-display-summary nil
               ibuffer-filter-group-name-face 'my-ibuffer-group-name-face
               ibuffer-movement-cycle nil
