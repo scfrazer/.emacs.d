@@ -38,6 +38,17 @@
                        'show-mark-face-eol
                      'show-mark-face)))))
 
+(defun show-mark-after-revert-hook ()
+  "Remove the overlay after reverting."
+  (when show-mark-overlay
+    (save-restriction
+      (widen)
+      (delete-overlay show-mark-overlay)
+      (remove-overlays (point-min) (point-max) 'face 'show-mark-face)
+      (remove-overlays (point-min) (point-max) 'face 'show-mark-face-eol))))
+
+(add-hook 'after-revert-hook 'show-mark-after-revert-hook)
+
 (define-minor-mode show-mark-mode
   "Minor mode to show the mark."
   t " mark" nil
