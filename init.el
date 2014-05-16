@@ -1393,6 +1393,7 @@ Only works if there are exactly two windows."
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'kr 'browse-kill-ring)
+(defalias 'qrr 'query-replace-regexp)
 (defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
