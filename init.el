@@ -22,7 +22,6 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ace-jump-mode)
 (require 'bm)
 (require 'csh-mode)
 (require 'etags)
@@ -48,6 +47,7 @@
 (require 'vcs-compile)
 
 (require 'my-abbrev)
+(require 'my-ace-jump-mode)
 (require 'my-bookmark)
 (require 'my-buf)
 (require 'my-calculator)
@@ -1413,6 +1413,7 @@ Only works if there are exactly two windows."
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'kr 'browse-kill-ring)
+(defalias 'qrr 'query-replace-regexp)
 (defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
