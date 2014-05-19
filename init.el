@@ -389,6 +389,26 @@
     (save-excursion (yank))
     (comment-region beg end)))
 
+(defun my-convert-to-ascii ()
+  "Change extended chars to ascii equivalents."
+  (interactive "*")
+  (let ((repls '(("\205" "...")
+                 ("\221" "'")
+                 ("\222" "'")
+                 ("\223" "\"")
+                 ("\224" "\"")
+                 ("\225" "*")
+                 ("\226" "-")
+                 ("\227" "--")
+                 ("\240" " ")
+                 ("\261" "+/-")
+                 )))
+    (dolist (repl repls)
+      (save-excursion
+        (goto-char (point-min))
+        (while (search-forward (car repl) nil t)
+          (replace match (cdr repl) nil t))))))
+
 (defun my-convert-to-base (arg)
   "Convert to decimal, or with prefix arg to hex."
   (interactive "*P")
