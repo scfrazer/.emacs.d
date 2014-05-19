@@ -22,7 +22,6 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ace-jump-mode)
 (require 'bm)
 (require 'csh-mode)
 (require 'etags)
@@ -48,6 +47,7 @@
 (require 'vcs-compile)
 
 (require 'my-abbrev)
+(require 'my-ace-jump-mode)
 (require 'my-bookmark)
 (require 'my-buf)
 (require 'my-calculator)
