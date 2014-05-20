@@ -682,7 +682,7 @@ recommended to produce unified diffs, when your
 (if (not (memq 'clearcase-dired-checkedout-face (face-list)))
     (progn
       (make-face 'clearcase-dired-checkedout-face)
-      (set-face-foreground 'clearcase-dired-checkedout-face "red")
+      (set-face-foreground 'clearcase-dired-checkedout-face "brightred")
 ;       (make-face-bold 'clearcase-dired-checkedout-face)))
       ))
 

@@ -286,7 +286,7 @@ jump internal use.  If you want to change it, use
   :group 'ace-jump)
 
 (defface ace-jump-face-foreground
-  '((((class color)) (:foreground "red"))
+  '((((class color)) (:foreground "brightred"))
     (((background dark)) (:foreground "gray100"))
     (((background light)) (:foreground "gray0"))
     (t (:foreground "gray100")))

@@ -1308,7 +1308,7 @@ Many Magit faces inherit from this one by default."
 
 (defface magit-process-ng
   '((t :inherit magit-header
-       :foreground "red"))
+       :foreground "brightred"))
   "Face for non-zero exit-status."
   :group 'magit-faces)
 

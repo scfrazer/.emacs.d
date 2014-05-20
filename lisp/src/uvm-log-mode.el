@@ -43,7 +43,7 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-error-face
-  '((t (:foreground "red")))
+  '((t (:foreground "brightred")))
   "Font Lock mode face used to highlight errors."
   :group 'uvm-log-mode)
 

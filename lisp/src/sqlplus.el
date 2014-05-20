@@ -2087,9 +2087,9 @@ static char * go_next_xpm[] = {
     (if (string-match "^\\(.*?\\)\\(\\w*prod\\w*\\)$" txt)
 	(if (>= emacs-major-version 22)
 	    (setq result (list (list :propertize (substring txt 0 (match-beginning 2)) 'face '((:foreground "blue")))
-			       (list :propertize (substring txt (match-beginning 2)) 'face '((:foreground "red")(:weight bold)))))
+			       (list :propertize (substring txt (match-beginning 2)) 'face '((:foreground "brightred")(:weight bold)))))
 	  (setq result (setq txt (propertize txt 'face '((:foreground "blue")))))
-	  (put-text-property (match-beginning 2) (match-end 2) 'face '((:foreground "red")(:weight bold)) txt))
+	  (put-text-property (match-beginning 2) (match-end 2) 'face '((:foreground "brightred")(:weight bold)) txt))
       (setq result 
 	    (if (>= emacs-major-version 22)
 		(list :propertize txt 'face '((:foreground "blue")))
@@ -3019,7 +3019,7 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
 			       (goto-char b)
 			       (while (re-search-forward warning-regexp nil t)
 				 (add-text-properties (match-beginning 0) (match-end 0)
-						      (list 'face (list (cons 'foreground-color "red") (list :weight 'bold)
+						      (list 'face (list (cons 'foreground-color "brightred") (list :weight 'bold)
 									(get-text-property (match-beginning 0) 'face))))))))))
 		    (t
 		     (insert str))))))))))
@@ -3068,7 +3068,7 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
 			  ((equal sqlplus-fan "/") "-")
 			  ((equal sqlplus-fan "-") "\\")
 			  ((equal sqlplus-fan "\\") "|")))
-	      (put-text-property 0 (length sqlplus-fan) 'face '((foreground-color . "red")) sqlplus-fan)
+	      (put-text-property 0 (length sqlplus-fan) 'face '((foreground-color . "brightred")) sqlplus-fan)
 	      (put-text-property 0 (length sqlplus-fan) 'help-echo (sqlplus-get-context-value context :sql) sqlplus-fan)
 	      (force-mode-line-update)))))
       (unwind-protect
@@ -4824,7 +4824,7 @@ buffer."
 					     'help-echo help-echo
 					     'mouse-face 'tabbar-highlight
 					     'face (if (> (sqlplus-tab-errors-count tab) 0)
-						       (list '(foreground-color . "red") face)
+						       (list '(foreground-color . "brightred") face)
 						     face)
 					     'pointer 'hand)))
 			     sqlplus-side-view-tabset
@@ -5002,7 +5002,7 @@ buffer."
 	(setq label (propertize label
 				'mouse-face 'ide-skel-highlight-face
 				'face (if (cdr pair)
-					  '(sqlplus-side-view-face (foreground-color . "red"))
+					  '(sqlplus-side-view-face (foreground-color . "brightred"))
 					'sqlplus-side-view-face)
 				'local-map km
 				'pointer 'hand
