@@ -17,12 +17,18 @@
 
 (defun my-cc-mode-imenu-create-index-function ()
   (let ((filename (buffer-file-name))
+        (mode major-mode)
         (pos nil)
         (prev-pos -1)
         (item-alist '()))
     (with-temp-buffer
       (shell-command
-       (concat my-cc-mode-ctags-executable " -e --language-force=c++ --c++-kinds=-egmstuvn+p --extra=+q -f- " filename) t)
+       (concat my-cc-mode-ctags-executable " -e "
+               (cond ((equal mode 'c++-mode)
+                      "--language-force=c++ --c++-kinds=-egmstuvn+p")
+                     ((equal mode 'java-mode)
+                      "--language-force=java --java-kinds=-efg"))
+               " --extra=+q -f- " filename) t)
       (goto-char (point-max))
       (while (not (bobp))
         (forward-line -1)
@@ -33,13 +39,12 @@
           (setq prev-pos pos))))
     item-alist))
 
-;; Setup
+;; Hooks
 
 (defun my-c-mode-common-hook ()
   (setq comment-start "// ")
   (setq comment-end "" )
   (setq imenu-create-index-function 'my-cc-mode-imenu-create-index-function)
-  (setq ll-debug-print-filename nil)
   (define-key c-mode-base-map "/" nil)
   (define-key c-mode-base-map (kbd "C-c d e") 'my-c-make-function-from-prototype)
   (abbrev-mode -1)
