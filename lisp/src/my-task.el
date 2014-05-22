@@ -13,33 +13,27 @@
 
 (defun my-task-before-save-hook ()
   "Save bookmarks file."
-  (let ((filename (concat task-top-dir task-current-name "/bookmarks.el"))
-        (my-task-saving-bookmarks t))
+  (setq my-task-saving-bookmarks t)
+  (let ((filename (concat task-top-dir task-current-name "/bookmarks.el")))
     (bm-buffer-save-all)
-    (bm-repository-save filename)))
+    (bm-repository-save filename))
+  (setq my-task-saving-bookmarks nil))
 
 (add-hook 'task-before-save-hook 'my-task-before-save-hook)
 
-(defvar my-task-loading-bookmarks nil)
-
-(defadvice bm-bookmark-add (around my-task-bm-bookmark-add activate)
-  (if my-task-loading-bookmarks
-      (let ((bm-buffer-persistence nil))
-        ad-do-it)
-    ad-do-it))
-
 (defun my-task-after-load-hook ()
   "Load bookmarks file if one exists."
-  (when clearcase-setview-viewtag
-    (dolist (buf (buffer-list))
-      (when (buffer-file-name buf)
-        (set-buffer buf)
-        (clearcase-hook-find-file-hook))))
-  (let ((filename (concat task-top-dir task-current-name "/bookmarks.el"))
-        (my-task-loading-bookmarks t))
+  (let ((filename (concat task-top-dir task-current-name "/bookmarks.el")))
     (when (file-exists-p filename)
       (bm-repository-load filename)
-      (bm-buffer-restore-all))))
+      (bm-buffer-restore-all)))
+  (dolist (buf (buffer-list))
+    (when (buffer-file-name buf)
+      (set-buffer buf)
+      (when clearcase-setview-viewtag
+        (clearcase-hook-find-file-hook))
+      (when bm-buffer-persistence
+        (bm-toggle-buffer-persistence)))))
 
 (add-hook 'task-after-load-hook 'my-task-after-load-hook)
 
