@@ -15,7 +15,7 @@
   (custom-theme-set-faces
    'my-window-light
 
-   `(default ((,class (:background "#f2f2f2"))))
+;;   `(default ((,class (:background "#f2f2f2"))))
 
    `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#DADADA"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF00"))))
