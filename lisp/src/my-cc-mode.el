@@ -3,7 +3,7 @@
 (require 'my-doxymacs)
 (require 'find-file)
 
-;; C++
+;; Style
 
 (c-add-style "strou2" '("stroustrup"
                         (c-basic-offset . 4)
@@ -11,25 +11,51 @@
                         (c-block-comment-prefix . "")))
 (setq c-default-style "strou2")
 
+;; Default imenu is not very good
+
+(defvar my-cc-mode-ctags-executable "ctags")
+
+(defun my-cc-mode-imenu-create-index-function ()
+  (let ((filename (buffer-file-name))
+        (pos nil)
+        (prev-pos -1)
+        (item-alist '()))
+    (with-temp-buffer
+      (shell-command
+       (concat my-cc-mode-ctags-executable " -e --language-force=c++ --c++-kinds=-egmstuvn+p --extra=+q -f- " filename) t)
+      (goto-char (point-max))
+      (while (not (bobp))
+        (forward-line -1)
+        (when (looking-at ".+\\(.+\\)[0-9]+,\\([0-9]+\\)")
+          (setq pos (1+ (string-to-number (match-string-no-properties 2))))
+          (unless (= pos prev-pos)
+            (push (cons (match-string-no-properties 1) pos) item-alist))
+          (setq prev-pos pos))))
+    item-alist))
+
+;; Setup
+
 (defun my-c-mode-common-hook ()
   (setq comment-start "// ")
   (setq comment-end "" )
+  (setq imenu-create-index-function 'my-cc-mode-imenu-create-index-function)
   (setq ll-debug-print-filename nil)
   (define-key c-mode-base-map "/" nil)
   (define-key c-mode-base-map (kbd "C-c d e") 'my-c-make-function-from-prototype)
-  (font-lock-add-keywords nil
-                          (list (cons (concat "^.*/\*\\s-*\\([Tt][Oo][Dd][Oo]\\|[Ff][Ii][Xx][Mm][Ee]\\)")
-                                      (list '(1 'my-todo-face t))))
-                          'add-to-end)
-;;   (c-setup-filladapt)
-;;   (filladapt-mode 1)
   (abbrev-mode -1)
   (c-set-style "strou2"))
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+;; Other file
+
 (setq cc-other-file-alist
-      '(("\\.cc$"
+      '(
+        ("\\.cpp$"
+         (".hpp" ".h"))
+        ("\\.hpp$"
+         (".cpp"))
+        ("\\.cc$"
          (".h" ".hh"))
         ("\\.hh$"
          (".cc" ".C"))
@@ -47,10 +73,7 @@
          (".CC"))
         ("\\.cxx$"
          (".hh" ".h"))
-        ("\\.cpp$"
-         (".hpp" ".h"))
-        ("\\.hpp$"
-         (".cpp"))))
+        ))
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 
