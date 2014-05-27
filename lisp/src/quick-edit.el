@@ -344,7 +344,7 @@ With prefix arg, append kill."
             (setq fcn (lookup-key qe-unit-common-map qe-unit-prev-key)
                   result (funcall fcn qe-unit-prev-to-char))
           (if (equal seq cmd-keys)
-              (setq fcn 'qe-unit-ends-line)
+              (setq fcn 'qe-unit-ends-mark)
             (setq fcn (lookup-key qe-unit-common-map seq)))
           (unless fcn
             (error "Unknown key entered for kill text unit"))
@@ -371,7 +371,7 @@ With prefix arg, append kill."
         (when arg
           (setq cmd-keys (substring cmd-keys 1)))
         (if (equal seq cmd-keys)
-            (setq fcn 'qe-unit-ends-line)
+            (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
           (error "Unknown key entered for copy text unit"))
@@ -419,6 +419,7 @@ With prefix arg, append kill."
     (define-key map (kbd "P") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-paragraph)))
     (define-key map (kbd "b") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-block)))
     (define-key map (kbd "B") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-block)))
+    (define-key map (kbd "l") 'qe-unit-ends-line)
     (define-key map (kbd "w") 'qe-unit-ends-forward-word)
     (define-key map (kbd "W") 'qe-unit-ends-backward-word)
 ;;     (define-key map (kbd "_") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-section)))
@@ -433,8 +434,6 @@ With prefix arg, append kill."
     (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
     (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
-    (define-key map (kbd "C-@") 'qe-unit-ends-mark)
-    (define-key map (kbd "C-SPC") 'qe-unit-ends-mark)
     (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))

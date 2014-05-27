@@ -108,7 +108,7 @@
    `(outline-4 ((,class (:foreground "#5F5FD7"))))
    `(outline-5 ((,class (:foreground "#00AFFF"))))
    `(primary-selection ((,class (:background "#0000D7"))))
-   `(region ((,class (:background "#AFD7D7"))))
+   `(region ((,class (:background "#AFD7FF"))))
    `(sh-heredoc ((,class (:foreground "#AF8700"))))
    `(sh-quoted-exec ((,class (:foreground "#AF87FF"))))
    `(show-paren-match-face ((,class (:background "#0000AF" :foreground "#FFFFFF"))))
