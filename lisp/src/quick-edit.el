@@ -353,7 +353,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                         "(Append) Kill:")
                     "Kill:")))
             fcn)
-        (if (string-match (concat ".*" (regexp-quote seq)) cmd-keys)
+        (if (and (> (length seq) 1) (string-match (concat ".*" (regexp-quote seq)) cmd-keys))
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
@@ -381,7 +381,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
       (let ((cmd-keys (this-command-keys))
             (seq (read-key-sequence (if arg "(Append) Copy:" "Copy:")))
             fcn)
-        (if (string-match (concat ".*" (regexp-quote seq)) cmd-keys)
+        (if (and (> (length seq) 1) (string-match (concat ".*" (regexp-quote seq)) cmd-keys))
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
