@@ -39,6 +39,23 @@
           (setq prev-pos pos))))
     item-alist))
 
+;; Uncrustify
+
+(defvar my-cc-mode-uncrustify-executable "uncrustify")
+
+(defun my-cc-mode-uncrustify ()
+  "Run uncrustify on marked region, or entire buffer."
+  (interactive "*")
+  (let ((pos (point))
+        beg end)
+  (if (region-active-p)
+      (setq beg (region-beginning)
+            end (region-end))
+    (setq beg (point-min)
+          end (point-max)))
+  (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l CPP") nil t)
+  (goto-char pos)))
+
 ;; Hooks
 
 (defun my-c-mode-common-hook ()

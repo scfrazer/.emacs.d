@@ -1430,6 +1430,7 @@ Only works if there are exactly two windows."
 
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
