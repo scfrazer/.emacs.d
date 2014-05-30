@@ -907,9 +907,9 @@ with a prefix argument, prompt for START-AT and FORMAT."
   "Copy region, or with prefix arg last kill, to a register."
   (interactive "P")
   (if arg
-      (set-register (read-char "(Last kill) Set register:") (current-kill 0 t))
-    (set-register (read-char "(Region) Set register:")
-                  (buffer-substring (region-beginning) (region-end)))))
+      (set-register (read-char "(Region) Set register:")
+                  (buffer-substring (region-beginning) (region-end)))
+    (set-register (read-char "(Last kill) Set register:") (current-kill 0 t))))
 
 (defun my-set-selective-display (&optional col)
   "Set selective display based on cursor column."

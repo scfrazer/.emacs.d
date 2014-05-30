@@ -228,45 +228,53 @@ depending on the major mode (see `qe-block-indented-modes')."
 6. Else if looking at an open bracket/brace/paren, kill sexp forward
 7. Else if looking at a quotation mark, kill quoted text
 8. Else kill next char
-With prefix arg, append kill."
+With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
   (interactive "*P")
   (let (forward-sexp-function)
-    (when arg (append-next-kill))
+    (when (and arg (not (listp arg))) (append-next-kill))
     (if (region-active-p)
-        (kill-region (region-beginning) (region-end))
-      (kill-region (point)
-                   (progn
-                     (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
-                            (skip-syntax-forward "w_")
-                            (skip-syntax-forward " "))
-                           ((qe-looking-at-syntax "w_")
-                            (skip-syntax-forward "w_"))
-                           ((qe-looking-at-syntax " ")
-                            (skip-syntax-forward " "))
-                           ((qe-looking-at-syntax ".")
-                            (skip-syntax-forward "."))
-                           ((qe-looking-at-syntax "(")
-                            (forward-sexp))
-                           ((qe-looking-at-syntax "\"")
-                            (let ((c (char-after)) region)
-                              (forward-char)
-                              (setq region (qe-region-inside-quotes c 'forward))
-                              (goto-char (cdr region)))
-                            (forward-char))
-                           (t
-                            (forward-char)))
-                     (point))))))
+        (if (and arg (listp arg))
+            (delete-region (region-beginning) (region-end))
+          (kill-region (region-beginning) (region-end)))
+      (let ((beg (point))
+            (end (progn
+                   (cond ((looking-at "\\<\\(\\sw\\|\\s_\\)")
+                          (skip-syntax-forward "w_")
+                          (skip-syntax-forward " "))
+                         ((qe-looking-at-syntax "w_")
+                          (skip-syntax-forward "w_"))
+                         ((qe-looking-at-syntax " ")
+                          (skip-syntax-forward " "))
+                         ((qe-looking-at-syntax ".")
+                          (skip-syntax-forward "."))
+                         ((qe-looking-at-syntax "(")
+                          (forward-sexp))
+                         ((qe-looking-at-syntax "\"")
+                          (let ((c (char-after)) region)
+                            (forward-char)
+                            (setq region (qe-region-inside-quotes c 'forward))
+                            (goto-char (cdr region)))
+                          (forward-char))
+                         (t
+                          (forward-char)))
+                   (point))))
+        (if (and arg (listp arg))
+            (delete-region beg end)
+          (kill-region beg end))))))
 
 (defun qe-forward-kill-section (&optional arg)
   "Forward kill pieces of words.
-With prefix arg, append kill."
+With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
   (interactive "*P")
-  (when arg (append-next-kill))
-  (kill-region (point)
-               (progn
-                 (qe-forward-section)
-                 (skip-syntax-forward "_")
-                 (point))))
+  (when (and arg (not (listp arg))) (append-next-kill))
+  (let ((beg (point))
+        (end (progn
+               (qe-forward-section)
+               (skip-syntax-forward "_")
+               (point))))
+    (if (and arg (listp arg))
+        (delete-region beg end)
+      (kill-region beg end))))
 
 (defun qe-backward-kill (&optional arg)
   "Smart kill backward.
@@ -277,14 +285,16 @@ With prefix arg, append kill."
 5. Else if looking at an close bracket/brace/paren, kill backward sexp
 6. Else if looking at a quotation mark, kill backward quoted text
 7. Else kill previous char
-With prefix arg, append kill."
+With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
   (interactive "*P")
   (let (forward-sexp-function)
-    (when arg (append-next-kill))
+    (when (and arg (not (listp arg))) (append-next-kill))
     (if (region-active-p)
-        (kill-region (region-beginning) (region-end))
-      (kill-region (point)
-                   (progn
+        (if (and arg (listp arg))
+            (delete-region (region-beginning) (region-end))
+          (kill-region (region-beginning) (region-end)))
+      (let ((beg (point))
+            (end (progn
                      (cond ((= (char-before) ?\n)
                             (backward-char))
                            ((qe-looking-back-syntax " ")
@@ -305,18 +315,24 @@ With prefix arg, append kill."
                             (backward-char))
                            (t
                             (backward-char)))
-                     (point))))))
+                     (point))))
+        (if (and arg (listp arg))
+            (delete-region beg end)
+          (kill-region beg end))))))
 
 (defun qe-backward-kill-section (&optional arg)
   "Backward kill pieces of words.
-With prefix arg, append kill."
+With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
   (interactive "*P")
-  (when arg (append-next-kill))
-  (kill-region (point)
-               (progn
+  (when (and arg (not (listp arg))) (append-next-kill))
+  (let ((beg (point))
+        (end (progn
                  (skip-syntax-backward "_")
                  (qe-backward-section)
                  (point))))
+    (if (and arg (listp arg))
+        (delete-region beg end)
+      (kill-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit
@@ -330,11 +346,14 @@ With prefix arg, append kill."
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark))
       (let ((cmd-keys (this-command-keys))
-            (seq (read-key-sequence "Kill:"))
+            (seq (read-key-sequence
+                  (if arg
+                      (if (listp arg)
+                          "Delete:"
+                        "(Append) Kill:")
+                    "Kill:")))
             fcn)
-        (when arg
-          (setq cmd-keys (substring cmd-keys 1)))
-        (if (equal seq cmd-keys)
+        (if (string-match (concat ".*" (regexp-quote seq)) cmd-keys)
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
@@ -343,8 +362,12 @@ With prefix arg, append kill."
     (when (and result
                (consp result)
                (not (= (car result) (cdr result))))
-      (when arg (append-next-kill))
-      (kill-region (car result) (cdr result)))))
+      (if arg
+          (if (listp arg)
+              (delete-region (car result) (cdr result))
+            (append-next-kill)
+            (kill-region (car result) (cdr result)))
+        (kill-region (car result) (cdr result))))))
 
 (defun qe-unit-copy (&optional arg)
   "TODO"
@@ -356,11 +379,9 @@ With prefix arg, append kill."
           (deactivate-mark)
           (setq do-highlight nil))
       (let ((cmd-keys (this-command-keys))
-            (seq (read-key-sequence "Copy:"))
+            (seq (read-key-sequence (if arg "(Append) Copy:" "Copy:")))
             fcn)
-        (when arg
-          (setq cmd-keys (substring cmd-keys 1)))
-        (if (equal seq cmd-keys)
+        (if (string-match (concat ".*" (regexp-quote seq)) cmd-keys)
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
@@ -432,6 +453,7 @@ With prefix arg, append kill."
     (define-key map (kbd "x") (lambda () (qe-region-xml-content 'forward)))
     (define-key map (kbd "X") (lambda () (qe-region-xml-content 'backward)))
     (define-key map (kbd "i") 'qe-unit-ends-inside)
+    (define-key map (kbd "o") 'qe-unit-ends-outside)
     (define-key map (kbd "SPC") (lambda () (qe-unit-ends-forward-to-char ?\ )))
     (define-key map (kbd "!") (lambda () (qe-unit-ends-forward-to-char ?!)))
     (define-key map (kbd "#") (lambda () (qe-unit-ends-forward-to-char ?#)))
@@ -550,9 +572,9 @@ preserved.")
   "Text unit ends for forward whitespace."
   (cons (point) (progn (skip-syntax-forward " ") (point))))
 
-(defun qe-unit-ends-inside ()
+(defun qe-unit-ends-inside (&optional msg)
   "Text unit ends for inside quotes/parens."
-  (message "Inside:")
+  (message (or msg "Inside:"))
   (let ((char (read-char)))
     (if (memq char '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
         (qe-region-inside-pair char 'inside)
@@ -561,6 +583,17 @@ preserved.")
         (if (memq char '(?x ?X))
             (qe-region-xml-content 'inside)
           (error "Unknown char entered for kill inside text unit"))))))
+
+(defun qe-unit-ends-outside ()
+  "Text unit ends for inside quotes/parens plus the enclosing chars."
+  (let* ((ends (qe-unit-ends-inside "Outside:"))
+         (beg (car ends))
+         (end (cdr ends)))
+    (unless (= beg (point-min))
+      (setq beg (1- beg)))
+    (unless (= end (point-max))
+      (setq end (1+ end)))
+    (cons beg end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utility functions
