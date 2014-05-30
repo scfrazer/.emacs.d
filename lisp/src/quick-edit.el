@@ -345,15 +345,16 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
         (progn
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark))
-      (let ((cmd-keys (this-command-keys))
-            (seq (read-key-sequence
-                  (if arg
-                      (if (listp arg)
-                          "Delete:"
-                        "(Append) Kill:")
-                    "Kill:")))
-            fcn)
-        (if (and (> (length seq) 1) (string-match (concat ".*" (regexp-quote seq)) cmd-keys))
+      (let* ((cmd-keys (this-command-keys))
+             (seq (read-key-sequence
+                   (if arg
+                       (if (listp arg)
+                           "Delete:"
+                         "(Append) Kill:")
+                     "Kill:")))
+             (seq-match-pos (string-match (concat "\\(\\|[-0-9]+\\)*" (regexp-quote seq)) cmd-keys))
+             fcn)
+        (if (and seq-match-pos (= seq-match-pos 0))
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
@@ -378,10 +379,11 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (setq result (cons (region-beginning) (region-end)))
           (deactivate-mark)
           (setq do-highlight nil))
-      (let ((cmd-keys (this-command-keys))
-            (seq (read-key-sequence (if arg "(Append) Copy:" "Copy:")))
-            fcn)
-        (if (and (> (length seq) 1) (string-match (concat ".*" (regexp-quote seq)) cmd-keys))
+      (let* ((cmd-keys (this-command-keys))
+             (seq (read-key-sequence (if arg "(Append) Copy:" "Copy:")))
+             (seq-match-pos (string-match (concat "\\(\\|[-0-9]+\\)*" (regexp-quote seq)) cmd-keys))
+             fcn)
+        (if (and seq-match-pos (= seq-match-pos 0))
             (setq fcn 'qe-unit-ends-mark)
           (setq fcn (lookup-key qe-unit-common-map seq)))
         (unless fcn
