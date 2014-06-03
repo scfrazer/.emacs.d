@@ -464,6 +464,7 @@
 (defun my-dos2unix ()
   "Remove ^M's from file."
   (interactive "*")
+  (set-buffer-file-coding-system 'unix t)
   (goto-char (point-min))
   (while (search-forward (string ?\C-m) nil t)
     (replace-match ""))

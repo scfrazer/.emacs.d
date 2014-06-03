@@ -97,7 +97,7 @@
         (4 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
         (3 (string-match "^*" (buffer-name)) font-lock-comment-face)
         (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
-        (1 buffer-read-only font-lock-doc-face)))
+        (1 buffer-read-only font-lock-function-name-face)))
 
 (setq ibuffer-saved-filter-groups
       `(("my-groups"
@@ -231,8 +231,7 @@
   (define-key ibuffer-mode-map (kbd "i") (lambda() (interactive) (ido-switch-buffer) (delete-other-windows)))
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
   (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
-  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency)
-  (hl-line-mode 1))
+  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency))
 
 (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
 
