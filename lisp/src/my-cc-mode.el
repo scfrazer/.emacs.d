@@ -54,7 +54,9 @@
     (setq beg (point-min)
           end (point-max)))
   (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l CPP") nil t)
-  (goto-char pos)))
+  (goto-char pos)
+  (beginning-of-line)
+  (recenter)))
 
 ;; Hooks
 

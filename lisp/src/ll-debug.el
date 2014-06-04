@@ -608,6 +608,25 @@ Uses `query-replace-regexp' internally."
                               ("Variable name: "
                                " << \"  " str ":\" << " str)))
 
+;; (ll-debug-register-mode 'c++-mode
+;;                         "vpi_printf(" ");"
+;;                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
+;;                         '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
+;;                               ("Variable name: "
+;;                                "  " str "="
+;;                                '(progn
+;;                                   (if v1
+;;                                       (setq v1 (concat v1 ", " str))
+;;                                     (setq v1 str))
+;;                                   nil)
+;;                                (let ((fmt (read-string "Format: ")))
+;;                                  (cond
+;;                                   ((string= (downcase fmt) "x")
+;;                                    (concat "0x%" fmt))
+;;                                   (t
+;;                                    (concat "%" fmt)))))
+;;                               (if v1 "\\n\", " "\\n\"") v1))
+
 (ll-debug-register-mode 'c-mode
                         "printf(" ");"
                         '(nil "\"" (ll-debug-create-next-debug-string) "\\n\"")

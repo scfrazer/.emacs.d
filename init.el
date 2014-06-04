@@ -1367,26 +1367,6 @@ Only works if there are exactly two windows."
   (setenv "SV_PATH"
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
 
-(eval-after-load 'll-debug
-  '(ll-debug-register-mode 'c++-mode
-                           "vpi_printf(" ");"
-                           '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
-                           '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
-                                 ("Variable name: "
-                                  "  " str "="
-                                  '(progn
-                                     (if v1
-                                         (setq v1 (concat v1 ", " str))
-                                       (setq v1 str))
-                                     nil)
-                                  (let ((fmt (read-string "Format: ")))
-                                    (cond
-                                     ((string= (downcase fmt) "x")
-                                      (concat "0x%" fmt))
-                                     (t
-                                      (concat "%" fmt)))))
-                                 (if v1 "\\n\", " "\\n\"") v1)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
 
@@ -1437,6 +1417,23 @@ Only works if there are exactly two windows."
 ;; System setup
 
 (unless window-system
+
+  (set-terminal-coding-system 'utf-8)
+
+  (defface my-display-table-face
+    '((t (:foreground "black" :background "color-226")))
+    "Face for terminal truncation/wrapping glyphs."
+    :group 'faces)
+
+  (let ((truncation-glyph (make-glyph-code ?\$ 'my-display-table-face))
+        (wrap-glyph (make-glyph-code ?\\ 'my-display-table-face))
+        (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
+        (control-glyph (make-glyph-code ?\^ 'my-display-table-face)))
+    (set-display-table-slot standard-display-table 'truncation truncation-glyph)
+    (set-display-table-slot standard-display-table 'wrap wrap-glyph)
+    (set-display-table-slot standard-display-table 'escape escape-glyph)
+    (set-display-table-slot standard-display-table 'control control-glyph))
+
   (my-keys-define "<f1>" 'xterm-mouse-mode)
   (my-keys-define "C-M-z" 'suspend-emacs)
   (my-keys-define "C-_" 'dabbrev-expand))
