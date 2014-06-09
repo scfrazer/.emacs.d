@@ -1207,7 +1207,6 @@ Only works if there are exactly two windows."
 (my-keys-define "C-M-l" 'forward-sexp)
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
-(my-keys-define "C-M-y" 'my-edit-yank-pop)
 (my-keys-define "C-\\" 'expand-abbrev)
 (my-keys-define "C-c #" 'hl-line-mode)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
@@ -1279,7 +1278,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
 (my-keys-define "C-x ~" 'my-flymake-goto-prev-error)
-(my-keys-define "C-y" 'my-edit-yank)
+(my-keys-define "C-y" 'qe-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
@@ -1330,6 +1329,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-u" 'my-recenter)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
+(my-keys-define "M-}" (lambda () (interactive) (re-search-forward "^\\s-*$" nil 'go)))
 (my-keys-define "M-~" 'previous-error)
 
 ;; These have to be in this order
@@ -1419,6 +1419,8 @@ Only works if there are exactly two windows."
 (unless window-system
 
   (set-terminal-coding-system 'utf-8)
+  ;; (set-keyboard-coding-system 'utf-8)
+  ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
     '((t (:foreground "black" :background "color-226")))

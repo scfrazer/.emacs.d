@@ -78,18 +78,6 @@
     (skip-syntax-forward "^w_"))
   (skip-syntax-forward "w_"))
 
-(defun qe-forward-not-word ()
-  "Forward to next not-word or whitespace."
-  (interactive)
-  (when (qe-looking-at-syntax "^w_ ")
-    (forward-char))
-  (when (looking-at "\\s-*$")
-    (forward-line))
-  (while (or (> (skip-syntax-forward "w_ ") 0)
-             (and (looking-at "$")
-                  (progn (forward-char) t)
-                  (not (eobp))))))
-
 (defun qe-forward-paragraph ()
   "Like forward-paragraph, but goes to next non-blank line."
   (interactive)
@@ -160,15 +148,6 @@ depending on the major mode (see `qe-block-indented-modes')."
     (skip-syntax-backward "w_"))
   (skip-syntax-backward "^w_"))
 
-(defun qe-backward-not-word ()
-  "Backward to next not-word or whitespace."
-  (interactive)
-  (skip-syntax-backward "w_ ")
-  (backward-char)
-  (while (and (looking-at "$") (not (bobp)))
-    (skip-syntax-backward "w_ ")
-    (backward-char)))
-
 (defun qe-backward-paragraph ()
   "Go to first line after previous blank line."
   (interactive)
@@ -214,6 +193,16 @@ depending on the major mode (see `qe-block-indented-modes')."
       (when (and (<= (current-column) col) (not (looking-at "$")))
         (setq done t)
         (beginning-of-line)))))
+
+(defun qe-yank ()
+  "Like yank, but with prefix number yank that many times."
+  (interactive "*")
+  (when (and delete-selection-mode (region-active-p))
+    (delete-region (region-beginning) (region-end)))
+  (if (and current-prefix-arg (integerp current-prefix-arg))
+      (dotimes (x current-prefix-arg)
+        (yank))
+    (yank)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Smart kill
@@ -439,7 +428,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
     (define-key map (kbd "e") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))
     (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
-    (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'forward-paragraph)))
+    (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line)))
     (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
@@ -490,6 +479,10 @@ preserved.")
 (defun qe-unit-ends-line ()
   "Text unit ends for current line."
   (cons (point-at-bol) (point-at-bol 2)))
+
+(defun qe-forward-next-blank-line ()
+  "Text unit ends for forward to next blank line."
+  (cons (point) (progn (re-search-forward "^\\s-*$" nil 'go))))
 
 (defun qe-unit-ends-forward-word ()
   "Text unit ends for forward word."
