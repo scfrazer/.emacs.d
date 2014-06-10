@@ -1,6 +1,7 @@
 ;;; my-ibuffer.el
 
 (require 'ibuffer)
+(require 'ibuf-ext)
 (require 'bookmark)
 (require 'my-ediff)
 

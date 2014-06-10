@@ -45,7 +45,8 @@
 (defadvice find-file-at-point (after my-ffap-find-file-at-point activate)
   "Go to `my-ffap-line-number' if non-nil."
   (when my-ffap-line-number
-    (goto-line my-ffap-line-number)
+    (goto-char (point-min))
+    (forward-line (1- my-ffap-line-number))
     (setq my-ffap-line-number nil)))
 
 (provide 'my-ffap)

@@ -51,7 +51,6 @@
       (insert "[" (number-to-string (1- num-bits)) ":0] "))))
 
 (defun my-sv-mode-hook ()
-  (setq tab-width 3)
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
