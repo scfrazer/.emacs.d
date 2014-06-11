@@ -54,21 +54,25 @@
 ;; Splits
 
 (defun my-buf-split-window-vertically (&optional arg)
-  "Split window vertically, switch to other window and previous buffer."
+  "Like `split-window-vertically', but switch to other window after split.
+With prefix arg, stay in current window but show different buffer in new window."
   (interactive "P")
   (split-window-vertically)
   (recenter)
-  (unless arg
-    (other-window 1)
-    (my-buf-toggle)
+  (other-window 1)
+  (when arg
+    (my-buf-toggle))
+  (recenter)
+  (when arg
     (other-window -1)))
 
 (defun my-buf-split-window-horizontally (&optional arg)
-  "Split window horizontally, switch to other window and previous buffer."
+  "Like `split-window-horizontally', but switch to other window after split.
+With prefix arg, stay in current window but show different buffer in new window."
   (interactive "P")
   (split-window-horizontally)
-  (unless arg
-    (other-window 1)
+  (other-window 1)
+  (when arg
     (my-buf-toggle)
     (other-window -1)))
 
