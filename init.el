@@ -886,23 +886,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
         (set-window-buffer w b)
         (set-window-point w p)))))
 
-(defvar my-save-location-marker (make-marker))
-(defun my-save-location (&optional arg)
-  "Create/move a location marker.  With ARG, pop to marker."
-  (interactive "P")
-  (if arg
-      (let ((buf (marker-buffer my-save-location-marker))
-            (pos (marker-position my-save-location-marker))
-            recenter)
-        (when (and buf pos)
-          (switch-to-buffer buf)
-          (setq recenter (not (pos-visible-in-window-p pos)))
-          (goto-char pos)
-          (when recenter
-            (recenter))))
-    (setq my-save-location-marker (point-marker))
-    (set-marker-insertion-type my-save-location-marker t)
-    (message "Saved location")))
 
 (defun my-set-register (&optional arg)
   "Copy region, or with prefix arg last kill, to a register."
@@ -1039,6 +1022,15 @@ Only works if there are exactly two windows."
     (when (> color-num 15)
       (kill-region (point) end)
       (insert "color-" (number-to-string color-num)))))
+
+(defun my-yank-target-jump (&optional arg)
+  "Set yank target, or with prefix arg go to yank target, or with numeric arg go to yank source."
+  (interactive "P")
+  (if (and arg (listp arg))
+      (yank-target-go-target)
+    (if arg
+        (yank-target-go-source)
+      (yank-target-set))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
@@ -1207,6 +1199,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-M-l" 'forward-sexp)
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
+(my-keys-define "C-M-y" (lambda () (interactive) (yank-target-go-target) (yank)))
 (my-keys-define "C-\\" 'expand-abbrev)
 (my-keys-define "C-c #" 'hl-line-mode)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
@@ -1303,7 +1296,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-P" 'scroll-down-command)
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
-(my-keys-define "M-SPC" 'my-save-location)
+(my-keys-define "M-SPC" 'my-yank-target-jump)
 (my-keys-define "M-\"" (lambda () (interactive) (forward-comment (point-max))))
 (my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
 (my-keys-define "M-`" 'next-error)

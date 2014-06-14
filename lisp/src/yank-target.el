@@ -42,9 +42,9 @@
 ;;
 ;; SPC -- Set the target to yank/kill to
 ;; y   -- Yank to target and stay here
-;; C-y -- Yank to target and go there
+;; Y   -- Yank to target and go there
 ;; k   -- Kill to target and stay here
-;; C-k -- Kill to target and go there
+;; K   -- Kill to target and go there
 ;; t   -- Go to target location
 ;; s   -- Go to source location, i.e. where you just were
 
@@ -84,9 +84,7 @@
         (with-current-buffer (marker-buffer yank-target-marker)
           (goto-char (marker-position yank-target-marker))
           (setq start (point))
-          (insert text)
-          (when (not (member indent-line-function '(indent-relative sh-basic-indent-line)))
-            (indent-region start (point)))))
+          (insert text)))
       (setq yank-target-source (point-marker))
       (if transient-mark-mode
           (if (region-active-p)
@@ -139,9 +137,9 @@
 (define-prefix-command 'yank-target-map)
 (define-key yank-target-map (kbd "SPC") 'yank-target-set)
 (define-key yank-target-map (kbd "y") 'yank-target-yank)
-(define-key yank-target-map (kbd "C-y") 'yank-target-yank-and-go)
+(define-key yank-target-map (kbd "Y") 'yank-target-yank-and-go)
 (define-key yank-target-map (kbd "k") 'yank-target-kill)
-(define-key yank-target-map (kbd "C-k") 'yank-target-kill-and-go)
+(define-key yank-target-map (kbd "K") 'yank-target-kill-and-go)
 (define-key yank-target-map (kbd "t") 'yank-target-go-target)
 (define-key yank-target-map (kbd "s") 'yank-target-go-source)
 
