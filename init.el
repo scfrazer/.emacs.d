@@ -44,7 +44,6 @@
 (require 'sr-speedbar)
 (require 'uniquify)
 (require 'yank-target)
-(require 'vcs-compile)
 
 (require 'my-abbrev)
 (require 'my-ace-jump-mode)
@@ -360,13 +359,16 @@
     (widen)
     (write-region (point-min) (point-max) filename nil nil nil 'confirm)))
 
-(defun my-compile ()
-  "Call the appropriate compile command."
-  (interactive)
-  (cond ((eq major-mode 'sv-mode)
-         (call-interactively 'vcs-compile))
-        (t
-         (call-interactively 'compile))))
+(defvar my-compile-command (list compile-command))
+(defun my-compile (&optional arg)
+  "Call `compile', or with prefix arg select a compilation command."
+  (interactive "P")
+  (when arg
+    (setq compile-command
+          (ido-completing-read "Compile command: " my-compile-command))
+    (setq prefix-arg nil))
+  (call-interactively 'compile)
+  (add-to-list 'my-compile-command compile-command))
 
 (defun my-comment-or-uncomment-region ()
   "Like `comment-or-uncomment-region', but always uses lines."
@@ -1341,8 +1343,6 @@ Only works if there are exactly two windows."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
-
-(setq-default vcs-compile-command "l2q antares_targ_build_pitPP /build_user/")
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)

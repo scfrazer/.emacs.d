@@ -67,18 +67,6 @@
   (flymake-mode 1))
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
-(setq-default compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
-
-;; (defun my-vtt-update (&optional arg)
-;;   (interactive "P")
-;;   (let* ((local-filename (buffer-file-name))
-;;          (server-filename (replace-regexp-in-string ".+/war/" "/auto/vtt/www/prod/dev/scfrazer/vtt/war/" local-filename))
-;;          (command (concat "cp " local-filename " " server-filename)))
-;;     (if arg
-;;         (message command)
-;;       (message "Copying to server ...")
-;;       (shell-command command))))
-;;
-;; (global-set-key (kbd "C-c u") 'my-vtt-update)
+(add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
 
 (provide 'vtt)
