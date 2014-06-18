@@ -360,13 +360,11 @@
     (write-region (point-min) (point-max) filename nil nil nil 'confirm)))
 
 (defvar my-compile-command (list compile-command))
-(defun my-compile (&optional arg)
-  "Call `compile', or with prefix arg select a compilation command."
-  (interactive "P")
-  (when arg
-    (setq compile-command
-          (ido-completing-read "Compile command: " my-compile-command))
-    (setq prefix-arg nil))
+(defun my-compile ()
+  "Call `compile' with selection of commands."
+  (interactive)
+  (setq compile-command
+        (ido-completing-read "Compile command: " my-compile-command))
   (call-interactively 'compile)
   (add-to-list 'my-compile-command compile-command))
 
