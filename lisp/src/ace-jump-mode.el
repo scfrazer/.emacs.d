@@ -356,7 +356,7 @@ The returned value is a list of `aj-position' record."
                      (let ((case-fold-search ace-jump-mode-case-fold))
                        (loop while (re-search-forward re-query-string nil t)
                              until (or
-                                    (> (point) end-point)
+                                    (>= (point) end-point)
                                     (eobp))
                              if (or ace-jump-allow-invisible (not (invisible-p (match-beginning 0))))
                              collect (make-aj-position :offset (match-beginning 0)

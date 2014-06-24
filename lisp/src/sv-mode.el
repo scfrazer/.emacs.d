@@ -864,6 +864,8 @@ own function.  This function can be called through abbrevs."
 (defun sv-mode-backward-ifdef ()
   "Go from `else/`endif to `ifdef/`ifndef"
   (interactive)
+  (when (called-interactively-p 'interactive)
+    (back-to-indentation))
   (when (looking-at "\\s-*`\\(else\\|endif\\)")
     (let ((depth 1) str)
       (catch 'done
@@ -897,6 +899,8 @@ own function.  This function can be called through abbrevs."
 (defun sv-mode-forward-ifdef ()
   "Go from `ifdef/`ifndef/`else to `else/`endif"
   (interactive)
+  (when (called-interactively-p 'interactive)
+    (back-to-indentation))
   (when (looking-at "\\s-*`\\(ifn?def\\|else\\)")
     (forward-line)
     (let ((depth 1) str)

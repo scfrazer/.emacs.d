@@ -63,7 +63,7 @@
 (defvar my-ibuffer-current-buf)
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) "." " "))
+  (if (eq my-ibuffer-current-buf buffer) ">" " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
