@@ -27,6 +27,11 @@
   ""
   (lambda() (insert "FIXME")))
 
+(define-abbrev global-abbrev-table
+  "db"
+  ""
+  (lambda() (insert "DEBUG")))
+
 (defadvice expand-abbrev (around my-expand-abbrev-advice activate)
   (if (looking-back "{")
       (progn

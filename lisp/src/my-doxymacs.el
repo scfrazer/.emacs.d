@@ -150,7 +150,7 @@
   (skip-syntax-forward "w_()")
   (insert "</tt>"))
 
-(define-key doxymacs-mode-map "\C-cdh" 'my-doxymacs-html)
-(define-key doxymacs-mode-map "\C-cdt" 'my-doxymacs-tt)
+(define-key doxymacs-mode-map (kbd "h") 'my-doxymacs-html)
+(define-key doxymacs-mode-map (kbd "t") 'my-doxymacs-tt)
 
 (provide 'my-doxymacs)

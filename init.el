@@ -52,6 +52,7 @@
 (require 'my-calculator)
 (require 'my-cc-mode)
 (require 'my-clearcase)
+(require 'my-debug)
 (require 'my-doxymacs)
 (require 'my-ediff)
 (require 'my-edit)
@@ -94,14 +95,10 @@
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
-(autoload 'grep-buffers "grep-buffers" nil t)
 (autoload 'highlight-indentation-mode "highlight-indentation" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'js2-mode "js2-mode" nil t)
 (autoload 'json-mode "json-mode" nil t)
-(autoload 'll-debug-insert "ll-debug" nil t)
-(autoload 'll-debug-renumber "ll-debug" nil t)
-(autoload 'll-debug-revert "ll-debug" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
 (autoload 'php-mode "php-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
@@ -179,8 +176,6 @@
               line-move-visual t
               line-number-mode t
               line-number-display-limit-width 1000
-              ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
-              ll-debug-print-filename nil
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
@@ -593,11 +588,6 @@ end of a non-blank line, or insert an 80-column comment line"
         (insert "  " comment-start)
         (delete-horizontal-space)
         (insert" ")))))
-
-(defun my-ll-debug-insert (&optional arg)
-  "Swap default style of ll-debug-insert."
-  (interactive "*P")
-  (ll-debug-insert (if arg nil 1)))
 
 (defun my-kill-buffer (arg buffer)
   "Kill buffer and delete window if there is more than one."
@@ -1218,13 +1208,11 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
+(my-keys-define "C-c d" 'my-debug-map)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'lgrep)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c l d" 'll-debug-revert)
-(my-keys-define "C-c l i" 'my-ll-debug-insert)
-(my-keys-define "C-c l r" 'll-debug-renumber)
 (my-keys-define "C-c m" 'my-compile)
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
@@ -1264,6 +1252,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
+(my-keys-define "C-x d" 'doxymacs-mode-map)
 (my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'kill-buffer)
 (my-keys-define "C-x m" 'magit-status)
@@ -1316,6 +1305,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
 (my-keys-define "M-r t" 'string-rectangle)
+(my-keys-define "M-s O" 'my-multi-occur)
 (my-keys-define "M-s h h" 'my-highlight-symbol)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-t" 'my-tmux-copy-region)
@@ -1379,7 +1369,6 @@ Only works if there are exactly two windows."
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
-(defalias 'gb 'grep-buffers)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)

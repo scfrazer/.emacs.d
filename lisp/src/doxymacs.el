@@ -496,37 +496,17 @@ Key bindings:
 
 ;; Keymap
 
-(defvar doxymacs-mode-map (make-sparse-keymap)
-  "Keymap for doxymacs minor mode.")
+(define-prefix-command 'doxymacs-mode-map)
 
-(define-key doxymacs-mode-map "\C-cd?"
-  'doxymacs-lookup)
-(define-key doxymacs-mode-map "\C-cdr"
-  'doxymacs-rescan-tags)
+(define-key doxymacs-mode-map (kbd "?") 'doxymacs-lookup)
+(define-key doxymacs-mode-map (kbd "r") 'doxymacs-rescan-tags)
+(define-key doxymacs-mode-map (kbd "f") 'doxymacs-insert-function-comment)
+(define-key doxymacs-mode-map (kbd "i") 'doxymacs-insert-file-comment)
+(define-key doxymacs-mode-map (kbd "m") 'doxymacs-insert-blank-multiline-comment)
+(define-key doxymacs-mode-map (kbd "s") 'doxymacs-insert-blank-singleline-comment)
+(define-key doxymacs-mode-map (kbd ";") 'doxymacs-insert-member-comment)
+(define-key doxymacs-mode-map (kbd "@") 'doxymacs-insert-grouping-comments)
 
-(define-key doxymacs-mode-map "\C-cdf"
-  'doxymacs-insert-function-comment)
-(define-key doxymacs-mode-map "\C-cdi"
-  'doxymacs-insert-file-comment)
-(define-key doxymacs-mode-map "\C-cdm"
-  'doxymacs-insert-blank-multiline-comment)
-(define-key doxymacs-mode-map "\C-cds"
-  'doxymacs-insert-blank-singleline-comment)
-(define-key doxymacs-mode-map "\C-cd;"
-  'doxymacs-insert-member-comment)
-(define-key doxymacs-mode-map "\C-cd@"
-  'doxymacs-insert-grouping-comments)
-
-
-;;;###autoload
-(or (assoc 'doxymacs-mode minor-mode-alist)
-    (setq minor-mode-alist
-	  (cons '(doxymacs-mode " doxy") minor-mode-alist)))
-
-(or (assoc 'doxymacs-mode minor-mode-map-alist)
-    (setq minor-mode-map-alist
-	  (cons (cons 'doxymacs-mode doxymacs-mode-map)
-		minor-mode-map-alist)))
 
 ;; This stuff has to do with fontification
 ;; Thanks to Alec Panovici for the idea.
