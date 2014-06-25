@@ -1344,6 +1344,26 @@ Only works if there are exactly two windows."
        '("/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/.*" "/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/TAGS")
        ))
 
+(when clearcase-servers-online
+  (ll-debug-register-mode 'c++-mode
+                          "dvc_info(" ");"
+                          '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
+                          '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
+                                ("Variable name: "
+                                 "  " str "="
+                                 '(progn
+                                    (if v1
+                                        (setq v1 (concat v1 ", " str))
+                                      (setq v1 str))
+                                    nil)
+                                 (let ((fmt (read-string "Format: ")))
+                                   (cond
+                                    ((string= (downcase fmt) "x")
+                                     (concat "0x%" fmt))
+                                    (t
+                                     (concat "%" fmt)))))
+                                (if v1 "\\n\", " "\\n\"") v1)))
+
 (unless (getenv "SV_PATH")
   (setenv "SV_PATH"
           ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))

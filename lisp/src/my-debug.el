@@ -5,8 +5,8 @@
 
 (require 'll-debug)
 
-(setq ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
-      ll-debug-print-filename nil)
+(setq-default ll-debug-output-prefix (concat "DEBUG-" (getenv "USER") "-")
+              ll-debug-print-filename nil)
 
 (defun my-debug-insert-ll (&optional arg)
   "Swap default style of ll-debug-insert."
