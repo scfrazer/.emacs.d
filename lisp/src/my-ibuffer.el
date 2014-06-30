@@ -153,7 +153,7 @@
 (defadvice ibuffer-switch-format (after my-ibuffer-switch-format activate)
   (setq header-line-format my-ibuffer-header-line-format))
 
-(defvar my-ibuffer-name-max-width 40)
+(defvar my-ibuffer-name-max-width 50)
 (defvar my-ibuffer-name-column-width 0)
 (defadvice ibuffer-redisplay-engine (around my-ibuffer-redisplay-engine activate)
   "Dynamically change the width of the 'buffer' column"

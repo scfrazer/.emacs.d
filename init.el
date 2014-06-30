@@ -291,6 +291,30 @@
     (save-excursion
       (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))
 
+(defun my-apply-macro-to-region-lines (top bottom)
+  "Like `apply-macro-to-region-lines' but works with offset into line."
+  (interactive "r")
+  (when (null last-kbd-macro)
+    (error "No keyboard macro has been defined"))
+  (save-excursion
+    (let ((end-marker (copy-marker bottom))
+          next-line-marker column)
+      (goto-char top)
+      (setq column (current-column))
+      (beginning-of-line)
+      (setq next-line-marker (point-marker))
+      (while (< next-line-marker end-marker)
+        (goto-char next-line-marker)
+        (save-excursion
+          (forward-line 1)
+          (set-marker next-line-marker (point)))
+        (save-excursion
+          (let ((mark-active nil))
+            (forward-char column)
+            (execute-kbd-macro last-kbd-macro))))
+      (set-marker end-marker nil)
+      (set-marker next-line-marker nil))))
+
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
   (interactive)
@@ -1244,7 +1268,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
 (my-keys-define "C-x C-r" 'my-ido-recentf-file)
 (my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
-(my-keys-define "C-x E" 'apply-macro-to-region-lines)
+(my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
 (my-keys-define "C-x K" 'my-kill-buffer)
 (my-keys-define "C-x M" (lambda () (interactive) (magit-file-log (buffer-file-name))))
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
