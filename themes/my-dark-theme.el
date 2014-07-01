@@ -1,9 +1,9 @@
-(deftheme my-terminal-dark
+(deftheme my-dark
   "Terminal with dark background.")
 
 (let ((class '((class color) (min-colors 89))))
   (custom-theme-set-faces
-   'my-terminal-dark
+   'my-dark
 
 ;;   `(button ((,class (:foreground "color-30")))) ;; Light
 ;;   `(compilation-column-number ((,class (:foreground "color-22")))) ;; Light
@@ -169,4 +169,4 @@
 
    ))
 
-(provide-theme 'my-terminal-dark)
+(provide-theme 'my-dark)

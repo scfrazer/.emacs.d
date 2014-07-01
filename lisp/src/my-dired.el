@@ -1,6 +1,7 @@
 ;;; my-dired.el
 
 (require 'dired)
+(require 'my-ibuffer)
 
 (setq dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep"))
 (setq dired-recursive-deletes 'always)
@@ -18,6 +19,20 @@
               (list
                (concat "\\(" (mapconcat 'identity extensions "\\|") "\\|#\\)$")
                '(".+" (dired-move-to-filename) nil (0 font-lock-comment-face))))))
+
+(unless (memq 'clearcase-dired-checkedout-face (face-list))
+  (make-face 'clearcase-dired-checkedout-face)
+  (set-face-foreground 'clearcase-dired-checkedout-face "brightred"))
+
+(unless (memq 'clearcase-dired-element-face (face-list))
+  (make-face 'clearcase-dired-element-face)
+  (set-face-foreground 'clearcase-dired-element-face "deepskyblue"))
+
+(setq dired-font-lock-keywords
+      (append dired-font-lock-keywords
+              '(("^.+ \\(CHECKOUT-[RU]\\|HIJACK\\)\\s-+[0-9]" 1 'clearcase-dired-checkedout-face)
+                ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
+                ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face))))
 
 ;; Find marked files in dired, but don't display all at once
 
@@ -97,11 +112,39 @@ there is a prefix arg."
      default-directory
      (read-from-minibuffer "Find-name (filename wildcard): "))))
 
-;; Sort directories first
+;; Update display
 
-(defun my-dired-sort ()
-  "Sort directories first."
+(defvar my-dired-path-uses-bookmarks nil)
+
+(defun my-dired-toggle-path ()
+  "Toggle using bookmarks in path."
   (interactive)
+  (setq my-dired-path-uses-bookmarks (not my-dired-path-uses-bookmarks))
+  (my-dired-update-path))
+
+(defun my-dired-update-path ()
+  "Update the path shown at the top."
+  (save-excursion
+    (let (buffer-read-only
+          (path (expand-file-name dired-directory)))
+      (goto-char (point-min))
+      (delete-region (point-min) (point-at-eol))
+      (insert "  "
+              (if (not my-dired-path-uses-bookmarks)
+                  (propertize path 'font-lock-face 'font-lock-function-name-face)
+                (catch 'done
+                  (dolist (sub my-ibuffer-bookmark-subs)
+                    (when (string-match (car sub) path)
+                      (throw 'done (concat (propertize (cdr sub) 'font-lock-face 'font-lock-variable-name-face)
+                                           (propertize (concat "/" (match-string 1 path)) 'font-lock-face 'font-lock-function-name-face)))))
+                  path))
+              ":")))
+  (set-buffer-modified-p nil))
+
+(defun my-dired-after-readin-hook ()
+  (interactive)
+  (my-dired-update-path)
+  ;; Sort directories first
   (save-excursion
     (let (buffer-read-only)
       (forward-line 2)
@@ -109,7 +152,7 @@ there is a prefix arg."
   (dired-insert-set-properties (point-min) (point-max))
   (set-buffer-modified-p nil))
 
-(add-hook 'dired-after-readin-hook 'my-dired-sort)
+(add-hook 'dired-after-readin-hook 'my-dired-after-readin-hook)
 
 ;; Toggle current file mark in dired
 
@@ -171,6 +214,7 @@ there is a prefix arg."
 
   (define-key dired-mode-map " " 'my-dired-toggle-mark)
   (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
+  (define-key dired-mode-map "b" 'my-dired-toggle-path)
   (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
   (define-key dired-mode-map "n" 'my-dired-next-line)
   (define-key dired-mode-map "o" 'my-dired-do-find-file)

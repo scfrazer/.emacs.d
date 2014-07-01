@@ -4,14 +4,10 @@
 
 (defun my-theme-light ()
   (interactive)
-  (if (display-graphic-p)
-      (load-theme 'my-window-light t)
-    (load-theme 'my-terminal-light t)))
+  (load-theme 'my-light t))
 
 (defun my-theme-dark ()
   (interactive)
-  (if (display-graphic-p)
-      (load-theme 'deeper-blue t)
-    (load-theme 'my-terminal-dark t)))
+  (load-theme 'my-dark t))
 
 (provide 'my-theme)

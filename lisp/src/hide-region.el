@@ -3,10 +3,7 @@
 (defvar hide-region-string "<...>")
 
 (defface hide-region-face
-  '((((type tty))
-     (:background "color-181" :foreground "black"))
-    (t
-     (:background "#D7AFAF" :foreground "black")))
+  '((t (:background "#D7AFAF" :foreground "black")))
   "Face for hide-region markers."
   :group 'faces)
 

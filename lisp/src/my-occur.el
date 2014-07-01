@@ -34,10 +34,16 @@
       (multi-occur-in-matching-buffers ".+" regexp))))
 
 (defface my-occur-prefix-face
-  '((t (:background "gray88")))
+  '((t (:foreground "#AFAFD7")))
   "Face for occur line numbers."
   :group 'faces)
 (setq-default list-matching-lines-prefix-face 'my-occur-prefix-face)
+
+(defface my-occur-buffer-name-face
+  '((t (:underline t :background "#AFAFD7")))
+  "Face for occur buffer names."
+  :group 'faces)
+(setq-default list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
 
 (defun my-occur-mode-hook ()
   (define-key occur-mode-map "q" 'bury-buffer)

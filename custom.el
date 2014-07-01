@@ -8,6 +8,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(clean-buffer-list-kill-buffer-names (quote ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
+ '(custom-safe-themes (quote ("4745a8c153862189cf197d71a0466183633f5dda20fca4d8f95f1013cc9f7d84" default)))
  '(frame-background-mode (quote dark))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))

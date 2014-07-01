@@ -291,6 +291,13 @@
     (save-excursion
       (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))
 
+(defun my-ansi-color ()
+  "ANSI colorize the buffer."
+  (interactive)
+  (save-restriction
+    (widen)
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
 (defun my-apply-macro-to-region-lines (top bottom)
   "Like `apply-macro-to-region-lines' but works with offset into line."
   (interactive "r")
@@ -377,6 +384,22 @@
   (save-restriction
     (widen)
     (write-region (point-min) (point-max) filename nil nil nil 'confirm)))
+
+(defun my-color-translate ()
+  "Translate between tty color and rgb color."
+  (interactive "*")
+  (skip-chars-backward "-a-zA-Z0-9#")
+  (let ((start (point)) orig)
+    (skip-chars-forward "-a-zA-Z0-9#")
+    (setq orig (buffer-substring-no-properties start (point)))
+    (delete-region start (point))
+    (if (= (elt orig 0) ?#)
+        (insert "color-" (number-to-string (tty-color-translate orig)))
+      (let* ((color-values (tty-color-values orig))
+             (red (/ (nth 0 color-values) 256))
+             (green (/ (nth 1 color-values) 256))
+             (blue (/ (nth 2 color-values) 256)))
+        (insert (format "#%02X%02X%02X" red green blue))))))
 
 (defvar my-compile-command (list compile-command))
 (defun my-compile ()
@@ -1447,7 +1470,7 @@ Only works if there are exactly two windows."
   ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((t (:foreground "black" :background "color-226")))
+    '((t (:foreground "black" :background "#FFFF00")))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
