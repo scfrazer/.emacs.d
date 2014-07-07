@@ -5,21 +5,17 @@
 (defun my-edit-kill-line (&optional arg)
   "Like kill-line, but use `my-edit-join-line-with-next' when at
 end-of-line (and it's not a empty line).  Kills region if active.
-With C-u prefix arg, delete instead of kill."
+With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
   (interactive "*P")
+  (when (and arg (not (listp arg))) (append-next-kill))
   (if (region-active-p)
       (if (and arg (listp arg))
           (delete-region (region-beginning) (region-end))
         (kill-region (region-beginning) (region-end)))
     (if (or arg (not (eolp)) (bolp))
-        (cond ((null arg)
-               (kill-line))
-              ((and (numberp arg) (= arg 0))
-               (kill-region (point) (progn (back-to-indentation) (point))))
-              ((and (listp arg))
-               (delete-region (point-at-bol) (point-at-bol 2)))
-              (t
-               (kill-line arg)))
+        (if (and arg (listp arg))
+            (delete-region (point-at-bol) (point-at-bol 2))
+          (kill-line))
       (my-edit-join-line-with-next))))
 
 ;;; Insert lines

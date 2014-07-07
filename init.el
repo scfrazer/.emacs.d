@@ -1268,6 +1268,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
+(my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
 (my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-f" 'qe-unit-move)

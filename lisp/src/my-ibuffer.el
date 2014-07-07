@@ -39,7 +39,8 @@
   "Build bookmark substitutions."
   (interactive)
   (setq my-ibuffer-bookmark-subs nil)
-  (bookmark-load bookmark-default-file t t)
+  (ignore-errors
+    (bookmark-load bookmark-default-file t t))
   (let (name filename)
     (dolist (bmk bookmark-alist)
       (setq name (bookmark-name-from-full-record bmk)

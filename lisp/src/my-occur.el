@@ -34,16 +34,20 @@
       (multi-occur-in-matching-buffers ".+" regexp))))
 
 (defface my-occur-prefix-face
-  '((t (:foreground "#AFAFD7")))
+  '((t (:background "#D7D7D7")))
   "Face for occur line numbers."
   :group 'faces)
-(setq-default list-matching-lines-prefix-face 'my-occur-prefix-face)
 
 (defface my-occur-buffer-name-face
-  '((t (:underline t :background "#AFAFD7")))
+  '((t (:underline t :background "#D7D7D7")))
   "Face for occur buffer names."
   :group 'faces)
-(setq-default list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
+
+(defadvice face-differs-from-default-p (around my-occur-face-differs-from-default-p activate)
+  "Hack because something stupid is wrong with this."
+  (if (equal (ad-get-arg 0) 'my-occur-prefix-face)
+      (setq ad-return-value t)
+    ad-do-it))
 
 (defun my-occur-mode-hook ()
   (define-key occur-mode-map "q" (lambda ()
@@ -53,6 +57,9 @@
                                      (delete-window))))
   (define-key occur-mode-map "n" 'next-line)
   (define-key occur-mode-map "p" 'previous-line)
+  (setq list-matching-lines-prefix-face 'my-occur-prefix-face)
+  (setq list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
+  (setq truncate-lines t)
   (occur-rename-buffer t))
 
 (add-hook 'occur-mode-hook 'my-occur-mode-hook)
