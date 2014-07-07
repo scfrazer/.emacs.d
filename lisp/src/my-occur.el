@@ -43,11 +43,13 @@
   "Face for occur buffer names."
   :group 'faces)
 
+;; TODO Remove this when new Emacs version with patches available
+(load-library "replace")
 (defadvice face-differs-from-default-p (around my-occur-face-differs-from-default-p activate)
-  "Hack because something stupid is wrong with this."
   (if (equal (ad-get-arg 0) 'my-occur-prefix-face)
       (setq ad-return-value t)
     ad-do-it))
+;; TODO
 
 (defun my-occur-mode-hook ()
   (define-key occur-mode-map "q" (lambda ()
