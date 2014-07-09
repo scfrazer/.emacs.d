@@ -34,12 +34,12 @@
       (multi-occur-in-matching-buffers ".+" regexp))))
 
 (defface my-occur-prefix-face
-  '((t (:background "#D7D7D7")))
+  '((t (:background "#D7D7AF")))
   "Face for occur line numbers."
   :group 'faces)
 
 (defface my-occur-buffer-name-face
-  '((t (:underline t :background "#D7D7D7")))
+  '((t (:underline t :background "#D7D7AF")))
   "Face for occur buffer names."
   :group 'faces)
 
