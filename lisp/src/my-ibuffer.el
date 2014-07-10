@@ -61,10 +61,16 @@
 
 (my-ibuffer-build-bookmark-subs)
 
+(defface my-ibuffer-current-face
+  '((t (:foreground "#FFFFFF" :background "#005FD7")))
+  "Current buffer marker face."
+  :group 'faces)
+
 (defvar my-ibuffer-current-buf)
+
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) ">" " "))
+  (if (eq my-ibuffer-current-buf buffer) (propertize ">" 'face 'my-ibuffer-current-face) " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
@@ -93,11 +99,12 @@
               filename)))
 
 (setq ibuffer-fontification-alist
-      `((6 (eq major-mode 'dired-mode) font-lock-type-face)
-        (5 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
+      `((7 (eq major-mode 'dired-mode) font-lock-type-face)
+        (6 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
                (eq major-mode 'Custom-mode)) font-lock-type-face)
-        (4 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
-        (3 (string-match "^*" (buffer-name)) font-lock-comment-face)
+        (5 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
+        (4 (string-match "^*" (buffer-name)) font-lock-comment-face)
+        (3 (buffer-modified-p) font-lock-warning-face)
         (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
         (1 buffer-read-only font-lock-function-name-face)))
 
