@@ -14,7 +14,7 @@
               ibuffer-use-other-window t)
 
 (defface my-ibuffer-group-name-face
-  '((t (:foreground "black" :background "gray85")))
+  '((t (:foreground "#000000" :background "#DADADA")))
   "ibuffer group name face"
   :group 'faces)
 
@@ -62,7 +62,7 @@
 (my-ibuffer-build-bookmark-subs)
 
 (defface my-ibuffer-current-face
-  '((t (:foreground "#FFFFFF" :background "#005FD7")))
+  '((t (:foreground "#875F00" :background "#FFFFD7")))
   "Current buffer marker face."
   :group 'faces)
 
@@ -70,7 +70,7 @@
 
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) (propertize ">" 'face 'my-ibuffer-current-face) " "))
+  (if (eq my-ibuffer-current-buf buffer) (propertize "@" 'face 'my-ibuffer-current-face) " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
