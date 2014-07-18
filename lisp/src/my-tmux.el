@@ -1,18 +1,16 @@
 ;;; my-tmux.el
 
-(defvar my-tmux-max-copy-length 5000
-  "*Max length of string to copy to tmux in `my-interprogram-cut-function'.")
-
-(defun my-interprogram-cut-function (text)
-  "Don't copy if in a keyboard macro, and if in a tmux session also copy TEXT to a tmux buffer (if it's not too big)."
-  (unless executing-kbd-macro
-    (when (display-graphic-p)
-      (x-select-text text))
-    (when (and (getenv "TMUX")
-               (<= (length text) my-tmux-max-copy-length))
-      (my-tmux-copy text))))
-
-;; Uncomment this to automatically copy to tmux paste buffer
+;; (defvar my-tmux-max-copy-length 5000
+;;   "*Max length of string to copy to tmux in `my-interprogram-cut-function'.")
+;; 
+;; (defun my-interprogram-cut-function (text)
+;;   "Don't copy if in a keyboard macro, and if in a tmux session also copy TEXT to a tmux buffer (if it's not too big)."
+;;   (unless executing-kbd-macro
+;;     (when (display-graphic-p)
+;;       (x-select-text text))
+;;     (when (and (getenv "TMUX")
+;;                (<= (length text) my-tmux-max-copy-length))
+;;       (my-tmux-copy text))))
 ;; (setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
 (defun my-tmux-copy-region (&optional arg)
@@ -37,5 +35,14 @@
              (replace-regexp-in-string
               "!" "\\\\!"
               (replace-regexp-in-string "\n" "\\\\\n" text))))) nil 0))
+
+(defun my-tmux-iterm-copy ()
+  "Copy last kill to clipboard through tmux and iterm"
+  (interactive)
+  (send-string-to-terminal
+   (format "\033Ptmux;\033\033]50;CopyToClipboard\007%s\033\033]50;EndCopy\007\033\\"
+           (substring-no-properties (current-kill 0 t))))
+  (redraw-display)
+  (message "Copied last kill to host clipboard"))
 
 (provide 'my-tmux)
