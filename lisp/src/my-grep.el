@@ -16,8 +16,8 @@
                                    ("v" . "*.v *.vh *.vg")
                                    ("sv" . "*.sv *.svh")))
 
-(grep-apply-setting 'grep-template "/bin/grep -nH -d skip -I -E -e <R> <C> <F>")
-(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e /bin/grep -nH -I -E -e <R> <C>")
+(grep-apply-setting 'grep-template "/bin/grep -nH -d skip -I -E -e '<R>' <C> <F>")
+(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e /bin/grep -nH -I -E -e '<R>' <C>")
 
 (defun my-grep-setup-hook ()
   (setenv "TERM" "xterm-color"))
@@ -45,5 +45,27 @@
     (and files
          (or (cdr (assoc files grep-files-aliases))
              files))))
+
+(defun my-grep-find-tag-function ()
+  "Get default grep string from region if possible."
+  (if (and current-prefix-arg (mark t))
+      (progn
+        (setq current-prefix-arg nil)
+        (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end))))
+    (or (funcall (or (get major-mode 'find-tag-default-function)
+                     'find-tag-default))
+        "")))
+
+(defun my-lgrep (&optional arg)
+  "Like `lgrep', but with \\[universal-argument] take default string from region."
+  (interactive)
+  (let ((find-tag-default-function 'my-grep-find-tag-function))
+    (call-interactively 'lgrep)))
+
+(defun my-rgrep (&optional arg)
+  "Like `rgrep', but with \\[universal-argument] take default string from region."
+  (interactive)
+  (let ((find-tag-default-function 'my-grep-find-tag-function))
+    (call-interactively 'rgrep)))
 
 (provide 'my-grep)
