@@ -1,6 +1,7 @@
 ;;; my-magit.el
 
 (require 'magit)
+(require 'git-timemachine)
 
 (setq-default magit-ellipsis ?>
               magit-restore-window-configuration t
@@ -10,26 +11,13 @@
 
 (setq-default git-commit-summary-max-length 120)
 
-(defun my-magit-file-log (&optional arg)
-  "Show log for current file.
-By default shows diff against previous commit.  With prefix arg, show
-entire history.  With numeric prefix, show that many commits."
+(defun my-magit-history (&optional arg)
+  "Show history for current file, either using git-timemachine
+or, with C-u, magit-file-log."
   (interactive "P")
-  (let ((num-commits 1)
-        (buf (get-buffer-create "*git-log*"))
-        (filename (buffer-file-name)))
-    (when arg
-      (cond ((listp arg)
-             (setq num-commits 0))
-            ((numberp arg)
-             (setq num-commits arg))))
-    (with-current-buffer buf
-      (erase-buffer)
-      (shell-command (concat "git log -p --follow "
-                             (if (> num-commits 0) (format "-%d " num-commits) "")
-                             filename) t)
-      (diff-mode))
-    (pop-to-buffer buf)))
+  (if arg
+      (magit-file-log (buffer-file-name))
+    (git-timemachine)))
 
 (defun magit-process-password-prompt (proc string)
   "Forward password prompts to the user."
