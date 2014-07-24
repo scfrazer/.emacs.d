@@ -1,11 +1,9 @@
 ;;; git-timemachine.el --- Walk through git revisions of a file
 
-;; Copyright (C) 2014 Peter Stiernström
-
-;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 1.3
+;; Copyright (C) 2014 Peter Stiernstr
+;; Author: Peter Stiernstr
 ;; URL: https://github.com/pidu/git-timemachine
-;; Package-Requires: ((cl-lib "0.5") (s "1.9.0"))
+;; Package-Requires: ((cl-lib "0.5")
 ;; Keywords: git
 
 ;; This file is not part of GNU Emacs
@@ -38,30 +36,35 @@
 (make-variable-buffer-local 'git-timemachine-file)
 (defvar git-timemachine-revision nil)
 (make-variable-buffer-local 'git-timemachine-revision)
+(defvar git-timemachine-source-buffer nil)
+(make-variable-buffer-local 'git-timemachine-source-buffer)
+(defvar git-timemachine-revisions nil)
+(make-variable-buffer-local 'git-timemachine-revisions)
 
-(defun git-timemachine--revisions ()
-  "List git revisions of current buffers file."
-  (split-string
-   (shell-command-to-string
-    (format "cd %s && git log --pretty=format:%s %s"
-            (shell-quote-argument git-timemachine-directory)
-            (shell-quote-argument "%h")
-            (shell-quote-argument git-timemachine-file)))))
+(defun git-timemachine-cache-revisions ()
+  "Cache the revisions of the current file."
+  (setq git-timemachine-revisions
+        (split-string
+         (shell-command-to-string
+          (format "cd %s && git log --pretty=format:%s %s"
+                  (shell-quote-argument git-timemachine-directory)
+                  (shell-quote-argument "%h")
+                  (shell-quote-argument git-timemachine-file))))))
 
 (defun git-timemachine-show-current-revision ()
   "Show last (current) revision of file."
   (interactive)
-  (git-timemachine-show-revision (car (git-timemachine--revisions))))
+  (git-timemachine-show-revision (car git-timemachine-revisions)))
 
 (defun git-timemachine-show-previous-revision ()
   "Show previous revision of file."
   (interactive)
-  (git-timemachine-show-revision (cadr (member git-timemachine-revision (git-timemachine--revisions)))))
+  (git-timemachine-show-revision (cadr (member git-timemachine-revision git-timemachine-revisions))))
 
 (defun git-timemachine-show-next-revision ()
   "Show next revision of file."
   (interactive)
-  (git-timemachine-show-revision (cadr (member git-timemachine-revision (reverse (git-timemachine--revisions))))))
+  (git-timemachine-show-revision (cadr (member git-timemachine-revision (reverse git-timemachine-revisions)))))
 
 (defun git-timemachine-show-revision (revision)
   "Show a REVISION (commit hash) of the current file."
@@ -77,8 +80,10 @@
                 (shell-quote-argument git-timemachine-file))))
       (setq buffer-read-only t)
       (set-buffer-modified-p nil)
-      (let* ((revisions (git-timemachine--revisions))
-             (n-of-m (format "(%d/%d)" (- (length revisions) (cl-position revision revisions :test 'equal)) (length revisions))))
+      (let* ((revisions git-timemachine-revisions)
+             (n-of-m (format "(%d/%d)" (- (length git-timemachine-revisions)
+                                          (cl-position revision git-timemachine-revisions :test 'equal))
+                             (length git-timemachine-revisions))))
         (setq mode-line-format (list "Commit: " revision " -- %b -- " n-of-m " -- [%p]")))
       (setq git-timemachine-revision revision)
       (goto-char current-position))))
@@ -100,7 +105,7 @@
 (defun git-timemachine-ediff ()
   "Ediff against the original file."
   (interactive)
-  (ediff-buffers (buffer-name) git-timemachine-file))
+  (ediff-buffers (buffer-name) git-timemachine-source-buffer))
 
 (define-minor-mode git-timemachine-mode
   "Git Timemachine, feel the wings of history."
@@ -136,15 +141,18 @@
   (interactive)
   (let* ((git-directory (concat (git-timemachine-trim-right (shell-command-to-string "git rev-parse --show-toplevel")) "/"))
          (relative-file (git-timemachine-chop-prefix git-directory (buffer-file-name)))
-         (timemachine-buffer (format "timemachine:%s" (buffer-name))))
+         (timemachine-buffer (format "timemachine:%s" (buffer-name)))
+         (source-buf (current-buffer)))
     (with-current-buffer (get-buffer-create timemachine-buffer)
       (setq buffer-file-name relative-file)
       (set-auto-mode)
+      (setq buffer-file-name nil)
       (git-timemachine-mode)
       (setq git-timemachine-directory git-directory
             git-timemachine-file relative-file
             git-timemachine-revision nil
-            buffer-file-name nil)
+            git-timemachine-source-buffer source-buf)
+      (git-timemachine-cache-revisions)
       (git-timemachine-show-current-revision)
       (switch-to-buffer timemachine-buffer))))
 
