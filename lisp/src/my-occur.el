@@ -39,7 +39,7 @@
   :group 'faces)
 
 (defface my-occur-buffer-name-face
-  '((t (:underline t :background "#D7D7AF")))
+  '((t (:underline nil :foreground "#E4E4E4" :background "#303030")))
   "Face for occur buffer names."
   :group 'faces)
 

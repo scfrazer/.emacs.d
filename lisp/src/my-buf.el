@@ -13,7 +13,8 @@
                                                            "*magit:"
                                                            "*scratch"
                                                            "*shell"
-                                                           "*terminal")))
+                                                           "*terminal"
+                                                           "*regman")))
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-buf-never-show-regexps '("^\\s-" "^\\*" "TAGS$")

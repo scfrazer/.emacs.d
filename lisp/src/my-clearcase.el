@@ -15,7 +15,8 @@
   (when my-clearcase-update-cs-after-checkin
     (let ((file (ad-get-arg 0)))
       (with-current-buffer "*clearcase*"
-        (when (looking-at (concat "Checked in \"" file "\" version \"\\(.+?\\)\""))
+        (goto-char (point-min))
+        (when (re-search-forward (concat "Checked in \"" file "\" version \"\\(.+?\\)\"") nil t)
           (let ((version (match-string-no-properties 1)))
             (message "Updating config spec ...")
             (let ((temp-file (make-temp-file "cc-status-config-spec-")))

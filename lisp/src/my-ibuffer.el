@@ -30,7 +30,8 @@
                                                  "*info"
                                                  "*scratch"
                                                  "*shell"
-                                                 "*terminal")))
+                                                 "*terminal"
+                                                 "*regman")))
 
 (defvar my-ibuffer-env-vars-as-bookmarks (list "RESULTSDIR"))
 (defvar my-ibuffer-bookmark-subs nil)

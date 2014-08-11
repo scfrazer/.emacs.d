@@ -1,27 +1,43 @@
 ;;; cc-status.el
 
+;; TODO Eclipsed files?
+
 (require 'clearcase)
 (eval-when-compile (require 'cl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar cc-status-ignore-regexps (list "#"
-                                       "~"
-                                       "\\.swp"
-                                       "@@"
-                                       "ver/build"
-                                       "/obj\\(64\\)?"
-                                       "\\.cmake\\.state"
-                                       "rtl/Makefile\\(\\..+\\)?"
-                                       "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
-                                       "rtl/dump.rdl"
-                                       "Makefile.chip"
-                                       "bus_struct"
-                                       "\\.pyc")
-  "*Regexps of view-private elements to ignore.")
+(defgroup cc-status nil
+  "ClearCase status."
+  :group 'tools)
 
-(defvar cc-status-filter t
-  "*Use `cc-status-ignore-regexps' to filter view-private elements.")
+(defcustom cc-status-filter-private t
+  "*Use `cc-status-ignore-regexps' to filter view-private elements."
+  :group 'cc-status)
+
+(defcustom cc-status-no-private nil
+  "*Don't show any private files."
+  :group 'cc-status)
+
+(defcustom cc-status-ignore-regexps (list "#"
+                                          "~"
+                                          "\\.swp"
+                                          "@@"
+                                          "ver/build"
+                                          "/obj\\(64\\)?"
+                                          "\\.cmake\\.state"
+                                          "rtl/Makefile\\(\\..+\\)?"
+                                          "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
+                                          "rtl/dump.rdl"
+                                          "Makefile.chip"
+                                          "chipdv.targets.macro"
+                                          "bus_struct"
+                                          "\\.pyc"
+                                          "simv"
+                                          "rtl/.*spyglass.*")
+  "*Regexps of view-private elements to ignore."
+  :type '(repeat (string :tag "Regexp"))
+  :group 'cc-status)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -52,19 +68,20 @@
   (setq cc-status-elms nil)
   (let (filename)
     ;; Private files
-    (with-temp-buffer
-      (call-process-shell-command "cleartool lspri -other" nil t)
-      (message "Checking view-private files ...")
-      (goto-char (point-min))
-      (while (not (eobp))
-        (setq filename (buffer-substring-no-properties (point) (point-at-eol)))
-        (unless (and cc-status-filter
-                     (catch 'ignore
-                       (dolist (regexp cc-status-ignore-regexps)
-                         (when (string-match regexp filename)
-                           (throw 'ignore t)))))
-          (push (make-cc-status-elm :filename filename :private t) cc-status-elms))
-        (forward-line 1)))
+    (unless cc-status-no-private
+      (with-temp-buffer
+        (call-process-shell-command "cleartool lspri -other" nil t)
+        (message "Checking view-private files ...")
+        (goto-char (point-min))
+        (while (not (eobp))
+          (setq filename (buffer-substring-no-properties (point) (point-at-eol)))
+          (unless (and cc-status-filter-private
+                       (catch 'ignore
+                         (dolist (regexp cc-status-ignore-regexps)
+                           (when (string-match regexp filename)
+                             (throw 'ignore t)))))
+            (push (make-cc-status-elm :filename filename :private t) cc-status-elms))
+          (forward-line 1))))
     ;; Checked out files
     (let (elm user version reserved mastered view location master-replica latest-version)
       (with-temp-buffer
@@ -119,7 +136,7 @@
           (forward-line 1))))
     ;; Update buffer
     (erase-buffer)
-    (insert "ClearCase Status:\n\n")
+    (insert "ClearCase Status" (if cc-status-no-private " (No private)" "") ":\n\n")
     (setq cc-status-elms (sort cc-status-elms #'(lambda (x y) (string< (cc-status-elm-filename x) (cc-status-elm-filename y)))))
     (dolist (elm cc-status-elms)
       (insert "  " (cc-status-elm-filename elm) " "
@@ -417,6 +434,12 @@
     (clearcase-fprop-clear-all-properties)
     (delete-file temp-file)))
 
+(defun cc-status-toggle-private ()
+  "Toggle showing private files."
+  (interactive)
+  (setq cc-status-no-private (not cc-status-no-private))
+  (cc-status-refresh))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Keymap
@@ -437,6 +460,7 @@
 
     (define-key map (kbd "RET") 'cc-status-open-file)
     (define-key map "=" 'cc-status-ediff)
+    (define-key map "~" 'cc-status-toggle-private)
 
     (define-key map (kbd "SPC") 'cc-status-mark)
     (define-key map (kbd "p") 'cc-status-mark)
