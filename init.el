@@ -200,7 +200,7 @@
               split-width-threshold nil
               tags-revert-without-query t
               truncate-partial-width-windows nil
-              uniquify-buffer-name-style 'forward
+              uniquify-buffer-name-style 'post-forward-angle-brackets
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               vc-handled-backends nil ;; maybe '(Hg) later
               verilog-auto-endcomments nil
@@ -752,8 +752,10 @@ arg do something special."
       (when arg
         (setq filename (file-name-nondirectory filename)))
       (kill-new filename)
-      (when interprogram-cut-function
-        (funcall interprogram-cut-function filename))
+      (when (getenv "TMUX")
+        (let ((text (substring-no-properties (current-kill 0 t))))
+          (my-tmux-copy-text text)
+          (my-tmux-iterm-copy-text text)))
       (message filename))))
 
 (defun my-prettify ()
@@ -1356,7 +1358,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-s O" 'my-multi-occur)
 (my-keys-define "M-s h h" 'my-highlight-symbol)
 (my-keys-define "M-s o" 'my-occur)
-(my-keys-define "M-t" 'my-tmux-copy-region)
+(my-keys-define "M-t" 'my-tmux-copy)
 (my-keys-define "M-u" 'my-recenter)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)

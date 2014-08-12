@@ -13,10 +13,10 @@
 ;;       (my-tmux-copy text))))
 ;; (setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
-(defun my-tmux-copy-region (&optional arg)
+(defun my-tmux-copy (&optional arg)
   "Copy last kill to tmux paste buffer.  With prefix arg, copy region."
   (interactive "P")
-  (my-tmux-copy
+  (my-tmux-copy-text
    (if arg
        (buffer-substring-no-properties (region-beginning) (region-end))
      (substring-no-properties (current-kill 0 t))))
@@ -24,7 +24,7 @@
       (message "Copied region to tmux buffer")
     (message "Copied last kill to tmux buffer")))
 
-(defun my-tmux-copy (text)
+(defun my-tmux-copy-text (text)
   "Copy text to tmux buffer."
   (call-process-shell-command
    (format "tmux set-buffer -- \"%s\""
@@ -36,13 +36,22 @@
               "!" "\\\\!"
               (replace-regexp-in-string "\n" "\\\\\n" text))))) nil 0))
 
-(defun my-tmux-iterm-copy ()
-  "Copy last kill to clipboard through tmux and iterm"
+(defun my-tmux-iterm-copy (&optional arg)
+  "Copy last kill to clipboard through tmux and iterm.  With prefix arg, copy region."
+  (interactive "P")
+  (my-tmux-iterm-copy-text
+   (if arg
+       (buffer-substring-no-properties (region-beginning) (region-end))
+     (substring-no-properties (current-kill 0 t))))
+  (if arg
+      (message "Copied region to clipboard")
+    (message "Copied last kill to clipboard")))
+
+(defun my-tmux-iterm-copy-text (text)
+  "Copy text to clipboard through tmux and iterm"
   (interactive)
   (send-string-to-terminal
-   (format "\033Ptmux;\033\033]50;CopyToClipboard\007%s\033\033]50;EndCopy\007\033\\"
-           (substring-no-properties (current-kill 0 t))))
-  (redraw-display)
-  (message "Copied last kill to host clipboard"))
+   (format "\033Ptmux;\033\033]50;CopyToClipboard\007%s\033\033]50;EndCopy\007\033\\" text))
+  (redraw-display))
 
 (provide 'my-tmux)
