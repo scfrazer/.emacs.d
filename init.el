@@ -1090,6 +1090,10 @@ Only works if there are exactly two windows."
 ;;   (when (called-interactively-p 'any)
 ;;     (ad-set-arg 0 (not (ad-get-arg 0)))))
 
+(defadvice term-handle-exit (after my-term-handle-exit activate)
+  "Kill terminal buffer after exit."
+  (kill-buffer))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 

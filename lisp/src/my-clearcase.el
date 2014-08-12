@@ -3,6 +3,11 @@
 (require 'clearcase)
 (require 'cc-status)
 
+(setq clearcase-annotate-fmt-string "| %Sd  %-8.8u  %-10.10Vn | "
+      clearcase-diff-gui-tool "tkdiff"
+      clearcase-suppress-checkout-comments t
+      clearcase-use-normal-diff t)
+
 (defun clearcase-fprop-viewtag (file)
   "For FILE, return its \"viewtag\" ClearCase property."
   (or (aref (clearcase-fprop-get-properties file) 10)
@@ -135,16 +140,12 @@ With prefix arg ask for version."
 
 (add-hook 'find-file-hook 'my-clearcase-backup-set-mode)
 
-(setq clearcase-suppress-checkout-comments t)
-(setq clearcase-diff-gui-tool "tkdiff")
-(setq clearcase-use-normal-diff t)
-
 (define-key clearcase-prefix-map "=" 'my-clearcase-ediff-current)
 (define-key clearcase-prefix-map "?" nil)
 (define-key clearcase-prefix-map "O" 'clearcase-checkout-current-buffer)
 (define-key clearcase-prefix-map "R" 'my-clearcase-unreserve)
 (define-key clearcase-prefix-map "U" (lambda() "Uncheckout/remove current file." (interactive) (clearcase-uncheckout-current-buffer 'discard)))
-(define-key clearcase-prefix-map "a" nil)
+(define-key clearcase-prefix-map "a" 'clearcase-annotate-current-buffer)
 (define-key clearcase-prefix-map "b" nil)
 (define-key clearcase-prefix-map "c" 'my-clearcase-list-checkouts)
 (define-key clearcase-prefix-map "g" 'my-clearcase-gui-diff-current)
@@ -154,7 +155,7 @@ With prefix arg ask for version."
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "v" nil)
-(define-key clearcase-prefix-map "w" nil)
+(define-key clearcase-prefix-map "w" 'clearcase-what-rule-current-buffer)
 (define-key clearcase-prefix-map "~" nil)
 (define-key clearcase-prefix-map (kbd "RET") 'cc-status)
 
@@ -163,7 +164,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "O" 'clearcase-checkout-dired-files)
 (define-key clearcase-dired-prefix-map "R" 'my-clearcase-unreserve)
 (define-key clearcase-dired-prefix-map "U" (lambda() (interactive) (clearcase-uncheckout-dired-files 'discard)))
-(define-key clearcase-dired-prefix-map "a" nil)
+(define-key clearcase-dired-prefix-map "a" 'clearcase-annotate-dired-file)
 (define-key clearcase-dired-prefix-map "b" nil)
 (define-key clearcase-dired-prefix-map "c" 'my-clearcase-list-checkouts)
 (define-key clearcase-dired-prefix-map "g" 'my-clearcase-gui-diff-current)
@@ -173,7 +174,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "v" nil)
-(define-key clearcase-dired-prefix-map "w" nil)
+(define-key clearcase-dired-prefix-map "w" 'clearcase-what-rule-dired-file)
 (define-key clearcase-dired-prefix-map "~" nil)
 (define-key clearcase-dired-prefix-map (kbd "RET") 'cc-status)
 
