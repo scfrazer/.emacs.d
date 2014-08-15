@@ -32,6 +32,7 @@
               (if (buffer-modified-p)
                   (propertize str 'face 'my-modified-face)
                 str))))
+   (:eval (if (> (length (frame-list)) 1) "  %F" ""))
    (list 'line-number-mode "  ")
    (:eval (when line-number-mode
             (let ((str "L%l"))
