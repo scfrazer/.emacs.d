@@ -959,14 +959,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (setq-default server-name clearcase-setview-viewtag)
     (server-start)))
 
-(defun my-tidy-lines (&optional arg)
-  "Tidy up current line, or lines in region with prefix arg."
-  (interactive "*P")
-  (let* ((start (if arg (region-beginning) (point-at-bol)))
-         (end  (if arg (region-end) (point-at-eol)))
-         (num-lines (count-lines start end)))
+(defun my-tidy-lines ()
+  "Tidy up lines in region."
+  (interactive "*")
+  (let* ((beg (save-excursion (goto-char (region-beginning)) (point-at-bol)))
+         (end (save-excursion (goto-char (region-end)) (point-at-bol)))
+         (num-lines (count-lines beg end)))
     (save-excursion
-      (goto-char start)
+      (goto-char beg)
       (dotimes (idx num-lines)
         (back-to-indentation)
         ;; Multiple spaces
@@ -1438,6 +1438,7 @@ Only works if there are exactly two windows."
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
 (defalias 'edbg 'edebug-defun)
+(defalias 'eb 'ediff-buffers)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)
