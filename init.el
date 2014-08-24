@@ -525,6 +525,14 @@ Prefix with C-u to fit the `next-window'."
   (let ((win (if arg (next-window) (get-buffer-window))))
     (fit-window-to-buffer win (/ (frame-height) 4))))
 
+(defun my-forward-paragraph ()
+  "Move to next blank line after some text."
+  (interactive)
+  (beginning-of-line)
+  (while (and (looking-at "^\\s-*$") (not (eobp)))
+    (forward-line))
+  (re-search-forward "^\\s-*$" nil 'go))
+
 (defun my-forward-paragraph-rect ()
   "Move forward over what looks like a similar set of lines."
   (interactive)
@@ -924,7 +932,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
         (set-window-buffer w b)
         (set-window-point w p)))))
 
-
 (defun my-set-register (&optional arg)
   "Copy region, or with prefix arg last kill, to a register."
   (interactive "P")
@@ -962,9 +969,12 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
-  (let* ((beg (save-excursion (goto-char (region-beginning)) (point-at-bol)))
-         (end (save-excursion (goto-char (region-end)) (point-at-bol)))
-         (num-lines (count-lines beg end)))
+  (let ((beg (save-excursion (goto-char (region-beginning)) (point-at-bol)))
+        (end (save-excursion (goto-char (region-end)) (point-at-bol)))
+        num-lines)
+    (when (= beg end)
+      (setq end (point-at-bol 2)))
+    (setq num-lines (count-lines beg end))
     (save-excursion
       (goto-char beg)
       (dotimes (idx num-lines)
@@ -1366,7 +1376,7 @@ Only works if there are exactly two windows."
 (my-keys-define "M-u" 'my-recenter)
 (my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
-(my-keys-define "M-}" (lambda () (interactive) (re-search-forward "^\\s-*$" nil 'go)))
+(my-keys-define "M-}" 'my-forward-paragraph)
 (my-keys-define "M-~" 'previous-error)
 
 ;; These have to be in this order

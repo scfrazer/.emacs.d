@@ -2,19 +2,20 @@
 
 ;; Ignore buffers
 
-(defvar my-buf-always-show-regexps (list (regexp-opt (list "*Find"
-                                                           "*Occur"
-                                                           "*calculator"
-                                                           "*cc-status"
-                                                           "*clearcase-config-spec"
-                                                           "*compilation"
-                                                           "*grep"
-                                                           "*info"
-                                                           "*magit:"
-                                                           "*scratch"
-                                                           "*shell"
-                                                           "*terminal"
-                                                           "*regman")))
+(defvar my-buf-always-show-regexps (list (concat "^"
+                                                 (regexp-opt (list "*Find"
+                                                                   "*Occur"
+                                                                   "*calculator"
+                                                                   "*cc-status"
+                                                                   "*clearcase-config-spec"
+                                                                   "*compilation"
+                                                                   "*grep"
+                                                                   "*info"
+                                                                   "*magit:"
+                                                                   "*scratch"
+                                                                   "*shell"
+                                                                   "*terminal"
+                                                                   "*regman"))))
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-buf-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
