@@ -12,7 +12,8 @@
       (match-string 1))))
 
 (ll-debug-register-mode 'java-mode
-                        "global.log(" ");"
+;;                        "global.log(" ");"
+                        "Log.info(" ");"
                         '(nil "\""
                               (concat (ll-debug-create-next-debug-string)
                                       " (" (buffer-name) " - "
@@ -39,7 +40,8 @@
         (match-string 1)))))
 
 (ll-debug-register-mode 'php-mode
-                        "Vtt_Log::getInstance()->log(" ", Vtt_Log::INFO);"
+;;                         "Vtt_Log::getInstance()->log(" ", Vtt_Log::INFO);"
+                        "trigger_error(" ");"
                         '(nil "\""
                               (concat (ll-debug-create-next-debug-string)
                                       " (" (buffer-name) " - "
@@ -67,6 +69,7 @@
   (flymake-mode 1))
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
-(add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
+;; (add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
+(add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt3 ; make")
 
 (provide 'vtt)
