@@ -8,7 +8,7 @@
    `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#DADADA"))))
    `(bm-face ((,class (:foreground nil :background "#FFD7AF"))))
    `(button ((,class (:foreground "#008787"))))
-   `(compilation-column-number ((,class (:foreground "#005F00"))))
+   `(compilation-column-number ((,class (:foreground "#5F00AF"))))
    `(compilation-error ((,class (:foreground "#CD0000"))))
    `(compilation-info ((,class (:foreground "#008700"))))
    `(compilation-line-number ((,class (:foreground "#000087"))))
