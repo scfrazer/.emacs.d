@@ -2031,7 +2031,7 @@ static char * go_next_xpm[] = {
   (define-key orcl-mode-map "\C-c\C-k" 'sqlplus-restart-connection)
   (define-key orcl-mode-map "\C-c\C-t" 'sqlplus-show-history)
   (define-key orcl-mode-map "\C-c\C-s" 'sqlplus-get-source)
-  (define-key orcl-mode-map "\C-c\C-i" 'sqlplus-send-interrupt)
+  ;; (define-key orcl-mode-map "\C-c\C-i" 'sqlplus-send-interrupt)
   (define-key orcl-mode-map [S-return] 'sqlplus-send-user-string)
   (define-key orcl-mode-map [tool-bar sqlplus-restart-connection]
     (list 'menu-item "Restart connection" 'sqlplus-restart-connection))

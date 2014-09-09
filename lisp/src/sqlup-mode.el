@@ -58,23 +58,21 @@
   (insert ";"))
 
 (defun sqlup-maybe-capitalize-word-at-point ()
-  (let ((sqlup-current-word (downcase (thing-at-point 'symbol)))
-        (sqlup-current-word-boundaries (bounds-of-thing-at-point 'symbol)))
-    (when (member sqlup-current-word sqlup-keywords)
-      (delete-region (car sqlup-current-word-boundaries) (cdr sqlup-current-word-boundaries))
-      (insert (upcase sqlup-current-word)))))
+  (when (looking-back "[a-zA-Z0-9_]+" (point-at-bol) t)
+    (let ((word (match-string-no-properties 0)))
+      (when (member (downcase word) sqlup-keywords)
+        (replace-match (upcase word) t t)))))
 
 ;;;###autoload
 (defun sqlup-capitalize-keywords-in-region ()
   "Call this function on a region to capitalize the SQL keywords therein."
   (interactive "*")
-  (let ((sqlup-start-of-region (region-beginning))
-        (sqlup-end-of-region (region-end)))
+  (let ((beg (region-beginning))
+        (end (region-end)))
     (save-excursion
-      (goto-char sqlup-start-of-region)
-      (while (search-forward-regexp "[[:alpha:]_]+" sqlup-end-of-region t)
+      (goto-char beg)
+      (while (search-forward-regexp "[a-zA-Z0-9_]+" end t)
         (when (member (downcase (match-string 0)) sqlup-keywords)
-          (message (upcase (match-string 0)))
           (replace-match (upcase (match-string 0)) t t))))))
 
 ;;;###autoload
