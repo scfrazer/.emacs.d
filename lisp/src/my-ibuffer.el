@@ -24,6 +24,7 @@
 
 (defvar my-ibuffer-star-regexp (regexp-opt (list "*Find"
                                                  "*Occur"
+                                                 "*ag"
                                                  "*calculator"
                                                  "*compilation"
                                                  "*grep"

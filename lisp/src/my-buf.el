@@ -5,6 +5,7 @@
 (defvar my-buf-always-show-regexps (list (concat "^"
                                                  (regexp-opt (list "*Find"
                                                                    "*Occur"
+                                                                   "*ag"
                                                                    "*calculator"
                                                                    "*cc-status"
                                                                    "*clearcase-config-spec"
