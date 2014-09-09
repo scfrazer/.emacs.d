@@ -2245,6 +2245,8 @@ Key Bindings:
   (setq sv-mode-begin-to-end-alist
         (append (list '("begin" . "end")
                       '("case" . "endcase")
+                      '("casex" . "endcase")
+                      '("casez" . "endcase")
                       '("class" . "endclass")
                       '("clocking" . "endclocking")
                       '("config" . "endconfig")
@@ -2269,7 +2271,7 @@ Key Bindings:
 
   (setq sv-mode-end-to-begin-alist
         (append (list '("end" . "begin")
-                      '("endcase" . "case")
+                      '("endcase" . "case\\|casex\\|casez")
                       '("endclass" . "class")
                       '("endclocking" . "clocking")
                       '("endconfig" . "config")
