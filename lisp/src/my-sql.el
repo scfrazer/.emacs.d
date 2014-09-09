@@ -5,10 +5,16 @@
 
 (eval-after-load "sqlplus"
   '(progn
+
      (defun sqlplus-get-potential-connect-string (file-path)
        (save-excursion
          (goto-char (point-min))
          (when (looking-at "--\\s-+connect:\\s-+\\(.+\\)$")
-           (match-string 1))))))
+           (match-string 1))))
+
+     (defun my-sqlplus-mode-hook ()
+       (sqlup-mode 1))
+
+     (add-hook 'sqlplus-mode-hook 'my-sqlplus-mode-hook)))
 
 (provide 'my-sql)
