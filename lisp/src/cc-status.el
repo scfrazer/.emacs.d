@@ -21,6 +21,7 @@
 
 (defcustom cc-status-ignore-regexps (list "#"
                                           "~"
+                                          "<.+>"
                                           "\\.swp"
                                           "@@"
                                           "ver/build"
@@ -332,7 +333,9 @@
   (when files
     (message "Deleting files ...")
     (dolist (filename files)
-      (delete-file filename))))
+      (if (file-directory-p filename)
+          (delete-directory filename t)
+        (delete-file filename)))))
 
 (defvar cc-status-prev-window-config nil)
 (defvar cc-status-files-to-checkin)
