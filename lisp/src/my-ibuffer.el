@@ -23,6 +23,7 @@
                                                "*magit:")))
 
 (defvar my-ibuffer-star-regexp (regexp-opt (list "*Find"
+                                                 "*Man"
                                                  "*Occur"
                                                  "*ag"
                                                  "*calculator"

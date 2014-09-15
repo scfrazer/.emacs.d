@@ -121,7 +121,8 @@
 (global-show-mark-mode 1)
 (winner-mode 1)
 
-(setq-default ace-jump-mode-case-fold nil
+(setq-default Man-notify-method 'bully
+              ace-jump-mode-case-fold nil
               ace-jump-mode-gray-background nil
               ace-jump-mode-scope 'window
               ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
@@ -135,8 +136,9 @@
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
               browse-kill-ring-quit-action (quote kill-and-delete-window)
-;;               browse-kill-ring-separator "----------8<----------8<----------8<----------8<----------8<----------"
-              browse-kill-ring-separator-face (quote font-lock-keyword-face)
+              browse-kill-ring-separator "---"
+              browse-kill-ring-separator-face 'font-lock-function-name-face
+              browse-kill-ring-show-preview nil
               browse-kill-ring-use-fontification t
               case-fold-search t
               column-number-mode t
@@ -161,13 +163,13 @@
               flyspell-mode-map nil
               font-lock-verbose nil
               highlight-changes-active-string " Chg+"
-              highlight-changes-passive-string " Chg-"
               highlight-changes-global-modes nil
+              highlight-changes-passive-string " Chg-"
               hscroll-step 1
               htmlize-output-type 'font
               iflipb-ignore-buffers 'my-buf-ignore-buffer
-              indicate-buffer-boundaries t
               indent-tabs-mode nil
+              indicate-buffer-boundaries t
               inhibit-startup-message t
               isearch-lazy-highlight-initial-delay 0
               js2-basic-offset 4
@@ -175,8 +177,8 @@
               kill-whole-line t
               large-file-warning-threshold nil
               line-move-visual t
-              line-number-mode t
               line-number-display-limit-width 1000
+              line-number-mode t
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
@@ -209,6 +211,8 @@
               verilog-auto-lineup '(all)
               verilog-auto-newline nil
               verilog-case-indent 4
+              verilog-imenu-flatten t
+              verilog-imenu-qualify-names nil
               verilog-indent-begin-after-if nil
               verilog-indent-level 4
               verilog-indent-level-behavioral 0
@@ -217,8 +221,6 @@
               verilog-indent-level-module 0
               verilog-minimum-comment-distance 40
               verilog-tab-always-indent t
-              verilog-imenu-flatten t
-              verilog-imenu-qualify-names nil
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")

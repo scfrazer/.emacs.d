@@ -4,6 +4,7 @@
 
 (defvar my-buf-always-show-regexps (list (concat "^"
                                                  (regexp-opt (list "*Find"
+                                                                   "*Man"
                                                                    "*Occur"
                                                                    "*ag"
                                                                    "*calculator"
