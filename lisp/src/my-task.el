@@ -1,7 +1,11 @@
 ;;; my-task.el
 
 (require 'task)
+(require 'my-clearcase)
 (require 'bm)
+
+(when clearcase-servers-online
+  (setq task-save-at-exit-name clearcase-setview-viewtag))
 
 (defvar my-task-saving-bookmarks nil)
 
