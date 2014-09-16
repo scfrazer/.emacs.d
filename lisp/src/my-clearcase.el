@@ -45,6 +45,36 @@
       (clearcase-list-history-dired-file)
     (clearcase-list-history-current-buffer)))
 
+(defun my-clearcase-list-history-get-file-in-view ()
+  "Get a file in a different view through /view/..."
+  (interactive)
+  (save-excursion
+    (goto-char (point-at-bol))
+    (when (looking-at ".+checkout version.+\"\\(.+?\\)\".+?  \\(.+\\)  ")
+      (let ((filename (concat "/view/" (match-string-no-properties 2) (match-string-no-properties 1))))
+        (if (file-exists-p filename)
+            (progn
+              (View-quit)
+              (find-file filename))
+          (error (concat "Couldn't find " filename)))))))
+
+(defadvice clearcase-list-history (after my-clearcase-list-history activate)
+  "Colorize and add a key to visit a version checked out by someone else through /view/..."
+  (with-current-buffer "*clearcase*"
+    (setq show-trailing-whitespace nil)
+    (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file-in-view)
+    (setq buffer-read-only nil)
+    (goto-char (point-min))
+    (while (not (eobp))
+      (if (looking-at "^.+checkout version.+$")
+          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
+        (unless (looking-at "^[0-9]+-[0-9]+-[0-9]+.+$")
+          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-comment-face)))
+      (forward-line 1))
+    (goto-char (point-min))
+    (setq buffer-read-only t)
+    (set-buffer-modified-p nil)))
+
 (defun my-clearcase-list-checkouts ()
   "List the checkouts of FILE.
 FILE can be a file or a directory. If it is a directory, only the information
