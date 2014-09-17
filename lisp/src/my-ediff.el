@@ -13,13 +13,16 @@
   "If buffer is modified, diff against file.  If not modified,
 either do ClearCase diff or Git diff depending on where the file is."
   (interactive "P")
-  (if (buffer-modified-p)
-      (my-ediff-buffer-with-file)
-    (if (and clearcase-servers-online
-             clearcase-setview-viewtag
-             (clearcase-file-is-in-mvfs-p (buffer-file-name)))
-        (my-clearcase-ediff-current arg)
-      (my-vc-ediff))))
+  (cond ((buffer-modified-p)
+         (my-ediff-buffer-with-file))
+        ((string= (buffer-name) "*clearcase*")
+         (my-clearcase-list-history-diff))
+        ((and clearcase-servers-online
+              clearcase-setview-viewtag
+              (clearcase-file-is-in-mvfs-p (buffer-file-name)))
+         (my-clearcase-ediff-current arg))
+        (t
+         (my-vc-ediff))))
 
 (defun my-ediff-buffer-with-file (&optional arg)
   "View the differences between current buffer and it's associated file using ediff."

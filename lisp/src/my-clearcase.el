@@ -38,7 +38,7 @@
               (delete-file temp-file)
               (message ""))))))))
 
-(defun my-clearcase-list-hist (&optional arg)
+(defun my-clearcase-list-history (&optional arg)
   "List the history of the current file."
   (interactive)
   (if (equal major-mode 'dired-mode)
@@ -48,21 +48,38 @@
 (defun my-clearcase-list-history-get-file-in-view ()
   "Get a file in a different view through /view/..."
   (interactive)
+  (let ((filename (my-clearcase-list-history-get-filename)))
+    (unless (file-exists-p filename)
+      (error (concat "Couldn't find " filename)))
+    (View-quit)
+    (find-file filename)))
+
+(defun my-clearcase-list-history-get-filename ()
+  "Get a filename from the current line."
   (save-excursion
     (goto-char (point-at-bol))
-    (when (looking-at ".+checkout version.+\"\\(.+?\\)\".+?  \\(.+\\)  ")
-      (let ((filename (concat "/view/" (match-string-no-properties 2) (match-string-no-properties 1))))
-        (if (file-exists-p filename)
-            (progn
-              (View-quit)
-              (find-file filename))
-          (error (concat "Couldn't find " filename)))))))
+    (cond ((looking-at ".+checkout version.+\"\\(.+?\\)\".+?  \\(.+\\)  ")
+           (concat "/view/" (match-string-no-properties 2) (match-string-no-properties 1)))
+          ((looking-at ".+create version.+\"\\(.+?\\)\"")
+           (match-string-no-properties 1))
+          (t nil))))
+
+(defun my-clearcase-list-history-diff ()
+  "Diff against current line in list history."
+  (interactive)
+  (let ((filename (my-clearcase-list-history-get-filename)))
+    (unless (file-exists-p filename)
+      (error (concat "Couldn't find " filename)))
+    (View-quit)
+    (ediff-files filename (buffer-file-name))))
 
 (defadvice clearcase-list-history (after my-clearcase-list-history activate)
-  "Colorize and add a key to visit a version checked out by someone else through /view/..."
+  "Colorize and add some extra functions."
   (with-current-buffer "*clearcase*"
     (setq show-trailing-whitespace nil)
     (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file-in-view)
+    (local-set-key (kbd "C-c =") 'my-clearcase-list-history-diff)
+    (setq truncate-lines t)
     (setq buffer-read-only nil)
     (goto-char (point-min))
     (while (not (eobp))
@@ -180,7 +197,7 @@ With prefix arg ask for version."
 (define-key clearcase-prefix-map "c" 'my-clearcase-list-checkouts)
 (define-key clearcase-prefix-map "g" 'my-clearcase-gui-diff-current)
 (define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
-(define-key clearcase-prefix-map "l" 'my-clearcase-list-hist)
+(define-key clearcase-prefix-map "l" 'my-clearcase-list-history)
 (define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
@@ -199,7 +216,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "c" 'my-clearcase-list-checkouts)
 (define-key clearcase-dired-prefix-map "g" 'my-clearcase-gui-diff-current)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
-(define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-hist)
+(define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-history)
 (define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
