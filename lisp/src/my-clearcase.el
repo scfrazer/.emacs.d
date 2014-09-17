@@ -45,15 +45,6 @@
       (clearcase-list-history-dired-file)
     (clearcase-list-history-current-buffer)))
 
-(defun my-clearcase-list-history-get-file-in-view ()
-  "Get a file in a different view through /view/..."
-  (interactive)
-  (let ((filename (my-clearcase-list-history-get-filename)))
-    (unless (file-exists-p filename)
-      (error (concat "Couldn't find " filename)))
-    (View-quit)
-    (find-file filename)))
-
 (defun my-clearcase-list-history-get-filename ()
   "Get a filename from the current line."
   (save-excursion
@@ -64,8 +55,17 @@
            (match-string-no-properties 1))
           (t nil))))
 
+(defun my-clearcase-list-history-get-file ()
+  "Get file on current line."
+  (interactive)
+  (let ((filename (my-clearcase-list-history-get-filename)))
+    (unless (file-exists-p filename)
+      (error (concat "Couldn't find " filename)))
+    (View-quit)
+    (find-file filename)))
+
 (defun my-clearcase-list-history-diff ()
-  "Diff against current line in list history."
+  "Diff against file on current line."
   (interactive)
   (let ((filename (my-clearcase-list-history-get-filename)))
     (unless (file-exists-p filename)
@@ -73,12 +73,31 @@
     (View-quit)
     (ediff-files filename (buffer-file-name))))
 
+(defun my-clearcase-list-history-next ()
+  "Go to next file."
+  (interactive)
+  (let ((pos (point)))
+    (forward-line 1)
+    (when (re-search-forward "^[0-9]+-[0-9]+-[0-9]+" nil t)
+      (setq pos (match-beginning 0)))
+    (goto-char pos)))
+
+(defun my-clearcase-list-history-previous ()
+  "Go to previous file."
+  (interactive)
+  (let ((pos (point)))
+    (when (re-search-backward "^[0-9]+-[0-9]+-[0-9]+" nil t)
+      (setq pos (match-beginning 0)))
+    (goto-char pos)))
+
 (defadvice clearcase-list-history (after my-clearcase-list-history activate)
   "Colorize and add some extra functions."
   (with-current-buffer "*clearcase*"
     (setq show-trailing-whitespace nil)
-    (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file-in-view)
+    (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file)
     (local-set-key (kbd "C-c =") 'my-clearcase-list-history-diff)
+    (local-set-key (kbd "C-n") 'my-clearcase-list-history-next)
+    (local-set-key (kbd "C-p") 'my-clearcase-list-history-previous)
     (setq truncate-lines t)
     (setq buffer-read-only nil)
     (goto-char (point-min))
