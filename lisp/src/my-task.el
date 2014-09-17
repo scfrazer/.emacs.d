@@ -4,8 +4,8 @@
 (require 'my-clearcase)
 (require 'bm)
 
-(when (and clearcase-servers-online clearcase-setview-viewtag)
-  (setq task-save-at-exit-name clearcase-setview-viewtag))
+;; (when (and clearcase-servers-online clearcase-setview-viewtag)
+;;   (setq task-save-at-exit-name clearcase-setview-viewtag))
 
 (defvar my-task-saving-bookmarks nil)
 
