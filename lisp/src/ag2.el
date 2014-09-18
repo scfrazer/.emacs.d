@@ -154,10 +154,56 @@
       (setq string (concat string " -w")))
     string))
 
+(defconst ag2-options-buffer-name " *ag2 options*")
+
+(defun ag2-popup-insert-boolean (key-string option-string symbol)
+  "Insert a boolean option."
+  (define-key ag2-popup-map (kbd key-string)
+    `(lambda () (interactive) (ag2-popup-toggle-option ,key-string (quote ,symbol))))
+  (insert key-string ": " option-string)
+  (when (symbol-value (intern-soft symbol))
+    (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face))
+  (insert "\n"))
+
+(defun ag2-popup-toggle-option (key-string symbol)
+  "Toggle an option."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward (concat "^" key-string ":") nil t)
+      (set symbol (not (symbol-value symbol)))
+      (setq buffer-read-only nil)
+      (if (symbol-value symbol)
+          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
+        (put-text-property (point-at-bol) (point-at-eol) 'face 'default))
+      (setq buffer-read-only t)
+      (set-buffer-modified-p nil))))
+
+(defun ag2-popup-map nil)
+
 (defun ag2-popup-search-options ()
   "Let user change default search options."
   (interactive)
-  (message "TODO search"))
+  (with-current-buffer (get-buffer-create ag2-options-buffer-name)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    (setq ag2-popup-map (make-sparse-keymap))
+    (define-key ag2-popup-map (kbd "RET")
+      (lambda ()
+        (interactive)
+        (kill-buffer-and-window)
+        (select-window (active-minibuffer-window))))
+    (ag2-popup-insert-boolean "Q" "--literal" 'ag2-option-literal)
+    (ag2-popup-insert-boolean "i" "--ignore-case" 'ag2-option-ignore-case)
+    (ag2-popup-insert-boolean "s" "--case-sensitive" 'ag2-option-case-sensitive)
+    (ag2-popup-insert-boolean "w" "--word-regexp" 'ag2-option-word-regexp)
+    (insert "\n")
+    (insert "Press RET when finished")
+    (use-local-map ag2-popup-map)
+    (beginning-of-line)
+    (setq buffer-read-only t)
+    (set-buffer-modified-p nil))
+  (pop-to-buffer ag2-options-buffer-name)
+  (fit-window-to-buffer))
 
 (defun ag2-popup-file-options ()
   "Let user change default file options."
@@ -211,15 +257,15 @@
              (ag2-word-at-point)))
          (search-string
           (read-from-minibuffer
-           (concat "Search for (default \"" default-string "\", M-- for options): ")
+           (concat "Search for (default \"" default-string "\"): ")
            nil ag2-search-local-map nil 'ag2-search-history default-string))
          (search-files
           (read-from-minibuffer
-           "Filename regexp (default to all, M-- for options): "
+           "Filename regexp (default to all): "
            nil ag2-file-local-map nil 'ag2-files-history))
          (search-dir
           (read-from-minibuffer
-           "In directory (M-- for options): "
+           "In directory: "
            default-directory ag2-dir-local-map nil 'ag2-dir-history)))
     (when (string= search-string "")
       (setq search-string default-string))
@@ -233,6 +279,13 @@
                (if (string= "" search-files) "" (concat " -G " (shell-quote-argument search-files)))
                " -- " (shell-quote-argument search-string))
        'ag2-mode))))
+
+;;;###autoload
+(defun ag2-local (&optional arg)
+  "Run 'ag' with depth 0.  With prefix arg, take search string from region."
+  (interactive "P")
+  (let ((ag2-default-depth 0))
+    (call-interactively 'ag2)))
 
 ;;;###autoload
 (define-compilation-mode ag2-mode "ag2"

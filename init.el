@@ -1275,7 +1275,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c d" 'my-debug-map)
 (my-keys-define "C-c f" 'my-ffap)
-(my-keys-define "C-c g" (lambda () "Local ag" (interactive) (let ((ag2-default-depth 0)) (call-interactively 'ag2))))
+(my-keys-define "C-c g" 'ag2-local)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
 (my-keys-define "C-c l" 'my-rotate-case)
