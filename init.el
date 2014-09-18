@@ -754,16 +754,14 @@ arg do something special."
       (kill-buffer buf))))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
-  "Put the current file name on the clipboard"
+  "Put the current file name in the kill-ring."
   (interactive "P")
   (let ((filename (if (equal major-mode 'dired-mode)
                       default-directory
                     (buffer-file-name))))
     (when filename
-      (when arg
-        (setq filename (file-name-nondirectory filename)))
       (kill-new filename)
-      (when (getenv "TMUX")
+      (when (and arg (getenv "TMUX"))
         (let ((text (substring-no-properties (current-kill 0 t))))
           (my-tmux-copy-text text)
           (my-tmux-iterm-copy-text text)))
@@ -1151,6 +1149,7 @@ Only works if there are exactly two windows."
                                (let* ((enable-recursive-minibuffers t)
                                       (dir (my-ido-get-bookmark-dir)))
                                  (when dir
+                                   (delete-minibuffer-contents)
                                    (insert dir))))))
 
 (defun my-sh-mode-hook ()
@@ -1465,6 +1464,7 @@ Only works if there are exactly two windows."
 (defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'kr 'browse-kill-ring)
 (defalias 'qrr 'query-replace-regexp)
+(defalias 'ren 'rename-buffer)
 (defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
