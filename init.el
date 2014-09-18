@@ -22,7 +22,7 @@
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ag)
+(require 'ag2)
 (require 'bm)
 (require 'csh-mode)
 (require 'etags)
@@ -126,6 +126,7 @@
               ace-jump-mode-gray-background nil
               ace-jump-mode-scope 'window
               ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
+              ag2-default-literal t
               backup-inhibited t
               blink-matching-paren-distance nil
               bm-goto-position nil
@@ -1264,7 +1265,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c =" 'my-ediff-dwim)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
-(my-keys-define "C-c G" 'ag)
+(my-keys-define "C-c G" 'ag2)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c R" 'revbufs)
@@ -1274,7 +1275,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c d" 'my-debug-map)
 (my-keys-define "C-c f" 'my-ffap)
-(my-keys-define "C-c g" 'ag-local)
+(my-keys-define "C-c g" (lambda () "Local ag" (interactive) (let ((ag2-default-depth 0)) (call-interactively 'ag2))))
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
 (my-keys-define "C-c l" 'my-rotate-case)
