@@ -360,10 +360,8 @@
                  "In directory: "
                  default-dir ag2-popup-minibuffer-map nil 'ag2-dir-history))
           (when (string= search-dir "")
-            (setq search-dir default-dir))
-          ;; Cleanup
-          (with-current-buffer ag2-popup-buffer-name
-            (kill-buffer-and-window)))
+            (setq search-dir default-dir)))
+      ;; Cleanup
       (with-current-buffer ag2-popup-buffer-name
         (kill-buffer-and-window)))
     ;; Execute
