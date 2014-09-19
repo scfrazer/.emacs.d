@@ -191,6 +191,7 @@
 (defun ag2-popup-end ()
   "Common popup end code."
   (with-current-buffer ag2-popup-buffer-name
+    (setq buffer-read-only nil)
     (insert "\n")
     (insert "Press M-- to switch to this buffer and change options\n")
     (insert "Press RET when finished to switch back to the minibuffer")
@@ -204,27 +205,88 @@
 (defun ag2-popup-insert-boolean (key-string option-string symbol)
   "Insert a boolean option."
   (define-key ag2-popup-map (kbd key-string)
-    `(lambda () (interactive) (ag2-popup-toggle-option ,key-string (quote ,symbol))))
+    `(lambda () (interactive) (ag2-popup-toggle-boolean ,key-string (quote ,symbol))))
+  (setq buffer-read-only nil)
   (insert key-string ": " option-string)
   (when (symbol-value (intern-soft symbol))
     (put-text-property
      (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face))
-  (insert "\n"))
+  (insert "\n")
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil))
 
-(defun ag2-popup-toggle-option (key-string symbol)
+(defun ag2-popup-toggle-boolean (key-string symbol)
   "Toggle an option."
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward (concat "^" key-string ":") nil t)
-      (set symbol (not (symbol-value symbol)))
-      (setq buffer-read-only nil)
-      (if (symbol-value symbol)
-          (put-text-property
-           (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
-        (put-text-property
-         (point-at-bol) (point-at-eol) 'face 'default))
-      (setq buffer-read-only t)
-      (set-buffer-modified-p nil))))
+  (goto-char (point-min))
+  (re-search-forward (concat "^" key-string ":") nil t)
+  (beginning-of-line)
+  (set symbol (not (symbol-value symbol)))
+  (setq buffer-read-only nil)
+  (if (symbol-value symbol)
+      (put-text-property
+       (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
+    (put-text-property
+     (point-at-bol) (point-at-eol) 'face 'default))
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil))
+
+(defun ag2-popup-insert-option-line (key-string option-string symbol &optional newline)
+  "Insert option line text."
+  (setq buffer-read-only nil)
+  (delete-region (point-at-bol) (point-at-eol))
+  (insert key-string ": " option-string)
+  (let ((value (symbol-value (intern-soft symbol))))
+    (when value
+      (insert " = ")
+      (cond ((stringp value)
+             (insert value))
+            ((numberp value)
+             (insert (number-to-string value))))
+      (put-text-property
+       (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)))
+  (when newline
+    (insert "\n"))
+  (beginning-of-line)
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil))
+
+(defun ag2-popup-insert-number (key-string option-string symbol prompt)
+  "Insert a number option."
+  (define-key ag2-popup-map (kbd key-string)
+    `(lambda () (interactive) (ag2-popup-set-number-option ,key-string ,option-string (quote ,symbol) ,prompt)))
+  (ag2-popup-insert-option-line key-string option-string symbol t))
+
+(defun ag2-popup-set-number-option (key-string option-string symbol prompt)
+  "Set a number option."
+  (goto-char (point-min))
+  (re-search-forward (concat "^" key-string ":") nil t)
+  (beginning-of-line)
+  (let* ((enable-recursive-minibuffers t)
+         (sym-val (symbol-value symbol))
+         (value (read-from-minibuffer
+                 prompt (and sym-val (number-to-string sym-val)))))
+    (if (string= value "")
+        (set symbol nil)
+      (set symbol (string-to-number value))))
+  (ag2-popup-insert-option-line key-string option-string symbol))
+
+(defun ag2-popup-insert-string (key-string option-string symbol prompt)
+  "Insert a string option."
+  (define-key ag2-popup-map (kbd key-string)
+    `(lambda () (interactive) (ag2-popup-set-string-option ,key-string ,option-string (quote ,symbol) ,prompt)))
+  (ag2-popup-insert-option-line key-string option-string symbol t))
+
+(defun ag2-popup-set-string-option (key-string option-string symbol prompt)
+  "Set a string option."
+  (goto-char (point-min))
+  (re-search-forward (concat "^" key-string ":") nil t)
+  (beginning-of-line)
+  (let* ((enable-recursive-minibuffers t)
+         (value (read-from-minibuffer prompt (symbol-value symbol))))
+    (if (string= value "")
+        (set symbol nil)
+      (set symbol value)))
+  (ag2-popup-insert-option-line key-string option-string symbol))
 
 (defun ag2-popup-search-options ()
   "Let user change default search options."
@@ -243,45 +305,32 @@
   (ag2-popup-start)
   (define-key ag2-popup-map (kbd "-") 'ag2-popup-choose-file-type)
   (with-current-buffer ag2-popup-buffer-name
-    (ag2-popup-insert-file-type) (insert "\n")
+    (ag2-popup-insert-option-line "-" "Search file type" 'ag2-option-file-type t)
     (ag2-popup-insert-boolean "a" "--all-types" 'ag2-option-all-types)
     (ag2-popup-insert-boolean "b" "--search-binary" 'ag2-option-search-binary)
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
-    (insert "i: --ignore PATTERN (TODO)\n")
+    (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file regexp: ")
     (ag2-popup-insert-boolean "h" "--hidden" 'ag2-option-hidden)
     (ag2-popup-insert-boolean "t" "--all-text" 'ag2-option-all-text)
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
     (ag2-popup-insert-boolean "z" "--search-zip" 'ag2-option-search-zip))
   (ag2-popup-end))
 
-(defun ag2-popup-insert-file-type ()
-  "Insert file type option."
-    (insert "-: Search file type")
-    (when ag2-option-file-type
-      (insert " = " ag2-option-file-type)
-      (put-text-property
-       (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)))
-
 ;; TODO User-defined types
 (defun ag2-popup-choose-file-type ()
   "Choose file type."
   (interactive)
   (ag2-popup-get-built-in-file-types)
+  (goto-char (point-min))
+  (re-search-forward "^-:" nil t)
+  (beginning-of-line)
   (let ((enable-recursive-minibuffers t))
     (setq ag2-option-file-type
           (completing-read "File type: " ag2-built-in-file-types
            nil t ag2-option-file-type 'ag2-type-history)))
   (when (string= ag2-option-file-type "")
     (setq ag2-option-file-type nil))
-  (goto-char (point-min))
-  (re-search-forward "^-:" nil t)
-  (setq buffer-read-only nil)
-  (delete-region (point-at-bol) (point-at-eol))
-  (ag2-popup-insert-file-type)
-  (setq buffer-read-only t)
-  (set-buffer-modified-p nil)
-  (goto-char (point-max))
-  (beginning-of-line))
+  (ag2-popup-insert-option-line "-" "Search file type" 'ag2-option-file-type))
 
 (defun ag2-popup-get-built-in-file-types ()
   "Get the file types ag knows about."
@@ -297,8 +346,8 @@
   "Let user change default directory options."
   (interactive)
   (ag2-popup-start)
-  (insert "d: --depth NUM (TODO)\n")
-  (insert "i: --ignore-dir NAME (TODO)\n")
+  (ag2-popup-insert-number "d" "--depth" 'ag2-option-depth "Depth: ")
+  (ag2-popup-insert-string "i" "--ignore-dir" 'ag2-option-ignore-dir "Ignore directory regexp: ")
   (ag2-popup-end))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
