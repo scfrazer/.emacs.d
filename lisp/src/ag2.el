@@ -182,7 +182,7 @@
 
 (defun ag2-popup-end ()
   "Common popup end code."
-  (with-current-buffer (get-buffer-create ag2-popup-buffer-name)
+  (with-current-buffer ag2-popup-buffer-name
     (insert "\n")
     (insert "Press M-- to switch to this buffer and change options\n")
     (insert "Press RET when finished to switch back to the minibuffer")
@@ -219,7 +219,7 @@
   "Let user change default search options."
   (interactive)
   (ag2-popup-start)
-  (with-current-buffer (get-buffer-create ag2-popup-buffer-name)
+  (with-current-buffer ag2-popup-buffer-name
     (ag2-popup-insert-boolean "Q" "--literal" 'ag2-option-literal)
     (ag2-popup-insert-boolean "i" "--ignore-case" 'ag2-option-ignore-case)
     (ag2-popup-insert-boolean "s" "--case-sensitive" 'ag2-option-case-sensitive)
@@ -230,7 +230,7 @@
   "Let user change default file options."
   (interactive)
   (ag2-popup-start)
-  (with-current-buffer (get-buffer-create ag2-popup-buffer-name)
+  (with-current-buffer ag2-popup-buffer-name
     (insert "-: Add file types (TODO)\n")
     (ag2-popup-insert-boolean "a" "--all-types" 'ag2-option-all-types)
     (ag2-popup-insert-boolean "b" "--search-binary" 'ag2-option-search-binary)
