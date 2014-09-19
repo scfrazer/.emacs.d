@@ -39,6 +39,12 @@
   :group 'ag2)
 (defvar ag2-option-depth nil)
 
+(defcustom ag2-default-file-types nil
+  "List of file types to search."
+  :type '(repeat string)
+  :group 'ag2)
+(defvar ag2-option-file-types nil)
+
 (defcustom ag2-default-follow nil
   "Use --follow."
   :type 'boolean
@@ -104,6 +110,8 @@
 (defvar ag2-search-history nil)
 (defvar ag2-files-history nil)
 (defvar ag2-dir-history nil)
+(defvar ag2-types-history nil)
+(defvar ag2-built-in-file-types nil)
 
 (defun ag2-word-at-point ()
   "Get the closest word at point."
@@ -162,7 +170,7 @@
 
 (defvar ag2-popup-minibuffer-map
   (let ((map (copy-keymap minibuffer-local-map)))
-    (define-key map (kbd "M--")
+    (define-key map (kbd "C-o")
       (lambda ()
         (interactive)
         (pop-to-buffer ag2-popup-buffer-name)))
@@ -184,7 +192,7 @@
   "Common popup end code."
   (with-current-buffer ag2-popup-buffer-name
     (insert "\n")
-    (insert "Press M-- to switch to this buffer and change options\n")
+    (insert "Press C-o to switch to this buffer and change options\n")
     (insert "Press RET when finished to switch back to the minibuffer")
     (beginning-of-line)
     (use-local-map ag2-popup-map)
@@ -199,7 +207,8 @@
     `(lambda () (interactive) (ag2-popup-toggle-option ,key-string (quote ,symbol))))
   (insert key-string ": " option-string)
   (when (symbol-value (intern-soft symbol))
-    (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face))
+    (put-text-property
+     (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face))
   (insert "\n"))
 
 (defun ag2-popup-toggle-option (key-string symbol)
@@ -210,8 +219,10 @@
       (set symbol (not (symbol-value symbol)))
       (setq buffer-read-only nil)
       (if (symbol-value symbol)
-          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
-        (put-text-property (point-at-bol) (point-at-eol) 'face 'default))
+          (put-text-property
+           (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
+        (put-text-property
+         (point-at-bol) (point-at-eol) 'face 'default))
       (setq buffer-read-only t)
       (set-buffer-modified-p nil))))
 
@@ -230,8 +241,9 @@
   "Let user change default file options."
   (interactive)
   (ag2-popup-start)
+  (define-key ag2-popup-map (kbd "-") 'ag2-popup-choose-file-types)
   (with-current-buffer ag2-popup-buffer-name
-    (insert "-: Add file types (TODO)\n")
+    (ag2-popup-insert-file-types) (insert "\n")
     (ag2-popup-insert-boolean "a" "--all-types" 'ag2-option-all-types)
     (ag2-popup-insert-boolean "b" "--search-binary" 'ag2-option-search-binary)
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
@@ -241,6 +253,54 @@
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
     (ag2-popup-insert-boolean "z" "--search-zip" 'ag2-option-search-zip))
   (ag2-popup-end))
+
+(defun ag2-popup-insert-file-types ()
+  "Insert file types option."
+    (insert "-: Search file types")
+    (when ag2-option-file-types
+      (insert " = ")
+      (dolist (type ag2-option-file-types)
+        (insert type ","))
+      (delete-char -1)
+      (put-text-property
+       (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)))
+
+;; TODO User-defined types
+(defun ag2-popup-choose-file-types ()
+  "Choose file types."
+  (interactive)
+  (ag2-popup-get-built-in-file-types)
+  (let ((enable-recursive-minibuffers t)
+        (crm-default-separator ",")
+        (type-string ""))
+    (when ag2-option-file-types
+      (dolist (type ag2-option-file-types)
+        (setq type-string (concat type-string type ",")))
+      (setq type-string (substring type-string 0 -1)))
+    (setq ag2-option-file-types
+          (completing-read-multiple
+           "File types (comma separated): "
+           ag2-built-in-file-types
+           nil nil type-string 'ag2-types-history)))
+  (goto-char (point-min))
+  (re-search-forward "^-:" nil t)
+  (setq buffer-read-only nil)
+  (delete-region (point-at-bol) (point-at-eol))
+  (ag2-popup-insert-file-types)
+  (setq buffer-read-only t)
+  (set-buffer-modified-p nil)
+  (goto-char (point-max))
+  (beginning-of-line))
+
+(defun ag2-popup-get-built-in-file-types ()
+  "Get the file types ag knows about."
+  (unless ag2-built-in-file-types
+    (with-temp-buffer
+      (shell-command (concat ag2-executable " --list-file-types") t)
+      (goto-char (point-min))
+      (while (re-search-forward "^\\s-+--\\([a-zA-Z0-9_]+\\)" nil t)
+        (push (match-string-no-properties 1) ag2-built-in-file-types)))
+    (setq ag2-built-in-file-types (sort ag2-built-in-file-types 'string<))))
 
 (defun ag2-popup-dir-options ()
   "Let user change default directory options."
@@ -256,6 +316,7 @@
 (defun ag2 (&optional arg)
   "Run 'ag'.  With prefix arg, take search string from region."
   (interactive "P")
+  (setq ag2-option-file-types (copy-sequence ag2-default-file-types))
   (setq ag2-option-all-text ag2-default-all-text
         ag2-option-all-types ag2-default-all-types
         ag2-option-case-sensitive ag2-default-case-sensitive
@@ -270,41 +331,50 @@
         ag2-option-search-zip ag2-default-search-zip
         ag2-option-unrestricted ag2-default-unrestricted
         ag2-option-word-regexp ag2-default-word-regexp)
-  (let ((default-string
+  (let ((default-search
           (if (and arg (mark t))
               (buffer-substring-no-properties (region-beginning) (region-end))
             (ag2-word-at-point)))
         (default-dir default-directory)
         search-string search-files search-dir)
-    ;; Search
-    (ag2-popup-search-options)
-    (setq search-string
-          (read-from-minibuffer
-           (concat "Search for (default \"" default-string "\"): ")
-           nil ag2-popup-minibuffer-map nil 'ag2-search-history default-string))
-    (when (string= search-string "")
-      (setq search-string default-string))
-    ;; File
-    (ag2-popup-file-options)
-    (setq search-files
-          (read-from-minibuffer
-           "Filename regexp (default to all): "
-           nil ag2-popup-minibuffer-map nil 'ag2-files-history))
-    ;; Directory
-    (ag2-popup-dir-options)
-    (setq search-dir
-          (read-from-minibuffer
-           "In directory: "
-           default-dir ag2-popup-minibuffer-map nil 'ag2-dir-history))
-    (when (string= search-dir "")
-      (setq search-dir default-dir))
+    (unwind-protect
+        (progn
+          ;; Search
+          (ag2-popup-search-options)
+          (setq search-string
+                (read-from-minibuffer
+                 (concat "Search for (default \"" default-search "\"): ")
+                 nil ag2-popup-minibuffer-map nil 'ag2-search-history default-search))
+          (when (string= search-string "")
+            (setq search-string default-search))
+          ;; File
+          (ag2-popup-file-options)
+          (setq search-files
+                (read-from-minibuffer
+                 "Filename regexp (default to all): "
+                 nil ag2-popup-minibuffer-map nil 'ag2-files-history))
+          ;; Directory
+          (ag2-popup-dir-options)
+          (setq search-dir
+                (read-from-minibuffer
+                 "In directory: "
+                 default-dir ag2-popup-minibuffer-map nil 'ag2-dir-history))
+          (when (string= search-dir "")
+            (setq search-dir default-dir))
+          ;; Cleanup
+          (with-current-buffer ag2-popup-buffer-name
+            (kill-buffer-and-window)))
+      (with-current-buffer ag2-popup-buffer-name
+        (kill-buffer-and-window)))
     ;; Execute
-    (with-current-buffer ag2-popup-buffer-name
-      (kill-buffer-and-window))
-    (let ((default-directory search-dir))
+    (let ((default-directory search-dir)
+          (type-string ""))
+      (dolist (type ag2-option-file-types)
+        (setq type-string (concat type-string " --" type)))
       (compilation-start
        (concat ag2-executable
-               " --nogroup --line-number --column --color --color-match 1\\;31"
+               type-string
+               " --nogroup --column --color --color-match 1\\;31"
                (ag2-options-to-string)
                (if (string= "" search-files) "" (concat " -G " (shell-quote-argument search-files)))
                " -- " (shell-quote-argument search-string))
