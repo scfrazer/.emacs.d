@@ -1405,6 +1405,9 @@ Only works if there are exactly two windows."
 (define-key clearcase-mode-map (kbd "C-v") nil)
 (define-key clearcase-dired-mode-map (kbd "C-v") nil)
 
+(setq ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
+                                ("rtl" . "\\.(s|v|vh)$")))
+
 (setq etags-table-alist
       (list
        '("/vob/sse/asic/.*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")

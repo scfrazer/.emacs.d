@@ -15,6 +15,13 @@
   :type 'string
   :group 'ag2)
 
+(defcustom ag2-files-aliases-alist nil
+  "Alist of aliases for the filename regexp.
+If the key matches the filename regexp input exactly, the
+corresponding value will be used instead."
+  :type '(alist :key-type string :value-type string)
+  :group 'ag2)
+
 (defcustom ag2-default-all-text nil
   "Use --all-text."
   :type 'boolean
@@ -68,12 +75,6 @@
   :type 'boolean
   :group 'ag2)
 (defvar ag2-option-ignore-case nil)
-
-(defcustom ag2-default-ignore-dir nil
-  "Use --ignore-dir NAME."
-  :type 'string
-  :group 'ag2)
-(defvar ag2-option-ignore-dir nil)
 
 (defcustom ag2-default-literal nil
   "Use --literal."
@@ -146,10 +147,6 @@
                     (shell-quote-argument ag2-option-ignore))))
     (when ag2-option-ignore-case
       (setq string (concat string " -i")))
-    (when ag2-option-ignore-dir
-      (setq string
-            (concat string " --ignore-dir "
-                    (shell-quote-argument ag2-option-ignore-dir))))
     (when ag2-option-literal
       (setq string (concat string " -Q")))
     (when ag2-option-search-binary
@@ -309,14 +306,13 @@
     (ag2-popup-insert-boolean "a" "--all-types" 'ag2-option-all-types)
     (ag2-popup-insert-boolean "b" "--search-binary" 'ag2-option-search-binary)
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
-    (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file regexp: ")
+    (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file/directory regexp: ")
     (ag2-popup-insert-boolean "h" "--hidden" 'ag2-option-hidden)
     (ag2-popup-insert-boolean "t" "--all-text" 'ag2-option-all-text)
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
     (ag2-popup-insert-boolean "z" "--search-zip" 'ag2-option-search-zip))
   (ag2-popup-end))
 
-;; TODO User-defined types
 (defun ag2-popup-choose-file-type ()
   "Choose file type."
   (interactive)
@@ -347,7 +343,6 @@
   (interactive)
   (ag2-popup-start)
   (ag2-popup-insert-number "d" "--depth" 'ag2-option-depth "Depth: ")
-  (ag2-popup-insert-string "i" "--ignore-dir" 'ag2-option-ignore-dir "Ignore directory regexp: ")
   (ag2-popup-end))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -365,7 +360,6 @@
         ag2-option-hidden ag2-default-hidden
         ag2-option-ignore ag2-default-ignore
         ag2-option-ignore-case ag2-default-ignore-case
-        ag2-option-ignore-dir ag2-default-ignore-dir
         ag2-option-literal ag2-default-literal
         ag2-option-search-binary ag2-default-search-binary
         ag2-option-search-zip ag2-default-search-zip
@@ -393,6 +387,9 @@
                 (read-from-minibuffer
                  "Filename regexp (default to all): "
                  nil ag2-popup-minibuffer-map nil 'ag2-files-history))
+          (let ((cell (assoc search-files ag2-files-aliases-alist)))
+            (when cell
+              (setq search-files (cdr cell))))
           ;; Directory
           (ag2-popup-dir-options)
           (setq search-dir
