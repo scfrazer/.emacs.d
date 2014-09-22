@@ -1406,7 +1406,8 @@ Only works if there are exactly two windows."
 (define-key clearcase-dired-mode-map (kbd "C-v") nil)
 
 (setq ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
-                                ("rtl" . "\\.(s|v|vh)$")))
+                                ("rtl" . "\\.(s|v|vh)$")
+                                ("vtt" . "\\.(java|php|json|html)$")))
 
 (setq etags-table-alist
       (list
