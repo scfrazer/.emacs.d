@@ -299,6 +299,7 @@ corresponding value will be used instead."
   (with-current-buffer ag2-popup-buffer-name
     (ag2-popup-insert-boolean "Q" "--literal" 'ag2-option-literal)
     (ag2-popup-insert-boolean "i" "--ignore-case" 'ag2-option-ignore-case)
+    (ag2-popup-insert-number "m" "--max-count" 'ag2-option-max-count "Max count: ")
     (ag2-popup-insert-boolean "s" "--case-sensitive" 'ag2-option-case-sensitive)
     (ag2-popup-insert-boolean "w" "--word-regexp" 'ag2-option-word-regexp))
   (ag2-popup-end))
@@ -315,7 +316,6 @@ corresponding value will be used instead."
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
     (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file/directory regexp: ")
     (ag2-popup-insert-boolean "h" "--hidden" 'ag2-option-hidden)
-    (ag2-popup-insert-number "m" "--max-count" 'ag2-option-max-count "Max count: ")
     (ag2-popup-insert-boolean "t" "--all-text" 'ag2-option-all-text)
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
     (ag2-popup-insert-boolean "z" "--search-zip" 'ag2-option-search-zip))
