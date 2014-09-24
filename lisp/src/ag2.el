@@ -82,6 +82,12 @@ corresponding value will be used instead."
   :group 'ag2)
 (defvar ag2-option-literal nil)
 
+(defcustom ag2-default-max-count nil
+  "Use --max-count."
+  :type 'integer
+  :group 'ag2)
+(defvar ag2-option-max-count nil)
+
 (defcustom ag2-default-search-binary nil
   "Use --search-binary."
   :type 'boolean
@@ -149,6 +155,9 @@ corresponding value will be used instead."
       (setq string (concat string " -i")))
     (when ag2-option-literal
       (setq string (concat string " -Q")))
+    (when ag2-option-max-count
+      (setq string
+            (concat string " -m " (number-to-string ag2-option-max-count))))
     (when ag2-option-search-binary
       (setq string (concat string " --search-binary")))
     (when ag2-option-search-zip
@@ -306,6 +315,7 @@ corresponding value will be used instead."
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
     (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file/directory regexp: ")
     (ag2-popup-insert-boolean "h" "--hidden" 'ag2-option-hidden)
+    (ag2-popup-insert-number "m" "--max-count" 'ag2-option-max-count "Max count: ")
     (ag2-popup-insert-boolean "t" "--all-text" 'ag2-option-all-text)
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
     (ag2-popup-insert-boolean "z" "--search-zip" 'ag2-option-search-zip))
@@ -360,6 +370,7 @@ corresponding value will be used instead."
         ag2-option-ignore ag2-default-ignore
         ag2-option-ignore-case ag2-default-ignore-case
         ag2-option-literal ag2-default-literal
+        ag2-option-max-count ag2-default-max-count
         ag2-option-search-binary ag2-default-search-binary
         ag2-option-search-zip ag2-default-search-zip
         ag2-option-unrestricted ag2-default-unrestricted
