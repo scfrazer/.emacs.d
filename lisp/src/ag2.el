@@ -179,19 +179,14 @@ corresponding value will be used instead."
   (with-current-buffer (get-buffer-create ag2-popup-buffer-name)
     (setq buffer-read-only nil)
     (erase-buffer)
-    (setq ag2-popup-map (make-sparse-keymap))
-    (define-key ag2-popup-map (kbd "RET")
-      (lambda ()
-        (interactive)
-        (select-window (active-minibuffer-window))))))
+    (setq ag2-popup-map (make-sparse-keymap))))
 
 (defun ag2-popup-end ()
   "Common popup end code."
   (with-current-buffer ag2-popup-buffer-name
     (setq buffer-read-only nil)
     (insert "\n")
-    (insert "Press M-- to switch to this buffer and change options\n")
-    (insert "Press RET when finished to switch back to the minibuffer")
+    (insert "Press M-- to switch to this buffer, then choose an option\n")
     (beginning-of-line)
     (use-local-map ag2-popup-map)
     (setq buffer-read-only t)
@@ -225,7 +220,8 @@ corresponding value will be used instead."
     (put-text-property
      (point-at-bol) (point-at-eol) 'face 'default))
   (setq buffer-read-only t)
-  (set-buffer-modified-p nil))
+  (set-buffer-modified-p nil)
+  (select-window (active-minibuffer-window)))
 
 (defun ag2-popup-insert-option-line (key-string option-string symbol &optional newline)
   "Insert option line text."
@@ -265,7 +261,8 @@ corresponding value will be used instead."
     (if (string= value "")
         (set symbol nil)
       (set symbol (string-to-number value))))
-  (ag2-popup-insert-option-line key-string option-string symbol))
+  (ag2-popup-insert-option-line key-string option-string symbol)
+  (select-window (active-minibuffer-window)))
 
 (defun ag2-popup-insert-string (key-string option-string symbol prompt)
   "Insert a string option."
@@ -283,7 +280,8 @@ corresponding value will be used instead."
     (if (string= value "")
         (set symbol nil)
       (set symbol value)))
-  (ag2-popup-insert-option-line key-string option-string symbol))
+  (ag2-popup-insert-option-line key-string option-string symbol)
+  (select-window (active-minibuffer-window)))
 
 (defun ag2-popup-search-options ()
   "Let user change default search options."
@@ -326,7 +324,8 @@ corresponding value will be used instead."
            nil t ag2-option-file-type 'ag2-type-history)))
   (when (string= ag2-option-file-type "")
     (setq ag2-option-file-type nil))
-  (ag2-popup-insert-option-line "-" "Search file type" 'ag2-option-file-type))
+  (ag2-popup-insert-option-line "-" "Search file type" 'ag2-option-file-type)
+  (select-window (active-minibuffer-window)))
 
 (defun ag2-popup-get-built-in-file-types ()
   "Get the file types ag knows about."
