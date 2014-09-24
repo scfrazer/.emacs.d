@@ -47,6 +47,7 @@
   (when my-ffap-line-number
     (goto-char (point-min))
     (forward-line (1- my-ffap-line-number))
+    (recenter)
     (setq my-ffap-line-number nil)))
 
 (provide 'my-ffap)
