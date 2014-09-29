@@ -92,24 +92,28 @@
 
 (defadvice clearcase-list-history (after my-clearcase-list-history activate)
   "Colorize and add some extra functions."
-  (with-current-buffer "*clearcase*"
-    (setq show-trailing-whitespace nil)
-    (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file)
-    (local-set-key (kbd "C-c =") 'my-clearcase-list-history-diff)
-    (local-set-key (kbd "C-n") 'my-clearcase-list-history-next)
-    (local-set-key (kbd "C-p") 'my-clearcase-list-history-previous)
-    (setq truncate-lines t)
-    (setq buffer-read-only nil)
-    (goto-char (point-min))
-    (while (not (eobp))
-      (if (looking-at "^.+checkout version.+$")
-          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face)
-        (unless (looking-at "^[0-9]+-[0-9]+-[0-9]+.+$")
-          (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-comment-face)))
-      (forward-line 1))
-    (goto-char (point-min))
-    (setq buffer-read-only t)
-    (set-buffer-modified-p nil)))
+  (let ((version (clearcase-fprop-version (ad-get-arg 0))))
+    (with-current-buffer "*clearcase*"
+      (setq show-trailing-whitespace nil)
+      (local-set-key (kbd "C-c C-e") 'my-clearcase-list-history-get-file)
+      (local-set-key (kbd "C-c =") 'my-clearcase-list-history-diff)
+      (local-set-key (kbd "C-n") 'my-clearcase-list-history-next)
+      (local-set-key (kbd "C-p") 'my-clearcase-list-history-previous)
+      (setq truncate-lines t)
+      (setq buffer-read-only nil)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (cond ((looking-at "^.+checkout version.+$")
+               (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-warning-face))
+              ((looking-at (concat "^.+@@" version "\""))
+               (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-constant-face))
+              (t
+               (unless (looking-at "^[0-9]+-[0-9]+-[0-9]+.+$")
+                 (put-text-property (point-at-bol) (point-at-eol) 'face 'font-lock-comment-face))))
+        (forward-line 1))
+      (goto-char (point-min))
+      (setq buffer-read-only t)
+      (set-buffer-modified-p nil))))
 
 (defun my-clearcase-list-checkouts ()
   "List the checkouts of FILE.
@@ -167,10 +171,15 @@ on the directory element itself is listed, not on its contents."
             (revert-buffer nil t))))
       (dired-relist-file file))))
 
+(defvar my-clearcase-versioned-buffers-before-ediff nil)
 (defun my-clearcase-ediff-current (&optional arg)
   "Do ediff of current buffer/dired-file against latest.
 With prefix arg ask for version."
   (interactive "P")
+  (setq my-clearcase-versioned-buffers-before-ediff nil)
+  (dolist (buf (buffer-list))
+    (when (string-match ".+?@@.+?$" (buffer-name buf))
+      (push (buffer-name buf) my-clearcase-versioned-buffers-before-ediff)))
   (call-interactively
    (if (eq major-mode 'dired-mode)
        (if arg

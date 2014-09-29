@@ -6,7 +6,7 @@
    'my-light
 
    `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#DADADA"))))
-   `(bm-face ((,class (:foreground nil :background "#FFD7AF"))))
+   `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#5F00AF"))))
    `(compilation-error ((,class (:foreground "#CD0000"))))

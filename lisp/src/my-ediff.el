@@ -103,7 +103,8 @@ either do ClearCase diff or Git diff depending on where the file is."
     ;; Kill Clearcase revision buffers
     (mapc (lambda (x)
             (when (and (buffer-name x) (string-match ".+?@@.+?$" (buffer-name x)))
-              (kill-buffer x)))
+              (unless (member (buffer-name x) my-clearcase-versioned-buffers-before-ediff)
+                (kill-buffer x))))
           buf-list)
     ;; Kill vc revision buffers
     (mapc (lambda (x)
