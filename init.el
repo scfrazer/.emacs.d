@@ -411,6 +411,7 @@
   (setq compile-command
         (ido-completing-read "Compile command: " my-compile-command))
   (call-interactively 'compile)
+  (setq my-compile-command (delq compile-command my-compile-command))
   (add-to-list 'my-compile-command compile-command))
 
 (defun my-comment-or-uncomment-region ()
