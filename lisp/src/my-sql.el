@@ -15,6 +15,8 @@
            (match-string 1))))
 
      (defun my-sqlplus-mode-hook ()
+       (setq comment-start "-- "
+             comment-end "")
        (make-local-variable 'indent-line-function)
        (setq indent-line-function 'sql-indent-line)
        (sqlup-mode 1))
