@@ -34,9 +34,9 @@
       (goto-char (point-min))
       (while (re-search-forward "[$(){}]" nil t)
         (replace-match ""))
-      (goto-char (point-min))
       ;; Parse <char><line number> from end as line-number
-      (when (re-search-forward "[@:]\\([0-9]+\\)$" nil t)
+      (goto-char (point-min))
+      (when (re-search-forward "[@:]\\([0-9]+\\)" nil t)
         (setq my-ffap-line-number (string-to-number (match-string 1)))
         (replace-match ""))
       (setq ad-return-value (buffer-substring (point-min) (point-max)))
