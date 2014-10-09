@@ -72,6 +72,7 @@
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "SPC") (lambda () (interactive) (sqlup-maybe-capitalize-and-insert " ")))
             (define-key map (kbd "(") (lambda () (interactive) (sqlup-maybe-capitalize-and-insert "(")))
+            (define-key map (kbd ")") (lambda () (interactive) (sqlup-maybe-capitalize-and-insert ")")))
             (define-key map (kbd ";") (lambda () (interactive) (sqlup-maybe-capitalize-and-insert ";")))
             (define-key map (kbd ",") (lambda () (interactive) (sqlup-maybe-capitalize-and-insert ",")))
             map))

@@ -66,6 +66,7 @@
     (list "/auto/vtt/www/prod/dev/local/bin/php-lint" (list local-file))))
 
 (defun my-php-mode-hook ()
+  (font-lock-add-keywords nil '(("default" (0 'font-lock-keyword-face prepend))) 'add-to-end)
   (flymake-mode 1))
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 

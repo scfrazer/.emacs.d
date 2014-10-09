@@ -682,6 +682,21 @@ end of a non-blank line, or insert an 80-column comment line"
   (when (and (not arg) (> (count-windows) 1))
     (delete-window)))
 
+(defvar my-layout-window-configuration nil)
+
+(defun my-layout-load ()
+  "Load a saved window configuration."
+  (interactive)
+  (when my-layout-window-configuration
+    (set-window-configuration my-layout-window-configuration)
+    (message "Layout loaded")))
+
+(defun my-layout-save ()
+  "Save current window configuration."
+  (interactive)
+  (setq my-layout-window-configuration (current-window-configuration))
+  (message "Layout saved"))
+
 (defun my-minibuffer-backward ()
   "Move backward words or path elements in the minibuffer."
   (interactive)
@@ -874,16 +889,14 @@ with a prefix argument, prompt for START-AT and FORMAT."
  t => lowercase, uppercase, capitalize.")
 
 (defun my-rotate-case (&optional arg)
-  "Rotate case to capitalized, uppercase, lowercase."
-  (interactive "*")
+  "Rotate current symbol case to capitalized, uppercase, lowercase.
+With prefix arg, just do current lett."
+  (interactive "*P")
   (let ((case-fold-search nil) beg end)
     (save-excursion
       (if arg
-          (if (< (region-beginning) (region-end))
-              (setq beg (region-beginning)
-                    end (region-end))
-            (setq end (region-beginning)
-                  beg (region-end)))
+          (setq beg (point)
+                end (1+ (point)))
         (skip-syntax-forward "w_")
         (setq end (point))
         (skip-syntax-backward "w_")
@@ -1269,10 +1282,12 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c G" 'ag2)
+(my-keys-define "C-c L" 'my-layout-save)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
+(my-keys-define "C-c U" (lambda () (interactive) (my-rotate-case t)))
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
@@ -1281,7 +1296,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c g" 'ag2-local)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c l" 'my-rotate-case)
+(my-keys-define "C-c l" 'my-layout-load)
 (my-keys-define "C-c m" 'my-compile)
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
@@ -1289,6 +1304,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
+(my-keys-define "C-c u" 'my-rotate-case)
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
 (my-keys-define "C-c y" 'yank-target-map)
