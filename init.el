@@ -984,6 +984,18 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (setq-default server-name clearcase-setview-viewtag)
     (server-start)))
 
+(defun my-term ()
+  "Like `term', but use default shell without prompting."
+  (interactive)
+  (set-buffer
+   (make-term "terminal" (or explicit-shell-file-name
+                             (getenv "ESHELL")
+                             (getenv "SHELL")
+                             "/bin/sh")))
+  (term-mode)
+  (term-char-mode)
+  (switch-to-buffer "*terminal*"))
+
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
@@ -1292,6 +1304,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
 (my-keys-define "C-c d" 'my-debug-map)
+(my-keys-define "C-c e" 'my-term)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c g" 'ag2-local)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))

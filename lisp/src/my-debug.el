@@ -20,7 +20,8 @@
     (newline)
     (forward-line -1))
   (insert "DEBUG")
-  (comment-region (point-at-bol) (point-at-eol)))
+  (comment-region (point-at-bol) (point-at-eol))
+  (indent-region (point-at-bol) (point-at-eol)))
 
 (defun my-debug-comment-region ()
   "Comment out the current region and insert a DEBUG line above it."
