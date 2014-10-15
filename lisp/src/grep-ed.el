@@ -103,13 +103,13 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
   ;; Narrow to just interesting part
   (save-excursion
     (goto-char (point-min))
-    (when (re-search-forward "^[^ \t]+?:[0-9]+:" nil t)
+    (when (re-search-forward "^[^ \t]+?:[0-9]+:\\([0-9]+:\\)?" nil t)
       (beginning-of-line)
       (narrow-to-region (point) (progn (forward-paragraph) (point)))))
   ;; Make all filename:line-num: non-editable
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "^[^ \t]+?:[0-9]+:" nil t)
+    (while (re-search-forward "^[^ \t]+?:[0-9]+:\\([0-9]+:\\)?" nil t)
       (add-text-properties (match-beginning 0) (match-end 0)
                            (list 'intangible 'grep-ed
                                  'read-only t
@@ -135,7 +135,7 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
     (save-excursion
       (goto-char (point-min))
       (let ((inhibit-read-only t))
-        (while (re-search-forward "^[^ \t]+?:[0-9]+:" nil t)
+        (while (re-search-forward "^[^ \t]+?:[0-9]+:\\([0-9]+:\\)?" nil t)
           (remove-text-properties (match-beginning 0) (match-end 0)
                                   (list 'intangible 'grep-ed
                                         'read-only t
@@ -169,10 +169,10 @@ This variable will be ignored if `grep-ed-save-after-changes' is nil."
         (save-excursion
           ;; Get file/line/text info
           (beginning-of-line)
-          (when (looking-at "\\([^ \t]+?\\):\\([0-9]+\\):\\(.*\\)$")
+          (when (looking-at "\\([^ \t]+?\\):\\([0-9]+\\):\\([0-9]+:\\)?\\(.*\\)$")
             (let ((filename (expand-file-name (match-string-no-properties 1)))
                   (line-num (string-to-number (match-string 2)))
-                  (line-text (match-string-no-properties 3)))
+                  (line-text (match-string-no-properties 4)))
               ;; If a line has multiple changes, only change it once
               (when (or (not (string= filename prev-filename))
                         (not (= line-num prev-line-num)))

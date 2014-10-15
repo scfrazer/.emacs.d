@@ -1140,6 +1140,9 @@ Only works if there are exactly two windows."
 (defun my-after-save-hook ()
   (executable-make-buffer-file-executable-if-script-p))
 
+(defun my-ag2-mode-hook ()
+  (define-key ag2-mode-map "\C-x\C-q" 'grep-ed-start))
+
 (defun my-diff-mode-hook ()
   (define-key diff-mode-map "q" 'my-kill-this-buffer)
   (define-key diff-mode-map "n" 'diff-hunk-next)
@@ -1198,6 +1201,7 @@ Only works if there are exactly two windows."
 
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
+(add-hook 'ag2-mode-hook 'my-ag2-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
