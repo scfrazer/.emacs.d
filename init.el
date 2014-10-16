@@ -239,6 +239,7 @@
 (add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . sgml-mode))
 (add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.cron$" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.csh$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
@@ -380,6 +381,23 @@
   (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
     (beginning-of-line)
     (forward-line -1)))
+
+(defun my-case-symbol (mode)
+  "Change case of symbol.  MODE is 'upcase 'downcase or 'capitalize."
+  (interactive "*S")
+  (let (beg end)
+    (save-excursion
+      (unless (looking-at "\\sw\\|\\s_")
+        (skip-syntax-backward "^w_"))
+      (skip-syntax-forward "w_")
+      (setq end (point))
+      (skip-syntax-backward "w_")
+      (skip-syntax-forward "^w")
+      (setq beg (point)))
+    (case mode
+      ('upcase (upcase-region beg end))
+      ('downcase (downcase-region beg end))
+      ('capitalize (capitalize-region beg (1+ beg))))))
 
 (defun my-clone-file (filename)
   "Clone the current buffer and write it into FILENAME."
@@ -884,58 +902,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
     (apply-on-rectangle 'rectangle-number-line-callback
                         start end format)))
 
-(defvar my-rotate-case-direction nil
-  "nil => capitalize, uppercase, lowercase,
- t => lowercase, uppercase, capitalize.")
-
-(defun my-rotate-case (&optional arg)
-  "Rotate current symbol case to capitalized, uppercase, lowercase.
-With prefix arg, just do current lett."
-  (interactive "*P")
-  (let ((case-fold-search nil) beg end)
-    (save-excursion
-      (if arg
-          (setq beg (point)
-                end (1+ (point)))
-        (skip-syntax-forward "w_")
-        (setq end (point))
-        (skip-syntax-backward "w_")
-        (skip-chars-forward "^a-zA-Z")
-        (setq beg (point)))
-      (goto-char beg)
-      (if (< (- end beg) 2)
-          (if (looking-at "[A-Z]")
-              (downcase-region beg end)
-            (upcase-region beg end))
-        (let ((current-state
-               (if (looking-at "[a-z]") 'lowercase
-                 (forward-char)
-                 (if (re-search-forward "[a-z]" end t) 'capitalized
-                   'uppercase)))
-              next-state)
-          (setq next-state
-                (if (equal last-command 'my-rotate-case)
-                    (if my-rotate-case-direction
-                        (cond ((eq current-state 'lowercase) 'uppercase)
-                              ((eq current-state 'uppercase) 'capitalized)
-                              (t 'lowercase))
-                      (cond ((eq current-state 'capitalized) 'uppercase)
-                            ((eq current-state 'uppercase) 'lowercase)
-                            (t 'capitalized)))
-                  (cond ((eq current-state 'lowercase)
-                         (setq my-rotate-case-direction nil)
-                         'capitalized)
-                        ((eq current-state 'capitalized)
-                         (setq my-rotate-case-direction t)
-                         'lowercase)
-                        (t
-                         (setq my-rotate-case-direction nil)
-                         'lowercase))))
-          (cond ((eq next-state 'lowercase) (downcase-region beg end))
-                ((eq next-state 'uppercase) (upcase-region beg end))
-                (t (upcase-region beg (1+ beg))
-                   (downcase-region (1+ beg) end))))))))
-
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
   (interactive)
@@ -1298,12 +1264,11 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c G" 'ag2)
-(my-keys-define "C-c L" 'my-layout-save)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
-(my-keys-define "C-c U" (lambda () (interactive) (my-rotate-case t)))
+(my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
@@ -1313,7 +1278,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c g" 'ag2-local)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c l" 'my-layout-load)
+(my-keys-define "C-c l" (lambda () (interactive) (my-case-symbol 'downcase)))
 (my-keys-define "C-c m" 'my-compile)
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
@@ -1321,7 +1286,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
-(my-keys-define "C-c u" 'my-rotate-case)
+(my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
 (my-keys-define "C-c y" 'yank-target-map)
@@ -1450,7 +1415,6 @@ Only works if there are exactly two windows."
        '("/vob/sse/asic/.*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
-       '("/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/.*" "/auto/ibunobackup2/scfrazer/local/git/vtt/vtt/TAGS")
        ))
 
 (when clearcase-servers-online
