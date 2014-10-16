@@ -235,7 +235,6 @@
 (defun my-ibuffer-mode-hook ()
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
-  (setq ibuffer-hidden-filter-groups '("Default"))
   (define-key ibuffer-mode-map (kbd "=") 'my-ibuffer-diff)
   (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
   (define-key ibuffer-mode-map (kbd "D") 'my-ibuffer-do-delete)
