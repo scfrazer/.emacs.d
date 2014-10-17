@@ -541,13 +541,6 @@
       (fill-region (region-beginning) (region-end))
     (fill-paragraph nil)))
 
-(defun my-fit-window (&optional arg)
-  "Fit window to buffer or `frame-height' / 4.
-Prefix with C-u to fit the `next-window'."
-  (interactive "P")
-  (let ((win (if arg (next-window) (get-buffer-window))))
-    (fit-window-to-buffer win (/ (frame-height) 4))))
-
 (defun my-forward-paragraph ()
   "Move to next blank line after some text."
   (interactive)
@@ -1057,6 +1050,13 @@ Only works if there are exactly two windows."
   (save-excursion
     (untabify (point-min) (point-max))))
 
+(defun my-window-resize (&optional arg)
+  "Resize window to `frame-height' / 4.
+Prefix with C-u to resize the `next-window'."
+  (interactive "P")
+  (let ((win (if arg (next-window) (get-buffer-window))))
+    (window-resize win (- (/ (frame-height) 4) (window-height win)))))
+
 (defun my-x-color-to-tty-color ()
   (interactive)
   (let (color-num end)
@@ -1195,9 +1195,9 @@ Only works if there are exactly two windows."
      (defun my-compilation-mode-hook ()
        (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
-     (defun my-compilation-process-setup-function ()
-       (setq compilation-window-height (/ (frame-height) 4)))
-     (setq compilation-process-setup-function 'my-compilation-process-setup-function)
+;;      (defun my-compilation-process-setup-function ()
+;;        (setq compilation-window-height (/ (frame-height) 4)))
+;;      (setq compilation-process-setup-function 'my-compilation-process-setup-function)
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
 (eval-after-load "e-mode"
@@ -1310,7 +1310,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
-(my-keys-define "C-x -" 'my-fit-window)
+(my-keys-define "C-x -" 'my-window-resize)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x C-h" 'hide-region-toggle)
 (my-keys-define "C-x C-n" 'other-window)
@@ -1322,7 +1322,7 @@ Only works if there are exactly two windows."
 (my-keys-define "C-x M" 'my-magit-history)
 (my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
 (my-keys-define "C-x SPC" 'fixup-whitespace)
-(my-keys-define "C-x _" (lambda () (interactive) (my-fit-window t)))
+(my-keys-define "C-x _" (lambda () (interactive) (my-window-resize t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
 (my-keys-define "C-x d" 'doxymacs-mode-map)
