@@ -1142,11 +1142,13 @@ Only works if there are exactly two windows."
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
-  (local-set-key (kbd "M-$") (lambda ()
-                               (interactive)
+  (local-set-key (kbd "M-$") (lambda (&optional arg)
+                               (interactive "P")
                                (let* ((enable-recursive-minibuffers t)
                                       (dir (my-ido-get-bookmark-dir)))
                                  (when dir
+                                   (when arg
+                                     (setq dir (concat "/view/CPPDVTOOLS.view" dir)))
                                    (delete-minibuffer-contents)
                                    (insert dir))))))
 
@@ -1193,6 +1195,9 @@ Only works if there are exactly two windows."
      (defun my-compilation-mode-hook ()
        (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
+     (defun my-compilation-process-setup-function ()
+       (setq compilation-window-height (/ (frame-height) 4)))
+     (setq compilation-process-setup-function 'my-compilation-process-setup-function)
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
 (eval-after-load "e-mode"
@@ -1370,9 +1375,11 @@ Only works if there are exactly two windows."
 (my-keys-define "M-o" 'my-ibuffer)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-q" 'my-fill)
+(my-keys-define "M-r j" 'jump-to-register)
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
 (my-keys-define "M-r t" 'string-rectangle)
+(my-keys-define "M-r w" 'window-configuration-to-register)
 (my-keys-define "M-s G" 'my-rgrep)
 (my-keys-define "M-s O" 'my-multi-occur)
 (my-keys-define "M-s g" 'my-lgrep)
