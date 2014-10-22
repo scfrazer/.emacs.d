@@ -154,6 +154,7 @@
               cursor-in-non-selected-windows nil
               cursor-type 'box
               dabbrev-case-fold-search nil
+              desktop-restore-frames nil
               diff-switches "-b -u"
               dired-auto-revert-buffer t
               echo-keystrokes 0.1
