@@ -5,7 +5,7 @@
   (custom-theme-set-faces
    'my-light
 
-   `(ace-jump-face-foreground ((,class (:foreground "#CD0000" :background "#DADADA"))))
+   `(ace-jump-face-foreground ((,class (:foreground "#FFFF00" :background "#000000"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#5F00AF"))))

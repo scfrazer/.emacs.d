@@ -120,6 +120,10 @@
   (set-scroll-bar-mode nil))
 (global-show-mark-mode 1)
 (winner-mode 1)
+(when (fboundp 'electric-indent-mode)
+  (electric-indent-mode -1))
+(when (fboundp 'electric-pair-mode)
+  (electric-pair-mode -1))
 
 (setq-default Man-notify-method 'bully
               ace-jump-mode-case-fold nil
@@ -163,6 +167,7 @@
               fill-column 78
               flyspell-mode-map nil
               font-lock-verbose nil
+              hi-lock-auto-select-face t
               highlight-changes-active-string " Chg+"
               highlight-changes-global-modes nil
               highlight-changes-passive-string " Chg-"
@@ -504,6 +509,17 @@
   (emacs-lisp-mode)
   (set-buffer-modified-p nil))
 
+(defun my-delete-duplicate-lines (&optional arg)
+  "Like `delete-duplicate-lines', but operates on the following paragraph,
+or the region with prefix arg."
+  (interactive "*P")
+  (save-excursion
+    (if arg
+        (delete-duplicate-lines (region-beginning) (region-end) nil nil nil t)
+      (delete-duplicate-lines (point-at-bol)
+                              (save-excursion (forward-paragraph) (point-at-eol))
+                              nil nil nil t))))
+
 (defun my-delete-whitespace-after-cursor ()
   "Delete spaces/tabs after cursor."
   (interactive "*")
@@ -611,26 +627,6 @@ With a numeric prefix, goto that window line."
                                  "\n")))
              hash)
     str))
-
-(defvar my-highlight-colors (list 'hi-yellow 'hi-pink 'hi-green 'hi-blue))
-(defun my-highlight-symbol (&optional arg)
-  "Highlight the symbol under point, or with prefix arg the region."
-  (interactive "P")
-  (require 'hi-lock nil t)
-  (let (beg end face-num)
-    (if (and arg (mark t))
-        (setq beg (region-beginning)
-              end (region-end))
-      (save-excursion
-        (skip-syntax-backward "w_")
-        (setq beg (point))
-        (skip-syntax-forward "w_")
-        (setq end (point))))
-    (setq face-num (mod (length hi-lock-interactive-patterns)
-                        (length my-highlight-colors)))
-    (hi-lock-face-buffer
-     (regexp-quote (buffer-substring-no-properties beg end))
-     (nth face-num my-highlight-colors))))
 
 (defun my-indent ()
   "Indent entire buffer."
@@ -908,14 +904,6 @@ with a prefix argument, prompt for START-AT and FORMAT."
             (p (pop wpoints)))
         (set-window-buffer w b)
         (set-window-point w p)))))
-
-(defun my-set-register (&optional arg)
-  "Copy region, or with prefix arg last kill, to a register."
-  (interactive "P")
-  (if arg
-      (set-register (read-char "(Region) Set register:")
-                  (buffer-substring (region-beginning) (region-end)))
-    (set-register (read-char "(Last kill) Set register:") (current-kill 0 t))))
 
 (defun my-set-selective-display (&optional col)
   "Set selective display based on cursor column."
@@ -1289,7 +1277,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
-(my-keys-define "C-c s" 'my-set-register)
+(my-keys-define "C-c s" 'copy-to-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
@@ -1383,7 +1371,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-s G" 'my-rgrep)
 (my-keys-define "M-s O" 'my-multi-occur)
 (my-keys-define "M-s g" 'my-lgrep)
-(my-keys-define "M-s h h" 'my-highlight-symbol)
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-t" 'my-tmux-copy)
 (my-keys-define "M-u" 'my-recenter)
@@ -1485,6 +1472,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'sl 'my-sort-lines)
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
+(defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
 (defalias 'vtt (lambda () (interactive) (require 'vtt)))
