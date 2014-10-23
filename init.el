@@ -932,6 +932,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (setq-default server-name clearcase-setview-viewtag)
     (server-start)))
 
+(defun my-set-register (&optional arg)
+  "Copy last kill, or with prefix arg region, to a register."
+  (interactive "P")
+  (if arg
+      (set-register (register-read-with-preview "(Region) Set register:")
+                  (buffer-substring (region-beginning) (region-end)))
+    (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
+
 (defun my-term ()
   "Like `term', but use default shell without prompting."
   (interactive)
@@ -1278,7 +1286,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c r" 'revert-buffer)
-(my-keys-define "C-c s" 'copy-to-register)
+(my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
