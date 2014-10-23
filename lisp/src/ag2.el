@@ -195,7 +195,7 @@ corresponding value will be used instead."
   (with-current-buffer ag2-popup-buffer-name
     (setq buffer-read-only nil)
     (insert "\n")
-    (insert "Press M-- to switch to this buffer, then choose an option\n")
+    (insert "Press M-- to switch to this buffer, then choose an option")
     (beginning-of-line)
     (use-local-map ag2-popup-map)
     (setq buffer-read-only t)
