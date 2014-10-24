@@ -1372,6 +1372,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-o" 'my-ibuffer)
 (my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-q" 'my-fill)
+(my-keys-define "M-r SPC" 'rectangle-mark-mode)
 (my-keys-define "M-r j" 'jump-to-register)
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
