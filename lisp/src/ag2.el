@@ -314,7 +314,7 @@ corresponding value will be used instead."
     (ag2-popup-insert-boolean "a" "--all-types" 'ag2-option-all-types)
     (ag2-popup-insert-boolean "b" "--search-binary" 'ag2-option-search-binary)
     (ag2-popup-insert-boolean "f" "--follow" 'ag2-option-follow)
-    (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file/directory regexp: ")
+    (ag2-popup-insert-string "i" "--ignore" 'ag2-option-ignore "Ignore file/directory glob: ")
     (ag2-popup-insert-boolean "h" "--hidden" 'ag2-option-hidden)
     (ag2-popup-insert-boolean "t" "--all-text" 'ag2-option-all-text)
     (ag2-popup-insert-boolean "u" "--unrestricted" 'ag2-option-unrestricted)
