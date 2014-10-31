@@ -29,12 +29,14 @@
   (call-process-shell-command
    (format "tmux set-buffer -- \"%s\""
            (replace-regexp-in-string
-            "\\$" "\"'$'\""
+            "`" "\"'`'\""
             (replace-regexp-in-string
-             "\\\"" "\"'\"'\""
+             "\\$" "\"'$'\""
              (replace-regexp-in-string
-              "!" "\\\\!"
-              (replace-regexp-in-string "\n" "\\\\\n" text))))) nil 0))
+              "\\\"" "\"'\"'\""
+              (replace-regexp-in-string
+               "!" "\\\\!"
+               (replace-regexp-in-string "\n" "\\\\\n" text)))))) nil 0))
 
 (defun my-tmux-iterm-copy (&optional arg)
   "Copy last kill to clipboard through tmux and iterm.  With prefix arg, copy region."
