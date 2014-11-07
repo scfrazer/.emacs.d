@@ -69,7 +69,8 @@
                 dir)))))
 
 (defun my-ido-dired-mode-hook ()
-  (define-key dired-mode-map "$" 'my-ido-bookmark-jump))
+  (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
+  (define-key dired-mode-map (kbd "M-$") 'my-ido-bookmark-jump))
 
 (add-hook 'dired-mode-hook 'my-ido-dired-mode-hook)
 
@@ -86,7 +87,8 @@
       (exit-minibuffer))))
 
 (defadvice ido-init-completion-maps (after my-ido-init-map activate)
-  (define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir))
+  (define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
+  (define-key ido-common-completion-map (kbd "M-$") 'my-ido-use-bookmark-dir))
 (ido-init-completion-maps) ;; For pre-23.3 Emacs
 
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)

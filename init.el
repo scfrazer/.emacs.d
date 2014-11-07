@@ -778,11 +778,11 @@ arg do something special."
     (unless (equal buf (current-buffer))
       (kill-buffer buf))))
 
-(defun my-put-file-name-on-clipboard (&optional arg)
+(defun my-put-file-name-on-clipboard ()
   "Put the current file name in the kill-ring.
-If running inside a tmux session, it will also be put in a tmux copy-buffer.
-With ARG and inside tmux, also copy through iTerm2 to clipboard."
-  (interactive "P")
+If running inside a tmux session, it will also be put in a tmux copy-buffer
+and copied through iTerm2 to clipboard."
+  (interactive)
   (let ((filename (if (equal major-mode 'dired-mode)
                       default-directory
                     (buffer-file-name))))
@@ -790,8 +790,7 @@ With ARG and inside tmux, also copy through iTerm2 to clipboard."
       (kill-new filename)
       (when (getenv "TMUX")
         (my-tmux-copy-text filename)
-        (when arg
-          (my-tmux-iterm-copy-text filename)))
+        (my-tmux-iterm-copy-text filename))
       (message filename))))
 
 (defun my-prettify ()
