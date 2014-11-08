@@ -1,5 +1,7 @@
 ;;; my-occur.el
 
+(require 'my-buf)
+
 (defun my-occur (&optional arg)
   "Like `occur', but with prefix arg take the string from the region."
   (interactive "P")
@@ -19,19 +21,25 @@
 (defun my-multi-occur (&optional arg)
   "Like `multi-occur-in-matching-buffers', but with prefix arg take the string from the region."
   (interactive "P")
-  (if arg
-      (multi-occur-in-matching-buffers ".+"
-                                       (read-from-minibuffer "List lines matching regexp: "
-                                                             (regexp-quote (buffer-substring (region-beginning) (region-end)))
-                                                             nil nil 'regexp-history))
-    (let* ((default (buffer-substring-no-properties
-                     (point)
-                     (save-excursion (skip-syntax-forward "w_") (point))))
-           (regexp (read-from-minibuffer
-                    (format "List lines matching regexp (default %s): " default) nil nil nil
-                    'regexp-history default)))
-      (setq regexp (if (string= regexp "") default regexp))
-      (multi-occur-in-matching-buffers ".+" regexp))))
+  (let (regexp bufs)
+    (if arg
+        (setq regexp (read-from-minibuffer
+                      "List lines matching regexp: "
+                      (regexp-quote (buffer-substring (region-beginning) (region-end))) nil nil
+                      'regexp-history))
+      (let ((default (buffer-substring-no-properties
+                      (point)
+                      (save-excursion (skip-syntax-forward "w_") (point)))))
+        (setq regexp (read-from-minibuffer
+                      (format "List lines matching regexp (default %s): " default) nil nil nil
+                      'regexp-history default))
+        (when (string= regexp "")
+          (setq regexp default))))
+    (dolist (buf (buffer-list))
+      (unless (my-buf-ignore-buffer (buffer-name buf))
+        (push buf bufs)))
+    (when bufs
+      (multi-occur bufs regexp))))
 
 (defface my-occur-prefix-face
   '((t (:background "#D7D7AF")))
