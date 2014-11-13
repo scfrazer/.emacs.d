@@ -7,7 +7,6 @@
                                                                    "*Man"
                                                                    "*Occur"
                                                                    "*ag"
-                                                                   "*calculator"
                                                                    "*cc-status"
                                                                    "*clearcase-config-spec"
                                                                    "*compilation"
