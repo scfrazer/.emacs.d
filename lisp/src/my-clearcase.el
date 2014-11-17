@@ -265,11 +265,12 @@ With prefix arg ask for version."
   (beginning-of-line)
   (cond
    ;; Package name
-   ((looking-at "\\s-*\\([a-z0-9_]+\\)-\\([a-z0-9_]+\\)\\(:\\([0-9]+\\)\\)?")
-    (let* ((dir (downcase (match-string-no-properties 1)))
-           (pkg (downcase (match-string-no-properties 2)))
-           (release (match-string-no-properties 4))
-           (urq-rules (my-clearcase-urq-rules dir pkg release)))
+   ((looking-at "\\s-*\\([a-z0-9_]+\\)-\\([a-z0-9_]+\\)\\(:\\([a-z0-9]+\\)\\)?\\(:\\([0-9]+\\)\\)?")
+    (let* ((dir (match-string-no-properties 1))
+           (pkg (match-string-no-properties 2))
+           (branch (match-string-no-properties 4))
+           (release (match-string-no-properties 6))
+           (urq-rules (my-clearcase-urq-rules dir pkg branch release)))
       (when urq-rules
         (delete-region (point-at-bol) (point-at-eol))
         (insert urq-rules)
@@ -278,12 +279,13 @@ With prefix arg ask for version."
           (insert "\n")
           (backward-char 1)))))
    ;; ur label
-   ((looking-at ".+?\\([A-Z0-9_]+\\)-\\([A-Z0-9_]+\\)__.+__\\([0-9]+\\)")
+   ((looking-at ".+?\\([A-Z0-9_]+\\)-\\([A-Z0-9_]+\\)__\\(.+\\)__\\([0-9]+\\)")
     (let* ((dir (downcase (match-string-no-properties 1)))
            (pkg (downcase (match-string-no-properties 2)))
-           (urq-rules (my-clearcase-urq-rules dir pkg)))
+           (branch (match-string-no-properties 3))
+           (urq-rules (my-clearcase-urq-rules dir pkg branch)))
       (when urq-rules
-        (delete-region (point-at-bol) (save-excursion (re-search-forward "^\\s-*$\\|^\\s-*element.+[.][*]\\s-+/main/LATEST" nil t) (point)))
+        (delete-region (point-at-bol) (save-excursion (re-search-forward "^\\s-*$\\|^\\s-*element.+[.][*]\\s-+/main.+LATEST" nil t) (point)))
         (insert urq-rules)
         (forward-char 1)
         (unless (looking-at "^\\s-*$")
@@ -309,10 +311,13 @@ With prefix arg ask for version."
    (t
     (error "Couldn't parse current line"))))
 
-(defun my-clearcase-urq-rules (dir pkg &optional release)
+(defun my-clearcase-urq-rules (dir pkg &optional branch release)
   "Get urq rules."
   (with-temp-buffer
-    (let ((status (call-process "urq" nil t nil "rules" (concat dir "-" pkg (if release (concat ":" release))))))
+    (let ((status (call-process "urq" nil t nil "rules"
+                                (concat dir "-" pkg
+                                        (if branch (concat ":" branch))
+                                        (if release (concat ":" release))))))
       (if (not (equal status 0))
           (error "Couldn't get urq rules for current line")
         (goto-char (point-min))

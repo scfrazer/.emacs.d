@@ -1284,6 +1284,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c n" 'my-narrow)
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c p" 'my-pair-delete-forward)
+(my-keys-define "C-c q" 'bury-buffer)
 (my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
