@@ -122,8 +122,22 @@
 (winner-mode 1)
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
+
 (when (fboundp 'electric-pair-mode)
-;;   (electric-pair-mode -1))
+  (defun my-electric-pair-open-newline-between-pairs()
+    "Indent paired char and empty line"
+    (when (and (eq last-command-event ?\n)
+               (< (1+ (point-min)) (point) (point-max))
+               (eq (save-excursion
+                     (skip-chars-backward "\t\s")
+                     (char-before (1- (point))))
+                   (matching-paren (char-after))))
+      (save-excursion
+        (insert "\n")
+        (indent-according-to-mode))
+      (indent-according-to-mode))
+    nil)
+  (setq-default electric-pair-open-newline-between-pairs 'my-electric-pair-open-newline-between-pairs)
   (electric-pair-mode 1))
 
 (setq-default Man-notify-method 'bully
@@ -1271,6 +1285,8 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
+(my-keys-define "C-c [" 'backward-up-list)
+(my-keys-define "C-c ]" 'up-list)
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
