@@ -202,6 +202,30 @@ With prefix arg ask for version."
          'clearcase-gui-diff-named-version-current-buffer
        'clearcase-gui-diff-pred-current-buffer))))
 
+(defun my-clearcase-get-file-package (file)
+  "Get the package information for FILE."
+  (with-temp-buffer
+    (let ((status (call-process "urq" nil t nil "find" "-nversions" "1" file)))
+      (if (not (equal status 0))
+          (error "Error using urq find")
+        (goto-char (point-min))
+        (when (re-search-forward ".+?\\([A-Z0-9_]+\\)-\\([A-Z0-9_]+\\)__\\(.+\\)__\\([0-9]+\\)" nil t)
+          (let ((dir (downcase (match-string-no-properties 1)))
+                (pkg (downcase (match-string-no-properties 2)))
+                (branch (match-string-no-properties 3)))
+            (list dir pkg branch)))))))
+
+(defun my-clearcase-show-package ()
+  "Show the ur package for the current file"
+  (interactive)
+  (let* ((file (if (equal major-mode 'dired-mode) (dired-get-filename) (buffer-file-name)))
+         (pkg-info (my-clearcase-get-file-package file))
+         result)
+    (when pkg-info
+      (setq result (concat (nth 0 pkg-info) "-" (nth 1 pkg-info)))
+      (kill-new result)
+      (message (concat "Package: " result)))))
+
 (defun my-clearcase-backup-set-mode ()
   "Set the mode of backup ClearCase files to the mode of the original."
   (interactive)
@@ -227,6 +251,7 @@ With prefix arg ask for version."
 (define-key clearcase-prefix-map "i" 'clearcase-checkin-current-buffer)
 (define-key clearcase-prefix-map "l" 'my-clearcase-list-history)
 (define-key clearcase-prefix-map "o" 'clearcase-checkout-unreserved-current-buffer)
+(define-key clearcase-prefix-map "p" 'my-clearcase-show-package)
 (define-key clearcase-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-prefix-map "u" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "v" nil)
@@ -246,6 +271,7 @@ With prefix arg ask for version."
 (define-key clearcase-dired-prefix-map "i" 'clearcase-checkin-dired-files)
 (define-key clearcase-dired-prefix-map "l" 'my-clearcase-list-history)
 (define-key clearcase-dired-prefix-map "o" 'clearcase-checkout-unreserved-dired-files)
+(define-key clearcase-dired-prefix-map "p" 'my-clearcase-show-package)
 (define-key clearcase-dired-prefix-map "r" 'my-clearcase-reserve)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "v" nil)
@@ -324,6 +350,17 @@ With prefix arg ask for version."
         (keep-lines "^element.+")
         (buffer-substring-no-properties (point-min) (1- (point-max)))))))
 
+(defun my-clearcase-cs-file-to-package ()
+  "Change the file on the current line into the latest package for that file."
+  (interactive)
+  (beginning-of-line)
+  (when (looking-at "\\s-*\\(element\\s-+\\)?\\([a-zA-Z0-9_./]+\\)")
+    (let* ((file (match-string-no-properties 2))
+           (pkg-info (my-clearcase-get-file-package file)))
+      (delete-region (point-at-bol) (point-at-eol))
+      (insert (my-clearcase-urq-rules (nth 0 pkg-info) (nth 1 pkg-info) (nth 2 pkg-info)))
+      (forward-line))))
+
 ;; Syntax table
 
 (defvar clearcase-edcs-mode-syntax-table
@@ -369,6 +406,7 @@ With prefix arg ask for version."
 (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
 (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
 (define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest-dwim)
+(define-key clearcase-edcs-mode-map (kbd "C-c C-p") 'my-clearcase-cs-file-to-package)
 
 ;; Abbrevs
 
