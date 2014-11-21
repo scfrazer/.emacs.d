@@ -954,6 +954,22 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
+(defun my-step-out-backward ()
+  "Step backward out of current list or string."
+  (interactive)
+  (if (nth 3 (syntax-ppss (point)))
+      (progn
+        (re-search-backward "[^\\]\"" nil 'go)
+        (forward-char))
+    (backward-up-list)))
+
+(defun my-step-out-forward ()
+  "Step forward out of current list or string."
+  (interactive)
+  (if (nth 3 (syntax-ppss (point)))
+      (re-search-forward "[^\\]\"" nil 'go)
+    (up-list)))
+
 (defun my-term ()
   "Like `term', but use default shell without prompting."
   (interactive)
@@ -1280,13 +1296,12 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c G" 'ag2)
+(my-keys-define "C-c M" 'vcs-compile)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
-(my-keys-define "C-c [" 'backward-up-list)
-(my-keys-define "C-c ]" 'up-list)
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
@@ -1374,7 +1389,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-yank-target-jump)
 (my-keys-define "M-\"" (lambda () (interactive) (forward-comment (point-max))))
-(my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-backward-paragraph-rect) (my-forward-paragraph-rect))))
+(my-keys-define "M-]" (lambda (&optional arg) (interactive "P") (if arg (my-step-out-backward) (my-step-out-forward))))
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-tmux-iterm-copy)
@@ -1390,6 +1405,8 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-q" 'my-fill)
 (my-keys-define "M-r SPC" 'rectangle-mark-mode)
+(my-keys-define "M-r [" 'my-backward-paragraph-rect)
+(my-keys-define "M-r ]" 'my-forward-paragraph-rect)
 (my-keys-define "M-r j" 'jump-to-register)
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
@@ -1423,6 +1440,9 @@ Prefix with C-u to resize the `next-window'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
+
+(require 'vcs-compile)
+(setq vcs-compile-command "l2q procyon_targ_build_fbePP /build_user/")
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)
