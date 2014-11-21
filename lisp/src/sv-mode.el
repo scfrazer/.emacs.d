@@ -1229,6 +1229,7 @@ default for next `query-replace'."
   "Auto-indent after entering '{'."
   (interactive)
   (insert "{")
+  (run-hooks 'post-self-insert-hook)
   (when (and sv-mode-opener-is-electric
              (not (sv-mode-in-comment-or-string)))
     (sv-mode-indent-line)))
@@ -1237,6 +1238,7 @@ default for next `query-replace'."
   "Auto-indent after entering '}'."
   (interactive)
   (insert "}")
+  (run-hooks 'post-self-insert-hook)
   (when (and sv-mode-closer-is-electric
              (not (sv-mode-in-comment-or-string)))
     (sv-mode-indent-line)))
