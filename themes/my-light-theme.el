@@ -110,7 +110,7 @@
    `(vertical-border ((,class (:foreground "#A8A8A8"))))
    `(warning ((,class (:foreground "#878700"))))
    `(web-mode-current-element-highlight-face ((,class (:background "#D7FFFF"))))
-   `(web-mode-html-attr-name-face ((,class (:foreground "#87AFAF"))))
+   `(web-mode-html-attr-name-face ((,class (:foreground "#D7FFAF"))))
 
    ))
 
