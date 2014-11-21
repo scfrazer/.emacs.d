@@ -109,8 +109,8 @@
    `(trailing-whitespace ((,class (:background "#D7FFFF"))))
    `(vertical-border ((,class (:foreground "#A8A8A8"))))
    `(warning ((,class (:foreground "#878700"))))
-   `(web-mode-current-element-highlight-face ((,class (:background "#D7FFFF"))))
-   `(web-mode-html-attr-name-face ((,class (:foreground "#D7FFAF"))))
+   `(web-mode-current-element-highlight-face ((,class (:background "#D7FFAF"))))
+   `(web-mode-html-attr-name-face ((,class (:foreground "#87AFAF"))))
 
    ))
 
