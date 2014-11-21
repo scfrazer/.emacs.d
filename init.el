@@ -1249,10 +1249,10 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
      (add-to-list 'file-template-mapping-alist '("\\.s$" . "template.s"))
-     (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh")))
+     (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
-     (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v")))
+     (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))))
 
 (eval-after-load "grep"
   '(define-key grep-mode-map "q" 'my-kill-results-buffer))
