@@ -44,6 +44,7 @@
 (require 'show-mark)
 (require 'sr-speedbar)
 (require 'uniquify)
+(require 'web-mode)
 (require 'yank-target)
 
 (require 'my-abbrev)
@@ -245,6 +246,9 @@
               verilog-tab-always-indent t
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
+              web-mode-auto-close-style 2
+              web-mode-enable-auto-closing t
+              web-mode-enable-current-element-highlight t
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
 
@@ -257,29 +261,30 @@
                                           (concat " - " clearcase-setview-viewtag)
                                         "")))
 
-(add-to-list 'auto-mode-alist '("Makefile.*$" . makefile-mode))
-(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . sgml-mode))
-(add-to-list 'auto-mode-alist '("\\.aop$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.cron$" . crontab-mode))
-(add-to-list 'auto-mode-alist '("\\.csh$" . csh-mode))
-(add-to-list 'auto-mode-alist '("\\.cshrc$" . csh-mode))
-(add-to-list 'auto-mode-alist '("\\.e$" . e-mode))
-(add-to-list 'auto-mode-alist '("\\.elog$" . elog-mode))
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-(add-to-list 'auto-mode-alist '("\\.rdlh?$" . rdl-mode))
-(add-to-list 'auto-mode-alist '("\\.s$" . specterx-mode))
+(add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
+(add-to-list 'auto-mode-alist '("\\.aop\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
+(add-to-list 'auto-mode-alist '("\\.csh\\'" . csh-mode))
+(add-to-list 'auto-mode-alist '("\\.cshrc\\'" . csh-mode))
+(add-to-list 'auto-mode-alist '("\\.e\\'" . e-mode))
+(add-to-list 'auto-mode-alist '("\\.elog\\'" . elog-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
+(add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
 (add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
-(add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.sva$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.v$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.vh$" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.vsif$" . vsif-mode))
-(add-to-list 'auto-mode-alist '("dve_gui.log$" . uvm-log-mode))
-(add-to-list 'auto-mode-alist '("run.log$" . uvm-log-mode))
-(add-to-list 'auto-mode-alist '("very.*\\.log$" . elog-mode))
+(add-to-list 'auto-mode-alist '("\\.sv\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.sva\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.svh\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.v\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.vh\\'" . sv-mode))
+(add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
+(add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
+(add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
+(add-to-list 'auto-mode-alist '("very.*\\.log\\'" . elog-mode))
 
 (defun major-mode-from-name ()
   "Choose proper mode for buffers created by switch-to-buffer."
@@ -1176,7 +1181,6 @@ Prefix with C-u to resize the `next-window'."
                                  (when dir
                                    (when arg
                                      (setq dir (concat "/view/CPPDVTOOLS.view" dir)))
-                                   (delete-minibuffer-contents)
                                    (insert dir))))))
 
 (defun my-sh-mode-hook ()
@@ -1222,9 +1226,6 @@ Prefix with C-u to resize the `next-window'."
      (defun my-compilation-mode-hook ()
        (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
-;;      (defun my-compilation-process-setup-function ()
-;;        (setq compilation-window-height (/ (frame-height) 4)))
-;;      (setq compilation-process-setup-function 'my-compilation-process-setup-function)
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
 (eval-after-load "e-mode"
@@ -1244,13 +1245,14 @@ Prefix with C-u to resize the `next-window'."
 
 (eval-after-load "file-template"
   '(progn
+     (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
+     (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
      (add-to-list 'file-template-mapping-alist '("\\.s$" . "template.s"))
-     (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))
+     (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh")))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
-     (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
-     (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))))
+     (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v")))
 
 (eval-after-load "grep"
   '(define-key grep-mode-map "q" 'my-kill-results-buffer))
