@@ -27,18 +27,4 @@
   ""
   (lambda() (insert "FIXME")))
 
-(define-abbrev global-abbrev-table
-  "db"
-  ""
-  (lambda() (insert "DEBUG")))
-
-(defadvice expand-abbrev (around my-expand-abbrev-advice activate)
-  (if (looking-back "{")
-      (progn
-        (insert "\n\n}")
-        (indent-according-to-mode)
-        (forward-line -1)
-        (indent-according-to-mode))
-    ad-do-it))
-
 (provide 'my-abbrev)
