@@ -964,15 +964,19 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive)
   (if (nth 3 (syntax-ppss (point)))
       (progn
-        (re-search-backward "[^\\]\"" nil 'go)
-        (forward-char))
+        (backward-char)
+        (while (and (not (bobp)) (nth 3 (syntax-ppss (point))))
+          (backward-char)))
     (backward-up-list)))
 
 (defun my-step-out-forward ()
   "Step forward out of current list or string."
   (interactive)
   (if (nth 3 (syntax-ppss (point)))
-      (re-search-forward "[^\\]\"" nil 'go)
+      (progn
+        (forward-char)
+        (while (and (not (eobp)) (nth 3 (syntax-ppss (point))))
+          (forward-char)))
     (up-list)))
 
 (defun my-term ()
