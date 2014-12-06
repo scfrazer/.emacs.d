@@ -1391,11 +1391,12 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
 (my-keys-define "M-SPC" 'my-yank-target-jump)
-(my-keys-define "M-\"" (lambda (&optional arg) (interactive "P") (if arg (my-step-out-backward) (my-step-out-forward))))
 (my-keys-define "M-`" 'next-error)
+(my-keys-define "M-a" 'my-step-out-backward)
 (my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-tmux-iterm-copy)
 (my-keys-define "M-d" 'my-dired-pop-to-or-create)
+(my-keys-define "M-e" 'my-step-out-forward)
 (my-keys-define "M-g" 'my-goto-line-column)
 (my-keys-define "M-h" 'qe-backward-word)
 (my-keys-define "M-i" 'ido-switch-buffer)
@@ -1455,7 +1456,7 @@ Prefix with C-u to resize the `next-window'."
 
 (setq etags-table-alist
       (list
-       '("/vob/sse/asic/.*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
+       '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
        '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
        ))
