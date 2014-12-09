@@ -208,6 +208,8 @@
               magit-repo-dirs (list "~/.emacs.d" "~/Projects")
               magit-repo-dirs-depth 2
               make-backup-files nil
+              max-lisp-eval-depth 6000
+              max-specpdl-size 13000
               mouse-autoselect-window t
               mouse-highlight 1
               mouse-yank-at-point t

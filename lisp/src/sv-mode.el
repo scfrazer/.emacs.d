@@ -302,12 +302,12 @@ Otherwise indent them as usual."
              "pulsestyle_onevent" "pulsestyle_ondetect" "pure" "rand" "randc"
              "randcase" "randsequence" "rcmos" "ref" "release" "repeat" "return"
              "rnmos" "rpmos" "rtran" "rtranif0" "rtranif1" "scalared" "sequence"
-             "showcancelled" "small" "solve" "specify" "specparam" "static"
-             "struct" "super" "table" "tagged" "task" "this" "throughout"
-             "timeprecision" "timeunit" "tran" "tranif0" "tranif1" "type"
-             "typedef" "union" "unique" "use" "var" "vectored" "virtual" "void"
-             "wait" "wait_order" "while" "wildcard" "with" "within" "xnor"
-             "xor"))
+             "showcancelled" "small" "soft" "solve" "specify" "specparam"
+             "static" "struct" "super" "table" "tagged" "task" "this"
+             "throughout" "timeprecision" "timeunit" "tran" "tranif0" "tranif1"
+             "type" "typedef" "union" "unique" "use" "var" "vectored" "virtual"
+             "void" "wait" "wait_order" "while" "wildcard" "with" "within"
+             "xnor" "xor"))
           "\\)\\_>"))
 
 (defvar sv-mode-builtin-types

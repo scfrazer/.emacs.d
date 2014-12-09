@@ -81,9 +81,9 @@
   '(
     ("\\*\\{80\\}"
      (0 'uvm-log-mode-phase-face))
-    ("\\(\\*\\* Starting phase:\\)\\s-+\\([a-zA-Z0-9_]+\\)"
+    ("\\(\\*\\* \\(Starting\\|Ending\\) phase:\\)\\s-+\\([a-zA-Z0-9_]+\\)"
      (1 'uvm-log-mode-phase-face)
-     (2 'font-lock-function-name-face))
+     (3 'font-lock-function-name-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(DEBUG-[a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-debug-face)
