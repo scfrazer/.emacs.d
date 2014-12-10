@@ -1346,6 +1346,7 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x 2" 'my-buf-split-window-vertically)
 (my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
+(my-keys-define "C-x 5 n" 'set-frame-name)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-window-resize)
@@ -1373,6 +1374,8 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x ~" 'my-flymake-goto-prev-error)
 (my-keys-define "C-y" 'qe-yank)
 (my-keys-define "C-z" 'undo)
+(my-keys-define "ESC <left>" (lambda () "Select previous frame." (interactive) (other-frame 1)))
+(my-keys-define "ESC <right>" (lambda () "Select next frame." (interactive) (other-frame -1)))
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
 (my-keys-define "M-%" 'my-query-replace)
@@ -1451,6 +1454,13 @@ Prefix with C-u to resize the `next-window'."
 
 (require 'vcs-compile)
 (setq vcs-compile-command "l2q procyon_targ_build_fbePP /build_user/")
+
+(defun dv-lint ()
+  (interactive)
+  (compilation-mode)
+  (hl-line-mode 1)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
 
 (global-set-key (kbd "C-x v") clearcase-prefix-map)
 (define-key clearcase-mode-map (kbd "C-v") nil)
