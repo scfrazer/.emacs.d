@@ -74,7 +74,7 @@
    `(magit-log-author ((,class (:foreground "#5F5FFF"))))
    `(magit-log-sha1 ((,class (:foreground "#AF5F00"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
-   `(match ((,class (:background "#AFD7FF"))))
+   `(match ((,class (:background "#FFD7FF"))))
    `(minibuffer-prompt ((,class (:foreground "#005F87"))))
    `(mode-line ((,class (:background "#BCBCBC" :foreground "#000000"))))
    `(mode-line-buffer-id ((,class (:foreground "#0000D7"))))
