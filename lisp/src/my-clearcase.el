@@ -357,9 +357,8 @@ With prefix arg ask for version."
   (when (looking-at "\\s-*\\(element\\s-+\\)?\\([a-zA-Z0-9_./]+\\)")
     (let* ((file (match-string-no-properties 2))
            (pkg-info (my-clearcase-get-file-package file)))
-      (delete-region (point-at-bol) (point-at-eol))
-      (insert (my-clearcase-urq-rules (nth 0 pkg-info) (nth 1 pkg-info) (nth 2 pkg-info)))
-      (forward-line))))
+      (beginning-of-line)
+      (insert (my-clearcase-urq-rules (nth 0 pkg-info) (nth 1 pkg-info) (nth 2 pkg-info)) "\n"))))
 
 ;; Syntax table
 
