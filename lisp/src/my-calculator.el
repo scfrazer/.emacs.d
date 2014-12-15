@@ -9,11 +9,20 @@
               calculator-user-operators '(("<" << (lsh TX TY) 2 2)
                                           (">" >> (lsh TX (* -1 TY)) 2 2)))
 
+;; Show commas in decimal mode
+
+(defun my-calculator-displayer (num)
+  (let ((std-result (calculator-standard-displayer num ?n)))
+    std-result))
+
 ;; TODO calculator-displayers -- separators in decimal mode
 
 (defadvice calculator-get-prompt (after my-calculator-get-prompt activate)
   "Replace '=' with '-'"
   (setq ad-return-value (replace-regexp-in-string "=" "-" ad-return-value)))
+
+(defadvice calculator-copy (after my-calculator-copy activate)
+  (message "Copied value to kill-ring"))
 
 ;; Copy defun and remove annoying warning
 
@@ -52,6 +61,7 @@
                 (t "0.0"))))))
 
 (defun my-calculator-mode-hook ()
+  (set-window-dedicated-p nil t)
   (define-key calculator-mode-map " " nil)
   (define-key calculator-mode-map "w" 'calculator-copy)
   (define-key calculator-mode-map "y" 'calculator-paste))
