@@ -208,8 +208,6 @@
               magit-repo-dirs (list "~/.emacs.d" "~/Projects")
               magit-repo-dirs-depth 2
               make-backup-files nil
-              max-lisp-eval-depth 6000
-              max-specpdl-size 13000
               mouse-autoselect-window t
               mouse-highlight 1
               mouse-yank-at-point t
@@ -288,11 +286,11 @@
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("very.*\\.log\\'" . elog-mode))
 
-(defun major-mode-from-name ()
-  "Choose proper mode for buffers created by switch-to-buffer."
-  (let ((buffer-file-name (or buffer-file-name (buffer-name))))
-    (set-auto-mode)))
-(setq-default major-mode 'major-mode-from-name)
+;; (defun major-mode-from-name ()
+;;   "Choose proper mode for buffers created by switch-to-buffer."
+;;   (let ((buffer-file-name (or buffer-file-name (buffer-name))))
+;;     (set-auto-mode)))
+;; (setq-default major-mode 'major-mode-from-name)
 
 ;; Don't use sh-mode for csh files
 
