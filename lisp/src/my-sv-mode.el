@@ -50,9 +50,19 @@
         (insert "bit "))
       (insert "[" (number-to-string (1- num-bits)) ":0] "))))
 
+(defun my-sv-breakpoint ()
+  "Create a VCS breakpoint string and copy to the clipboard."
+  (interactive)
+  (let ((breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}")))
+    (with-temp-buffer
+      (insert breakpoint)
+      (clipboard-kill-region (point-min) (point-max)))
+    (message breakpoint)))
+
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
+  (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))

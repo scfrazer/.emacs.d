@@ -571,6 +571,19 @@ or the region with prefix arg."
     (replace-match ""))
   (goto-char (point-min)))
 
+(defun my-edit-region-in-mode (start end mode-name)
+  "Edit region in some other mode."
+  (interactive "r\nsMode? ")
+  (let* ((buf (clone-indirect-buffer nil nil))
+         (mode (intern-soft (concat mode-name "-mode"))))
+    (unless mode
+      (error (concat "No mode named '" mode-name "-mode.")))
+    (with-current-buffer buf
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (funcall mode)
+      (switch-to-buffer buf))))
+
 (defun my-fill (&optional arg)
   "Fill paragraph, or region with prefix arg."
   (interactive "*P")
