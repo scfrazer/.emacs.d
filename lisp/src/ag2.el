@@ -416,7 +416,7 @@ corresponding value will be used instead."
       (compilation-start
        (concat ag2-executable
                (if ag2-option-file-type (concat " --" ag2-option-file-type) "")
-               " --nogroup --column --color --color-match 1\\;31"
+               " --silent --nogroup --column --color --color-match 1\\;31"
                (ag2-options-to-string)
                (if (string= "" search-files) "" (concat " -G " (shell-quote-argument search-files)))
                " -- " (shell-quote-argument search-string))
