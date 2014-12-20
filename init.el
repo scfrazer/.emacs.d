@@ -1524,11 +1524,12 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (defalias 'bc 'emacs-lisp-byte-compile)
+(defalias 'bcl 'emacs-lisp-byte-compile-and-load)
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
-(defalias 'edbg 'edebug-defun)
 (defalias 'eb 'ediff-buffers)
+(defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)
