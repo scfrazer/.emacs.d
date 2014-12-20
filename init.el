@@ -1464,7 +1464,7 @@ Prefix with C-u to resize the `next-window'."
 ;; Cisco setup
 
 (require 'vcs-compile)
-(setq vcs-compile-command "l2q procyon_targ_build_fbePP /build_user/")
+(setq vcs-compile-command "l2q procyon_targ_build_fbe /build_user/")
 
 (defun dv-lint ()
   (interactive)
