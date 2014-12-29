@@ -4,10 +4,14 @@
 
 (defun my-theme-light ()
   (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
   (load-theme 'my-light t))
 
 (defun my-theme-dark ()
   (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
   (load-theme 'my-dark t))
 
 (provide 'my-theme)
