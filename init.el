@@ -20,13 +20,36 @@
 ;; Need these first
 
 (require 'my-font-lock)
-(require 'my-dired)
 
-;; Normal packages
+(use-package my-dired
+  :demand t
+  :bind* ("M-d" . my-dired-pop-to-or-create)
+  :config
+  (progn
+    (unbind-key "C-o" dired-mode-map)
+    (unbind-key "s"   dired-mode-map)
+
+    (bind-key " "        'my-dired-toggle-mark         dired-mode-map)
+    (bind-key "<return>" 'my-dired-open                dired-mode-map)
+    (bind-key "J"        'my-dired-jump-to-prev-dir    dired-mode-map)
+    (bind-key "M-<"      'my-dired-beginning-of-buffer dired-mode-map)
+    (bind-key "M->"      'my-dired-end-of-buffer       dired-mode-map)
+    (bind-key "RET"      'my-dired-open                dired-mode-map)
+    (bind-key "b"        'my-dired-toggle-path         dired-mode-map)
+    (bind-key "j"        'my-dired-jump-to-dir         dired-mode-map)
+    (bind-key "n"        'my-dired-next-line           dired-mode-map)
+    (bind-key "o"        'my-dired-do-find-file        dired-mode-map)
+    (bind-key "p"        'my-dired-previous-line       dired-mode-map)
+    (bind-key "s h"      'dired-hide-subdir            dired-mode-map)
+    (bind-key "s i"      'dired-maybe-insert-subdir    dired-mode-map)
+    (bind-key "s k"      'dired-kill-subdir            dired-mode-map)
+    (bind-key "u"        'my-dired-up-dir              dired-mode-map)))
+
+;; Regular packages
 
 (use-package ag2
-  :bind (("C-c G" . ag2)
-         ("C-c g" . ag2-local))
+  :bind* (("C-c G" . ag2)
+          ("C-c g" . ag2-local))
   :config
   (progn
     (setq ag2-default-literal t
@@ -36,8 +59,8 @@
     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
 (use-package bm
-  :bind (("M-(" . bm-previous)
-         ("M-)" . bm-next))
+  :bind* (("M-(" . bm-previous)
+          ("M-)" . bm-next))
   :commands (bm-show-all bm-toggle)
   :init
   (bind-key* "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
@@ -71,24 +94,24 @@
           etags-table-search-up-depth 10)))
 
 (use-package hide-region
-  :bind ("C-x C-h" . hide-region-toggle))
+  :bind* ("C-x C-h" . hide-region-toggle))
 
 (use-package hl-line
-  :bind ("C-c #" . hl-line-mode))
+  :bind* ("C-c #" . hl-line-mode))
 
 (use-package iflipb
-  :bind (("M-," . iflipb-previous-buffer)
-         ("M-." . iflipb-next-buffer))
+  :bind* (("M-," . iflipb-previous-buffer)
+          ("M-." . iflipb-next-buffer))
   :config
   (progn
     (require 'my-buf)
     (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
 
 (use-package jump-to-prev-pos
-  :bind ("M-b" . jump-to-prev-pos))
+  :bind* ("M-b" . jump-to-prev-pos))
 
 (use-package mdabbrev
-  :bind ("M-/" . mdabbrev-expand))
+  :bind* ("M-/" . mdabbrev-expand))
 
 (use-package mode-fn
   :demand t
@@ -99,35 +122,59 @@
     (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)))
 
 (use-package quick-edit
-  :bind (("C-f" . qe-unit-move)
-         ("C-w" . qe-unit-kill)
-         ("C-y" . qe-yank)
-         ("M-'" . qe-backward-word-end)
-         ("M-;" . qe-forward-word-end)
-         ("M-H" . qe-backward-word-section)
-         ("M-J" . qe-backward-kill-section)
-         ("M-K" . qe-forward-kill-section)
-         ("M-L" . qe-forward-word-section)
-         ("M-h" . qe-backward-word)
-         ("M-j" . qe-backward-kill)
-         ("M-k" . qe-forward-kill)
-         ("M-l" . qe-forward-word)
-         ("M-n" . qe-forward-paragraph)
-         ("M-p" . qe-backward-paragraph)
-         ("M-w" . qe-unit-copy)))
+  :bind* (("C-f" . qe-unit-move)
+          ("C-w" . qe-unit-kill)
+          ("C-y" . qe-yank)
+          ("M-'" . qe-backward-word-end)
+          ("M-;" . qe-forward-word-end)
+          ("M-H" . qe-backward-word-section)
+          ("M-J" . qe-backward-kill-section)
+          ("M-K" . qe-forward-kill-section)
+          ("M-L" . qe-forward-word-section)
+          ("M-h" . qe-backward-word)
+          ("M-j" . qe-backward-kill)
+          ("M-k" . qe-forward-kill)
+          ("M-l" . qe-forward-word)
+          ("M-n" . qe-forward-paragraph)
+          ("M-p" . qe-backward-paragraph)
+          ("M-w" . qe-unit-copy)))
 
-(require 'rect)
-(require 'redo+)
-(require 'revbufs)
-(require 'sb-imenu)
-(require 'scf-mode)
-(require 'show-mark)
-(require 'sr-speedbar)
-(require 'uniquify)
+(use-package redo+
+  :bind* (("C-z" . undo)
+          ("M-z" . redo)))
+
+(use-package revbufs
+  :bind* ("C-c R" . revbufs))
+
+(use-package sr-speedbar
+  :commands (sr-speedbar-toggle)
+  :init
+  (defalias 'sb 'sr-speedbar-toggle)
+  :config
+  (progn
+    (require 'sb-imenu)
+    (setq speedbar-indentation-width 2
+          speedbar-initial-expansion-list-name "sb-imenu"
+          speedbar-use-images nil)
+    (speedbar-add-supported-extension ".v")
+    (speedbar-add-supported-extension ".sv")
+    (speedbar-add-supported-extension ".svh")
+    (speedbar-add-supported-extension ".aop")))
+
+(use-package show-mark
+  :demand t
+  :config
+  (global-show-mark-mode 1))
+
+(use-package uniquify
+  :demand t
+  :config
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+
 (require 'web-mode)
 (require 'yank-target)
 
-;; Customized packages
+;; Custom packages
 
 (require 'my-abbrev)
 (require 'my-ace-jump-mode)
@@ -173,8 +220,6 @@
 (autoload 'align-regexp "align" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
-(autoload 'e-mode "e-mode" "Specman 'e' code editing mode" t)
-(autoload 'elog-mode "elog-mode" nil t)
 (autoload 'expand-abbrev "abbrev" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
@@ -201,7 +246,6 @@
 (transient-mark-mode -1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
-(global-show-mark-mode 1)
 (winner-mode 1)
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
@@ -294,13 +338,9 @@
               scroll-preserve-screen-position t
               shift-select-mode nil
               show-paren-delay 0
-              speedbar-indentation-width 2
-              speedbar-initial-expansion-list-name "sb-imenu"
-              speedbar-use-images nil
               split-width-threshold nil
               tags-revert-without-query t
               truncate-partial-width-windows nil
-              uniquify-buffer-name-style 'post-forward-angle-brackets
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               vc-handled-backends nil ;; maybe '(Hg) later
               verilog-auto-endcomments nil
@@ -335,8 +375,6 @@
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
 (add-to-list 'auto-mode-alist '("\\.aop\\'" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
-(add-to-list 'auto-mode-alist '("\\.e\\'" . e-mode))
-(add-to-list 'auto-mode-alist '("\\.elog\\'" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
@@ -352,7 +390,6 @@
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
-(add-to-list 'auto-mode-alist '("very.*\\.log\\'" . elog-mode))
 
 ;; (defun major-mode-from-name ()
 ;;   "Choose proper mode for buffers created by switch-to-buffer."
@@ -1227,9 +1264,6 @@ Prefix with C-u to resize the `next-window'."
     (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
 
-(defun my-grep-mode-hook ()
-  (define-key grep-mode-map "s" 'scf-mode))
-
 (defun my-minibuffer-setup-hook ()
   (my-keys-minor-mode 0)
   (show-mark-mode 0)
@@ -1273,7 +1307,6 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
-(add-hook 'grep-mode-hook 'my-grep-mode-hook)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'sv-mode-hook 'doxymacs-mode)
@@ -1290,21 +1323,6 @@ Prefix with C-u to resize the `next-window'."
        (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
-
-(eval-after-load "e-mode"
-  '(progn
-     (require 'my-e-mode)
-     (require 'e-mode-dbg)
-     (defun my-e-mode-hook ()
-       (set (make-local-variable 'compile-command) "cat $work/test/results/specman.elog"))
-     (add-hook 'e-mode-hook 'my-e-mode-hook)))
-
-(eval-after-load "elog-mode"
-  '(progn
-     (defun my-elog-mode-hook ()
-       (my-whitespace-off-hook)
-       (setq truncate-lines 'one-line-each))
-     (add-hook 'elog-mode-hook 'my-elog-mode-hook)))
 
 (eval-after-load "file-template"
   '(progn
@@ -1326,16 +1344,12 @@ Prefix with C-u to resize the `next-window'."
        (modify-syntax-entry ?= ". 14" makefile-mode-syntax-table))
      (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)))
 
-(eval-after-load "speedbar"
-  '(progn
-     (speedbar-add-supported-extension ".e")
-     (speedbar-add-supported-extension ".v")
-     (speedbar-add-supported-extension ".sv")
-     (speedbar-add-supported-extension ".svh")
-     (speedbar-add-supported-extension ".aop")))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
+
+(bind-key* "C-c r" 'revert-buffer)
+
+(bind-key* "C-c r" 'revert-buffer)
 
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
@@ -1362,7 +1376,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c M" 'vcs-compile)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
-(my-keys-define "C-c R" 'revbufs)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
 (my-keys-define "C-c Y" (lambda () (interactive) (yank-target-go-target) (yank)))
@@ -1380,7 +1393,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
 (my-keys-define "C-c p" 'my-pair-delete-forward)
 (my-keys-define "C-c q" 'bury-buffer)
-(my-keys-define "C-c r" 'revert-buffer)
 (my-keys-define "C-c s" 'my-set-register)
 (my-keys-define "C-c t" 'my-tidy-lines)
 (my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
@@ -1423,7 +1435,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
 (my-keys-define "C-x ~" 'my-flymake-goto-prev-error)
-(my-keys-define "C-z" 'undo)
 (my-keys-define "ESC <left>" (lambda () "Select previous frame." (interactive) (other-frame 1)))
 (my-keys-define "ESC <right>" (lambda () "Select next frame." (interactive) (other-frame -1)))
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
@@ -1459,7 +1470,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-t" 'my-tmux-copy)
 (my-keys-define "M-u" 'my-recenter)
-(my-keys-define "M-z" 'redo)
 (my-keys-define "M-}" 'my-forward-paragraph)
 (my-keys-define "M-~" 'previous-error)
 

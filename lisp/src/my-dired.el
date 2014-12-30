@@ -2,29 +2,6 @@
 
 (require 'dired)
 
-;; Keys
-
-(bind-key* "M-d" 'my-dired-pop-to-or-create)
-
-(unbind-key "C-o" dired-mode-map)
-(unbind-key "s" dired-mode-map)
-
-(bind-key " "        'my-dired-toggle-mark         dired-mode-map)
-(bind-key "<return>" 'my-dired-open                dired-mode-map)
-(bind-key "J"        'my-dired-jump-to-prev-dir    dired-mode-map)
-(bind-key "M-<"      'my-dired-beginning-of-buffer dired-mode-map)
-(bind-key "M->"      'my-dired-end-of-buffer       dired-mode-map)
-(bind-key "RET"      'my-dired-open                dired-mode-map)
-(bind-key "b"        'my-dired-toggle-path         dired-mode-map)
-(bind-key "j"        'my-dired-jump-to-dir         dired-mode-map)
-(bind-key "n"        'my-dired-next-line           dired-mode-map)
-(bind-key "o"        'my-dired-do-find-file        dired-mode-map)
-(bind-key "p"        'my-dired-previous-line       dired-mode-map)
-(bind-key "s h"      'dired-hide-subdir            dired-mode-map)
-(bind-key "s i"      'dired-maybe-insert-subdir    dired-mode-map)
-(bind-key "s k"      'dired-kill-subdir            dired-mode-map)
-(bind-key "u"        'my-dired-up-dir              dired-mode-map)
-
 ;; Settings
 
 (put 'dired-find-alternate-file 'disabled nil)
