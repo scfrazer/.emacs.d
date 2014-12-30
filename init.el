@@ -9,33 +9,113 @@
   (tooltip-mode -1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Basic settings
+;; Settings
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
-(require 'package)
-(package-initialize)
+(require 'use-package)
+(setq use-package-verbose t)
 
-;; Need these first to avoid font-lock/dired issues
+;; Need these first
 
 (require 'my-font-lock)
 (require 'my-dired)
 
-(require 'ag2)
-(require 'bm)
-(require 'csh-mode)
-(require 'etags)
-(require 'etags-select)
-(require 'etags-table)
-(require 'hide-region)
-(require 'hl-line)
-(require 'iflipb)
-(require 'jump-to-prev-pos)
-(require 'mdabbrev)
-(require 'midnight)
-(require 'mode-fn)
-(require 'quick-edit)
+;; Normal packages
+
+(use-package ag2
+  :bind (("C-c G" . ag2)
+         ("C-c g" . ag2-local))
+  :config
+  (progn
+    (setq ag2-default-literal t
+          ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
+                                    ("rtl" . "\\.(s|v|vh)$")
+                                    ("vtt" . "\\.(java|php|json|html)$")))
+    (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
+
+(use-package bm
+  :bind (("M-(" . bm-previous)
+         ("M-)" . bm-next))
+  :commands (bm-show-all bm-toggle)
+  :init
+  (bind-key* "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
+  :config
+  (setq bm-goto-position nil
+        bm-recenter t
+        bm-wrap-immediately nil))
+
+(use-package csh-mode
+  :mode (("\\.csh\\'" . csh-mode)
+         ("\\.cshrc\\'" . csh-mode))
+  :init
+  ;; Don't use sh-mode for csh files
+  (dolist (elt interpreter-mode-alist)
+    (when (member (car elt) (list "csh" "tcsh"))
+      (setcdr elt 'csh-mode))))
+
+(use-package etags-select
+  :commands (etags-select-find-tag etags-select-find-tag-at-point)
+  :init
+  (bind-key* "M-?" (lambda (&optional arg) (interactive "P") (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+  :config
+  (progn
+    (require 'etags-table)
+    (setq etags-select-use-short-name-completion t
+          etags-table-alist (list
+                             '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
+                             '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
+                             '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
+                             )
+          etags-table-search-up-depth 10)))
+
+(use-package hide-region
+  :bind ("C-x C-h" . hide-region-toggle))
+
+(use-package hl-line
+  :bind ("C-c #" . hl-line-mode))
+
+(use-package iflipb
+  :bind (("M-," . iflipb-previous-buffer)
+         ("M-." . iflipb-next-buffer))
+  :config
+  (progn
+    (require 'my-buf)
+    (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
+
+(use-package jump-to-prev-pos
+  :bind ("M-b" . jump-to-prev-pos))
+
+(use-package mdabbrev
+  :bind ("M-/" . mdabbrev-expand))
+
+(use-package mode-fn
+  :demand t
+  :config
+  (progn
+    (mode-fn-map 'html 'org-mode 'org-export-as-html)
+    (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+    (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)))
+
+(use-package quick-edit
+  :bind (("C-f" . qe-unit-move)
+         ("C-w" . qe-unit-kill)
+         ("C-y" . qe-yank)
+         ("M-'" . qe-backward-word-end)
+         ("M-;" . qe-forward-word-end)
+         ("M-H" . qe-backward-word-section)
+         ("M-J" . qe-backward-kill-section)
+         ("M-K" . qe-forward-kill-section)
+         ("M-L" . qe-forward-word-section)
+         ("M-h" . qe-backward-word)
+         ("M-j" . qe-backward-kill)
+         ("M-k" . qe-forward-kill)
+         ("M-l" . qe-forward-word)
+         ("M-n" . qe-forward-paragraph)
+         ("M-p" . qe-backward-paragraph)
+         ("M-w" . qe-unit-copy)))
+
 (require 'rect)
 (require 'redo+)
 (require 'revbufs)
@@ -46,6 +126,8 @@
 (require 'uniquify)
 (require 'web-mode)
 (require 'yank-target)
+
+;; Customized packages
 
 (require 'my-abbrev)
 (require 'my-ace-jump-mode)
@@ -76,7 +158,7 @@
 (require 'my-python)
 (require 'my-recentf)
 (require 'my-reformat)
-(require 'my-register-list)
+;; (require 'my-register-list)
 (require 'my-sgml-xml)
 (require 'my-shell)
 (require 'my-sort-lines)
@@ -146,12 +228,8 @@
               ace-jump-mode-gray-background nil
               ace-jump-mode-scope 'window
               ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
-              ag2-default-literal t
               backup-inhibited t
               blink-matching-paren-distance nil
-              bm-goto-position nil
-              bm-recenter t
-              bm-wrap-immediately nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
@@ -172,10 +250,7 @@
               dabbrev-case-fold-search nil
               desktop-restore-frames nil
               diff-switches "-b -u"
-              dired-auto-revert-buffer t
               echo-keystrokes 0.1
-              etags-select-use-short-name-completion t
-              etags-table-search-up-depth 10
               eval-expression-print-length nil
               eval-expression-print-level nil
               even-window-heights nil
@@ -190,7 +265,6 @@
               highlight-changes-passive-string " Chg-"
               hscroll-step 1
               htmlize-output-type 'font
-              iflipb-ignore-buffers 'my-buf-ignore-buffer
               indent-tabs-mode nil
               indicate-buffer-boundaries t
               inhibit-startup-message t
@@ -257,16 +331,10 @@
               x-select-enable-primary t
               x-select-enable-clipboard nil)
 
-(setq frame-title-format (concat "%F" (if (and clearcase-servers-online clearcase-setview-viewtag)
-                                          (concat " - " clearcase-setview-viewtag)
-                                        "")))
-
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
 (add-to-list 'auto-mode-alist '("\\.aop\\'" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
-(add-to-list 'auto-mode-alist '("\\.csh\\'" . csh-mode))
-(add-to-list 'auto-mode-alist '("\\.cshrc\\'" . csh-mode))
 (add-to-list 'auto-mode-alist '("\\.e\\'" . e-mode))
 (add-to-list 'auto-mode-alist '("\\.elog\\'" . elog-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
@@ -291,12 +359,6 @@
 ;;   (let ((buffer-file-name (or buffer-file-name (buffer-name))))
 ;;     (set-auto-mode)))
 ;; (setq-default major-mode 'major-mode-from-name)
-
-;; Don't use sh-mode for csh files
-
-(dolist (elt interpreter-mode-alist)
-  (when (member (car elt) (list "csh" "tcsh"))
-    (setcdr elt 'csh-mode)))
 
 ;; Comments
 
@@ -956,14 +1018,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
 
-(defun my-server()
-  "Start an Emacs server in a ClearCase view."
-  (interactive)
-  (when (and (not window-system) clearcase-servers-online clearcase-setview-viewtag)
-    (require 'server)
-    (setq-default server-name clearcase-setview-viewtag)
-    (server-start)))
-
 (defun my-set-register (&optional arg)
   "Copy last kill, or with prefix arg region, to a register."
   (interactive "P")
@@ -1155,9 +1209,6 @@ Prefix with C-u to resize the `next-window'."
 (defun my-after-save-hook ()
   (executable-make-buffer-file-executable-if-script-p))
 
-(defun my-ag2-mode-hook ()
-  (define-key ag2-mode-map "\C-x\C-q" 'grep-ed-start))
-
 (defun my-diff-mode-hook ()
   (define-key diff-mode-map "q" 'my-kill-this-buffer)
   (define-key diff-mode-map "n" 'diff-hunk-next)
@@ -1217,23 +1268,18 @@ Prefix with C-u to resize the `next-window'."
 
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
-(add-hook 'ag2-mode-hook 'my-ag2-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
-(add-hook 'dired-mode-hook 'my-whitespace-off-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (add-hook 'grep-mode-hook 'my-grep-mode-hook)
-(add-hook 'midnight-hook 'recentf-cleanup)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'sv-mode-hook 'doxymacs-mode)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
-
-(remove-hook 'midnight-hook 'clean-buffer-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After loads
@@ -1305,7 +1351,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
 (my-keys-define "C-M-y" 'browse-kill-ring)
 (my-keys-define "C-\\" 'expand-abbrev)
-(my-keys-define "C-c #" 'hl-line-mode)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
@@ -1314,7 +1359,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c =" 'my-ediff-dwim)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
-(my-keys-define "C-c G" 'ag2)
 (my-keys-define "C-c M" 'vcs-compile)
 (my-keys-define "C-c N" 'narrow-to-defun)
 (my-keys-define "C-c P" 'my-pair-delete-backward)
@@ -1328,7 +1372,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c d" 'my-debug-map)
 (my-keys-define "C-c e" 'my-term)
 (my-keys-define "C-c f" 'my-ffap)
-(my-keys-define "C-c g" 'ag2-local)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
 (my-keys-define "C-c j" 'my-edit-join-line-with-next)
 (my-keys-define "C-c l" (lambda () (interactive) (my-case-symbol 'downcase)))
@@ -1345,7 +1388,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
 (my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)
-(my-keys-define "C-f" 'qe-unit-move)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'ace-jump-mode)
 (my-keys-define "C-k" 'my-edit-kill-line)
@@ -1354,7 +1396,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-r" 'my-isearch-backward)
 (my-keys-define "C-s" 'my-isearch-forward)
 (my-keys-define "C-v" 'my-edit-newline-and-indent)
-(my-keys-define "C-w" 'qe-unit-kill)
 (my-keys-define "C-x 2" 'my-buf-split-window-vertically)
 (my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
 (my-keys-define "C-x 5 n" 'set-frame-name)
@@ -1362,7 +1403,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-window-resize)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
-(my-keys-define "C-x C-h" 'hide-region-toggle)
 (my-keys-define "C-x C-n" 'other-window)
 (my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
 (my-keys-define "C-x C-r" 'my-ido-recentf-file)
@@ -1383,29 +1423,15 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x w" 'my-clone-file)
 (my-keys-define "C-x |" 'my-toggle-window-split)
 (my-keys-define "C-x ~" 'my-flymake-goto-prev-error)
-(my-keys-define "C-y" 'qe-yank)
 (my-keys-define "C-z" 'undo)
 (my-keys-define "ESC <left>" (lambda () "Select previous frame." (interactive) (other-frame 1)))
 (my-keys-define "ESC <right>" (lambda () "Select next frame." (interactive) (other-frame -1)))
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
-(my-keys-define "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
 (my-keys-define "M-%" 'my-query-replace)
 (my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
-(my-keys-define "M-'" 'qe-backward-word-end)
-(my-keys-define "M-(" 'bm-previous)
-(my-keys-define "M-)" 'bm-next)
 (my-keys-define "M-*" 'pop-tag-mark)
-(my-keys-define "M-," 'iflipb-previous-buffer)
-(my-keys-define "M-." 'iflipb-next-buffer)
-(my-keys-define "M-/" 'mdabbrev-expand)
-(my-keys-define "M-;" 'qe-forward-word-end)
 (my-keys-define "M-=" 'my-count-lines)
-(my-keys-define "M-?" (lambda (&optional arg) (interactive "P") (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
 (my-keys-define "M-G" (lambda (&optional arg) (interactive "P") (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol))))
-(my-keys-define "M-H" 'qe-backward-word-section)
-(my-keys-define "M-J" 'qe-backward-kill-section)
-(my-keys-define "M-K" 'qe-forward-kill-section)
-(my-keys-define "M-L" 'qe-forward-word-section)
 (my-keys-define "M-N" 'scroll-up-command)
 (my-keys-define "M-P" 'scroll-down-command)
 (my-keys-define "M-Q" 'my-unfill)
@@ -1413,19 +1439,11 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-SPC" 'my-yank-target-jump)
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-a" 'my-step-out-backward)
-(my-keys-define "M-b" 'jump-to-prev-pos)
 (my-keys-define "M-c" 'my-tmux-iterm-copy)
-(my-keys-define "M-d" 'my-dired-pop-to-or-create)
 (my-keys-define "M-e" 'my-step-out-forward)
 (my-keys-define "M-g" 'my-goto-line-column)
-(my-keys-define "M-h" 'qe-backward-word)
 (my-keys-define "M-i" 'ido-switch-buffer)
-(my-keys-define "M-j" 'qe-backward-kill)
-(my-keys-define "M-k" 'qe-forward-kill)
-(my-keys-define "M-l" 'qe-forward-word)
-(my-keys-define "M-n" 'qe-forward-paragraph)
 (my-keys-define "M-o" 'my-ibuffer)
-(my-keys-define "M-p" 'qe-backward-paragraph)
 (my-keys-define "M-q" 'my-fill)
 (my-keys-define "M-r SPC" 'rectangle-mark-mode)
 (my-keys-define "M-r [" 'my-backward-paragraph-rect)
@@ -1441,7 +1459,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-s o" 'my-occur)
 (my-keys-define "M-t" 'my-tmux-copy)
 (my-keys-define "M-u" 'my-recenter)
-(my-keys-define "M-w" 'qe-unit-copy)
 (my-keys-define "M-z" 'redo)
 (my-keys-define "M-}" 'my-forward-paragraph)
 (my-keys-define "M-~" 'previous-error)
@@ -1473,22 +1490,8 @@ Prefix with C-u to resize the `next-window'."
   (set (make-local-variable 'compilation-error-regexp-alist)
        (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
 
-(global-set-key (kbd "C-x v") clearcase-prefix-map)
-(define-key clearcase-mode-map (kbd "C-v") nil)
-(define-key clearcase-dired-mode-map (kbd "C-v") nil)
 
-(setq ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
-                                ("rtl" . "\\.(s|v|vh)$")
-                                ("vtt" . "\\.(java|php|json|html)$")))
-
-(setq etags-table-alist
-      (list
-       '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-       '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-       '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
-       ))
-
-(when clearcase-servers-online
+(when use-clearcase
   (ll-debug-register-mode 'c++-mode
                           "dvc_info(" ");"
                           '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
@@ -1533,7 +1536,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)
-(defalias 'fnd 'my-find-name-dired)
+(defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
 (defalias 'hex 'my-dec-to-hex)
 (defalias 'hli 'highlight-indentation-mode)
@@ -1555,10 +1558,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'vtt (lambda () (interactive) (require 'vtt)))
 (defalias 'work (lambda () (interactive) (find-file (expand-file-name "~/Documents/Org/Work.org"))))
 (defalias 'ws 'my-font-lock-show-whitespace)
-
-(mode-fn-map 'html 'org-mode 'org-export-as-html)
-(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
-(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
@@ -1609,6 +1608,5 @@ Prefix with C-u to resize the `next-window'."
 ;; Disabled commands
 
 (put 'erase-buffer 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'scroll-right 'disabled nil)

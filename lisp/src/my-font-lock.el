@@ -47,7 +47,7 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
         (font-lock-remove-keywords nil '(("\t+" (0 'my-tab-face prepend)))))
       (font-lock-fontify-buffer))))
 
-;; Hooks and advice for adding font-lock faces
+;; Hooks for adding font-lock faces
 
 (defun my-font-lock-mode-hook ()
   "Font-lock mode hook."
@@ -64,18 +64,22 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
     (font-lock-add-keywords nil (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\)\\>" (list '(1 'my-todo-face t)))) 'add-to-end)
     (font-lock-add-keywords nil (list (cons "\\<\\([Ff][Ii][Xx][Mm][Ee]\\)\\>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
 
-(defadvice toggle-read-only (after my-font-lock-toggle-read-only activate)
-  "Turn whitespace on/off with read-only status"
-  (if buffer-read-only
-      (my-font-lock-show-whitespace -1)
-    (my-font-lock-show-whitespace 1)))
+(defvar my-font-lock-whitespace-state t)
+(make-variable-buffer-local 'my-font-lock-whitespace-state)
 
-(defadvice revert-buffer (after my-font-lock-revert-buffer activate)
+(defun my-font-lock-whitespace-hook ()
   "Turn whitespace on/off with read-only status"
   (if buffer-read-only
       (my-font-lock-show-whitespace -1)
-    (my-font-lock-show-whitespace 1)))
+    (when my-font-lock-whitespace-state
+      (my-font-lock-show-whitespace 1))))
+
+(defun my-font-lock-before-revert-hook ()
+  (setq my-font-lock-whitespace-state show-trailing-whitespace))
 
 (add-hook 'font-lock-mode-hook 'my-font-lock-mode-hook)
+(add-hook 'read-only-mode-hook 'my-font-lock-whitespace-hook)
+(add-hook 'before-revert-hook 'my-font-lock-before-revert-hook)
+(add-hook 'after-revert-hook 'my-font-lock-whitespace-hook)
 
 (provide 'my-font-lock)

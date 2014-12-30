@@ -1,24 +1,26 @@
 ;;; my-recentf.el
 
 (require 'recentf)
-(require 'clearcase)
+(require 'midnight)
+
+(add-hook 'midnight-hook 'recentf-cleanup)
+(remove-hook 'midnight-hook 'clean-buffer-list)
+
+(require 'my-clearcase)
+(defvar clearcase-setview-viewtag)
 
 (setq recentf-save-file
       (convert-standard-filename
-       (let ((view (and clearcase-servers-online clearcase-setview-viewtag)))
+       (let ((view (and use-clearcase clearcase-setview-viewtag)))
          (if view
              (concat "~/.recentf-" view)
            "~/.recentf"))))
 
-(setq recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" ".*/[0-9]+$")))
-(setq recentf-max-menu-items 100)
-(setq recentf-max-saved-items 100)
-(setq recentf-menu-filter nil)
-(setq recentf-auto-cleanup "11:59pm")
-
-(defun my-recentf-clear-list ()
-  (interactive)
-  (setq recentf-list nil))
+(setq recentf-auto-cleanup "11:59pm"
+      recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" ".*/[0-9]+$"))
+      recentf-max-menu-items 100
+      recentf-max-saved-items 100
+      recentf-menu-filter nil)
 
 (recentf-mode t)
 

@@ -1,6 +1,8 @@
 ;;; my-mode-line.el
 
 (require 'my-clearcase)
+(defvar clearcase-setview-viewtag)
+
 (require 'task)
 
 (defvar my-mode-line-buffer-line-count nil)
@@ -47,7 +49,7 @@
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode)
             (concat "  " (propertize "Mouse" 'face 'my-narrow-face))))
    "  " mode-line-modes
-   (:eval (if (and clearcase-servers-online clearcase-setview-viewtag)
+   (:eval (if (and use-clearcase clearcase-setview-viewtag)
               (concat "  [View: " clearcase-setview-viewtag "]")
             ""))
    (:eval (if (not task-current-name)
