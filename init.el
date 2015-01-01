@@ -19,7 +19,12 @@
 
 ;; Need these first
 
-(require 'my-font-lock)
+(use-package my-font-lock
+  :demand t
+  :config
+  (progn
+    (defalias 'fl 'font-lock-fontify-buffer)
+    (defalias 'ws 'my-font-lock-show-whitespace)))
 
 (use-package my-dired
   :demand t
@@ -59,15 +64,18 @@
     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
 (use-package bm
-  :bind* (("M-(" . bm-previous)
+  :bind* (("M-#" . my-bm-toggle-or-show)
+          ("M-(" . bm-previous)
           ("M-)" . bm-next))
-  :commands (bm-show-all bm-toggle)
-  :init
-  (bind-key* "M-#" (lambda (&optional arg) (interactive "P") (if arg (bm-show-all) (bm-toggle))))
   :config
-  (setq bm-goto-position nil
-        bm-recenter t
-        bm-wrap-immediately nil))
+  (progn
+    (setq bm-goto-position nil
+          bm-recenter t
+          bm-wrap-immediately nil)
+    (defun my-bm-toggle-or-show (&optional arg)
+      "Toggle or show bookmarks"
+      (interactive "P")
+      (if arg (bm-show-all) (bm-toggle)))))
 
 (use-package csh-mode
   :mode (("\\.csh\\'" . csh-mode)
@@ -79,9 +87,9 @@
       (setcdr elt 'csh-mode))))
 
 (use-package etags-select
-  :commands (etags-select-find-tag etags-select-find-tag-at-point)
-  :init
-  (bind-key* "M-?" (lambda (&optional arg) (interactive "P") (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+  :bind* (("M-?" . my-etags-select-find-tag)
+          ("M-&" . my-pop-tag-mark-kill-buffer)
+          ("M-*" . pop-tag-mark))
   :config
   (progn
     (require 'etags-table)
@@ -91,7 +99,19 @@
                              '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
                              '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
                              )
-          etags-table-search-up-depth 10)))
+          etags-table-search-up-depth 10
+          tags-revert-without-query t)
+    (defun my-etags-select-find-tag (&optional arg)
+      "Find tag at point or plain find tag"
+      (interactive "P")
+      (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
+    (defun my-pop-tag-mark-kill-buffer ()
+      "Pop tag mark and kill previous buffer."
+      (interactive)
+      (let ((buf (current-buffer)))
+        (pop-tag-mark)
+        (unless (equal buf (current-buffer))
+          (kill-buffer buf))))))
 
 (use-package hide-region
   :bind* ("C-x C-h" . hide-region-toggle))
@@ -171,8 +191,32 @@
   :config
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
-(require 'web-mode)
-(require 'yank-target)
+(use-package web-mode
+  :mode (("\\.html?\\'" . web-mode))
+  :config
+  (setq web-mode-auto-close-style 2
+        web-mode-enable-auto-closing t
+        web-mode-enable-current-element-highlight t))
+
+(use-package yank-target
+  :bind* (("C-c Y" . my-yank-target-go-yank)
+          ("C-c y" . yank-target-map)
+          ("M-SPC" . my-yank-target-jump))
+  :config
+  (progn
+    (defun my-yank-target-go-yank ()
+      "Go to target and yank"
+      (interactive)
+      (yank-target-go-target)
+      (yank))
+    (defun my-yank-target-jump (&optional arg)
+      "Set yank target, or with prefix arg go to yank target, or with numeric arg go to yank source."
+      (interactive "P")
+      (if (and arg (listp arg))
+          (yank-target-go-target)
+        (if arg
+            (yank-target-go-source)
+          (yank-target-set))))))
 
 ;; Custom packages
 
@@ -302,7 +346,6 @@
               file-template-paths (list (concat user-emacs-directory "templates/"))
               fill-column 78
               flyspell-mode-map nil
-              font-lock-verbose nil
               hi-lock-auto-select-face t
               highlight-changes-active-string " Chg+"
               highlight-changes-global-modes nil
@@ -339,7 +382,6 @@
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
-              tags-revert-without-query t
               truncate-partial-width-windows nil
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               vc-handled-backends nil ;; maybe '(Hg) later
@@ -360,9 +402,6 @@
               verilog-tab-always-indent t
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
-              web-mode-auto-close-style 2
-              web-mode-enable-auto-closing t
-              web-mode-enable-current-element-highlight t
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
               winner-ring-size 50)
 
@@ -375,7 +414,6 @@
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
 (add-to-list 'auto-mode-alist '("\\.aop\\'" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
@@ -487,6 +525,7 @@
                        (unless (bolp) (backward-char 1)))
                      (point)))))
          (again t))
+    (set-mark (point))
     (while again
       (forward-line -1)
       (setq again (not (bobp)))
@@ -715,6 +754,7 @@ or the region with prefix arg."
                        (unless (bolp) (backward-char 1)))
                      (point)))))
          (again t))
+    (set-mark (point))
     (while again
       (forward-line 1)
       (setq again (not (eobp)))
@@ -901,14 +941,6 @@ arg do something special."
         (widen)
       (narrow-to-region (region-beginning) (region-end))
       (goto-char (point-min)))))
-
-(defun my-pop-tag-mark-kill-buffer ()
-  "Pop tag mark and kill previous buffer."
-  (interactive)
-  (let ((buf (current-buffer)))
-    (pop-tag-mark)
-    (unless (equal buf (current-buffer))
-      (kill-buffer buf))))
 
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name in the kill-ring.
@@ -1207,15 +1239,6 @@ Prefix with C-u to resize the `next-window'."
       (kill-region (point) end)
       (insert "color-" (number-to-string color-num)))))
 
-(defun my-yank-target-jump (&optional arg)
-  "Set yank target, or with prefix arg go to yank target, or with numeric arg go to yank source."
-  (interactive "P")
-  (if (and arg (listp arg))
-      (yank-target-go-target)
-    (if arg
-        (yank-target-go-source)
-      (yank-target-set))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
 
@@ -1349,8 +1372,6 @@ Prefix with C-u to resize the `next-window'."
 
 (bind-key* "C-c r" 'revert-buffer)
 
-(bind-key* "C-c r" 'revert-buffer)
-
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 (defmacro my-keys-define (key fn)
@@ -1378,7 +1399,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c P" 'my-pair-delete-backward)
 (my-keys-define "C-c TAB" 'indent-region)
 (my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
-(my-keys-define "C-c Y" (lambda () (interactive) (yank-target-go-target) (yank)))
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
@@ -1398,7 +1418,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
 (my-keys-define "C-c v" 'toggle-truncate-lines)
 (my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
-(my-keys-define "C-c y" 'yank-target-map)
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
 (my-keys-define "C-j" 'ace-jump-mode)
@@ -1439,15 +1458,12 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "ESC <right>" (lambda () "Select next frame." (interactive) (other-frame -1)))
 (my-keys-define "M-!" 'my-shell-command-on-current-file)
 (my-keys-define "M-%" 'my-query-replace)
-(my-keys-define "M-&" 'my-pop-tag-mark-kill-buffer)
-(my-keys-define "M-*" 'pop-tag-mark)
 (my-keys-define "M-=" 'my-count-lines)
 (my-keys-define "M-G" (lambda (&optional arg) (interactive "P") (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol))))
 (my-keys-define "M-N" 'scroll-up-command)
 (my-keys-define "M-P" 'scroll-down-command)
 (my-keys-define "M-Q" 'my-unfill)
 (my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
-(my-keys-define "M-SPC" 'my-yank-target-jump)
 (my-keys-define "M-`" 'next-error)
 (my-keys-define "M-a" 'my-step-out-backward)
 (my-keys-define "M-c" 'my-tmux-iterm-copy)
@@ -1457,8 +1473,8 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "M-o" 'my-ibuffer)
 (my-keys-define "M-q" 'my-fill)
 (my-keys-define "M-r SPC" 'rectangle-mark-mode)
-(my-keys-define "M-r [" 'my-backward-paragraph-rect)
-(my-keys-define "M-r ]" 'my-forward-paragraph-rect)
+(my-keys-define "M-r M-n" 'my-forward-paragraph-rect)
+(my-keys-define "M-r M-p" 'my-backward-paragraph-rect)
 (my-keys-define "M-r j" 'jump-to-register)
 (my-keys-define "M-r k" 'kill-rectangle)
 (my-keys-define "M-r n" 'my-rectangle-number-lines)
@@ -1544,7 +1560,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'eb 'ediff-buffers)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
@@ -1567,7 +1582,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
 (defalias 'vtt (lambda () (interactive) (require 'vtt)))
 (defalias 'work (lambda () (interactive) (find-file (expand-file-name "~/Documents/Org/Work.org"))))
-(defalias 'ws 'my-font-lock-show-whitespace)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
