@@ -5,7 +5,7 @@
   (custom-theme-set-faces
    'my-light
 
-   `(ace-jump-face-foreground ((,class (:foreground "#FFFF00" :background "#000000"))))
+   `(ace-jump-face-foreground ((,class (:foreground "#FFFFFF" :background "#444444"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#5F00AF"))))
@@ -57,8 +57,8 @@
    `(ido-first-match ((,class (:weight normal :foreground "#000000" :background "#AFFFFF"))))
    `(ido-only-match ((,class (:weight normal :foreground "#000000" :background "#87FF87"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
-   `(info-header-node ((,class (:foreground "#00AFFF"))))
-   `(info-header-xref ((,class (:inherit info-xref :foreground "#00875F"))))
+   `(info-header-node ((,class (:foreground "#00CD00"))))
+   `(info-header-xref ((,class (:inherit info-xref :foreground "#00AFFF"))))
    `(info-menu-star ((,class (:foreground "#000000"))))
    `(info-node ((,class (:foreground "#00AFFF"))))
    `(info-title-1 ((,class (:foreground "#878700"))))

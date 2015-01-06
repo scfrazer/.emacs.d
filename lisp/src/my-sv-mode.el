@@ -18,6 +18,7 @@
 (setq ffap-alist (append (list '(sv-mode . ffap-sv-mode)) ffap-alist))
 
 (defun my-sv-mode-expand-reg ()
+  "Expand register definition."
   (interactive)
   (back-to-indentation)
   (let* ((orig (buffer-substring-no-properties (point) (point-at-eol)))
@@ -39,6 +40,7 @@
       (insert ";"))))
 
 (defun my-sv-mode-bit-vector ()
+  "Expand bit vector."
   (interactive)
   (let (num-bits)
     (skip-chars-backward "0-9")
@@ -50,14 +52,35 @@
         (insert "bit "))
       (insert "[" (number-to-string (1- num-bits)) ":0] "))))
 
+(defun my-sv-mode-uvm-create ()
+  "Expand UVM create var."
+  (interactive)
+  (let ((pos (point)))
+    (when (re-search-backward "[^a-zA-Z0-9_]\\([a-zA-Z0-9_]+\\)\\s-*=" (point-at-bol) t)
+      (let ((var (match-string 1)))
+        (goto-char pos)
+        (when (re-search-backward (concat "[^a-zA-Z0-9_:]\\([a-zA-Z0-9_:]+\\)\\s-+" var) nil t)
+          (let ((type (match-string 1)))
+            (goto-char pos)
+            (insert type "::type_id::create(\"" var "\", this);")))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar my-sv-xclip-program (executable-find "xclip")
+  "Name of XClip program tool.")
+
 (defun my-sv-breakpoint ()
   "Create a VCS breakpoint string and copy to the clipboard."
   (interactive)
-  (let ((breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}")))
-    (with-temp-buffer
-      (insert breakpoint)
-      (clipboard-kill-region (point-min) (point-max)))
-    (message breakpoint)))
+  (when (and my-sv-xclip-program (getenv "DISPLAY"))
+    (let* ((breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"))
+           (process-connection-type nil)
+           (proc (start-process "xclip" nil "xclip" "-selection" "clipboard")))
+      (process-send-string proc breakpoint)
+      (process-send-eof proc)
+      (message breakpoint))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
@@ -146,5 +169,10 @@
       (save-excursion
         (insert "\nend")
         (sv-mode-indent-line)))))
+
+(define-abbrev sv-mode-abbrev-table
+  "create"
+  ""
+  'my-sv-mode-uvm-create)
 
 (provide 'my-sv-mode)
