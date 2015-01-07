@@ -50,7 +50,41 @@
     (bind-key "s k"      'dired-kill-subdir            dired-mode-map)
     (bind-key "u"        'my-dired-up-dir              dired-mode-map)))
 
-;; Regular packages
+;; Required packages
+
+(require 'my-bookmark)
+(require 'my-buf)
+(require 'my-clearcase)
+
+(require 'mode-fn)
+(mode-fn-map 'html 'org-mode 'org-export-as-html)
+(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
+
+(require 'show-mark)
+(global-show-mark-mode 1)
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+;; Deferred packages
+
+(use-package abbrev
+  :bind* ("C-\\" . expand-abbrev)
+  :config
+  (progn
+    (require 'my-abbrev)
+    (setq save-abbrevs nil)))
+
+(use-package ace-jump-mode
+  :bind* ("C-j" . ace-jump-mode)
+  :config
+  (progn
+    (require 'my-ace-jump-mode)
+    (setq ace-jump-mode-case-fold nil
+          ace-jump-mode-gray-background nil
+          ace-jump-mode-scope 'window
+          ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode))))
 
 (use-package ag2
   :bind* (("C-c G" . ag2)
@@ -77,6 +111,16 @@
       (interactive "P")
       (if arg (bm-show-all) (bm-toggle)))))
 
+(use-package calculator
+  :bind* ("C-x *" . calculator)
+  :config
+  (require 'my-calculator))
+
+(use-package cc-mode
+  :defer t
+  :config
+  (require 'my-cc-mode))
+
 (use-package csh-mode
   :mode (("\\.csh\\'" . csh-mode)
          ("\\.cshrc\\'" . csh-mode))
@@ -86,12 +130,13 @@
     (when (member (car elt) (list "csh" "tcsh"))
       (setcdr elt 'csh-mode))))
 
-(use-package etags-select
+(use-package etags
   :bind* (("M-?" . my-etags-select-find-tag)
           ("M-&" . my-pop-tag-mark-kill-buffer)
           ("M-*" . pop-tag-mark))
   :config
   (progn
+    (require 'etags-select)
     (require 'etags-table)
     (setq etags-select-use-short-name-completion t
           etags-table-alist (list
@@ -130,16 +175,24 @@
 (use-package jump-to-prev-pos
   :bind* ("M-b" . jump-to-prev-pos))
 
+(use-package ll-debug
+  :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
+          ("C-c d C-r" . my-debug-isearch-backward)
+          ("C-c d C-s" . my-debug-isearch-forward)
+          ("C-c d O"   . my-debug-multi-occur)
+          ("C-c d R"   . ll-debug-revert)
+          ("C-c d c"   . my-debug-comment-region)
+          ("C-c d d"   . my-debug-insert-line)
+          ("C-c d i"   . my-debug-insert-ll)
+          ("C-c d n"   . my-debug-next)
+          ("C-c d o"   . my-debug-occur)
+          ("C-c d p"   . my-debug-previous)
+          ("C-c d r"   . ll-debug-renumber))
+  :config
+  (require 'my-debug))
+
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
-
-(use-package mode-fn
-  :demand t
-  :config
-  (progn
-    (mode-fn-map 'html 'org-mode 'org-export-as-html)
-    (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
-    (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)))
 
 (use-package quick-edit
   :bind* (("C-f" . qe-unit-move)
@@ -166,12 +219,13 @@
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
 
-(use-package sr-speedbar
+(use-package speedbar
   :commands (sr-speedbar-toggle)
   :init
   (defalias 'sb 'sr-speedbar-toggle)
   :config
   (progn
+    (require 'sr-speedbar)
     (require 'sb-imenu)
     (setq speedbar-indentation-width 2
           speedbar-initial-expansion-list-name "sb-imenu"
@@ -181,16 +235,6 @@
     (speedbar-add-supported-extension ".svh")
     (speedbar-add-supported-extension ".aop")))
 
-(use-package show-mark
-  :demand t
-  :config
-  (global-show-mark-mode 1))
-
-(use-package uniquify
-  :demand t
-  :config
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
-
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :config
@@ -199,9 +243,15 @@
         web-mode-enable-current-element-highlight t))
 
 (use-package yank-target
-  :bind* (("C-c Y" . my-yank-target-go-yank)
-          ("C-c y" . yank-target-map)
-          ("M-SPC" . my-yank-target-jump))
+  :bind* (("C-c Y"     . my-yank-target-go-yank)
+          ("C-c y SPC" . yank-target-set)
+          ("C-c y y"   . yank-target-yank)
+          ("C-c y Y"   . yank-target-yank-and-go)
+          ("C-c y k"   . yank-target-kill)
+          ("C-c y K"   . yank-target-kill-and-go)
+          ("C-c y t"   . yank-target-go-target)
+          ("C-c y s"   . yank-target-go-source)
+          ("M-SPC"     . my-yank-target-jump))
   :config
   (progn
     (defun my-yank-target-go-yank ()
@@ -218,18 +268,25 @@
             (yank-target-go-source)
           (yank-target-set))))))
 
-;; Custom packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'my-abbrev)
-(require 'my-ace-jump-mode)
-(require 'my-bookmark)
-(require 'my-buf)
-(require 'my-calculator)
-(require 'my-cc-mode)
-(require 'my-clearcase)
-(require 'my-debug)
-(require 'my-doxymacs)
-(require 'my-ediff)
+(use-package diff
+  :defer t
+  :config
+  (progn
+    (setq diff-switches "-b -u")
+    (bind-key "q" 'my-kill-this-buffer diff-mode-map)
+    (bind-key "n" 'diff-hunk-next      diff-mode-map)
+    (bind-key "p" 'diff-hunk-prev      diff-mode-map)))
+
+(use-package ediff
+  :bind ("C-c =" . my-ediff-dwim)
+  :commands (ediff-buffers)
+  :init
+  (defalias 'eb 'ediff-buffers)
+  :config
+  (require 'my-ediff))
+
 (require 'my-edit)
 (require 'my-ffap)
 (require 'my-grep)
@@ -260,11 +317,19 @@
 (require 'my-tmux)
 (require 'my-vc)
 
+;; TODO
+;; (require 'my-doxymacs)
+;; (defun my-doxymacs-font-lock-hook ()
+;;   (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
+;;     (doxymacs-font-lock)))
+;; (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
+;; (add-hook 'sv-mode-hook 'doxymacs-mode)
+;; (my-keys-define "C-x d" 'doxymacs-mode-map)
+
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
-(autoload 'expand-abbrev "abbrev" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
@@ -312,10 +377,6 @@
   (electric-pair-mode 1))
 
 (setq-default Man-notify-method 'bully
-              ace-jump-mode-case-fold nil
-              ace-jump-mode-gray-background nil
-              ace-jump-mode-scope 'window
-              ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode)
               backup-inhibited t
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
@@ -337,7 +398,6 @@
               cursor-type 'box
               dabbrev-case-fold-search nil
               desktop-restore-frames nil
-              diff-switches "-b -u"
               echo-keystrokes 0.1
               eval-expression-print-length nil
               eval-expression-print-level nil
@@ -375,7 +435,6 @@
               parens-require-spaces nil
               redisplay-dont-pause t
               rst-mode-lazy nil
-              save-abbrevs nil
               scroll-conservatively 10000
               scroll-error-top-bottom t
               scroll-preserve-screen-position t
@@ -1269,15 +1328,6 @@ Prefix with C-u to resize the `next-window'."
 (defun my-after-save-hook ()
   (executable-make-buffer-file-executable-if-script-p))
 
-(defun my-diff-mode-hook ()
-  (define-key diff-mode-map "q" 'my-kill-this-buffer)
-  (define-key diff-mode-map "n" 'diff-hunk-next)
-  (define-key diff-mode-map "p" 'diff-hunk-prev))
-
-(defun my-doxymacs-font-lock-hook ()
-  (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
-    (doxymacs-font-lock)))
-
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0))
 
@@ -1325,14 +1375,11 @@ Prefix with C-u to resize the `next-window'."
 
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
-(add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
-(add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
-(add-hook 'sv-mode-hook 'doxymacs-mode)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
@@ -1385,13 +1432,11 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-M-n" 'my-edit-scroll-down)
 (my-keys-define "C-M-p" 'my-edit-scroll-up)
 (my-keys-define "C-M-y" 'browse-kill-ring)
-(my-keys-define "C-\\" 'expand-abbrev)
 (my-keys-define "C-c $" 'my-delete-trailing-whitespace)
 (my-keys-define "C-c '" 'my-toggle-quotes)
 (my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
 (my-keys-define "C-c ." 'my-kill-results-buffer)
 (my-keys-define "C-c ;" 'my-line-comment)
-(my-keys-define "C-c =" 'my-ediff-dwim)
 (my-keys-define "C-c A" 'align-regexp)
 (my-keys-define "C-c C" 'my-comment-region-after-copy)
 (my-keys-define "C-c M" 'vcs-compile)
@@ -1402,7 +1447,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c a" 'my-align)
 (my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
 (my-keys-define "C-c c" 'my-comment-or-uncomment-region)
-(my-keys-define "C-c d" 'my-debug-map)
 (my-keys-define "C-c e" 'my-term)
 (my-keys-define "C-c f" 'my-ffap)
 (my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
@@ -1420,7 +1464,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
 (my-keys-define "C-d" 'delete-forward-char)
 (my-keys-define "C-h" 'backward-char)
-(my-keys-define "C-j" 'ace-jump-mode)
 (my-keys-define "C-k" 'my-edit-kill-line)
 (my-keys-define "C-l" 'forward-char)
 (my-keys-define "C-o" 'my-buf-toggle)
@@ -1431,7 +1474,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
 (my-keys-define "C-x 5 n" 'set-frame-name)
 (my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
-(my-keys-define "C-x *" 'calculator)
 (my-keys-define "C-x -" 'my-window-resize)
 (my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
 (my-keys-define "C-x C-n" 'other-window)
@@ -1446,7 +1488,6 @@ Prefix with C-u to resize the `next-window'."
 (my-keys-define "C-x _" (lambda () (interactive) (my-window-resize t)))
 (my-keys-define "C-x `" 'my-flymake-goto-next-error)
 (my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
-(my-keys-define "C-x d" 'doxymacs-mode-map)
 (my-keys-define "C-x f" 'flymake-start-syntax-check)
 (my-keys-define "C-x k" 'kill-buffer)
 (my-keys-define "C-x m" 'magit-status)
@@ -1557,7 +1598,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dec 'my-hex-to-dec)
-(defalias 'eb 'ediff-buffers)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fly 'flymake-mode)

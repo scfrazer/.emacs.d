@@ -97,18 +97,4 @@
   (setq my-debug-isearch t)
   (call-interactively 'isearch-backward-regexp))
 
-(define-prefix-command 'my-debug-map)
-(define-key my-debug-map (kbd "C") 'my-debug-comment-region-after-copy)
-(define-key my-debug-map (kbd "C-r") 'my-debug-isearch-backward)
-(define-key my-debug-map (kbd "C-s") 'my-debug-isearch-forward)
-(define-key my-debug-map (kbd "O") 'my-debug-multi-occur)
-(define-key my-debug-map (kbd "R") 'll-debug-revert)
-(define-key my-debug-map (kbd "c") 'my-debug-comment-region)
-(define-key my-debug-map (kbd "d") 'my-debug-insert-line)
-(define-key my-debug-map (kbd "i") 'my-debug-insert-ll)
-(define-key my-debug-map (kbd "n") 'my-debug-next)
-(define-key my-debug-map (kbd "o") 'my-debug-occur)
-(define-key my-debug-map (kbd "p") 'my-debug-previous)
-(define-key my-debug-map (kbd "r") 'll-debug-renumber)
-
 (provide 'my-debug)

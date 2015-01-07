@@ -1,3 +1,18 @@
+2014-11-18  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit '3abcd90ddc2f446ddf0fb874dd79ba870c26ad2d' from js2-mode
+
+2014-11-15  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit '2c744815cf9e4653625dd25f2e7f8b59c152782d' from js2-mode
+
+	Conflicts:
+	packages/js2-mode/js2-imenu-extras.el
+
+2014-10-15  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* packages/js2-mode/js2-imenu-extras.el: Use Unix-style EOL.
+
 2014-01-14  Dmitry Gutov  <dgutov@yandex.ru>
 
 	Merge commit '3575aaa39f311822dcedd53235ba036e9cf68ab8' from js2-mode
