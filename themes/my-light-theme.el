@@ -73,6 +73,8 @@
    `(magit-item-highlight ((,class (:background "#FFFFFF"))))
    `(magit-log-author ((,class (:foreground "#5F5FFF"))))
    `(magit-log-sha1 ((,class (:foreground "#AF5F00"))))
+   `(magit-section-heading ((,class (:background "#8A8A8A" :foreground "#E5E5E5"))))
+   `(magit-section-highlight ((,class (:background "#E4E4E4"))))
    `(magit-section-title ((,class (:inherit font-lock-keyword-face))))
    `(match ((,class (:background "#FFD7FF"))))
    `(minibuffer-prompt ((,class (:foreground "#005F87"))))

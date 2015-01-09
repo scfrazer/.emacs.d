@@ -296,7 +296,14 @@
 (require 'my-imenu)
 (require 'my-increment-number)
 (require 'my-isearch)
+
 (require 'my-magit)
+(setq magit-auto-revert-mode nil
+      magit-backup-mode nil
+      magit-delete-by-moving-to-trash nil
+      magit-popup-show-help-echo nil
+      magit-popup-show-help-section nil)
+
 (require 'my-mode-line)
 (require 'my-occur)
 (require 'my-org)
