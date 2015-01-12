@@ -2,7 +2,7 @@
 
 ;; (defvar my-tmux-max-copy-length 5000
 ;;   "*Max length of string to copy to tmux in `my-interprogram-cut-function'.")
-;; 
+;;
 ;; (defun my-interprogram-cut-function (text)
 ;;   "Don't copy if in a keyboard macro, and if in a tmux session also copy TEXT to a tmux buffer (if it's not too big)."
 ;;   (unless executing-kbd-macro

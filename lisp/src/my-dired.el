@@ -1,13 +1,17 @@
 ;;; my-dired.el
 
 (require 'dired)
-(require 'my-ibuffer)
 
-(setq dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep"))
-(setq dired-recursive-deletes 'always)
-(setq dired-recursive-copies 'always)
-(setq dired-listing-switches "-alv")
-(setq dired-isearch-filenames 'dwim)
+;; Settings
+
+(put 'dired-find-alternate-file 'disabled nil)
+
+(setq dired-auto-revert-buffer t
+      dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep" ".contrib")
+      dired-isearch-filenames 'dwim
+      dired-listing-switches "-alv"
+      dired-recursive-copies 'always
+      dired-recursive-deletes 'always)
 
 (setq dired-font-lock-keywords
       '(("^. \\([^\n]+\\)\\(:\\)[\n]" (1 font-lock-function-name-face))
@@ -20,27 +24,13 @@
                (concat "\\(" (mapconcat 'identity extensions "\\|") "\\|#\\)$")
                '(".+" (dired-move-to-filename) nil (0 font-lock-comment-face))))))
 
-(unless (memq 'clearcase-dired-checkedout-face (face-list))
-  (make-face 'clearcase-dired-checkedout-face)
-  (set-face-foreground 'clearcase-dired-checkedout-face "brightred"))
-
-(unless (memq 'clearcase-dired-element-face (face-list))
-  (make-face 'clearcase-dired-element-face)
-  (set-face-foreground 'clearcase-dired-element-face "deepskyblue"))
-
-(setq dired-font-lock-keywords
-      (append dired-font-lock-keywords
-              '(("^.+ \\(CHECKOUT-[RU]\\|HIJACK\\)\\s-+[0-9]" 1 'clearcase-dired-checkedout-face)
-                ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
-                ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face))))
-
 ;; Find marked files in dired, but don't display all at once
 
 (defun my-dired-do-find-file ()
-   "Visit all marked files at once."
-   (interactive)
-   (let ((file-list (reverse (dired-get-marked-files))))
-     (mapcar 'find-file file-list)))
+  "Visit all marked files at once."
+  (interactive)
+  (let ((file-list (reverse (dired-get-marked-files))))
+    (mapcar 'find-file file-list)))
 
 ;; Open directory in current buffer, or file in new buffer
 
@@ -102,9 +92,8 @@
 
 ;; Modified find-name-dired
 
-(defun my-find-name-dired (&optional arg)
-  "Same as `find-name-dired', but uses default dir unless
-there is a prefix arg."
+(defun my-dired-find-name-dired (&optional arg)
+  "Same as `find-name-dired', but uses default dir unless there is a prefix arg."
   (interactive "P")
   (if arg
       (call-interactively 'find-name-dired)
@@ -211,27 +200,7 @@ there is a prefix arg."
 ;; Dired hook
 
 (defun my-dired-mode-hook ()
-
-  (define-key dired-mode-map " " 'my-dired-toggle-mark)
-  (define-key dired-mode-map "J" 'my-dired-jump-to-prev-dir)
-  (define-key dired-mode-map "b" 'my-dired-toggle-path)
-  (define-key dired-mode-map "j" 'my-dired-jump-to-dir)
-  (define-key dired-mode-map "n" 'my-dired-next-line)
-  (define-key dired-mode-map "o" 'my-dired-do-find-file)
-  (define-key dired-mode-map "p" 'my-dired-previous-line)
-  (define-key dired-mode-map "u" 'my-dired-up-dir)
-  (define-key dired-mode-map (kbd "<return>") 'my-dired-open)
-  (define-key dired-mode-map (kbd "C-o") nil)
-  (define-key dired-mode-map (kbd "M-<") 'my-dired-beginning-of-buffer)
-  (define-key dired-mode-map (kbd "M->") 'my-dired-end-of-buffer)
-  (define-key dired-mode-map (kbd "M-o") nil)
-  (define-key dired-mode-map (kbd "RET") 'my-dired-open)
-
-  (define-key dired-mode-map "s" nil)
-  (define-key dired-mode-map (kbd "s h") 'dired-hide-subdir)
-  (define-key dired-mode-map (kbd "s i") 'dired-maybe-insert-subdir)
-  (define-key dired-mode-map (kbd "s k") 'dired-kill-subdir)
-
+  (my-font-lock-show-whitespace -1)
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)
