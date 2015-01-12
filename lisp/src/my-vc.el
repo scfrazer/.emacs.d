@@ -2,7 +2,7 @@
 
 (require 'ediff)
 
-(defvar my-vc-handled-backends '(Git Hg)
+(defvar my-vc-handled-backends '(Git)
   "*Handled backends")
 
 (defun my-vc-activate ()

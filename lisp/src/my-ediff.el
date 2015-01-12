@@ -2,7 +2,6 @@
 
 (require 'ediff)
 (require 'my-clearcase)
-(require 'my-vc)
 
 (setq-default ediff-ignore-similar-regions t
               ediff-keep-variants t
@@ -13,16 +12,15 @@
   "If buffer is modified, diff against file.  If not modified,
 either do ClearCase diff or Git diff depending on where the file is."
   (interactive "P")
-  (cond ((buffer-modified-p)
-         (my-ediff-buffer-with-file))
-        ((string= (buffer-name) "*clearcase*")
-         (my-clearcase-list-history-diff))
-        ((and clearcase-servers-online
-              clearcase-setview-viewtag
-              (clearcase-file-is-in-mvfs-p (buffer-file-name)))
-         (my-clearcase-ediff-current arg))
-        (t
-         (my-vc-ediff))))
+  (if (buffer-modified-p)
+      (my-ediff-buffer-with-file)
+    (if use-clearcase
+        (if (string= (buffer-name) "*clearcase*")
+            (my-clearcase-list-history-diff)
+          (when (clearcase-file-is-in-mvfs-p (buffer-file-name))
+            (my-clearcase-ediff-current arg)))
+      (require 'my-vc)
+      (my-vc-ediff))))
 
 (defun my-ediff-buffer-with-file (&optional arg)
   "View the differences between current buffer and it's associated file using ediff."
@@ -101,11 +99,12 @@ either do ClearCase diff or Git diff depending on where the file is."
   (set-window-configuration my-ediff-window-config)
   (let (buf (buf-list (buffer-list)))
     ;; Kill Clearcase revision buffers
-    (mapc (lambda (x)
-            (when (and (buffer-name x) (string-match ".+?@@.+?$" (buffer-name x)))
-              (unless (member (buffer-name x) my-clearcase-versioned-buffers-before-ediff)
-                (kill-buffer x))))
-          buf-list)
+    (when use-clearcase
+      (mapc (lambda (x)
+              (when (and (buffer-name x) (string-match ".+?@@.+?$" (buffer-name x)))
+                (unless (member (buffer-name x) my-clearcase-versioned-buffers-before-ediff)
+                  (kill-buffer x))))
+            buf-list))
     ;; Kill vc revision buffers
     (mapc (lambda (x)
             (when (and (buffer-name x) (string-match "\\.~.+~$" (buffer-name x)))

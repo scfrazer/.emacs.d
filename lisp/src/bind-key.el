@@ -41,7 +41,7 @@
 ;;
 ;;   (bind-key* "<C-return>" 'other-window)
 ;;
-;; If you want to rebind a key only in a particular key, use:
+;; If you want to rebind a key only in a particular keymap, use:
 ;;
 ;;   (bind-key "C-c x" 'my-ctrl-c-x-command some-other-mode-map)
 ;;
@@ -166,8 +166,7 @@ spelled-out keystrokes, e.g., \"C-c C-z\". See documentation of
 
 (defmacro bind-key* (key-name command)
   `(progn
-     (bind-key ,key-name ,command)
-     (define-key override-global-map ,(read-kbd-macro key-name) ,command)))
+     (bind-key ,key-name ,command override-global-map)))
 
 (defmacro bind-keys (&rest args)
   "Bind multiple keys at once.
@@ -285,8 +284,8 @@ function symbol (unquoted)."
       (dolist (binding
                (setq personal-keybindings
                      (sort personal-keybindings
-                           #'(lambda (l r)
-                               (car (compare-keybindings l r))))))
+                           (lambda (l r)
+                             (car (compare-keybindings l r))))))
         
         (if (not (eq (cdar last-binding) (cdar binding)))
             (princ (format "\n\n%s\n%s\n\n"

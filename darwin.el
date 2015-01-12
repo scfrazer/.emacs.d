@@ -10,7 +10,9 @@
                                         "/usr/X11/bin"
                                         "/opt/local/bin")))
 
-(grep-apply-setting 'grep-template "grep -nH -d skip -I -E -e <R> <C> <F>")
-(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 grep -nH -I -E -e <R> <C>")
+(eval-after-load "grep"
+  '(progn
+     (grep-apply-setting 'grep-template "grep -nH -d skip -I -E -e <R> <C> <F>")
+     (grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 grep -nH -I -E -e <R> <C>")))
 
 (my-theme-light)

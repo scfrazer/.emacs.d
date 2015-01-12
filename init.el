@@ -14,67 +14,85 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
+(require 'package)
+(package-initialize)
+
 (require 'use-package)
 (setq use-package-verbose t)
 
 ;; Need these first
 
-(use-package my-font-lock
-  :demand t
-  :config
-  (progn
-    (defalias 'fl 'font-lock-fontify-buffer)
-    (defalias 'ws 'my-font-lock-show-whitespace)))
+(require 'my-font-lock)
+(defalias 'fl 'font-lock-fontify-buffer)
+(defalias 'ws 'my-font-lock-show-whitespace)
 
-(use-package my-dired
-  :demand t
-  :bind* ("M-d" . my-dired-pop-to-or-create)
-  :config
-  (progn
-    (unbind-key "C-o" dired-mode-map)
-    (unbind-key "s"   dired-mode-map)
-
-    (bind-key " "        'my-dired-toggle-mark         dired-mode-map)
-    (bind-key "<return>" 'my-dired-open                dired-mode-map)
-    (bind-key "J"        'my-dired-jump-to-prev-dir    dired-mode-map)
-    (bind-key "M-<"      'my-dired-beginning-of-buffer dired-mode-map)
-    (bind-key "M->"      'my-dired-end-of-buffer       dired-mode-map)
-    (bind-key "RET"      'my-dired-open                dired-mode-map)
-    (bind-key "b"        'my-dired-toggle-path         dired-mode-map)
-    (bind-key "j"        'my-dired-jump-to-dir         dired-mode-map)
-    (bind-key "n"        'my-dired-next-line           dired-mode-map)
-    (bind-key "o"        'my-dired-do-find-file        dired-mode-map)
-    (bind-key "p"        'my-dired-previous-line       dired-mode-map)
-    (bind-key "s h"      'dired-hide-subdir            dired-mode-map)
-    (bind-key "s i"      'dired-maybe-insert-subdir    dired-mode-map)
-    (bind-key "s k"      'dired-kill-subdir            dired-mode-map)
-    (bind-key "u"        'my-dired-up-dir              dired-mode-map)))
+(require 'my-dired)
+(bind-key* "M-d" 'my-dired-pop-to-or-create)
+(unbind-key "C-o" dired-mode-map)
+(unbind-key "s"   dired-mode-map)
+(bind-keys :map dired-mode-map
+           (" "        . my-dired-toggle-mark)
+           ("<return>" . my-dired-open)
+           ("J"        . my-dired-jump-to-prev-dir)
+           ("M-<"      . my-dired-beginning-of-buffer)
+           ("M->"      . my-dired-end-of-buffer)
+           ("RET"      . my-dired-open)
+           ("b"        . my-dired-toggle-path)
+           ("j"        . my-dired-jump-to-dir)
+           ("n"        . my-dired-next-line)
+           ("o"        . my-dired-do-find-file)
+           ("p"        . my-dired-previous-line)
+           ("s h"      . dired-hide-subdir)
+           ("s i"      . dired-maybe-insert-subdir)
+           ("s k"      . dired-kill-subdir)
+           ("u"        . my-dired-up-dir))
 
 ;; Required packages
 
+(require 'my-abbrev)
+(bind-keys* ("C-\\" . expand-abbrev))
+(setq save-abbrevs nil)
+
 (require 'my-bookmark)
+
 (require 'my-buf)
+(bind-keys* ("C-o"   . my-buf-toggle)
+            ("C-x 2" . my-buf-split-window-vertically)
+            ("C-x 3" . my-buf-split-window-horizontally))
+
 (require 'my-clearcase)
+
+(require 'my-edit)
+(bind-keys* ("C-M-n" . my-edit-scroll-down)
+            ("C-M-p" . my-edit-scroll-up)
+            ("C-c j" . my-edit-join-line-with-next)
+            ("C-k"   . my-edit-kill-line)
+            ("C-v"   . my-edit-newline-and-indent)
+            ("M-RET" . my-edit-newline-and-indent-above))
+
+(require 'my-ido)
+(bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
+            ("C-x C-r" . my-ido-recentf-file)
+            ("M-i"     . ido-switch-buffer))
 
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 
+(require 'my-mode-line)
+(require 'my-recentf)
+
 (require 'show-mark)
 (global-show-mark-mode 1)
+
+(require 'my-task)
+(require 'my-theme)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 ;; Deferred packages
-
-(use-package abbrev
-  :bind* ("C-\\" . expand-abbrev)
-  :config
-  (progn
-    (require 'my-abbrev)
-    (setq save-abbrevs nil)))
 
 (use-package ace-jump-mode
   :bind* ("C-j" . ace-jump-mode)
@@ -91,6 +109,7 @@
           ("C-c g" . ag2-local))
   :config
   (progn
+    (require 'my-grep-ed)
     (setq ag2-default-literal t
           ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
                                     ("rtl" . "\\.(s|v|vh)$")
@@ -121,6 +140,13 @@
   :config
   (require 'my-cc-mode))
 
+(use-package cperl-mode
+  :defer t
+  :init
+  (defalias 'perl-mode 'cperl-mode)
+  :config
+  (require 'my-perl))
+
 (use-package csh-mode
   :mode (("\\.csh\\'" . csh-mode)
          ("\\.cshrc\\'" . csh-mode))
@@ -129,6 +155,22 @@
   (dolist (elt interpreter-mode-alist)
     (when (member (car elt) (list "csh" "tcsh"))
       (setcdr elt 'csh-mode))))
+
+(use-package diff
+  :defer t
+  :config
+  (progn
+    (setq diff-switches "-b -u")
+    (bind-keys :map diff-mode-map
+               ("q" . my-kill-this-buffer)
+               ("n" . diff-hunk-next)
+               ("p" . diff-hunk-prev))))
+
+(use-package my-ediff
+  :bind* ("C-c =" . my-ediff-dwim)
+  :commands (ediff-buffers)
+  :init
+  (defalias 'eb 'ediff-buffers))
 
 (use-package etags
   :bind* (("M-?" . my-etags-select-find-tag)
@@ -139,11 +181,12 @@
     (require 'etags-select)
     (require 'etags-table)
     (setq etags-select-use-short-name-completion t
-          etags-table-alist (list
-                             '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-                             '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-                             '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
-                             )
+          etags-table-alist
+          (list
+           '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
+           '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
+           '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
+           )
           etags-table-search-up-depth 10
           tags-revert-without-query t)
     (defun my-etags-select-find-tag (&optional arg)
@@ -158,19 +201,66 @@
         (unless (equal buf (current-buffer))
           (kill-buffer buf))))))
 
+(use-package ffap
+  :bind* (("C-c f" . my-ffap)
+          ("C-c o" . my-other-file))
+  :init
+  (defun my-other-file ()
+    (interactive)
+    (call-interactively
+     (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file)))
+  :config
+  (require 'my-pop-back)
+  (require 'my-ffap))
+
+(use-package grep
+  :bind* (("M-s G" . my-rgrep)
+          ("M-s g" . my-lgrep))
+  :config
+  (progn
+    (require 'my-grep)
+    (require 'my-grep-ed)
+    (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
+
 (use-package hide-region
   :bind* ("C-x C-h" . hide-region-toggle))
 
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
 
+(use-package ibuffer
+  :bind* ("M-o" . my-ibuffer)
+  :config
+  (require 'my-ibuffer))
+
 (use-package iflipb
   :bind* (("M-," . iflipb-previous-buffer)
           ("M-." . iflipb-next-buffer))
   :config
   (progn
-    (require 'my-buf)
     (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
+
+(use-package my-imenu
+  :bind* ("M-G" . my-ido-imenu-nav)
+  :commands (my-ido-imenu-goto-symbol)
+  :init
+  (defun my-ido-imenu-nav (&optional arg)
+    (interactive "P")
+    (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol)))
+  :config
+  (require 'my-pop-back))
+
+(use-package my-increment-number
+  :commands (my-dec-to-hex my-hex-to-dec))
+
+(use-package my-isearch
+  :bind* (("C-r" . my-isearch-backward)
+          ("C-s" . my-isearch-forward))
+  :config
+  (progn
+    (setq isearch-allow-scroll t
+          isearch-lazy-highlight-initial-delay 0)
+    (put 'my-recenter 'isearch-scroll t)))
 
 (use-package jump-to-prev-pos
   :bind* ("M-b" . jump-to-prev-pos))
@@ -191,8 +281,43 @@
   :config
   (require 'my-debug))
 
+(use-package occur
+  :bind* (("M-s O" . my-multi-occur)
+          ("M-s o" . my-occur))
+  :config
+  (require 'my-occur))
+
+(use-package magit
+  :bind* (("C-x M" . my-magit-history)
+          ("C-x m" . magit-status))
+  :config
+  (progn
+    (require 'my-magit)
+    (setq magit-auto-revert-mode nil
+          magit-backup-mode nil
+          magit-delete-by-moving-to-trash nil
+          magit-popup-show-help-echo nil
+          magit-popup-show-help-section nil
+          magit-repo-dirs (list "~/.emacs.d" "~/Projects")
+          magit-repo-dirs-depth 2)))
+
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
+
+(use-package nxml-mode
+  :defer t
+  :config
+  (progn
+    (defun my-nxml-forward-balanced ()
+      (interactive)
+      (let ((nxml-sexp-element-flag t)) (nxml-forward-balanced-item)))
+    (defun my-nxml-backward-balanced ()
+      (interactive)
+      (let ((nxml-sexp-element-flag t)) (nxml-forward-balanced-item -1)))
+    (bind-keys :map nxml-mode-map
+               ("C-c >" . my-nxml-forward-balanced)
+               ("C-c <" . my-nxml-backward-balanced)
+               ("C-c &" . nxml-insert-named-char))))
 
 (use-package quick-edit
   :bind* (("C-f" . qe-unit-move)
@@ -212,12 +337,46 @@
           ("M-p" . qe-backward-paragraph)
           ("M-w" . qe-unit-copy)))
 
+(use-package org
+  :mode (("\\.org\\'" . org-mode))
+  :config
+  (require 'my-org))
+
+(use-package my-pair
+  :bind* (("C-c P" . my-pair-delete-backward)
+          ("C-c p" . my-pair-delete-forward)))
+
+(use-package python
+  :defer t
+  :config
+  (require 'my-python))
+
 (use-package redo+
   :bind* (("C-z" . undo)
           ("M-z" . redo)))
 
+(use-package my-reformat
+  :bind* ("C-c ," . my-reformat-comma-delimited-items))
+
+(use-package register-list
+  :defer t
+  :init
+  (defalias 'rl 'register-list)
+  :config
+  (require 'my-register-list))
+
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
+
+(use-package sgml-mode
+  :mode (("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
+  :config
+  (require 'my-sgml-mode))
+
+(use-package my-sort-lines
+  :commands (my-sort-lines)
+  :init
+  (defalias 'sl 'my-sort-lines))
 
 (use-package speedbar
   :commands (sr-speedbar-toggle)
@@ -234,6 +393,32 @@
     (speedbar-add-supported-extension ".sv")
     (speedbar-add-supported-extension ".svh")
     (speedbar-add-supported-extension ".aop")))
+
+(use-package sv-mode
+  :mode (("\\.aop\\'" . sv-mode)
+         ("\\.sv\\'" . sv-mode)
+         ("\\.sva\\'" . sv-mode)
+         ("\\.svh\\'" . sv-mode)
+         ("\\.v\\'" . sv-mode)
+         ("\\.vh\\'" . sv-mode))
+  :config
+  (require 'my-sv-mode))
+
+(use-package sqlplus
+  :mode (("\\.sqp\\'" . sqlplus-mode))
+  :config
+  (require 'my-sql))
+
+(use-package my-tmux
+  :bind* (("M-c" . my-tmux-iterm-copy)
+          ("M-t" . my-tmux-copy)))
+
+(use-package vc
+  :defer t
+  :init
+  (setq vc-handled-backends nil)
+  :config
+  (require 'my-vc))
 
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
@@ -270,60 +455,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package diff
-  :defer t
-  :config
-  (progn
-    (setq diff-switches "-b -u")
-    (bind-key "q" 'my-kill-this-buffer diff-mode-map)
-    (bind-key "n" 'diff-hunk-next      diff-mode-map)
-    (bind-key "p" 'diff-hunk-prev      diff-mode-map)))
-
-(use-package ediff
-  :bind ("C-c =" . my-ediff-dwim)
-  :commands (ediff-buffers)
-  :init
-  (defalias 'eb 'ediff-buffers)
-  :config
-  (require 'my-ediff))
-
-(require 'my-edit)
-(require 'my-ffap)
-(require 'my-grep)
-(require 'my-grep-ed)
-(require 'my-ibuffer)
-(require 'my-ido)
-(require 'my-imenu)
-(require 'my-increment-number)
-(require 'my-isearch)
-
-(require 'my-magit)
-(setq magit-auto-revert-mode nil
-      magit-backup-mode nil
-      magit-delete-by-moving-to-trash nil
-      magit-popup-show-help-echo nil
-      magit-popup-show-help-section nil)
-
-(require 'my-mode-line)
-(require 'my-occur)
-(require 'my-org)
-(require 'my-pair)
-(require 'my-perl)
-(require 'my-pop-back)
-(require 'my-python)
-(require 'my-recentf)
-(require 'my-reformat)
-;; (require 'my-register-list)
-(require 'my-sgml-xml)
-(require 'my-shell)
-(require 'my-sort-lines)
-(require 'my-sql)
-(require 'my-sv-mode)
-(require 'my-task)
-(require 'my-theme)
-(require 'my-tmux)
-(require 'my-vc)
-
 ;; TODO
 ;; (require 'my-doxymacs)
 ;; (defun my-doxymacs-font-lock-hook ()
@@ -350,10 +481,7 @@
 (autoload 'regman "regman" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
-(autoload 'sqlplus "sqlplus" nil t)
-(autoload 'sqlplus-mode "sqlplus" nil t)
 (autoload 'sse-log-mode "sse-log-mode" nil t)
-(autoload 'sv-mode "sv-mode" "SystemVerilog mode" t)
 (autoload 'uvm-log-mode "uvm-log-mode" nil t)
 (autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
@@ -422,7 +550,6 @@
               indent-tabs-mode nil
               indicate-buffer-boundaries t
               inhibit-startup-message t
-              isearch-lazy-highlight-initial-delay 0
               js2-basic-offset 4
               kill-do-not-save-duplicates t
               kill-whole-line t
@@ -433,8 +560,6 @@
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
-              magit-repo-dirs (list "~/.emacs.d" "~/Projects")
-              magit-repo-dirs-depth 2
               make-backup-files nil
               mouse-autoselect-window t
               mouse-highlight 1
@@ -450,7 +575,6 @@
               split-width-threshold nil
               truncate-partial-width-windows nil
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
-              vc-handled-backends nil ;; maybe '(Hg) later
               verilog-auto-endcomments nil
               verilog-auto-indent-on-newline nil
               verilog-auto-lineup '(all)
@@ -477,20 +601,12 @@
               x-select-enable-clipboard nil)
 
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
-(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
-(add-to-list 'auto-mode-alist '("\\.aop\\'" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
-(add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
-(add-to-list 'auto-mode-alist '("\\.sv\\'" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.sva\\'" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.svh\\'" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.v\\'" . sv-mode))
-(add-to-list 'auto-mode-alist '("\\.vh\\'" . sv-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
@@ -509,10 +625,6 @@
               comment-fill-column 120
               comment-style 'my-style)
 
-;; isearch scroll
-
-(setq isearch-allow-scroll t)
-(put 'my-recenter 'isearch-scroll t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -702,13 +814,6 @@
         (goto-char (point-min))
         (while (search-forward (car repl) nil t)
           (replace match (cdr repl) nil t))))))
-
-(defun my-convert-to-base (arg)
-  "Convert to decimal, or with prefix arg to hex."
-  (interactive "*P")
-  (if arg
-      (my-dec-to-hex)
-    (my-hex-to-dec)))
 
 (defun my-count-lines (&optional arg)
   "Count lines to next blank line, or with prefix arg count lines in region."
@@ -1345,7 +1450,7 @@ Prefix with C-u to resize the `next-window'."
     (my-word-wrap-on-hook)))
 
 (defun my-minibuffer-setup-hook ()
-  (my-keys-minor-mode 0)
+  (override-global-mode -1)
   (show-mark-mode 0)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-/") 'dabbrev-expand)
@@ -1412,9 +1517,6 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
      (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))))
 
-(eval-after-load "grep"
-  '(define-key grep-mode-map "q" 'my-kill-results-buffer))
-
 (eval-after-load "make-mode"
   '(progn
      (defun my-makefile-mode-hook ()
@@ -1424,132 +1526,90 @@ Prefix with C-u to resize the `next-window'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 
-(bind-key* "C-c r" 'revert-buffer)
-
-(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-
-(defmacro my-keys-define (key fn)
-  (list 'define-key 'my-keys-minor-mode-map (list 'kbd key) fn))
-
-(my-keys-define "<delete>" 'delete-char)
-(my-keys-define "C-/" 'dabbrev-expand)
-(my-keys-define "C-M-h" 'backward-sexp)
-(my-keys-define "C-M-k" 'delete-region)
-(my-keys-define "C-M-l" 'forward-sexp)
-(my-keys-define "C-M-n" 'my-edit-scroll-down)
-(my-keys-define "C-M-p" 'my-edit-scroll-up)
-(my-keys-define "C-M-y" 'browse-kill-ring)
-(my-keys-define "C-c $" 'my-delete-trailing-whitespace)
-(my-keys-define "C-c '" 'my-toggle-quotes)
-(my-keys-define "C-c ," 'my-reformat-comma-delimited-items)
-(my-keys-define "C-c ." 'my-kill-results-buffer)
-(my-keys-define "C-c ;" 'my-line-comment)
-(my-keys-define "C-c A" 'align-regexp)
-(my-keys-define "C-c C" 'my-comment-region-after-copy)
-(my-keys-define "C-c M" 'vcs-compile)
-(my-keys-define "C-c N" 'narrow-to-defun)
-(my-keys-define "C-c P" 'my-pair-delete-backward)
-(my-keys-define "C-c TAB" 'indent-region)
-(my-keys-define "C-c U" (lambda () (interactive) (my-case-symbol 'upcase)))
-(my-keys-define "C-c a" 'my-align)
-(my-keys-define "C-c b" 'my-ido-insert-bookmark-dir)
-(my-keys-define "C-c c" 'my-comment-or-uncomment-region)
-(my-keys-define "C-c e" 'my-term)
-(my-keys-define "C-c f" 'my-ffap)
-(my-keys-define "C-c i" (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
-(my-keys-define "C-c j" 'my-edit-join-line-with-next)
-(my-keys-define "C-c l" (lambda () (interactive) (my-case-symbol 'downcase)))
-(my-keys-define "C-c m" 'my-compile)
-(my-keys-define "C-c n" 'my-narrow)
-(my-keys-define "C-c o" (lambda () (interactive) (call-interactively (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file))))
-(my-keys-define "C-c p" 'my-pair-delete-forward)
-(my-keys-define "C-c q" 'bury-buffer)
-(my-keys-define "C-c s" 'my-set-register)
-(my-keys-define "C-c t" 'my-tidy-lines)
-(my-keys-define "C-c u" (lambda () (interactive) (my-case-symbol 'capitalize)))
-(my-keys-define "C-c v" 'toggle-truncate-lines)
-(my-keys-define "C-c w" (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
-(my-keys-define "C-d" 'delete-forward-char)
-(my-keys-define "C-h" 'backward-char)
-(my-keys-define "C-k" 'my-edit-kill-line)
-(my-keys-define "C-l" 'forward-char)
-(my-keys-define "C-o" 'my-buf-toggle)
-(my-keys-define "C-r" 'my-isearch-backward)
-(my-keys-define "C-s" 'my-isearch-forward)
-(my-keys-define "C-v" 'my-edit-newline-and-indent)
-(my-keys-define "C-x 2" 'my-buf-split-window-vertically)
-(my-keys-define "C-x 3" 'my-buf-split-window-horizontally)
-(my-keys-define "C-x 5 n" 'set-frame-name)
-(my-keys-define "C-x (" 'kmacro-start-macro-or-insert-counter)
-(my-keys-define "C-x -" 'my-window-resize)
-(my-keys-define "C-x C-c" 'my-kill-frame-or-emacs)
-(my-keys-define "C-x C-n" 'other-window)
-(my-keys-define "C-x C-p" (lambda () (interactive (other-window -1))))
-(my-keys-define "C-x C-r" 'my-ido-recentf-file)
-(my-keys-define "C-x C-z" (lambda () (interactive) (ding)))
-(my-keys-define "C-x E" 'my-apply-macro-to-region-lines)
-(my-keys-define "C-x K" 'my-kill-buffer)
-(my-keys-define "C-x M" 'my-magit-history)
-(my-keys-define "C-x M-q" 'my-toggle-buffer-modified)
-(my-keys-define "C-x SPC" 'fixup-whitespace)
-(my-keys-define "C-x _" (lambda () (interactive) (my-window-resize t)))
-(my-keys-define "C-x `" 'my-flymake-goto-next-error)
-(my-keys-define "C-x c" 'clone-indirect-buffer-other-window)
-(my-keys-define "C-x f" 'flymake-start-syntax-check)
-(my-keys-define "C-x k" 'kill-buffer)
-(my-keys-define "C-x m" 'magit-status)
-(my-keys-define "C-x t" 'task-map)
-(my-keys-define "C-x w" 'my-clone-file)
-(my-keys-define "C-x |" 'my-toggle-window-split)
-(my-keys-define "C-x ~" 'my-flymake-goto-prev-error)
-(my-keys-define "ESC <left>" (lambda () "Select previous frame." (interactive) (other-frame 1)))
-(my-keys-define "ESC <right>" (lambda () "Select next frame." (interactive) (other-frame -1)))
-(my-keys-define "M-!" 'my-shell-command-on-current-file)
-(my-keys-define "M-%" 'my-query-replace)
-(my-keys-define "M-=" 'my-count-lines)
-(my-keys-define "M-G" (lambda (&optional arg) (interactive "P") (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol))))
-(my-keys-define "M-N" 'scroll-up-command)
-(my-keys-define "M-P" 'scroll-down-command)
-(my-keys-define "M-Q" 'my-unfill)
-(my-keys-define "M-RET" 'my-edit-newline-and-indent-above)
-(my-keys-define "M-`" 'next-error)
-(my-keys-define "M-a" 'my-step-out-backward)
-(my-keys-define "M-c" 'my-tmux-iterm-copy)
-(my-keys-define "M-e" 'my-step-out-forward)
-(my-keys-define "M-g" 'my-goto-line-column)
-(my-keys-define "M-i" 'ido-switch-buffer)
-(my-keys-define "M-o" 'my-ibuffer)
-(my-keys-define "M-q" 'my-fill)
-(my-keys-define "M-r SPC" 'rectangle-mark-mode)
-(my-keys-define "M-r M-n" 'my-forward-paragraph-rect)
-(my-keys-define "M-r M-p" 'my-backward-paragraph-rect)
-(my-keys-define "M-r j" 'jump-to-register)
-(my-keys-define "M-r k" 'kill-rectangle)
-(my-keys-define "M-r n" 'my-rectangle-number-lines)
-(my-keys-define "M-r t" 'string-rectangle)
-(my-keys-define "M-r w" 'window-configuration-to-register)
-(my-keys-define "M-s G" 'my-rgrep)
-(my-keys-define "M-s O" 'my-multi-occur)
-(my-keys-define "M-s g" 'my-lgrep)
-(my-keys-define "M-s o" 'my-occur)
-(my-keys-define "M-t" 'my-tmux-copy)
-(my-keys-define "M-u" 'my-recenter)
-(my-keys-define "M-}" 'my-forward-paragraph)
-(my-keys-define "M-~" 'previous-error)
+(bind-keys*
+ ("<delete>"    . delete-char)
+ ("C-/"         . dabbrev-expand)
+ ("C-M-h"       . backward-sexp)
+ ("C-M-k"       . delete-region)
+ ("C-M-l"       . forward-sexp)
+ ("C-M-y"       . browse-kill-ring)
+ ("C-c $"       . my-delete-trailing-whitespace)
+ ("C-c '"       . my-toggle-quotes)
+ ("C-c          ." . my-kill-results-buffer)
+ ("C-c ;"       . my-line-comment)
+ ("C-c A"       . align-regexp)
+ ("C-c C"       . my-comment-region-after-copy)
+ ("C-c M"       . vcs-compile)
+ ("C-c N"       . narrow-to-defun)
+ ("C-c TAB"     . indent-region)
+ ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
+ ("C-c a"       . my-align)
+ ("C-c c"       . my-comment-or-uncomment-region)
+ ("C-c e"       . my-term)
+ ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+ ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
+ ("C-c m"       . my-compile)
+ ("C-c n"       . my-narrow)
+ ("C-c q"       . bury-buffer)
+ ("C-c r"       . revert-buffer)
+ ("C-c s"       . my-set-register)
+ ("C-c t"       . my-tidy-lines)
+ ("C-c u"       . (lambda () (interactive) (my-case-symbol 'capitalize)))
+ ("C-c v"       . toggle-truncate-lines)
+ ("C-c w"       . (lambda (&optional arg) (interactive "P") (if arg (winner-redo) (winner-undo))))
+ ("C-d"         . delete-forward-char)
+ ("C-h"         . backward-char)
+ ("C-l"         . forward-char)
+ ("C-x 5 n"     . set-frame-name)
+ ("C-x ("       . kmacro-start-macro-or-insert-counter)
+ ("C-x -"       . my-window-resize)
+ ("C-x C-c"     . my-kill-frame-or-emacs)
+ ("C-x C-n"     . other-window)
+ ("C-x C-p"     . (lambda () (interactive (other-window -1))))
+ ("C-x C-z"     . (lambda () (interactive) (ding)))
+ ("C-x E"       . my-apply-macro-to-region-lines)
+ ("C-x K"       . my-kill-buffer)
+ ("C-x M-q"     . my-toggle-buffer-modified)
+ ("C-x SPC"     . fixup-whitespace)
+ ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
+ ("C-x `"       . my-flymake-goto-next-error)
+ ("C-x c"       . clone-indirect-buffer-other-window)
+ ("C-x f"       . flymake-start-syntax-check)
+ ("C-x k"       . kill-buffer)
+ ("C-x t"       . task-map)
+ ("C-x w"       . my-clone-file)
+ ("C-x |"       . my-toggle-window-split)
+ ("C-x ~"       . my-flymake-goto-prev-error)
+ ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
+ ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
+ ("M-!"         . my-shell-command-on-current-file)
+ ("M-%"         . my-query-replace)
+ ("M-="         . my-count-lines)
+ ("M-N"         . scroll-up-command)
+ ("M-P"         . scroll-down-command)
+ ("M-Q"         . my-unfill)
+ ("M-`"         . next-error)
+ ("M-a"         . my-step-out-backward)
+ ("M-e"         . my-step-out-forward)
+ ("M-g"         . my-goto-line-column)
+ ("M-q"         . my-fill)
+ ("M-r M-n"     . my-forward-paragraph-rect)
+ ("M-r M-p"     . my-backward-paragraph-rect)
+ ("M-r SPC"     . rectangle-mark-mode)
+ ("M-r j"       . jump-to-register)
+ ("M-r k"       . kill-rectangle)
+ ("M-r n"       . my-rectangle-number-lines)
+ ("M-r t"       . string-rectangle)
+ ("M-r w"       . window-configuration-to-register)
+ ("M-u"         . my-recenter)
+ ("M-}"         . my-forward-paragraph)
+ ("M-~"         . previous-error))
 
 ;; These have to be in this order
 
-(my-keys-define "C-c h" 'help-command)
-(my-keys-define "C-c h a" 'apropos)
-(my-keys-define "C-c h I" 'info-apropos)
-
-;; Keybinding minor mode
-
-(define-minor-mode my-keys-minor-mode
-  "A minor mode so that my key settings override annoying major modes."
-  t " my-keys" 'my-keys-minor-mode-map)
-
-(my-keys-minor-mode 1)
+(bind-key* "C-c h" 'help-command)
+(bind-key* "C-c h a" 'apropos)
+(bind-key* "C-c h I" 'info-apropos)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
@@ -1563,7 +1623,6 @@ Prefix with C-u to resize the `next-window'."
   (hl-line-mode 1)
   (set (make-local-variable 'compilation-error-regexp-alist)
        (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
-
 
 (when use-clearcase
   (ll-debug-register-mode 'c++-mode
@@ -1604,24 +1663,19 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'bcl 'emacs-lisp-byte-compile-and-load)
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
-(defalias 'dec 'my-hex-to-dec)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
-(defalias 'hex 'my-dec-to-hex)
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (find-file user-init-file)))
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
-(defalias 'rl 'register-list)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
 (defalias 'serve 'my-server)
-(defalias 'sf 'my-sort-fields)
-(defalias 'sl 'my-sort-lines)
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'uniq 'my-delete-duplicate-lines)
@@ -1653,9 +1707,9 @@ Prefix with C-u to resize the `next-window'."
     (set-display-table-slot standard-display-table 'escape escape-glyph)
     (set-display-table-slot standard-display-table 'control control-glyph))
 
-  (my-keys-define "<f1>" 'xterm-mouse-mode)
-  (my-keys-define "C-M-z" 'suspend-emacs)
-  (my-keys-define "C-_" 'dabbrev-expand))
+  (bind-keys* ("<f1>"  . xterm-mouse-mode)
+              ("C-M-z" . suspend-emacs)
+              ("C-_"   . dabbrev-expand)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OS-specific setup
