@@ -75,7 +75,7 @@
   (when (and my-sv-xclip-program (getenv "DISPLAY"))
     (let* ((breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"))
            (process-connection-type nil)
-           (proc (start-process "xclip" nil "xclip" "-selection" "clipboard")))
+           (proc (start-process "xclip" nil "xclip" "-selection" "primary")))
       (process-send-string proc breakpoint)
       (process-send-eof proc)
       (message breakpoint))))
