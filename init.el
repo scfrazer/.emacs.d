@@ -1624,25 +1624,25 @@ Prefix with C-u to resize the `next-window'."
   (set (make-local-variable 'compilation-error-regexp-alist)
        (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
 
-(when use-clearcase
-  (ll-debug-register-mode 'c++-mode
-                          "dvc_info(" ");"
-                          '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
-                          '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
-                                ("Variable name: "
-                                 "  " str "="
-                                 '(progn
-                                    (if v1
-                                        (setq v1 (concat v1 ", " str))
-                                      (setq v1 str))
-                                    nil)
-                                 (let ((fmt (read-string "Format: ")))
-                                   (cond
-                                    ((string= (downcase fmt) "x")
-                                     (concat "0x%" fmt))
-                                    (t
-                                     (concat "%" fmt)))))
-                                (if v1 "\\n\", " "\\n\"") v1)))
+;; (when use-clearcase
+;;   (ll-debug-register-mode 'c++-mode
+;;                           "dvc_info(" ");"
+;;                           '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
+;;                           '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
+;;                                 ("Variable name: "
+;;                                  "  " str "="
+;;                                  '(progn
+;;                                     (if v1
+;;                                         (setq v1 (concat v1 ", " str))
+;;                                       (setq v1 str))
+;;                                     nil)
+;;                                  (let ((fmt (read-string "Format: ")))
+;;                                    (cond
+;;                                     ((string= (downcase fmt) "x")
+;;                                      (concat "0x%" fmt))
+;;                                     (t
+;;                                      (concat "%" fmt)))))
+;;                                 (if v1 "\\n\", " "\\n\"") v1)))
 
 (unless (getenv "SV_PATH")
   (setenv "SV_PATH"
