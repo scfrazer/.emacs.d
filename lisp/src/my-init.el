@@ -280,7 +280,7 @@
           magit-popup-show-help-echo nil
           magit-popup-show-help-section nil
           magit-repository-directories (list "~/.emacs.d" "~/Projects")
-          magit-repository-directories 2)))
+          magit-repository-directories-depth 2)))
 
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
