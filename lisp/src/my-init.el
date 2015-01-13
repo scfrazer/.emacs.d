@@ -147,6 +147,17 @@
                ("n" . diff-hunk-next)
                ("p" . diff-hunk-prev))))
 
+(use-package doxymacs
+  :bind-keymap* ("C-x d" . doxymacs-mode-map)
+  :config
+  (progn
+    (require 'my-doxymacs)
+    (defun my-doxymacs-font-lock-hook ()
+      (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
+        (doxymacs-font-lock)))
+    (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
+    (add-hook 'sv-mode-hook 'doxymacs-mode)))
+
 (use-package my-ediff
   :bind* ("C-c =" . my-ediff-dwim)
   :commands (ediff-buffers)
@@ -435,15 +446,6 @@
           (yank-target-set))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; TODO
-;; (require 'my-doxymacs)
-;; (defun my-doxymacs-font-lock-hook ()
-;;   (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
-;;     (doxymacs-font-lock)))
-;; (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
-;; (add-hook 'sv-mode-hook 'doxymacs-mode)
-;; (my-keys-define "C-x d" 'doxymacs-mode-map)
 
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
@@ -1442,6 +1444,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
+  (local-set-key (kbd "M-\\") 'completion-at-point)
   (local-set-key (kbd "M-$") (lambda (&optional arg)
                                (interactive "P")
                                (let* ((enable-recursive-minibuffers t)
@@ -1563,6 +1566,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x ~"       . my-flymake-goto-prev-error)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
+ ("M-\\"        . completion-at-point)
  ("M-!"         . my-shell-command-on-current-file)
  ("M-%"         . my-query-replace)
  ("M-="         . my-count-lines)
