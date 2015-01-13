@@ -447,6 +447,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; TODO
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (ac-config-default)
+
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
