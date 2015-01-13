@@ -2102,6 +2102,7 @@ BUFFER is the buffer speedbar is requesting buttons for."
   (speedbar-select-attached-frame)
   (raise-frame)
   (select-frame-set-input-focus (selected-frame))
+  (switch-to-buffer speedbar-desired-buffer)
   (goto-char node))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

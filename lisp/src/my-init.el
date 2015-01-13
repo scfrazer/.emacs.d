@@ -175,7 +175,7 @@
 
 (use-package my-ediff
   :bind* ("C-c =" . my-ediff-dwim)
-  :commands (ediff-buffers)
+  :commands (ediff-buffers ediff-files)
   :init
   (defalias 'eb 'ediff-buffers))
 
