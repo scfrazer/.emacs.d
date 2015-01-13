@@ -33,6 +33,16 @@
 (bind-keys* ("C-\\" . expand-abbrev))
 (setq save-abbrevs nil)
 
+(require 'auto-complete-config)
+(defun ac-comphist-save ()
+  nil)
+(ac-config-default)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(setq ac-auto-start 4
+      ac-use-menu-map t)
+(define-key ac-menu-map "\C-n" 'ac-next)
+(define-key ac-menu-map "\C-p" 'ac-previous)
+
 (require 'my-bookmark)
 
 (require 'my-buf)
@@ -61,6 +71,11 @@
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 
 (require 'my-mode-line)
+
+(require 'my-occur)
+(bind-keys* ("M-s O" . my-multi-occur)
+            ("M-s o" . my-occur))
+
 (require 'my-recentf)
 
 (require 'show-mark)
@@ -273,12 +288,6 @@
   :config
   (require 'my-debug))
 
-(use-package occur
-  :bind* (("M-s O" . my-multi-occur)
-          ("M-s o" . my-occur))
-  :config
-  (require 'my-occur))
-
 (use-package magit
   :bind* (("C-x M" . my-magit-history)
           ("C-x m" . magit-status))
@@ -448,10 +457,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; TODO
-;; (require 'auto-complete-config)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;; (ac-config-default)
-
 (autoload 'align "align" nil t)
 (autoload 'align-regexp "align" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
@@ -538,6 +543,7 @@
               indent-tabs-mode nil
               indicate-buffer-boundaries t
               inhibit-startup-message t
+              initial-major-mode 'emacs-lisp-mode
               js2-basic-offset 4
               kill-do-not-save-duplicates t
               kill-whole-line t

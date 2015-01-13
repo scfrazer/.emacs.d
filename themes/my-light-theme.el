@@ -5,6 +5,7 @@
   (custom-theme-set-faces
    'my-light
 
+   `(ac-completion-face ((,class (:foreground "#A8A8A8"))))
    `(ace-jump-face-foreground ((,class (:foreground "#FFFFFF" :background "#444444"))))
    `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
