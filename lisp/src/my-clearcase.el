@@ -14,6 +14,7 @@
 
   (require 'clearcase)
   (require 'cc-status)
+  (require 'bind-key)
 
   (bind-key* "C-x v" clearcase-prefix-map)
 
