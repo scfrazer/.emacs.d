@@ -82,9 +82,7 @@
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
                               ("\\.s$" (".v"))
-                              ("\\.v$" (".s" ".vh"))))
-  (when (featurep 'auto-complete-config)
-    (setq ac-sources (list 'ac-source-words-in-same-mode-buffers))))
+                              ("\\.v$" (".s" ".vh")))))
 
 (add-hook 'sv-mode-hook 'my-sv-mode-hook)
 

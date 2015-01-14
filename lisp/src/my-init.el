@@ -1145,6 +1145,7 @@ and copied through iTerm2 to clipboard."
     (when filename
       (kill-new filename)
       (when (getenv "TMUX")
+        (require 'my-tmux)
         (my-tmux-copy-text filename)
         (my-tmux-iterm-copy-text filename))
       (message filename))))
@@ -1508,6 +1509,8 @@ Prefix with C-u to resize the `next-window'."
 (eval-after-load "compile"
   '(progn
      (defun my-compilation-mode-hook ()
+       (define-key compilation-mode-map "{" 'compilation-previous-file)
+       (define-key compilation-mode-map "}" 'compilation-next-file)
        (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
