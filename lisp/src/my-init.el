@@ -39,7 +39,7 @@
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (add-to-list 'ac-modes 'sv-mode)
-(setq ac-auto-start 4
+(setq ac-auto-start 2
       ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
@@ -429,7 +429,14 @@
     (defadvice term-handle-exit (after my-term-handle-exit activate)
       "Kill terminal buffer after exit."
       (kill-buffer))))
- 
+
+(use-package tern
+  :commands (tern-mode)
+  :config
+  (progn
+    (require 'tern-auto-complete)
+    (tern-ac-setup)))
+
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
           ("M-t" . my-tmux-copy)))
