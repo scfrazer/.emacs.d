@@ -38,6 +38,7 @@
   nil)
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-to-list 'ac-modes 'sv-mode)
 (setq ac-auto-start 4
       ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
@@ -410,6 +411,25 @@
   :config
   (require 'my-sql))
 
+(use-package term
+  :bind* ("C-c e" . my-term)
+  :config
+  (progn
+    (defun my-term ()
+      "Like `term', but use default shell without prompting."
+      (interactive)
+      (set-buffer
+       (make-term "terminal" (or explicit-shell-file-name
+                                 (getenv "ESHELL")
+                                 (getenv "SHELL")
+                                 "/bin/sh")))
+      (term-mode)
+      (term-char-mode)
+      (switch-to-buffer "*terminal*"))
+    (defadvice term-handle-exit (after my-term-handle-exit activate)
+      "Kill terminal buffer after exit."
+      (kill-buffer))))
+ 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
           ("M-t" . my-tmux-copy)))
@@ -1280,18 +1300,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
           (forward-char)))
     (up-list)))
 
-(defun my-term ()
-  "Like `term', but use default shell without prompting."
-  (interactive)
-  (set-buffer
-   (make-term "terminal" (or explicit-shell-file-name
-                             (getenv "ESHELL")
-                             (getenv "SHELL")
-                             "/bin/sh")))
-  (term-mode)
-  (term-char-mode)
-  (switch-to-buffer "*terminal*"))
-
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
@@ -1424,10 +1432,6 @@ Prefix with C-u to resize the `next-window'."
 ;;   (when (called-interactively-p 'any)
 ;;     (ad-set-arg 0 (not (ad-get-arg 0)))))
 
-(defadvice term-handle-exit (after my-term-handle-exit activate)
-  "Kill terminal buffer after exit."
-  (kill-buffer))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
 
@@ -1540,7 +1544,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c a"       . my-align)
  ("C-c c"       . my-comment-or-uncomment-region)
- ("C-c e"       . my-term)
  ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
  ("C-c m"       . my-compile)
