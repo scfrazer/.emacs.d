@@ -1590,7 +1590,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x ~"       . my-flymake-goto-prev-error)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
- ("M-\\"        . completion-at-point)
+ ("M-\\"        . ac-start) ;; completion-at-point)
  ("M-!"         . my-shell-command-on-current-file)
  ("M-%"         . my-query-replace)
  ("M-="         . my-count-lines)
