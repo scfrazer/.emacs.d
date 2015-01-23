@@ -39,8 +39,10 @@
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (add-to-list 'ac-modes 'sv-mode)
-(setq ac-auto-start 2
-      ac-use-menu-map t)
+(setq-default ac-auto-start 2
+              ac-ignore-case nil
+              ac-sources (list 'ac-source-words-in-same-mode-buffers 'ac-source-abbrev 'ac-source-dictionary)
+              ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
@@ -981,6 +983,22 @@ With a numeric prefix, goto that window line."
         (when col
           (move-to-column (string-to-number col)))))))
 
+(defun my-goto-next-error ()
+  "Goto next non-compilation-mode error."
+  (interactive)
+  (cond ((eq major-mode 'js2-mode)
+         (js2-next-error))
+        (flymake-mode
+         (my-flymake-goto-next-error))))
+
+(defun my-goto-previous-error ()
+  "Goto previous non-compilation-mode error."
+  (interactive)
+  (cond ((eq major-mode 'js2-mode)
+         (js2-next-error -1))
+        (flymake-mode
+         (my-flymake-goto-prev-error))))
+
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
@@ -1288,6 +1306,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
+(defun my-statement-close ()
+  "Close the current statement"
+  (interactive "*")
+  (save-excursion
+    (up-list)
+    (skip-syntax-forward ")")
+    (insert ";")))
+
 (defun my-step-out-backward ()
   "Step backward out of current list or string."
   (interactive)
@@ -1542,10 +1568,11 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-k"       . delete-region)
  ("C-M-l"       . forward-sexp)
  ("C-M-y"       . browse-kill-ring)
+ ("C-c          ." . my-kill-results-buffer)
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c '"       . my-toggle-quotes)
- ("C-c          ." . my-kill-results-buffer)
- ("C-c ;"       . my-line-comment)
+ ("C-c /"       . my-line-comment)
+ ("C-c ;"       . my-statement-close)
  ("C-c A"       . align-regexp)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . vcs-compile)
@@ -1580,23 +1607,23 @@ Prefix with C-u to resize the `next-window'."
  ("C-x M-q"     . my-toggle-buffer-modified)
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
- ("C-x `"       . my-flymake-goto-next-error)
+ ("C-x `"       . my-goto-next-error)
  ("C-x c"       . clone-indirect-buffer-other-window)
  ("C-x f"       . flymake-start-syntax-check)
  ("C-x k"       . kill-buffer)
  ("C-x t"       . task-map)
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
- ("C-x ~"       . my-flymake-goto-prev-error)
+ ("C-x ~"       . my-goto-prev-error)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
- ("M-\\"        . ac-start) ;; completion-at-point)
  ("M-!"         . my-shell-command-on-current-file)
  ("M-%"         . my-query-replace)
  ("M-="         . my-count-lines)
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
+ ("M-\\"        . ac-start) ;; completion-at-point)
  ("M-`"         . next-error)
  ("M-a"         . my-step-out-backward)
  ("M-e"         . my-step-out-forward)
