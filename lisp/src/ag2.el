@@ -138,8 +138,16 @@ corresponding value will be used instead."
       (setq string (concat string " -t")))
     (when ag2-option-all-types
       (setq string (concat string " -a")))
+
+    ;; ag has a problem with case-sensitive options, so do smart-case if not
+    ;; specified otherwise
     (when ag2-option-case-sensitive
       (setq string (concat string " -s")))
+    (when ag2-option-ignore-case
+      (setq string (concat string " -i")))
+    (when (not (or ag2-option-case-sensitive ag2-option-ignore-case))
+      (setq string (concat string " -S")))
+
     (when ag2-option-depth
       (setq string
             (concat string " --depth " (number-to-string ag2-option-depth))))
@@ -151,8 +159,6 @@ corresponding value will be used instead."
       (setq string
             (concat string " --ignore "
                     (shell-quote-argument ag2-option-ignore))))
-    (when ag2-option-ignore-case
-      (setq string (concat string " -i")))
     (when ag2-option-literal
       (setq string (concat string " -Q")))
     (when ag2-option-max-count
@@ -417,8 +423,9 @@ corresponding value will be used instead."
        (concat ag2-executable
                (if ag2-option-file-type (concat " --" ag2-option-file-type) "")
                " --silent --nogroup --column --color --color-match 1\\;31"
-               (ag2-options-to-string)
+               ;; Have to do -G before -i/-s/-S or ag won't do the right thing
                (if (string= "" search-files) "" (concat " -G " (shell-quote-argument search-files)))
+               (ag2-options-to-string)
                " -- " (shell-quote-argument search-string))
        'ag2-mode))))
 
