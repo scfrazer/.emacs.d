@@ -438,6 +438,23 @@
   (progn
     (require 'tern-auto-complete)
     (tern-ac-setup)))
+(defcustom my-tern-enable nil
+  "Non-nil means use tern-mode where appropriate."
+  :type 'boolean)
+(defun my-tern-enable ()
+  "Enable tern-mode where appropriate."
+  (interactive)
+  (setq my-tern-enable t))
+(defun my-tern-mode ()
+  "Turn on tern-mode when appropriate."
+  (when my-tern-enable
+    (tern-mode t)))
+(eval-after-load "js2-mode"
+  '(progn
+     (add-hook 'js2-mode-hook 'my-tern-mode)))
+(eval-after-load "web-mode"
+  '(progn
+     (add-hook 'web-mode-hook 'my-tern-mode)))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
