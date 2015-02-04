@@ -1,11 +1,13 @@
 ;; my-init.el
 
 (defvar my-location
-  (let ((hostname (getenv "HOSTNAME")))
-    (cond
-     ((string-match "^\\(golf\\|lx30-vm\\)" hostname) 'RTP)
-     ((string-match "^cpp-hw" hostname) 'SJC)
-     ((string-match "^SCFRAZER" hostname) 'Work))))
+  (let ((hostname (or (getenv "HOSTNAME")
+                      (getenv "ABBREV_HOSTNAME"))))
+    (and (stringp hostname)
+         (cond
+          ((string-match "^lx30-vm" hostname) 'RTP)
+          ((string-match "^cpp-hw" hostname) 'SJC)
+          ((string-match "^SCFRAZER" hostname) 'Work)))))
 
 ;; Need these first
 
