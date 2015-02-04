@@ -34,14 +34,13 @@
 (setq save-abbrevs nil)
 
 (require 'auto-complete-config)
-(defun ac-comphist-save ()
-  nil)
+(defun ac-comphist-save () nil)
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (add-to-list 'ac-modes 'sv-mode)
 (setq-default ac-auto-start 2
               ac-ignore-case nil
-              ac-sources (list 'ac-source-words-in-same-mode-buffers 'ac-source-abbrev 'ac-source-dictionary)
+              ac-sources (list 'ac-source-dictionary)
               ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
@@ -176,11 +175,13 @@
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
     (add-hook 'sv-mode-hook 'doxymacs-mode)))
 
-(use-package my-ediff
+(use-package ediff
   :bind* ("C-c =" . my-ediff-dwim)
   :commands (ediff-buffers ediff-files)
   :init
-  (defalias 'eb 'ediff-buffers))
+  (defalias 'eb 'ediff-buffers)
+  :config
+  (require 'my-ediff))
 
 (use-package etags
   :bind* (("M-?" . my-etags-select-find-tag)
@@ -440,7 +441,8 @@
     (tern-ac-setup)))
 (defcustom my-tern-enable nil
   "Non-nil means use tern-mode where appropriate."
-  :type 'boolean)
+  :type 'boolean
+  :group 'auto-complete)
 (defun my-tern-enable ()
   "Enable tern-mode where appropriate."
   (interactive)
@@ -615,21 +617,6 @@
               split-width-threshold nil
               truncate-partial-width-windows nil
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
-              verilog-auto-endcomments nil
-              verilog-auto-indent-on-newline nil
-              verilog-auto-lineup '(all)
-              verilog-auto-newline nil
-              verilog-case-indent 4
-              verilog-imenu-flatten t
-              verilog-imenu-qualify-names nil
-              verilog-indent-begin-after-if nil
-              verilog-indent-level 4
-              verilog-indent-level-behavioral 0
-              verilog-indent-level-declaration 0
-              verilog-indent-level-directive 0
-              verilog-indent-level-module 0
-              verilog-minimum-comment-distance 40
-              verilog-tab-always-indent t
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
@@ -1530,11 +1517,6 @@ Prefix with C-u to resize the `next-window'."
   (setq truncate-lines nil)
   (setq word-wrap t))
 
-(defun my-verilog-hook ()
-  (define-key verilog-mode-map "`" nil)
-  (define-key verilog-mode-map (kbd "RET") nil)
-  (define-key verilog-mode-map ";" nil))
-
 (add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
@@ -1544,7 +1526,6 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
-(add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After loads
@@ -1569,11 +1550,11 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
      (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))))
 
-(eval-after-load "make-mode"
-  '(progn
-     (defun my-makefile-mode-hook ()
-       (modify-syntax-entry ?= ". 14" makefile-mode-syntax-table))
-     (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)))
+;; (eval-after-load "make-mode"
+;;   '(progn
+;;      (defun my-makefile-mode-hook ()
+;;        (modify-syntax-entry ?= ". 14" makefile-mode-syntax-table))
+;;      (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
