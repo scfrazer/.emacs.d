@@ -1,5 +1,12 @@
 ;; my-init.el
 
+(defvar my-location
+  (let ((hostname (getenv "HOSTNAME")))
+    (cond
+     ((string-match "^\\(golf\\|lx30-vm\\)" hostname) 'RTP)
+     ((string-match "^cpp-hw" hostname) 'SJC)
+     ((string-match "^SCFRAZER" hostname) 'Work))))
+
 ;; Need these first
 
 (require 'my-font-lock)
@@ -110,7 +117,7 @@
     (setq ag2-default-literal t
           ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
                                     ("rtl" . "\\.(s|v|vh)$")
-                                    ("vtt" . "\\.(java|php|json|html)$")))
+                                    ("vtt" . "\\.(java|php|json|html|js)$")))
     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
 (use-package bm
@@ -223,6 +230,14 @@
   :config
   (require 'my-pop-back)
   (require 'my-ffap))
+
+(use-package flymake
+ :bind* (("C-x f" . flymake-start-syntax-check))
+ :commands (my-goto-next-error my-goto-previous-error)
+ :init
+ (defalias 'fly 'flymake-mode)
+ :config
+ (require 'my-flymake))
 
 (use-package grep
   :bind* (("M-s G" . my-rgrep)
@@ -351,6 +366,27 @@
   :bind* (("C-c P" . my-pair-delete-backward)
           ("C-c p" . my-pair-delete-forward)))
 
+(use-package php-mode
+  :mode (("\\.php\\'" . php-mode))
+  :config
+  (progn
+    (defvar my-php-lint
+      (cond
+       ((eq my-location 'RTP) "/nfs/ibunobackup2/scfrazer/local/php/bin/php-lint")
+       ((eq my-location 'SJC) "/auto/vtt/www/prod/dev/local/bin/php-lint")))
+    (defun flymake-php-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list my-php-lint (list local-file))))
+    (defun my-php-mode-hook ()
+      (font-lock-add-keywords nil '(("default" (0 'font-lock-keyword-face prepend))) 'add-to-end)
+      (when my-php-lint
+        (flymake-mode 1)))
+    (add-hook 'php-mode-hook 'my-php-mode-hook)))
+
 (use-package python
   :defer t
   :config
@@ -435,28 +471,24 @@
 
 (use-package tern
   :commands (tern-mode)
+  :init
+  (progn
+    (setq-default
+     tern-executable
+     (cond
+      ((eq my-location 'RTP) "/auto/ibunobackup2/scfrazer/local/lib/node_modules/tern/bin/tern")
+      ((eq my-location 'Work) "/Users/scfrazer/node_modules/tern/bin/tern")))
+    (defun my-tern-mode ()
+      "Turn on tern-mode when avaliable."
+      (when tern-executable
+        (tern-mode t)))
+    (eval-after-load "js2-mode"
+      '(progn
+         (add-hook 'js2-mode-hook 'my-tern-mode))))
   :config
   (progn
     (require 'tern-auto-complete)
     (tern-ac-setup)))
-(defcustom my-tern-enable nil
-  "Non-nil means use tern-mode where appropriate."
-  :type 'boolean
-  :group 'auto-complete)
-(defun my-tern-enable ()
-  "Enable tern-mode where appropriate."
-  (interactive)
-  (setq my-tern-enable t))
-(defun my-tern-mode ()
-  "Turn on tern-mode when appropriate."
-  (when my-tern-enable
-    (tern-mode t)))
-(eval-after-load "js2-mode"
-  '(progn
-     (add-hook 'js2-mode-hook 'my-tern-mode)))
-(eval-after-load "web-mode"
-  '(progn
-     (add-hook 'web-mode-hook 'my-tern-mode)))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
@@ -517,7 +549,6 @@
 (autoload 'js2-mode "js2-mode" nil t)
 (autoload 'json-mode "json-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
-(autoload 'php-mode "php-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
 (autoload 'regman "regman" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
@@ -631,7 +662,6 @@
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
@@ -1607,7 +1637,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
  ("C-x `"       . my-goto-next-error)
  ("C-x c"       . clone-indirect-buffer-other-window)
- ("C-x f"       . flymake-start-syntax-check)
  ("C-x k"       . kill-buffer)
  ("C-x t"       . task-map)
  ("C-x w"       . my-clone-file)
@@ -1699,7 +1728,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'colors 'list-colors-display)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
-(defalias 'fly 'flymake-mode)
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
 (defalias 'hli 'highlight-indentation-mode)

@@ -661,6 +661,33 @@ Uses `query-replace-regexp' internally."
                         "disp(" ");"
                         '(nil "'" (ll-debug-create-next-debug-string) "'"))
 
+(defun ll-debug-get-php-function-name ()
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (php-beginning-of-defun)
+      (if (bobp)
+          "<none>"
+        (re-search-forward "\\s-\\([^ \t\n]+\\)\\s-*(")
+        (match-string 1)))))
+
+(ll-debug-register-mode 'php-mode
+                        "trigger_error(" ");"
+                        '(nil "\""
+                              (concat (ll-debug-create-next-debug-string)
+                                      " (" (buffer-name) " - "
+                                      (ll-debug-get-php-function-name)
+                                      ")")
+                              "\"")
+                        '(nil "\""
+                              (concat (ll-debug-create-next-debug-string)
+                                      " (" (buffer-name) " - "
+                                      (ll-debug-get-php-function-name)
+                                      ")")
+                              "\""
+                              ("Variable name: "
+                               ".\"  \\" str ":\".print_r(" str ", true)")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ll-debug-get-sv-mode-function ()

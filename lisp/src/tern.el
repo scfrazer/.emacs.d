@@ -11,6 +11,16 @@
 (require 'url)
 (require 'url-http)
 
+(defgroup tern nil
+  "Rern for JavaScript completion."
+  :group 'tools)
+
+(defcustom tern-executable
+  "tern"
+  "The tern executable."
+  :type 'string
+  :group 'tern)
+
 (defvar tern-known-port nil)
 (defvar tern-server nil)
 (defvar tern-explicit-port nil)
@@ -80,9 +90,7 @@
       (tern-start-server c))))
 
 (defvar tern-command
-  (let* ((script-file "~/node_modules/tern/emacs/tern.el")
-         (bin-file (expand-file-name "../bin/tern" (file-name-directory (file-truename script-file))))
-         (tern-itself (list (if (file-exists-p bin-file) bin-file "tern"))))
+  (let* ((tern-itself (list (if (file-exists-p tern-executable) tern-executable "tern"))))
     (if (eq system-type 'windows-nt) (cons "node" tern-itself) tern-itself))
   "The command to be run to start the Tern server. Should be a
 list of strings, giving the binary name and arguments.")
