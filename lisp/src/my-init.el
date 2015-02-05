@@ -1679,39 +1679,38 @@ Prefix with C-u to resize the `next-window'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(require 'vcs-compile)
-(setq vcs-compile-command "l2q procyon_targ_build_fbe /build_user/")
+(when (eq my-location 'RTP)
 
-(defun dv-lint ()
-  (interactive)
-  (compilation-mode)
-  (hl-line-mode 1)
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
+  (require 'vcs-compile)
+  (setq vcs-compile-command "l2q procyon_targ_build_fbe /build_user/")
 
-;; (when use-clearcase
-;;   (ll-debug-register-mode 'c++-mode
-;;                           "dvc_info(" ");"
-;;                           '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
-;;                           '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
-;;                                 ("Variable name: "
-;;                                  "  " str "="
-;;                                  '(progn
-;;                                     (if v1
-;;                                         (setq v1 (concat v1 ", " str))
-;;                                       (setq v1 str))
-;;                                     nil)
-;;                                  (let ((fmt (read-string "Format: ")))
-;;                                    (cond
-;;                                     ((string= (downcase fmt) "x")
-;;                                      (concat "0x%" fmt))
-;;                                     (t
-;;                                      (concat "%" fmt)))))
-;;                                 (if v1 "\\n\", " "\\n\"") v1)))
+  (defun dv-lint ()
+    (interactive)
+    (compilation-mode)
+    (hl-line-mode 1)
+    (set (make-local-variable 'compilation-error-regexp-alist)
+         (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
 
-(unless (getenv "SV_PATH")
-  (setenv "SV_PATH"
-          ".:/vob/sse/asic/shared/ver/lib/sv:/vob/cpp/ver/lib/sv:/vob/cpp/ver/shared/sv:/vob/cpp/asic/yoda/rtl/blk:/vob/cpp/asic/yoda/ver/chipdv/env/sv"))
+  (eval-after-load "ll-debug"
+    '(progn
+       (ll-debug-register-mode 'c++-mode
+                               "dvc_info(" ");"
+                               '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
+                               '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
+                                     ("Variable name: "
+                                      "  " str "="
+                                      '(progn
+                                         (if v1
+                                             (setq v1 (concat v1 ", " str))
+                                           (setq v1 str))
+                                         nil)
+                                      (let ((fmt (read-string "Format: ")))
+                                        (cond
+                                         ((string= (downcase fmt) "x")
+                                          (concat "0x%" fmt))
+                                         (t
+                                          (concat "%" fmt)))))
+                                     (if v1 "\\n\", " "\\n\"") v1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
