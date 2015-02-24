@@ -3,7 +3,7 @@
 (require 'ffap)
 
 (setq-default ffap-url-regexp nil)
-(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.~=/$(){}" "" ""))
+(setcdr (assq 'file ffap-string-at-point-mode-alist) (list "-a-zA-Z0-9_.~=@/$(){}" "" ""))
 
 (defun my-ffap (&optional arg)
   "ffap, or ffap-other-window when preceded with C-u."
@@ -34,14 +34,20 @@
       (goto-char (point-min))
       (while (re-search-forward "[$(){}]" nil t)
         (replace-match ""))
+      ;; Strip off line-number
+      (goto-char (point-min))
+      (when (re-search-forward "@[0-9]+$" nil t)
+        (delete-region (match-beginning 0) (match-end 0))
+        (let ((end (cadr ffap-string-at-point-region)))
+          (setcar (cdr ffap-string-at-point-region) (- end (- (match-end 0) (match-beginning 0))))))
       (setq ad-return-value (buffer-substring (point-min) (point-max)))
-      (setq ffap-string-at-point ad-return-value)))
+      (setq ffap-string-at-point ad-return-value))
     ;; Try to find a line number
     (save-excursion
       (goto-char (cadr ffap-string-at-point-region))
       (when (looking-at "[@:,]\\s-*\\([0-9]+\\)")
         (setq my-ffap-line-number (string-to-number (match-string 1)))
-        (setcar (cdr ffap-string-at-point-region) (match-end 0)))))
+        (setcar (cdr ffap-string-at-point-region) (match-end 0))))))
 
 (defadvice find-file-at-point (after my-ffap-find-file-at-point activate)
   "Go to `my-ffap-line-number' if non-nil."

@@ -1682,7 +1682,7 @@ Prefix with C-u to resize the `next-window'."
 (when (eq my-location 'RTP)
 
   (require 'vcs-compile)
-  (setq vcs-compile-command "l2q procyon_targ_build_fbe /build_user/")
+  (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/")
 
   (defun dv-lint ()
     (interactive)

@@ -1,6 +1,7 @@
 ;;; vcs-compile.el
 
 (require 'compile)
+(require 'ido)
 
 (defun vcs-compile-find-file (filename)
   "Unmangle filename if necessary."
@@ -31,20 +32,18 @@
 (defvar vcs-compile-command "find_fail_log -c"
   "*Default VCS compile command")
 
-(defun vcs-compile (command &optional comint)
+(defvar vcs-compile-command-list (list vcs-compile-command))
+
+(defun vcs-compile ()
   "VCS compile."
-  (interactive
-   (list
-    (let ((command (eval vcs-compile-command)))
-      (if (or compilation-read-command current-prefix-arg)
-          (vcs-compilation-read-command command)
-        command))
-    (consp current-prefix-arg)))
-  (unless (equal command (eval vcs-compile-command))
-    (setq vcs-compile-command command))
+  (interactive)
+  (setq vcs-compile-command
+        (ido-completing-read "VCS compile command: " vcs-compile-command-list))
   (save-some-buffers (not compilation-ask-about-save)
                      compilation-save-buffers-predicate)
-  (setq-default compilation-directory default-directory)
-  (compilation-start command 'vcs-compile-mode))
+  (let ((default-directory (or (getenv "RESULTSDIR") default-directory)))
+    (setq vcs-compile-command-list (delq vcs-compile-command vcs-compile-command-list))
+    (add-to-list 'vcs-compile-command-list vcs-compile-command)
+    (compilation-start vcs-compile-command 'vcs-compile-mode)))
 
 (provide 'vcs-compile)

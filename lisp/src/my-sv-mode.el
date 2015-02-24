@@ -52,7 +52,7 @@
     (when (re-search-backward "[^a-zA-Z0-9_]\\([a-zA-Z0-9_]+\\)\\s-*=" (point-at-bol) t)
       (let ((var (match-string 1)))
         (goto-char pos)
-        (when (re-search-backward (concat "[^a-zA-Z0-9_:]\\([a-zA-Z0-9_:]+\\)\\s-+" var) nil t)
+        (when (re-search-backward (concat "^\\s-*[^a-zA-Z0-9_:]\\([a-zA-Z0-9_:]+\\)\\s-+" var) nil t)
           (let ((type (match-string 1)))
             (goto-char pos)
             (insert type "::type_id::create(\"" var "\", this);")))))))
@@ -156,8 +156,8 @@
   "for"
   (lambda()
     (let ((type (read-from-minibuffer "Enum type? "))
-          (var (read-from-minibuffer "Loop variable? ")))
-      (insert "(int idx=0, " type " " var "=" var ".first; idx < " var ".num; idx++, " var "=" var ".next) begin\n")
+          (var (read-from-minibuffer "Enum loop variable name? ")))
+      (insert "(int idx=0, " type " " var "=" var ".first(); idx < " var ".num(); idx++, " var "=" var ".next()) begin\n")
       (sv-mode-indent-line)
       (save-excursion
         (insert "\nend")

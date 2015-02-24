@@ -42,7 +42,7 @@
       (multi-occur bufs regexp))))
 
 (defface my-occur-prefix-face
-  '((t (:background "#D7D7AF")))
+  '((t (:foreground "#E4E4E4" :background "#303030")))
   "Face for occur line numbers."
   :group 'faces)
 
@@ -70,7 +70,8 @@
   (setq list-matching-lines-prefix-face 'my-occur-prefix-face)
   (setq list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
   (setq truncate-lines t)
-  (occur-rename-buffer t))
+  (when (eq major-mode 'occur-mode)
+    (occur-rename-buffer t)))
 
 (add-hook 'occur-mode-hook 'my-occur-mode-hook)
 

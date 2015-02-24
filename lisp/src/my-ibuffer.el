@@ -14,7 +14,7 @@
               ibuffer-use-other-window t)
 
 (defface my-ibuffer-group-name-face
-  '((t (:foreground "#000000" :background "#DADADA")))
+  '((t (:foreground "#000000" :background "#A8A8A8")))
   "ibuffer group name face"
   :group 'faces)
 
@@ -65,7 +65,7 @@
 (my-ibuffer-build-bookmark-subs)
 
 (defface my-ibuffer-current-face
-  '((t (:foreground "#875F00" :background "#FFFFD7")))
+  '((t (:foreground "#CDCD00" :background "#0000D7")))
   "Current buffer marker face."
   :group 'faces)
 

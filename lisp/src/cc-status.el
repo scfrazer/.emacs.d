@@ -1,7 +1,5 @@
 ;;; cc-status.el
 
-;; TODO Eclipsed files?
-
 (require 'clearcase)
 (eval-when-compile (require 'cl))
 
@@ -46,7 +44,7 @@
 (defconst cc-status-output-buffer-name " *cc-status-output*")
 (defconst cc-status-comment-buffer-name "*cc-status-comment*")
 
-(defstruct cc-status-elm filename ok private reserved mastered pull merge)
+(defstruct cc-status-elm filename branch ok private eclipsed reserved mastered pull merge)
 
 (defun cc-status ()
   "ClearCase status."
@@ -81,10 +79,14 @@
                          (dolist (regexp cc-status-ignore-regexps)
                            (when (string-match regexp filename)
                              (throw 'ignore t)))))
-            (push (make-cc-status-elm :filename filename :private t) cc-status-elms))
+            (push (make-cc-status-elm
+                   :filename filename
+                   :private t
+                   :eclipsed (string-match "eclipsed" (shell-command-to-string (concat "cleartool ls " filename))))
+                  cc-status-elms))
           (forward-line 1))))
     ;; Checked out files
-    (let (elm user version reserved mastered view location master-replica latest-version)
+    (let (elm user version branch reserved mastered view location master-replica latest-version)
       (with-temp-buffer
         (call-process-shell-command "cleartool lspri -co -short" nil t)
         (goto-char (point-min))
@@ -97,17 +99,19 @@
              (concat "cleartool lsco -areplicas -fmt \"%u %f %Rf %Mf %Tf %[checkout_replica]p\\n\" " filename) nil t)
             (goto-char (point-min))
             (while (not (eobp))
-              (looking-at "\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\(.+\\)")
+              (looking-at "\\([^ ]+\\) \\(\\(/main.*\\)/[0-9]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\(.+\\)")
               (setq user (match-string-no-properties 1)
                     version (match-string-no-properties 2)
-                    reserved (match-string-no-properties 3)
-                    mastered (match-string-no-properties 4)
-                    view (match-string-no-properties 5)
-                    location (match-string-no-properties 6))
+                    branch (match-string-no-properties 3)
+                    reserved (match-string-no-properties 4)
+                    mastered (match-string-no-properties 5)
+                    view (match-string-no-properties 6)
+                    location (match-string-no-properties 7))
+              (setf (cc-status-elm-branch elm) branch)
               (if (string= view clearcase-setview-viewtag)
                   (progn
-                    (setq master-replica (shell-command-to-string (concat "cleartool describe -fmt \"%[master]p\" " filename "@@/main")))
-                    (setq latest-version (shell-command-to-string (concat "cleartool describe -fmt \"%Vn\" " filename "@@/main/LATEST")))
+                    (setq master-replica (shell-command-to-string (concat "cleartool describe -fmt \"%[master]p\" " filename "@@" branch)))
+                    (setq latest-version (shell-command-to-string (concat "cleartool describe -fmt \"%Vn\" " filename "@@" branch "/LATEST")))
                     (unless (string= location master-replica)
                       (setf (cc-status-elm-pull elm) (concat "[Needs pull: " master-replica "]")))
                     (unless (string= version latest-version)
@@ -120,7 +124,7 @@
                             (setf (cc-status-elm-ok elm) (concat "{Merged to: " latest-version "}")))
                           (forward-line 1)))
                       (unless (cc-status-elm-ok elm)
-                        (setf (cc-status-elm-merge elm) (concat "[Checked out: " version ", /main/LATEST: " latest-version "]")))))
+                        (setf (cc-status-elm-merge elm) (concat "[Checked out: " version ", " branch "/LATEST: " latest-version "]")))))
                 (when (string= reserved "reserved")
                   (setf (cc-status-elm-reserved elm) (concat "[Reserved: " user ":" view "]")))
                 (when (string= mastered "mastered")
@@ -142,7 +146,11 @@
     (dolist (elm cc-status-elms)
       (insert "  " (cc-status-elm-filename elm) " "
               (if (cc-status-elm-ok elm) (concat " " (cc-status-elm-ok elm)) "")
-              (if (cc-status-elm-private elm) " (Private)" "")
+              (if (cc-status-elm-private elm)
+                  (if (cc-status-elm-eclipsed elm)
+                      " [Private but eclipses checked in file]"
+                    " (Private)")
+                "")
               (if (cc-status-elm-reserved elm) (concat " " (cc-status-elm-reserved elm)) "")
               (if (cc-status-elm-mastered elm) (concat " " (cc-status-elm-mastered elm)) "")
               (if (cc-status-elm-pull elm) (concat " " (cc-status-elm-pull elm)) "")
@@ -211,12 +219,13 @@
   (interactive "P")
   (beginning-of-line)
   (let* ((elm (cc-status-get-current-elm))
-         (filename (cc-status-elm-filename elm)))
+         (filename (cc-status-elm-filename elm))
+         (branch (cc-status-elm-branch elm)))
     (if (cc-status-elm-private elm)
         (error "Can't diff a view-private file.")
       (if arg
           (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename))
-        (clearcase-ediff-file-with-version filename "/main/LATEST")))))
+        (clearcase-ediff-file-with-version filename (concat branch "/LATEST"))))))
 
 (defun cc-status-mark (&optional arg)
   "Mark a file.  With prefix argument, mark all relevent files."
@@ -293,15 +302,17 @@
         (call-process-shell-command cmd nil t)
         (setq buffer-read-only t)))))
 
-(defun cc-status-merge (files)
+(defun cc-status-merge (files branches)
   "Merge files."
   (when files
     (message "Merging files ...")
     (cc-status-prep-output-buffer)
-    (let (cmd)
+    (let (cmd branch)
       (with-current-buffer cc-status-output-buffer-name
         (dolist (filename files)
-          (setq cmd (concat "cleartool merge -abort -to " filename " " filename "@@/main/LATEST"))
+          (setq branch (car branches)
+                branches (cdr branches)
+                cmd (concat "cleartool merge -abort -to " filename " " filename "@@" branch "/LATEST"))
           (insert "--> " cmd "\n")
           (call-process-shell-command cmd nil t))
         (setq buffer-read-only t)))))
@@ -345,14 +356,15 @@
   (interactive)
   (when (y-or-n-p "Operate on marked files? ")
     (cc-status-goto-first-file)
-    (let (op files-to-pull files-to-merge files-to-uncheckout-keep files-to-uncheckout-rm files-to-delete)
+    (let (op files-to-pull files-to-merge file-branches-to-merge files-to-uncheckout-keep files-to-uncheckout-rm files-to-delete)
       (setq cc-status-files-to-checkin nil)
       (dolist (elm cc-status-elms)
         (setq op (char-after))
         (cond ((= op ?P)
                (push (cc-status-elm-filename elm) files-to-pull))
               ((= op ?M)
-               (push (cc-status-elm-filename elm) files-to-merge))
+               (push (cc-status-elm-filename elm) files-to-merge)
+               (push (cc-status-elm-branch elm) file-branches-to-merge))
               ((= op ?I)
                (push (cc-status-elm-filename elm) cc-status-files-to-checkin))
               ((= op ?U)
@@ -365,7 +377,7 @@
                nil))
         (forward-line 1))
       (cc-status-pull files-to-pull)
-      (cc-status-merge files-to-merge)
+      (cc-status-merge files-to-merge file-branches-to-merge)
       (cc-status-uncheckout-keep files-to-uncheckout-keep)
       (cc-status-uncheckout-rm files-to-uncheckout-rm)
       (cc-status-delete files-to-delete))
