@@ -16,7 +16,8 @@
                                                                    "*scratch"
                                                                    "*shell"
                                                                    "*terminal"
-                                                                   "*regman"))))
+                                                                   "*regman"
+                                                                   "*vcs-compile"))))
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-buf-never-show-regexps '("^\\s-" "^\\*" "TAGS$")

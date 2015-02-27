@@ -341,24 +341,30 @@ Otherwise indent them as usual."
           "\\)\\_>"))
 
 (defvar sv-mode-builtin-methods
-  (concat "\\_<[$]\\("
+  (concat "\\_<\\("
           (regexp-opt
-           '("assertkill" "assertoff" "asserton" "bits" "bitstoshortreal"
-             "cast" "coverage_control" "coverage_get" "coverage_get_max"
-             "coverage_merge" "coverage_save" "dimensions" "display" "dumpfile"
-             "dumpports" "dumpportsall" "dumpportsflush" "dumpportslimit"
-             "dumpportsoff" "dumpportson" "dumpvars" "error" "exit" "fatal"
-             "fclose" "fdisplay" "ferror" "fflush" "fgetc" "fgets" "finish"
-             "fmonitor" "fopen" "fread" "fscanf" "fseek" "fstrobe" "ftell"
-             "fwrite" "high" "increment" "info" "isunbounded" "isunknown"
-             "left" "low" "monitor" "onehot" "onehot0" "random" "readmemb"
-             "readmemh" "realtime" "rewind" "right" "sformat" "shortrealtobits"
-             "signed" "size" "srandom" "sscanf" "stop" "strobe" "swrite"
-             "swriteb" "swriteh" "swriteo" "time" "timeformat" "typename"
-             "typeof" "ungetc" "unsigned" "urandom" "urandom_range" "void"
-             "warning" "write" "writememb" "writememh"
+           '("$assertkill" "$assertoff" "$asserton" "$bits" "$bitstoshortreal"
+             "$cast" "$coverage_control" "$coverage_get" "$coverage_get_max"
+             "$coverage_merge" "$coverage_save" "$dimensions" "$display" "$dumpfile"
+             "$dumpports" "$dumpportsall" "$dumpportsflush" "$dumpportslimit"
+             "$dumpportsoff" "$dumpportson" "$dumpvars" "$error" "$exit" "$fatal"
+             "$fclose" "$fdisplay" "$ferror" "$fflush" "$fgetc" "$fgets" "$finish"
+             "$fmonitor" "$fopen" "$fread" "$fscanf" "$fseek" "$fstrobe" "$ftell"
+             "$fwrite" "$high" "$increment" "$info" "$isunbounded" "$isunknown"
+             "$left" "$low" "$monitor" "$onehot" "$onehot0" "$random" "$readmemb"
+             "$readmemh" "$realtime" "$rewind" "$right" "$sformat" "$shortrealtobits"
+             "$signed" "$size" "$srandom" "$sscanf" "$stop" "$strobe" "$swrite"
+             "$swriteb" "$swriteh" "$swriteo" "$time" "$timeformat" "$typename"
+             "$typeof" "$ungetc" "$unsigned" "$urandom" "$urandom_range" "$void"
+             "$warning" "$write" "$writememb" "$writememh"
+             ;; Other functions
+             "delete" "exists" "find" "find_first" "find_first_index" "find_index"
+             "find_last" "find_last_index" "first" "get_randstate" "insert" "last"
+             "max" "min" "name" "next" "num" "pop_back" "pop_front" "prev" "product"
+             "push_back" "push_front" "randomize" "reverse" "rsort" "set_randstate"
+             "shuffle" "size" "sort" "srandom" "sum" "unique_index"
              ;; Not in the LRM, but most simulators support
-             "psprintf" "sformatf"))
+             "$psprintf" "$sformatf"))
           "\\)\\_>"))
 
 (defvar sv-mode-aop-keywords

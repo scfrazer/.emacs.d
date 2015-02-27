@@ -7,6 +7,8 @@
 
    `(ace-jump-face-foreground ((,class (:foreground "#FFFFFF" :background "#0087AF"))))
    `(bm-face ((,class (:foreground nil :background "#585858"))))
+   `(compilation-mode-line-exit ((,class (:background nil :foreground "#00CD00"))))
+   `(compilation-mode-line-fail ((,class (:background nil :foreground "#FF0000"))))
    `(font-lock-builtin-face ((,class (:foreground "#AF875F"))))
    `(font-lock-comment-delimiter-face ((,class (:foreground "#808080"))))
    `(font-lock-comment-face ((,class (:foreground "#808080"))))
@@ -29,11 +31,11 @@
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
    `(my-tab-face ((,class (:background "#D787AF"))))
    `(region ((,class (:background "#005FAF"))))
-   `(show-mark-face ((,class (:background "#005F5F"))))
-   `(show-mark-face-eol ((,class (:underline t :foreground "#005F5F"))))
+   `(show-mark-face ((,class (:background "#5F5F5F"))))
+   `(show-mark-face-eol ((,class (:underline t :foreground "#5F5F5F"))))
    `(show-paren-match-face ((,class (:background "#005FFF" :foreground "#FFFFFF"))))
    `(show-paren-mismatch-face ((,class (:background "#AF0000" :foreground "#FFFFFF"))))
-   `(trailing-whitespace ((,class (:background "#5F5F87"))))
+   `(trailing-whitespace ((,class (:background "#005F87"))))
 
    ))
 

@@ -326,6 +326,7 @@ push_front
 rand
 randc
 randcase
+randomize
 randsequence
 real
 realtime

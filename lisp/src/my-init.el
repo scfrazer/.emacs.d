@@ -66,6 +66,7 @@
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
             ("C-M-p" . my-edit-scroll-up)
+            ("C-M-v" . my-edit-newline-and-indent-around)
             ("C-c j" . my-edit-join-line-with-next)
             ("C-k"   . my-edit-kill-line)
             ("C-v"   . my-edit-newline-and-indent)
@@ -1682,7 +1683,7 @@ Prefix with C-u to resize the `next-window'."
 (when (eq my-location 'RTP)
 
   (require 'vcs-compile)
-  (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/")
+  (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
 
   (defun dv-lint ()
     (interactive)

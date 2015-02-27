@@ -278,8 +278,10 @@ With prefix arg ask for version."
 
   (defun my-clearcase-get-file-package (file)
     "Get the package information for FILE."
+    (message "Running urq ...")
     (with-temp-buffer
       (let ((status (call-process "urq" nil t nil "find" "-nversions" "1" file)))
+        (message "")
         (if (not (equal status 0))
             (error "Error using urq find")
           (goto-char (point-min))
@@ -320,6 +322,7 @@ With prefix arg ask for version."
     "Set latest for current line, trying to do-the-right-thing."
     (interactive)
     (beginning-of-line)
+    (message "Updating ...")
     (cond
      ;; Package name
      ((looking-at "\\s-*\\([a-z0-9_]+\\)-\\([a-z0-9_]+\\)\\(:\\([a-z0-9]+\\)\\)?\\(:\\([0-9]+\\)\\)?")
@@ -366,15 +369,18 @@ With prefix arg ask for version."
         (insert " /main/LATEST")))
      ;; Unknown
      (t
-      (error "Couldn't parse current line"))))
+      (error "Couldn't parse current line")))
+    (message ""))
 
   (defun my-clearcase-urq-rules (dir pkg &optional branch release)
     "Get urq rules."
+    (message "Running urq ...")
     (with-temp-buffer
       (let ((status (call-process "urq" nil t nil "rules"
                                   (concat dir "-" pkg
                                           (if branch (concat ":" branch))
                                           (if release (concat ":" release))))))
+        (message "")
         (if (not (equal status 0))
             (error "Couldn't get urq rules for current line")
           (goto-char (point-min))
