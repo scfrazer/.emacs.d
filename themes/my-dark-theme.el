@@ -9,7 +9,7 @@
    `(bm-face ((,class (:foreground nil :background "#585858"))))
    `(compilation-mode-line-exit ((,class (:background nil :foreground "#00CD00"))))
    `(compilation-mode-line-fail ((,class (:background nil :foreground "#FF0000"))))
-   `(font-lock-builtin-face ((,class (:foreground "#AF875F"))))
+   `(font-lock-builtin-face ((,class (:foreground "#D7AF87"))))
    `(font-lock-comment-delimiter-face ((,class (:foreground "#808080"))))
    `(font-lock-comment-face ((,class (:foreground "#808080"))))
    `(font-lock-constant-face ((,class (:foreground "#AFD75F"))))
