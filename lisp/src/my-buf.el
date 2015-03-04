@@ -39,6 +39,7 @@
   (or (and (not (my-buf-str-in-regexp-list name my-buf-always-show-regexps))
            (my-buf-str-in-regexp-list name my-buf-never-show-regexps))
       (and my-buf-ignore-dired-buffers
+           (buffer-live-p name)
            (with-current-buffer name
              (and (equal major-mode 'dired-mode)
                   (not (string= name "*Find*")))))))

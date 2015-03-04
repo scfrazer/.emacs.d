@@ -359,10 +359,9 @@ Otherwise indent them as usual."
              "$warning" "$write" "$writememb" "$writememh"
              ;; Other functions
              "delete" "exists" "find" "find_first" "find_first_index" "find_index"
-             "find_last" "find_last_index" "first" "get_randstate" "insert" "last"
-             "max" "min" "name" "next" "num" "pop_back" "pop_front" "prev" "product"
-             "push_back" "push_front" "randomize" "reverse" "rsort" "set_randstate"
-             "shuffle" "size" "sort" "srandom" "sum" "unique_index"
+             "find_last" "find_last_index" "insert" "pop_back" "pop_front"
+             "push_back" "push_front" "randomize" "reverse" "rsort" "shuffle"
+             "size" "sort" "unique_index"
              ;; Not in the LRM, but most simulators support
              "$psprintf" "$sformatf"))
           "\\)\\_>"))

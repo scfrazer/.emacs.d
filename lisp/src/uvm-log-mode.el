@@ -33,7 +33,7 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-face
-  '((t (:foreground "#000087")))
+  '((t (:inherit default)))
   "Font Lock mode face used to highlight messages."
   :group 'uvm-log-mode)
 
