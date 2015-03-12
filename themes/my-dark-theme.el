@@ -32,6 +32,7 @@
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
    `(isearch ((,class (:background "#D75F5F" :foreground "#FFFFFF"))))
    `(isearch-lazy-highlight-face ((,class (:background "#875F00" :foreground "#FFFFFF"))))
+   `(match ((,class (:background "#5F005F"))))
    `(my-tab-face ((,class (:background "#D787AF"))))
    `(region ((,class (:background "#005FAF"))))
    `(show-mark-face ((,class (:background "#5F5F5F"))))

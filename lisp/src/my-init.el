@@ -77,6 +77,9 @@
             ("C-x C-r" . my-ido-recentf-file)
             ("M-i"     . ido-switch-buffer))
 
+(require 'jump-to-prev-pos)
+(bind-keys* ("M-b" . jump-to-prev-pos))
+
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
@@ -290,9 +293,6 @@
     (setq isearch-allow-scroll t
           lazy-highlight-initial-delay 0)
     (put 'my-recenter 'isearch-scroll t)))
-
-(use-package jump-to-prev-pos
-  :bind* ("M-b" . jump-to-prev-pos))
 
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
