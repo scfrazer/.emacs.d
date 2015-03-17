@@ -14,7 +14,7 @@
               ibuffer-use-other-window t)
 
 (defface my-ibuffer-group-name-face
-  '((t (:foreground "#000000" :background "#A8A8A8")))
+  '((t (:foreground "#D0D0D0" :background "#444444")))
   "ibuffer group name face"
   :group 'faces)
 
@@ -226,13 +226,14 @@
   (ibuffer-visit-buffer-1-window)
   (my-ediff-dwim))
 
-(defun my-ibuffer ()
+(defun my-ibuffer (&optional arg)
   "Open ibuffer with point on last buffer name."
-  (interactive)
+  (interactive "P")
   (if (string= (buffer-name) "*Ibuffer*")
       (call-interactively 'ibuffer-update)
     (setq my-ibuffer-current-buf (current-buffer))
-    (ibuffer))
+    (let ((ibuffer-use-other-window (not arg)))
+      (ibuffer)))
   (when my-ibuffer-current-buf
     (ibuffer-jump-to-buffer (buffer-name my-ibuffer-current-buf))))
 

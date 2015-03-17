@@ -391,7 +391,8 @@
 
 (define-derived-mode cc-status-comment-mode text-mode "cc-status-comment-mode"
   "Add comments for checkin or mkelem."
-  (local-set-key (kbd "C-x C-s") 'cc-status-comment-mode-finish))
+  (local-set-key (kbd "C-x C-s") 'cc-status-comment-mode-finish)
+  (local-set-key (kbd "C-c C-c") 'cc-status-comment-mode-finish))
 
 (defun cc-status-comment-mode-finish ()
   "Finish entering comment and do the operations."
