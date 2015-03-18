@@ -6,7 +6,7 @@
    'my-dark
 
    `(ace-jump-face-foreground ((,class (:foreground "#FFFFFF" :background "#0087AF"))))
-   `(bm-face ((,class (:foreground nil :background "#5F005F"))))
+   `(bm-face ((,class (:foreground "#FFFFFF" :background "#5F005F"))))
    `(compilation-mode-line-exit ((,class (:background nil :foreground "#00CD00"))))
    `(compilation-mode-line-fail ((,class (:background nil :foreground "#FF0000"))))
    `(font-lock-builtin-face ((,class (:foreground "#D7AF87"))))
