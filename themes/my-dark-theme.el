@@ -26,7 +26,7 @@
    `(font-lock-variable-name-face ((,class (:foreground "#5FFF87"))))
    `(font-lock-warning-face ((,class (:foreground "#CD0000"))))
    `(header-line ((,class (:underline nil :foreground "#E4E4E4" :background "#303030"))))
-   `(highlight ((,class (:background "#444444" :foreground nil))))
+   `(highlight ((,class (:background "#303030" :foreground nil))))
    `(ido-first-match ((,class (:weight normal :foreground "#CDCD00"))))
    `(ido-only-match ((,class (:weight normal :foreground "#00FF00"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
