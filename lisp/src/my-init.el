@@ -570,7 +570,7 @@
   (electric-indent-mode -1))
 
 (when (fboundp 'electric-pair-mode)
-  (defun my-electric-pair-open-newline-between-pairs()
+  (defun my-electric-pair-open-newline-between-pairs ()
     "Indent paired char and empty line"
     (when (and (eq last-command-event ?\n)
                (< (1+ (point-min)) (point) (point-max))
@@ -584,6 +584,7 @@
       (indent-according-to-mode))
     nil)
   (setq-default electric-pair-open-newline-between-pairs 'my-electric-pair-open-newline-between-pairs)
+  (setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
   (electric-pair-mode 1))
 
 (setq-default Man-notify-method 'bully
@@ -1452,6 +1453,30 @@ Only works if there are exactly two windows."
         (select-window first-win)
         (when this-win-2nd (other-window 1))))))
 
+(defun my-transpose-sexps ()
+  "If point is after certain chars transpose chunks around that.
+Otherwise transpose sexps."
+  (interactive "*")
+  (if (not (looking-back "[,]\\s-*" (point-at-bol)))
+      (progn (transpose-sexps 1) (forward-sexp -1))
+    (let ((beg (point)) end rhs lhs)
+      (while (and (not (eobp))
+                  (not (looking-at "\\s-*\\([,]\\|\\s)\\)")))
+        (forward-sexp 1))
+      (setq rhs (buffer-substring beg (point)))
+      (delete-region beg (point))
+      (re-search-backward "[,]\\s-*" nil t)
+      (setq beg (point))
+      (while (and (not (bobp))
+                  (not (looking-back "\\([,]\\|\\s(\\)\\s-*" (point-at-bol))))
+        (forward-sexp -1))
+      (setq lhs (buffer-substring beg (point)))
+      (delete-region beg (point))
+      (insert rhs)
+      (re-search-forward "[,]\\s-*" nil t)
+      (save-excursion
+        (insert lhs)))))
+
 (defun my-unfill (&optional arg)
   "Unfill paragraph, or region with prefix arg."
   (interactive "*P")
@@ -1598,6 +1623,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
  ("C-M-l"       . forward-sexp)
+ ("C-M-t"       . my-transpose-sexps)
  ("C-M-y"       . browse-kill-ring)
  ("C-c          ." . my-kill-results-buffer)
  ("C-c $"       . my-delete-trailing-whitespace)
