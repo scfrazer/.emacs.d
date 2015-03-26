@@ -21,7 +21,7 @@
    `(font-lock-reference-face ((,class (:foreground "#FF8787"))))
    `(font-lock-regexp-grouping-backslash ((,class (:weight bold))))
    `(font-lock-regexp-grouping-construct ((,class (:weight bold))))
-   `(font-lock-string-face ((,class (:foreground "#D75FAF"))))
+   `(font-lock-string-face ((,class (:foreground "#FF8787"))))
    `(font-lock-type-face ((,class (:foreground "#87FFFF"))))
    `(font-lock-variable-name-face ((,class (:foreground "#5FFF87"))))
    `(font-lock-warning-face ((,class (:foreground "#CD0000"))))
