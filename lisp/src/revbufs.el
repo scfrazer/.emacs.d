@@ -93,13 +93,14 @@
            (concat
             (format "Reverted %s with"
                     (revbufs-quantity (length reverts) "buffer"))
-            (if conflicts 
+            (if conflicts
                 (format " %s%s"
                         (revbufs-quantity (length conflicts) "conflict")
                         (if orphans " and" "")))
             (if orphans
                 (format " %s"
                         (revbufs-quantity (length orphans) "orphan"))))))
+      (kill-buffer report-buf)
       (if reverts
           (message "Reverted %s." (revbufs-quantity (length reverts) "buffer"))
         (message "No buffers need reverting.")))))
@@ -108,7 +109,7 @@
   (if list
       (concat label
               (format " (%s):\n" (length list))
-              (mapconcat 
+              (mapconcat
                (function
                 (lambda (buf)
                   (format "  %-20s %s\n"
