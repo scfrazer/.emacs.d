@@ -32,8 +32,8 @@
 ;; startup file:
 ;;
 ;; (autoload 'sv-mode "sv-mode" "SystemVerilog code editing mode" t)
-;; (add-to-list 'auto-mode-alist '("\\.sv$" . sv-mode))
-;; (add-to-list 'auto-mode-alist '("\\.svh$" . sv-mode))
+;; (add-to-list 'auto-mode-alist '("\\.sv\\'" . sv-mode))
+;; (add-to-list 'auto-mode-alist '("\\.svh\\'" . sv-mode))
 ;;
 ;; Default keybindings:
 ;;

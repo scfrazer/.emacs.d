@@ -50,7 +50,7 @@
   (turn-on-font-lock)
   (font-lock-fontify-buffer))
 
-(add-to-list 'auto-mode-alist '("\\.txt" . btext-mode))
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . btext-mode))
 (add-to-list 'magic-fallback-mode-alist (cons "." 'btext-mode) 'append)
 
 (provide 'btext-mode)

@@ -99,7 +99,7 @@
          (".hh" ".h"))
         ))
 
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 ;; Make function from prototype
 

@@ -507,7 +507,7 @@ With prefix arg ask for version."
 
     (run-hooks 'text-mode-hook))
 
-  (add-to-list 'auto-mode-alist '("\\.cs$" . clearcase-cs-mode))
-  (add-to-list 'auto-mode-alist '("\\.template$" . clearcase-cs-mode)))
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . clearcase-cs-mode))
+  (add-to-list 'auto-mode-alist '("\\.template\\'" . clearcase-cs-mode)))
 
 (provide 'my-clearcase)

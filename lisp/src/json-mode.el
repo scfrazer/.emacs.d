@@ -77,7 +77,7 @@ With prefix-arg sort the keys."
   (set (make-local-variable 'font-lock-defaults) '(json-font-lock-keywords-1 t)))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 
 ;; (define-key json-mode-map (kbd "C-c C-r") 'json-mode-beautify)
 (define-key json-mode-map (kbd "C-c C-r") 'json-reformat-region)

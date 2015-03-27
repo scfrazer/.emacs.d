@@ -1711,6 +1711,8 @@ Prefix with C-u to resize the `next-window'."
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
 
+  (require 'ur-log-mode)
+
   (defun dv-lint ()
     (interactive)
     (compilation-mode)
