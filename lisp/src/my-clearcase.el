@@ -397,6 +397,31 @@ With prefix arg ask for version."
         (beginning-of-line)
         (insert (my-clearcase-urq-rules (nth 0 pkg-info) (nth 1 pkg-info) (nth 2 pkg-info)) "\n"))))
 
+  (defun my-clearcase-cs-update-dwim ()
+    "Remove packages equal to or older than what is in the included config specs."
+    (interactive)
+    (let ((inc-buffer (get-buffer-create "*cs-included-files*")))
+      ;; Create buffer with all included config specs (not recursively though)
+      (goto-char (point-min))
+      (while (re-search-forward "^\\s-*include\\s-+\\([^ \t\n]+\\)" nil t)
+        (let ((filename (match-string-no-properties 1)))
+          (with-current-buffer inc-buffer
+            (insert-file-contents filename))))
+      ;; Find each package and see if it's at or above what is in the included config specs
+      (goto-char (point-min))
+      (while (re-search-forward "^\\s-*element.+\\s-\\([A-Z0-9_]+-[A-Z0-9_]+__.+__\\)\\([0-9]+\\)" nil t)
+        (let ((beg (match-beginning 0))
+              (ext-pkg (match-string-no-properties 1))
+              (pkg-ver (string-to-number (match-string-no-properties 2))))
+          (re-search-forward "^\\s-*element.+\\.\\*.+\n" nil t)
+          (when (with-current-buffer inc-buffer
+                  (goto-char (point-min))
+                  (when (re-search-forward (concat ext-pkg "\\([0-9]+\\)") nil t)
+                    (>= (string-to-number (match-string-no-properties 1)) pkg-ver)))
+            (delete-region beg (point)))))
+      ;; Done
+      (kill-buffer inc-buffer)))
+
   ;; Syntax table
 
   (defvar clearcase-edcs-mode-syntax-table
@@ -439,10 +464,11 @@ With prefix arg ask for version."
 
   (make-variable-buffer-local 'clearcase-parent-buffer)
 
-  (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
-  (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
   (define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest-dwim)
   (define-key clearcase-edcs-mode-map (kbd "C-c C-p") 'my-clearcase-cs-file-to-package)
+  (define-key clearcase-edcs-mode-map (kbd "C-c C-u") 'my-clearcase-cs-update-dwim)
+  (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
+  (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
 
   ;; Abbrevs
 
@@ -499,8 +525,6 @@ With prefix arg ask for version."
     (set (make-local-variable 'comment-start) "# ")
     (set (make-local-variable 'comment-end) "")
     (set (make-local-variable 'comment-start-skip) "#[ \t]*")
-
-    (local-set-key (kbd "C-c C-r") 'my-clearcase-cs-element-set-latest-rev)
 
     (set (make-local-variable 'font-lock-defaults) '(clearcase-edcs-mode-font-lock-keywords))
     (turn-on-font-lock)
