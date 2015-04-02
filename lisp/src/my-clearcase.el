@@ -397,30 +397,46 @@ With prefix arg ask for version."
         (beginning-of-line)
         (insert (my-clearcase-urq-rules (nth 0 pkg-info) (nth 1 pkg-info) (nth 2 pkg-info)) "\n"))))
 
-  (defun my-clearcase-cs-update-dwim ()
+  (defun my-clearcase-cs-clean-packages ()
     "Remove packages equal to or older than what is in the included config specs."
     (interactive)
-    (let ((inc-buffer (get-buffer-create "*cs-included-files*")))
-      ;; Create buffer with all included config specs (not recursively though)
+    (save-excursion
+      (let ((inc-buffer (get-buffer-create "*cs-included-files*")))
+        ;; Create buffer with all included config specs (not recursively though)
+        (goto-char (point-min))
+        (while (re-search-forward "^\\s-*include\\s-+\\([^ \t\n]+\\)" nil t)
+          (let ((filename (match-string-no-properties 1)))
+            (with-current-buffer inc-buffer
+              (insert-file-contents filename))))
+        ;; Find each package and see if it's at or above what is in the included config specs
+        (goto-char (point-min))
+        (while (re-search-forward "^\\s-*element.+\\s-\\([A-Z0-9_]+-[A-Z0-9_]+__.+__\\)\\([0-9]+\\)" nil t)
+          (let ((beg (match-beginning 0))
+                (ext-pkg (match-string-no-properties 1))
+                (pkg-ver (string-to-number (match-string-no-properties 2))))
+            (re-search-forward "^\\s-*element.+\\.\\*.+\n" nil t)
+            (when (with-current-buffer inc-buffer
+                    (goto-char (point-min))
+                    (when (re-search-forward (concat ext-pkg "\\([0-9]+\\)") nil t)
+                      (>= (string-to-number (match-string-no-properties 1)) pkg-ver)))
+              (delete-region beg (point)))))
+        (kill-buffer inc-buffer))
+        ;; Clean blank lines
       (goto-char (point-min))
-      (while (re-search-forward "^\\s-*include\\s-+\\([^ \t\n]+\\)" nil t)
-        (let ((filename (match-string-no-properties 1)))
-          (with-current-buffer inc-buffer
-            (insert-file-contents filename))))
-      ;; Find each package and see if it's at or above what is in the included config specs
+      (while (re-search-forward "\n\n\n+" nil t)
+        (backward-char)
+        (delete-blank-lines))
+      (goto-char (point-max))
+      (delete-blank-lines)))
+
+  (defun my-clearcase-cs-update ()
+    "Update includes to latest version, then clean packages."
+    (interactive)
+    (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "^\\s-*element.+\\s-\\([A-Z0-9_]+-[A-Z0-9_]+__.+__\\)\\([0-9]+\\)" nil t)
-        (let ((beg (match-beginning 0))
-              (ext-pkg (match-string-no-properties 1))
-              (pkg-ver (string-to-number (match-string-no-properties 2))))
-          (re-search-forward "^\\s-*element.+\\.\\*.+\n" nil t)
-          (when (with-current-buffer inc-buffer
-                  (goto-char (point-min))
-                  (when (re-search-forward (concat ext-pkg "\\([0-9]+\\)") nil t)
-                    (>= (string-to-number (match-string-no-properties 1)) pkg-ver)))
-            (delete-region beg (point)))))
-      ;; Done
-      (kill-buffer inc-buffer)))
+      (while (re-search-forward "^\\s-*include" nil t)
+        (my-clearcase-cs-set-latest-dwim))
+      (my-clearcase-cs-clean-packages)))
 
   ;; Syntax table
 
@@ -465,8 +481,9 @@ With prefix arg ask for version."
   (make-variable-buffer-local 'clearcase-parent-buffer)
 
   (define-key clearcase-edcs-mode-map (kbd "C-c C-l") 'my-clearcase-cs-set-latest-dwim)
+  (define-key clearcase-edcs-mode-map (kbd "C-c C-n") 'my-clearcase-cs-clean-packages)
   (define-key clearcase-edcs-mode-map (kbd "C-c C-p") 'my-clearcase-cs-file-to-package)
-  (define-key clearcase-edcs-mode-map (kbd "C-c C-u") 'my-clearcase-cs-update-dwim)
+  (define-key clearcase-edcs-mode-map (kbd "C-c C-u") 'my-clearcase-cs-update)
   (define-key clearcase-edcs-mode-map (kbd "C-x C-s") 'clearcase-edcs-finish)
   (define-key clearcase-edcs-mode-map (kbd "C-x C-w") 'clearcase-edcs-save)
 
