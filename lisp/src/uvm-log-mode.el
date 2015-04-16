@@ -73,7 +73,7 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-highlight-phase-face
-  '((t (:background "#AFD7D7")))
+  '((t (:inherit show-paren-match-face)))
   "Font Lock mode face used to highlight tags."
   :group 'uvm-log-mode)
 
@@ -127,15 +127,15 @@
 (defun uvm-log-mode-next-phase (arg reset)
   "Goto next TESTFLOW phase (or error)."
   (interactive)
-  (let ((phase-or-error-regexp "\\(Starting phase\\)") ov pos)
+  (let ((phase-or-error-regexp "\\(Starting phase\\|[*] ERROR \\)") ov pos)
     (if (and arg (< arg 0))
         (unless (re-search-backward phase-or-error-regexp nil t)
-          (error "No previous phase change"))
+          (error "No previous phase/error"))
       (setq pos (point))
       (end-of-line)
       (unless (re-search-forward phase-or-error-regexp nil t)
         (goto-char pos)
-        (error "No more phase changes")))
+        (error "No more phases/errors")))
     (beginning-of-line)
     (recenter)
     (let ((ov (make-overlay (point-at-bol) (point-at-eol))))
