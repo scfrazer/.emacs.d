@@ -22,6 +22,11 @@ corresponding value will be used instead."
   :type '(alist :key-type string :value-type string)
   :group 'ag2)
 
+(defcustom ag2-save-options t
+  "Save changed options as defaults."
+  :type 'boolean
+  :group 'ag2)
+
 (defcustom ag2-default-all-text nil
   "Use --all-text."
   :type 'boolean
@@ -116,7 +121,6 @@ corresponding value will be used instead."
 
 (defvar ag2-search-history nil)
 (defvar ag2-files-history nil)
-(defvar ag2-dir-history nil)
 (defvar ag2-type-history nil)
 (defvar ag2-built-in-file-types nil)
 
@@ -180,8 +184,17 @@ corresponding value will be used instead."
 
 (defvar ag2-popup-map nil)
 
-(defvar ag2-popup-minibuffer-map
+(defvar ag2-minibuffer-local-map
   (let ((map (copy-keymap minibuffer-local-map)))
+    (define-key map (kbd "M--")
+      (lambda ()
+        (interactive)
+        (pop-to-buffer ag2-popup-buffer-name)))
+    map)
+  "Keymap for getting to popup options.")
+
+(defvar ag2-minibuffer-local-filename-completion-map
+  (let ((map (copy-keymap minibuffer-local-filename-completion-map)))
     (define-key map (kbd "M--")
       (lambda ()
         (interactive)
@@ -394,7 +407,7 @@ corresponding value will be used instead."
           (setq search-string
                 (read-from-minibuffer
                  (concat "Search for (default \"" default-search "\"): ")
-                 nil ag2-popup-minibuffer-map nil 'ag2-search-history default-search))
+                 nil ag2-minibuffer-local-map nil 'ag2-search-history default-search))
           (when (string= search-string "")
             (setq search-string default-search))
           ;; File
@@ -402,21 +415,35 @@ corresponding value will be used instead."
           (setq search-files
                 (read-from-minibuffer
                  "Filename regexp (default to all): "
-                 nil ag2-popup-minibuffer-map nil 'ag2-files-history))
+                 nil ag2-minibuffer-local-map nil 'ag2-files-history))
           (let ((cell (assoc search-files ag2-files-aliases-alist)))
             (when cell
               (setq search-files (cdr cell))))
           ;; Directory
           (ag2-popup-dir-options)
-          (setq search-dir
-                (read-from-minibuffer
-                 "In directory: "
-                 default-dir ag2-popup-minibuffer-map nil 'ag2-dir-history))
-          (when (string= search-dir "")
-            (setq search-dir default-dir)))
+          (let ((minibuffer-local-filename-completion-map ag2-minibuffer-local-filename-completion-map))
+            (setq search-dir
+                  (read-directory-name "In directory: " nil nil t))))
       ;; Cleanup
       (with-current-buffer ag2-popup-buffer-name
         (kill-buffer-and-window)))
+    ;; Save options
+    (when ag2-save-options
+      (setq ag2-default-all-text ag2-option-all-text
+            ag2-default-all-types ag2-option-all-types
+            ag2-default-case-sensitive ag2-option-case-sensitive
+            ag2-default-depth ag2-option-depth
+            ag2-default-file-type ag2-option-file-type
+            ag2-default-follow ag2-option-follow
+            ag2-default-hidden ag2-option-hidden
+            ag2-default-ignore ag2-option-ignore
+            ag2-default-ignore-case ag2-option-ignore-case
+            ag2-default-literal ag2-option-literal
+            ag2-default-max-count ag2-option-max-count
+            ag2-default-search-binary ag2-option-search-binary
+            ag2-default-search-zip ag2-option-search-zip
+            ag2-default-unrestricted ag2-option-unrestricted
+            ag2-default-word-regexp ag2-option-word-regexp))
     ;; Execute
     (let ((default-directory search-dir))
       (compilation-start
