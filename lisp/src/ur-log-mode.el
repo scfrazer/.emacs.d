@@ -19,19 +19,21 @@
 (defun ur-log-mode-insert-first-comment ()
   "Insert comment from first file."
   (interactive)
-  (let (beg end comment)
+  (let (beg end comment (comments ""))
     (save-excursion
       (goto-char (point-min))
-      (when (and (search-forward "---------- Only add comments above this line. All other edits will be lost. ----------" nil t)
-                 (re-search-forward "^\\s-+/vob/sse" nil t))
-        (forward-line 1)
-        (setq beg (point))
-        (while (and (not (eobp)) (not (looking-at "^\\s-*$")))
-          (forward-line 1))
-        (setq comment (buffer-substring-no-properties beg (point)))))
-    (when comment
+      (when (search-forward "---------- Only add comments above this line. All other edits will be lost. ----------" nil t)
+        (while (re-search-forward "^\\s-+/vob/sse" nil t)
+          (forward-line 1)
+          (setq beg (point))
+          (while (and (not (eobp)) (not (looking-at "^\\s-*$")))
+            (forward-line 1))
+          (setq comment (buffer-substring-no-properties beg (point)))
+          (unless (string-match (regexp-quote comment) comments)
+            (setq comments (concat comments comment))))))
+    (when comments
       (delete-blank-lines)
-      (insert (replace-regexp-in-string "^\\s-*" "" comment)))))
+      (insert (replace-regexp-in-string "^\\s-*" "" comments)))))
 
 (defun ur-log-mode-commit ()
   "Save and exit."
