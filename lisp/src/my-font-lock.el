@@ -2,7 +2,7 @@
 
 (require 'font-lock)
 
-(setq-default show-trailing-whitespace nil
+(setq-default show-trailing-whitespace t
               lazy-lock-mode nil)
 (global-font-lock-mode t)
 
