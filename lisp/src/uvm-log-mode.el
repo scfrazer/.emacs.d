@@ -89,6 +89,8 @@
      (2 'uvm-log-mode-debug-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-debug-msg-face))
+    ("=>"
+     (0 'font-lock-preprocessor-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
@@ -127,7 +129,7 @@
 (defun uvm-log-mode-next-phase (arg reset)
   "Goto next TESTFLOW phase (or error)."
   (interactive)
-  (let ((phase-or-error-regexp "\\(Starting phase\\|[*] ERROR \\)") ov pos)
+  (let ((phase-or-error-regexp "\\(Starting phase\\|[*] ERROR \\|[*] FATAL\\)") ov pos)
     (if (and arg (< arg 0))
         (unless (re-search-backward phase-or-error-regexp nil t)
           (error "No previous phase/error"))
