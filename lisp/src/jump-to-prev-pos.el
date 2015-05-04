@@ -26,6 +26,20 @@
 
 ;;; Code:
 
+(defgroup jtpp nil
+  "Jump to previous position."
+  :group 'convenience)
+
+(defcustom jtpp-ignore-commands (list 'jump-to-prev-pos
+                                      'self-insert-command
+                                      'forward-char
+                                      'backward-char
+                                      'next-line
+                                      'previous-line)
+  "Commands for jtpp to ignore when saving positions."
+  :type '(repeat symbol)
+  :group 'jtpp)
+
 (defvar jtpp-prev-pos-stack nil
   "Stack of previous positions.")
 (make-variable-buffer-local 'jtpp-prev-pos-stack)
@@ -40,7 +54,7 @@
 (defun jtpp-remember-position ()
   "Remember current position."
   (unless (or (equal (point) (car jtpp-prev-pos-stack))
-              (equal this-command 'jump-to-prev-pos))
+              (member this-command jtpp-ignore-commands))
     (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))
     (when (> (length jtpp-prev-pos-stack) jtpp-stack-depth)
       (nbutlast jtpp-prev-pos-stack))
