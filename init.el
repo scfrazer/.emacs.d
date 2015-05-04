@@ -14,7 +14,4 @@
 (require 'package)
 (package-initialize)
 
-(require 'use-package)
-(setq use-package-verbose t)
-
 (require 'my-init)

@@ -15,6 +15,8 @@
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'ws 'my-font-lock-show-whitespace)
 
+(require 'bind-key)
+
 (require 'my-dired)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
 (unbind-key "C-o" dired-mode-map)
@@ -103,6 +105,10 @@
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 ;; Deferred packages
+
+(eval-when-compile
+  (require 'use-package))
+(setq use-package-verbose t)
 
 (use-package ace-jump-mode
   :bind* ("C-j" . ace-jump-mode)
@@ -1535,7 +1541,14 @@ Prefix with C-u to resize the `next-window'."
   (executable-make-buffer-file-executable-if-script-p))
 
 (defun my-emacs-lisp-mode-hook ()
-  (setq comment-column 0))
+  (setq comment-column 0)
+;;  (require 'use-package)
+  (add-to-list 'imenu-generic-expression
+             '("Require"
+               "^(require +'\\(\\_<.+\\_>\\)" 1))
+  (add-to-list 'imenu-generic-expression
+             '("Use Package"
+               "^(use-package +\\(\\_<.+\\_>\\)" 1)))
 
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
@@ -1762,7 +1775,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'fre 'my-forward-regexp)
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
-(defalias 'init (lambda () (interactive) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
+(defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
