@@ -1196,6 +1196,31 @@ arg do something special."
       (narrow-to-region (region-beginning) (region-end))
       (goto-char (point-min)))))
 
+(defvar my-paste-mode nil)
+(add-to-list 'minor-mode-alist '(my-paste-mode " Paste"))
+(defun my-paste-mode ()
+  (interactive)
+  (let ((buf (current-buffer))
+        (my-paste-mode t))
+    (with-temp-buffer
+      (let ((stay t)
+            (text (current-buffer)))
+        (redisplay)
+        (while stay
+          (let ((char (let ((inhibit-redisplay t)) (read-event nil t 0.1))))
+            (unless char
+              (with-current-buffer buf (insert-buffer-substring text))
+              (erase-buffer)
+              (redisplay)
+              (setq char (read-event nil t)))
+            (cond
+             ((not (characterp char)) (setq stay nil))
+             ((eq char ?\r) (insert ?\n))
+             ((eq char ?\e)
+              (if (sit-for 0.1 'nodisp) (setq stay nil) (insert ?\e)))
+             (t (insert char)))))
+        (insert-buffer-substring text)))))
+
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name in the kill-ring.
 If running inside a tmux session, it will also be put in a tmux copy-buffer
@@ -1350,33 +1375,31 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
-(defun my-statement-close ()
+(defun my-statement-close (&optional arg)
   "Close the current statement"
-  (interactive "*")
-  (save-excursion
+  (interactive "*P")
+  (let ((pos (point)))
     (up-list)
     (skip-syntax-forward ")")
-    (insert ";")))
+    (insert ";")
+    (when arg
+      (goto-char pos))))
 
 (defun my-step-out-backward ()
   "Step backward out of current list or string."
   (interactive)
-  (if (nth 3 (syntax-ppss (point)))
-      (progn
-        (backward-char)
-        (while (and (not (bobp)) (nth 3 (syntax-ppss (point))))
-          (backward-char)))
-    (backward-up-list)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
+    (cond
+     ((nth 3 pps)
+      (goto-char (nth 8 pps)))
+     ((nth 1 pps)
+      (goto-char (nth 1 pps))))))
 
 (defun my-step-out-forward ()
   "Step forward out of current list or string."
   (interactive)
-  (if (nth 3 (syntax-ppss (point)))
-      (progn
-        (forward-char)
-        (while (and (not (eobp)) (nth 3 (syntax-ppss (point))))
-          (forward-char)))
-    (up-list)))
+  (my-step-out-backward)
+  (forward-sexp))
 
 (defun my-tidy-lines ()
   "Tidy up lines in region."
@@ -1776,6 +1799,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
+(defalias 'paste 'my-paste-mode)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
