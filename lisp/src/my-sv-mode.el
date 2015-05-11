@@ -57,6 +57,21 @@
             (goto-char pos)
             (insert type "::type_id::create(\"" var "\", this);")))))))
 
+(defun my-sv-mode-uvm-new (&optional component)
+  "Fill in 'new' function for uvm_(object|component)."
+  (interactive "*P")
+  (let* ((pos (point))
+         (class-type (sv-mode-get-class-type))
+         (name (nth 0 class-type)))
+    (insert "function new(string name = \"" name "\"")
+    (when component
+      (insert ", uvm_component parent"))
+    (insert ");\nsuper.new(name")
+    (when component
+      (insert ", parent"))
+    (insert ");\nendfunction : new\n")
+    (indent-region pos (point))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar my-sv-xclip-program (executable-find "xclip")
@@ -167,5 +182,15 @@
   "create"
   ""
   'my-sv-mode-uvm-create)
+
+(define-abbrev sv-mode-abbrev-table
+  "uno"
+  ""
+  (lambda () (my-sv-mode-uvm-new nil)))
+
+(define-abbrev sv-mode-abbrev-table
+  "unc"
+  ""
+  (lambda () (my-sv-mode-uvm-new t)))
 
 (provide 'my-sv-mode)
