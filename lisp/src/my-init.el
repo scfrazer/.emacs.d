@@ -22,7 +22,7 @@
 (unbind-key "C-o" dired-mode-map)
 (unbind-key "s"   dired-mode-map)
 (bind-keys :map dired-mode-map
-           (" "        . my-dired-toggle-mark)
+           ("SPC"      . my-dired-toggle-mark)
            ("<return>" . my-dired-open)
            ("J"        . my-dired-jump-to-prev-dir)
            ("M-<"      . my-dired-beginning-of-buffer)
