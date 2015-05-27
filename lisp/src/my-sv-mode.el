@@ -187,12 +187,12 @@ With prefix argument, add a condition."
   'my-sv-mode-uvm-create)
 
 (define-abbrev sv-mode-abbrev-table
-  "uno"
+  "uon"
   ""
   (lambda () (my-sv-mode-uvm-new nil)))
 
 (define-abbrev sv-mode-abbrev-table
-  "unc"
+  "ucn"
   ""
   (lambda () (my-sv-mode-uvm-new t)))
 
