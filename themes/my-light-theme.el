@@ -88,6 +88,7 @@
    `(mode-line-inactive ((,class (:background "#EEEEEE" :foreground "#BCBCBC"))))
    `(my-debug-face ((,class (:background "#FF8700" :foreground "#000000"))))
    `(my-fixme-face ((,class (:background "#CD0000" :foreground "#FFFFFF"))))
+   `(my-ibuffer-current-face ((,class (:background nil :foreground "#D700FF"))))
    `(my-modified-face ((,class (:background "#AF0000" :foreground "#E4E4E4"))))
    `(my-narrow-face ((,class (:background "#FFFF00" :foreground "#000000"))))
    `(my-read-only-face ((,class (:background "#FF8700" :foreground "#000000"))))
