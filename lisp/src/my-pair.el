@@ -1,86 +1,171 @@
 ;;; my-pair.el
 
+(defun my-pair-open-paren-dwim ()
+  "DWIM for open parenthesis.
+If on the same opener, slurp left and enter transient mode
+slurping.  If on a different opener, change to entered parens.
+If after the matching closer, barf right and enter transient mode
+slurping.  Otherwise wrap current sexp, go to beginning of sexp,
+and enter transient mode slurping."
+  (interactive "*")
+  (let ((entered-char last-input-event)
+        (current-char (char-after))
+        (table (copy-syntax-table (syntax-table))))
+    (when (eq entered-char ?<)
+      (modify-syntax-entry ?< "(>" table)
+      (modify-syntax-entry ?> ")<" table))
+    (with-syntax-table table
+      (cond
+       ;; Open paren
+       ((= (char-syntax current-char) ?\()
+        ;; Same opener
+        (if (= entered-char current-char)
+            ;; TODO Slurp left, enter transient mode
+            nil
+          ;; Different opener
+          (save-excursion
+            (forward-sexp)
+            (delete-char -1)
+            (insert (matching-paren entered-char)))
+          (delete-char 1)
+          (insert entered-char)
+          (backward-char)))
+       ;; Matching closer
+       ((= (char-before) (matching-paren entered-char))
+        ;; TODO Barf right, enter transient mode
+        nil)
+       ;; Anything else
+       (t
+        (unless (looking-back "\\s-+" (point-at-bol))
+          (condition-case nil
+              (backward-sexp)
+            ((scan-error) nil)))
+        (insert entered-char)
+        (forward-sexp)
+        (insert (matching-paren entered-char))
+        (backward-sexp)
+        ;; TODO Enter transient mode
+        )))))
+
+(defun my-pair-close-paren-dwim ()
+  "DWIM for close parenthesis.
+If after the same closer, slurp right and enter transient mode
+slurping.  If after a different closer, change to entered parens.
+If on the matching opener, barf right and enter transient mode
+slurping.  Otherwise wrap current sexp, go past end of sexp, and
+enter transient mode slurping."
+  (interactive "*")
+  (let ((entered-char last-input-event)
+        (current-char (char-before))
+        (table (copy-syntax-table (syntax-table))))
+    (when (eq entered-char ?>)
+      (modify-syntax-entry ?< "(>" table)
+      (modify-syntax-entry ?> ")<" table))
+    (with-syntax-table table
+      (cond
+       ;; Close paren
+       ((= (char-syntax current-char) ?\))
+        ;; Same closer
+        (if (= entered-char current-char)
+            ;; TODO Slurp right, enter transient mode
+            nil
+          ;; Different closer
+          (save-excursion
+            (backward-sexp)
+            (delete-char 1)
+            (insert (matching-paren entered-char)))
+          (delete-char -1)
+          (insert entered-char)))
+       ;; Matching opener
+       ((= (char-after) (matching-paren entered-char))
+        ;; TODO Barf left, enter transient mode
+        nil)
+       ;; Anything else
+       (t
+        (unless (looking-back "\\s-+" (point-at-bol))
+          (condition-case nil
+              (backward-sexp)
+            ((scan-error) nil)))
+        (insert (matching-paren entered-char))
+        (forward-sexp)
+        (insert entered-char)
+        ;; TODO Enter transient mode
+        )))))
+
+(defun my-pair-quotes-dwim ()
+  "DWIM for quotes.
+If looking at different quotes, change to the entered quotes."
+  (interactive "*")
+  (let ((entered-char last-input-event)
+        (current-char (char-after)))
+    (when (= (char-syntax current-char) ?\")
+      (save-excursion
+        (forward-sexp)
+        (delete-char -1)
+        (insert entered-char))
+      (delete-char 1)
+      (insert entered-char)
+      (backward-char))))
+
 (defun my-pair-delete-forward ()
   "Forward delete paired chars."
-  (interactive)
+  (interactive "*")
   (let ((char (char-after))
         (table (copy-syntax-table (syntax-table))))
-    (when (or (eq char ?<) (eq char ?>))
+    (when (eq char ?<)
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (when (eq char ?`)
       (modify-syntax-entry ?` "\"`" table))
-    (save-excursion
-      (forward-sexp)
-      (delete-char -1))
-    (delete-char 1)))
+    (with-syntax-table table
+      (save-excursion
+        (forward-sexp)
+        (delete-char -1))
+      (delete-char 1))))
 
 (defun my-pair-delete-backward ()
   "Backward delete paired chars."
-  (interactive)
+  (interactive "*")
   (let ((char (char-before))
         (table (copy-syntax-table (syntax-table))))
-    (when (or (eq char ?<) (eq char ?>))
+    (when (eq char ?>)
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (when (eq char ?`)
       (modify-syntax-entry ?` "\"`" table))
+    (with-syntax-table table
+      (save-excursion
+        (backward-sexp)
+        (delete-char 1))
+      (delete-char -1))))
+
+(defun my-pair-close-all ()
+  "Close all open parens."
+  (interactive "*")
+  (let (closers)
     (save-excursion
-      (backward-sexp)
-      (delete-char 1))
-    (delete-char -1)))
+      (while
+          (condition-case nil
+              (progn
+                (backward-up-list)
+                (push (matching-paren (char-after)) closers))
+            ((scan-error) nil))))
+    (apply #'insert (nreverse closers))))
 
-(defun corral-wrap-backward (open close)
-  "Wrap OPEN and CLOSE delimiters around sexp, leaving point at OPEN."
-  ;; If char before point is whitespace, move to end of sexp first
-  (when (string-match-p "\\S-" (char-to-string (char-before)))
-    (beginning-of-sexp))
-  (insert open)
-  (save-excursion
-    (forward-sexp) (insert close))
-  (backward-char))
-
-(defun corral-wrap-forward (open close)
-  "Wrap OPEN and CLOSE around sexp, leaving point at CLOSE."
-  ;; If char before point is a word, move to beginning of sexp first
-  (when (string-match-p "\\S-" (char-to-string (char-before)))
-    (beginning-of-sexp))
-  (insert open)
-  (forward-sexp)
-  (insert close))
-
-(defun corral-shift-backward (open close)
-  "Shift OPEN delimiter backward one sexp.  CLOSE is not moved."
-  (cond
-   ((eq (char-before) open)
-    (backward-char) (corral-shift-backward open close))
-   ((eq (char-after) open)
-    (delete-char 1) (backward-sexp) (insert open) (backward-char))
-   (t (backward-sexp) (forward-char) (corral-shift-backward open close))))
-
-(defun corral-shift-forward (open close)
-  "Without moving OPEN, shift CLOSE delimiter forward one sexp."
-  (cond
-   ((eq (char-after) close)
-    (forward-char) (corral-shift-forward open close))
-   ((eq (char-before) close)
-    (delete-char -1) (forward-sexp) (insert close))
-   (t (forward-sexp) (corral-shift-forward open close))))
-
-(defun corral-parentheses-forward ()
-  "Wrap parentheses around sexp, moving point to the closing parentheses."
+(defun my-pair-step-out-backward ()
+  "Step backward out of current list or string."
   (interactive)
-  (if (or (eq last-command 'corral-parentheses-forward)
-          (eq last-command 'corral-parentheses-backward))
-      (corral-shift-forward ?( ?))
-    (corral-wrap-forward ?( ?))))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
+    (cond
+     ((nth 3 pps)
+      (goto-char (nth 8 pps)))
+     ((nth 1 pps)
+      (goto-char (nth 1 pps))))))
 
-(defun corral-parentheses-backward ()
-  "Wrap parentheses around sexp, moving point to the opening parentheses."
+(defun my-pair-step-out-forward ()
+  "Step forward out of current list or string."
   (interactive)
-  (if (or (eq last-command 'corral-parentheses-forward)
-          (eq last-command 'corral-parentheses-backward))
-      (corral-shift-backward ?( ?))
-    (corral-wrap-backward ?( ?))))
+  (my-pair-step-out-backward)
+  (forward-sexp))
 
 (provide 'my-pair)

@@ -372,8 +372,21 @@
   (require 'my-org))
 
 (use-package my-pair
-  :bind* (("C-c P" . my-pair-delete-backward)
-          ("C-c p" . my-pair-delete-forward)))
+  :bind* (("C-c ("   . my-pair-open-paren-dwim)
+          ("C-c )"   . my-pair-close-paren-dwim)
+          ("C-c ["   . my-pair-open-paren-dwim)
+          ("C-c ]"   . my-pair-close-paren-dwim)
+          ("C-c {"   . my-pair-open-paren-dwim)
+          ("C-c }"   . my-pair-close-paren-dwim)
+          ("C-c <"   . my-pair-open-paren-dwim)
+          ("C-c >"   . my-pair-close-paren-dwim)
+          ("C-c '"   . my-pair-quotes-dwim)
+          ("C-c \""  . my-pair-quotes-dwim)
+          ("C-c p d" . my-pair-delete-forward)
+          ("C-c p D" . my-pair-delete-backward)
+          ("C-c p p" . my-pair-close-all)
+          ("M-a"     . my-pair-step-out-backward)
+          ("M-e"     . my-pair-step-out-forward)))
 
 (use-package php-mode
   :mode (("\\.php\\'" . php-mode))
@@ -576,22 +589,24 @@
   (electric-indent-mode -1))
 
 (when (fboundp 'electric-pair-mode)
-  (defun my-electric-pair-open-newline-between-pairs ()
-    "Indent paired char and empty line"
-    (when (and (eq last-command-event ?\n)
-               (< (1+ (point-min)) (point) (point-max))
-               (eq (save-excursion
-                     (skip-chars-backward "\t\s")
-                     (char-before (1- (point))))
-                   (matching-paren (char-after))))
-      (save-excursion
-        (insert "\n")
-        (indent-according-to-mode))
-      (indent-according-to-mode))
-    nil)
-  (setq-default electric-pair-open-newline-between-pairs 'my-electric-pair-open-newline-between-pairs)
-  (setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
-  (electric-pair-mode 1))
+  (electric-pair-mode -1)
+;;   (defun my-electric-pair-open-newline-between-pairs ()
+;;     "Indent paired char and empty line"
+;;     (when (and (eq last-command-event ?\n)
+;;                (< (1+ (point-min)) (point) (point-max))
+;;                (eq (save-excursion
+;;                      (skip-chars-backward "\t\s")
+;;                      (char-before (1- (point))))
+;;                    (matching-paren (char-after))))
+;;       (save-excursion
+;;         (insert "\n")
+;;         (indent-according-to-mode))
+;;       (indent-according-to-mode))
+;;     nil)
+;;   (setq-default electric-pair-open-newline-between-pairs 'my-electric-pair-open-newline-between-pairs)
+;;   (setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+;;   (electric-pair-mode 1)
+  )
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
@@ -699,7 +714,7 @@
 (defun my-align ()
   "Align to an entered char."
   (interactive "*")
-  (let ((regexp (concat "\\(\\s-*\\)" (char-to-string (read-char "Align to char:")))))
+  (let ((regexp (concat "\\(\\s-*\\)" (regexp-quote (char-to-string (read-char "Align to char:"))))))
     (save-excursion
       (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))
 
@@ -1385,22 +1400,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (when arg
       (goto-char pos))))
 
-(defun my-step-out-backward ()
-  "Step backward out of current list or string."
-  (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point))))
-    (cond
-     ((nth 3 pps)
-      (goto-char (nth 8 pps)))
-     ((nth 1 pps)
-      (goto-char (nth 1 pps))))))
-
-(defun my-step-out-forward ()
-  "Step forward out of current list or string."
-  (interactive)
-  (my-step-out-backward)
-  (forward-sexp))
-
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
@@ -1441,19 +1440,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   "Toggle buffer modified/unmodified."
   (interactive)
   (set-buffer-modified-p (not (buffer-modified-p))))
-
-(defun my-toggle-quotes ()
-  "Toggle between single/double quotes."
-  (interactive "*")
-  (let ((pos (point))
-        (char (if (= (char-after) ?') ?\" ?')))
-    (forward-sexp)
-    (delete-char -1)
-    (insert char)
-    (goto-char pos)
-    (delete-char 1)
-    (insert char)
-    (backward-char)))
 
 (defun my-toggle-window-split ()
   "Toggle between horizontal/vertical split.
@@ -1661,9 +1647,8 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-l"       . forward-sexp)
  ("C-M-t"       . my-transpose-sexps)
  ("C-M-y"       . browse-kill-ring)
- ("C-c          ." . my-kill-results-buffer)
+ ("C-c ."       . my-kill-results-buffer)
  ("C-c $"       . my-delete-trailing-whitespace)
- ("C-c '"       . my-toggle-quotes)
  ("C-c /"       . my-line-comment)
  ("C-c ;"       . my-statement-close)
  ("C-c A"       . align-regexp)
@@ -1718,8 +1703,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-Q"         . my-unfill)
  ("M-\\"        . ac-start) ;; completion-at-point)
  ("M-`"         . next-error)
- ("M-a"         . my-step-out-backward)
- ("M-e"         . my-step-out-forward)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-r M-n"     . my-forward-paragraph-rect)
