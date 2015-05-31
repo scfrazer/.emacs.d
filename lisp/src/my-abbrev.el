@@ -27,4 +27,14 @@
   ""
   (lambda() (insert "FIXME")))
 
+(defadvice expand-abbrev (around my-expand-abbrev-advice activate)
+  (let ((char (char-before)))
+    (if (= (char-syntax char) ?\()
+        (progn
+          (insert "\n\n" (matching-paren char))
+          (indent-according-to-mode)
+          (forward-line -1)
+          (indent-according-to-mode))
+      ad-do-it)))
+
 (provide 'my-abbrev)
