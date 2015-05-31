@@ -28,17 +28,17 @@ slurping transient mode."
               (insert (matching-paren entered-char)))
             (delete-char 1)
             (insert entered-char)
-            (backward-char)))
-      ;; Anything else
-      (unless (looking-back "\\s-+" (point-at-bol))
-        (condition-case nil
-            (backward-sexp)
-          ((scan-error) nil)))
-      (insert entered-char)
-      (forward-sexp)
-      (insert (matching-paren entered-char))
-      (backward-sexp)
-      (my-pair-transient-mode))))
+            (backward-char))
+        ;; Anything else
+        (unless (looking-back "\\s-+" (point-at-bol))
+          (condition-case nil
+              (backward-sexp)
+            ((scan-error) nil)))
+        (insert entered-char)
+        (forward-sexp)
+        (insert (matching-paren entered-char))
+        (backward-sexp)
+        (my-pair-transient-mode)))))
 
 (defun my-pair-close-paren-dwim ()
   "DWIM for close parenthesis.
