@@ -372,21 +372,20 @@
   (require 'my-org))
 
 (use-package my-pair
-  :bind* (("C-c ("   . my-pair-open-paren-dwim)
-          ("C-c )"   . my-pair-close-paren-dwim)
-          ("C-c ["   . my-pair-open-paren-dwim)
-          ("C-c ]"   . my-pair-close-paren-dwim)
-          ("C-c {"   . my-pair-open-paren-dwim)
-          ("C-c }"   . my-pair-close-paren-dwim)
-          ("C-c <"   . my-pair-open-paren-dwim)
-          ("C-c >"   . my-pair-close-paren-dwim)
-          ("C-c '"   . my-pair-quotes-dwim)
-          ("C-c \""  . my-pair-quotes-dwim)
-          ("C-c p d" . my-pair-delete-forward)
-          ("C-c p D" . my-pair-delete-backward)
-          ("C-c p p" . my-pair-close-all)
-          ("M-a"     . my-pair-step-out-backward)
-          ("M-e"     . my-pair-step-out-forward)))
+  :bind* (("C-c ("  . my-pair-open-paren-dwim)
+          ("C-c )"  . my-pair-close-paren-dwim)
+          ("C-c ["  . my-pair-open-paren-dwim)
+          ("C-c ]"  . my-pair-close-paren-dwim)
+          ("C-c {"  . my-pair-open-paren-dwim)
+          ("C-c }"  . my-pair-close-paren-dwim)
+          ("C-c <"  . my-pair-open-paren-dwim)
+          ("C-c >"  . my-pair-close-paren-dwim)
+          ("C-c '"  . my-pair-quotes-dwim)
+          ("C-c \"" . my-pair-quotes-dwim)
+          ("C-c -"  . my-pair-delete)
+          ("C-c ;"  . my-pair-close-all)
+          ("M-a"    . my-pair-step-out-backward)
+          ("M-e"    . my-pair-step-out-forward)))
 
 (use-package php-mode
   :mode (("\\.php\\'" . php-mode))
@@ -1390,16 +1389,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
-(defun my-statement-close (&optional arg)
-  "Close the current statement"
-  (interactive "*P")
-  (let ((pos (point)))
-    (up-list)
-    (skip-syntax-forward ")")
-    (insert ";")
-    (when arg
-      (goto-char pos))))
-
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
@@ -1650,7 +1639,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-c ."       . my-kill-results-buffer)
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c /"       . my-line-comment)
- ("C-c ;"       . my-statement-close)
  ("C-c A"       . align-regexp)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . vcs-compile)
