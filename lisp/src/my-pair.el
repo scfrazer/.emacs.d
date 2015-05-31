@@ -144,37 +144,34 @@ If looking at different quotes, change to the entered quotes."
       (insert entered-char)
       (backward-char))))
 
-(defun my-pair-delete-forward ()
-  "Forward delete paired chars."
-  (interactive "*")
-  (let ((char (char-after))
-        (table (copy-syntax-table (syntax-table))))
-    (when (eq char ?<)
-      (modify-syntax-entry ?< "(>" table)
-      (modify-syntax-entry ?> ")<" table))
-    (when (eq char ?`)
-      (modify-syntax-entry ?` "\"`" table))
-    (with-syntax-table table
-      (save-excursion
-        (forward-sexp)
-        (delete-char -1))
-      (delete-char 1))))
-
-(defun my-pair-delete-backward ()
-  "Backward delete paired chars."
-  (interactive "*")
-  (let ((char (char-before))
-        (table (copy-syntax-table (syntax-table))))
-    (when (eq char ?>)
-      (modify-syntax-entry ?< "(>" table)
-      (modify-syntax-entry ?> ")<" table))
-    (when (eq char ?`)
-      (modify-syntax-entry ?` "\"`" table))
-    (with-syntax-table table
-      (save-excursion
-        (backward-sexp)
-        (delete-char 1))
-      (delete-char -1))))
+(defun my-pair-delete (&optional arg)
+  "Forward delete paired chars.  With prefix arg, backward delete."
+  (interactive "*P")
+  (if arg
+      (let ((char (char-before))
+            (table (copy-syntax-table (syntax-table))))
+        (when (eq char ?>)
+          (modify-syntax-entry ?< "(>" table)
+          (modify-syntax-entry ?> ")<" table))
+        (when (eq char ?`)
+          (modify-syntax-entry ?` "\"`" table))
+        (with-syntax-table table
+          (save-excursion
+            (backward-sexp)
+            (delete-char 1))
+          (delete-char -1)))
+    (let ((char (char-after))
+          (table (copy-syntax-table (syntax-table))))
+      (when (eq char ?<)
+        (modify-syntax-entry ?< "(>" table)
+        (modify-syntax-entry ?> ")<" table))
+      (when (eq char ?`)
+        (modify-syntax-entry ?` "\"`" table))
+      (with-syntax-table table
+        (save-excursion
+          (forward-sexp)
+          (delete-char -1))
+        (delete-char 1)))))
 
 (defun my-pair-close-all ()
   "Close all open parens."
