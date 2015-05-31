@@ -69,7 +69,7 @@ enter slurping transient mode."
             (delete-char -1)
             (insert entered-char))
         ;; Anything else
-        (unless (looking-back "\\s-+" (point-at-bol))
+        (unless (or (bolp) (looking-back "\\s-+" (point-at-bol)))
           (condition-case nil
               (backward-sexp)
             ((scan-error) nil)))
