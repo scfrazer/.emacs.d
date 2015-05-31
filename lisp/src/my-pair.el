@@ -2,11 +2,10 @@
 
 (defun my-pair-open-paren-dwim ()
   "DWIM for open parenthesis.
-If on the same opener, slurp left and enter transient mode.  If
-on a different opener, change to entered parens.  If after the
-matching closer, barf right and enter transient mode.  Otherwise
-wrap current sexp, go to beginning of sexp, and enter transient
-mode ."
+If on the same opener, slurp left and enter slurping transient
+mode.  If on a different opener, change to entered parens.
+Otherwise wrap current sexp, go to beginning of sexp, and enter
+slurping transient mode."
   (interactive "*")
   (let ((entered-char last-input-event)
         (current-char (char-after))
@@ -15,45 +14,38 @@ mode ."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (cond
-       ;; Open paren
-       ((= (char-syntax current-char) ?\()
-        ;; Same opener
-        (if (= entered-char current-char)
-            (progn
-              (my-pair-slurp-barf-open)
-              (my-pair-transient-mode))
-          ;; Different opener
-          (save-excursion
-            (forward-sexp)
-            (delete-char -1)
-            (insert (matching-paren entered-char)))
-          (delete-char 1)
-          (insert entered-char)
-          (backward-char)))
-       ;; Matching closer
-       ((= (char-before) (matching-paren entered-char))
-        (my-pair-slurp-barf-open)
-        (my-pair-transient-mode))
-       ;; Anything else
-       (t
-        (unless (looking-back "\\s-+" (point-at-bol))
-          (condition-case nil
-              (backward-sexp)
-            ((scan-error) nil)))
-        (insert entered-char)
-        (forward-sexp)
-        (insert (matching-paren entered-char))
-        (backward-sexp)
-        (my-pair-transient-mode))))))
+      ;; Open paren
+      (if (= (char-syntax current-char) ?\()
+          ;; Same opener
+          (if (= entered-char current-char)
+              (progn
+                (my-pair-slurp-open)
+                (my-pair-transient-mode))
+            ;; Different opener
+            (save-excursion
+              (forward-sexp)
+              (delete-char -1)
+              (insert (matching-paren entered-char)))
+            (delete-char 1)
+            (insert entered-char)
+            (backward-char)))
+      ;; Anything else
+      (unless (looking-back "\\s-+" (point-at-bol))
+        (condition-case nil
+            (backward-sexp)
+          ((scan-error) nil)))
+      (insert entered-char)
+      (forward-sexp)
+      (insert (matching-paren entered-char))
+      (backward-sexp)
+      (my-pair-transient-mode))))
 
 (defun my-pair-close-paren-dwim ()
   "DWIM for close parenthesis.
-If after the same closer, slurp right and enter transient mode.
-If after a different closer, change to entered parens.  If on the
-matching opener, barf right and enter transient mode.  Otherwise
-wrap current sexp, go past end of sexp, and enter transient
-mode."
+If after the same closer, slurp right and enter slurping
+transient mode.  If after a different closer, change to entered
+parens.  Otherwise wrap current sexp, go past end of sexp, and
+enter slurping transient mode."
   (interactive "*")
   (let ((entered-char last-input-event)
         (current-char (char-before))
@@ -62,27 +54,21 @@ mode."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (cond
-       ;; Close paren
-       ((= (char-syntax current-char) ?\))
-        ;; Same closer
-        (if (= entered-char current-char)
-            (progn
-              (my-pair-slurp-barf-close)
-              (my-pair-transient-mode))
-          ;; Different closer
-          (save-excursion
-            (backward-sexp)
-            (delete-char 1)
-            (insert (matching-paren entered-char)))
-          (delete-char -1)
-          (insert entered-char)))
-       ;; Matching opener
-       ((= (char-after) (matching-paren entered-char))
-        (my-pair-slurp-barf-close)
-        (my-pair-transient-mode))
-       ;; Anything else
-       (t
+      ;; Close paren
+      (if (= (char-syntax current-char) ?\))
+          ;; Same closer
+          (if (= entered-char current-char)
+              (progn
+                (my-pair-slurp-close)
+                (my-pair-transient-mode))
+            ;; Different closer
+            (save-excursion
+              (backward-sexp)
+              (delete-char 1)
+              (insert (matching-paren entered-char)))
+            (delete-char -1)
+            (insert entered-char))
+        ;; Anything else
         (unless (looking-back "\\s-+" (point-at-bol))
           (condition-case nil
               (backward-sexp)
@@ -90,10 +76,10 @@ mode."
         (insert (matching-paren entered-char))
         (forward-sexp)
         (insert entered-char)
-        (my-pair-transient-mode))))))
+        (my-pair-transient-mode)))))
 
-(defun my-pair-slurp-barf-open ()
-  "Slurp or barf from using opener."
+(defun my-pair-slurp-open ()
+  "Slurp at opener."
   (interactive "*")
   (let ((entered-char last-input-event)
         (table (copy-syntax-table (syntax-table))))
@@ -101,14 +87,16 @@ mode."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (cond
-       ((= (char-syntax (char-after)) ?\()
-        (message "TODO slurp left"))
-       ((= (char-syntax (char-before)) ?\))
-        (message "TODO barf right"))))))
+      (when (= (char-syntax (char-after)) ?\()
+        (let ((char (char-after)))
+          (save-excursion
+            (backward-sexp)
+            (insert char))
+          (delete-char 1)
+          (backward-up-list))))))
 
-(defun my-pair-slurp-barf-close ()
-  "Slurp or barf using closer."
+(defun my-pair-slurp-close ()
+  "Slurp at closer."
   (interactive "*")
   (let ((entered-char last-input-event)
         (table (copy-syntax-table (syntax-table))))
@@ -116,27 +104,29 @@ mode."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (cond
-       ((= (char-syntax (char-before)) ?\))
-        (message "TODO slurp right"))
-       ((= (char-syntax (char-after)) ?\()
-        (message "TODO barf left"))))))
+      (when (= (char-syntax (char-before)) ?\))
+        (let ((char (char-before)))
+          (save-excursion
+            (forward-sexp)
+            (insert char))
+          (delete-char -1)
+          (up-list))))))
 
 (defvar my-pair-transient-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "(") 'my-pair-slurp-barf-open)
-    (define-key map (kbd ")") 'my-pair-slurp-barf-close)
-    (define-key map (kbd "[") 'my-pair-slurp-barf-open)
-    (define-key map (kbd "]") 'my-pair-slurp-barf-close)
-    (define-key map (kbd "{") 'my-pair-slurp-barf-open)
-    (define-key map (kbd "}") 'my-pair-slurp-barf-close)
-    (define-key map (kbd "<") 'my-pair-slurp-barf-open)
-    (define-key map (kbd ">") 'my-pair-slurp-barf-close)
+    (define-key map (kbd "(") 'my-pair-slurp-open)
+    (define-key map (kbd ")") 'my-pair-slurp-close)
+    (define-key map (kbd "[") 'my-pair-slurp-open)
+    (define-key map (kbd "]") 'my-pair-slurp-close)
+    (define-key map (kbd "{") 'my-pair-slurp-open)
+    (define-key map (kbd "}") 'my-pair-slurp-close)
+    (define-key map (kbd "<") 'my-pair-slurp-open)
+    (define-key map (kbd ">") 'my-pair-slurp-close)
     map)
-  "Keymap used in slurping/barfing transient mode.")
+  "Keymap used in slurping transient mode.")
 
 (defun my-pair-transient-mode ()
-  "Start slurping/barfing transient mode."
+  "Start slurping transient mode."
   (set-transient-map my-pair-transient-map t))
 
 (defun my-pair-quotes-dwim ()
