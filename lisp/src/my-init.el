@@ -49,12 +49,13 @@
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (add-to-list 'ac-modes 'sv-mode)
-(setq-default ac-auto-start 2
+(setq-default ac-auto-start nil
               ac-ignore-case nil
               ac-sources (list 'ac-source-dictionary)
               ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
+(bind-keys* ("M-\\" . ac-start)) ;; completion-at-point)
 
 (require 'my-bookmark)
 
@@ -1689,7 +1690,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
- ("M-\\"        . ac-start) ;; completion-at-point)
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
