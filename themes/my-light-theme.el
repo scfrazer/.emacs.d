@@ -110,6 +110,8 @@
    `(region ((,class (:background "#AFD7FF"))))
    `(sh-heredoc ((,class (:foreground "#AF8700"))))
    `(sh-quoted-exec ((,class (:foreground "#AF87FF"))))
+   `(show-mark-face ((,class (:background "#D7FFD7"))))
+   `(show-mark-face-eol ((,class (:foreground "#D7FFD7" :underline t))))
    `(show-paren-match-face ((,class (:background "#0000AF" :foreground "#FFFFFF"))))
    `(show-paren-mismatch-face ((,class (:background "#CD0000" :foreground "#FFFFFF"))))
    `(sqlplus-table-head-face ((,class (:underline nil :foreground "#E4E4E4" :background "#303030"))))
