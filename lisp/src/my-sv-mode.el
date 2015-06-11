@@ -242,4 +242,14 @@ With prefix argument, add a condition."
   ""
   (lambda () (my-sv-mode-uvm-phase)))
 
+(define-abbrev sv-mode-abbrev-table
+  "uto"
+  "set_type_override_by_type(TODO_orig::get_type(), TODO_over::get_type());"
+  (lambda () (back-to-indentation) (search-forward "(")))
+
+(define-abbrev sv-mode-abbrev-table
+  "uio"
+  "set_inst_override_by_type(\"TODO.path\", TODO_orig::get_type(), TODO_over::get_type());"
+  (lambda () (back-to-indentation) (search-forward "\"")))
+
 (provide 'my-sv-mode)
