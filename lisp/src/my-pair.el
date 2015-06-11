@@ -30,7 +30,7 @@ slurping transient mode."
             (insert entered-char)
             (backward-char))
         ;; Anything else
-        (unless (looking-back "\\s-+" (point-at-bol))
+        (unless (or (bolp) (looking-back "\\s-+" (point-at-bol)))
           (condition-case nil
               (backward-sexp)
             ((scan-error) nil)))
@@ -87,13 +87,21 @@ enter slurping transient mode."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (when (= (char-syntax (char-after)) ?\()
-        (let ((char (char-after)))
+      (if (= (char-syntax (char-after)) ?\()
+          (my-pair-slurp-open-1)
+        (when (= (char-syntax (char-before)) ?\))
           (save-excursion
             (backward-sexp)
-            (insert char))
-          (delete-char 1)
-          (backward-up-list))))))
+            (my-pair-slurp-open-1)))))))
+
+(defun my-pair-slurp-open-1 ()
+  "Do the actual slurp open work."
+  (let ((char (char-after)))
+    (save-excursion
+      (backward-sexp)
+      (insert char))
+    (delete-char 1)
+    (backward-up-list)))
 
 (defun my-pair-slurp-close ()
   "Slurp at closer."
@@ -104,13 +112,21 @@ enter slurping transient mode."
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
-      (when (= (char-syntax (char-before)) ?\))
-        (let ((char (char-before)))
+      (if (= (char-syntax (char-before)) ?\))
+          (my-pair-slurp-close-1)
+        (when (= (char-syntax (char-after)) ?\()
           (save-excursion
             (forward-sexp)
-            (insert char))
-          (delete-char -1)
-          (up-list))))))
+            (my-pair-slurp-close-1)))))))
+
+(defun my-pair-slurp-close-1 ()
+  "Do the actual slurp close work."
+  (let ((char (char-before)))
+    (save-excursion
+      (forward-sexp)
+      (insert char))
+    (delete-char -1)
+    (up-list)))
 
 (defvar my-pair-transient-map
   (let ((map (make-sparse-keymap)))
