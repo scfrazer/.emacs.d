@@ -2111,6 +2111,15 @@ BUFFER is the buffer speedbar is requesting buttons for."
   (goto-char node))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emacs tags
+
+(defun sv-mode-find-tag ()
+  "Suggest a tag to find."
+  (let ((bounds (find-tag-default-bounds)))
+    (when bounds
+      (replace-regexp-in-string "`" "" (buffer-substring-no-properties (car bounds) (cdr bounds))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Align
 
 (require 'align)
@@ -2208,6 +2217,8 @@ Key Bindings:
 
   (set (make-local-variable 'beginning-of-defun-function) 'sv-mode-beginning-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'sv-mode-end-of-defun)
+
+  (put 'sv-mode 'find-tag-default-function 'sv-mode-find-tag)
 
   ;; Font-lock
 
