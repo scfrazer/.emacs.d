@@ -167,7 +167,9 @@ package, if you set this to t you can just type foo<TAB>."
 found, see the `etags-select-no-select-for-one-match' variable to decide what
 to do."
   (interactive)
-  (etags-select-find (or (find-tag-default) "")))
+  (etags-select-find (or (funcall (or find-tag-default-function
+                                      (get major-mode 'find-tag-default-function)
+                                      'find-tag-default)) "")))
 
 ;;;###autoload
 (defun etags-select-find-tag ()

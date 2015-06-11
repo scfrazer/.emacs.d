@@ -3,13 +3,6 @@
 (require 'sv-mode)
 (require 'quick-edit)
 
-(eval-after-load "subr"
-  `(progn
-     (defadvice find-tag-default (after my-sv-mode-find-tag-default activate)
-       "Remove backtick in sv-mode."
-       (when (equal major-mode 'sv-mode)
-         (setq ad-return-value (when ad-return-value (replace-regexp-in-string "`" "" ad-return-value)))))))
-
 (defun my-sv-mode-expand-reg ()
   "Expand register definition."
   (interactive)
@@ -194,6 +187,6 @@ With prefix argument, add a condition."
 (define-abbrev sv-mode-abbrev-table
   "ucn"
   ""
-  (lambda () (my-sv-mode-uvm-new t)))
+  (lambda () "UVM component new()" (my-sv-mode-uvm-new t)))
 
 (provide 'my-sv-mode)
