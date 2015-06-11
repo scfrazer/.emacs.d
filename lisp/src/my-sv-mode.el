@@ -56,14 +56,62 @@
   (let* ((pos (point))
          (class-type (sv-mode-get-class-type))
          (name (nth 0 class-type)))
-    (insert "function new(string name = \"" name "\"")
+    (insert "extern function new(string name = \"" name "\"")
     (when component
       (insert ", uvm_component parent"))
-    (insert ");\nsuper.new(name")
-    (when component
-      (insert ", parent"))
-    (insert ");\nendfunction : new\n")
+    (insert ");")
     (indent-region pos (point))))
+
+(defun my-sv-mode-uvm-phase ()
+  "Insert a UVM phase declaration."
+  (interactive "*")
+  (let* ((phases (list (cons "build_phase" 'function)
+                       (cons "connect_phase" 'function)
+                       (cons "end_of_elaboration_phase" 'function)
+                       (cons "start_of_simulation_phase" 'function)
+                       (cons "run_phase" 'task)
+                       (cons "pre_reset_phase" 'task)
+                       (cons "pre_oir" 'task)
+                       (cons "reset_phase" 'task)
+                       (cons "reset_pon_active" 'task)
+                       (cons "reset_pon_deassert" 'task)
+                       (cons "reset_hard_active" 'task)
+                       (cons "reset_hard_deassert" 'task)
+                       (cons "reset_soft_active" 'task)
+                       (cons "reset_soft_deassert" 'task)
+                       (cons "reset_prep" 'task)
+                       (cons "post_reset_phase" 'task)
+                       (cons "pre_configure_phase" 'task)
+                       (cons "config_memory" 'task)
+                       (cons "config_memory_enable" 'task)
+                       (cons "config_memory_bulk_init" 'task)
+                       (cons "snapshot_post_init_invariant_save" 'task)
+                       (cons "snapshot_save_resume" 'task)
+                       (cons "configure_phase" 'task)
+                       (cons "config_enable" 'task)
+                       (cons "post_configure_phase" 'task)
+                       (cons "snapshot_post_init_done_save" 'task)
+                       (cons "pre_main_phase" 'task)
+                       (cons "main_phase" 'task)
+                       (cons "post_main_phase" 'task)
+                       (cons "pre_shutdown_phase" 'task)
+                       (cons "shutdown_phase" 'task)
+                       (cons "post_shutdown_phase" 'task)
+                       (cons "extract_phase" 'function)
+                       (cons "check_phase" 'function)
+                       (cons "report_phase" 'function)
+                       (cons "final_phase" 'function)
+                       (cons "phase_started" 'function)
+                       (cons "phase_ready_to_end" 'function)
+                       (cons "phase_ended" 'function)))
+         (phase (ido-completing-read "Insert phase: " (mapcar #'car phases) nil t))
+         (kind (cdr (assoc phase phases))))
+    (when (and phase kind)
+      (insert "extern virtual ")
+      (if (equal kind 'function)
+          (insert "function void ")
+        (insert "task "))
+      (insert phase "(uvm_phase phase);"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -187,6 +235,11 @@ With prefix argument, add a condition."
 (define-abbrev sv-mode-abbrev-table
   "ucn"
   ""
-  (lambda () "UVM component new()" (my-sv-mode-uvm-new t)))
+  (lambda () (my-sv-mode-uvm-new t)))
+
+(define-abbrev sv-mode-abbrev-table
+  "up"
+  ""
+  (lambda () (my-sv-mode-uvm-phase)))
 
 (provide 'my-sv-mode)
