@@ -1,12 +1,12 @@
 ;;; my-pair.el
 
-(defun my-pair-open-paren-dwim ()
+(defun my-pair-open-paren-dwim (&optional arg)
   "DWIM for open parenthesis.
 If on the same opener, slurp left and enter slurping transient
 mode.  If on a different opener, change to entered parens.
-Otherwise wrap current sexp, go to beginning of sexp, and enter
-slurping transient mode."
-  (interactive "*")
+Otherwise (or if a prefix arg has been given) wrap current sexp,
+go to beginning of sexp, and enter slurping transient mode."
+  (interactive "*P")
   (let ((entered-char last-input-event)
         (current-char (char-after))
         (table (copy-syntax-table (syntax-table))))
@@ -15,7 +15,7 @@ slurping transient mode."
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
       ;; Open paren
-      (if (= (char-syntax current-char) ?\()
+      (if (and (not arg) (= (char-syntax current-char) ?\())
           ;; Same opener
           (if (= entered-char current-char)
               (progn
@@ -40,13 +40,14 @@ slurping transient mode."
         (backward-sexp)
         (my-pair-transient-mode)))))
 
-(defun my-pair-close-paren-dwim ()
+(defun my-pair-close-paren-dwim (&optional arg)
   "DWIM for close parenthesis.
 If after the same closer, slurp right and enter slurping
 transient mode.  If after a different closer, change to entered
-parens.  Otherwise wrap current sexp, go past end of sexp, and
-enter slurping transient mode."
-  (interactive "*")
+parens.  Otherwise (or if a prefix arg has been given) wrap
+current sexp, go past end of sexp, and enter slurping transient
+mode."
+  (interactive "*P")
   (let ((entered-char last-input-event)
         (current-char (char-before))
         (table (copy-syntax-table (syntax-table))))
@@ -55,7 +56,7 @@ enter slurping transient mode."
       (modify-syntax-entry ?> ")<" table))
     (with-syntax-table table
       ;; Close paren
-      (if (= (char-syntax current-char) ?\))
+      (if (and (not arg) (= (char-syntax current-char) ?\)))
           ;; Same closer
           (if (= entered-char current-char)
               (progn
