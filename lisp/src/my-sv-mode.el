@@ -50,22 +50,30 @@
             (goto-char pos)
             (insert type "::type_id::create(\"" var "\", this);")))))))
 
-(defun my-sv-mode-uvm-new (&optional component)
+(defun my-sv-mode-uvm-new (component)
   "Fill in 'new' function for uvm_(object|component)."
-  (interactive "*P")
   (let* ((pos (point))
          (class-type (sv-mode-get-class-type))
          (name (nth 0 class-type)))
-    (insert "extern function new(string name = \"" name "\"")
+    (unless current-prefix-arg
+      (insert "extern "))
+    (insert "function new(string name = \"" name "\"")
     (when component
       (insert ", uvm_component parent"))
     (insert ");")
-    (indent-region pos (point))))
+    (when current-prefix-arg
+      (insert "\n")
+      (sv-mode-insert-super)
+      (insert "\n")
+      (sv-mode-insert-end)
+      (insert "\n")
+      (indent-region pos (point)))))
 
 (defun my-sv-mode-uvm-phase ()
   "Insert a UVM phase declaration."
   (interactive "*")
-  (let* ((phases (list (cons "build_phase" 'function)
+  (let* ((pos (point))
+         (phases (list (cons "build_phase" 'function)
                        (cons "connect_phase" 'function)
                        (cons "end_of_elaboration_phase" 'function)
                        (cons "start_of_simulation_phase" 'function)
@@ -107,11 +115,20 @@
          (phase (ido-completing-read "Insert phase: " (mapcar #'car phases) nil t))
          (kind (cdr (assoc phase phases))))
     (when (and phase kind)
-      (insert "extern virtual ")
+      (unless current-prefix-arg
+        (insert "extern "))
+      (insert "virtual ")
       (if (equal kind 'function)
           (insert "function void ")
         (insert "task "))
-      (insert phase "(uvm_phase phase);"))))
+      (insert phase "(uvm_phase phase);")
+      (when current-prefix-arg
+        (insert "\n")
+        (sv-mode-insert-super)
+        (insert "\n")
+        (sv-mode-insert-end)
+        (insert "\n")
+        (indent-region pos (point))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
