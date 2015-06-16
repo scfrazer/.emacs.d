@@ -2,6 +2,19 @@
 
 (require 'abbrev)
 
+(defun my-abbrev-expand-function ()
+  "If after a paren, expand it.  Otherwise do default abbrev expansion."
+  (let ((char (char-before)))
+    (if (= (char-syntax char) ?\()
+        (progn
+          (insert "\n\n" (matching-paren char))
+          (indent-according-to-mode)
+          (forward-line -1)
+          (indent-according-to-mode))
+      (abbrev--default-expand))))
+
+(setq-default abbrev-expand-function #'my-abbrev-expand-function)
+
 (define-abbrev global-abbrev-table
   "filename"
   ""
@@ -26,15 +39,5 @@
   "fix"
   ""
   (lambda() (insert "FIXME")))
-
-(defadvice expand-abbrev (around my-expand-abbrev-advice activate)
-  (let ((char (char-before)))
-    (if (= (char-syntax char) ?\()
-        (progn
-          (insert "\n\n" (matching-paren char))
-          (indent-according-to-mode)
-          (forward-line -1)
-          (indent-according-to-mode))
-      ad-do-it)))
 
 (provide 'my-abbrev)
