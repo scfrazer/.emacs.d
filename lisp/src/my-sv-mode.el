@@ -67,7 +67,9 @@
       (insert "\n")
       (sv-mode-insert-end)
       (insert "\n")
-      (indent-region pos (point)))))
+      (indent-region pos (point)))
+    (unless current-prefix-arg
+      (goto-char pos))))
 
 (defun my-sv-mode-uvm-phase ()
   "Insert a UVM phase declaration."
@@ -128,7 +130,9 @@
         (insert "\n")
         (sv-mode-insert-end)
         (insert "\n")
-        (indent-region pos (point))))))
+        (indent-region pos (point)))
+      (unless current-prefix-arg
+        (goto-char pos)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
