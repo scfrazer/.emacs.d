@@ -111,15 +111,15 @@
   (require 'use-package))
 (setq use-package-verbose t)
 
-(use-package ace-jump-mode
-  :bind* ("C-j" . ace-jump-mode)
+(use-package avy
+  :bind* (("C-j" . avy-goto-word-1)
+          ("C-M-j" . avy-goto-line))
   :config
   (progn
-    (require 'my-ace-jump-mode)
-    (setq ace-jump-mode-case-fold nil
-          ace-jump-mode-gray-background nil
-          ace-jump-mode-scope 'window
-          ace-jump-mode-submode-list '(ace-jump-word-mode ace-jump-char-mode ace-jump-line-mode))))
+    (setq avy-keys (nconc (number-sequence ?a ?z)
+                          (number-sequence ?A ?Z))
+          avy-all-windows nil
+          avy-case-fold-search nil)))
 
 (use-package ag2
   :bind* (("C-c G" . ag2)
