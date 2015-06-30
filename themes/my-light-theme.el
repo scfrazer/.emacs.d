@@ -52,6 +52,8 @@
    `(font-lock-variable-name-face ((,class (:foreground "#00875F"))))
    `(font-lock-warning-face ((,class (:foreground "#CD0000"))))
    `(fringe ((,class (:background "#E4E4E4"))))
+   `(guide-key/key-face ((,class :inherit font-lock-string-face)))
+   `(guide-key/prefix-command-face ((,class :inherit font-lock-comment-face)))
    `(header-line ((,class (:underline nil :foreground "#E4E4E4" :background "#303030"))))
    `(hi-blue ((,class (:background "#87D7FF" :foreground "#000000"))))
    `(hi-green ((,class (:background "#87FF87" :foreground "#000000"))))

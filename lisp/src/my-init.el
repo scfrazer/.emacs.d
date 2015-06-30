@@ -16,6 +16,7 @@
 (defalias 'ws 'my-font-lock-show-whitespace)
 
 (require 'bind-key)
+(require 'bind-remind)
 
 (require 'my-dired)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)

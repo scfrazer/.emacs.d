@@ -27,7 +27,7 @@
   (bind-key "O"   'clearcase-checkout-current-buffer            clearcase-prefix-map)
   (bind-key "R"   'my-clearcase-unreserve                       clearcase-prefix-map)
   (bind-key "RET" 'cc-status                                    clearcase-prefix-map)
-  (bind-key "U" (lambda() "Uncheckout/remove current file." (interactive) (clearcase-uncheckout-current-buffer 'discard)) clearcase-prefix-map)
+  (bind-key "U"   'my-clearcase-uncheckout-and-remove           clearcase-prefix-map)
   (bind-key "a"   'clearcase-annotate-current-buffer            clearcase-prefix-map)
   (bind-key "c"   'my-clearcase-list-checkouts                  clearcase-prefix-map)
   (bind-key "g"   'my-clearcase-gui-diff-current                clearcase-prefix-map)
@@ -81,6 +81,11 @@
         clearcase-diff-gui-tool "tkdiff"
         clearcase-suppress-checkout-comments t
         clearcase-use-normal-diff t)
+
+  (defun my-clearcase-uncheckout-and-remove ()
+    "Uncheckout with -remove."
+    (interactive)
+    (clearcase-uncheckout-current-buffer 'discard))
 
   (defun clearcase-fprop-viewtag (file)
     "For FILE, return its \"viewtag\" ClearCase property."
