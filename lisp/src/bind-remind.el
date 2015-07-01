@@ -1,5 +1,6 @@
 ;;; bind-remind.el
 
+;; TODO Defcustoms, move my specific ones to a different file
 (defvar bind-remind-key-alist '(
                                 ("C-c d"   . "Debug")
                                 ("C-c y"   . "Yank to Target")
@@ -30,13 +31,13 @@
     ("my-debug-comment-region-after-copy" . "Insert copy of region and comment original")
     ("my-debug-insert-line"               . "Insert comment")
 
-    ("yank-target-set" . "Set target")
-    ("yank-target-yank" . "Copy region to target")
-    ("yank-target-kill" . "Move region to target")
+    ("yank-target-set"         . "Set target")
+    ("yank-target-yank"        . "Copy region to target")
+    ("yank-target-kill"        . "Move region to target")
     ("yank-target-yank-and-go" . "Copy region to target and go")
     ("yank-target-kill-and-go" . "Move region to target and go")
-    ("yank-target-go-source" . "Goto last copy/move region source")
-    ("yank-target-go-target" . "Goto target")
+    ("yank-target-go-source"   . "Goto last copy/move region source")
+    ("yank-target-go-target"   . "Goto target")
 
     ("clearcase-edcs-edit"                          . "Edit config spec")
     ("cc-status"                                    . "Status")
@@ -55,20 +56,21 @@
     ("my-clearcase-reserve"                         . "Reserve")
     ("my-clearcase-unreserve"                       . "Unreserve")
 
-    ("kill-rectangle" . "Kill")
-    ("string-rectangle" . "Replace with string")
-    ("my-rectangle-number-lines" . "Number lines")
-    ("my-forward-paragraph-rect" . "Forward similar lines")
+    ("kill-rectangle"             . "Kill")
+    ("string-rectangle"           . "Replace with string")
+    ("my-rectangle-number-lines"  . "Number lines")
+    ("my-forward-paragraph-rect"  . "Forward similar lines")
     ("my-backward-paragraph-rect" . "Backward similar lines")
-    ("rectangle-mark-mode" . "Visible mark mode")
+    ("rectangle-mark-mode"        . "Visible mark mode")
 
-    ("my-occur" . "Occur")
-    ("my-multi-occur" . "Multi-occur")
-    ("my-lgrep" . "Grep")
-    ("my-rgrep" . "Rgrep")
+    ("my-occur"                        . "Occur")
+    ("my-multi-occur"                  . "Multi-occur")
+    ("my-lgrep"                        . "Grep")
+    ("my-rgrep"                        . "Rgrep")
     ("isearch-forward-symbol-at-point" . "Isearch forward symbol at point")
-    ("isearch-forward-symbol" . "Isearch forward symbol")
-    ("isearch-forward-word" . "Isearch forward word")
+    ("isearch-forward-symbol"          . "Isearch forward symbol")
+    ("isearch-forward-word"            . "Isearch forward word")
+
     )
   "Command/user-string pairs")
 
@@ -79,12 +81,11 @@
 
 (defun bind-remind-populate-hash ()
   "Populate `bind-remind-command-hash' from `bind-remind-hash-mapping'."
+  (clrhash bind-remind-command-hash)
   (let ((idx 0))
     (dolist (map bind-remind-command-hash-mapping)
       (puthash (car map) (cons (cdr map) idx) bind-remind-command-hash)
       (setq idx (1+ idx)))))
-
-(bind-remind-populate-hash)
 
 (defun bind-remind-show-bindings (&optional test-keys)
   "Show bind reminder."
@@ -96,9 +97,11 @@
       (let ((bindings (bind-remind-get-bindings (current-buffer) keys prefix))
             (buf (get-buffer-create "*bind-remind*"))
             (max-key-length 0))
+        ;; Find how much padding to add between key/desc
         (dolist (binding bindings)
           (setq max-key-length (max max-key-length (length (car binding)))))
         (setq max-key-length (+ 4 max-key-length))
+        ;; Populate buffer
         (with-current-buffer buf
           (erase-buffer)
           (setq header-line-format (format "[%s]" (cdr prefix-info)))
@@ -108,10 +111,13 @@
               (setq key (car binding)
                     desc (cdr binding))
               (if (not key)
+                  ;; Separate user-supplied strings from default ones
                   (insert "\n")
+                ;; Highlight prefix commands
                 (when (string-match "\\`\\[" desc)
                   (setq key (propertize key 'face 'font-lock-keyword-face)
                         desc (propertize desc 'face 'font-lock-keyword-face)))
+                ;; Insert binding
                 (insert key
                         (make-string (- max-key-length (length key)) ?\ )
                         desc "\n"))))
@@ -137,6 +143,7 @@
           (when (and (stringp info) (string= info "Prefix Command"))
             (let ((prefix-info (assoc (format "%s %s" prefix key) bind-remind-key-alist)))
               (setq info (format "[%s]" (if prefix-info (cdr prefix-info) info)))))
+          ;; Don't show generic prefix binding
           (unless (string= key "ESC")
             (push (cons key info) bindings)))))
     ;; Sort
@@ -154,7 +161,9 @@
     (nreverse key-desc-pairs)))
 
 (defun bind-remind-sort-bindings (x y)
-  "Sort bindings."
+  "Sort bindings.
+User-supplied descriptions first, in the order they appear in
+`bind-remind-command-hash-mapping', then others alphabetically."
   (if (stringp (cdr x))
       (if (stringp (cdr y))
           (string< (car x) (car y))
@@ -171,8 +180,10 @@
     (setq bind-remind-buf nil)))
 
 ;; TODO Global minor mode that adds/removes timer and hook
-(run-with-idle-timer 1.0 t 'bind-remind-show-bindings)
+;; TODO Customizable idle time
+(bind-remind-populate-hash)
 (add-hook 'pre-command-hook 'bind-remind-close)
+(run-with-idle-timer 1.0 t 'bind-remind-show-bindings)
 
 ;; TODO Tests
 ;; (bind-remind-show-bindings (kbd "C-x v"))
