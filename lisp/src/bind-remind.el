@@ -1,15 +1,15 @@
 ;;; bind-remind.el
 
 (defvar bind-remind-key-alist '(
-                                ("C-c d"   . "Debugging")
+                                ("C-c d"   . "Debug")
                                 ("C-c y"   . "Yank to Target")
-                                ("C-x 5"   . "Frames")
-                                ("C-x C-k" . "Keyboard Macros")
-                                ("C-x n"   . "Narrowing")
-                                ("C-x r"   . "Rectangles and Registers")
-                                ("C-x t"   . "Tasks")
+                                ("C-x 5"   . "Frame")
+                                ("C-x C-k" . "Keyboard Macro")
+                                ("C-x n"   . "Narrow")
+                                ("C-x r"   . "Rectangle and Register")
+                                ("C-x t"   . "Task")
                                 ("C-x v"   . "ClearCase")
-                                ("M-r"     . "Rectangles")
+                                ("M-r"     . "Rectangle")
                                 ("M-s"     . "Search")
                                 ("M-s h"   . "Highlight")
                                 )
