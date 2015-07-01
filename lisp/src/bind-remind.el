@@ -137,7 +137,8 @@
           (when (and (stringp info) (string= info "Prefix Command"))
             (let ((prefix-info (assoc (format "%s %s" prefix key) bind-remind-key-alist)))
               (setq info (format "[%s]" (if prefix-info (cdr prefix-info) info)))))
-          (push (cons key info) bindings))))
+          (unless (string= key "ESC")
+            (push (cons key info) bindings)))))
     ;; Sort
     (setq bindings (sort bindings 'bind-remind-sort-bindings))
     ;; Strip out sorting info and differentiate where user-supplied strings end
