@@ -16,7 +16,7 @@
 or, with C-u, magit-file-log."
   (interactive "P")
   (if arg
-      (magit-file-log (buffer-file-name))
+      (magit-log-buffer-file)
     (git-timemachine)))
 
 (defun magit-process-password-prompt (proc string)
