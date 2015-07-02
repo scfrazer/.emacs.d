@@ -104,7 +104,9 @@
         ;; Populate buffer
         (with-current-buffer buf
           (erase-buffer)
-          (setq header-line-format (format "[%s]" (cdr prefix-info)))
+          (setq header-line-format
+                (concat (propertize " " 'display '((space :align-to 0)))
+                        (format "[%s]" (cdr prefix-info))))
           (setq mode-line-format nil)
           (let (key desc)
             (dolist (binding bindings)
