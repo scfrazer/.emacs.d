@@ -1,10 +1,9 @@
-;;; git-commit.el --- edit Git commit messages  -*- lexical-binding: t; -*-
+;;; git-commit.el --- Edit Git commit messages  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Authors: Jonas Bernoulli <jonas@bernoul.li>
 ;;	Sebastian Wiesner <lunaryorn@gmail.com>
@@ -12,8 +11,9 @@
 ;;	Marius Vollmer <marius.vollmer@gmail.com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
+;; Package-Requires: ((emacs "24.4") (dash "2.10.0") (with-editor "2.1.0"))
+;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
-;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
 
@@ -32,37 +32,82 @@
 
 ;;; Commentary:
 
-;; Support for editing Git commit messages.
+;; This package assists the user in writing good Git commit messages.
 
-;;;; Formatting
+;; While Git allows for the message to be provided on the command
+;; line, it is preferable to tell Git to create the commit without
+;; actually passing it a message.  Git then invokes the `$GIT_EDITOR'
+;; (or if that is undefined `$EDITOR') asking the user to provide the
+;; message by editing the file ".git/COMMIT_EDITMSG" (or another file
+;; in that directory, e.g. ".git/MERGE_MSG" for merge commits).
 
-;; Highlight the formatting of git commit messages and indicate errors according
-;; to the guidelines for commit messages (see
-;; http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+;; When `global-git-commit-mode' is enabled, which it is by default,
+;; then opening such a file causes the features described below, to
+;; be enabled in that buffer.  Normally this would be done using a
+;; major-mode but to allow the use of any major-mode, as the user sees
+;; fit, it is done here by running a setup function, which among other
+;; things turns on the preferred major-mode, by default `text-mode'.
+
+;; Git waits for the `$EDITOR' to finish and then either creates the
+;; commit using the contents of the file as commit message, or, if the
+;; editor process exited with a non-zero exit status, aborts without
+;; creating a commit.  Unfortunately Emacsclient (which is what Emacs
+;; users should be using as `$EDITOR' or at least as `$GIT_EDITOR')
+;; does not differentiate between "successfully" editing a file and
+;; aborting; not out of the box that is.
+
+;; By making use of the `with-editor' package this package provides
+;; both ways of finish an editing session.  In either case the file
+;; is saved, but Emacseditor's exit code differs.
 ;;
-;; Highlight the first line (aka "summary") specially if it exceeds 50
-;; characters (configurable using `git-commit-summary-max-length').
+;;   C-c C-c  Finish the editing session successfully by returning
+;;            with exit code 0.  Git then creates the commit using
+;;            the message it finds in the file.
 ;;
-;; Enable `auto-fill-mode' and set the `fill-column' to 72 according to the
-;; aforementioned guidelines (configurable using `git-commit-fill-column').
+;;   C-c C-k  Aborts the edit editing session by returning with exit
+;;            code 1.  Git then aborts the commit.
 
-;;;; Headers
-
-;; Provide commands to insert standard headers into commit messages.
+;; Aborting the commit does not cause the message to be lost, but
+;; relying solely on the file not being tampered with is risky.  This
+;; package additionally stores all aborted messages for the duration
+;; of the current session (i.e. until you close Emacs).  To get back
+;; an aborted message use M-p and M-n while editing a message.
 ;;
-;; - C-c C-s inserts Signed-off-by (`git-commit-signoff').
-;; - C-C C-a inserts Acked-by (`git-commit-ack').
-;; - C-c C-t inserts Tested-by (`git-commit-test').
-;; - C-c C-r inserts Reviewed-by (`git-commit-review').
-;; - C-c C-o inserts Cc (`git-commit-cc').
-;; - C-c C-p inserts Reported-by (`git-commit-reported').
-
-;;;; Committing
-
-;; C-c C-c finishes a commit.
+;;   M-p      Replace the buffer contents with the previous message
+;;            from the message ring.  Of course only after storing
+;;            the current content there too.
 ;;
-;; Check a buffer for stylistic errors before committing, and ask for
-;; confirmation before committing with style errors.
+;;   M-n      Replace the buffer contents with the next message from
+;;            the message ring, after storing the current content.
+
+;; Some support for pseudo headers as used in some projects is
+;; provided by these commands:
+;;
+;;   C-c C-s  Insert a Signed-off-by header.
+;;   C-C C-a  Insert a Acked-by header.
+;;   C-c C-t  Insert a Tested-by header.
+;;   C-c C-r  Insert a Reviewed-by header.
+;;   C-c C-o  Insert a Cc header.
+;;   C-c C-p  Insert a Reported-by header.
+;;   C-c M-s  Insert a Suggested-by header.
+
+;; When Git requests a commit message from the user, it does so by
+;; having her edit a file which initially contains some comments,
+;; instructing her what to do, and providing useful information, such
+;; as which files were modified.  These comments, even when left
+;; intact by the user, do not become part of the commit message.  This
+;; package ensures these comments are propertizes as such and further
+;; prettifies them by using different faces for various parts, such as
+;; files.
+
+;; Finally this package highlights style errors, like lines that are
+;; to long, or when the second line is not empty.  It may even nag you
+;; when you attempt to finish the commit without having fixed these
+;; issues.  Some people like that nagging, I don't, so you'll have to
+;; enable it.  Which brings me to the last point.  Like any
+;; respectable Emacs package, this one too is highly customizable:
+;;
+;;   M-x customize-group RET git-commit RET
 
 ;;; Code:
 ;;;; Dependencies
@@ -87,6 +132,7 @@
   :prefix "git-commit-"
   :group 'tools)
 
+;;;###autoload
 (define-minor-mode global-git-commit-mode
   "Edit Git commit messages.
 This global mode arranges for `git-commit-setup' to be called
@@ -150,11 +196,13 @@ usually honor this wish and return non-nil."
 (defcustom git-commit-summary-max-length 50
   "Fontify characters beyond this column in summary lines as errors."
   :group 'git-commit
+  :safe 'numberp
   :type 'number)
 
 (defcustom git-commit-fill-column 72
   "Automatically wrap commit message lines beyond this column."
   :group 'git-commit
+  :safe 'numberp
   :type 'number)
 
 (defcustom git-commit-known-pseudo-headers
@@ -162,6 +210,7 @@ usually honor this wish and return non-nil."
     "Suggested-by" "Reported-by" "Tested-by" "Reviewed-by")
   "A list of Git pseudo headers to be highlighted."
   :group 'git-commit
+  :safe (lambda (val) (and (listp val) (-all-p 'stringp val)))
   :type '(repeat string))
 
 ;;;; Faces
@@ -307,6 +356,8 @@ usually honor this wish and return non-nil."
   (with-editor-mode 1)
   (add-hook 'with-editor-finish-query-functions
             'git-commit-finish-query-functions nil t)
+  (add-hook 'with-editor-pre-finish-hook
+            'git-commit-save-message nil t)
   (add-hook 'with-editor-pre-cancel-hook
             'git-commit-save-message nil t)
   (setq with-editor-cancel-message
@@ -321,7 +372,8 @@ usually honor this wish and return non-nil."
     (when (= (line-beginning-position)
              (line-end-position))
       (open-line 1)))
-  (run-hooks 'git-commit-setup-hook))
+  (run-hooks 'git-commit-setup-hook)
+  (set-buffer-modified-p nil))
 
 (defun git-commit-setup-font-lock ()
   (let ((table (make-syntax-table (syntax-table))))
@@ -367,10 +419,10 @@ finally check current non-comment text."
   (require 'flyspell)
   (turn-on-flyspell)
   (setq flyspell-generic-check-word-predicate
-        'git-commit-mode-flyspell-verify)
+        'git-commit-flyspell-verify)
   (flyspell-buffer))
 
-(defun git-commit-mode-flyspell-verify ()
+(defun git-commit-flyspell-verify ()
   (not (memq (get-text-property (point) 'face)
              '(font-lock-comment-face     font-lock-comment-delimiter-face
                git-commit-comment-branch  git-commit-comment-detached
@@ -383,6 +435,10 @@ finally check current non-comment text."
    'git-commit-finish-query-functions force))
 
 (defun git-commit-check-style-conventions (force)
+  "Check for violations of certain basic style conventions.
+For each violation ask the user if she wants to proceed anyway.
+This makes sure the summary line isn't to long and that the
+second line is empty."
   (or force
       (save-excursion
         (goto-char (point-min))
@@ -591,19 +647,6 @@ With a numeric prefix ARG, go forward ARG comments."
            (buffer-string)))))))
 
 ;;; git-commit.el ends soon
-
-(define-obsolete-face-alias 'git-commit-summary-face 'git-commit-summary "1.1.0")
-(define-obsolete-face-alias 'git-commit-overlong-summary-face 'git-commit-overlong-summary "1.1.0")
-(define-obsolete-face-alias 'git-commit-nonempty-second-line-face 'git-commit-nonempty-second-line "1.1.0")
-(define-obsolete-face-alias 'git-commit-note-face 'git-commit-note "1.1.0")
-(define-obsolete-face-alias 'git-commit-pseudo-header-face 'git-commit-pseudo-header "1.1.0")
-(define-obsolete-face-alias 'git-commit-known-pseudo-header-face 'git-commit-known-pseudo-header "1.1.0")
-(define-obsolete-face-alias 'git-commit-branch-face 'git-commit-comment-branch "1.1.0")
-(define-obsolete-face-alias 'git-commit-no-branch-face 'git-commit-comment-detached "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-heading-face 'git-commit-comment-heading "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-file-face 'git-commit-comment-file "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-action-face 'git-commit-comment-action "1.1.0")
-
 (provide 'git-commit)
 ;; Local Variables:
 ;; indent-tabs-mode: nil

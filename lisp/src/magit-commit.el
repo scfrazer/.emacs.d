@@ -1,10 +1,9 @@
 ;;; magit-commit.el --- create Git commits
 
-;; Copyright (C) 2008-2014  The Magit Project Developers
+;; Copyright (C) 2008-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -21,6 +20,12 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with Magit.  If not, see http://www.gnu.org/licenses.
+
+;;; Commentary:
+
+;; This library implements commands for creating Git commits.  These
+;; commands just initiate the commit, support for writing the commit
+;; messages is implemented in `git-commit.el'.
 
 ;;; Code:
 
@@ -69,10 +74,11 @@ an error while using those is harder to recover from."
 
 ;;; Code
 
-(with-no-warnings ; quiet 24.4 byte-compiler
+;;;###autoload (autoload 'magit-commit-popup "magit-commit" nil t)
+(with-no-warnings ; quiet byte-compiler
 (magit-define-popup magit-commit-popup
   "Popup console for commit commands."
-  'magit-popups
+  'magit-commands
   :man-page "git-commit"
   :switches '((?a "Stage all modified and deleted files"   "--all")
               (?e "Allow empty commit"                     "--allow-empty")
@@ -88,16 +94,16 @@ an error while using those is harder to recover from."
               (?f "Fixup"          magit-commit-fixup)
               (?F "Instant Fixup"  magit-commit-instant-fixup)
               (?a "Amend"          magit-commit-amend)
-              (?r "Reword"         magit-commit-reword)
+              (?w "Reword"         magit-commit-reword)
               (?s "Squash"         magit-commit-squash)
               (?S "Instant Squash" magit-commit-instant-squash))
   :max-action-columns 4
   :default-action 'magit-commit))
 
 (defun magit-commit-message-buffer ()
-  (let ((topdir (magit-get-top-dir)))
+  (let ((topdir (magit-toplevel)))
     (--first (equal topdir (with-current-buffer it
-                             (and git-commit-mode (magit-get-top-dir))))
+                             (and git-commit-mode (magit-toplevel))))
              (append (buffer-list (selected-frame))
                      (buffer-list)))))
 
@@ -191,7 +197,7 @@ depending on the value of option `magit-commit-squash-confirm'.
   (magit-commit-squash-internal
    (lambda (c a)
      (when (setq c (magit-commit-fixup c a))
-       (magit-rebase-autosquash (concat c "^"))))
+       (magit-rebase-autosquash (concat c "^") (list "--autostash"))))
    "--fixup" commit args t))
 
 ;;;###autoload
@@ -204,7 +210,7 @@ depending on the value of option `magit-commit-squash-confirm'.
   (magit-commit-squash-internal
    (lambda (c a)
      (when (setq c (magit-commit-squash c a))
-       (magit-rebase-autosquash (concat c "^"))))
+       (magit-rebase-autosquash (concat c "^") (list "--autostash"))))
    "--squash" commit args t))
 
 (defun magit-commit-squash-read-args ()
@@ -220,7 +226,8 @@ depending on the value of option `magit-commit-squash-confirm'.
                                      (concat option "=" commit) args)
           commit)
       (magit-log-select
-        `(lambda (commit) (,fn commit (list ,@args))))
+        `(lambda (commit) (,fn commit (list ,@args)))
+        "Type %p on the commit to squash/fixup into it,")
       (when (magit-diff-auto-show-p 'log-select)
         (let ((magit-diff-switch-buffer-function 'display-buffer))
           (magit-diff-staged))))))
@@ -239,11 +246,13 @@ depending on the value of option `magit-commit-squash-confirm'.
    ((and (magit-rebase-in-progress-p)
          (not (magit-anything-unstaged-p))
          (y-or-n-p "Nothing staged.  Continue in-progress rebase? "))
-    (magit-run-git-with-editor "rebase" "--continue")
+    (magit-run-git-sequencer "rebase" "--continue")
     nil)
    ((and (file-exists-p (magit-git-dir "MERGE_MSG"))
          (not (magit-anything-unstaged-p)))
     (or args (list "--")))
+   ((not (magit-anything-unstaged-p))
+    (user-error "Nothing staged (or unstaged)"))
    (magit-commit-ask-to-stage
     (when (magit-diff-auto-show-p 'stage-all)
       (magit-diff-unstaged))
@@ -252,7 +261,7 @@ depending on the value of option `magit-commit-squash-confirm'.
              (or args (list "--")))
       (when (and (magit-diff-auto-show-p 'stage-all)
                  (derived-mode-p 'magit-diff-mode))
-        (magit-mode-quit-window))))
+        (magit-mode-bury-buffer))))
    (t
     (user-error "Nothing staged"))))
 
@@ -287,7 +296,8 @@ depending on the value of option `magit-commit-squash-confirm'.
     (magit-completing-read prompt keys nil nil nil 'magit-gpg-secret-key-hist
                            (car (or magit-gpg-secret-key-hist keys)))))
 
-(defvar magit-commit-add-log-insert-function 'magit-commit-add-log-insert)
+(defvar magit-commit-add-log-insert-function 'magit-commit-add-log-insert
+  "Used by `magit-commit-add-log' to insert a single entry.")
 
 (defun magit-commit-add-log ()
   "Add a stub for the current hunk into the commit message buffer.
@@ -310,7 +320,7 @@ actually insert the entry."
       (with-current-buffer buf
         (goto-char pos)
         (funcall magit-commit-add-log-insert-function log
-                 (file-relative-name buffer-file-name (magit-get-top-dir))
+                 (file-relative-name buffer-file-name (magit-toplevel))
                  (add-log-current-defun))))))
 
 (defun magit-commit-add-log-insert (buffer file defun)

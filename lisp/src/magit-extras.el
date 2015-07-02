@@ -1,10 +1,9 @@
 ;;; magit-extras.el --- additional functionality for Magit
 
-;; Copyright (C) 2008-2014  The Magit Project Developers
+;; Copyright (C) 2008-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -26,7 +25,6 @@
 ;;; Code:
 
 (require 'magit)
-(require 'magit-backup)
 
 (defgroup magit-extras nil
   "Additional functionality for Magit."
@@ -49,7 +47,7 @@
 (defun magit-run-git-gui ()
   "Run `git gui' for the current git repository."
   (interactive)
-  (let* ((default-directory (magit-get-top-dir)))
+  (magit-with-toplevel
     (call-process magit-git-executable nil 0 nil "gui")))
 
 ;;;###autoload
@@ -71,7 +69,7 @@ blame to center around the line point is on."
                        (ignore-errors
                          (magit-file-relative-name (buffer-file-name))))
                 (line-number-at-pos)))))
-  (let ((default-directory (magit-get-top-dir)))
+  (let ((default-directory (magit-toplevel)))
     (apply #'call-process magit-git-executable nil 0 nil "gui" "blame"
            `(,@(and linenum (list (format "--line=%d" linenum)))
              ,commit
@@ -96,17 +94,18 @@ with two prefix arguments remove ignored files only.
 \n(git clean -f -d [-x|-X])"
   (interactive "p")
   (when (yes-or-no-p (format "Remove %s files? "
-                             (cl-case arg
+                             (pcase arg
                                (1 "untracked")
                                (4 "untracked and ignored")
-                               (t "ignored"))))
-    (magit-maybe-backup)
-    (magit-run-git "clean" "-f" "-d" (cl-case arg (4 "-x") (16 "-X")))))
+                               (_ "ignored"))))
+    (magit-wip-commit-before-change)
+    (magit-run-git "clean" "-f" "-d" (pcase arg (4 "-x") (16 "-X")))))
 
 (put 'magit-clean 'disabled t)
 
 ;;; Gitignore
 
+;;;###autoload
 (defun magit-gitignore (file-or-pattern &optional local)
   "Instruct Git to ignore FILE-OR-PATTERN.
 With a prefix argument only ignore locally."
@@ -114,7 +113,7 @@ With a prefix argument only ignore locally."
   (let ((gitignore
          (if local
              (magit-git-dir (convert-standard-filename "info/exclude"))
-           (expand-file-name ".gitignore" (magit-get-top-dir)))))
+           (expand-file-name ".gitignore" (magit-toplevel)))))
     (make-directory (file-name-directory gitignore) t)
     (with-temp-buffer
       (when (file-exists-p gitignore)
@@ -129,6 +128,7 @@ With a prefix argument only ignore locally."
         (magit-refresh)
       (magit-run-git "add" ".gitignore"))))
 
+;;;###autoload
 (defun magit-gitignore-locally (file-or-pattern &optional local)
   "Instruct Git to locally ignore FILE-OR-PATTERN.
 \n(fn FILE-OR-PATTERN)"

@@ -1,10 +1,9 @@
 ;;; magit-ediff.el --- Ediff extension for Magit
 
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -32,6 +31,15 @@
 
 (require 'ediff)
 (require 'smerge-mode)
+
+;;;###autoload (autoload 'magit-ediff-popup "magit-ediff" nil t)
+(magit-define-popup magit-ediff-popup
+  "Popup console for ediff commands."
+  'magit-diff nil nil
+  :actions '((?E "Dwim"    magit-ediff-dwim)
+             (?d "Compare" magit-ediff-compare)
+             (?m "Resolve" magit-ediff-resolve)
+             (?s "Stage"   magit-ediff-stage)))
 
 ;;;###autoload
 (defun magit-ediff-resolve (file)
@@ -61,37 +69,38 @@ FILE has to be relative to the top directory of the repository."
                                 (magit-current-file))))
   (let* ((conf (current-window-configuration))
          (bufA (magit-get-revision-buffer "HEAD" file))
-         (bufB (get-file-buffer file))
-         (bufC (get-buffer (concat file ".~{index}~")))
-         (bufCrw (and bufC (with-current-buffer bufC
-                             (not buffer-read-only)))))
+         (bufB (get-buffer (concat file ".~{index}~")))
+         (bufBrw (and bufB (with-current-buffer bufB (not buffer-read-only))))
+         (bufC (get-file-buffer file)))
     (ediff-buffers3
      (or bufA (magit-find-file-noselect "HEAD" file))
-     (or bufB (find-file-noselect file))
-     (or bufC (magit-find-file-index-noselect file))
+     (with-current-buffer (magit-find-file-index-noselect file t)
+       (setq buffer-read-only nil)
+       (current-buffer))
+     (or bufC (find-file-noselect file))
      `((lambda ()
-         (add-hook
-          'ediff-quit-hook
+         (setq-local
+          ediff-quit-hook
           (lambda ()
             (and (buffer-live-p ediff-buffer-B)
                  (buffer-modified-p ediff-buffer-B)
                  (with-current-buffer ediff-buffer-B
-                   (when (y-or-n-p
-                          (format "Save file %s? " (buffer-file-name)))
-                     (save-buffer))))
+                   (magit-update-index)))
             (and (buffer-live-p ediff-buffer-C)
                  (buffer-modified-p ediff-buffer-C)
                  (with-current-buffer ediff-buffer-C
-                   (magit-update-index)))
+                   (when (y-or-n-p
+                          (format "Save file %s? " (buffer-file-name)))
+                     (save-buffer))))
             ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
-            ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
-            ,@(if bufC
-                  (unless bufCrw '((with-current-buffer ediff-buffer-C
+            ,@(if bufB
+                  (unless bufBrw '((with-current-buffer ediff-buffer-B
                                      (setq buffer-read-only t))))
-                '((ediff-kill-buffer-carefully ediff-buffer-C)))
-            (set-window-configuration ,conf))
-          nil t)))      ; and then also run default `ediff-cleanup-mess'
-     'ediff-buffers3))) ; no "staging" job exists, use this generic job
+                '((ediff-kill-buffer-carefully ediff-buffer-B)))
+            ,@(unless bufC '((ediff-kill-buffer-carefully ediff-buffer-C)))
+            (magit-ediff-cleanup-auxiliary-buffers)
+            (set-window-configuration ,conf)))))
+     'ediff-buffers3)))
 
 ;;;###autoload
 (defun magit-ediff-compare (revA revB fileA fileB)
@@ -118,14 +127,14 @@ working tree state."
                   (magit-find-file-noselect revB fileB)
                 (find-file-noselect fileB)))
      `((lambda ()
-         (add-hook
-          'ediff-quit-hook
+         (setq-local
+          ediff-quit-hook
           (lambda ()
             ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
             ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
-            (set-window-configuration ,conf))
-          nil t)))      ; and then also run default `ediff-cleanup-mess'
-     'ediff-revision))) ; this job gets no special handling at all; good
+            (magit-ediff-cleanup-auxiliary-buffers)
+            (set-window-configuration ,conf)))))
+     'ediff-revision)))
 
 (defun magit-ediff-compare--read-revisions (&optional arg)
   (let ((input (or arg (magit-read-range-or-commit "Compare range or commit")))
@@ -154,8 +163,8 @@ working tree state."
                             (setq elt (split-string (substring elt 97)))
                             (when (nth 2 elt)
                               (list (cons (nth 1 elt) (nth 2 elt)))))
-                          (magit-decode-git-path
-                           (magit-git-lines "diff-tree" "-M" "HEAD^" "HEAD")))))
+                          (magit-git-items
+                           "diff-tree" "-z" "-M" "HEAD^" "HEAD"))))
             (magit-read-file-from-rev
              revA (format "Compare %s:%s with file in %s" revB fileB revA)))
         fileB))
@@ -175,6 +184,7 @@ mind at all, then it asks the user for a command to run."
     (hunk (save-excursion
             (goto-char (magit-section-start (magit-section-parent it)))
             (magit-ediff-dwim)))
+    (commit (call-interactively 'magit-ediff-compare))
     (t
      (let ((command 'magit-ediff-compare)
            (file (magit-current-file))
@@ -210,11 +220,15 @@ mind at all, then it asks the user for a command to run."
                 (unpulled (setq revA (magit-get-current-branch)
                                 revB (magit-get-tracked-branch)
                                 range (concat revA ".." revB)))
-                (t (setq command
-                         (cond ((not file) nil)
-                               ((magit-anything-unmerged-p file)
-                                'magit-ediff-resolve)
-                               (t 'magit-ediff-stage)))))))
+                ((staged unstaged)
+                 (setq command (if (magit-anything-unmerged-p)
+                                   'magit-ediff-resolve
+                                 'magit-ediff-stage)))
+                (t
+                 (setq command (cond ((not file) nil)
+                                     ((magit-anything-unmerged-p file)
+                                      'magit-ediff-resolve)
+                                     (t 'magit-ediff-stage)))))))
        (cond ((not command)
               (call-interactively
                (magit-read-char-case
@@ -229,6 +243,84 @@ mind at all, then it asks the user for a command to run."
               (funcall command file))
              (t
               (call-interactively command)))))))
+
+;;;###autoload
+(defun magit-ediff-show-staged (file)
+  "Show staged changes using Ediff.
+This only allows looking at the changes; to stage, unstage,
+and discard changes using Ediff, use `magit-ediff-stage'."
+  (interactive
+   (list (magit-completing-read "Show staged changes for file" nil
+                                (magit-tracked-files) nil nil nil
+                                (magit-current-file))))
+  (let ((conf (current-window-configuration))
+        (bufA (magit-get-revision-buffer "HEAD" file))
+        (bufB (get-buffer (concat file ".~{index}~"))))
+    (ediff-buffers
+     (or bufA (magit-find-file-noselect "HEAD" file))
+     (or bufB (magit-find-file-index-noselect file t))
+     `((lambda ()
+         (setq-local
+          ediff-quit-hook
+          (lambda ()
+            ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
+            ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
+            (magit-ediff-cleanup-auxiliary-buffers)
+            (set-window-configuration ,conf)))))
+     'ediff-buffers)))
+
+;;;###autoload
+(defun magit-ediff-show-unstaged (file)
+  "Show unstaged changes using Ediff.
+This only allows looking at the changes; to stage, unstage,
+and discard changes using Ediff, use `magit-ediff-stage'."
+  (interactive
+   (list (magit-completing-read "Show unstaged changes for file" nil
+                                (magit-tracked-files) nil nil nil
+                                (magit-current-file))))
+  (let ((conf (current-window-configuration))
+        (bufA (get-buffer (concat file ".~{index}~")))
+        (bufB (get-file-buffer file)))
+    (ediff-buffers
+     (or bufA (magit-find-file-index-noselect file t))
+     (or bufB (find-file-noselect file))
+     `((lambda ()
+         (setq-local
+          ediff-quit-hook
+          (lambda ()
+            ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
+            ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
+            (magit-ediff-cleanup-auxiliary-buffers)
+            (set-window-configuration ,conf)))))
+     'ediff-buffers)))
+
+(defun magit-ediff-cleanup-auxiliary-buffers ()
+  (let* ((ctl-buf ediff-control-buffer)
+	 (ctl-win (ediff-get-visible-buffer-window ctl-buf))
+	 (ctl-frm ediff-control-frame)
+	 (main-frame (cond ((window-live-p ediff-window-A)
+			    (window-frame  ediff-window-A))
+			   ((window-live-p ediff-window-B)
+			    (window-frame  ediff-window-B)))))
+    (ediff-kill-buffer-carefully ediff-diff-buffer)
+    (ediff-kill-buffer-carefully ediff-custom-diff-buffer)
+    (ediff-kill-buffer-carefully ediff-fine-diff-buffer)
+    (ediff-kill-buffer-carefully ediff-tmp-buffer)
+    (ediff-kill-buffer-carefully ediff-error-buffer)
+    (ediff-kill-buffer-carefully ediff-msg-buffer)
+    (ediff-kill-buffer-carefully ediff-debug-buffer)
+    (when (boundp 'ediff-patch-diagnostics)
+      (ediff-kill-buffer-carefully ediff-patch-diagnostics))
+    (cond ((and (ediff-window-display-p)
+                (frame-live-p ctl-frm))
+	   (delete-frame ctl-frm))
+	  ((window-live-p ctl-win)
+	   (delete-window ctl-win)))
+    (unless (ediff-multiframe-setup-p)
+      (ediff-kill-bottom-toolbar))
+    (ediff-kill-buffer-carefully ctl-buf)
+    (when (frame-live-p main-frame)
+      (select-frame main-frame))))
 
 ;;; magit-ediff.el ends soon
 (provide 'magit-ediff)

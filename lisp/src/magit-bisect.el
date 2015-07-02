@@ -1,10 +1,9 @@
 ;;; magit-bisect.el --- bisect support for Magit
 
-;; Copyright (C) 2011-2014  The Magit Project Developers
+;; Copyright (C) 2011-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -31,33 +30,32 @@
 (require 'magit)
 
 (defface magit-bisect-good
-  '((t :background "LightGreen"
-       :foreground "DarkOliveGreen"))
+  '((t :foreground "DarkOliveGreen"))
   "Face for good bisect revisions."
   :group 'magit-faces)
 
 (defface magit-bisect-skip
-  '((t :background "LightGoldenrod"
-       :foreground "DarkGoldenrod"))
+  '((t :foreground "DarkGoldenrod"))
   "Face for skipped bisect revisions."
   :group 'magit-faces)
 
 (defface magit-bisect-bad
-  '((t :background "IndianRed1"
-       :foreground "IndianRed4"))
+  '((t :foreground "IndianRed4"))
   "Face for bad bisect revisions."
   :group 'magit-faces)
 
+;;;###autoload (autoload 'magit-bisect-popup "magit-bisect" nil t)
 (magit-define-popup magit-bisect-popup
   "Popup console for bisect commands."
-  'magit-popups
+  'magit-commands 'magit-popup-sequence-mode
   :man-page "git-bisect"
-  :actions  '((?b "Bad"   magit-bisect-bad)
-              (?g "Good"  magit-bisect-good)
-              (?k "Skip"  magit-bisect-skip)
-              (?r "Reset" magit-bisect-reset)
-              (?s "Start" magit-bisect-start)
-              (?u "Run"   magit-bisect-run)))
+  :actions            '((?B "Start" magit-bisect-start)
+                        (?a "Run"   magit-bisect-run))
+  :sequence-actions   '((?r "Reset" magit-bisect-reset)
+                        (?b "Bad"   magit-bisect-bad)
+                        (?g "Good"  magit-bisect-good)
+                        (?k "Skip"  magit-bisect-skip))
+  :sequence-predicate 'magit-bisect-in-progress-p)
 
 ;;;###autoload
 (defun magit-bisect-start (bad good)
@@ -77,7 +75,7 @@ other actions from the bisect popup (\
 
 ;;;###autoload
 (defun magit-bisect-reset ()
-  "After bisecting cleanup bisection state and return to original HEAD."
+  "After bisecting, cleanup bisection state and return to original `HEAD'."
   (interactive)
   (when (magit-confirm 'reset-bisect)
     (magit-run-git "bisect" "reset")
@@ -116,10 +114,10 @@ to test.  This command lets Git choose a different one."
 (defun magit-bisect-async (subcommand &optional args no-assert)
   (unless (or no-assert (magit-bisect-in-progress-p))
     (user-error "Not bisecting"))
-  (let ((file (magit-git-dir "BISECT_CMD_OUTPUT"))
-        (default-directory (magit-get-top-dir)))
-    (ignore-errors (delete-file file))
-    (magit-run-git-with-logfile file "bisect" subcommand args)
+  (magit-with-toplevel
+    (let ((file (magit-git-dir "BISECT_CMD_OUTPUT")))
+      (ignore-errors (delete-file file))
+      (magit-run-git-with-logfile file "bisect" subcommand args))
     (magit-process-wait)
     (magit-refresh)))
 
@@ -127,6 +125,7 @@ to test.  This command lets Git choose a different one."
   (file-exists-p (magit-git-dir "BISECT_LOG")))
 
 (defun magit-insert-bisect-output ()
+  "While bisecting, insert section with output from `git bisect'."
   (when (magit-bisect-in-progress-p)
     (let ((lines
            (or (magit-file-lines (magit-git-dir "BISECT_CMD_OUTPUT"))
@@ -146,6 +145,7 @@ to test.  This command lets Git choose a different one."
     (insert "\n")))
 
 (defun magit-insert-bisect-rest ()
+  "While bisecting, insert section visualizing the bisect state."
   (when (magit-bisect-in-progress-p)
     (magit-insert-section (bisect-view)
       (magit-insert-heading "Bisect Rest:")
@@ -154,6 +154,7 @@ to test.  This command lets Git choose a different one."
         "--format=%h%d %s" "--decorate=full"))))
 
 (defun magit-insert-bisect-log ()
+  "While bisecting, insert section logging bisect progress."
   (when (magit-bisect-in-progress-p)
     (magit-insert-section (bisect-log)
       (magit-insert-heading "Bisect Log:")

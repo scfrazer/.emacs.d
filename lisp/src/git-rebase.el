@@ -1,16 +1,12 @@
-;;; git-rebase.el --- Major mode for editing git rebase files
+;;; git-rebase.el --- Edit Git rebase files
 
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Phil Jackson <phil@shellarchive.co.uk>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
-
-;; Homepage: https://github.com/magit/magit
-;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
 
@@ -29,9 +25,41 @@
 
 ;;; Commentary:
 
-;; Allows the editing of a git rebase file (which you might get when
-;; using 'git rebase -i' or hitting 'E' in Magit). Assumes editing is
-;; happening in a server.
+;; This package assists the user in editing the list of commits to be
+;; rewritten during an interactive rebase.
+
+;; When the user initiates an interactive rebase, e.g. using "e e" in
+;; a Magit buffer or on the command line using "git rebase -i REV",
+;; Git invokes the `$GIT_SEQUENCE_EDITOR' (or if that is undefined
+;; `$GIT_EDITOR' or even `$EDITOR') letting the user rearrange, drop,
+;; reword, edit, and squash commits.
+
+;; This package provides the major-mode `git-rebase-mode' which makes
+;; doing so much more fun, by making the buffer more colorful and
+;; providing the following commands:
+;;
+;;   C-c C-c  Tell Git to make it happen.
+;;   C-c C-k  Tell Git that you changed your mind, i.e. abort.
+;;
+;;   p        Move point to previous line.
+;;   n        Move point to next line.
+;;
+;;   M-p      Move the commit at point up.
+;;   M-n      Move the commit at point down.
+;;
+;;   k        Drop the commit at point.
+;;   c        Don't drop the commit at point.
+;;   r        Change the message of the commit at point.
+;;   e        Edit the commit at point.
+;;   s        Squash the commit at point, into the one above.
+;;   f        Like "s" but don't also edit the commit message.
+;;   x        Add a script to be run with the commit at point
+;;            being checked out.
+;;
+;;   RET      Show the commit at point in another buffer.
+;;   C-/      Undo last change.
+
+;; You should probably also read the `git-rebase' manpage.
 
 ;;; Code:
 
@@ -39,6 +67,7 @@
 (require 'easymenu)
 (require 'server)
 (require 'with-editor)
+(require 'magit)
 
 (eval-when-compile (require 'recentf))
 
@@ -54,9 +83,8 @@
   :group 'git-rebase
   :type 'boolean)
 
-(defcustom git-rebase-remove-instructions nil
-  "Whether to remove the instructions from the rebase buffer.
-Because you have seen them before and can still remember."
+(defcustom git-rebase-show-instructions t
+  "Whether to show usage instructions inside the rebase buffer."
   :group 'git-rebase
   :type 'boolean)
 
@@ -87,11 +115,6 @@ Because you have seen them before and can still remember."
   "Face for commented action and exec lines."
   :group 'git-rebase-faces)
 
-(define-obsolete-face-alias 'git-rebase-description-face
-  'git-rebase-description "1.0.0")
-(define-obsolete-face-alias 'git-rebase-killed-action-face
-  'git-rebase-killed-action "1.0.0")
-
 ;;; Keymaps
 
 (defvar git-rebase-mode-map
@@ -110,10 +133,11 @@ Because you have seen them before and can still remember."
     (define-key map (kbd "C-k") 'git-rebase-kill-line)
     (define-key map (kbd "p")   'git-rebase-backward-line)
     (define-key map (kbd "n")   'forward-line)
-    (define-key map (kbd "M-p") 'git-rebase-move-line-up)
-    (define-key map (kbd "M-n") 'git-rebase-move-line-down)
-    (define-key map (kbd "M-<up>") 'git-rebase-move-line-up)
+    (define-key map (kbd "M-p")      'git-rebase-move-line-up)
+    (define-key map (kbd "M-n")      'git-rebase-move-line-down)
+    (define-key map (kbd "M-<up>")   'git-rebase-move-line-up)
     (define-key map (kbd "M-<down>") 'git-rebase-move-line-down)
+    (define-key map (kbd "C-x C-t")  'git-rebase-move-line-up)
     map)
   "Keymap for Git-Rebase mode.")
 
@@ -211,14 +235,9 @@ Because you have seen them before and can still remember."
 
 (defun git-rebase-insert (rev)
   "Read an arbitrary commit and insert it below current line."
-  (interactive
-   (list (if (fboundp 'magit-read-branch-or-commit)
-             (magit-read-branch-or-commit "Insert revision")
-           (read-string "Insert revision: "))))
+  (interactive (list (magit-read-branch-or-commit "Insert revision")))
   (forward-line)
-  (--if-let (if (fboundp 'magit-rev-format)
-                (magit-rev-format "%h %s" rev)
-              (process-lines "git" "show" "-s" "--format=%h %s" rev))
+  (--if-let (magit-rev-format "%h %s" rev)
       (let ((inhibit-read-only t))
         (insert "pick " it ?\n))
     (user-error "Unknown revision")))
@@ -259,16 +278,14 @@ Like `undo' but works in read-only buffers."
   (let ((inhibit-read-only t))
     (undo arg)))
 
-(defun git-rebase-show-commit (&optional arg)
+(defun git-rebase-show-commit ()
   "Show the commit on the current line if any."
-  (interactive "P")
+  (interactive)
   (save-excursion
     (goto-char (line-beginning-position))
     (--if-let (and (looking-at git-rebase-line)
                    (match-string 2))
-        (if (fboundp 'magit-show-commit)
-            (magit-show-commit it)
-          (shell-command (concat "git show " it)))
+        (magit-show-commit it)
       (ding))))
 
 (defun git-rebase-backward-line (&optional n)
@@ -288,16 +305,26 @@ Rebase files are generated when you run 'git rebase -i' or run
 the rebase.  See the documentation for git-rebase (e.g., by
 running 'man git-rebase' at the command line) for details."
   (setq font-lock-defaults '(git-rebase-mode-font-lock-keywords t t))
-  (when git-rebase-remove-instructions
+  (unless git-rebase-show-instructions
     (let ((inhibit-read-only t))
       (flush-lines "^\\($\\|#\\)")))
   (with-editor-mode 1)
   (when git-rebase-confirm-cancel
     (add-hook 'with-editor-cancel-query-functions
-              'git-rebase-cancel-confirm nil t)))
+              'git-rebase-cancel-confirm nil t))
+  (add-hook 'with-editor-pre-cancel-hook  'git-rebase-autostash-save  nil t)
+  (add-hook 'with-editor-post-cancel-hook 'git-rebase-autostash-apply nil t))
 
 (defun git-rebase-cancel-confirm (force)
   (or (not (buffer-modified-p)) force (y-or-n-p "Abort this rebase? ")))
+
+(defun git-rebase-autostash-save ()
+  (--when-let (magit-file-line (magit-git-dir "rebase-merge/autostash"))
+    (push (cons 'stash it) with-editor-cancel-alist)))
+
+(defun git-rebase-autostash-apply ()
+  (--when-let (cdr (assq 'stash with-editor-cancel-alist))
+    (magit-stash-apply it)))
 
 (defconst git-rebase-mode-font-lock-keywords
   `(("^\\([efprs]\\|pick\\|reword\\|edit\\|squash\\|fixup\\) \\([^ \n]+\\) \\(.*\\)"
@@ -307,7 +334,7 @@ running 'man git-rebase' at the command line) for details."
     ("^\\(exec\\) \\(.*\\)"
      (1 'font-lock-keyword-face)
      (2 'git-rebase-description))
-    ("^# .*"      0 'font-lock-comment-face)
+    ("^#.*"       0 'font-lock-comment-face)
     ("^#[^ \n].*" 0 'git-rebase-killed-action t))
   "Font lock keywords for Git-Rebase mode.")
 
@@ -316,17 +343,28 @@ running 'man git-rebase' at the command line) for details."
 at the bottom of the file so that in place of the one-letter
 abbreviation for the command, it shows the command's keybinding.
 By default, this is the same except for the \"pick\" command."
-  (save-excursion
-    (goto-char (point-min))
-    (while (search-forward-regexp "^#  \\(.\\), \\([[:alpha:]]+\\) = " nil t)
-      (let ((start (match-beginning 1))
-            (end (match-end 1))
-            (command (intern (concat "git-rebase-" (match-string 2)))))
-        (when (fboundp command)
-          (let ((overlay (make-overlay start end)))
-            (overlay-put
-             overlay 'display
-             (key-description (where-is-internal command nil t)))))))))
+  (let ((inhibit-read-only t))
+    (save-excursion
+      (goto-char (point-min))
+      (when (and git-rebase-show-instructions
+                 (re-search-forward "^# Commands:\n" nil t))
+        (insert "# C-c C-c  tell Git to make it happen\n")
+        (insert "# C-c C-k  tell Git that you changed your mind, i.e. abort\n")
+        (insert "# p        move point to previous line\n")
+        (insert "# n        move point to next line\n")
+        (insert "# M-p      move the commit at point up\n")
+        (insert "# M-n      move the commit at point down\n")
+        (insert "# RET      show the commit at point in another buffer\n")
+        (insert "# C-/      undo last change\n")
+        (insert "# k        drop the commit at point\n")
+        (while (re-search-forward
+                "^#\\(  ?\\)\\([^,]\\)\\(,\\) \\([^ ]+\\) = " nil t)
+          (replace-match " "       t t nil 1)
+          (replace-match "       " t t nil 3)
+          (let* ((cmd (intern (concat "git-rebase-" (match-string 4))))
+                 (key (where-is-internal cmd nil t)))
+            (when (and (fboundp cmd) key) ; see #1875
+              (replace-match (key-description key) t t nil 2))))))))
 
 (add-hook 'git-rebase-mode-hook 'git-rebase-mode-show-keybindings t)
 
@@ -340,6 +378,9 @@ By default, this is the same except for the \"pick\" command."
 ;;;###autoload
 (add-to-list 'auto-mode-alist
              (cons git-rebase-filename-regexp 'git-rebase-mode))
+
+(add-to-list 'with-editor-server-window-alist
+             (cons git-rebase-filename-regexp 'switch-to-buffer))
 
 (eval-after-load 'recentf
   '(add-to-list 'recentf-exclude git-rebase-filename-regexp))

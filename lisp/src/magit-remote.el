@@ -1,10 +1,9 @@
 ;;; magit-remote.el --- transfer Git commits
 
-;; Copyright (C) 2008-2014  The Magit Project Developers
+;; Copyright (C) 2008-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -21,6 +20,12 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with Magit.  If not, see http://www.gnu.org/licenses.
+
+;;; Commentary:
+
+;; This library implements support for interacting with remote
+;; repositories.  Commands for cloning, fetching, pulling, and
+;; pushing are defined here.
 
 ;;; Code:
 
@@ -42,9 +47,10 @@
 
 ;;; Setup
 
+;;;###autoload (autoload 'magit-remote-popup "magit-remote" nil t)
 (magit-define-popup magit-remote-popup
   "Popup console for remote commands."
-  'magit-popups
+  'magit-commands nil nil
   :man-page "git-remote"
   :actions  '((?a "Add"     magit-remote-add)
               (?r "Rename"  magit-remote-rename)
@@ -83,9 +89,10 @@
 
 ;;; Fetch
 
+;;;###autoload (autoload 'magit-fetch-popup "magit-remote" nil t)
 (magit-define-popup magit-fetch-popup
   "Popup console for fetch commands."
-  'magit-popups
+  'magit-commands
   :man-page "git-fetch"
   :switches '((?p "Prune"      "--prune"))
   :actions  '((?f "Current"    magit-fetch-current)
@@ -102,26 +109,27 @@ then read the remote."
   (interactive (list (or (magit-get-remote)
                          (magit-read-remote "Fetch remote"))
                      (magit-fetch-arguments)))
-  (magit-run-git-async "fetch" remote args))
+  (magit-run-git-async-no-revert "fetch" remote args))
 
 ;;;###autoload
 (defun magit-fetch (remote &optional args)
   "Fetch from another repository."
   (interactive (list (magit-read-remote "Fetch remote")
                      (magit-fetch-arguments)))
-  (magit-run-git-async "fetch" remote args))
+  (magit-run-git-async-no-revert "fetch" remote args))
 
 ;;;###autoload
 (defun magit-fetch-all (&optional args)
-  "Fetch from another repository."
+  "Fetch from all configured remotes."
   (interactive (list (magit-fetch-arguments)))
-  (magit-run-git-async "remote" "update" args))
+  (magit-run-git-async-no-revert "remote" "update" args))
 
 ;;; Pull
 
+;;;###autoload (autoload 'magit-pull-popup "magit-remote" nil t)
 (magit-define-popup magit-pull-popup
   "Popup console for pull commands."
-  'magit-popups
+  'magit-commands
   :man-page "git-pull"
   :switches '((?r "Rebase" "--rebase"))
   :actions  '((?F "Current" magit-pull-current)
@@ -130,7 +138,7 @@ then read the remote."
 
 ;;;###autoload
 (defun magit-pull-current (remote branch &optional args)
-  "Fetch from another repository and merge into current branch."
+  "Fetch and merge into current branch."
   (interactive (magit-pull-read-args t))
   (magit-run-git-async "pull" args remote branch))
 
@@ -148,21 +156,23 @@ then read the remote."
 
 ;;; Push
 
+;;;###autoload (autoload 'magit-push-popup "magit-remote" nil t)
 (magit-define-popup magit-push-popup
   "Popup console for push commands."
-  'magit-popups
+  'magit-commands
   :man-page "git-push"
-  :switches '((?f "Force safely"  "--force-with-lease") ; >= 1.8.5
-              (?F "Force"         "--force")
+  :switches '((?f "Force"         "--force-with-lease")
               (?h "Disable hooks" "--no-verify")
               (?d "Dry run"       "--dry-run")
               (?u "Set upstream"  "--set-upstream"))
   :actions  '((?P "Current"   magit-push-current)
-              (?o "Other"     magit-push)
               (?e "Elsewhere" magit-push-elsewhere)
+              (?t "Tags"      magit-push-tags)
+              (?o "Other"     magit-push)
               (?m "Matching"  magit-push-matching)
-              (?t "Tags"      magit-push-tags))
-  :default-action 'magit-push-current)
+              (?T "Tag"       magit-push-tag))
+  :default-action 'magit-push-current
+  :max-action-columns 3)
 
 ;;;###autoload
 (defun magit-push-current (branch remote &optional remote-branch args)
@@ -176,26 +186,29 @@ If the upstream isn't set, then read the remote branch."
   "Push a branch to its upstream branch.
 If the upstream isn't set, then read the remote branch."
   (interactive (magit-push-read-args t))
-  (magit-run-git-async "push" "-v" args remote
-                       (if remote-branch
-                           (format "%s:refs/heads/%s" branch remote-branch)
-                         branch)))
+  (magit-run-git-async-no-revert
+   "push" "-v" args remote
+   (if remote-branch
+       (format "%s:refs/heads/%s" branch remote-branch)
+     branch)))
 
 ;;;###autoload
 (defun magit-push-elsewhere (branch remote remote-branch &optional args)
   "Push a branch or commit to some remote branch.
 Read the local and remote branch."
-  (interactive (magit-push-read-args))
+  (interactive (magit-push-read-args nil nil t))
   (magit-push branch remote remote-branch args))
 
-(defun magit-push-read-args (&optional use-upstream use-current)
-  (let* ((local (or (and use-current (magit-get-current-branch))
+(defun magit-push-read-args (&optional use-upstream use-current default-current)
+  (let* ((current (magit-get-current-branch))
+         (local (or (and use-current current)
                     (magit-completing-read
                      "Push" (--if-let (magit-commit-at-point)
                                 (cons it (magit-list-local-branch-names))
                               (magit-list-local-branch-names))
                      nil nil nil 'magit-revision-history
-                     (magit-local-branch-at-point))
+                     (or (and default-current current)
+                         (magit-local-branch-at-point)))
                     (user-error "Nothing selected")))
          (remote (and (magit-branch-p local)
                       (magit-get-remote-branch local))))
@@ -220,7 +233,73 @@ for a remote, offering the remote configured for the current
 branch as default."
   (interactive (list (magit-read-remote "Push tags to remote" nil t)
                      (magit-push-arguments)))
-  (magit-run-git-async "push" remote "--tags" args))
+  (magit-run-git-async-no-revert "push" remote "--tags" args))
+
+;;;###autoload
+(defun magit-push-tag (tag remote &optional args)
+  "Push a tag to another repository."
+  (interactive
+   (let  ((tag (magit-read-tag "Push tag")))
+     (list tag (magit-read-remote (format "Push %s to remote" tag) nil t))))
+  (magit-run-git-async-no-revert "push" remote tag))
+
+
+;;; Email
+
+;;;###autoload (autoload 'magit-patch-popup "magit-remote" nil t)
+(magit-define-popup magit-patch-popup
+  "Popup console for patch commands."
+  'magit-commands
+  :man-page "git-format-patch"
+  :options  '((?f "From"             "--from=")
+              (?t "To"               "--to=")
+              (?c "CC"               "--cc=")
+              (?r "In reply to"      "--in-reply-to=")
+              (?v "Reroll count"     "--reroll-count=")
+              (?s "Thread style"     "--thread=")
+              (?U "Context lines"    "-U")
+              (?M "Detect renames"   "-M")
+              (?C "Detect copies"    "-C")
+              (?A "Diff algorithm"   "--diff-algorithm="
+                  magit-diff-select-algorithm)
+              (?o "Output directory" "--output-directory="))
+  :actions  '((?p "Format patches"   magit-format-patch)
+              (?r "Request pull"     magit-request-pull))
+  :default-action 'magit-format-patch)
+
+;;;###autoload
+(defun magit-format-patch (range args)
+  "Create patches for the commits in RANGE."
+  (interactive
+   (list (-if-let (revs (magit-region-values 'commit))
+             (concat (car (last revs)) "^.." (car revs))
+           (let ((range (magit-read-range-or-commit "Format range or commit")))
+             (if (string-match-p "\\.\\." range)
+                 range
+               (format "%s~..%s" range range))))
+         (magit-patch-arguments)))
+  (magit-run-git-no-revert "format-patch" range args))
+
+;;;###autoload
+(defun magit-request-pull (url start end)
+  "Request upstream to pull from you public repository.
+
+URL is the url of your publically accessible repository.
+START is a commit that already is in the upstream repository.
+END is the last commit, usually a branch name, which upstream
+is asked to pull.  START has to be reachable from that commit."
+  (interactive
+   (list (magit-get "remote" (magit-read-remote "Remote") "url")
+         (magit-read-branch-or-commit "Start" (magit-get-tracked-branch))
+         (magit-read-branch-or-commit "End")))
+  (let ((dir default-directory))
+    ;; mu4e changes default-directory
+    (compose-mail)
+    (setq default-directory dir))
+  (message-goto-body)
+  (let ((inhibit-magit-revert t))
+    (magit-git-insert "request-pull" start url))
+  (set-buffer-modified-p nil))
 
 ;;; magit-remote.el ends soon
 (provide 'magit-remote)

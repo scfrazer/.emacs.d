@@ -1,10 +1,9 @@
 ;;; magit-utils.el --- various utilities
 
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -25,13 +24,27 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with Magit.  If not, see http://www.gnu.org/licenses.
 
+;;; Commentary:
+
+;; This library defines several utility functions used by several
+;; other libraries which cannot depend on one another (because
+;; circular dependencies are not good).  Luckily most (all) of these
+;; functions have very little (nothing) to do with Git, so we not only
+;; have to do this, it even makes sense.
+
+;; Unfortunately there are also some options which are used by several
+;; libraries which cannot depend on one another, they are defined here
+;; too.
+
 ;;; Code:
 
 (require 'cl-lib)
 (require 'dash)
 
 (eval-when-compile (require 'ido))
-(declare-function ido-completing-read 'ido)
+(declare-function ido-completing-read+ 'ido-completing-read+)
+
+(defvar magit-wip-before-change-mode)
 
 ;;; Options
 
@@ -45,11 +58,92 @@
 
 (defcustom magit-no-confirm nil
   "A list of symbols for actions Magit should not confirm, or t.
-Actions are: `reverse', `discard', `rename', `resurrect',
-`trash', `delete', `abort-merge', `merge-dirty', `drop-stashes'
-`reset-bisect', `kill-process', `delete-unmerged-branch',
-`stage-all-changes' and `unstage-all-changes'.  If t then don't
-require confirmation for any of these actions."
+
+Many potentially dangerous commands by default ask the user for
+confirmation.  Each of the below symbols stands for an action
+which, when invoked unintentionally or without being fully aware
+of the consequences, could lead to tears.  In many cases there
+are several commands that perform variations of a certain action,
+so we don't use the command names but more generic symbols.
+
+Applying changes:
+
+  `discard' Discarding one or more changes (i.e. hunks or the
+  complete diff for a file) loses that change, obviously.
+
+  `reverse' Reverting one or more changes can usually be undone
+  by reverting the reversion.
+
+  `stage-all-changes', `unstage-all-changes' When there are both
+  staged and unstaged changes, then un-/staging everything would
+  destroy that distinction.  Of course that also applies when
+  un-/staging a single change, but then less is lost and one does
+  that so often that having to confirm every time would be
+  unacceptable.
+
+Files:
+
+  `delete' When a file that isn't yet tracked by Git is deleted
+  then it is completely lost, not just the last changes.  Very
+  dangerous.
+
+  `trash' Instead of deleting a file it can also be move to the
+  system trash.  Obviously much less dangerous than deleting it.
+
+  Also see option `magit-delete-by-moving-to-trash'.
+
+  `resurrect' A deleted file can easily be resurrected by
+  \"deleting\" the deletion, which is done using the same command
+  that was used to delete the same file in the first place.
+
+  `rename' Renaming a file can easily be undone.
+
+Sequences:
+
+  `reset-bisect' Aborting (known to Git as \"resetting\") a
+  bisect operation loses all information collected so far.
+
+  `abort-merge' Aborting a merge throws away all conflict
+  resolutions which has already been carried out by the user.
+
+  `merge-dirty' Merging with a dirty worktree can make it hard to
+  go back to the state before the merge was initiated.
+
+References:
+
+  `delete-unmerged-branch' Once a branch has been deleted it can
+  only be restored using low-level recovery tools provided by
+  Git.  And even then the reflog is gone.  The user always has
+  to confirm the deletion of a branch by accepting the default
+  choice (or selecting another branch), but when a branch has
+  not been merged yet, also make sure the user is aware of that.
+
+  `drop-stashes' Dropping a stash is dangerous because Git stores
+  them in the reflog, once it is removed there is no going back
+  without using low-level recovery tools provided by Git.  When a
+  single stash is dropped, then the user always has to confirm by
+  accepting the default (or selecting another).  This action only
+  concerns the deletion of multiple stages at once.
+
+Various:
+
+  `kill-process' There seldom is a reason to kill a process.
+
+Global settings:
+
+  Instead of adding all of the above symbols to the value of this
+  option you can also set it to the atom `t', which has the same
+  effect as adding all of the above symbols.  Doing that most
+  certainly is a bad idea, especially because other symbols might
+  be added in the future.  So even if you don't want to be asked
+  for confirmation for any of these actions, you are still better
+  of adding all of the respective symbols individually.
+
+  When `magit-wip-before-change-mode' is enabled then these actions
+  can fairly easily be undone: `discard', `reverse',
+  `stage-all-changes', and `unstage-all-changes'.  If and only if
+  this mode is enabled then `safe-with-wip' has the same effect
+  as adding all of these symbols individually."
   :package-version '(magit . "2.1.0")
   :group 'magit
   :type '(choice (const :tag "No confirmation needed" t)
@@ -59,71 +153,14 @@ require confirmation for any of these actions."
                       (const abort-merge)       (const merge-dirty)
                       (const drop-stashes)      (const resect-bisect)
                       (const kill-process)      (const delete-unmerged-branch)
-                      (const stage-all-changes) (const unstage-all-changes))))
+                      (const stage-all-changes) (const unstage-all-changes)
+                      (const safe-with-wip))))
 
 (defcustom magit-ellipsis ?…
   "Character used to abreviate text."
   :package-version '(magit . "2.1.0")
   :group 'magit
   :type 'character)
-
-;;; Compatibility
-
-(eval-and-compile
-
-  ;; Added in Emacs 24.3
-  (unless (fboundp 'user-error)
-    (defalias 'user-error 'error))
-
-  ;; Added in Emacs 24.3 (mirrors/emacs@b335efc3).
-  (unless (fboundp 'setq-local)
-    (defmacro setq-local (var val)
-      "Set variable VAR to value VAL in current buffer."
-      (list 'set (list 'make-local-variable (list 'quote var)) val)))
-
-  ;; Added in Emacs 24.3 (mirrors/emacs@b335efc3).
-  (unless (fboundp 'defvar-local)
-    (defmacro defvar-local (var val &optional docstring)
-      "Define VAR as a buffer-local variable with default value VAL.
-Like `defvar' but additionally marks the variable as being automatically
-buffer-local wherever it is set."
-      (declare (debug defvar) (doc-string 3))
-      (list 'progn (list 'defvar var val docstring)
-            (list 'make-variable-buffer-local (list 'quote var)))))
-
-  ;; Added in Emacs 24.4
-  (unless (fboundp 'with-current-buffer-window)
-    (defmacro with-current-buffer-window (buffer-or-name action quit-function &rest body)
-      "Evaluate BODY with a buffer BUFFER-OR-NAME current and show that buffer.
-This construct is like `with-temp-buffer-window' but unlike that
-makes the buffer specified by BUFFER-OR-NAME current for running
-BODY."
-      (declare (debug t))
-      (let ((buffer (make-symbol "buffer"))
-            (window (make-symbol "window"))
-            (value (make-symbol "value")))
-        `(let* ((,buffer (temp-buffer-window-setup ,buffer-or-name))
-                (standard-output ,buffer)
-                ,window ,value)
-           (with-current-buffer ,buffer
-             (setq ,value (progn ,@body))
-             (setq ,window (temp-buffer-window-show ,buffer ,action)))
-
-           (if (functionp ,quit-function)
-               (funcall ,quit-function ,window ,value)
-             ,value)))))
-
-  ;; Added in Emacs 24.4
-  (unless (fboundp 'string-suffix-p)
-    (defun string-suffix-p (suffix string  &optional ignore-case)
-      "Return non-nil if SUFFIX is a suffix of STRING.
-If IGNORE-CASE is non-nil, the comparison is done without paying
-attention to case differences."
-      (let ((start-pos (- (length string) (length suffix))))
-        (and (>= start-pos 0)
-             (eq t (compare-strings suffix nil nil
-                                    string start-pos nil ignore-case))))))
-  )
 
 ;;; User Input
 
@@ -172,17 +209,22 @@ results in additional differences."
 
 (defun magit-ido-completing-read
   (prompt choices &optional predicate require-match initial-input hist def)
-  "Ido-based completing-read almost-replacement."
-  (require 'ido)
-  (let ((reply (ido-completing-read
-                prompt
-                (if (consp (car choices))
-                    (mapcar #'car choices)
-                  choices)
-                predicate require-match initial-input hist def)))
-    (or (and (consp (car choices))
-             (cdr (assoc reply choices)))
-        reply)))
+  "Ido-based `completing-read' almost-replacement.
+
+Unfortunately `ido-completing-read' is not suitable as a
+drop-in replacement for `completing-read', instead we use
+`ido-completing-read+' from the third-party package by the
+same name."
+  (if (require 'ido-completing-read+ nil t)
+      (ido-completing-read+ prompt choices predicate require-match
+                            initial-input hist def)
+    (display-warning 'magit "ido-completing-read+ is not installed
+
+To use Ido completion with Magit you need to install the
+third-party `ido-completing-read+' packages.  Falling
+back to built-in `completing-read' for now." :error)
+    (magit-builtin-completing-read prompt choices predicate require-match
+                                   initial-input hist def)))
 
 (defun magit-prompt-with-default (prompt def)
   (if (and def (> (length prompt) 2)
@@ -190,8 +232,10 @@ results in additional differences."
       (format "%s (default %s): " (substring prompt 0 -2) def)
     prompt))
 
-(defun magit-read-string
-    (prompt &optional initial-input history default-value)
+(defun magit-read-string (prompt &optional initial-input history default-value)
+  "Like `read-string' but require non-empty input.
+Empty input is only allowed if DEFAULT-VALUE is non-nil in
+which case that is returned.  Also append \": \" to PROMPT."
   (let ((reply (read-string (magit-prompt-with-default
                              (concat prompt ": ") default-value)
                             initial-input history default-value)))
@@ -217,7 +261,13 @@ results in additional differences."
                          (car items)))
   (cond ((and (not (eq action t))
               (or (eq magit-no-confirm t)
-                  (memq action magit-no-confirm)))
+                  (memq action
+                        `(,@magit-no-confirm
+                          ,@(and magit-wip-before-change-mode
+                                 (memq 'safe-with-wip magit-no-confirm)
+                                 `(discard reverse
+                                   stage-all-changes
+                                   unstage-all-changes))))))
          (or (not sitems) items))
         ((not sitems)
          (y-or-n-p prompt))
@@ -254,6 +304,11 @@ results in additional differences."
 ;;; Text Utilities
 
 (defmacro magit-bind-match-strings (varlist string &rest body)
+  "Bind varibles to submatches accoring to VARLIST then evaluate BODY.
+Bind the symbols in VARLIST to submatches of the current match
+data, starting with 1 and incrementing by 1 for each symbol.  If
+the last match was against a string then that has to be provided
+as STRING."
   (declare (indent 2) (debug (listp form body)))
   (let ((s (cl-gensym "string"))
         (i 0))
@@ -261,9 +316,6 @@ results in additional differences."
        (let ,(save-match-data
                (--map (list it (list 'match-string (cl-incf i) s)) varlist))
          ,@body))))
-
-(defun magit-string-pad (string width)
-  (concat string (make-string (max 0 (- width (length string))) ?\s)))
 
 (defun magit-delete-line ()
   "Delete the rest of the current line."
@@ -290,17 +342,6 @@ Unless optional argument KEEP-EMPTY-LINES is t, trim all empty lines."
     (with-temp-buffer
       (insert-file-contents file)
       (split-string (buffer-string) "\n" (not keep-empty-lines)))))
-
-(defun magit-face-remap-set-base (face &optional base)
-  (make-local-variable 'face-remapping-alist)
-  (--if-let (assq face  face-remapping-alist)
-      (if base
-          (setcar (last it) base)
-        (if (cddr it)
-            (setcar (last it) face)
-          (setq face-remapping-alist (remq it face-remapping-alist))))
-    (when base
-      (push (list face base) face-remapping-alist))))
 
 ;;; magit-utils.el ends soon
 (provide 'magit-utils)
