@@ -44,7 +44,7 @@
   "Get the directory of a bookmark."
   (let* ((my-ido-doing-bookmark-dir t)
          (bmk-list (bookmark-all-names))
-         (name (ido-completing-read "Use dir of bookmark: " (append bmk-list my-ido-env-vars-as-bookmarks) nil t))
+         (name (ido-completing-read "Use dir of bookmark: " (append my-ido-env-vars-as-bookmarks bmk-list) nil t))
          bmk)
     (if (not (member name bmk-list))
         (getenv name)
@@ -226,7 +226,8 @@
                      (or prev-partial-match (= elt-idx 0)))
             (setq curr-partial-match
                   (aset partial-matches elt-idx
-                        (cons char-idx (if (and (= elt-idx 0) (= char-idx 0)) 1 0)))))
+;;                         (cons char-idx (if (and (= elt-idx 0) (= char-idx 0)) 1 0)))))
+                        (cons char-idx 0))))
           ;; Set (match-position . correlation)
           (when curr-partial-match
             (setcar curr-partial-match char-idx)
