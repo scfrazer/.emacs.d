@@ -332,6 +332,10 @@
           magit-repository-directories (list "~/.emacs.d" "~/Projects")
           magit-repository-directories-depth 2)))
 
+(use-package markdown-mode
+  :mode (("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode)))
+
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
 
