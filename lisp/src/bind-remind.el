@@ -91,51 +91,57 @@
   "Show bind reminder."
   (let* ((keys (or test-keys (this-single-command-keys)))
          (prefix (key-description keys))
-         (prefix-info (assoc prefix bind-remind-key-alist)))
+         (prefix-info (or (assoc prefix bind-remind-key-alist)
+                          (when (string-match "\\`C-c" prefix)
+                            (cons nil (concat (symbol-name major-mode) " " prefix))))))
     (when prefix-info
       (bind-remind-close)
       (let ((bindings (bind-remind-get-bindings (current-buffer) keys prefix))
             (buf (get-buffer-create "*bind-remind*"))
             (max-key-length 0))
-        ;; Find how much padding to add between key/desc
-        (dolist (binding bindings)
-          (setq max-key-length (max max-key-length (length (car binding)))))
-        (setq max-key-length (+ 4 max-key-length))
-        ;; Populate buffer
-        (with-current-buffer buf
-          (erase-buffer)
-          (setq header-line-format
-                (concat (propertize " " 'display '((space :align-to 0)))
-                        (format "[%s]" (cdr prefix-info))))
-          (setq mode-line-format nil)
-          (let (key desc)
-            (dolist (binding bindings)
-              (setq key (car binding)
-                    desc (cdr binding))
-              (if (not key)
-                  ;; Separate user-supplied strings from default ones
-                  (insert "\n")
-                ;; Highlight prefix commands
-                (when (string-match "\\`\\[" desc)
-                  (setq key (propertize key 'face 'font-lock-keyword-face)
-                        desc (propertize desc 'face 'font-lock-keyword-face)))
-                ;; Insert binding
-                (insert key
-                        (make-string (- max-key-length (length key)) ?\ )
-                        desc "\n"))))
-          (goto-char (point-min)))
-        (display-buffer buf '((display-buffer-at-bottom)
-                              (window-height . fit-window-to-buffer)))
-        (unless test-keys
-          (setq bind-remind-buf buf))))))
+        (when bindings
+          ;; Find how much padding to add between key/desc
+          (dolist (binding bindings)
+            (setq max-key-length (max max-key-length (length (car binding)))))
+          (setq max-key-length (+ 4 max-key-length))
+          ;; Populate buffer
+          (with-current-buffer buf
+            (erase-buffer)
+            (setq header-line-format
+                  (concat (propertize " " 'display '((space :align-to 0)))
+                          (format "[%s]" (cdr prefix-info))))
+            (setq mode-line-format nil)
+            (let (key desc)
+              (dolist (binding bindings)
+                (setq key (car binding)
+                      desc (cdr binding))
+                (if (not key)
+                    ;; Separate user-supplied strings from default ones
+                    (insert "\n")
+                  ;; Highlight prefix commands
+                  (when (string-match "\\`\\[" desc)
+                    (setq key (propertize key 'face 'font-lock-keyword-face)
+                          desc (propertize desc 'face 'font-lock-keyword-face)))
+                  ;; Insert binding
+                  (insert key
+                          (make-string (- max-key-length (length key)) ?\ )
+                          desc "\n"))))
+            (goto-char (point-min)))
+          (display-buffer buf '((display-buffer-at-bottom)
+                                (window-height . fit-window-to-buffer)))
+          (unless test-keys
+            (setq bind-remind-buf buf)))))))
 
 (defun bind-remind-get-bindings (buf keys prefix)
   "Get sorted bindings."
   (let ((regexp (format "^%s \\([^ ]+\\)\\s-\\{2,\\}\\([^ ].+\\)$" (regexp-quote prefix)))
+        (mode major-mode)
         bindings key-desc-pairs)
     ;; Get bindings
     (with-temp-buffer
-      (describe-buffer-bindings buf keys)
+      (if (string-match "\\`C-c" prefix)
+          (insert (documentation mode))
+        (describe-buffer-bindings buf keys))
       (goto-char (point-min))
       (while (re-search-forward regexp nil t)
         (let* ((key (match-string-no-properties 1))
