@@ -9,11 +9,6 @@
   "Face for showing the mark."
   :group 'show-mark)
 
-(defface show-mark-face-eol
-  '((t (:foreground "#AFFF00" :underline t)))
-  "Face for showing the mark at the end of a line."
-  :group 'show-mark)
-
 (defvar show-mark-overlay nil
   "Overlay for showing the mark.")
 (make-variable-buffer-local 'show-mark-overlay)
@@ -27,10 +22,12 @@
       (if show-mark-overlay
           (move-overlay show-mark-overlay mark-pos (1+ mark-pos))
         (setq show-mark-overlay (make-overlay mark-pos (1+ mark-pos) nil t)))
-      (overlay-put show-mark-overlay 'face
-                   (if (save-excursion (goto-char mark-pos) (eolp))
-                       'show-mark-face-eol
-                     'show-mark-face)))))
+      (if (save-excursion (goto-char mark-pos) (eolp))
+          (progn
+            (overlay-put show-mark-overlay 'face nil)
+            (overlay-put show-mark-overlay 'display (concat (propertize " " 'face 'show-mark-face) "\n")))
+        (overlay-put show-mark-overlay 'face 'show-mark-face)
+        (overlay-put show-mark-overlay 'display nil)))))
 
 (defun show-mark-after-revert-hook ()
   "Remove the overlay after reverting."
@@ -38,8 +35,7 @@
     (save-restriction
       (widen)
       (delete-overlay show-mark-overlay)
-      (remove-overlays (point-min) (point-max) 'face 'show-mark-face)
-      (remove-overlays (point-min) (point-max) 'face 'show-mark-face-eol))))
+      (remove-overlays (point-min) (point-max) 'face 'show-mark-face))))
 
 (add-hook 'after-revert-hook 'show-mark-after-revert-hook)
 
