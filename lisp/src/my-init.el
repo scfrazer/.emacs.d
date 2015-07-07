@@ -113,14 +113,18 @@
 (setq use-package-verbose t)
 
 (use-package avy
-  :bind* (("C-j" . avy-goto-word-1)
+  :bind* (("C-j" . my-avy-goto)
           ("C-M-j" . avy-goto-line))
   :config
   (progn
     (setq avy-keys (nconc (number-sequence ?a ?z)
                           (number-sequence ?A ?Z))
           avy-all-windows nil
-          avy-case-fold-search nil)))
+          avy-case-fold-search nil)
+    (defun my-avy-goto (&optional arg)
+      "Goto word or, with prefix-arg, char."
+      (interactive "P")
+      (call-interactively (if arg 'avy-goto-char 'avy-goto-word-1)))))
 
 (use-package ag2
   :bind* (("C-c G" . ag2)
