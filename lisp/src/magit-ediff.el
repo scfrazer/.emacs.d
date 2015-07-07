@@ -36,7 +36,8 @@
 (magit-define-popup magit-ediff-popup
   "Popup console for ediff commands."
   'magit-diff nil nil
-  :actions '((?E "Dwim"    magit-ediff-dwim)
+  :actions '((?E "Show"    magit-ediff-show-unstaged)
+             (?e "Dwim"    magit-ediff-dwim)
              (?d "Compare" magit-ediff-compare)
              (?m "Resolve" magit-ediff-resolve)
              (?s "Stage"   magit-ediff-stage)))
