@@ -34,6 +34,9 @@ or, with C-u, magit-file-log."
 (define-key magit-mode-map (kbd "{") 'magit-goto-previous-sibling-section)
 (define-key magit-mode-map (kbd "}") 'magit-goto-next-sibling-section)
 
+(magit-define-popup-action 'magit-ediff-popup ?S "Show staged" 'magit-ediff-show-staged)
+(magit-define-popup-action 'magit-ediff-popup ?U "Show unstaged" 'magit-ediff-show-unstaged)
+
 (define-key git-commit-mode-map (kbd "C-x C-s") 'git-commit-commit)
 
 (provide 'my-magit)
