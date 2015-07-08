@@ -514,6 +514,11 @@ With prefix arg ask for version."
   ;; Modes
 
   (defun clearcase-edcs-mode ()
+    "ClearCase edit config spec mode.
+
+Key Bindings:
+
+\\{clearcase-edcs-mode-map}"
     (interactive)
 
     (use-local-map clearcase-edcs-mode-map)
@@ -536,6 +541,7 @@ With prefix arg ask for version."
     (run-hooks 'text-mode-hook 'clearcase-edcs-mode-hook))
 
   (defun clearcase-cs-mode ()
+    "ClearCase config spec mode."
     (interactive)
 
     (setq major-mode 'clearcase-cs-mode)
