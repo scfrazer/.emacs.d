@@ -3,7 +3,7 @@
 
 ;; Exec this line to insert the current font as a setting:
 ;; (insert "\n(set-default-font \"" (cdr (assoc 'font (frame-parameters))) "\")")
-(set-default-font "-apple-Source_Code_Pro-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
+(set-default-font "-apple-Source_Code_Pro-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
 
 (setq exec-path (append exec-path (list "/usr/local/bin"
                                         "/usr/local/git/bin"
