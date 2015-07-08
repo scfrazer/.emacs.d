@@ -140,7 +140,9 @@
     ;; Get bindings
     (with-temp-buffer
       (if (string-match "\\`C-c" prefix)
-          (insert (documentation mode))
+          (let ((doc (documentation mode)))
+            (when (stringp doc)
+              (insert doc)))
         (describe-buffer-bindings buf keys))
       (goto-char (point-min))
       (while (re-search-forward regexp nil t)
