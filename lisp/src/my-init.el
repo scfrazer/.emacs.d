@@ -294,6 +294,22 @@
   :config
   (require 'my-pop-back))
 
+(use-package imenu-list
+  :bind* ("C-c I" . imenu-list-minor-mode)
+  :config
+  (progn
+    (setq imenu-list-mode-line-format
+          '("%e" mode-line-front-space mode-line-mule-info mode-line-client
+            mode-line-modified mode-line-remote mode-line-frame-identification
+            (:propertize "%b" face mode-line-buffer-id) " "
+            (:eval (buffer-name imenu-list--displayed-buffer)) " "
+            mode-line-end-spaces))
+    (bind-keys :map imenu-list-major-mode-map
+               ("TAB" . hs-toggle-hiding))
+    (defun my-imenu-list-major-mode-hook ()
+      (setq truncate-lines 'one-line-each))
+    (add-hook 'imenu-list-major-mode-hook 'my-imenu-list-major-mode-hook)))
+
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))
 
