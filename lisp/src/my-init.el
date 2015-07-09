@@ -298,17 +298,20 @@
   :bind* ("C-c I" . imenu-list-minor-mode)
   :config
   (progn
+    (require 'my-imenu)
     (setq imenu-list-mode-line-format
-          '("%e" mode-line-front-space mode-line-mule-info mode-line-client
-            mode-line-modified mode-line-remote mode-line-frame-identification
-            (:propertize "%b" face mode-line-buffer-id) " "
-            (:eval (buffer-name imenu-list--displayed-buffer)) " "
-            mode-line-end-spaces))
+          '("  " (:propertize "%b" face mode-line-buffer-id)
+            "  " (:eval (propertize (buffer-name imenu-list--displayed-buffer) 'face 'mode-line-buffer-id))))
     (bind-keys :map imenu-list-major-mode-map
                ("TAB" . hs-toggle-hiding))
     (defun my-imenu-list-major-mode-hook ()
       (setq truncate-lines 'one-line-each))
-    (add-hook 'imenu-list-major-mode-hook 'my-imenu-list-major-mode-hook)))
+    (add-hook 'imenu-list-major-mode-hook 'my-imenu-list-major-mode-hook)
+    (defadvice imenu-list-rescan-imenu (around my-imenu-list-rescan-imenu activate)
+      (if (equal major-mode 'sv-mode)
+          (let ((sv-mode-imenu-simple nil))
+            ad-do-it)
+        ad-do-it))))
 
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))

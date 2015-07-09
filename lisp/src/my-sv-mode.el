@@ -155,8 +155,6 @@ With prefix argument, add a condition."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default sv-mode-imenu-simple nil)
-
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
