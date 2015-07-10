@@ -220,7 +220,7 @@
   (turn-on-font-lock)
 
   (setq truncate-lines t)
-  (setq imenu-generic-expression (list '(nil "Starting phase: \\(.+\\)" 1)))
+  (setq imenu-generic-expression (list '(nil "Starting phase: \\(.+?\\)," 1)))
 
   (run-mode-hooks 'uvm-log-mode-hook))
 
