@@ -595,8 +595,8 @@ And the example function that can occur above problem is `pop-to-buffer'."
              (sr-speedbar-window-dedicated-only-one-p) ;just have one `non-dedicated' window
              (sr-speedbar-window-exist-p sr-speedbar-window)
              (not (sr-speedbar-window-p))) ;not in `sr-speedbar' window
-    (split-window-vertically)
-    (windmove-down)))
+    (split-window-vertically)))
+;;    (windmove-down)))
 
 (defadvice other-window (after sr-speedbar-other-window-advice)
   "Default, can use `other-window' select window in cyclic ordering of windows.
