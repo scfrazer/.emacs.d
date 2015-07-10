@@ -294,7 +294,7 @@
   :config
   (require 'my-pop-back))
 
-(use-package imenu-list
+(use-package my-imenu-list
   :bind* ("C-c I" . imenu-list-minor-mode)
   :config
   (progn
