@@ -136,22 +136,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar my-sv-xclip-program (executable-find "xclip")
-  "Name of XClip program tool.")
+(require 'my-xclip)
 
 (defun my-sv-breakpoint (&optional arg)
   "Create a VCS breakpoint string and copy to the clipboard.
 With prefix argument, add a condition."
   (interactive "P")
-  (when (and my-sv-xclip-program (getenv "DISPLAY"))
-    (let* ((condition (and arg (read-string "Breakpoint condition? ")))
-           (breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"
-                               (if arg (concat " -condition {" condition "}") "")))
-           (process-connection-type nil)
-           (proc (start-process "xclip" nil "xclip" "-selection" "primary")))
-      (process-send-string proc breakpoint)
-      (process-send-eof proc)
-      (message breakpoint))))
+  (let* ((condition (and arg (read-string "Breakpoint condition? ")))
+         (breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"
+                             (if arg (concat " -condition {" condition "}") ""))))
+    (my-xclip-copy-text breakpoint)
+    (message breakpoint)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
