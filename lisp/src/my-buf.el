@@ -64,21 +64,23 @@
                (display-buffer-reuse-window display-buffer-in-side-window)
                (reusable-frames . visible)
                (side            . bottom)
-               (window-height   . 0.4)))
+               (window-height   . 0.5)))
 
 (defun my-buf-popup-filter (buffer alist)
-  "Filter for `display-buffer-alist' to popup special buffers -- ignoring
-certain ones -- at the bottom of the frame."
-  (and (string-match "\\`[*]" buffer)
-       ;; Special buffers that should use popup
-       (or (string-match (concat "\\`" (regexp-opt '("*magit-diff")))
-                         buffer)
-           ;; Special buffers that should do their own thing
-           (not (string-match (concat "\\`" (regexp-opt '("*Ilist"
-                                                          "*cc-status"
-                                                          "*info"
-                                                          "*magit")))
-                              buffer)))))
+  "Filter for `display-buffer-alist' to popup these buffers at
+the bottom of the frame."
+  (string-match (concat "\\`" (regexp-opt '(
+                                            "*Compile-Log"
+                                            "*Find"
+                                            "*Help"
+                                            "*Ibuffer"
+                                            "*Occur"
+                                            "*ag"
+                                            "*compilation"
+                                            "*grep"
+                                            "*regman"
+                                            "*vcs-compile"
+                                            ))) buffer))
 
 
 ;; Splits
