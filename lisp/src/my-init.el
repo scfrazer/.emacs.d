@@ -45,18 +45,18 @@
 (bind-keys* ("C-\\" . expand-abbrev))
 (setq save-abbrevs nil)
 
-(require 'auto-complete-config)
-(defun ac-comphist-save () nil)
-(ac-config-default)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(add-to-list 'ac-modes 'sv-mode)
-(setq-default ac-auto-start nil
-              ac-ignore-case nil
-              ac-sources (list 'ac-source-dictionary)
-              ac-use-menu-map t)
-(define-key ac-menu-map "\C-n" 'ac-next)
-(define-key ac-menu-map "\C-p" 'ac-previous)
-(bind-keys* ("M-\\" . ac-start)) ;; completion-at-point)
+;; (require 'auto-complete-config)
+;; (defun ac-comphist-save () nil)
+;; (ac-config-default)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (add-to-list 'ac-modes 'sv-mode)
+;; (setq-default ac-auto-start nil
+;;               ac-ignore-case nil
+;;               ac-sources (list 'ac-source-dictionary)
+;;               ac-use-menu-map t)
+;; (define-key ac-menu-map "\C-n" 'ac-next)
+;; (define-key ac-menu-map "\C-p" 'ac-previous)
+;; (bind-keys* ("M-\\" . ac-start)) ;; completion-at-point)
 
 (require 'my-bookmark)
 
@@ -1143,17 +1143,20 @@ end of a non-blank line, or insert an 80-column comment line"
     (save-buffers-kill-emacs)))
 
 (defun my-kill-results-buffer ()
-  "Kill a compliation/grep/*whatever*/cloned buffer in a second window."
+  "Kill a *special* or cloned buffer in a second window."
   (interactive)
   (when (> (count-windows) 1)
-    (other-window 1)
-    (unless (and (posix-string-match "[ *]+.*[ *]+\\|.+<[0-9]+>$" (buffer-name))
-                 (not (string= "*scratch*" (buffer-name))))
-      (other-window 1))
-    (when (and (posix-string-match "[ *]+.*[ *]+\\|.+<[0-9]+>$" (buffer-name))
-               (not (string= "*scratch*" (buffer-name))))
-      (kill-buffer nil)
-      (delete-window))))
+    (let ((regexp (concat "\\`" (regexp-opt '("*Ilist" "*scratch" ))))
+          (windows (window-list-1 (next-window)))
+          buf)
+      (catch 'done
+        (dolist (win windows)
+          (setq buf (window-buffer win))
+          (when (and (string-match "\\`*\\|.+<[0-9]+>\\'" (buffer-name buf))
+                     (not (string-match regexp (buffer-name buf))))
+            (delete-windows-on buf)
+            (kill-buffer buf)
+            (throw 'done t)))))))
 
 (defun my-kill-this-buffer (arg)
   "Kill buffer and delete window if there is more than one."
