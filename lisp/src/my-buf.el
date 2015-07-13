@@ -57,6 +57,30 @@
         (switch-to-buffer buf)
         (throw 'done t)))))
 
+;; Popup special buffers at bottom of frame
+
+(add-to-list 'display-buffer-alist
+             '(my-buf-popup-filter
+               (display-buffer-reuse-window display-buffer-in-side-window)
+               (reusable-frames . visible)
+               (side            . bottom)
+               (window-height   . 0.4)))
+
+(defun my-buf-popup-filter (buffer alist)
+  "Filter for `display-buffer-alist' to popup special buffers -- ignoring
+certain ones -- at the bottom of the frame."
+  (and (string-match "\\`[*]" buffer)
+       ;; Special buffers that should use popup
+       (or (string-match (concat "\\`" (regexp-opt '("*magit-diff")))
+                         buffer)
+           ;; Special buffers that should do their own thing
+           (not (string-match (concat "\\`" (regexp-opt '("*Ilist"
+                                                          "*cc-status"
+                                                          "*info"
+                                                          "*magit")))
+                              buffer)))))
+
+
 ;; Splits
 
 (defun my-buf-split-window-vertically (&optional arg)
