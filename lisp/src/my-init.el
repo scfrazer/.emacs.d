@@ -558,6 +558,9 @@
         web-mode-enable-auto-closing t
         web-mode-enable-current-element-highlight t))
 
+(use-package my-xclip
+  :bind* (("C-c x" . my-xclip-copy)))
+
 (use-package yank-target
   :bind* (("C-c Y"     . my-yank-target-go-yank)
           ("C-c y SPC" . yank-target-set)
