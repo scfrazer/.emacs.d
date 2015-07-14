@@ -139,7 +139,8 @@
         bindings key-desc-pairs)
     ;; Get bindings
     (with-temp-buffer
-      (if (string-match "\\`C-c" prefix)
+      (if (and (string-match "\\`C-c" prefix)
+               (not (assoc prefix bind-remind-key-alist)))
           (let ((doc (documentation mode)))
             (when (stringp doc)
               (insert doc)))
