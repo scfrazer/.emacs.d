@@ -173,10 +173,8 @@
   :mode (("\\.csh\\'" . csh-mode)
          ("\\.cshrc\\'" . csh-mode))
   :init
-  ;; Don't use sh-mode for csh files
-  (dolist (elt interpreter-mode-alist)
-    (when (member (car elt) (list "csh" "tcsh"))
-      (setcdr elt 'csh-mode))))
+  ;; Add csh to magic interpreter modes
+ (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
 
 (use-package diff
   :defer t
