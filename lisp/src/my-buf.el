@@ -76,6 +76,7 @@ the bottom of the frame."
                                             "*ag"
                                             "*compilation"
                                             "*grep"
+                                            "*magit-diff"
                                             "*regman"
                                             "*vcs-compile"
                                             ))) buffer))
