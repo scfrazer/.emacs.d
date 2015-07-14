@@ -61,10 +61,8 @@
 
 (add-to-list 'display-buffer-alist
              '(my-buf-popup-filter
-               (display-buffer-reuse-window display-buffer-in-side-window)
-               (reusable-frames . visible)
-               (side            . bottom)
-               (window-height   . 0.5)))
+               (display-buffer-reuse-window display-buffer-below-selected)
+               (reusable-frames . visible)))
 
 (defun my-buf-popup-filter (buffer alist)
   "Filter for `display-buffer-alist' to popup these buffers at
