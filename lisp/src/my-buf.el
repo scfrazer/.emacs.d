@@ -57,56 +57,6 @@
         (switch-to-buffer buf)
         (throw 'done t)))))
 
-;; Popup special buffers at bottom of frame
-
-(add-to-list 'display-buffer-alist
-             '(my-buf-popup-filter
-               (display-buffer-reuse-window display-buffer-below-selected)
-               (reusable-frames . visible)))
-
-(defun my-buf-popup-filter (buffer alist)
-  "Filter for `display-buffer-alist' to popup these buffers at
-the bottom of the frame."
-  (string-match (concat "\\`" (regexp-opt '(
-                                            "*Compile-Log"
-                                            "*Find"
-                                            "*Help"
-                                            "*Ibuffer"
-                                            "*Occur"
-                                            "*ag"
-                                            "*compilation"
-                                            "*grep"
-                                            "*magit-diff"
-                                            "*regman"
-                                            "*vcs-compile"
-                                            ))) buffer))
-
-
-;; Splits
-
-(defun my-buf-split-window-vertically (&optional arg)
-  "Like `split-window-vertically', but switch to other window after split.
-With prefix arg, stay in current window but show different buffer in new window."
-  (interactive "P")
-  (split-window-vertically)
-  (recenter)
-  (other-window 1)
-  (when arg
-    (my-buf-toggle))
-  (recenter)
-  (when arg
-    (other-window -1)))
-
-(defun my-buf-split-window-horizontally (&optional arg)
-  "Like `split-window-horizontally', but switch to other window after split.
-With prefix arg, stay in current window but show different buffer in new window."
-  (interactive "P")
-  (split-window-horizontally)
-  (other-window 1)
-  (when arg
-    (my-buf-toggle)
-    (other-window -1)))
-
 ;; Done
 
 (provide 'my-buf)

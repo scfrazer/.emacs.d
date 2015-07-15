@@ -61,9 +61,7 @@
 (require 'my-bookmark)
 
 (require 'my-buf)
-(bind-keys* ("C-o"   . my-buf-toggle)
-            ("C-x 2" . my-buf-split-window-vertically)
-            ("C-x 3" . my-buf-split-window-horizontally))
+(bind-keys* ("C-o". my-buf-toggle))
 
 (require 'my-clearcase)
 
@@ -105,6 +103,14 @@
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+(require 'my-win)
+(bind-keys* ("C-x 2" . my-win-split-vertically)
+            ("C-x 3" . my-win-split-horizontally)
+            ("C-x ^" . my-win-resize-up-dwim)
+            ("C-x V" . my-win-resize-down-dwim)
+            ("C-x {" . my-win-resize-left-dwim)
+            ("C-x }" . my-win-resize-right-dwim))
 
 ;; Deferred packages
 
@@ -1724,6 +1730,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x `"       . my-goto-next-error)
  ("C-x c"       . clone-indirect-buffer-other-window)
  ("C-x k"       . kill-buffer)
+ ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
