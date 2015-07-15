@@ -107,10 +107,10 @@
 (require 'my-win)
 (bind-keys* ("C-x 2" . my-win-split-vertically)
             ("C-x 3" . my-win-split-horizontally)
-            ("C-x ^" . my-win-resize-up-dwim)
-            ("C-x V" . my-win-resize-down-dwim)
-            ("C-x {" . my-win-resize-left-dwim)
-            ("C-x }" . my-win-resize-right-dwim))
+            ("C-x ^" . my-win-resize-up-start)
+            ("C-x V" . my-win-resize-down-start)
+            ("C-x {" . my-win-resize-left-start)
+            ("C-x }" . my-win-resize-right-start))
 
 ;; Deferred packages
 
@@ -1689,8 +1689,8 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-l"       . forward-sexp)
  ("C-M-t"       . my-transpose-sexps)
  ("C-M-y"       . browse-kill-ring)
- ("C-c ."       . my-kill-results-buffer)
  ("C-c $"       . my-delete-trailing-whitespace)
+ ("C-c ."       . my-kill-results-buffer)
  ("C-c /"       . my-line-comment)
  ("C-c A"       . align-regexp)
  ("C-c C"       . my-comment-region-after-copy)
@@ -1725,6 +1725,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x E"       . my-apply-macro-to-region-lines)
  ("C-x K"       . my-kill-buffer)
  ("C-x M-q"     . my-toggle-buffer-modified)
+ ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
  ("C-x `"       . my-goto-next-error)

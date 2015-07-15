@@ -67,65 +67,53 @@ With prefix arg, stay in current window but show different buffer in new window.
   "Start window resizing transient mode."
   (set-transient-map my-win-resize-transient-map t))
 
-(defun my-win-get-vertical-position ()
-  "Figure out if the current window is at the top, the bottom, or
-in the middle of the frame."
-  (let ((edges (window-edges)))
-    (if (eq 0 (nth 1 edges))
-        'top
-      (if (eq (- (frame-height) 1) (nth 3 edges))
-          'bottom
-        'middle))))
+(defun my-win-resize-at-bottom-p ()
+  "Is the current window at the bottom of the frame?"
+  (eq (- (frame-height) 1) (nth 3 (window-edges))))
 
-(defun my-win-get-horizontal-position ()
-  "Figure out if the current window is at the left, the right, or
-in the middle of the frame."
-  (let ((edges (window-edges)))
-    (if (eq 0 (nth 0 edges))
-        'left
-      (if (eq (frame-width) (nth 2 edges))
-          'right
-        'middle))))
+(defun my-win-resize-at-right-p ()
+  "Is the current window at the right of the frame?"
+  (eq (frame-width) (nth 2 (window-edges))))
 
 (defun my-win-resize-up ()
   "Resize window depending on where it is in the frame."
   (interactive)
-  (enlarge-window (if (eq (my-win-get-vertical-position) 'bottom) 1 -1)))
+  (enlarge-window (if (my-win-resize-at-bottom-p) 1 -1)))
 
 (defun my-win-resize-down ()
   "Resize window depending on where it is in the frame."
   (interactive)
-  (enlarge-window (if (eq (my-win-get-vertical-position) 'bottom) -1 1)))
+  (enlarge-window (if (my-win-resize-at-bottom-p) -1 1)))
 
 (defun my-win-resize-left ()
   "Resize window depending on where it is in the frame."
   (interactive)
-  (enlarge-window-horizontally (if (eq (my-win-get-horizontal-position) 'right) 1 -1)))
+  (enlarge-window (if (my-win-resize-at-right-p) 1 -1) t))
 
 (defun my-win-resize-right ()
   "Resize window depending on where it is in the frame."
   (interactive)
-  (enlarge-window-horizontally (if (eq (my-win-get-horizontal-position) 'right) -1 1)))
+  (enlarge-window (if (my-win-resize-at-right-p) -1 1) t))
 
-(defun my-win-resize-up-dwim ()
+(defun my-win-resize-up-start ()
   "Resize window and start transient mode."
   (interactive)
   (my-win-resize-up)
   (my-win-resize-transient-mode))
 
-(defun my-win-resize-down-dwim ()
+(defun my-win-resize-down-start()
   "Resize window and start transient mode."
   (interactive)
   (my-win-resize-down)
   (my-win-resize-transient-mode))
 
-(defun my-win-resize-left-dwim ()
+(defun my-win-resize-left-start ()
   "Resize window and start transient mode."
   (interactive)
   (my-win-resize-left)
   (my-win-resize-transient-mode))
 
-(defun my-win-resize-right-dwim ()
+(defun my-win-resize-right-start ()
   "Resize window and start transient mode."
   (interactive)
   (my-win-resize-right)
