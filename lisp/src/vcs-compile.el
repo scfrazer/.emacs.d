@@ -29,19 +29,21 @@
                           '(compile-history . 1)
                         'compile-history)))
 
-(defvar vcs-compile-command "find_fail_log -c"
+(defvar vcs-compile-command "find_fail_log -c ."
   "*Default VCS compile command")
 
 (defvar vcs-compile-command-list (list vcs-compile-command))
 
-(defun vcs-compile ()
-  "VCS compile."
-  (interactive)
+(defun vcs-compile (&optional arg)
+  "VCS compile.  With prefix arg, don't set run directory to $RESULTSDIR."
+  (interactive "P")
   (setq vcs-compile-command
-        (ido-completing-read "VCS compile command: " vcs-compile-command-list))
+        (vcs-compilation-read-command
+         (ido-completing-read "VCS compile command: " vcs-compile-command-list)))
   (save-some-buffers (not compilation-ask-about-save)
                      compilation-save-buffers-predicate)
-  (let ((default-directory (or (getenv "RESULTSDIR") default-directory)))
+  (let ((default-directory (or (and (not arg)
+                                    (getenv "RESULTSDIR")) default-directory)))
     (setq vcs-compile-command-list (delq vcs-compile-command vcs-compile-command-list))
     (add-to-list 'vcs-compile-command-list vcs-compile-command)
     (compilation-start vcs-compile-command 'vcs-compile-mode)))
