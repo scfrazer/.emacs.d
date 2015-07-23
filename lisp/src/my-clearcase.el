@@ -30,6 +30,7 @@
   (bind-key "U"   'my-clearcase-uncheckout-and-remove           clearcase-prefix-map)
   (bind-key "a"   'clearcase-annotate-current-buffer            clearcase-prefix-map)
   (bind-key "c"   'my-clearcase-list-checkouts                  clearcase-prefix-map)
+  (bind-key "d"   'my-clearcase-diff-current                    clearcase-prefix-map)
   (bind-key "g"   'my-clearcase-gui-diff-current                clearcase-prefix-map)
   (bind-key "i"   'clearcase-checkin-current-buffer             clearcase-prefix-map)
   (bind-key "l"   'my-clearcase-list-history                    clearcase-prefix-map)
@@ -51,6 +52,7 @@
   (bind-key "U"   (lambda() "Uncheckout/remove current file." (interactive) (clearcase-uncheckout-dired-files 'discard)) clearcase-dired-prefix-map)
   (bind-key "a"   'clearcase-annotate-dired-file             clearcase-dired-prefix-map)
   (bind-key "c"   'my-clearcase-list-checkouts               clearcase-dired-prefix-map)
+  (bind-key "d"   'my-clearcase-diff-current                 clearcase-dired-prefix-map)
   (bind-key "g"   'my-clearcase-gui-diff-current             clearcase-dired-prefix-map)
   (bind-key "i"   'clearcase-checkin-dired-files             clearcase-dired-prefix-map)
   (bind-key "l"   'my-clearcase-list-history                 clearcase-dired-prefix-map)
@@ -267,6 +269,19 @@ With prefix arg ask for version."
        (if arg
            'clearcase-ediff-named-version-current-buffer
          'clearcase-ediff-pred-current-buffer))))
+
+  (defun my-clearcase-diff-current (&optional arg)
+    "Do diff of current buffer/dired-file against latest.
+With prefix arg ask for version."
+    (interactive "P")
+    (call-interactively
+     (if (eq major-mode 'dired-mode)
+         (if arg
+             'clearcase-diff-named-version-dired-file
+           'clearcase-diff-pred-dired-file)
+       (if arg
+           'clearcase-diff-named-version-current-buffer
+         'clearcase-diff-pred-current-buffer))))
 
   (defun my-clearcase-gui-diff-current (&optional arg)
     "Do GUI diff of current buffer/dired-file against latest.
