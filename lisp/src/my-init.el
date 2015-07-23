@@ -118,19 +118,53 @@
   (require 'use-package))
 (setq use-package-verbose t)
 
+(use-package align
+  :bind* (("C-c A" . align-regexp)
+          ("C-c a" . my-align))
+  :config
+  (progn
+    (defun my-align ()
+      "Align to an entered char."
+      (interactive "*")
+      (let ((regexp (concat "\\(\\s-*\\)" (regexp-quote (char-to-string (read-char "Align to char:"))))))
+        (save-excursion
+          (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
+
 (use-package avy
-  :bind* (("C-j" . my-avy-goto)
-          ("C-M-j" . avy-goto-line))
+  :bind* (("C-j" . my-avy-goto))
   :config
   (progn
     (setq avy-keys (nconc (number-sequence ?a ?z)
                           (number-sequence ?A ?Z))
           avy-all-windows nil
           avy-case-fold-search nil)
-    (defun my-avy-goto (&optional arg)
-      "Goto word or, with prefix-arg, char."
-      (interactive "P")
-      (call-interactively (if arg 'avy-goto-char 'avy-goto-word-1)))))
+
+    (defun my-avy-goto (char)
+      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-j, or EOL if C-m."
+      (interactive (list (read-char "char: ")))
+      (if (= 11 char)
+          (call-interactively 'avy-goto-char)
+        (if (= 10 char)
+            (avy-goto-line)
+          (avy--with-avy-keys avy-goto-word-1
+            (let* ((str (string char))
+                   (regex (cond ((= 13 char)
+                                 "\n")
+                                ((string= str ".")
+                                 "\\.")
+                                ((and avy-word-punc-regexp
+                                      (string-match avy-word-punc-regexp str))
+                                 (regexp-quote str))
+                                ((eq major-mode 'php-mode)
+                                 (concat "\\b\\$?\\(" str "\\)"))
+                                (t
+                                 (concat "\\b" str)))))
+              (if (and (eq major-mode 'php-mode)
+                       (string-match "\\$" regex))
+                  (avy--goto (avy--process
+                              (avy--regex-candidates regex nil nil nil 1)
+                              (avy--style-fn avy-style)))
+                (avy--generic-jump regex nil avy-style)))))))))
 
 (use-package ag2
   :bind* (("C-c G" . ag2)
@@ -594,8 +628,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; TODO
-(autoload 'align "align" nil t)
-(autoload 'align-regexp "align" nil t)
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
@@ -746,13 +778,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
 
-(defun my-align ()
-  "Align to an entered char."
-  (interactive "*")
-  (let ((regexp (concat "\\(\\s-*\\)" (regexp-quote (char-to-string (read-char "Align to char:"))))))
-    (save-excursion
-      (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))
-
 (defun my-ansi-color ()
   "ANSI colorize the buffer."
   (interactive)
@@ -820,7 +845,6 @@
                        (unless (bolp) (backward-char 1)))
                      (point)))))
          (again t))
-    (set-mark (point))
     (while again
       (forward-line -1)
       (setq again (not (bobp)))
@@ -1042,7 +1066,6 @@ or the region with prefix arg."
                        (unless (bolp) (backward-char 1)))
                      (point)))))
          (again t))
-    (set-mark (point))
     (while again
       (forward-line 1)
       (setq again (not (eobp)))
@@ -1692,14 +1715,12 @@ Prefix with C-u to resize the `next-window'."
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c ."       . my-kill-results-buffer)
  ("C-c /"       . my-line-comment)
- ("C-c A"       . align-regexp)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . vcs-compile)
  ("C-c N"       . narrow-to-defun)
  ("C-c TAB"     . indent-region)
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
- ("C-c a"       . my-align)
  ("C-c c"       . my-comment-or-uncomment-region)
  ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
