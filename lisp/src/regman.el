@@ -58,7 +58,7 @@
       (skip-syntax-backward "w_")
       (let ((beg (point)) guess)
         (skip-syntax-forward "w_")
-        (setq guess (buffer-substring-no-properties beg (point)))
+        (setq guess (replace-regexp-in-string "\\`m_" "" (buffer-substring-no-properties beg (point))))
         (if (string= guess "")
             (setq reg (read-from-minibuffer "Register: " nil nil nil 'regman-reg-history))
           (setq reg (read-from-minibuffer
