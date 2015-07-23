@@ -23,6 +23,7 @@
    `(custom-group-tag ((,class (:foreground "#5FAFFF"))))
    `(custom-variable-tag ((,class (:foreground "#5FAFFF"))))
    `(diff-added ((,class (:background nil :foreground "#00CD00"))))
+   `(diff-changed ((,class (:background nil :foreground "#0000FF"))))
    `(diff-refine-added ((,class (:background "#D7FFD7" :foreground "#005F00"))))
    `(diff-refine-change ((,class (:background "#AFD7FF" :foreground "#000087"))))
    `(diff-refine-removed ((,class (:background "#FFD7D7" :foreground "#D70000"))))
