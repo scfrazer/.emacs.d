@@ -160,7 +160,7 @@
                                 (t
                                  (concat "\\b" str)))))
               (if (and (eq major-mode 'php-mode)
-                       (string-match "\\$" regex))
+                       (string-match "\\\\b\\\\\\$" regex))
                   (avy--goto (avy--process
                               (avy--regex-candidates regex nil nil nil 1)
                               (avy--style-fn avy-style)))
