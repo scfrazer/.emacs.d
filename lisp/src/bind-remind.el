@@ -47,6 +47,7 @@
     ("clearcase-uncheckout-current-buffer"          . "Uncheckout keep")
     ("my-clearcase-uncheckout-and-remove"           . "Uncheckout remove")
     ("my-clearcase-ediff-current"                   . "Ediff")
+    ("my-clearcase-diff-current"                    . "Diff")
     ("my-clearcase-gui-diff-current"                . "TkDiff")
     ("my-clearcase-list-history"                    . "Show history")
     ("my-clearcase-list-checkouts"                  . "Show checkouts")
@@ -194,7 +195,7 @@ User-supplied descriptions first, in the order they appear in
 ;; TODO Customizable idle time
 (bind-remind-populate-hash)
 (add-hook 'pre-command-hook 'bind-remind-close)
-(run-with-idle-timer 1.0 t 'bind-remind-show-bindings)
+(run-with-idle-timer 2.0 t 'bind-remind-show-bindings)
 
 ;; TODO Tests
 ;; (bind-remind-show-bindings (kbd "C-x v"))
