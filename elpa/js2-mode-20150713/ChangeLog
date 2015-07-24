@@ -1,3 +1,30 @@
+2015-07-13  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit 'f3a899bb1c36e25e078eed2890eb2fecb22f4175' from js2-mode
+
+2015-04-24  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit 'ac93b9eef9b6ac44d187b9688d68a7a5f205b3fe' from js2-mode
+
+	Conflicts:
+	packages/js2-mode/js2-mode.el
+
+2015-04-15  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* js2-mode.el (js2-mode): Use cursor-sensor-mode if available.
+
+	(js2-export-node): Fix apparent paren typo.
+	(js2-get-token-internal-1): Remove unused var `quote-char'.
+	(js2-clear-face): Also remove cursor-sensor-functions.
+	(js2-parse-primary-expr): Remove unused var `pn'.
+	(js2-parse-legacy-array-comp): Remove unused var `first'.
+	(js2-mode-show-node, js2-mode-show-warn-or-err): Use
+	cursor-sensor-functions if available.
+	(js2-mode-hide-overlay, js2-echo-error): Adapt to new calling
+	convention.
+	(js2-echo-help): Declare obsolete.
+	(js2-mode-extend-comment): Look for the appropriate property.
+
 2015-02-02  Dmitry Gutov  <dgutov@yandex.ru>
 
 	Merge commit '7558a961a03b3a9d26fafc69d9665e4aadf47738' from js2-mode
