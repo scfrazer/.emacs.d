@@ -140,31 +140,33 @@
           avy-case-fold-search nil)
 
     (defun my-avy-goto (char)
-      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-j, or EOL if C-m."
+      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "char: ")))
       (if (= 11 char)
           (call-interactively 'avy-goto-char)
-        (if (= 10 char)
+        (if (= 12 char)
             (avy-goto-line)
-          (avy--with-avy-keys avy-goto-word-1
-            (let* ((str (string char))
-                   (regex (cond ((= 13 char)
-                                 "\n")
-                                ((string= str ".")
-                                 "\\.")
-                                ((and avy-word-punc-regexp
-                                      (string-match avy-word-punc-regexp str))
-                                 (regexp-quote str))
-                                ((eq major-mode 'php-mode)
-                                 (concat "\\b\\$?\\(" str "\\)"))
-                                (t
-                                 (concat "\\b" str)))))
-              (if (and (eq major-mode 'php-mode)
-                       (string-match "\\\\b\\\\\\$" regex))
-                  (avy--goto (avy--process
-                              (avy--regex-candidates regex nil nil nil 1)
-                              (avy--style-fn avy-style)))
-                (avy--generic-jump regex nil avy-style)))))))))
+          (if (not (< 31 char 127))
+              (error "Unknown char")
+            (avy--with-avy-keys avy-goto-word-1
+              (let* ((str (string char))
+                     (regex (cond ((= 13 char)
+                                   "\n")
+                                  ((string= str ".")
+                                   "\\.")
+                                  ((and avy-word-punc-regexp
+                                        (string-match avy-word-punc-regexp str))
+                                   (regexp-quote str))
+                                  ((eq major-mode 'php-mode)
+                                   (concat "\\b\\$?\\(" str "\\)"))
+                                  (t
+                                   (concat "\\b" str)))))
+                (if (and (eq major-mode 'php-mode)
+                         (string-match "\\\\b\\\\\\$" regex))
+                    (avy--goto (avy--process
+                                (avy--regex-candidates regex nil nil nil 1)
+                                (avy--style-fn avy-style)))
+                  (avy--generic-jump regex nil avy-style))))))))))
 
 (use-package ag2
   :bind* (("C-c G" . ag2)
