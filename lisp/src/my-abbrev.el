@@ -23,7 +23,11 @@
 (define-abbrev global-abbrev-table
   "file"
   ""
-  (lambda() (insert (if buffer-file-name (file-name-nondirectory buffer-file-name) "*NOFILE*"))))
+  (lambda()
+    (let ((filename (buffer-file-name (and (minibufferp) (window-buffer (minibuffer-selected-window))))))
+      (insert (if filename
+                  (file-name-nondirectory filename)
+                "*NOFILE*")))))
 
 (define-abbrev global-abbrev-table
   "date"
