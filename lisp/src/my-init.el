@@ -49,8 +49,7 @@
 ;; (defun ac-comphist-save () nil)
 ;; (ac-config-default)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;; (add-to-list 'ac-modes 'sv-mode)
-;; (setq-default ac-auto-start nil
+;; (setq-default ac-auto-start 2
 ;;               ac-ignore-case nil
 ;;               ac-sources (list 'ac-source-dictionary)
 ;;               ac-use-menu-map t)
@@ -482,10 +481,6 @@
   :config
   (require 'my-python))
 
-(use-package redo+
-  :bind* (("C-z" . undo)
-          ("M-z" . redo)))
-
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
 
@@ -717,6 +712,7 @@
               indicate-buffer-boundaries t
               inhibit-startup-message t
               initial-major-mode 'emacs-lisp-mode
+              initial-scratch-message ";; Scratch elisp buffer\n\n"
               js2-basic-offset 4
               kill-do-not-save-duplicates t
               kill-whole-line t
@@ -967,20 +963,6 @@
     (message "%d lines to end of paragraph"
              (count-lines (point-at-bol)
                           (save-excursion (forward-paragraph) (point-at-eol))))))
-
-(defun my-create-scratch ()
-  "Recreate the *scratch* buffer."
-  (interactive)
-  (get-buffer-create "*scratch*")
-  (switch-to-buffer "*scratch*")
-  (erase-buffer)
-  (insert ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
-
-")
-  (emacs-lisp-mode)
-  (set-buffer-modified-p nil))
 
 (defun my-delete-duplicate-lines (&optional arg)
   "Like `delete-duplicate-lines', but operates on the following paragraph,
@@ -1445,6 +1427,16 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
          (setq command (replace-regexp-in-string "%" (mapconcat 'identity (dired-get-marked-files) " ") command nil t))))
   (shell-command command output-buffer error-buffer))
 
+(defun my-scratch-create ()
+  "Recreate the *scratch* buffer."
+  (interactive)
+  (get-buffer-create "*scratch*")
+  (switch-to-buffer "*scratch*")
+  (erase-buffer)
+  (insert initial-scratch-message)
+  (emacs-lisp-mode)
+  (set-buffer-modified-p nil))
+
 (defun my-set-register (&optional arg)
   "Copy last kill, or with prefix arg region, to a register."
   (interactive "P")
@@ -1760,6 +1752,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
  ("C-x ~"       . my-goto-prev-error)
+ ("C-z"         . undo)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
  ("M-!"         . my-shell-command-on-current-file)
