@@ -48,7 +48,7 @@
    `(font-lock-doc-face ((,class (:foreground "#808080"))))
    `(font-lock-doc-string-face ((,class (:foreground "#808080"))))
    `(font-lock-function-name-face ((,class (:foreground "#AF5F00"))))
-   `(font-lock-keyword-face ((,class (:foreground "#0000AF"))))
+   `(font-lock-keyword-face ((,class (:foreground "#0000AF" :weight bold))))
    `(font-lock-preprocessor-face ((,class (:foreground "#AF8700"))))
    `(font-lock-reference-face ((,class (:foreground "#FF875F"))))
    `(font-lock-string-face ((,class (:foreground "#870087"))))
