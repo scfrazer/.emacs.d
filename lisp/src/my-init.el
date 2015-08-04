@@ -364,6 +364,19 @@
           lazy-highlight-initial-delay 0)
     (put 'my-recenter 'isearch-scroll t)))
 
+(use-package js2-mode
+  :mode (("\\.js\\'" . js2-mode))
+  :config
+  (progn
+    (require 'tern)
+    (defun my-js2-mode-hook ()
+      (setq-default js2-basic-offset 4
+                    js2-global-externs '("window" "$"))
+      (auto-complete-mode 1)
+      (local-set-key (kbd "M-\\") 'ac-start)
+      (my-tern-mode))
+    (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
+
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
           ("C-c d C-r" . my-debug-isearch-backward)
@@ -566,12 +579,19 @@
     (defun my-tern-mode ()
       "Turn on tern-mode when avaliable."
       (when tern-executable
-        (tern-mode t)))
-    (eval-after-load "js2-mode"
-      '(progn
-         (add-hook 'js2-mode-hook 'my-tern-mode))))
+        (tern-mode t))))
   :config
   (progn
+    (require 'auto-complete-config)
+    (defun ac-comphist-save () nil)
+    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+    (setq-default ac-auto-start 2
+                  ac-ignore-case nil
+                  ac-sources (list 'ac-source-dictionary)
+                  ac-use-menu-map t)
+    (define-key ac-menu-map "\C-n" 'ac-next)
+    (define-key ac-menu-map "\C-p" 'ac-previous)
+    (add-hook 'auto-complete-mode-hook 'ac-common-setup)
     (require 'tern-auto-complete)
     (tern-ac-setup)))
 
@@ -632,7 +652,6 @@
 (autoload 'file-template-insert "file-template" nil t)
 (autoload 'highlight-indentation-mode "highlight-indentation" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
-(autoload 'js2-mode "js2-mode" nil t)
 (autoload 'json-mode "json-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
@@ -713,7 +732,6 @@
               inhibit-startup-message t
               initial-major-mode 'emacs-lisp-mode
               initial-scratch-message ";; Scratch elisp buffer\n\n"
-              js2-basic-offset 4
               kill-do-not-save-duplicates t
               kill-whole-line t
               large-file-warning-threshold nil
@@ -750,7 +768,6 @@
 
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
