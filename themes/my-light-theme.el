@@ -62,7 +62,7 @@
    `(highlight ((,class (:background "#87D7FF" :foreground "#000000"))))
    `(hl-line ((,class (:inherit nil :background "#FFFFD7"))))
    `(ido-first-match ((,class (:weight normal :foreground "#000000" :background "#FFFFD7"))))
-   `(ido-only-match ((,class (:weight bold :foreground "#005F00" :background "#D7FFD7"))))
+   `(ido-only-match ((,class (:weight bold :foreground "#000000" :background "#D7FFD7"))))
    `(ido-subdir ((,class (:foreground nil :inherit font-lock-keyword-face))))
    `(info-header-node ((,class (:foreground "#00CD00"))))
    `(info-header-xref ((,class (:inherit info-xref :foreground "#00AFFF"))))
