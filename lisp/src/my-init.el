@@ -1156,13 +1156,6 @@ end of a non-blank line, or insert an 80-column comment line"
         (delete-horizontal-space)
         (insert" ")))))
 
-(defun my-kill-buffer (arg buffer)
-  "Kill buffer and delete window if there is more than one."
-  (interactive "P\nbKill buffer: ")
-  (kill-buffer buffer)
-  (when (> (count-windows) 1)
-    (delete-window)))
-
 (defun my-kill-frame-or-emacs ()
   "Kill a frame or emacs"
   (interactive)
@@ -1756,7 +1749,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x C-p"     . (lambda () (interactive (other-window -1))))
  ("C-x C-z"     . (lambda () (interactive) (ding)))
  ("C-x E"       . my-apply-macro-to-region-lines)
- ("C-x K"       . my-kill-buffer)
+ ("C-x K"       . kill-buffer-and-window)
  ("C-x M-q"     . my-toggle-buffer-modified)
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
