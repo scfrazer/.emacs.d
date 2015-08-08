@@ -369,11 +369,30 @@
   :config
   (progn
     (require 'tern)
+    (require 'js-doc)
+    (setq-default js2-basic-offset 4
+                  js2-global-externs '("window" "require" "define")
+                  js-doc-file-doc-lines '(js-doc-top-line
+                                          " * @fileOverview\n"
+                                          " * @name %F\n"
+                                          js-doc-bottom-line)
+                  js-doc-bottom-line " */\n\n")
+    (defun my-js2-mode-insert-doc ()
+      "Insert JSDoc file or function doc."
+      (interactive "*")
+      (if (bobp)
+          (progn (call-interactively 'js-doc-insert-file-doc)
+                 (insert "\n")
+                 (search-backward "@fileOverview")
+                 (goto-char (match-end 0))
+                 (insert " "))
+        (call-interactively 'js-doc-insert-function-doc)
+        (search-forward "* ")))
     (defun my-js2-mode-hook ()
-      (setq-default js2-basic-offset 4
-                    js2-global-externs '("window" "$"))
       (auto-complete-mode 1)
       (local-set-key (kbd "M-\\") 'ac-start)
+      (local-set-key (kbd "C-c C-j") 'my-js2-mode-insert-doc)
+      (local-set-key (kbd "@") 'js-doc-insert-tag)
       (my-tern-mode))
     (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
 
