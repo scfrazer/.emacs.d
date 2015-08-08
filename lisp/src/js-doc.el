@@ -47,7 +47,7 @@
 
 ;;; Code:
 
-(require 'iswitchb)
+(require 'thingatpt)
 
 ;;; Custom:
 (defgroup js-doc nil
@@ -126,6 +126,8 @@ This list contains tag name and its description")
 When the `js-doc-insert-file-doc' is called,
 each lines in a list will be formatted by `js-doc-format-string'
 and inserted to the top of current buffer.")
+
+(defvar js-doc-current-parameter-name "")
 
 (defvar js-doc-format-string-alist
   '(("%F" . (buffer-name))
@@ -308,11 +310,11 @@ The comment style can be custimized via `customize-group js-doc'"
     (indent-region from (point)))))
 
 ;; http://www.emacswiki.org/emacs/UseIswitchBuffer
-(defun js-doc-icompleting-read (prompt collection)
-  (let ((iswitchb-make-buflist-hook
-	 #'(lambda ()
-             (setq iswitchb-temp-buflist collection))))
-    (iswitchb-read-buffer prompt nil nil)))
+;; (defun js-doc-icompleting-read (prompt collection)
+;;   (let ((iswitchb-make-buflist-hook
+;; 	 #'(lambda ()
+;;              (setq iswitchb-temp-buflist collection))))
+;;     (iswitchb-read-buffer prompt nil nil)))
 
 (defun js-doc-make-tag-list ()
   (let ((taglist '()))
