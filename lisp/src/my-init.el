@@ -401,7 +401,6 @@
   :mode (("\\.less\\'" . less-css-mode))
   :config
   (progn
-    ;; TODO Config vars, config flymake
     (require 'flymake-easy)
     (require 'flymake-less)
     (add-hook 'less-css-mode-hook 'flymake-less-load)))
