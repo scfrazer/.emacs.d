@@ -389,12 +389,22 @@
         (call-interactively 'js-doc-insert-function-doc)
         (search-forward "* ")))
     (defun my-js2-mode-hook ()
+      (setq-local mode-name "js2")
       (auto-complete-mode 1)
       (local-set-key (kbd "M-\\") 'ac-start)
       (local-set-key (kbd "C-c C-j") 'my-js2-mode-insert-doc)
       (local-set-key (kbd "@") 'js-doc-insert-tag)
       (my-tern-mode))
     (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
+
+(use-package less-css-mode
+  :mode (("\\.less\\'" . less-css-mode))
+  :config
+  (progn
+    ;; TODO Config vars, config flymake
+    (require 'flymake-easy)
+    (require 'flymake-less)
+    (add-hook 'less-css-mode-hook 'flymake-less-load)))
 
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
