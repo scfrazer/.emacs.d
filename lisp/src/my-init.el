@@ -140,7 +140,7 @@
 
     (defun my-avy-goto (char)
       "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
-      (interactive (list (read-char "char: ")))
+      (interactive (list (read-char "Char: ")))
       (if (= 11 char)
           (call-interactively 'avy-goto-char)
         (if (= 12 char)
@@ -156,15 +156,15 @@
                                   ((and avy-word-punc-regexp
                                         (string-match avy-word-punc-regexp str))
                                    (regexp-quote str))
-                                  ((eq major-mode 'php-mode)
-                                   (concat "\\b\\$?\\(" str "\\)"))
+                                  ((< 64 char 91)
+                                   (concat "\\b" str "\\|" str "[a-z0-9]"))
                                   (t
                                    (concat "\\b" str)))))
-                (if (and (eq major-mode 'php-mode)
-                         (string-match "\\\\b\\\\\\$" regex))
-                    (avy--goto (avy--process
-                                (avy--regex-candidates regex nil nil nil 1)
-                                (avy--style-fn avy-style)))
+                (if (eq major-mode 'php-mode)
+                  (let ((table (copy-syntax-table (syntax-table))))
+                    (modify-syntax-entry ?$ "." table)
+                    (with-syntax-table table
+                      (avy--generic-jump regex nil avy-style)))
                   (avy--generic-jump regex nil avy-style))))))))))
 
 (use-package ag2
