@@ -637,7 +637,7 @@
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :config
-  (setq web-mode-auto-close-style 2
+  (setq web-mode-auto-close-style 0
         web-mode-enable-auto-closing t
         web-mode-enable-current-element-highlight t))
 
