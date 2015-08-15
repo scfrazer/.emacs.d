@@ -45,18 +45,6 @@
 (bind-keys* ("C-\\" . expand-abbrev))
 (setq save-abbrevs nil)
 
-;; (require 'auto-complete-config)
-;; (defun ac-comphist-save () nil)
-;; (ac-config-default)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;; (setq-default ac-auto-start 2
-;;               ac-ignore-case nil
-;;               ac-sources (list 'ac-source-dictionary)
-;;               ac-use-menu-map t)
-;; (define-key ac-menu-map "\C-n" 'ac-next)
-;; (define-key ac-menu-map "\C-p" 'ac-previous)
-;; (bind-keys* ("M-\\" . ac-start)) ;; completion-at-point)
-
 (require 'my-bookmark)
 
 (require 'my-buf)
@@ -377,6 +365,11 @@
                                           " * @name %F\n"
                                           js-doc-bottom-line)
                   js-doc-bottom-line " */\n\n")
+    (defun my-js2-mode-electic-closer ()
+      "Indent when entering a closer."
+      (interactive "*")
+      (insert last-command-event)
+      (indent-according-to-mode))
     (defun my-js2-mode-insert-doc ()
       "Insert JSDoc file or function doc."
       (interactive "*")
@@ -394,6 +387,9 @@
       (local-set-key (kbd "M-\\") 'ac-start)
       (local-set-key (kbd "C-c C-j") 'my-js2-mode-insert-doc)
       (local-set-key (kbd "@") 'js-doc-insert-tag)
+      (local-set-key (kbd ")") 'my-js2-mode-electic-closer)
+      (local-set-key (kbd "]") 'my-js2-mode-electic-closer)
+      (local-set-key (kbd "}") 'my-js2-mode-electic-closer)
       (my-tern-mode))
     (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
 
@@ -637,7 +633,7 @@
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :config
-  (setq web-mode-auto-close-style 2
+  (setq web-mode-auto-close-style 0
         web-mode-enable-auto-closing t
         web-mode-enable-current-element-highlight t))
 
