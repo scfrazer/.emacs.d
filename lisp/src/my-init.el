@@ -636,6 +636,7 @@
   :config
   (setq web-mode-auto-close-style 0
         web-mode-enable-auto-closing t
+        web-mode-enable-auto-indentation t
         web-mode-enable-current-element-highlight t))
 
 (use-package my-xclip

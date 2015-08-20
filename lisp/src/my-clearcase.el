@@ -79,7 +79,7 @@
                   ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
                   ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face))))
 
-  (setq clearcase-annotate-fmt-string "| %Sd  %-8.8u  %-10.10Vn | "
+  (setq clearcase-annotate-fmt-string "| %Sd  %-8.8u  %-15.15Vn | "
         clearcase-diff-gui-tool "tkdiff"
         clearcase-suppress-checkout-comments t
         clearcase-use-normal-diff t)
