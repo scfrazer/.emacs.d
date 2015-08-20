@@ -133,7 +133,8 @@
           (call-interactively 'avy-goto-char)
         (if (= 12 char)
             (avy-goto-line)
-          (if (not (< 31 char 127))
+          (if (and (not (< 31 char 127))
+                   (not (= 13 char)))
               (error "Unknown char")
             (avy--with-avy-keys avy-goto-word-1
               (let* ((str (string char))
@@ -717,6 +718,7 @@
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
+              bidi-display-reordering nil
               blink-matching-paren-distance nil
               browse-kill-ring-display-duplicates nil
               browse-kill-ring-highlight-current-entry nil
