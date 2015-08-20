@@ -54,6 +54,7 @@
     (unless buf
       (setq buf (get-buffer-create cc-status-buffer-name))
       (set-buffer buf)
+      (setq default-directory "~")
       (cc-status-refresh)
       (cc-status-mode))
     (switch-to-buffer buf)))
@@ -166,6 +167,7 @@
 (defun cc-status-prep-output-buffer ()
   "Prepare the output buffer."
   (with-current-buffer (get-buffer-create cc-status-output-buffer-name)
+    (setq default-directory "~")
     (widen)
     (goto-char (point-max))
     (setq buffer-read-only nil)))

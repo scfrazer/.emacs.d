@@ -4928,7 +4928,8 @@ EXTRA-ARGS."
     ;; have reasonable defaults.
     ;;
     (if file
-        (setq default-directory (file-name-directory file)))
+        (setq default-directory (file-name-directory file))
+      (setq default-directory "~"))
 
     (mapc
      (function (lambda (s)
