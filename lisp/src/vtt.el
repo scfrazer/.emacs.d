@@ -28,7 +28,6 @@
                               ("Variable name: "
                                "+\"  " str ":\"+" str)))
 
-;; (add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt/vtt ; make")
-(add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt3 ; make")
+(add-to-list 'my-compile-command "cd /auto/vtt/www/prod/dev/scfrazer/vtt_master/vtt ; make")
 
 (provide 'vtt)

@@ -158,7 +158,8 @@ to test.  This command lets Git choose a different one."
   (when (magit-bisect-in-progress-p)
     (magit-insert-section (bisect-log)
       (magit-insert-heading "Bisect Log:")
-      (magit-git-wash #'magit-wash-bisect-log "bisect" "log"))))
+      (magit-git-wash #'magit-wash-bisect-log "bisect" "log")
+      (insert ?\n))))
 
 (defun magit-wash-bisect-log (args)
   (let (beg)
@@ -169,8 +170,10 @@ to test.  This command lets Git choose a different one."
         (save-restriction
           (narrow-to-region beg (point))
           (goto-char (point-min))
-          (magit-insert-section (bisect-log nil t)
-            (magit-insert-heading heading)
+          (magit-insert-section (bisect-log heading t)
+            (magit-insert (propertize heading 'face
+                                      'magit-section-secondary-heading))
+            (magit-insert-heading)
             (magit-wash-sequence
              (apply-partially 'magit-log-wash-line 'bisect-log
                               (magit-abbrev-length)))

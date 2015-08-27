@@ -61,7 +61,7 @@ blame to center around the line point is on."
    (let (revision filename)
      (when (or current-prefix-arg
                (not (setq revision "HEAD"
-                          filename (magit-file-relative-name))))
+                          filename (magit-file-relative-name nil 'tracked))))
        (setq revision (magit-read-branch-or-commit "Blame from revision")
              filename (magit-read-file-from-rev revision "Blame file")))
      (list revision filename
@@ -76,13 +76,22 @@ blame to center around the line point is on."
              ,filename))))
 
 ;;;###autoload
-(defun magit-run-gitk (arg)
-  "Run Gitk for the current git repository.
-Without a prefix argument run `gitk --all', with
-a prefix argument run gitk without any arguments."
-  (interactive "P")
-  (apply #'call-process magit-gitk-executable nil 0 nil
-         (if arg nil (list "--all"))))
+(defun magit-run-gitk ()
+  "Run `gitk' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0))
+
+;;;###autoload
+(defun magit-run-gitk-branches ()
+  "Run `gitk --branches' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0 nil "--branches"))
+
+;;;###autoload
+(defun magit-run-gitk-all ()
+  "Run `gitk --all' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0 nil "--all"))
 
 ;;; Clean
 

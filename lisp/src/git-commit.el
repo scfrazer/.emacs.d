@@ -11,7 +11,7 @@
 ;;	Marius Vollmer <marius.vollmer@gmail.com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
-;; Package-Requires: ((emacs "24.4") (dash "2.10.0") (with-editor "2.1.0"))
+;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "20150824"))
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -101,7 +101,7 @@
 ;; files.
 
 ;; Finally this package highlights style errors, like lines that are
-;; to long, or when the second line is not empty.  It may even nag you
+;; too long, or when the second line is not empty.  It may even nag you
 ;; when you attempt to finish the commit without having fixed these
 ;; issues.  Some people like that nagging, I don't, so you'll have to
 ;; enable it.  Which brings me to the last point.  Like any
@@ -159,6 +159,12 @@ The major mode configured here is turned on by the minor mode
   :type '(choice (function-item text-mode)
                  (const :tag "No major mode")))
 
+(unless (find-lisp-object-file-name 'git-commit-setup-hook 'defvar)
+  (add-hook 'git-commit-setup-hook 'with-editor-usage-message)
+  (add-hook 'git-commit-setup-hook 'git-commit-propertize-diff)
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
+  (add-hook 'git-commit-setup-hook 'git-commit-setup-changelog-support)
+  (add-hook 'git-commit-setup-hook 'git-commit-save-message))
 (defcustom git-commit-setup-hook
   '(git-commit-save-message
     git-commit-setup-changelog-support
@@ -423,12 +429,7 @@ finally check current non-comment text."
   (flyspell-buffer))
 
 (defun git-commit-flyspell-verify ()
-  (not (memq (get-text-property (point) 'face)
-             '(font-lock-comment-face     font-lock-comment-delimiter-face
-               git-commit-comment-branch  git-commit-comment-detached
-               git-commit-comment-heading git-commit-comment-file
-               git-commit-comment-action  git-commit-pseudo-header
-               git-commit-known-pseudo-header))))
+  (not (= (char-after (line-beginning-position)) ?#)))
 
 (defun git-commit-finish-query-functions (force)
   (run-hook-with-args-until-failure
@@ -437,7 +438,7 @@ finally check current non-comment text."
 (defun git-commit-check-style-conventions (force)
   "Check for violations of certain basic style conventions.
 For each violation ask the user if she wants to proceed anyway.
-This makes sure the summary line isn't to long and that the
+This makes sure the summary line isn't too long and that the
 second line is empty."
   (or force
       (save-excursion
@@ -569,7 +570,7 @@ With a numeric prefix ARG, go forward ARG comments."
              (insert ?\n)))
           (t
            (while (re-search-backward (concat "^" comment-start) nil t))
-           (unless (looking-back "\n\n")
+           (unless (looking-back "\n\n" nil)
              (insert ?\n))
            (insert header ?\n)))
     (unless (or (eobp) (= (char-after) ?\n))
@@ -638,7 +639,10 @@ With a numeric prefix ARG, go forward ARG comments."
                 (delete-region (point) (point-max)))))
            (diff-mode)
            (let (font-lock-verbose font-lock-support-mode)
-             (font-lock-fontify-buffer))
+             (if (fboundp 'font-lock-flush)
+                 (font-lock-flush)
+               (with-no-warnings
+                 (font-lock-fontify-buffer))))
            (let (next (pos (point-min)))
              (while (setq next (next-single-property-change pos 'face))
                (put-text-property pos next 'font-lock-face

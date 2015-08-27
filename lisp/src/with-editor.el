@@ -8,7 +8,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
-;; Package-Requires: ((emacs "24.4") (dash "2.10.0"))
+;; Package-Requires: ((emacs "24.4") (async "20150812") (dash "2.11.0"))
 ;; Keywords: tools
 ;; Homepage: https://github.com/magit/magit
 
@@ -83,6 +83,11 @@
 (require 'server)
 (require 'tramp)
 (require 'tramp-sh nil t)
+
+(and (require 'async-bytecomp nil t)
+     (memq 'magit (bound-and-true-p async-bytecomp-allowed-packages))
+     (fboundp 'async-bytecomp-package-mode)
+     (async-bytecomp-package-mode 1))
 
 (eval-when-compile
   (progn (require 'dired nil t)
@@ -290,7 +295,11 @@ not a good idea to change such entries.")
              (kill-buffer)))
           (t
            (save-buffer)
-           (if clients (server-edit) (kill-buffer))))
+           (if clients
+               ;; Don't use `server-edit' because we do not want to show
+               ;; another buffer belonging to another client.  See #2197.
+               (server-done)
+             (kill-buffer))))
     (when pid
       (let ((default-directory dir))
         (process-file "kill" nil nil nil
@@ -352,7 +361,7 @@ Modify the `process-environment' for processes started in BODY,
 instructing them to use the Emacsclient as $EDITOR.  If optional
 ENVVAR is provided then bind that environment variable instead.
 \n(fn [ENVVAR] BODY...)"
-  (declare (indent defun))
+  (declare (indent defun) (debug (body)))
   `(let ((with-editor--envvar ,(if (stringp (car body))
                                    (pop body)
                                  '(or with-editor--envvar "EDITOR")))
@@ -441,6 +450,8 @@ which may or may not insert the text into the PROCESS' buffer."
           (,filter proc str)
           (with-editor-process-filter proc str t))
      filter)))
+
+(defvar with-editor-filter-visit-hook nil)
 
 (defun with-editor-output-filter (string)
   (save-match-data
