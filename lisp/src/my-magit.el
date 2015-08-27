@@ -4,6 +4,7 @@
 (require 'git-timemachine)
 
 (setq-default magit-ellipsis ?>
+              magit-push-always-verify nil
               magit-restore-window-configuration t
               magit-set-upstream-on-push 'askifnotset
               magit-status-buffer-switch-function 'switch-to-buffer
