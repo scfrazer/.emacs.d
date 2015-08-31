@@ -14,6 +14,12 @@
       (message "Copied region to xclipboard")
     (message "Copied last kill to xclipboard")))
 
+(defun my-xclip-yank ()
+  "Yank from xclipboard."
+  (interactive "*")
+  (when (and my-xclip-program (getenv "DISPLAY"))
+    (call-process "xclip" nil t nil "-o")))
+
 (defun my-xclip-copy-text (text)
   "Copy text to eh xclipboard."
   (when (and my-xclip-program (getenv "DISPLAY"))

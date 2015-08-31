@@ -400,6 +400,7 @@
   (progn
     (require 'flymake-easy)
     (require 'flymake-less)
+    (setq-default less-css-compile-at-save t)
     (add-hook 'less-css-mode-hook 'flymake-less-load)))
 
 (use-package ll-debug
@@ -640,7 +641,8 @@
         web-mode-enable-current-element-highlight t))
 
 (use-package my-xclip
-  :bind* (("C-c x" . my-xclip-copy)))
+  :bind* (("C-c X" . my-xclip-yank)
+          ("C-c x" . my-xclip-copy)))
 
 (use-package yank-target
   :bind* (("C-c Y"     . my-yank-target-go-yank)
