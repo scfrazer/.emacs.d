@@ -498,6 +498,7 @@
   :mode (("\\.php\\'" . php-mode))
   :config
   (progn
+    (require 'flymake)
     (defvar my-php-lint
       (cond
        ((eq my-location 'RTP) "/nfs/ibunobackup2/scfrazer/local/php/bin/php-lint")
