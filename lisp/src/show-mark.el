@@ -5,7 +5,7 @@
   :group 'convenience)
 
 (defface show-mark-face
-  '((t (:background "#AFFF00" :foreground "black")))
+  '((t (:background "color-254" :foreground "black")))
   "Face for showing the mark."
   :group 'show-mark)
 
