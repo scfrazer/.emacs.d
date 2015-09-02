@@ -519,7 +519,11 @@
 (use-package python
   :defer t
   :config
-  (require 'my-python))
+  (progn
+    (require 'my-python)
+    (defun my-python-mode-hook ()
+      (setq forward-sexp-function nil))
+    (add-hook 'python-mode-hook 'my-python-mode-hook)))
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
