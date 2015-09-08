@@ -42,7 +42,7 @@
       (multi-occur bufs regexp))))
 
 (defface my-occur-prefix-face
-  '((t (:foreground "#E4E4E4" :background "#303030")))
+  '((t (:foreground "#000000" :background "#C6C6C6")))
   "Face for occur line numbers."
   :group 'faces)
 
