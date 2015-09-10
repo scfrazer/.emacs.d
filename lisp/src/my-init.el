@@ -1325,15 +1325,17 @@ arg do something special."
              (t (insert char)))))
         (insert-buffer-substring text)))))
 
-(defun my-put-file-name-on-clipboard ()
+(defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name in the kill-ring.
 If running inside a tmux session, it will also be put in a tmux copy-buffer
 and copied through iTerm2 to clipboard."
-  (interactive)
+  (interactive "P")
   (let ((filename (if (equal major-mode 'dired-mode)
                       default-directory
                     (buffer-file-name))))
     (when filename
+      (when arg
+        (setq filename (file-name-nondirectory filename)))
       (kill-new filename)
       (when (getenv "TMUX")
         (require 'my-tmux)
