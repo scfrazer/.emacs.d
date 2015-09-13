@@ -11,6 +11,8 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp/company-mode"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
+(setq-default tramp-mode nil)
+
 (require 'package)
 (package-initialize)
 
