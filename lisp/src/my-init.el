@@ -1939,13 +1939,6 @@ Prefix with C-u to resize the `next-window'."
 
 (require 'btext-mode)
 
-;; Turn off tramp
-
-(let (elm)
-  (dolist (handler (list 'tramp-completion-file-name-handler 'tramp-file-name-handler))
-    (when (setq elm (rassq handler file-name-handler-alist))
-      (setq file-name-handler-alist (delq elm file-name-handler-alist)))))
-
 ;; Disabled commands
 
 (put 'erase-buffer 'disabled nil)
