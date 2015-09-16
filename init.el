@@ -13,7 +13,7 @@
 
 (setq-default tramp-mode nil)
 
-(require 'package)
-(package-initialize)
-
-(require 'my-init)
+(let ((gc-cons-threshold 10000000))
+  (require 'package)
+  (package-initialize)
+  (require 'my-init))
