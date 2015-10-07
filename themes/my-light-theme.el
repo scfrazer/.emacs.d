@@ -6,6 +6,10 @@
    'my-light
 
    `(ac-completion-face ((,class (:foreground "#A8A8A8"))))
+   `(avy-lead-face ((,class (:foreground "white" :background "#e52b50" :slant normal))))
+   `(avy-lead-face-0 ((,class (:foreground "white" :background "#4f57f9" :slant normal))))
+   `(avy-lead-face-1 ((,class (:foreground "white" :background "gray" :slant normal))))
+   `(avy-lead-face-2 ((,class (:foreground "white" :background "#f86bf3" :slant normal))))
    `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#5F00AF"))))
@@ -37,6 +41,7 @@
    `(ediff-odd-diff-A ((,class (:background "#C6C6C6" :foreground "#000000"))))
    `(ediff-odd-diff-B ((,class (:background "#C6C6C6" :foreground "#000000"))))
    `(error ((,class (:foreground "#CD0000" :weight bold))))
+   `(escape-glyph ((,class (:foreground "#AF0000" :background "#FFFFD7"))))
    `(etags-select-highlight-tag-face ((,class (:foreground "#E4E4E4" :background "#005FAF"))))
    `(flymake-errline ((,class (:inherit nil :background "#FFD7D7"))))
    `(flymake-warnline ((,class (:inherit nil :background "#FFFFD7"))))
