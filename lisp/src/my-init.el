@@ -87,6 +87,7 @@
 
 (require 'my-task)
 (require 'my-theme)
+(require 'my-undo)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
@@ -832,28 +833,30 @@
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 (defun my-apply-macro-to-region-lines (top bottom)
-  "Like `apply-macro-to-region-lines' but works with offset into line."
+  "Like `apply-macro-to-region-lines' but works with offset into line, and
+undoable all at once."
   (interactive "r")
   (when (null last-kbd-macro)
     (error "No keyboard macro has been defined"))
   (save-excursion
-    (let ((end-marker (copy-marker bottom))
-          next-line-marker column)
-      (goto-char top)
-      (setq column (current-column))
-      (beginning-of-line)
-      (setq next-line-marker (point-marker))
-      (while (< next-line-marker end-marker)
-        (goto-char next-line-marker)
-        (save-excursion
-          (forward-line 1)
-          (set-marker next-line-marker (point)))
-        (save-excursion
-          (let ((mark-active nil))
-            (forward-char column)
-            (execute-kbd-macro last-kbd-macro))))
-      (set-marker end-marker nil)
-      (set-marker next-line-marker nil))))
+    (with-no-undo-boundaries
+      (let ((end-marker (copy-marker bottom))
+            next-line-marker column)
+        (goto-char top)
+        (setq column (current-column))
+        (beginning-of-line)
+        (setq next-line-marker (point-marker))
+        (while (< next-line-marker end-marker)
+          (goto-char next-line-marker)
+          (save-excursion
+            (forward-line 1)
+            (set-marker next-line-marker (point)))
+          (save-excursion
+            (let ((mark-active nil))
+              (forward-char column)
+              (execute-kbd-macro last-kbd-macro))))
+        (set-marker end-marker nil)
+        (set-marker next-line-marker nil)))))
 
 (defun my-ascii-table ()
   "Display basic ASCII table (0 thru 128)."
@@ -910,6 +913,12 @@
   (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
     (beginning-of-line)
     (forward-line -1)))
+
+(defun my-call-last-kbd-macro (&optional rpt)
+  "Like `call-last-kbd-macro', but undoable all at once."
+  (interactive "P")
+  (with-no-undo-boundaries
+    (call-last-kbd-macro rpt)))
 
 (defun my-case-symbol (mode)
   "Change case of symbol.  MODE is 'upcase 'downcase or 'capitalize."
@@ -1789,6 +1798,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
  ("C-x `"       . my-goto-next-error)
  ("C-x c"       . clone-indirect-buffer-other-window)
+ ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
