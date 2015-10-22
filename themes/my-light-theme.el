@@ -6,10 +6,10 @@
    'my-light
 
    `(ac-completion-face ((,class (:foreground "#A8A8A8"))))
-   `(avy-lead-face ((,class (:foreground "white" :background "#e52b50" :slant normal))))
-   `(avy-lead-face-0 ((,class (:foreground "white" :background "#4f57f9" :slant normal))))
-   `(avy-lead-face-1 ((,class (:foreground "white" :background "gray" :slant normal))))
-   `(avy-lead-face-2 ((,class (:foreground "white" :background "#f86bf3" :slant normal))))
+   `(avy-lead-face ((,class (:foreground "#D7005F" :background "color-255" :slant normal :weight bold))))
+   `(avy-lead-face-0 ((,class (:foreground "#5C5CFF" :background "color-255" :slant normal :weight bold))))
+   `(avy-lead-face-1 ((,class (:foreground "#BCBCBC" :background "color-255" :slant normal :weight bold))))
+   `(avy-lead-face-2 ((,class (:foreground "#FF5FFF" :background "color-255" :slant normal :weight bold))))
    `(bm-face ((,class (:foreground nil :background "#FFFF5F"))))
    `(button ((,class (:foreground "#008787"))))
    `(compilation-column-number ((,class (:foreground "#5F00AF"))))

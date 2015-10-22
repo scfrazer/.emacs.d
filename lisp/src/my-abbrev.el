@@ -26,7 +26,9 @@
   (lambda()
     (let ((filename (buffer-file-name (and (minibufferp) (window-buffer (minibuffer-selected-window))))))
       (insert (if filename
-                  (file-name-nondirectory filename)
+                  (if current-prefix-arg
+                      (file-name-sans-extension (file-name-nondirectory filename))
+                    (file-name-nondirectory filename))
                 "*NOFILE*")))))
 
 (define-abbrev global-abbrev-table

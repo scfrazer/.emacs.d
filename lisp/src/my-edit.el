@@ -14,7 +14,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
         (kill-region (region-beginning) (region-end)))
     (if (or arg (not (eolp)) (bolp))
         (if (and arg (listp arg))
-            (delete-region (point-at-bol) (point-at-bol 2))
+            (delete-region (point) (point-at-eol))
           (kill-line))
       (my-edit-join-line-with-next))))
 

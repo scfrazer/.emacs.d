@@ -121,8 +121,7 @@
   :bind* (("C-j" . my-avy-goto))
   :config
   (progn
-    (setq avy-keys (nconc (number-sequence ?a ?z)
-                          (number-sequence ?A ?Z))
+    (setq avy-keys (number-sequence ?a ?z);; (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
           avy-all-windows nil
           avy-case-fold-search nil)
 
@@ -323,7 +322,7 @@
   (require 'my-pop-back))
 
 (use-package my-imenu-list
-  :bind* ("C-c I" . imenu-list-minor-mode)
+  :commands (imenu-list-minor-mode)
   :config
   (progn
     (require 'my-imenu)
@@ -549,9 +548,7 @@
   (defalias 'sl 'my-sort-lines))
 
 (use-package speedbar
-  :commands (sr-speedbar-toggle)
-  :init
-  (defalias 'sb 'sr-speedbar-toggle)
+  :bind* ("C-c I" . sr-speedbar-toggle)
   :config
   (progn
     (require 'sr-speedbar)
