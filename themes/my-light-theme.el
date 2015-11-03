@@ -105,7 +105,7 @@
    `(magit-sequence-part ((,class (:foreground "#D78700"))))
    `(magit-sequence-stop ((,class (:foreground "#5F875F"))))
    `(magit-tag ((,class (:foreground "#D78700"))))
-   `(match ((,class (:background "#FFD7FF"))))
+   `(match ((,class (:background "#FFD7AF"))))
    `(minibuffer-prompt ((,class (:foreground "#005F87"))))
    `(mode-line ((,class (:background "#BCBCBC" :foreground "#000000"))))
    `(mode-line-buffer-id ((,class (:foreground "#0000D7"))))

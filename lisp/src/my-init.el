@@ -157,8 +157,8 @@
                   (avy--generic-jump regex nil avy-style))))))))))
 
 (use-package ag2
-  :bind* (("C-c G" . ag2)
-          ("C-c g" . ag2-local))
+  :bind* (("M-s G" . ag2)
+          ("M-s g" . ag2-local))
   :config
   (progn
     (require 'my-grep-ed)
@@ -286,8 +286,8 @@
  (require 'my-flymake))
 
 (use-package grep
-  :bind* (("M-s G" . my-rgrep)
-          ("M-s g" . my-lgrep))
+  :bind* (("C-c G" . my-rgrep)
+          ("C-c g" . my-lgrep))
   :config
   (progn
     (require 'my-grep)
@@ -804,6 +804,7 @@
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
+(add-to-list 'auto-mode-alist '("\\.zsh.*\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
 
@@ -1699,6 +1700,8 @@ Prefix with C-u to resize the `next-window'."
       (overlay-put my-next-error-overlay 'face 'my-next-error-face))))
 
 (defun my-sh-mode-hook ()
+  (when (string-match "\\.zsh.*\\'" buffer-file-name)
+    (sh-set-shell "zsh"))
   (use-local-map nil))
 
 (defun my-whitespace-off-hook ()
