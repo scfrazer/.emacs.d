@@ -100,6 +100,8 @@
             ("C-x {" . my-win-resize-left-start)
             ("C-x }" . my-win-resize-right-start))
 
+(require 'zsh-edit-mode)
+
 ;; Deferred packages
 
 (eval-when-compile
@@ -1701,8 +1703,7 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-sh-mode-hook ()
   (when (string-match "\\.zsh.*\\'" buffer-file-name)
-    (sh-set-shell "zsh"))
-  (use-local-map nil))
+    (sh-set-shell "zsh")))
 
 (defun my-whitespace-off-hook ()
   (my-font-lock-show-whitespace -1))
