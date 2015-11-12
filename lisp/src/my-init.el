@@ -801,12 +801,13 @@
               x-select-enable-clipboard nil)
 
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
-(add-to-list 'auto-mode-alist '("\\.cron\\'" . crontab-mode))
+(add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
 (add-to-list 'auto-mode-alist '("\\.zsh.*\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
 
