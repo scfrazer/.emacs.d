@@ -134,11 +134,11 @@
       (if (= 11 char)
           (call-interactively 'avy-goto-char)
         (if (= 12 char)
-            (avy-goto-line)
+            (call-interactively 'avy-goto-line)
           (if (and (not (< 31 char 127))
                    (not (= 13 char)))
               (error "Unknown char")
-            (avy--with-avy-keys avy-goto-word-1
+            (avy-with avy-goto-word-1
               (let* ((str (string char))
                      (regex (cond ((= 13 char)
                                    "\n")
@@ -1141,7 +1141,8 @@ With a numeric prefix, goto that window line."
         (setq line (match-string 1 line-col)
               col (match-string 3 line-col))
         (when line
-          (goto-line (string-to-number line)))
+          (goto-char (point-min))
+          (forward-line (1- (string-to-number line))))
         (when col
           (move-to-column (string-to-number col)))))))
 
