@@ -411,6 +411,7 @@
     (setq magit-auto-revert-mode nil
           magit-backup-mode nil
           magit-delete-by-moving-to-trash nil
+          magit-diff-auto-show nil
           magit-popup-show-help-echo nil
           magit-popup-show-help-section nil
           magit-repository-directories (list "~/.emacs.d" "~/Projects")
