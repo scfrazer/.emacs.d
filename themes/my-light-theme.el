@@ -5,7 +5,6 @@
   (custom-theme-set-faces
    'my-light
 
-   `(ac-completion-face ((,class (:foreground "#A8A8A8"))))
    `(avy-lead-face ((,class (:foreground "#D7005F" :background "color-255" :slant normal :weight bold))))
    `(avy-lead-face-0 ((,class (:foreground "#5C5CFF" :background "color-255" :slant normal :weight bold))))
    `(avy-lead-face-1 ((,class (:foreground "#BCBCBC" :background "color-255" :slant normal :weight bold))))
@@ -108,7 +107,7 @@
    `(match ((,class (:background "#FFD7AF"))))
    `(minibuffer-prompt ((,class (:foreground "#005F87"))))
    `(mode-line ((,class (:background "#BCBCBC" :foreground "#000000"))))
-   `(mode-line-buffer-id ((,class (:foreground "#0000D7"))))
+   `(mode-line-buffer-id ((,class (:foreground "#0000D7" :weight bold))))
    `(mode-line-inactive ((,class (:background "#EEEEEE" :foreground "#BCBCBC"))))
    `(my-debug-face ((,class (:background "#FF8700" :foreground "#000000"))))
    `(my-fixme-face ((,class (:background "#CD0000" :foreground "#FFFFFF"))))

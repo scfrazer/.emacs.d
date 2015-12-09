@@ -14,4 +14,10 @@
     (disable-theme theme))
   (load-theme 'my-dark t))
 
+(defun my-theme-misterioso ()
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
+  (load-theme 'my-misterioso t))
+
 (provide 'my-theme)
