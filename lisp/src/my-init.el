@@ -124,7 +124,7 @@
   :bind* (("C-j" . my-avy-goto))
   :config
   (progn
-    (setq avy-keys (number-sequence ?a ?z);; (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
+    (setq avy-keys (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
           avy-all-windows nil
           avy-case-fold-search nil)
 
