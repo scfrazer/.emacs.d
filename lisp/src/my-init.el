@@ -1636,6 +1636,7 @@ Prefix with C-u to resize the `next-window'."
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
 ;;  (require 'use-package)
+  (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
              '("Require"
                "^(require +'\\(\\_<.+\\_>\\)" 1))

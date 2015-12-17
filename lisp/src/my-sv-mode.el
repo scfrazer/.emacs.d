@@ -268,4 +268,18 @@ With prefix argument, add a condition."
   "set_inst_override_by_type(\"TODO.path\", TODO_orig::get_type(), TODO_over::get_type());"
   (lambda () (back-to-indentation) (search-forward "\"")))
 
+(define-abbrev sv-mode-abbrev-table
+  "phr"
+  ""
+  (lambda()
+    (insert "phase.raise_objection(this);")
+    (sv-mode-indent-line)))
+
+(define-abbrev sv-mode-abbrev-table
+  "phd"
+  ""
+  (lambda()
+    (insert "phase.drop_objection(this);")
+    (sv-mode-indent-line)))
+
 (provide 'my-sv-mode)

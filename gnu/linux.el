@@ -1,6 +1,6 @@
 ;; Theme
 
-(my-theme-light)
+(my-theme-misterioso)
 
 ;; X vs. terminal
 

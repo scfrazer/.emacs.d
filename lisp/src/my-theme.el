@@ -20,4 +20,7 @@
     (disable-theme theme))
   (load-theme 'my-misterioso t))
 
+;; (setq-default frame-background-mode 'dark)
+;; (mapc 'frame-set-background-mode (frame-list))
+
 (provide 'my-theme)
