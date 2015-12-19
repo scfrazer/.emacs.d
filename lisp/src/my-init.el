@@ -86,7 +86,6 @@
 (global-show-mark-mode 1)
 
 (require 'my-task)
-(require 'my-theme)
 (require 'my-undo)
 
 (require 'uniquify)
@@ -727,6 +726,7 @@
               confirm-kill-emacs 'y-or-n-p
               cursor-in-non-selected-windows nil
               cursor-type 'box
+              custom-theme-directory (concat user-emacs-directory "themes")
               dabbrev-case-fold-search nil
               desktop-restore-frames nil
               echo-keystrokes 0.1
@@ -1483,6 +1483,12 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
       (set-register (register-read-with-preview "(Region) Set register:")
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
+
+(defun my-theme ()
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
+  (load-theme 'smf t))
 
 (defun my-tidy-lines ()
   "Tidy up lines in region."

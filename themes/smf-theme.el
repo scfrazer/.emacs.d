@@ -1,9 +1,9 @@
-(deftheme my-misterioso
+(deftheme smf
   "Terminal with light background.")
 
 (let ((class '((class color) (min-colors 89))))
   (custom-theme-set-faces
-   'my-misterioso
+   'smf
 
    `(avy-lead-face                    ((,class (:foreground "white" :background "color-161" :slant normal :weight bold))))
    `(avy-lead-face-0                  ((,class (:foreground "white" :background "color-25" :slant normal :weight bold))))
@@ -160,4 +160,4 @@
 
    ))
 
-(provide-theme 'my-misterioso)
+(provide-theme 'smf)

@@ -7,7 +7,8 @@
   :group 'languages)
 
 (defface specterx-directive-face
-  '((t (:foreground "#005fff")))
+  '((((class color) (background light)) :foreground "#005fff")
+    (((class color) (background  dark)) :foreground "#00AFFF"))
   "Face for SpecterX directives."
   :group 'specterx-mode)
 
