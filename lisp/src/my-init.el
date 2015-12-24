@@ -1484,8 +1484,18 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
-(defun my-theme ()
+(defun my-theme-dark ()
+  "Set dark theme."
   (interactive)
+  (customize-set-variable 'frame-background-mode 'dark)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
+  (load-theme 'smf t))
+
+(defun my-theme-light ()
+  "Set light theme."
+  (interactive)
+  (customize-set-variable 'frame-background-mode 'light)
   (dolist (theme custom-enabled-themes)
     (disable-theme theme))
   (load-theme 'smf t))
