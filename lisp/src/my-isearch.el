@@ -81,7 +81,7 @@
 (define-key isearch-mode-map (kbd "C-g") 'isearch-cancel)
 (define-key isearch-mode-map (kbd "C-w") 'my-isearch-yank-sexp)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
-(define-key isearch-mode-map (kbd "DEL") 'isearch-del-char)
+(define-key isearch-mode-map (kbd "DEL") 'isearch-delete-char)
 (define-key isearch-mode-map (kbd "M-w") 'my-isearch-yank-region)
 (define-key isearch-mode-map (kbd "RET") 'my-isearch-exit-other-end)
 
