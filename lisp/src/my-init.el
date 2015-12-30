@@ -367,12 +367,13 @@
     (defun my-js2-mode-hook ()
       (setq-local mode-name "js2")
       (auto-complete-mode 1)
-      (local-set-key (kbd "M-\\") 'ac-start)
-      (local-set-key (kbd "C-c C-j") 'my-js2-mode-insert-doc)
-      (local-set-key (kbd "@") 'js-doc-insert-tag)
-      (local-set-key (kbd ")") 'my-js2-mode-electic-closer)
-      (local-set-key (kbd "]") 'my-js2-mode-electic-closer)
-      (local-set-key (kbd "}") 'my-js2-mode-electic-closer)
+      (bind-keys :map js2-mode-map
+                 ("M-\\" . ac-start)
+                 ("C-c C-j" . my-js2-mode-insert-doc)
+                 ("@" . js-doc-insert-tag)
+                 (")" . my-js2-mode-electic-closer)
+                 ("]" . my-js2-mode-electic-closer)
+                 ("}" . my-js2-mode-electic-closer))
       (my-tern-mode))
     (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
 
@@ -621,10 +622,16 @@
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :config
-  (setq web-mode-auto-close-style 0
-        web-mode-enable-auto-closing t
-        web-mode-enable-auto-indentation t
-        web-mode-enable-current-element-highlight t))
+  (progn
+    (setq web-mode-auto-close-style 1
+          web-mode-enable-auto-closing t
+          web-mode-enable-auto-indentation t
+          web-mode-enable-current-element-highlight t)
+    (defun my-web-mode-comment-insert ()
+      (interactive)
+      (web-mode-comment-insert))
+    (bind-keys :map web-mode-map
+               ("C-c C-o" . my-web-mode-comment-insert))))
 
 (use-package my-xclip
   :bind* (("C-c X" . my-xclip-yank)
@@ -1177,11 +1184,15 @@ end of a non-blank line, or insert an 80-column comment line"
             (insert comment-start)
             (delete-horizontal-space)
             (setq char (char-before))
-            (insert-char char (- 80 (- (point) (point-at-bol)))))
+            (insert-char char (- 80 (- (point) (point-at-bol)) (length comment-end)))
+            (insert comment-end))
         (end-of-line)
         (insert "  " comment-start)
         (delete-horizontal-space)
-        (insert" ")))))
+        (insert " ")
+        (when (> (length comment-end) 0)
+          (save-excursion
+            (insert " " comment-end)))))))
 
 (defun my-kill-frame-or-emacs ()
   "Kill a frame or emacs"
@@ -1297,26 +1308,30 @@ arg do something special."
 (add-to-list 'minor-mode-alist '(my-paste-mode " Paste"))
 (defun my-paste-mode ()
   (interactive)
-  (let ((buf (current-buffer))
-        (my-paste-mode t))
-    (with-temp-buffer
-      (let ((stay t)
-            (text (current-buffer)))
-        (redisplay)
-        (while stay
-          (let ((char (let ((inhibit-redisplay t)) (read-event nil t 0.1))))
-            (unless char
-              (with-current-buffer buf (insert-buffer-substring text))
-              (erase-buffer)
-              (redisplay)
-              (setq char (read-event nil t)))
-            (cond
-             ((not (characterp char)) (setq stay nil))
-             ((eq char ?\r) (insert ?\n))
-             ((eq char ?\e)
-              (if (sit-for 0.1 'nodisp) (setq stay nil) (insert ?\e)))
-             (t (insert char)))))
-        (insert-buffer-substring text)))))
+  (set-mark (point))
+  (fundamental-mode)
+  (unwind-protect
+      (let ((buf (current-buffer))
+            (my-paste-mode t))
+        (with-temp-buffer
+          (let ((stay t)
+                (text (current-buffer)))
+            (redisplay)
+            (while stay
+              (let ((char (let ((inhibit-redisplay t)) (read-event nil t 0.1))))
+                (unless char
+                  (with-current-buffer buf (insert-buffer-substring text))
+                  (erase-buffer)
+                  (redisplay)
+                  (setq char (read-event nil t)))
+                (cond
+                 ((not (characterp char)) (setq stay nil))
+                 ((eq char ?\r) (insert ?\n))
+                 ((eq char ?\e)
+                  (if (sit-for 0.1 'nodisp) (setq stay nil) (insert ?\e)))
+                 (t (insert char)))))
+            (insert-buffer-substring text))))
+    (normal-mode)))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name in the kill-ring.
