@@ -907,11 +907,18 @@ undoable all at once."
     (beginning-of-line)
     (forward-line -1)))
 
+(defvar my-kbd-macro-transient-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "e") 'my-call-last-kbd-macro)
+    map)
+  "Keymap used for keyboard macros.")
+
 (defun my-call-last-kbd-macro (&optional rpt)
   "Like `call-last-kbd-macro', but undoable all at once."
   (interactive "P")
   (with-no-undo-boundaries
-    (call-last-kbd-macro rpt)))
+    (call-last-kbd-macro rpt))
+  (set-transient-map my-kbd-macro-transient-map t))
 
 (defun my-case-symbol (mode)
   "Change case of symbol.  MODE is 'upcase 'downcase or 'capitalize."
