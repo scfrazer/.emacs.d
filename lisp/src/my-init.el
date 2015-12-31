@@ -858,7 +858,6 @@ undoable all at once."
   (erase-buffer)
   (save-excursion
     (let ((i -1))
-      (insert "ASCII characters 0 thru 127.\n\n")
       (insert "Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char| Hex   Dec  Char\n")
       (while (< i 31)
         (insert (format "0x%-2X %4d %4s | 0x%-2X %4d %4s | 0x%-2X %4d %4s | 0x%-2X %4d %4s\n"
@@ -1336,8 +1335,7 @@ arg do something special."
                  ((eq char ?\r) (insert ?\n))
                  ((eq char ?\e)
                   (if (sit-for 0.1 'nodisp) (setq stay nil) (insert ?\e)))
-                 (t (insert char)))))
-            (insert-buffer-substring text))))
+                 (t (insert char))))))))
     (normal-mode)))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
@@ -1800,6 +1798,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
  ("C-c m"       . my-compile)
  ("C-c n"       . my-narrow)
+ ("C-c p"       . my-paste-mode)
  ("C-c q"       . bury-buffer)
  ("C-c r"       . revert-buffer)
  ("C-c s"       . my-set-register)
@@ -1920,7 +1919,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
-(defalias 'paste 'my-paste-mode)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
