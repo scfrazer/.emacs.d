@@ -1338,7 +1338,9 @@ arg do something special."
               (insert char))
              ((> char 127)
               nil)
-             (t (setq stay nil)))))
+             (t
+              (push char unread-command-events)
+              (setq stay nil)))))
         (insert-buffer-substring text)))))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
