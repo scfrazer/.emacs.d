@@ -1311,32 +1311,35 @@ arg do something special."
       (goto-char (point-min)))))
 
 (defvar my-paste-mode nil)
-(add-to-list 'minor-mode-alist '(my-paste-mode " Paste"))
+(add-to-list 'minor-mode-alist `(my-paste-mode ,(propertize " PASTE " 'face 'warning)))
 (defun my-paste-mode ()
   (interactive)
   (set-mark (point))
-  (fundamental-mode)
-  (unwind-protect
-      (let ((buf (current-buffer))
-            (my-paste-mode t))
-        (with-temp-buffer
-          (let ((stay t)
-                (text (current-buffer)))
-            (redisplay)
-            (while stay
-              (let ((char (let ((inhibit-redisplay t)) (read-event nil t 0.1))))
-                (unless char
-                  (with-current-buffer buf (insert-buffer-substring text))
-                  (erase-buffer)
-                  (redisplay)
-                  (setq char (read-event nil t)))
-                (cond
-                 ((not (characterp char)) (setq stay nil))
-                 ((eq char ?\r) (insert ?\n))
-                 ((eq char ?\e)
-                  (if (sit-for 0.1 'nodisp) (setq stay nil) (insert ?\e)))
-                 (t (insert char))))))))
-    (normal-mode)))
+  (let ((buf (current-buffer))
+        (my-paste-mode t))
+    (with-temp-buffer
+      (let ((stay t)
+            (text (current-buffer)))
+        (redisplay)
+        (while stay
+          (let ((char (let ((inhibit-redisplay t)) (read-event nil t 0.1))))
+            (unless char
+              (with-current-buffer buf (insert-buffer-substring text))
+              (erase-buffer)
+              (redisplay)
+              (setq char (read-event nil t)))
+            (cond
+             ((or (eq char ?\C-j)
+                  (eq char ?\C-m))
+              (insert ?\n))
+             ((eq char ?\C-i)
+              (insert ?\t))
+             ((< 31 char 127)
+              (insert char))
+             ((> char 127)
+              nil)
+             (t (setq stay nil)))))
+        (insert-buffer-substring text)))))
 
 (defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name in the kill-ring.
