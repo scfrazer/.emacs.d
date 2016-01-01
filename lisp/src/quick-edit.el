@@ -430,6 +430,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
     (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
     (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line)))
     (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
+    (define-key map (kbd "h") 'qe-unit-symbol)
     (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
     (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
     (define-key map (kbd "`") (lambda () (qe-region-inside-quotes ?\` 'forward)))
@@ -566,6 +567,11 @@ preserved.")
 (defun qe-unit-ends-forward-whitespace ()
   "Text unit ends for forward whitespace."
   (cons (point) (progn (skip-syntax-forward " ") (point))))
+
+(defun qe-unit-symbol ()
+  "Text unit ends for current symbol."
+  (cons (progn (skip-syntax-backward "w_") (point))
+        (progn (skip-syntax-forward "w_") (point))))
 
 (defun qe-unit-ends-inside (&optional msg)
   "Text unit ends for inside quotes/parens."
