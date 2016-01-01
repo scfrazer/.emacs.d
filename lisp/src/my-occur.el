@@ -9,7 +9,8 @@
       (occur (read-from-minibuffer "List lines matching regexp: "
                                    (regexp-quote (buffer-substring (region-beginning) (region-end)))
                                    nil nil 'regexp-history))
-    (let* ((default (buffer-substring-no-properties
+    (let* ((search-spaces-regexp search-whitespace-regexp)
+           (default (buffer-substring-no-properties
                      (point)
                      (save-excursion (skip-syntax-forward "w_") (point))))
            (regexp (read-from-minibuffer
@@ -21,7 +22,7 @@
 (defun my-multi-occur (&optional arg)
   "Like `multi-occur-in-matching-buffers', but with prefix arg take the string from the region."
   (interactive "P")
-  (let (regexp bufs)
+  (let ((search-spaces-regexp search-whitespace-regexp) regexp bufs)
     (if arg
         (setq regexp (read-from-minibuffer
                       "List lines matching regexp: "

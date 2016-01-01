@@ -332,7 +332,8 @@
   :config
   (progn
     (setq isearch-allow-scroll t
-          lazy-highlight-initial-delay 0)
+          lazy-highlight-initial-delay 0
+          search-whitespace-regexp ".*?")
     (put 'my-recenter 'isearch-scroll t)))
 
 (use-package js2-mode
