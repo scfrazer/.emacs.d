@@ -18,62 +18,64 @@
 ;; Faces
 
 (defface uvm-log-mode-timestamp-face
-  '((t (:foreground "#875F87")))
+  '((t :inherit font-lock-type-face))
   "Font Lock mode face used to highlight timestamps."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-id-face
-  '((t (:foreground "#5F5FD7")))
+  '((t :inherit font-lock-string-face))
   "Font Lock mode face used to highlight messages IDs."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-path-face
-  '((t (:foreground "#5F8787")))
+  '((t :inherit font-lock-variable-name-face))
   "Font Lock mode face used to highlight the component path."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-msg-face
-  '((t (:inherit default)))
+  '((t :inherit default))
   "Font Lock mode face used to highlight messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-phase-face
-  '((t (:foreground "#875F5F")))
+  '((t :inherit font-lock-keyword-face))
   "Font Lock mode face used to highlight phase change messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-error-face
-  '((t (:foreground "#FF0000")))
+  '((t :inherit error))
   "Font Lock mode face used to highlight errors."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-warning-face
-  '((t (:foreground "#878700")))
+  '((t :inherit warning))
   "Font Lock mode face used to highlight warnings."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-face
-  '((t (:foreground "#000000" :background "#FF8700")))
+  '((t (:foreground "black" :background "#FF8700")))
   "Font Lock mode face used to highlight debug markers."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-msg-face
-  '((t (:foreground "#D75F00")))
+  '((t :foreground "#FFAF00"))
   "Font Lock mode face used to highlight debug messages."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-sb-add-face
-  '((t (:foreground "#D700FF")))
+  '((((class color) (background light)) :foreground "#D700FF")
+    (((class color) (background  dark)) :foreground "#D787FF"))
   "Font Lock mode face used to highlight send statements."
   :group 'sse-log-mode)
 
 (defface uvm-log-mode-sb-match-face
-  '((t (:foreground "#00AF00")))
+  '((((class color) (background light)) :foreground "#00AF00")
+    (((class color) (background  dark)) :foreground "#00FF00"))
   "Font Lock mode face used to highlight match statements."
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-highlight-phase-face
-  '((t (:inherit show-paren-match-face)))
+  '((t :inherit show-paren-match-face))
   "Font Lock mode face used to highlight tags."
   :group 'uvm-log-mode)
 

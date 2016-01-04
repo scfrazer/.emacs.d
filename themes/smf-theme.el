@@ -21,7 +21,6 @@
    `(font-lock-function-name-face     ((,dark :foreground "color-50")))
    `(font-lock-keyword-face           ((,dark :foreground "color-214" :weight bold)))
    `(font-lock-preprocessor-face      ((,dark :foreground "color-178")))
-   `(font-lock-reference-face         ((,dark :foreground "color-216")))
    `(font-lock-string-face            ((,dark :foreground "color-209")))
    `(font-lock-type-face              ((,dark :foreground "color-80")))
    `(font-lock-variable-name-face     ((,dark :foreground "color-186")))
