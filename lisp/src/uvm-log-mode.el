@@ -42,16 +42,6 @@
   "Font Lock mode face used to highlight phase change messages."
   :group 'uvm-log-mode)
 
-(defface uvm-log-mode-error-face
-  '((t :inherit error))
-  "Font Lock mode face used to highlight errors."
-  :group 'uvm-log-mode)
-
-(defface uvm-log-mode-warning-face
-  '((t :inherit warning))
-  "Font Lock mode face used to highlight warnings."
-  :group 'uvm-log-mode)
-
 (defface uvm-log-mode-debug-face
   '((t (:foreground "black" :background "#FF8700")))
   "Font Lock mode face used to highlight debug markers."
@@ -91,6 +81,10 @@
      (2 'uvm-log-mode-debug-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-debug-msg-face))
+    ("\\_<\\(WARNING\\|Warning\\|warning\\)\\_>"
+     (0 'warning))
+    ("\\_<\\(ERROR\\|Error\\|error\\|FATAL\\|Fatal\\|fatal\\)\\_>"
+     (0 'error))
     ("=>"
      (0 'font-lock-preprocessor-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
@@ -109,12 +103,12 @@
      (6 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
-     (2 'font-lock-warning-face)
+     (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\([^ ]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
-     (2 'font-lock-warning-face)
+     (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
     ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(.*\\)"
