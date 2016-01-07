@@ -42,24 +42,6 @@
     (when bufs
       (multi-occur bufs regexp))))
 
-(defface my-occur-buffer-name-face
-  '((t (:foreground "#000000" :background "#D7AFAF" :slant italic)))
-  "Face for occur buffer names."
-  :group 'faces)
-
-(defface my-occur-prefix-face
-  '((t (:inherit my-occur-buffer-name-face)))
-  "Face for occur line numbers."
-  :group 'faces)
-
-;; TODO Remove this when new Emacs version with patches available
-(load-library "replace")
-(defadvice face-differs-from-default-p (around my-occur-face-differs-from-default-p activate)
-  (if (equal (ad-get-arg 0) 'my-occur-prefix-face)
-      (setq ad-return-value t)
-    ad-do-it))
-;; TODO
-
 (defun my-occur-mode-hook ()
   (define-key occur-mode-map "q" (lambda ()
                                    (interactive)
@@ -68,8 +50,8 @@
                                      (delete-window))))
   (define-key occur-mode-map "n" 'next-line)
   (define-key occur-mode-map "p" 'previous-line)
-  (setq list-matching-lines-prefix-face 'my-occur-prefix-face)
-  (setq list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
+;;   (setq list-matching-lines-prefix-face 'my-occur-prefix-face)
+;;   (setq list-matching-lines-buffer-name-face 'my-occur-buffer-name-face)
   (setq truncate-lines t)
   (when (eq major-mode 'occur-mode)
     (occur-rename-buffer t)))

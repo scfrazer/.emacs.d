@@ -14,17 +14,17 @@
   :group 'faces)
 
 (defface my-debug-face
-  '((t (:foreground "#000000" :background "#FF8700")))
+  '((t (:foreground "black" :background "orange2")))
   "todo/fixme highlighting."
   :group 'faces)
 
 (defface my-todo-face
-  '((t (:foreground "#000000" :background "#FFFF00")))
+  '((t :inherit warning))
   "todo/fixme highlighting."
   :group 'faces)
 
 (defface my-fixme-face
-  '((t (:foreground "#FFFFFF" :background "#CD0000")))
+  '((t :inherit error))
   "todo/fixme highlighting."
   :group 'faces)
 

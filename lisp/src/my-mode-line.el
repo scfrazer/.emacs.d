@@ -7,17 +7,17 @@
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
 
 (defface my-narrow-face
-  '((t (:foreground "black" :background "yellow3")))
+  '((t :inherit warning))
   "todo/fixme highlighting."
   :group 'faces)
 
 (defface my-read-only-face
-  '((t (:foreground "black" :background "orange3")))
+  '((t (:foreground "black" :background "orange2")))
   "Read-only buffer highlighting."
   :group 'faces)
 
 (defface my-modified-face
-  '((t (:foreground "gray80" :background "red4")))
+  '((t :inherit error))
   "Modified buffer highlighting."
   :group 'faces)
 

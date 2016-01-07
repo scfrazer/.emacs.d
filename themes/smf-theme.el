@@ -11,7 +11,7 @@
    `(avy-lead-face-1                     ((,dark :foreground "white" :background "gray" :slant normal :weight bold)))
    `(avy-lead-face-2                     ((,dark :foreground "white" :background "color-207" :slant normal :weight bold)))
    `(bm-face                             ((,dark :foreground nil :background "color-89")))
-   `(error                               ((,dark :foreground "color-231" :background "color-160")))
+   `(error                               ((,dark :foreground "color-231" :background "color-124")))
    `(font-lock-builtin-face              ((,dark :foreground "color-210")))
    `(font-lock-comment-delimiter-face    ((t :inherit font-lock-comment-face)))
    `(font-lock-comment-face              ((,dark :foreground "color-102" :slant italic) (,light :foreground "color-60" :slant italic)))
@@ -47,7 +47,7 @@
    `(show-paren-match-face               ((,dark :foreground "color-231" :background "color-34")))
    `(show-paren-mismatch-face            ((t :inherit error)))
    `(trailing-whitespace                 ((,dark :background "color-238")))
-   `(warning                             ((,dark :foreground "color-231" :background "color-100")))
+   `(warning                             ((,dark :foreground "black" :background "color-184")))
 
    ))
 
