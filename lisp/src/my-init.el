@@ -832,6 +832,8 @@ undoable all at once."
   (interactive "r")
   (when (null last-kbd-macro)
     (error "No keyboard macro has been defined"))
+  (when (= top bottom)
+    (setq bottom (save-excursion (re-search-forward "^\\s-*$" nil 'go) (point))))
   (save-excursion
     (with-no-undo-boundaries
       (let ((end-marker (copy-marker bottom))
