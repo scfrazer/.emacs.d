@@ -580,7 +580,7 @@ expression."
   (save-excursion
     (let ((pos (point)))
       (sv-mode-beginning-of-statement)
-      (re-search-forward "\\_<\\(extern\\|typedef\\|import\\)\\_>" pos t))))
+      (re-search-forward "\\_<\\(extern\\|pure\\|typedef\\|import\\)\\_>" pos t))))
 
 (defun sv-mode-class-decl-p ()
   "Is the current statement a class declaration?"
@@ -1389,7 +1389,7 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
       (unless (and (looking-at "\\_<task\\|function\\_>")
                    (save-excursion
                      (sv-mode-beginning-of-statement)
-                     (looking-at "\\_<extern\\|import\\|export\\|covergroup\\_>")))
+                     (looking-at "\\_<pure\\|extern\\|import\\|export\\|covergroup\\_>")))
         (when (looking-at sv-mode-begin-end-regexp)
           (let ((beg-1 (match-beginning 0))
                 (end-1 (match-end 0))
