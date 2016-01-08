@@ -344,6 +344,7 @@
     (require 'tern)
     (require 'js-doc)
     (require 'web-beautify)
+    ;; TODO (require 'requirejs)
     (setq-default js2-basic-offset 4
                   js2-global-externs '("window" "require" "define")
                   js-doc-file-doc-lines '(js-doc-top-line
