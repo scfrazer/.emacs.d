@@ -73,6 +73,7 @@
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
+(mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
 
 (require 'my-mode-line)
 
@@ -342,6 +343,7 @@
   (progn
     (require 'tern)
     (require 'js-doc)
+    (require 'web-beautify)
     (setq-default js2-basic-offset 4
                   js2-global-externs '("window" "require" "define")
                   js-doc-file-doc-lines '(js-doc-top-line
@@ -1798,6 +1800,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . vcs-compile)
  ("C-c N"       . narrow-to-defun)
+ ("C-c T"       . tidy)
  ("C-c TAB"     . indent-region)
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
