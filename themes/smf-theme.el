@@ -27,6 +27,7 @@
    `(font-lock-type-face                 ((,dark :foreground "color-123")))
    `(font-lock-variable-name-face        ((,dark :foreground "color-84")))
    `(font-lock-warning-face              ((t :inherit error)))
+   `(highlight                           ((t :inherit region)))
    `(ido-first-match                     ((t :inherit warning)))
    `(ido-only-match                      ((t :inherit show-paren-match-face)))
    `(ido-subdir                          ((t :inherit font-lock-keyword-face)))
