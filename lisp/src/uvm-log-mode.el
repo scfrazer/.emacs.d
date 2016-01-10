@@ -53,14 +53,12 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-sb-add-face
-  '((((class color) (background light)) :foreground "#D700FF")
-    (((class color) (background  dark)) :foreground "#D787FF"))
+  '((t :inherit link))
   "Font Lock mode face used to highlight send statements."
-  :group 'sse-log-mode)
+  :group 'uvm-log-mode)
 
 (defface uvm-log-mode-sb-match-face
-  '((((class color) (background light)) :foreground "#00AF00")
-    (((class color) (background  dark)) :foreground "#00FF00"))
+  '((t :inherit link-visited))
   "Font Lock mode face used to highlight match statements."
   :group 'uvm-log-mode)
 
@@ -87,31 +85,31 @@
      (0 'error))
     ("=>"
      (0 'font-lock-preprocessor-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(stream\\[[^]]+\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-add-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(stream\\[[^]]+\\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(stream\\[[^]]+\\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-match-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\([^ ]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\([^ ]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\([a-zA-Z0-9_:-]+\\) \\([^ ]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
@@ -196,7 +194,7 @@
 ;; Mode
 
 (defun uvm-log-mode ()
-  "uvm-log-mode is a major mode for browsing SSE run.log files.\n\n
+  "uvm-log-mode is a major mode for browsing UVM run.log files.\n\n
 \\{uvm-log-mode-map}"
   (interactive)
 
