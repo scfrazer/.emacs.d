@@ -34,7 +34,7 @@
    `(font-lock-string-face               ((,dark :foreground "color-180")))
    `(font-lock-type-face                 ((,dark :foreground "color-123")))
    `(font-lock-variable-name-face        ((,dark :foreground "color-84")))
-   `(font-lock-warning-face              ((t :inherit error)))
+   `(font-lock-warning-face              ((t :inherit warning)))
    `(highlight                           ((t :inherit region)))
    `(hl-line                             ((,dark (:background "color-23" :inherit nil))))
    `(ido-first-match                     ((t :inherit warning)))
