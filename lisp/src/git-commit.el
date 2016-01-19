@@ -1,6 +1,6 @@
 ;;; git-commit.el --- Edit Git commit messages  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010-2015  The Magit Project Contributors
+;; Copyright (C) 2010-2016  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -11,7 +11,7 @@
 ;;	Marius Vollmer <marius.vollmer@gmail.com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
-;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "20150824"))
+;; Package-Requires: ((emacs "24.4") (dash "20151021.113") (with-editor "20160117.1513"))
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -124,6 +124,8 @@
 
 (defvar flyspell-generic-check-word-predicate)
 
+(declare-function magit-expand-git-file-name 'magit-git)
+
 ;;; Options
 ;;;; Variables
 
@@ -174,7 +176,7 @@ The major mode configured here is turned on by the minor mode
   "Hook run at the end of `git-commit-setup'."
   :group 'git-commit
   :type 'hook
-  :options '(magit-revert-buffers
+  :options '(
              git-commit-save-message
              git-commit-setup-changelog-support
              git-commit-turn-on-auto-fill
@@ -356,6 +358,21 @@ usually honor this wish and return non-nil."
        (git-commit-setup)))
 
 (defun git-commit-setup ()
+  ;; cygwin git will pass a cygwin path (/cygdrive/c/foo/.git/...),
+  ;; try to handle this in window-nt Emacs.
+  (--when-let
+      (and (eq system-type 'windows-nt)
+           (not (file-accessible-directory-p default-directory))
+           (if (require 'magit-git nil t)
+               ;; Emacs prepends a "c:".
+               (magit-expand-git-file-name (substring buffer-file-name 2))
+             ;; Fallback if we can't load `magit-git'.
+             (and (string-match "\\`[a-z]:/\\(cygdrive/\\)?\\([a-z]\\)/\\(.*\\)"
+                                buffer-file-name)
+                  (concat (match-string 2 buffer-file-name) ":/"
+                          (match-string 3 buffer-file-name)))))
+    (when (file-accessible-directory-p (file-name-directory it))
+      (find-alternate-file it)))
   (when git-commit-major-mode
     (funcall git-commit-major-mode))
   (setq with-editor-show-usage nil)

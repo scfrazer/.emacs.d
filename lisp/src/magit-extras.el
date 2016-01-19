@@ -1,6 +1,6 @@
-;;; magit-extras.el --- additional functionality for Magit
+;;; magit-extras.el --- additional functionality for Magit  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2008-2015  The Magit Project Contributors
+;; Copyright (C) 2008-2016  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -67,9 +67,9 @@ blame to center around the line point is on."
      (list revision filename
            (and (equal filename
                        (ignore-errors
-                         (magit-file-relative-name (buffer-file-name))))
+                         (magit-file-relative-name buffer-file-name)))
                 (line-number-at-pos)))))
-  (let ((default-directory (magit-toplevel)))
+  (magit-with-toplevel
     (apply #'call-process magit-git-executable nil 0 nil "gui" "blame"
            `(,@(and linenum (list (format "--line=%d" linenum)))
              ,commit
@@ -118,7 +118,8 @@ with two prefix arguments remove ignored files only.
 (defun magit-gitignore (file-or-pattern &optional local)
   "Instruct Git to ignore FILE-OR-PATTERN.
 With a prefix argument only ignore locally."
-  (interactive (magit-gitignore-read-args current-prefix-arg))
+  (interactive (list (magit-gitignore-read-pattern current-prefix-arg)
+                     current-prefix-arg))
   (let ((gitignore
          (if local
              (magit-git-dir (convert-standard-filename "info/exclude"))
@@ -138,13 +139,12 @@ With a prefix argument only ignore locally."
       (magit-run-git "add" ".gitignore"))))
 
 ;;;###autoload
-(defun magit-gitignore-locally (file-or-pattern &optional local)
-  "Instruct Git to locally ignore FILE-OR-PATTERN.
-\n(fn FILE-OR-PATTERN)"
-  (interactive (magit-gitignore-read-args t))
+(defun magit-gitignore-locally (file-or-pattern)
+  "Instruct Git to locally ignore FILE-OR-PATTERN."
+  (interactive (list (magit-gitignore-read-pattern t)))
   (magit-gitignore file-or-pattern t))
 
-(defun magit-gitignore-read-args (local)
+(defun magit-gitignore-read-pattern (local)
   (let* ((default (magit-current-file))
          (choices
           (delete-dups
@@ -160,10 +160,9 @@ With a prefix argument only ignore locally."
         (setq default (concat "*." (file-name-extension default)))
         (unless (member default choices)
           (setq default nil))))
-    (list (magit-completing-read
-           (concat "File or pattern to ignore" (and local " locally"))
-           choices nil nil nil nil default)
-          local)))
+    (magit-completing-read (concat "File or pattern to ignore"
+                                   (and local " locally"))
+                           choices nil nil nil nil default)))
 
 ;;; ChangeLog
 

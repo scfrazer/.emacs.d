@@ -1,6 +1,6 @@
-;;; magit-remote.el --- transfer Git commits
+;;; magit-remote.el --- transfer Git commits  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2008-2015  The Magit Project Contributors
+;; Copyright (C) 2008-2016  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -33,25 +33,57 @@
 
 ;;; Clone
 
+(defcustom magit-clone-set-remote.pushDefault 'ask
+  "Whether to set the value of `remote.pushDefault' after cloning.
+
+If t, then set without asking.  If nil, then don't set.  If
+`ask', then ask."
+  :package-version '(magit . "2.4.0")
+  :group 'magit-commands
+  :type '(choice (const :tag "set" t)
+                 (const :tag "ask" ask)
+                 (const :tag "don't set" nil)))
+
 ;;;###autoload
 (defun magit-clone (repository directory)
   "Clone the REPOSITORY to DIRECTORY.
 Then show the status buffer for the new repository."
   (interactive
    (let  ((url (magit-read-string-ns "Clone repository")))
-     (list url (file-name-as-directory
-                (expand-file-name
-                 (read-directory-name
-                  "Clone to: " nil nil nil
-                  (and (string-match "\\([^./]+\\)\\(\\.git\\)?$" url)
-                       (match-string 1 url))))))))
-  (make-directory directory t)
+     (list url (read-directory-name
+                "Clone to: " nil nil nil
+                (and (string-match "\\([^./]+\\)\\(\\.git\\)?$" url)
+                     (match-string 1 url))))))
+  (setq directory (file-name-as-directory (expand-file-name directory)))
   (message "Cloning %s..." repository)
-  (when (= (magit-call-git "clone" repository directory) 0)
+  (when (= (magit-call-git "clone" repository
+                           ;; Stop cygwin git making a "c:" directory.
+                           (magit-convert-git-filename directory))
+           0)
+    (when (or (eq  magit-clone-set-remote.pushDefault t)
+              (and magit-clone-set-remote.pushDefault
+                   (y-or-n-p "Set `remote.pushDefault' to \"origin\"? ")))
+      (let ((default-directory directory))
+        (magit-call-git "config" "remote.pushDefault" "origin")))
     (message "Cloning %s...done" repository)
     (magit-status-internal directory)))
 
 ;;; Setup
+
+(defcustom magit-remote-add-set-remote.pushDefault 'ask-if-unset
+  "Whether to set the value of `remote.pushDefault' after adding a remote.
+
+If `ask', then always ask.  If `ask-if-unset', then ask, but only
+if the variable isn't set already.  If nil, then don't ever set.
+If the value is a string, then set without asking, provided the
+name of the name of the added remote is equal to that string and
+the variable isn't already set."
+  :package-version '(magit . "2.4.0")
+  :group 'magit-commands
+  :type '(choice (const  :tag "ask if unset" ask-if-unset)
+                 (const  :tag "always ask" ask)
+                 (string :tag "set if named")
+                 (const  :tag "don't set")))
 
 ;;;###autoload (autoload 'magit-remote-popup "magit-remote" nil t)
 (magit-define-popup magit-remote-popup
@@ -63,12 +95,26 @@ Then show the status buffer for the new repository."
               (?k "Remove"  magit-remote-remove)
               (?u "Set url" magit-remote-set-url)))
 
+(defun magit-read-url (prompt &optional initial-input)
+  (let ((url (magit-read-string-ns prompt initial-input)))
+    (if (string-prefix-p "~" url)
+        (expand-file-name url)
+      url)))
+
 ;;;###autoload
 (defun magit-remote-add (remote url)
   "Add a remote named REMOTE and fetch it."
   (interactive (list (magit-read-string-ns "Remote name")
-                     (magit-read-string-ns "Remote url")))
-  (magit-run-git-async "remote" "add" "-f" remote url))
+                     (magit-read-url "Remote url")))
+  (if (pcase (list magit-remote-add-set-remote.pushDefault
+                   (magit-get "remote.defaultPush"))
+        (`(,(pred stringp) ,_) t)
+        ((or `(ask ,_) `(ask-if-unset nil))
+         (y-or-n-p (format "Set `remote.pushDefault' to \"%s\"? " remote))))
+      (progn (magit-call-git "remote" "add" "-f" remote url)
+             (magit-call-git "config" "remote.pushDefault" remote)
+             (magit-refresh))
+    (magit-run-git-async "remote" "add" "-f" remote url)))
 
 ;;;###autoload
 (defun magit-remote-rename (old new)
@@ -84,9 +130,9 @@ Then show the status buffer for the new repository."
   "Change the url of the remote named REMOTE to URL."
   (interactive
    (let  ((remote (magit-read-remote "Set url of remote")))
-     (list remote (magit-read-string-ns
+     (list remote (magit-read-url
                    "Url" (magit-get "remote" remote "url")))))
-  (magit-set url "remote" remote "url"))
+  (magit-run-git "remote" "set-url" remote url))
 
 ;;;###autoload
 (defun magit-remote-remove (remote)
@@ -101,35 +147,70 @@ Then show the status buffer for the new repository."
   "Popup console for fetch commands."
   'magit-commands
   :man-page "git-fetch"
-  :switches '((?p "Prune"      "--prune"))
-  :actions  '((?f "Current"    magit-fetch-current)
-              (?o "Other"      magit-fetch)
-              (?a "All"        magit-fetch-all)
-              (?m "Submodules" magit-submodule-fetch))
-  :default-action 'magit-fetch-current)
+  :switches '((?p "Prune deleted branches" "--prune"))
+  :actions  '("Fetch from"
+              (?p magit-get-push-remote    magit-fetch-from-pushremote)
+              (?u magit-get-remote         magit-fetch-from-upstream)
+              (?e "elsewhere"              magit-fetch)
+              (?a "all remotes"            magit-fetch-all)
+              "Fetch"
+              (?m "submodules"             magit-submodule-fetch))
+  :default-action 'magit-fetch
+  :max-action-columns 1)
+
+(defun magit-git-fetch (remote args)
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "fetch" remote args))
 
 ;;;###autoload
-(defun magit-fetch-current (remote &optional args)
-  "Fetch from the upstream repository of the current branch.
-If `HEAD' is detached or if the upstream is not configured,
-then read the remote."
-  (interactive (list (or (magit-get-remote)
-                         (magit-read-remote "Fetch remote"))
-                     (magit-fetch-arguments)))
-  (magit-run-git-async-no-revert "fetch" remote args))
+(defun magit-fetch-from-pushremote (args)
+  "Fetch from the push-remote of the current branch."
+  (interactive (list (magit-fetch-arguments)))
+  (--if-let (magit-get-push-remote)
+      (magit-git-fetch it args)
+    (--if-let (magit-get-current-branch)
+        (user-error "No push-remote is configured for %s" it)
+      (user-error "No branch is checked out"))))
 
 ;;;###autoload
-(defun magit-fetch (remote &optional args)
+(defun magit-fetch-from-upstream (args)
+  "Fetch from the upstream repository of the current branch."
+  (interactive (list (magit-fetch-arguments)))
+  (--if-let (magit-get-remote)
+      (magit-git-fetch it args)
+    (--if-let (magit-get-current-branch)
+        (user-error "No upstream is configured for %s" it)
+      (user-error "No branch is checked out"))))
+
+;;;###autoload
+(defun magit-fetch (remote args)
   "Fetch from another repository."
   (interactive (list (magit-read-remote "Fetch remote")
                      (magit-fetch-arguments)))
-  (magit-run-git-async-no-revert "fetch" remote args))
+  (magit-git-fetch remote args))
 
 ;;;###autoload
-(defun magit-fetch-all (&optional args)
-  "Fetch from all configured remotes."
+(defun magit-fetch-all (args)
+  "Fetch from all remotes."
   (interactive (list (magit-fetch-arguments)))
-  (magit-run-git-async-no-revert "remote" "update" args))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "remote" "update" args))
+
+;;;###autoload
+(defun magit-fetch-all-prune ()
+  "Fetch from all remotes, and prune.
+Prune remote tracking branches for branches that have been
+removed on the respective remote."
+  (interactive)
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "remote" "update" "--prune"))
+
+;;;###autoload
+(defun magit-fetch-all-no-prune ()
+  "Fetch from all remotes."
+  (interactive)
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "remote" "update"))
 
 ;;; Pull
 
@@ -138,190 +219,281 @@ then read the remote."
   "Popup console for pull commands."
   'magit-commands
   :man-page "git-pull"
-  :switches '((?r "Rebase" "--rebase"))
-  :actions  '((?F "Current" magit-pull-current)
-              (?o "Other"   magit-pull))
-  :default-action 'magit-pull-current)
+  :variables '("Variables"
+               (?r "branch.%s.rebase"
+                   magit-cycle-branch*rebase
+                   magit-pull-format-branch*rebase))
+  :actions '((lambda ()
+               (--if-let (magit-get-current-branch)
+                   (concat
+                    (propertize "Pull into " 'face 'magit-popup-heading)
+                    (propertize it           'face 'magit-branch-local)
+                    (propertize " from"      'face 'magit-popup-heading))
+                 (propertize "Pull from" 'face 'magit-popup-heading)))
+             (?p magit-get-push-branch     magit-pull-from-pushremote)
+             (?u magit-get-upstream-branch magit-pull-from-upstream)
+             (?e "elsewhere"               magit-pull))
+  :default-action 'magit-pull
+  :max-action-columns 1)
+
+;;;###autoload (autoload 'magit-pull-and-fetch-popup "magit-remote" nil t)
+(magit-define-popup magit-pull-and-fetch-popup
+  "Popup console for pull and fetch commands.
+
+This popup is intended as a replacement for the separate popups
+`magit-pull-popup' and `magit-fetch-popup'.  To use it, add this
+to your init file:
+
+  (with-eval-after-load \\='magit-remote
+    (define-key magit-mode-map \"f\" \\='magit-pull-and-fetch-popup)
+    (define-key magit-mode-map \"F\" nil))
+
+The combined popup does not offer all commands and arguments
+available from the individual popups.  Instead of the argument
+`--prune' and the command `magit-fetch-all' it uses two commands
+`magit-fetch-prune' and `magit-fetch-no-prune'.  And the commands
+`magit-fetch-from-pushremote' and `magit-fetch-from-upstream' are
+missing.  To add them use something like:
+
+  (with-eval-after-load \\='magit-remote
+    (magit-define-popup-action \\='magit-pull-and-fetch-popup ?U
+      \\='magit-get-upstream-branch
+      \\='magit-fetch-from-upstream-remote ?F)
+    (magit-define-popup-action \\='magit-pull-and-fetch-popup ?P
+      \\='magit-get-push-branch
+      \\='magit-fetch-from-push-remote ?F))"
+  'magit-commands
+  :man-page "git-pull"
+  :variables '("Pull variables"
+               (?r "branch.%s.rebase"
+                   magit-cycle-branch*rebase
+                   magit-pull-format-branch*rebase))
+  :actions '((lambda ()
+               (--if-let (magit-get-current-branch)
+                   (concat
+                    (propertize "Pull into " 'face 'magit-popup-heading)
+                    (propertize it           'face 'magit-branch-local)
+                    (propertize " from"      'face 'magit-popup-heading))
+                 (propertize "Pull from" 'face 'magit-popup-heading)))
+             (?p magit-get-push-branch     magit-pull-from-pushremote)
+             (?u magit-get-upstream-branch magit-pull-from-upstream)
+             (?e "elsewhere"               magit-pull)
+             "Fetch from"
+             (?f "remotes"           magit-fetch-all-no-prune)
+             (?F "remotes and prune" magit-fetch-all-prune)
+             "Fetch"
+             (?m "submodules"        magit-submodule-fetch))
+  :default-action 'magit-fetch
+  :max-action-columns 1)
+
+(defun magit-pull-format-branch*rebase ()
+  (magit-popup-format-variable (format "branch.%s.rebase"
+                                       (or (magit-get-current-branch) "<name>"))
+                               '("true" "false")
+                               "false" "pull.rebase"))
+
+(defun magit-git-pull (source args)
+  (run-hooks 'magit-credential-hook)
+  (-let [(remote . branch)
+         (magit-split-branch-name source)]
+    (magit-run-git-with-editor "pull" args remote branch)))
 
 ;;;###autoload
-(defun magit-pull-current (remote branch &optional args)
-  "Fetch and merge into current branch."
-  (interactive (magit-pull-read-args t))
-  (magit-run-git-async "pull" args
-                       (and (not (equal remote (magit-get-remote)))
-                            (not (equal branch (magit-get-remote-branch)))
-                            (list remote branch))))
+(defun magit-pull-from-pushremote (args)
+  "Pull from the push-remote of the current branch."
+  (interactive (list (magit-pull-arguments)))
+  (--if-let (magit-get-push-branch)
+      (magit-git-pull it args)
+    (--if-let (magit-get-current-branch)
+        (user-error "No push-remote is configured for %s" it)
+      (user-error "No branch is checked out"))))
 
 ;;;###autoload
-(defun magit-pull (remote branch &optional args)
-  "Fetch from another repository and merge a fetched branch."
-  (interactive (magit-pull-read-args))
-  (magit-run-git-async "pull" args remote branch))
+(defun magit-pull-from-upstream (args)
+  "Pull from the upstream of the current branch."
+  (interactive (list (magit-pull-arguments)))
+  (--if-let (magit-get-upstream-branch)
+      (magit-git-pull it args)
+    (--if-let (magit-get-current-branch)
+        (user-error "No upstream is configured for %s" it)
+      (user-error "No branch is checked out"))))
 
-(defun magit-pull-read-args (&optional use-upstream)
-  (let ((remote (magit-get-remote-branch)))
-    (unless (and use-upstream remote)
-      (setq remote (magit-read-remote-branch "Pull" nil remote nil t)))
-    (list (car remote) (cdr remote) (magit-pull-arguments))))
+;;;###autoload
+(defun magit-pull (source args)
+  "Pull from a branch read in the minibuffer."
+  (interactive (list (magit-read-remote-branch "Pull" nil nil nil t)
+                     (magit-pull-arguments)))
+  (magit-git-pull source args))
 
 ;;; Push
+
+(defcustom magit-push-current-set-remote-if-missing t
+  "Whether to configure missing remotes before pushing.
+
+When nil, then the command `magit-push-current-to-pushremote' and
+`magit-push-current-to-upstream' do not appear in the push popup
+if the push-remote resp. upstream is not configured.  If the user
+invokes one of these commands anyway, then it raises an error.
+
+When non-nil, then these commands always appear in the push
+popup.  But if the required configuration is missing, then they
+do appear in a way that indicates that this is the case.  If the
+user invokes one of them, then it asks for the necessary
+configuration, stores the configuration, and then uses it to push
+a first time.
+
+This option also affects whether the argument `--set-upstream' is
+available in the popup.  If the value is t, then that argument is
+redundant.  But note that changing the value of this option does
+not take affect immediately, the argument will only be added or
+removed after restarting Emacs."
+  :package-version '(magit . "2.4.0")
+  :group 'magit-commands
+  :type 'boolean)
 
 ;;;###autoload (autoload 'magit-push-popup "magit-remote" nil t)
 (magit-define-popup magit-push-popup
   "Popup console for push commands."
   'magit-commands
   :man-page "git-push"
-  :switches '((?f "Force"         "--force-with-lease")
+  :switches `((?f "Force"         "--force-with-lease")
               (?h "Disable hooks" "--no-verify")
               (?d "Dry run"       "--dry-run")
-              (?u "Set upstream"  "--set-upstream"))
-  :actions  '((?P "Current"    magit-push-current)
-              (?Q "Quickly"    magit-push-quickly)
-              (?t "Tags"       magit-push-tags)
-              (?o "Other"      magit-push)
-              (?i "Implicitly" magit-push-implicitly)
-              (?T "Tag"        magit-push-tag)
-              (?e "Elsewhere"  magit-push-elsewhere)
-              (?m "Matching"   magit-push-matching))
-  :default-action 'magit-push-current
-  :max-action-columns 3)
+              ,@(and (not magit-push-current-set-remote-if-missing)
+                     '((?u "Set upstream"  "--set-upstream"))))
+  :actions '((lambda ()
+               (--when-let (magit-get-current-branch)
+                 (concat (propertize "Push " 'face 'magit-popup-heading)
+                         (propertize it      'face 'magit-branch-local)
+                         (propertize " to"   'face 'magit-popup-heading))))
+             (?p magit--push-current-to-pushremote-desc
+                 magit-push-current-to-pushremote)
+             (?u magit--push-current-to-upstream-desc
+                 magit-push-current-to-upstream)
+             (?e "elsewhere\n"       magit-push-current)
+             "Push"
+             (?o "another branch"    magit-push)
+             (?T "a tag"             magit-push-tag)
+             (?m "matching branches" magit-push-matching)
+             (?t "all tags"          magit-push-tags))
+  :max-action-columns 2)
+
+(defun magit-git-push (branch target args)
+  (run-hooks 'magit-credential-hook)
+  (-let [(remote . target)
+         (magit-split-branch-name target)]
+    (magit-run-git-async "push" "-v" args remote
+                         (format "%s:refs/heads/%s" branch target))))
 
 ;;;###autoload
-(defun magit-push-current (branch remote &optional remote-branch args)
-  "Push the current branch to its upstream branch.
-If the upstream isn't set, then read the remote branch."
-  (interactive (magit-push-read-args t t))
-  (magit-push branch remote remote-branch args))
+(defun magit-push-current-to-pushremote (args &optional push-remote)
+  "Push the current branch to `branch.<name>.pushRemote'.
+If that variable is unset, then push to `remote.pushDefault'.
 
-;;;###autoload
-(defun magit-push (branch remote &optional remote-branch args)
-  "Push a branch to its upstream branch.
-If the upstream isn't set, then read the remote branch."
-  (interactive (magit-push-read-args t))
-  (magit-run-git-async-no-revert
-   "push" "-v" args remote
-   (if remote-branch
-       (format "%s:refs/heads/%s" branch remote-branch)
-     branch)))
-
-;;;###autoload
-(defun magit-push-elsewhere (branch remote remote-branch &optional args)
-  "Push a branch or commit to some remote branch.
-Read the local and remote branch."
-  (interactive (magit-push-read-args nil nil t))
-  (magit-push branch remote remote-branch args))
-
-(defcustom magit-push-always-verify 'nag
-  "Whether certain commands require verification before pushing.
-
-Starting with v2.1.0 some of the push commands are supposed to
-push to the configured upstream branch without requiring user
-confirmation or offering to push somewhere else.
-
-This has taken a few users by surprise, and they suggested that
-we force users to opt-in to this behavior.  Unfortunately adding
-this option means that now other users will complain about us
-needlessly forcing them to set an option.  But what can you do?
-\(I am not making this up.  This has happened in the past and it
-is very frustrating.)
-
-You should set the value of this option to nil, causing all push
-commands to behave as intended:
-
-`PP' Push the current branch to its upstream branch, no questions
-     asked.  If no upstream branch is configured or if that is
-     another local branch, then prompt for the remote and branch
-     to push to.
-
-`Po' Push another local branch (not the current branch) to its
-     upstream branch.  If no upstream branch is configured or if
-     that is another local branch, then prompt for the remote and
-     branch to push to.
-
-`Pe' Push any local branch to any remote branch.  This command
-     isn't affected by this option.  It always asks which branch
-     should be pushed (defaulting to the current branch) and then
-     where that should be pushed (defaulting to the upstream
-     branch of the previously selected branch).
-
-There are other push commands besides these.  You should read
-their doc-strings instead of blindly trying them out and then
-being surprised if it turns out that they do something different
-from what you expected.  For example inside the push popup type
-`?i' to learn what \"implicitly\" means here.  Or to learn about
-all push commands at once, consult the manual.
-
-While I have your attention, I would also like to warn you that
-pushing will be further improved in a later release (probably
-v2.3.0), and that you might be surprised by some of these
-changes, unless you read the documentation.
-
-Setting this option to t makes little sense.  If you consider
-doing that, then you should probably just use `Pe' instead of
-`PP' or `Po'."
-  :package-version '(magit . "2.2.0")
-  :group 'magit-commands
-  :type '(choice (const :tag "require verification and mention this option" nag)
-                 (const :tag "require verification" t)
-                 (const :tag "don't require verification" nil)))
-
-(defun magit-push-read-args (&optional use-upstream use-current default-current)
-  (let* ((current (magit-get-current-branch))
-         (local (or (and use-current current)
-                    (magit-completing-read
-                     "Push" (--if-let (magit-commit-at-point)
-                                (cons it (magit-list-local-branch-names))
-                              (magit-list-local-branch-names))
-                     nil nil nil 'magit-revision-history
-                     (or (and default-current current)
-                         (magit-local-branch-at-point)
-                         (magit-commit-at-point)))
-                    (user-error "Nothing selected")))
-         (remote (and (magit-branch-p local)
-                      (magit-get-remote-branch local))))
-    (unless (and use-upstream remote (not magit-push-always-verify))
-      (setq remote (magit-read-remote-branch
-                    (concat
-                     (format "Push %s to" local)
-                     (and use-upstream remote
-                          (eq magit-push-always-verify 'nag)
-                          " [also see option magit-push-always-verify]"))
-                    nil remote local 'confirm)))
-    (list local (car remote) (cdr remote) (magit-push-arguments))))
-
-;;;###autoload
-(defun magit-push-quickly (&optional args)
-  "Push the current branch to some remote.
-When the Git variable `magit.pushRemote' is set, then push to
-that remote.  If that variable is undefined or the remote does
-not exist, then push to \"origin\".  If that also doesn't exist
-then raise an error.  The local branch is pushed to the remote
-branch with the same name."
-  (interactive (list (magit-push-arguments)))
-  (-if-let (branch (magit-get-current-branch))
-      (-if-let (remote (or (magit-remote-p (magit-get "magit.pushRemote"))
-                           (magit-remote-p "origin")))
-          (magit-run-git-async-no-revert "push" "-v" args remote branch)
-        (user-error "Cannot determine remote to push to"))
+When `magit-push-current-set-remote-if-missing' is non-nil and
+the push-remote is not configured, then read the push-remote from
+the user, set it, and then push to it.  With a prefix argument
+the push-remote can be changed before pushed to it."
+  (interactive
+   (list (magit-push-arguments)
+         (and (magit--push-current-set-pushremote-p current-prefix-arg)
+              (magit-read-remote (format "Set push-remote of %s and push there"
+                                         (magit-get-current-branch))))))
+  (--if-let (magit-get-current-branch)
+      (progn (when push-remote
+               (magit-call-git "config"
+                               (format "branch.%s.pushRemote"
+                                       (magit-get-current-branch))
+                               push-remote))
+             (-if-let (remote (magit-get-push-remote it))
+                 (if (member remote (magit-list-remotes))
+                     (magit-git-push it (concat remote "/" it) args)
+                   (user-error "Remote `%s' doesn't exist" remote))
+               (user-error "No push-remote is configured for %s" it)))
     (user-error "No branch is checked out")))
 
+(defun magit--push-current-set-pushremote-p (&optional change)
+  (and (or change
+           (and magit-push-current-set-remote-if-missing
+                (not (magit-get-push-remote))))
+       (magit-get-current-branch)))
+
+(defun magit--push-current-to-pushremote-desc ()
+  (--if-let (magit-get-push-branch)
+      (concat (magit-branch-set-face it) "\n")
+    (and (magit--push-current-set-pushremote-p)
+         (concat (propertize "pushRemote" 'face 'bold)
+                 ", after setting that\n"))))
+
 ;;;###autoload
-(defun magit-push-implicitly (&optional args)
-  "Push without explicitly specifing what to push.
-This runs `git push -v'.  What is being pushed depends on various
-Git variables as described in the `git-push(1)' and `git-config(1)'
-manpages."
-  (interactive (list (magit-push-arguments)))
-  (magit-run-git-async-no-revert "push" "-v" args))
+(defun magit-push-current-to-upstream (args &optional upstream)
+  "Push the current branch to its upstream branch.
+
+When `magit-push-current-set-remote-if-missing' is non-nil and
+the upstream is not configured, then read the upstream from the
+user, set it, and then push to it.  With a prefix argument the
+upstream can be changed before pushed to it."
+  (interactive
+   (list (magit-push-arguments)
+         (and (magit--push-current-set-upstream-p current-prefix-arg)
+              (magit-read-upstream-branch))))
+  (--if-let (magit-get-current-branch)
+      (progn
+        (when upstream
+          (magit-set-branch*merge/remote it upstream))
+        (-if-let (target (magit-get-upstream-branch it))
+            (magit-git-push it target args)
+          (user-error "No upstream is configured for %s" it)))
+    (user-error "No branch is checked out")))
+
+(defun magit--push-current-set-upstream-p (&optional change)
+  (and (or change
+           (and magit-push-current-set-remote-if-missing
+                (not (magit-get-upstream-branch))))
+       (magit-get-current-branch)))
+
+(defun magit--push-current-to-upstream-desc ()
+  (--if-let (magit-get-upstream-branch)
+      (concat (magit-branch-set-face it) "\n")
+    (and (magit--push-current-set-upstream-p)
+         (concat (propertize "@{upstream}" 'face 'bold)
+                 ", after setting that\n"))))
+
+;;;###autoload
+(defun magit-push-current (target args)
+  "Push the current branch to a branch read in the minibuffer."
+  (interactive
+   (--if-let (magit-get-current-branch)
+       (list (magit-read-remote-branch (format "Push %s to" it)
+                                       nil nil it 'confirm)
+             (magit-push-arguments))
+     (user-error "No branch is checked out")))
+  (magit-git-push (magit-get-current-branch) target args))
+
+;;;###autoload
+(defun magit-push (source target args)
+  "Push an arbitrary branch or commit somewhere.
+Both the source and the target are read in the minibuffer."
+  (interactive
+   (let ((source (magit-read-local-branch-or-commit "Push")))
+     (list source
+           (magit-read-remote-branch (format "Push %s to" source) nil
+                                     (magit-get-upstream-branch source)
+                                     source 'confirm)
+           (magit-push-arguments))))
+  (magit-git-push source target args))
 
 ;;;###autoload
 (defun magit-push-matching (remote &optional args)
   "Push all matching branches to another repository.
-If multiple remotes exit, then read one from the user.
+If multiple remotes exist, then read one from the user.
 If just one exists, use that without requiring confirmation."
-  (interactive (list (magit-read-remote "Push matching branches to" nil t)))
-  (magit-run-git-async-no-revert "push" "-v" args remote ":"))
+  (interactive (list (magit-read-remote "Push matching branches to" nil t)
+                     (magit-push-arguments)))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "push" "-v" args remote ":"))
 
+;;;###autoload
 (defun magit-push-tags (remote &optional args)
   "Push all tags to another repository.
 If only one remote exists, then push to that.  Otherwise prompt
@@ -329,16 +501,96 @@ for a remote, offering the remote configured for the current
 branch as default."
   (interactive (list (magit-read-remote "Push tags to remote" nil t)
                      (magit-push-arguments)))
-  (magit-run-git-async-no-revert "push" remote "--tags" args))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "push" remote "--tags" args))
 
 ;;;###autoload
 (defun magit-push-tag (tag remote &optional args)
   "Push a tag to another repository."
   (interactive
    (let  ((tag (magit-read-tag "Push tag")))
-     (list tag (magit-read-remote (format "Push %s to remote" tag) nil t))))
-  (magit-run-git-async-no-revert "push" remote tag))
+     (list tag (magit-read-remote (format "Push %s to remote" tag) nil t)
+           (magit-push-arguments))))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "push" remote tag args))
 
+;;;###autoload
+(defun magit-push-implicitly (args)
+  "Push somewhere without using an explicit refspec.
+
+This command simply runs \"git push -v [ARGS]\".  ARGS are the
+arguments specified in the popup buffer.  No explicit refspec
+arguments are used.  Instead the behavior depends on at least
+these Git variables: `push.default', `remote.pushDefault',
+`branch.<branch>.pushRemote', `branch.<branch>.remote',
+`branch.<branch>.merge', and `remote.<remote>.push'.
+
+To add this command to the push popup add this to your init file:
+
+  (with-eval-after-load \\='magit-remote
+    (magit-define-popup-action \\='magit-push-popup ?P
+      'magit-push-implicitly--desc
+      'magit-push-implicitly ?p t))
+
+The function `magit-push-implicitly--desc' attempts to predict
+what this command will do, the value it returns is displayed in
+the popup buffer."
+  (interactive (list (magit-push-arguments)))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "push" "-v" args))
+
+(defun magit-push-implicitly--desc ()
+  (let ((default (magit-get "push.default")))
+    (unless (equal default "nothing")
+      (or (-when-let* ((remote (or (magit-get-remote)
+                                   (magit-remote-p "origin")))
+                       (refspec (magit-get "remote" remote "push")))
+            (format "%s using %s"
+                    (propertize remote  'face 'magit-branch-remote)
+                    (propertize refspec 'face 'bold)))
+          (--when-let (and (not (magit-get-push-branch))
+                           (magit-get-upstream-branch))
+            (format "%s aka %s\n"
+                    (magit-branch-set-face it)
+                    (propertize "@{upstream}" 'face 'bold)))
+          (--when-let (magit-get-push-branch)
+            (format "%s aka %s\n"
+                    (magit-branch-set-face it)
+                    (propertize "pushRemote" 'face 'bold)))
+          (--when-let (magit-get-@{push}-branch)
+            (format "%s aka %s\n"
+                    (magit-branch-set-face it)
+                    (propertize "@{push}" 'face 'bold)))
+          (format "using %s (%s is %s)\n"
+                  (propertize "git push"     'face 'bold)
+                  (propertize "push.default" 'face 'bold)
+                  (propertize default        'face 'bold))))))
+
+;;;###autoload
+(defun magit-push-to-remote (remote args)
+  "Push to REMOTE without using an explicit refspec.
+The REMOTE is read in the minibuffer.
+
+This command simply runs \"git push -v [ARGS] REMOTE\".  ARGS
+are the arguments specified in the popup buffer.  No refspec
+arguments are used.  Instead the behavior depends on at least
+these Git variables: `push.default', `remote.pushDefault',
+`branch.<branch>.pushRemote', `branch.<branch>.remote',
+`branch.<branch>.merge', and `remote.<remote>.push'.
+
+To add this command to the push popup add this to your init file:
+
+  (with-eval-after-load \\='magit-remote
+    (magit-define-popup-action \\='magit-push-popup ?r
+      'magit-push-to-remote--desc
+      'magit-push-to-remote ?p t))"
+  (interactive (list (magit-read-remote "Push to remote")
+                     (magit-push-arguments)))
+  (run-hooks 'magit-credential-hook)
+  (magit-run-git-async "push" "-v" args remote))
+
+(defun magit-push-to-remote--desc ()
+  (format "using %s\n" (propertize "git push <remote>" 'face 'bold)))
 
 ;;; Email
 
@@ -347,7 +599,8 @@ branch as default."
   "Popup console for patch commands."
   'magit-commands
   :man-page "git-format-patch"
-  :options  '((?f "From"             "--from=")
+  :options  '("Options for formatting patches"
+              (?f "From"             "--from=")
               (?t "To"               "--to=")
               (?c "CC"               "--cc=")
               (?r "In reply to"      "--in-reply-to=")
@@ -378,7 +631,7 @@ HEAD but not from the specified commit)."
                  range
                (format "%s~..%s" range range))))
          (magit-patch-arguments)))
-  (magit-run-git-no-revert "format-patch" range args))
+  (magit-run-git "format-patch" range args))
 
 ;;;###autoload
 (defun magit-request-pull (url start end)
@@ -390,15 +643,14 @@ END is the last commit, usually a branch name, which upstream
 is asked to pull.  START has to be reachable from that commit."
   (interactive
    (list (magit-get "remote" (magit-read-remote "Remote") "url")
-         (magit-read-branch-or-commit "Start" (magit-get-tracked-branch))
+         (magit-read-branch-or-commit "Start" (magit-get-upstream-branch))
          (magit-read-branch-or-commit "End")))
   (let ((dir default-directory))
     ;; mu4e changes default-directory
     (compose-mail)
     (setq default-directory dir))
   (message-goto-body)
-  (let ((inhibit-magit-revert t))
-    (magit-git-insert "request-pull" start url))
+  (magit-git-insert "request-pull" start url end)
   (set-buffer-modified-p nil))
 
 ;;; magit-remote.el ends soon

@@ -1,6 +1,6 @@
-;;; magit-ediff.el --- Ediff extension for Magit
+;;; magit-ediff.el --- Ediff extension for Magit  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2010-2015  The Magit Project Contributors
+;; Copyright (C) 2010-2016  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -106,10 +106,10 @@ conflicts, including those already resolved by Git, use
          (let ((bufC ediff-buffer-C)
                (bufS smerge-ediff-buf))
            (with-current-buffer bufS
-             (erase-buffer)
-             (insert-buffer-substring bufC)
              (when (yes-or-no-p (format "Conflict resolution finished; save %s?"
                                         buffer-file-name))
+               (erase-buffer)
+               (insert-buffer-substring bufC)
                (save-buffer))))
          (when (buffer-live-p ediff-buffer-A) (kill-buffer ediff-buffer-A))
          (when (buffer-live-p ediff-buffer-B) (kill-buffer ediff-buffer-B))
@@ -151,7 +151,7 @@ FILE has to be relative to the top directory of the repository."
                    (buffer-modified-p ediff-buffer-C)
                    (with-current-buffer ediff-buffer-C
                      (when (y-or-n-p
-                            (format "Save file %s? " (buffer-file-name)))
+                            (format "Save file %s? " buffer-file-name))
                        (save-buffer))))
               ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
               ,@(if bufB
@@ -176,9 +176,8 @@ line of the region.  With a prefix argument, instead of diffing
 the revisions, choose a revision to view changes along, starting
 at the common ancestor of both revisions (i.e., use a \"...\"
 range)."
-  (interactive (cl-destructuring-bind (revA revB)
-                   (magit-ediff-compare--read-revisions
-                    nil current-prefix-arg)
+  (interactive (-let [(revA revB) (magit-ediff-compare--read-revisions
+                                   nil current-prefix-arg)]
                  (nconc (list revA revB)
                         (magit-ediff-compare--read-files revA revB))))
   (magit-with-toplevel
@@ -267,17 +266,15 @@ mind at all, then it asks the user for a command to run."
           (setq command #'magit-ediff-show-commit
                 revB value))
          ((pred stringp)
-          (cl-destructuring-bind (a b)
-              (magit-ediff-compare--read-revisions range)
+          (-let [(a b) (magit-ediff-compare--read-revisions range)]
             (setq command #'magit-ediff-compare
                   revA a
                   revB b)))
          (_
           (when (derived-mode-p 'magit-diff-mode)
             (pcase (magit-diff-type)
-              (`committed (cl-destructuring-bind (a b)
-                              (magit-ediff-compare--read-revisions
-                               (car magit-refresh-args))
+              (`committed (-let [(a b) (magit-ediff-compare--read-revisions
+                                        (car magit-refresh-args))]
                             (setq revA a revB b)))
               ((guard (not magit-ediff-dwim-show-on-hunks))
                (setq command #'magit-ediff-stage))
