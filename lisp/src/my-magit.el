@@ -3,12 +3,14 @@
 (require 'magit)
 (require 'git-timemachine)
 
-(setq-default magit-ellipsis ?>
-              magit-push-always-verify nil
-              magit-restore-window-configuration t
-              magit-set-upstream-on-push 'askifnotset
-              magit-status-buffer-switch-function 'switch-to-buffer
-              magit-turn-on-auto-revert-mode nil)
+(setq-default
+ magit-commit-show-diff nil
+ magit-display-buffer-function 'my-magit-display-buffer
+ magit-ellipsis ?>
+ magit-push-always-verify nil
+ magit-restore-window-configuration t
+ magit-set-upstream-on-push 'askifnotset
+ magit-turn-on-auto-revert-mode nil)
 
 (setq-default git-commit-summary-max-length 120)
 
@@ -32,12 +34,19 @@ or, with C-u, magit-file-log."
                                                 (buffer-substring-no-properties (point-min) (point-max)))
                                             (read-passwd prompt))) "\n")))))
 
+(defun my-magit-display-buffer (buffer)
+  "Derived from `magit-display-buffer-traditional'."
+  (display-buffer
+   buffer (if (memq (with-current-buffer buffer major-mode)
+                    '(magit-process-mode
+                      magit-revision-mode
+                      magit-diff-mode
+                      magit-stash-mode
+                      magit-status-mode))
+              '(display-buffer-same-window)
+            nil))) ; display in another window
+
 (define-key magit-mode-map (kbd "{") 'magit-goto-previous-sibling-section)
 (define-key magit-mode-map (kbd "}") 'magit-goto-next-sibling-section)
-
-(magit-define-popup-action 'magit-ediff-popup ?S "Show staged" 'magit-ediff-show-staged)
-(magit-define-popup-action 'magit-ediff-popup ?U "Show unstaged" 'magit-ediff-show-unstaged)
-
-(define-key git-commit-mode-map (kbd "C-x C-s") 'git-commit-commit)
 
 (provide 'my-magit)
