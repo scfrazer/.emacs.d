@@ -514,9 +514,9 @@
      (1 'font-lock-keyword-face)
      (2 'font-lock-comment-face))
     ("{.+}"
-     (0 'font-lock-variable-name-face))
+     (0 'success))
     ("\\[.+\\]"
-     (0 'font-lock-warning-face))
+     (0 'warning))
     )
   "Keyword highlighting specification for cc-status.")
 

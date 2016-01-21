@@ -61,8 +61,8 @@ Turn on iff arg is > 0, off iff arg is <= 0, otherwise toggle."
                  (not (eq major-mode 'org-mode)))
             (eq major-mode 'dired-mode))
     (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
-    (font-lock-add-keywords nil (list (cons "\\<\\([Tt][Oo][Dd][Oo]\\)\\>" (list '(1 'my-todo-face t)))) 'add-to-end)
-    (font-lock-add-keywords nil (list (cons "\\<\\([Ff][Ii][Xx][Mm][Ee]\\)\\>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
+    (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
+    (font-lock-add-keywords nil (list (cons "\\_<\\([Ff][Ii][Xx]\\([Mm][Ee]\\)?\\)\\_>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
 
 (defvar my-font-lock-whitespace-state t)
 (make-variable-buffer-local 'my-font-lock-whitespace-state)

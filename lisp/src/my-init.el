@@ -1763,7 +1763,7 @@ Prefix with C-u to resize the `next-window'."
      (defun my-compilation-mode-hook ()
        (define-key compilation-mode-map "{" 'compilation-previous-file)
        (define-key compilation-mode-map "}" 'compilation-next-file)
-       (setq truncate-lines 'one-line-each)
+       ;; (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
@@ -1879,6 +1879,8 @@ Prefix with C-u to resize the `next-window'."
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
 
+  (add-to-list 'my-compile-command "l2q procyon_compile_src_chipdv -chip_cpp")
+
   (require 'ur-log-mode)
 
   (defun dv-lint ()
@@ -1954,7 +1956,7 @@ Prefix with C-u to resize the `next-window'."
   ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((t (:foreground "black" :background "#FFFF00")))
+    '((t :inherit warning))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 

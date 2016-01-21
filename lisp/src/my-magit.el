@@ -9,10 +9,11 @@
  magit-ellipsis ?>
  magit-push-always-verify nil
  magit-restore-window-configuration t
- magit-set-upstream-on-push 'askifnotset
- magit-turn-on-auto-revert-mode nil)
+ magit-set-upstream-on-push 'askifnotset)
 
 (setq-default git-commit-summary-max-length 120)
+
+(magit-auto-revert-mode -1)
 
 (defun my-magit-history (&optional arg)
   "Show history for current file, either using git-timemachine
