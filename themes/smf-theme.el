@@ -46,6 +46,7 @@
    `(lazy-highlight                      ((,dark :foreground "white" :background "color-66")))
    `(link                                ((,dark :foreground "color-81" :underline t)))
    `(link-visited                        ((,dark :foreground "color-212" :underline t)))
+   `(match                               ((,dark :foreground "white" :background "color-62")))
    `(minibuffer-prompt                   ((t :inherit font-lock-keyword-face)))
    `(mode-line                           ((,dark :foreground "color-231" :background "color-24")))
    `(mode-line-buffer-id                 ((,dark :foreground "color-220" :weight bold)))

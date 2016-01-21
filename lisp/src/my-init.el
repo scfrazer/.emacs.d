@@ -132,13 +132,13 @@
       "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "Char: ")))
       (if (= 11 char)
-          (call-interactively 'avy-goto-char)
+          (avy--goto (avy-goto-char (read-char "char: ")))
         (if (= 12 char)
-            (call-interactively 'avy-goto-line)
+            (avy--goto (avy-goto-line))
           (if (and (not (< 31 char 127))
                    (not (= 13 char)))
               (error "Unknown char")
-            (avy-with avy-goto-word-1
+            (avy--with-avy-keys avy-goto-word-1
               (let* ((str (string char))
                      (regex (cond ((= 13 char)
                                    "\n")
@@ -152,11 +152,11 @@
                                   (t
                                    (concat "\\b" str)))))
                 (if (eq major-mode 'php-mode)
-                  (let ((table (copy-syntax-table (syntax-table))))
-                    (modify-syntax-entry ?$ "." table)
-                    (with-syntax-table table
-                      (avy--generic-jump regex nil avy-style)))
-                  (avy--generic-jump regex nil avy-style))))))))))
+                    (let ((table (copy-syntax-table (syntax-table))))
+                      (modify-syntax-entry ?$ "." table)
+                      (with-syntax-table table
+                        (avy--goto (avy--generic-jump regex nil avy-style))))
+                  (avy--goto (avy--generic-jump regex nil avy-style)))))))))))
 
 (use-package ag2
   :bind* (("M-s G" . ag2)
