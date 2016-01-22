@@ -8,7 +8,7 @@
 
    `(avy-lead-face                       ((,dark :foreground "white" :background "color-161" :slant normal :weight bold)))
    `(avy-lead-face-0                     ((,dark :foreground "white" :background "color-25" :slant normal :weight bold)))
-   `(bm-face                             ((,dark :foreground nil :background "color-17")))
+   `(bm-face                             ((,dark :foreground "white" :background "color-58")))
    `(compilation-column-number           ((t :inherit font-lock-variable-name-face)))
    `(compilation-error                   ((t :inherit error)))
    `(compilation-info                    ((t :inherit link)))
