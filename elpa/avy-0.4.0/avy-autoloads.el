@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "avy" "avy.el" (22175 44626 149152 0))
+;;;### (autoloads nil "avy" "avy.el" (22180 53216 0 0))
 ;;; Generated autoloads from avy.el
 
 (autoload 'avy-goto-char "avy" "\
@@ -55,13 +55,36 @@ Jump to the currently visible CHAR at a subword start.
 The window scope is determined by `avy-all-windows' (ARG negates it).
 The case of CHAR is ignored.
 
-\(fn CHAR ARG)" t nil)
+\(fn CHAR &optional ARG)" t nil)
+
+(autoload 'avy-goto-word-or-subword-1 "avy" "\
+Forward to `avy-goto-subword-1' or `avy-goto-word-1'.
+Which one depends on variable `subword-mode'.
+
+\(fn)" t nil)
 
 (autoload 'avy-goto-line "avy" "\
 Jump to a line start in current buffer.
-The window scope is determined by `avy-all-windows' (ARG negates it).
+
+When ARG is 1, jump to lines currently visible, with the option
+to cancel to `goto-line' by entering a number.
+
+When ARG is 4, negate the window scope determined by
+`avy-all-windows'.
+
+Otherwise, forward to `goto-line' with ARG.
 
 \(fn &optional ARG)" t nil)
+
+(autoload 'avy-goto-line-above "avy" "\
+Goto visible line above the cursor.
+
+\(fn)" t nil)
+
+(autoload 'avy-goto-line-below "avy" "\
+Goto visible line below the cursor.
+
+\(fn)" t nil)
 
 (autoload 'avy-copy-line "avy" "\
 Copy a selected line above the current line.
@@ -76,9 +99,12 @@ ARG lines can be used.
 \(fn ARG)" t nil)
 
 (autoload 'avy-copy-region "avy" "\
-Select two lines and copy the text between them here.
+Select two lines and copy the text between them to point.
 
-\(fn)" t nil)
+The window scope is determined by `avy-all-windows' or
+`avy-all-windows-alt' when ARG is non-nil.
+
+\(fn ARG)" t nil)
 
 (autoload 'avy-setup-default "avy" "\
 Setup the default shortcuts.
@@ -86,15 +112,15 @@ Setup the default shortcuts.
 \(fn)" nil nil)
 
 (autoload 'avy-goto-char-timer "avy" "\
-Read one or two consecutive chars and jump to the first one.
+Read one or many consecutive chars and jump to the first one.
 The window scope is determined by `avy-all-windows' (ARG negates it).
 
 \(fn &optional ARG)" t nil)
 
 ;;;***
 
-;;;### (autoloads nil nil ("avy-pkg.el" "avy-test.el") (22175 44626
-;;;;;;  157865 0))
+;;;### (autoloads nil nil ("avy-pkg.el" "avy-test.el") (22180 53216
+;;;;;;  192797 0))
 
 ;;;***
 

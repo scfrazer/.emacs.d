@@ -126,19 +126,19 @@
   (progn
     (setq avy-keys (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
           avy-all-windows nil
-          avy-case-fold-search nil)
-
+          avy-case-fold-search nil
+          avy-style 'at)
     (defun my-avy-goto (char)
       "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "Char: ")))
       (if (= 11 char)
-          (avy--goto (avy-goto-char (read-char "char: ")))
+          (call-interactively 'avy-goto-char)
         (if (= 12 char)
-            (avy--goto (avy-goto-line))
+            (call-interactively 'avy-goto-line)
           (if (and (not (< 31 char 127))
                    (not (= 13 char)))
               (error "Unknown char")
-            (avy--with-avy-keys avy-goto-word-1
+            (avy-with avy-goto-word-1
               (let* ((str (string char))
                      (regex (cond ((= 13 char)
                                    "\n")
@@ -155,8 +155,8 @@
                     (let ((table (copy-syntax-table (syntax-table))))
                       (modify-syntax-entry ?$ "." table)
                       (with-syntax-table table
-                        (avy--goto (avy--generic-jump regex nil avy-style))))
-                  (avy--goto (avy--generic-jump regex nil avy-style)))))))))))
+                        (avy--generic-jump regex nil avy-style)))
+                  (avy--generic-jump regex nil avy-style))))))))))
 
 (use-package ag2
   :bind* (("M-s G" . ag2)
