@@ -53,11 +53,11 @@
    `(mode-line-inactive                  ((,dark :foreground "color-231" :background "color-102")))
    `(my-tab-face                         ((,dark :background "color-95")))
    `(region                              ((,dark :foreground "color-231" :background "color-31")))
-   `(show-mark-face                      ((,dark :foreground nil :background "color-58")))
+   `(show-mark-face                      ((,dark :foreground nil :background "color-23")))
    `(show-paren-match-face               ((t :inherit success)))
    `(show-paren-mismatch-face            ((t :inherit error)))
    `(success                             ((,dark :foreground "color-231" :background "color-28")))
-   `(trailing-whitespace                 ((,dark :background "color-94")))
+   `(trailing-whitespace                 ((,dark :background "color-238")))
    `(warning                             ((,dark :foreground "black" :background "color-184")))
 
    ))
