@@ -57,9 +57,9 @@
 
 (defvar specterx-mode-syntax-table
   (let ((table (copy-syntax-table sv-mode-syntax-table)))
-    (modify-syntax-entry ?% ". 23b" table)
-    (modify-syntax-entry ?< ". 1b" table)
-    (modify-syntax-entry ?> ". 4b" table)
+;;     (modify-syntax-entry ?% ". 23b" table)
+;;     (modify-syntax-entry ?< ". 1b" table)
+;;     (modify-syntax-entry ?> ". 4b" table)
     table)
   "Syntax table used in specterx-mode buffers.")
 
@@ -68,8 +68,11 @@
   :abbrev-table nil
   :syntax-table specterx-mode-syntax-table
   (let ((keywords (list
-                   (cons "\\(<%\\|%>\\|@perl\\)"
+                   (cons "<%\\|%>\\|@perl"
                          '(0 'specterx-directive-face t))
+                   (cons "\\(</?\\(RdlMem\\|array\\)\\).*?\\(>\\)"
+                         '((1 'specterx-directive-face t)
+                           (3 'specterx-directive-face t)))
                    (cons "[a-zA-Z0-9_]\\([*%]\\)"
                          '(1 'specterx-directive-face t))
                    (cons "\\([*%]\\)[a-zA-Z0-9_]"
