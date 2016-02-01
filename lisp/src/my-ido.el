@@ -67,6 +67,7 @@
                 dir)))))
 
 (defun my-ido-dired-mode-hook ()
+  (define-key dired-mode-map "~" 'my-ido-bookmark-jump)
   (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
   (define-key dired-mode-map (kbd "M-$") 'my-ido-bookmark-jump))
 

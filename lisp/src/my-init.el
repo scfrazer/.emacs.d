@@ -1697,6 +1697,16 @@ Prefix with C-u to resize the `next-window'."
     (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
 
+(defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
+  "Insert a bookmarked dir using ido."
+  (interactive "P")
+  (let* ((enable-recursive-minibuffers t)
+         (dir (my-ido-get-bookmark-dir)))
+    (when dir
+      (when arg
+        (setq dir (concat "/view/CPPDVTOOLS.view" dir)))
+      (insert dir))))
+
 (defun my-minibuffer-setup-hook ()
   (override-global-mode -1)
   (show-mark-mode 0)
@@ -1711,14 +1721,8 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
-  (local-set-key (kbd "M-$") (lambda (&optional arg)
-                               (interactive "P")
-                               (let* ((enable-recursive-minibuffers t)
-                                      (dir (my-ido-get-bookmark-dir)))
-                                 (when dir
-                                   (when arg
-                                     (setq dir (concat "/view/CPPDVTOOLS.view" dir)))
-                                   (insert dir))))))
+  (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
+  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))
 
 (defface my-next-error-face
   '((t (:underline t)))
