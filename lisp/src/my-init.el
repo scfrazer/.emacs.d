@@ -1960,7 +1960,7 @@ Prefix with C-u to resize the `next-window'."
   ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((t :inherit warning))
+    '((t :foreground "color-201" :background nil :weight bold))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
