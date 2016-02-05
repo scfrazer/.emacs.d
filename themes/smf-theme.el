@@ -1,10 +1,22 @@
 (deftheme smf
   "Terminal colors.")
 
+(defun tty-hex-color (color-num)
+  "Return the hex value for a 256-color term color number."
+  "#5f5f87")
+;;   (let* ((color-values (tty-color-values (format "color-%d" color-num)))
+;;          (red (/ (nth 0 color-values) 256))
+;;          (green (/ (nth 1 color-values) 256))
+;;          (blue (/ (nth 2 color-values) 256)))
+;;     (format "#%02X%02X%02X" red green blue)))
+
 (let ((dark '((class color) (background dark)))
       (light '((class color) (background light))))
   (custom-theme-set-faces
    'smf
+
+   `(default ((((type graphic) (background dark)) (:background "#1d2937" :foreground "#f2f2f2"))))
+   `(cursor  ((((type graphic) (background dark)) (:background "#00cd00" :foreground "black"))))
 
    `(avy-lead-face                       ((,dark :foreground "white" :background "color-161" :slant normal :weight bold)))
    `(avy-lead-face-0                     ((,dark :foreground "white" :background "color-25" :slant normal :weight bold)))
@@ -21,7 +33,7 @@
    `(escape-glyph                        ((,dark :foreground "color-166")))
    `(font-lock-builtin-face              ((,dark :foreground "color-210")))
    `(font-lock-comment-delimiter-face    ((t :inherit font-lock-comment-face)))
-   `(font-lock-comment-face              ((,dark :foreground "color-102" :slant italic) (,light :foreground "color-60" :slant italic)))
+   `(font-lock-comment-face              ((,dark :foreground "color-102" :slant italic) (,light :foreground ,(tty-hex-color 60) :slant italic)))
    `(font-lock-constant-face             ((,dark :foreground "color-149")))
    `(font-lock-doc-face                  ((,dark :foreground "color-223")))
    `(font-lock-doc-string-face           ((t :inherit font-lock-doc-face)))
@@ -43,6 +55,7 @@
    `(js2-error                           ((t :inherit error)))
    `(js2-external-variable               ((t :inherit warning)))
    `(js2-function-param                  ((t :inherit font-lock-variable-name-face)))
+   `(js2-warning                         ((t :inherit warning)))
    `(lazy-highlight                      ((,dark :foreground "white" :background "color-66")))
    `(link                                ((,dark :foreground "color-81" :underline t)))
    `(link-visited                        ((,dark :foreground "color-212" :underline t)))
@@ -59,6 +72,12 @@
    `(success                             ((,dark :foreground "color-231" :background "color-28")))
    `(trailing-whitespace                 ((,dark :background "color-238")))
    `(warning                             ((,dark :foreground "black" :background "color-184")))
+   `(web-mode-html-attr-custom-face      ((,dark :foreground "color-106")))
+   `(web-mode-html-attr-equal-face       ((t :inherit web-mode-html-attr-name-face)))
+   `(web-mode-html-attr-name-face        ((,dark :foreground "color-108")))
+   `(web-mode-html-attr-value-face       ((,dark :foreground "color-137")))
+   `(web-mode-html-tag-bracket-face      ((t :inherit web-mode-html-tag-face)))
+   `(web-mode-html-tag-face              ((,dark :foreground "color-110")))
 
    ))
 

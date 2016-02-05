@@ -74,6 +74,7 @@
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
+(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
 
 (require 'my-mode-line)
 
@@ -281,7 +282,7 @@
 
 (use-package flymake
  :bind* (("C-x f" . flymake-start-syntax-check))
- :commands (my-goto-next-error my-goto-previous-error)
+ :commands (my-flymake-goto-next-error my-flymake-goto-prev-error)
  :init
  (defalias 'fly 'flymake-mode)
  :config
@@ -340,46 +341,7 @@
 (use-package js2-mode
   :mode (("\\.js\\'" . js2-mode))
   :config
-  (progn
-    (require 'tern)
-    (require 'js-doc)
-    (require 'web-beautify)
-    ;; TODO (require 'requirejs)
-    (setq-default js2-basic-offset 4
-                  js2-global-externs '("window" "require" "define")
-                  js-doc-file-doc-lines '(js-doc-top-line
-                                          " * @fileOverview\n"
-                                          " * @name %F\n"
-                                          js-doc-bottom-line)
-                  js-doc-bottom-line " */\n\n")
-    (defun my-js2-mode-electic-closer ()
-      "Indent when entering a closer."
-      (interactive "*")
-      (insert last-command-event)
-      (indent-according-to-mode))
-    (defun my-js2-mode-insert-doc ()
-      "Insert JSDoc file or function doc."
-      (interactive "*")
-      (if (bobp)
-          (progn (call-interactively 'js-doc-insert-file-doc)
-                 (insert "\n")
-                 (search-backward "@fileOverview")
-                 (goto-char (match-end 0))
-                 (insert " "))
-        (call-interactively 'js-doc-insert-function-doc)
-        (search-forward "* ")))
-    (defun my-js2-mode-hook ()
-      (setq-local mode-name "js2")
-      (auto-complete-mode 1)
-      (bind-keys :map js2-mode-map
-                 ("M-\\" . ac-start)
-                 ("C-c C-j" . my-js2-mode-insert-doc)
-                 ("@" . js-doc-insert-tag)
-                 (")" . my-js2-mode-electic-closer)
-                 ("]" . my-js2-mode-electic-closer)
-                 ("}" . my-js2-mode-electic-closer))
-      (my-tern-mode))
-    (add-hook 'js2-mode-hook 'my-js2-mode-hook)))
+  (require 'my-js2-mode))
 
 (use-package less-css-mode
   :mode (("\\.less\\'" . less-css-mode))
@@ -1147,22 +1109,6 @@ With a numeric prefix, goto that window line."
         (when col
           (move-to-column (string-to-number col)))))))
 
-(defun my-goto-next-error ()
-  "Goto next non-compilation-mode error."
-  (interactive)
-  (cond ((eq major-mode 'js2-mode)
-         (js2-next-error))
-        (flymake-mode
-         (my-flymake-goto-next-error))))
-
-(defun my-goto-previous-error ()
-  "Goto previous non-compilation-mode error."
-  (interactive)
-  (cond ((eq major-mode 'js2-mode)
-         (js2-next-error -1))
-        (flymake-mode
-         (my-flymake-goto-prev-error))))
-
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
@@ -1838,7 +1784,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
- ("C-x `"       . my-goto-next-error)
+ ("C-x `"       . my-flymake-goto-next-error)
  ("C-x c"       . clone-indirect-buffer-other-window)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
@@ -1846,7 +1792,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x t"       . task-map)
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
- ("C-x ~"       . my-goto-prev-error)
+ ("C-x ~"       . my-flymake-goto-prev-error)
  ("C-z"         . undo)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
