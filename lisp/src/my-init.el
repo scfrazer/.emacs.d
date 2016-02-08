@@ -221,7 +221,7 @@
                ("p" . diff-hunk-prev))))
 
 (use-package doxymacs
-  :bind-keymap* ("C-x d" . doxymacs-mode-map)
+;;   :bind-keymap* ("C-x d" . doxymacs-mode-map)
   :config
   (progn
     (require 'my-doxymacs)
@@ -592,7 +592,8 @@
     (setq web-mode-auto-close-style 1
           web-mode-enable-auto-closing t
           web-mode-enable-auto-indentation t
-          web-mode-enable-current-element-highlight t)
+          web-mode-enable-current-element-highlight t
+          web-mode-enable-html-entities-fontification t)
     (defun my-web-mode-comment-insert ()
       (interactive)
       (web-mode-comment-insert))
@@ -1906,12 +1907,12 @@ Prefix with C-u to resize the `next-window'."
   ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((t :foreground "color-201" :background nil :weight bold))
+    '((t :foreground "color-201" :background "black" :weight bold))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
-  (let ((truncation-glyph (make-glyph-code ?\> 'my-display-table-face))
-        (wrap-glyph (make-glyph-code ?\\ 'my-display-table-face))
+  (let ((truncation-glyph (make-glyph-code ?→ 'my-display-table-face))
+        (wrap-glyph (make-glyph-code ?↓ 'my-display-table-face))
         (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
         (control-glyph (make-glyph-code ?\^ 'my-display-table-face)))
     (set-display-table-slot standard-display-table 'truncation truncation-glyph)

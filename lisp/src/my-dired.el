@@ -8,6 +8,7 @@
 
 (setq dired-auto-revert-buffer t
       dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep" ".contrib")
+      dired-dwim-target t
       dired-isearch-filenames 'dwim
       dired-listing-switches "-alv"
       dired-recursive-copies 'always
