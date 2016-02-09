@@ -63,7 +63,7 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-highlight-phase-face
-  '((t :inherit show-paren-match-face))
+  '((t :inherit highlight))
   "Font Lock mode face used to highlight tags."
   :group 'uvm-log-mode)
 
