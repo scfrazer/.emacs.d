@@ -1,6 +1,8 @@
 ;;; my-dired.el
 
 (require 'dired)
+(require 'my-font-lock)
+(require 'my-ibuffer)
 
 ;; Settings
 
@@ -201,7 +203,7 @@
 ;; Dired hook
 
 (defun my-dired-mode-hook ()
-  (my-font-lock-show-whitespace -1)
+  (whitespace-mode -1)
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)

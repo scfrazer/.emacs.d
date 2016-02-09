@@ -69,7 +69,7 @@
    `(show-paren-match-face               ((t :inherit success)))
    `(show-paren-mismatch-face            ((t :inherit error)))
    `(success                             ((,dark :foreground "color-231" :background "color-28")))
-   `(trailing-whitespace                 ((,dark :foreground "color-244" :background "color-236")))
+   `(trailing-whitespace                 ((,dark :foreground "color-248" :background "color-236")))
    `(warning                             ((,dark :foreground "black" :background "color-184")))
    `(web-mode-html-attr-custom-face      ((,dark :foreground "color-106")))
    `(web-mode-html-attr-equal-face       ((t :inherit web-mode-html-attr-name-face)))
