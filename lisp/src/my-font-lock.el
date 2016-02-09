@@ -4,7 +4,7 @@
 (require 'whitespace)
 
 (setq-default lazy-lock-mode nil
-              whitespace-style '(face tabs trailing empty tab-mark))
+              whitespace-style '(face tabs trailing empty))
 (global-font-lock-mode t)
 
 ;; Extra font-lock faces
@@ -24,16 +24,36 @@
   "todo/fixme highlighting."
   :group 'faces)
 
-;; Hooks for adding font-lock faces
+(defun my-font-lock-whitespace-mode-hook ()
+  "Turn extra whitespace indication on/off."
+  (if whitespace-mode
+      (progn
+        (unless buffer-display-table
+          (setq buffer-display-table (copy-sequence standard-display-table)))
+        (aset buffer-display-table ?\t [?» ?\t]))
+    (when buffer-display-table
+      (aset buffer-display-table ?\t [?\t]))))
+
+(add-hook 'whitespace-mode-hook 'my-font-lock-whitespace-mode-hook)
+
+(defun my-font-lock-disable-whitespace ()
+  "Disable whitespace for this buffer."
+  (or buffer-read-only
+      (string-match "\\s-*\\*.+\\*" (buffer-name))
+      (member major-mode '(Info-mode))
+      (and (stringp (buffer-file-name))
+           (string-match "\\(\.log\\|config_tree.txt\\|\.el\.gz\\)\\'" (buffer-file-name)))))
+
+(defun my-font-lock-whitespace-hook ()
+  "Turn whitespace on/off."
+  (whitespace-mode (if (my-font-lock-disable-whitespace) -1 1)))
+
+(add-hook 'read-only-mode-hook 'my-font-lock-whitespace-hook)
+(add-hook 'after-revert-hook 'my-font-lock-whitespace-hook)
 
 (defun my-font-lock-mode-hook ()
   "Font-lock mode hook."
-  (if (or buffer-read-only
-          (string-match "\\s-*\\*.+\\*" (buffer-name))
-          (and (stringp (buffer-file-name))
-               (string-match "\.el\.gz$" (buffer-file-name))))
-      (whitespace-mode -1)
-    (whitespace-mode 1))
+  (my-font-lock-whitespace-hook)
   (when (or (and comment-start font-lock-keywords
                  (not (eq major-mode 'org-mode)))
             (eq major-mode 'dired-mode))
@@ -41,12 +61,6 @@
     (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
     (font-lock-add-keywords nil (list (cons "\\_<\\([Ff][Ii][Xx]\\([Mm][Ee]\\)?\\)\\_>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
 
-(defun my-font-lock-whitespace-hook ()
-  "Turn whitespace on/off with read-only status"
-  (whitespace-mode (if buffer-read-only -1 1)))
-
 (add-hook 'font-lock-mode-hook 'my-font-lock-mode-hook)
-(add-hook 'read-only-mode-hook 'my-font-lock-whitespace-hook)
-(add-hook 'after-revert-hook 'my-font-lock-whitespace-hook)
 
 (provide 'my-font-lock)

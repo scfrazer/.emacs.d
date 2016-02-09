@@ -1641,7 +1641,6 @@ Prefix with C-u to resize the `next-window'."
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
             (equal (buffer-name) "topology.txt"))
-    (my-whitespace-off-hook)
     (my-word-wrap-on-hook)))
 
 (defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
@@ -1688,14 +1687,10 @@ Prefix with C-u to resize the `next-window'."
   (when (string-match "\\.zsh.*\\'" buffer-file-name)
     (sh-set-shell "zsh")))
 
-(defun my-whitespace-off-hook ()
-  (whitespace-mode -1))
-
 (defun my-word-wrap-on-hook ()
   (setq truncate-lines nil)
   (setq word-wrap t))
 
-(add-hook 'Info-mode-hook 'my-whitespace-off-hook)
 (add-hook 'after-save-hook 'my-after-save-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
@@ -1703,7 +1698,6 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'next-error-hook 'my-next-error-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
-(add-hook 'uvm-log-mode-hook 'my-whitespace-off-hook)
 (add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1914,7 +1908,7 @@ Prefix with C-u to resize the `next-window'."
   (let ((truncation-glyph (make-glyph-code ?→ 'my-display-table-face))
         (wrap-glyph (make-glyph-code ?↓ 'my-display-table-face))
         (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
-        (control-glyph (make-glyph-code ?\^ 'my-display-table-face)))
+        (control-glyph (make-glyph-code ?^ 'my-display-table-face)))
     (set-display-table-slot standard-display-table 'truncation truncation-glyph)
     (set-display-table-slot standard-display-table 'wrap wrap-glyph)
     (set-display-table-slot standard-display-table 'escape escape-glyph)
