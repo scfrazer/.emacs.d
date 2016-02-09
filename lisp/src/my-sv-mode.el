@@ -129,10 +129,8 @@
         (sv-mode-insert-super)
         (insert "\n")
         (sv-mode-insert-end)
-        (insert "\n")
-        (indent-region pos (point)))
-      (unless current-prefix-arg
-        (goto-char pos)))))
+        (insert "\n"))
+      (indent-region pos (point)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
