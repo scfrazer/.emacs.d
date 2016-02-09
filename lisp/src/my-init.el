@@ -13,7 +13,7 @@
 
 (require 'my-font-lock)
 (defalias 'fl 'font-lock-fontify-buffer)
-(defalias 'ws 'my-font-lock-show-whitespace)
+(defalias 'ws 'whitespace-mode)
 
 (require 'bind-key)
 (require 'bind-remind)
@@ -1689,7 +1689,7 @@ Prefix with C-u to resize the `next-window'."
     (sh-set-shell "zsh")))
 
 (defun my-whitespace-off-hook ()
-  (my-font-lock-show-whitespace -1))
+  (whitespace-mode -1))
 
 (defun my-word-wrap-on-hook ()
   (setq truncate-lines nil)
