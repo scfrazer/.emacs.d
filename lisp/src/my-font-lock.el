@@ -27,10 +27,12 @@
 (defun my-font-lock-whitespace-mode-hook ()
   "Turn extra whitespace indication on/off."
   (if whitespace-mode
-      (progn
-        (unless buffer-display-table
-          (setq buffer-display-table (copy-sequence standard-display-table)))
-        (aset buffer-display-table ?\t [?» ?\t]))
+      (progn (unless buffer-display-table
+               (setq buffer-display-table
+                     (if standard-display-table
+                         (copy-sequence standard-display-table)
+                       (make-display-table))))
+             (aset buffer-display-table ?\t [?» ?\t]))
     (when buffer-display-table
       (aset buffer-display-table ?\t [?\t]))))
 
@@ -46,10 +48,14 @@
 
 (defun my-font-lock-whitespace-hook ()
   "Turn whitespace on/off."
-  (whitespace-mode (if (my-font-lock-disable-whitespace) -1 1)))
+  (when my-font-lock-auto-whitespace
+    (whitespace-mode (if (my-font-lock-disable-whitespace) -1 1))))
 
 (add-hook 'read-only-mode-hook 'my-font-lock-whitespace-hook)
 (add-hook 'after-revert-hook 'my-font-lock-whitespace-hook)
+
+(defvar my-font-lock-auto-whitespace nil
+  "Automatically turn on whitespace-mode with font-lock.")
 
 (defun my-font-lock-mode-hook ()
   "Font-lock mode hook."

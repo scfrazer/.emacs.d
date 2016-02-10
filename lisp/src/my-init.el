@@ -14,6 +14,7 @@
 (require 'my-font-lock)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'ws 'whitespace-mode)
+(setq-default my-font-lock-auto-whitespace t)
 
 (require 'bind-key)
 (require 'bind-remind)
