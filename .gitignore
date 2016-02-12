@@ -1,8 +1,10 @@
+*archive-contents*
 .hg
 .hgignore
-auto-save-list
-tasks
 /init-smf.el
+/lisp/src/test.el
 /lisp/src/vc_gen.el
 /lisp/vc_gen.elc
-/lisp/src/test.el
+auto-save-list
+tasks
+
