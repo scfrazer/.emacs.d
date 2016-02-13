@@ -79,7 +79,7 @@
    `(show-paren-match-face               ((t :inherit success)))
    `(show-paren-mismatch-face            ((t :inherit error)))
    `(success                             ((,dark :foreground ,(smf-color 231) :background ,(smf-color 28))))
-   `(trailing-whitespace                 ((,dark :foreground ,(smf-color 248) :background ,(smf-color 236))))
+   `(trailing-whitespace                 ((,dark :foreground ,(smf-color 245) :background ,(smf-color 236))))
    `(warning                             ((,dark :foreground "black" :background ,(smf-color 184))))
    `(web-mode-html-attr-custom-face      ((,dark :foreground ,(smf-color 106))))
    `(web-mode-html-attr-equal-face       ((t :inherit web-mode-html-attr-name-face)))
