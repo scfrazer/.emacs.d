@@ -6,11 +6,15 @@
 (require 'sql-indent)
 (require 'sqlup-mode)
 
-(defun sqlplus-get-potential-connect-string (file-path)
-  (save-excursion
-    (goto-char (point-min))
-    (when (looking-at "--\\s-+connect:\\s-+\\(.+\\)$")
-      (match-string 1))))
+(defun my-sql-connect ()
+  "Connect through sqlplus."
+  (interactive)
+  (let ((connect-string (save-excursion
+                          (goto-char (point-min))
+                          (when (looking-at "--\\s-+connect:\\s-+\\(.+\\)$")
+                            (match-string-no-properties 1)))))
+    (when connect-string
+      (sqlplus connect-string (current-buffer)))))
 
 (defun my-sqlplus-mode-hook ()
   (setq comment-start "-- "
