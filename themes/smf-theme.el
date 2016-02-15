@@ -56,6 +56,7 @@
    `(font-lock-type-face                 ((,dark :foreground ,(smf-color 123))))
    `(font-lock-variable-name-face        ((,dark :foreground ,(smf-color 84))))
    `(font-lock-warning-face              ((t :inherit warning)))
+   `(header-line                         ((,dark :foreground "white" :background "black")))
    `(highlight                           ((t :inherit region)))
    `(hl-line                             ((,dark (:background ,(smf-color 237) :inherit nil))))
    `(ido-first-match                     ((t :inherit warning)))
