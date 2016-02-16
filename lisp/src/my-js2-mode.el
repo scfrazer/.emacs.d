@@ -12,7 +12,8 @@
                                       " * @fileOverview\n"
                                       " * @name %F\n"
                                       js-doc-bottom-line)
-              js-doc-bottom-line " */\n\n")
+              js-doc-top-line "/**************************************************************************\n"
+              js-doc-bottom-line " **************************************************************************/\n\n")
 
 ;; Copied from js2-mode, but don't use font-lock-doc-face for jsdoc
 (defun js2-record-comment (token)
@@ -36,16 +37,19 @@
   (indent-according-to-mode))
 
 (defun my-js2-mode-insert-doc ()
-  "Insert JSDoc file or function doc."
+  "Insert function doc or big delimiter comment."
   (interactive "*")
-  (if (bobp)
-      (progn (call-interactively 'js-doc-insert-file-doc)
-             (insert "\n")
-             (search-backward "@fileOverview")
-             (goto-char (match-end 0))
-             (insert " "))
-    (call-interactively 'js-doc-insert-function-doc)
-    (search-forward "* ")))
+  (back-to-indentation)
+  (if (looking-at ".*\\_<function")
+      (call-interactively 'js-doc-insert-function-doc)
+    (beginning-of-line)
+    (let ((pos (point)))
+      (insert js-doc-top-line
+              js-doc-description-line
+              js-doc-bottom-line)
+      (indent-region pos (point))
+      (goto-char pos)))
+  (search-forward "* "))
 
 (defun my-js2-prev-error ()
   "Goto js2-mode previous error."
