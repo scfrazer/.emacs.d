@@ -74,7 +74,7 @@
 
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) (propertize (char-to-string ?▶) 'face 'my-ibuffer-current-face) " "))
+  (if (eq my-ibuffer-current-buf buffer) (propertize (char-to-string ?▸) 'face 'my-ibuffer-current-face) " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
