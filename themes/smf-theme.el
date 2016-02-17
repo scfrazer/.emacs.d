@@ -20,6 +20,11 @@
         (format "#%02X%02X%02X" r g b))
     (format "color-%d" color-num)))
 
+(defface caution
+  `((t :foreground ,(smf-color 215) :background ,(smf-color 94)))
+  "Caution face."
+  :group 'faces)
+
 (let ((dark '((class color) (background dark)))
       (light '((class color) (background light))))
   (custom-theme-set-faces
@@ -30,7 +35,7 @@
 
    `(avy-lead-face                       ((,dark :foreground "white" :background ,(smf-color 161) :slant normal :weight bold)))
    `(avy-lead-face-0                     ((,dark :foreground "white" :background ,(smf-color 25) :slant normal :weight bold)))
-   `(bm-face                             ((,dark :foreground "white" :background ,(smf-color 58))))
+   `(bm-face                             ((,dark :foreground ,(smf-color 51) :background ,(smf-color 17))))
    `(compilation-column-number           ((t :inherit font-lock-variable-name-face)))
    `(compilation-error                   ((t :inherit error)))
    `(compilation-info                    ((t :inherit link)))
@@ -39,7 +44,7 @@
    `(compilation-mode-line-fail          ((t :inherit error)))
    `(compilation-mode-line-run           ((t :inherit warning)))
    `(compilation-warning                 ((t :inherit warning)))
-   `(error                               ((,dark :foreground ,(smf-color 196) :background ,(smf-color 52))))
+   `(error                               ((,dark :foreground ,(smf-color 210) :background ,(smf-color 52))))
    `(escape-glyph                        ((,dark :foreground ,(smf-color 166))))
    `(font-lock-builtin-face              ((,dark :foreground ,(smf-color 210))))
    `(font-lock-comment-delimiter-face    ((t :inherit font-lock-comment-face)))
@@ -75,11 +80,13 @@
    `(mode-line                           ((,dark :foreground ,(smf-color 231) :background ,(smf-color 24))))
    `(mode-line-buffer-id                 ((,dark :foreground ,(smf-color 220) :weight bold)))
    `(mode-line-inactive                  ((,dark :foreground ,(smf-color 231) :background ,(smf-color 102))))
+   `(my-debug-face                       ((t :inherit caution)))
+   `(my-read-only-face                   ((t :inherit caution)))
    `(region                              ((,dark :foreground ,(smf-color 231) :background ,(smf-color 31))))
    `(show-mark-face                      ((,dark :foreground nil :background ,(smf-color 23))))
    `(show-paren-match-face               ((t :inherit success)))
    `(show-paren-mismatch-face            ((t :inherit error)))
-   `(success                             ((,dark :foreground ,(smf-color 231) :background ,(smf-color 28))))
+   `(success                             ((,dark :foreground ,(smf-color 120) :background ,(smf-color 22))))
    `(trailing-whitespace                 ((,dark :foreground ,(smf-color 245) :background ,(smf-color 236))))
    `(warning                             ((,dark :foreground ,(smf-color 226) :background ,(smf-color 58))))
    `(web-mode-html-attr-custom-face      ((,dark :foreground ,(smf-color 106))))

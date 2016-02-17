@@ -11,7 +11,7 @@
               ibuffer-movement-cycle nil
               ibuffer-expert t
               ibuffer-show-empty-filter-groups nil
-              ibuffer-use-other-window t)
+              ibuffer-use-other-window nil)
 
 (defface my-ibuffer-group-name-face
   '((t (:foreground "#D0D0D0" :background "#444444")))
@@ -66,7 +66,7 @@
 (my-ibuffer-build-bookmark-subs)
 
 (defface my-ibuffer-current-face
-  '((t (:foreground "#CDCD00" :background "#0000D7")))
+  '((t :inherit success))
   "Current buffer marker face."
   :group 'faces)
 
@@ -74,7 +74,7 @@
 
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) (propertize "@" 'face 'my-ibuffer-current-face) " "))
+  (if (eq my-ibuffer-current-buf buffer) (propertize (char-to-string ?▶) 'face 'my-ibuffer-current-face) " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
@@ -232,8 +232,7 @@
   (if (string= (buffer-name) "*Ibuffer*")
       (call-interactively 'ibuffer-update)
     (setq my-ibuffer-current-buf (current-buffer))
-    (let ((ibuffer-use-other-window (not arg)))
-      (ibuffer)))
+    (ibuffer))
   (when my-ibuffer-current-buf
     (ibuffer-jump-to-buffer (buffer-name my-ibuffer-current-buf))))
 
@@ -244,12 +243,7 @@
   (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
   (define-key ibuffer-mode-map (kbd "D") 'my-ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
-  (define-key ibuffer-mode-map (kbd "RET") (lambda (&optional arg)
-                                             (interactive "P")
-                                             (if (not arg)
-                                                 (ibuffer-visit-buffer-1-window)
-                                               (setq prefix-arg nil)
-                                               (ibuffer-visit-buffer))))
+  (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer)
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
   (define-key ibuffer-mode-map (kbd "V") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "^") 'ibuffer-backward-filter-group)
