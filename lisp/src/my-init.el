@@ -406,6 +406,9 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
+(use-package restclient
+  :mode (("\\.rest\\'" . restclient-mode)))
+
 (use-package quick-edit
   :bind* (("C-f" . qe-unit-move)
           ("C-w" . qe-unit-kill)
