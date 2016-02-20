@@ -44,6 +44,8 @@
    `(compilation-mode-line-fail          ((t :inherit error)))
    `(compilation-mode-line-run           ((t :inherit warning)))
    `(compilation-warning                 ((t :inherit warning)))
+   `(ediff-fine-diff-A                   ((,dark :background ,(smf-color 52))))
+   `(ediff-fine-diff-B                   ((,dark :background ,(smf-color 22))))
    `(error                               ((,dark :foreground ,(smf-color 210) :background ,(smf-color 52))))
    `(escape-glyph                        ((,dark :foreground ,(smf-color 166))))
    `(font-lock-builtin-face              ((,dark :foreground ,(smf-color 210))))
