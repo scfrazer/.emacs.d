@@ -1467,6 +1467,17 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                   (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
+(defun my-suspend-emacs (&optional arg)
+  "Suspend emacs.  With prefix arg, cd to current-directory."
+  (interactive "P")
+  (let (dir)
+    (when arg
+      (setq dir (if (eq major-mode 'dired-mode)
+                    (dired-current-directory)
+                  (and (buffer-file-name)
+                       (file-name-directory (buffer-file-name))))))
+    (suspend-emacs (and dir (concat "cd " dir)))))
+
 (defun my-theme-dark ()
   "Set dark theme."
   (interactive)
@@ -1920,7 +1931,7 @@ Prefix with C-u to resize the `next-window'."
     (set-display-table-slot standard-display-table 'control control-glyph))
 
   (bind-keys* ("<f1>"  . xterm-mouse-mode)
-              ("C-M-z" . suspend-emacs)
+              ("C-M-z" . my-suspend-emacs)
               ("C-_"   . dabbrev-expand)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
