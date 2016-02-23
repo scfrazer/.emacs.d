@@ -563,21 +563,21 @@
     (defun my-tern-mode ()
       "Turn on tern-mode when avaliable."
       (when tern-executable
-        (tern-mode t))))
-  :config
-  (progn
-    (require 'auto-complete-config)
-    (defun ac-comphist-save () nil)
-    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-    (setq-default ac-auto-start 2
-                  ac-ignore-case nil
-                  ac-sources (list 'ac-source-dictionary)
-                  ac-use-menu-map t)
-    (define-key ac-menu-map "\C-n" 'ac-next)
-    (define-key ac-menu-map "\C-p" 'ac-previous)
-    (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-    (require 'tern-auto-complete)
-    (tern-ac-setup)))
+        (tern-mode t)))))
+;;   :config
+;;   (progn
+;;     (require 'auto-complete-config)
+;;     (defun ac-comphist-save () nil)
+;;     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;;     (setq-default ac-auto-start 2
+;;                   ac-ignore-case nil
+;;                   ac-sources (list 'ac-source-dictionary)
+;;                   ac-use-menu-map t)
+;;     (define-key ac-menu-map "\C-n" 'ac-next)
+;;     (define-key ac-menu-map "\C-p" 'ac-previous)
+;;     (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+;;     (require 'tern-auto-complete)
+;;     (tern-ac-setup)))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
@@ -1169,7 +1169,7 @@ end of a non-blank line, or insert an 80-column comment line"
   "Kill a *special* or cloned buffer in a second window."
   (interactive)
   (when (> (count-windows) 1)
-    (let ((regexp (concat "\\`" (regexp-opt '("*Ilist" "*scratch" ))))
+    (let ((regexp (concat "\\`" (regexp-opt '("*Ilist" "*scratch" "*sqlplus"))))
           (windows (window-list-1 (next-window)))
           buf)
       (catch 'done
