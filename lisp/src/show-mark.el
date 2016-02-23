@@ -41,7 +41,7 @@
 
 (define-minor-mode show-mark-mode
   "Minor mode to show the mark."
-  t " mark" nil
+  t " mk" nil
   (if show-mark-mode
       (progn
         (show-mark-update)
