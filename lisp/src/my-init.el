@@ -144,6 +144,8 @@
               (let* ((str (string char))
                      (regex (cond ((= 13 char)
                                    "\n")
+                                  ((= 32 char)
+                                   "\\s-+")
                                   ((string= str ".")
                                    "\\.")
                                   ((and avy-word-punc-regexp
