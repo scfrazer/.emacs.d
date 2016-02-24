@@ -1037,6 +1037,15 @@ or the region with prefix arg."
     (replace-match ""))
   (goto-char (point-min)))
 
+(defun my-editor-mode ()
+  "For use when invoked as $EDITOR."
+  (defun my-editor-mode-done ()
+    "Save and exit."
+    (interactive)
+    (let ((confirm-kill-emacs nil))
+      (save-buffers-kill-emacs t)))
+  (local-set-key (kbd "C-c C-c") 'my-editor-mode-done))
+
 (defun my-edit-region-in-mode (start end mode-name)
   "Edit region in some other mode."
   (interactive "r\nsMode? ")
@@ -1919,7 +1928,8 @@ Prefix with C-u to resize the `next-window'."
   ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((t :foreground "color-201" :background "black" :weight bold))
+;;     '((t :foreground "color-201" :background "black" :weight bold))
+    '((t :foreground "color-201" :background "black"))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
