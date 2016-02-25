@@ -224,7 +224,6 @@
                ("p" . diff-hunk-prev))))
 
 (use-package doxymacs
-;;   :bind-keymap* ("C-x d" . doxymacs-mode-map)
   :config
   (progn
     (require 'my-doxymacs)
@@ -338,7 +337,6 @@
   (progn
     (setq isearch-allow-scroll t
           lazy-highlight-initial-delay 0)
-          ;; search-whitespace-regexp ".*?")
     (put 'my-recenter 'isearch-scroll t)))
 
 (use-package js2-mode
@@ -566,20 +564,6 @@
       "Turn on tern-mode when avaliable."
       (when tern-executable
         (tern-mode t)))))
-;;   :config
-;;   (progn
-;;     (require 'auto-complete-config)
-;;     (defun ac-comphist-save () nil)
-;;     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;;     (setq-default ac-auto-start 2
-;;                   ac-ignore-case nil
-;;                   ac-sources (list 'ac-source-dictionary)
-;;                   ac-use-menu-map t)
-;;     (define-key ac-menu-map "\C-n" 'ac-next)
-;;     (define-key ac-menu-map "\C-p" 'ac-previous)
-;;     (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-;;     (require 'tern-auto-complete)
-;;     (tern-ac-setup)))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
@@ -667,24 +651,7 @@
   (electric-indent-mode -1))
 
 (when (fboundp 'electric-pair-mode)
-  (electric-pair-mode -1)
-;;   (defun my-electric-pair-open-newline-between-pairs ()
-;;     "Indent paired char and empty line"
-;;     (when (and (eq last-command-event ?\n)
-;;                (< (1+ (point-min)) (point) (point-max))
-;;                (eq (save-excursion
-;;                      (skip-chars-backward "\t\s")
-;;                      (char-before (1- (point))))
-;;                    (matching-paren (char-after))))
-;;       (save-excursion
-;;         (insert "\n")
-;;         (indent-according-to-mode))
-;;       (indent-according-to-mode))
-;;     nil)
-;;   (setq-default electric-pair-open-newline-between-pairs 'my-electric-pair-open-newline-between-pairs)
-;;   (setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
-;;   (electric-pair-mode 1)
-  )
+  (electric-pair-mode -1))
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
@@ -773,12 +740,6 @@
 (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
 (add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
 (add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
-
-;; (defun major-mode-from-name ()
-;;   "Choose proper mode for buffers created by switch-to-buffer."
-;;   (let ((buffer-file-name (or buffer-file-name (buffer-name))))
-;;     (set-auto-mode)))
-;; (setq-default major-mode 'major-mode-from-name)
 
 ;; Comments
 
@@ -1631,22 +1592,11 @@ Prefix with C-u to resize the `next-window'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advice
 
-;; (defadvice show-paren-function (after my-echo-paren-matching-line activate)
-;;   "If a matching paren is off-screen, echo the matching line."
-;;   (when (char-equal (char-syntax (char-before (point))) ?\))
-;;     (let ((matching-text (blink-matching-open)))
-;;       (when matching-text
-;;         (message matching-text)))))
-
 (defadvice kill-buffer (around my-kill-buffer-advice activate)
   "Don't kill the *scratch* buffer."
   (if (equal (ad-get-arg 0) "*scratch*")
       (bury-buffer)
     ad-do-it))
-
-;; (defadvice quit-window (before advise-quit-window activate)
-;;   (when (called-interactively-p 'any)
-;;     (ad-set-arg 0 (not (ad-get-arg 0)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks
@@ -1656,7 +1606,6 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
-;;  (require 'use-package)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
              '("Require"
@@ -1735,7 +1684,6 @@ Prefix with C-u to resize the `next-window'."
      (defun my-compilation-mode-hook ()
        (define-key compilation-mode-map "{" 'compilation-previous-file)
        (define-key compilation-mode-map "}" 'compilation-next-file)
-       ;; (setq truncate-lines 'one-line-each)
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
@@ -1749,12 +1697,6 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
      (add-to-list 'file-template-mapping-alist '("\\.v$" . "template.v"))))
-
-;; (eval-after-load "make-mode"
-;;   '(progn
-;;      (defun my-makefile-mode-hook ()
-;;        (modify-syntax-entry ?= ". 14" makefile-mode-syntax-table))
-;;      (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
@@ -1924,11 +1866,8 @@ Prefix with C-u to resize the `next-window'."
 (unless window-system
 
   (set-terminal-coding-system 'utf-8)
-  ;; (set-keyboard-coding-system 'utf-8)
-  ;; (prefer-coding-system 'utf-8)
 
   (defface my-display-table-face
-;;     '((t :foreground "color-201" :background "black" :weight bold))
     '((t :foreground "color-201" :background "black"))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
