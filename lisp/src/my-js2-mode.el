@@ -59,7 +59,7 @@
 
 (defun my-js2-mode-hook ()
   (setq-local mode-name "js2")
-  (auto-complete-mode 1)
+;;   (auto-complete-mode 1)
   (bind-keys :map js2-mode-map
              ("M-\\" . ac-start)
              ("C-c C-j" . my-js2-mode-insert-doc)
