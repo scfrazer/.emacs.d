@@ -3,6 +3,7 @@
 (require 'dired)
 (require 'my-font-lock)
 (require 'my-ibuffer)
+(require 'dired-narrow)
 
 ;; Settings
 

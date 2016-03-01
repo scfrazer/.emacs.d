@@ -24,6 +24,7 @@
 (unbind-key "C-o" dired-mode-map)
 (unbind-key "s"   dired-mode-map)
 (bind-keys :map dired-mode-map
+           ("/"        . dired-narrow)
            ("SPC"      . my-dired-toggle-mark)
            ("<return>" . my-dired-open)
            ("J"        . my-dired-jump-to-prev-dir)
