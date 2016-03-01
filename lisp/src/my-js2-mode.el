@@ -70,7 +70,7 @@
              ("]" . my-js2-mode-electric-closer)
              ("}" . my-js2-mode-electric-closer))
   (flymake-eslint-load)
-  (my-tern-mode))
+  (tern-mode))
 
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 

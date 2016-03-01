@@ -553,19 +553,7 @@
       (kill-buffer))))
 
 (use-package tern
-  :commands (tern-mode)
-  :init
-  (progn
-    (setq-default
-     tern-executable
-     (cond
-      ((eq my-location 'RTP) "/auto/ibunobackup2/scfrazer/local/lib/node_modules/tern/bin/tern")
-      ((eq my-location 'SJC) "/auto/cppfs2e/scfrazer/node/lib/node_modules/tern/bin/tern")
-      ((eq my-location 'Work) "/Users/scfrazer/node_modules/tern/bin/tern")))
-    (defun my-tern-mode ()
-      "Turn on tern-mode when avaliable."
-      (when tern-executable
-        (tern-mode t)))))
+  :commands (tern-mode))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
