@@ -71,7 +71,7 @@
    `(ido-first-match                     ((t :inherit warning)))
    `(ido-only-match                      ((t :inherit success)))
    `(ido-subdir                          ((t :inherit font-lock-keyword-face)))
-   `(isearch                             ((,dark :foreground "black" :background ,(smf-color 211))))
+   `(isearch                             ((,dark :foreground ,(smf-color 231) :background ,(smf-color 203))))
    `(js2-error                           ((t :inherit error)))
    `(js2-external-variable               ((t :inherit warning)))
    `(js2-function-param                  ((t :inherit font-lock-variable-name-face)))

@@ -85,6 +85,8 @@
 
 (require 'my-recentf)
 
+(require 'redo+)
+
 (require 'show-mark)
 (global-show-mark-mode 1)
 
@@ -1713,7 +1715,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c ."       . my-kill-results-buffer)
  ("C-c /"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
- ("C-c M"       . vcs-compile)
+ ("C-c M"       . recompile)
  ("C-c N"       . narrow-to-defun)
  ("C-c T"       . tidy)
  ("C-c TAB"     . indent-region)
@@ -1776,6 +1778,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-r n"       . my-rectangle-number-lines)
  ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
+ ("M-z"         . redo)
  ("M-}"         . my-forward-paragraph)
  ("M-~"         . previous-error))
 
