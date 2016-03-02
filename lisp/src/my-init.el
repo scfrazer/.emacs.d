@@ -20,6 +20,7 @@
 (require 'bind-remind)
 
 (require 'my-dired)
+(require 'dired-narrow)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
 (unbind-key "C-o" dired-mode-map)
 (unbind-key "s"   dired-mode-map)
