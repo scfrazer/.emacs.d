@@ -12,7 +12,7 @@
 
 (ll-debug-register-mode 'java-mode
                         "global.log(" ");"
-;;                        "Log.info(" ");"
+;;;                        "Log.info(" ");"
                         '(nil "\""
                               (concat (ll-debug-create-next-debug-string)
                                       " (" (buffer-name) " - "
