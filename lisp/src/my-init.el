@@ -357,6 +357,11 @@
     (setq-default less-css-compile-at-save t)
     (add-hook 'less-css-mode-hook 'flymake-less-load)))
 
+(use-package linum
+  :commands (linum-mode)
+  :init
+  (setq-default linum-format "%4d "))
+
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
           ("C-c d C-r" . my-debug-isearch-backward)
