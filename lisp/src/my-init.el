@@ -359,8 +359,20 @@
 
 (use-package linum
   :commands (linum-mode)
-  :init
-  (setq-default linum-format "%4d "))
+  :config
+  (progn
+    (defvar my-linum-format "%4d ")
+    (defun my-linum-before-numbering-hook ()
+      "Set the linum format."
+      (setq-local my-linum-format
+                  (let ((width (length (number-to-string
+                                        (count-lines (point-min) (point-max))))))
+                    (concat "%" (number-to-string width) "d "))))
+    (add-hook 'linum-before-numbering-hook 'my-linum-before-numbering-hook)
+    (defun my-linum-format-func (line)
+      "Format the line number."
+      (propertize (format my-linum-format line) 'face 'linum))
+    (setq linum-format 'my-linum-format-func)))
 
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
