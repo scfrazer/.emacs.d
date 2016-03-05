@@ -1733,6 +1733,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-h"         . backward-char)
  ("C-l"         . forward-char)
  ("C-x 5 n"     . set-frame-name)
+ ("C-x #"       . linum-mode)
  ("C-x ("       . kmacro-start-macro-or-insert-counter)
  ("C-x -"       . my-window-resize)
  ("C-x C-c"     . my-kill-frame-or-emacs)
