@@ -489,6 +489,8 @@ With prefix arg ask for version."
 
   (defvar clearcase-edcs-mode-font-lock-keywords
     '(
+      ("^\\s-*element\\s-+\\*\\s-+/main/LATEST\\s-*$"
+       (0 font-lock-warning-face))
       ("^\\s-*\\<\\(element\\|include\\)\\>"
        (1 font-lock-keyword-face))
       ("@@"
