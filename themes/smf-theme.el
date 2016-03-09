@@ -80,6 +80,7 @@
    `(link                                ((,dark :foreground ,(smf-color 81) :slant italic :underline t)))
    `(link-visited                        ((,dark :foreground ,(smf-color 212) :slant italic :underline t)))
    `(linum                               ((,dark :foreground ,(smf-color 143) :background "black" :slant italic)))
+   `(magit-section-heading               ((,dark :foreground ,(smf-color 222))))
    `(match                               ((,dark :foreground "white" :background ,(smf-color 62))))
    `(minibuffer-prompt                   ((t :inherit font-lock-keyword-face)))
    `(mode-line                           ((,dark :foreground ,(smf-color 231) :background ,(smf-color 24))))

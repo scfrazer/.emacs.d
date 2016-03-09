@@ -6,7 +6,7 @@
 (setq-default
  magit-commit-show-diff nil
  magit-display-buffer-function 'my-magit-display-buffer
- magit-ellipsis ?>
+ magit-ellipsis ?…
  magit-push-always-verify nil
  magit-restore-window-configuration t
  magit-set-upstream-on-push 'askifnotset)
