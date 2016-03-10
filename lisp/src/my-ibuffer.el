@@ -66,7 +66,7 @@
 (my-ibuffer-build-bookmark-subs)
 
 (defface my-ibuffer-current-face
-  '((t :inherit success))
+  '((t :inherit mode-line))
   "Current buffer marker face."
   :group 'faces)
 
@@ -74,7 +74,7 @@
 
 (define-ibuffer-column current
   (:name "C" :inline nil)
-  (if (eq my-ibuffer-current-buf buffer) (propertize (char-to-string ?→) 'face 'my-ibuffer-current-face) " "))
+  (if (eq my-ibuffer-current-buf buffer) (propertize (char-to-string ?•) 'face 'my-ibuffer-current-face) " "))
 
 (define-ibuffer-column buffer
   (:name "Name" :inline nil)
@@ -94,11 +94,18 @@
                                  "/" (match-string 1 path)))))
         path))))
 
+;; (setq ibuffer-formats
+;;       '((mark current read-only modified "  "
+;;               (buffer -1 -1 :left :elide) "  "
+;;               bmk-filename)
+;;         (mark current read-only modified "  "
+;;               (buffer -1 -1 :left :elide) "  "
+;;               filename)))
 (setq ibuffer-formats
-      '((mark current read-only modified "  "
+      '((mark read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               bmk-filename)
-        (mark current read-only modified "  "
+        (mark read-only modified "  "
               (buffer -1 -1 :left :elide) "  "
               filename)))
 
