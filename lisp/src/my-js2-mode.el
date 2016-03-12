@@ -16,6 +16,26 @@
               js-doc-top-line "/**************************************************************************\n"
               js-doc-bottom-line " **************************************************************************/\n\n")
 
+;; Copied from js2-mode, but always reparse while ignore AMD wrapper
+(defun js2-mode-create-imenu-index ()
+  "Return an alist for `imenu--index-alist'."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char 0)
+      (when (looking-at "\\s-*define\\s-*(")
+        (search-forward "(")
+        (let ((beg (point)))
+          (search-forward "{")
+          (backward-char)
+          (forward-sexp)
+          (narrow-to-region beg (point))))
+      (js2-reparse 'force)
+      (prog1
+          (js2-build-imenu-index)
+        (setq js2-imenu-recorder nil
+              js2-imenu-function-map nil)))))
+
 ;; Copied from js2-mode, but don't use font-lock-doc-face for jsdoc
 (defun js2-record-comment (token)
   "Record a comment in `js2-scanned-comments'."

@@ -246,9 +246,9 @@
   (require 'my-ediff))
 
 (use-package etags
-  :bind* (("M-?" . my-etags-select-find-tag)
+  :bind* (("M-?" . my-find-tag)
           ("M-&" . my-pop-tag-mark-kill-buffer)
-          ("M-*" . pop-tag-mark))
+          ("M-*" . my-pop-tag-mark))
   :config
   (progn
     (require 'etags-select)
@@ -262,15 +262,23 @@
            )
           etags-table-search-up-depth 10
           tags-revert-without-query t)
-    (defun my-etags-select-find-tag (&optional arg)
+    (defun my-find-tag (&optional arg)
       "Find tag at point or plain find tag"
       (interactive "P")
-      (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
+      (if (eq major-mode 'js2-mode)
+          (if arg (tern-find-definition-by-name) (tern-find-definition))
+        (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+    (defun my-pop-tag-mark ()
+      "Pop tag mark."
+      (interactive)
+      (if (eq major-mode 'js2-mode)
+          (tern-pop-find-definition)
+        (pop-tag-mark)))
     (defun my-pop-tag-mark-kill-buffer ()
       "Pop tag mark and kill previous buffer."
       (interactive)
       (let ((buf (current-buffer)))
-        (pop-tag-mark)
+        (my-pop-tag-mark)
         (unless (equal buf (current-buffer))
           (kill-buffer buf))))))
 
