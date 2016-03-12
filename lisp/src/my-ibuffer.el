@@ -14,8 +14,18 @@
               ibuffer-use-other-window nil)
 
 (defface my-ibuffer-group-name-face
-  '((t (:foreground "#D0D0D0" :background "#444444")))
+  '((t :foreground "#D0D0D0" :background "#444444"))
   "ibuffer group name face"
+  :group 'faces)
+
+(defface my-ibuffer-read-only-face
+  '((t :inherit font-lock-function-name-face))
+  "ibuffer group name face"
+  :group 'faces)
+
+(defface my-ibuffer-current-face
+  '((t :inherit mode-line))
+  "Current buffer marker face."
   :group 'faces)
 
 (defvar my-ibuffer-vc-regexp (regexp-opt (list "*cc-status"
@@ -65,11 +75,6 @@
 
 (my-ibuffer-build-bookmark-subs)
 
-(defface my-ibuffer-current-face
-  '((t :inherit mode-line))
-  "Current buffer marker face."
-  :group 'faces)
-
 (defvar my-ibuffer-current-buf)
 
 (define-ibuffer-column current
@@ -115,9 +120,9 @@
                (eq major-mode 'Custom-mode)) font-lock-type-face)
         (5 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
         (4 (string-match "^*" (buffer-name)) font-lock-comment-face)
-        (3 (buffer-modified-p) font-lock-warning-face)
+        (3 (buffer-modified-p) error)
         (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
-        (1 buffer-read-only font-lock-function-name-face)))
+        (1 buffer-read-only my-ibuffer-read-only-face)))
 
 (setq ibuffer-saved-filter-groups
       `(("my-groups"
