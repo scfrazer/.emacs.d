@@ -64,7 +64,10 @@
 (defun my-isearch-yank-sexp ()
   "Yank next sexp."
   (interactive)
-  (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+  (isearch-yank-internal
+   (lambda ()
+     (let ((forward-sexp-function nil))
+       (forward-sexp 1) (point)))))
 
 (defun my-isearch-yank-region ()
   "Yank region."
