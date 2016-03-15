@@ -1017,6 +1017,7 @@ or the region with prefix arg."
 
 (defun my-editor-mode ()
   "For use when invoked as $EDITOR."
+  (setq-local mode-name "EDITOR")
   (defun my-editor-mode-done ()
     "Save and exit."
     (interactive)
