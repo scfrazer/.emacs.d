@@ -1710,6 +1710,8 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
+     (add-to-list 'file-template-mapping-alist '("\\.js$" . "template.js"))
+     (add-to-list 'file-template-mapping-alist '("\\.php$" . "template.php"))
      (add-to-list 'file-template-mapping-alist '("\\.s$" . "template.s"))
      (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
