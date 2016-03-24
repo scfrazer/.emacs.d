@@ -74,10 +74,11 @@
 
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
-(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
+(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
 (mode-fn-map 'tidy 'web-mode 'web-beautify-html)
+(mode-fn-map 'tidy 'php-mode 'my-php-tidy)
 
 (require 'my-mode-line)
 
@@ -482,20 +483,25 @@
   :config
   (progn
     (require 'flymake)
-    (defvar my-php-lint
+    (defvar my-php-bin-dir
       (cond
-       ((eq my-location 'RTP) "/nfs/ibunobackup2/scfrazer/local/php/bin/php-lint")
-       ((eq my-location 'SJC) "/auto/vtt/www/prod/dev/local/bin/php-lint")))
+       ((eq my-location 'RTP) "/nfs/ibunobackup2/scfrazer/local/php/bin")
+       ((eq my-location 'SJC) "/auto/vtt/www/prod/dev/local/bin")))
     (defun flymake-php-init ()
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory buffer-file-name))))
-        (list my-php-lint (list local-file))))
+        (list (concat my-php-bin-dir "/php-lint") (list local-file))))
+    (defun my-php-tidy ()
+      "Run phpcbf on buffer."
+      (interactive "*")
+      (call-process-shell-command (concat my-php-bin-dir "/phpcbf --standard=VTT " (buffer-file-name)))
+      (revert-buffer nil t t))
     (defun my-php-mode-hook ()
       (font-lock-add-keywords nil '(("default" (0 'font-lock-keyword-face prepend))) 'add-to-end)
-      (when my-php-lint
+      (when my-php-bin-dir
         (flymake-mode 1)))
     (add-hook 'php-mode-hook 'my-php-mode-hook)))
 

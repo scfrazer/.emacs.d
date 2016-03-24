@@ -2,7 +2,7 @@
 
 (require 'flymake)
 
-(setq-default flymake-no-changes-timeout 2.0
+(setq-default flymake-no-changes-timeout 1000000
               flymake-start-syntax-check-on-newline nil
               flymake-start-syntax-check-on-find-file nil)
 
