@@ -741,6 +741,7 @@
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
+              truncate-lines t
               truncate-partial-width-windows nil
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               visible-bell t
@@ -1708,6 +1709,7 @@ Prefix with C-u to resize the `next-window'."
      (defun my-compilation-mode-hook ()
        (define-key compilation-mode-map "{" 'compilation-previous-file)
        (define-key compilation-mode-map "}" 'compilation-next-file)
+       (setq truncate-lines nil)
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
