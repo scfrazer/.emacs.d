@@ -35,7 +35,6 @@
 (require 'magit-wip)
 
 ;; For `magit-apply'
-(declare-function magit-anti-stage 'magit-rockstar)
 (declare-function magit-am-popup 'magit-sequence)
 ;; For `magit-discard-files'
 (declare-function magit-checkout-stage 'magit)
@@ -50,6 +49,22 @@
   "Whether Magit uses the system's trash can."
   :package-version '(magit . "2.1.0")
   :group 'magit
+  :type 'boolean)
+
+(defcustom magit-unstage-committed t
+  "Whether unstaging a committed change reverts it instead.
+
+A committed change cannot be unstaged, because staging and
+unstaging are actions that are concern with the differences
+between the index and the working tree, not with committed
+changes.
+
+If this option is non-nil (the default), then typing \"u\"
+(`magit-unstage') on a committed change, causes it to be
+reversed in the index but not the working tree.  For more
+information see command `magit-reverse-in-index'."
+  :package-version '(magit . "2.4.1")
+  :group 'magit-commands
   :type 'boolean)
 
 ;;; Commands
@@ -71,22 +86,26 @@ With a prefix argument and if necessary, attempt a 3-way merge."
       (`(,_   file) (magit-apply-diff   it args))
       (`(,_  files) (magit-apply-diffs  it args)))))
 
+(defun magit-apply--section-content (section)
+  (buffer-substring-no-properties (if (eq (magit-section-type section) 'hunk)
+                                      (magit-section-start section)
+                                    (magit-section-content section))
+                                  (magit-section-end section)))
+
 (defun magit-apply-diffs (sections &rest args)
   (setq sections (magit-apply--get-diffs sections))
   (magit-apply-patch sections args
                      (mapconcat
                       (lambda (s)
                         (concat (magit-diff-file-header s)
-                                (buffer-substring (magit-section-content s)
-                                                  (magit-section-end s))))
+                                (magit-apply--section-content s)))
                       sections "")))
 
 (defun magit-apply-diff (section &rest args)
   (setq section (car (magit-apply--get-diffs (list section))))
   (magit-apply-patch section args
                      (concat (magit-diff-file-header section)
-                             (buffer-substring (magit-section-content section)
-                                               (magit-section-end section)))))
+                             (magit-apply--section-content section))))
 
 (defun magit-apply-hunks (sections &rest args)
   (let ((section (magit-section-parent (car sections))))
@@ -94,19 +113,15 @@ With a prefix argument and if necessary, attempt a 3-way merge."
       (user-error "Cannot un-/stage resolution hunks.  Stage the whole file"))
     (magit-apply-patch section args
                        (concat (magit-section-diff-header section)
-                               (mapconcat
-                                (lambda (s)
-                                  (buffer-substring (magit-section-start s)
-                                                    (magit-section-end s)))
-                                sections "")))))
+                               (mapconcat 'magit-apply--section-content
+                                          sections "")))))
 
 (defun magit-apply-hunk (section &rest args)
   (when (string-match "^diff --cc" (magit-section-parent-value section))
     (user-error "Cannot un-/stage resolution hunks.  Stage the whole file"))
   (magit-apply-patch (magit-section-parent section) args
                      (concat (magit-diff-file-header section)
-                             (buffer-substring (magit-section-start section)
-                                               (magit-section-end section)))))
+                             (magit-apply--section-content section))))
 
 (defun magit-apply-region (section &rest args)
   (unless (magit-diff-context-p)
@@ -129,10 +144,10 @@ With a prefix argument and if necessary, attempt a 3-way merge."
       (magit-wip-commit-before-change files (concat " before " command)))
     (with-temp-buffer
       (insert patch)
-      (magit-run-git-with-input nil
-        "apply" args "-p0"
-        (unless (magit-diff-context-p) "--unidiff-zero")
-        "--ignore-space-change" "-"))
+      (magit-run-git-with-input
+       "apply" args "-p0"
+       (unless (magit-diff-context-p) "--unidiff-zero")
+       "--ignore-space-change" "-"))
     (unless inhibit-magit-refresh
       (when magit-wip-after-apply-mode
         (magit-wip-commit-after-apply files (concat " after " command)))
@@ -256,8 +271,8 @@ ignored) files.
       (`(staged      file) (magit-unstage-1 (list (magit-section-value it))))
       (`(staged     files) (magit-unstage-1 (magit-region-values)))
       (`(staged      list) (magit-unstage-all))
-      (`(committed     ,_) (if (bound-and-true-p magit-unstage-use-anti-stage)
-                               (magit-anti-stage)
+      (`(committed     ,_) (if magit-unstage-committed
+                               (magit-reverse-in-index)
                              (user-error "Cannot unstage committed changes")))
       (`(undefined     ,_) (user-error "Cannot unstage this change")))))
 
@@ -515,6 +530,25 @@ without requiring confirmation."
         (magit-apply-diffs sections "--reverse" args)))
     (when binaries
       (user-error "Cannot reverse binary files"))))
+
+(defun magit-reverse-in-index (&rest args)
+  "Reverse the change at point in the index but not the working tree.
+
+Use this command to extract a change from `HEAD', while leaving
+it in the working tree, so that it can later be committed using
+a separate commit.  A typical workflow would be:
+
+0. Optionally make sure that there are no uncommitted changes.
+1. Visit the `HEAD' commit and navigate to the change that should
+   not have been included in that commit.
+2. Type \"u\" (`magit-unstage') to reverse it in the index.
+   This assumes that `magit-unstage-committed-changes' is non-nil.
+3. Type \"c e\" to extend `HEAD' with the staged changes,
+   including those that were already staged before.
+4. Optionally stage the remaining changes using \"s\" or \"S\"
+   and then type \"c c\" to create a new commit."
+  (interactive)
+  (magit-reverse (cons "--cached" args)))
 
 ;;; magit-apply.el ends soon
 (provide 'magit-apply)

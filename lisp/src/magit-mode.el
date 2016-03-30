@@ -349,6 +349,7 @@ starts complicating other things, then it will be removed."
     (define-key map "w" 'magit-am-popup)
     (define-key map "W" 'magit-patch-popup)
     (define-key map "x" 'magit-reset)
+    (define-key map "X" 'magit-reset-popup)
     (define-key map "y" 'magit-show-refs-popup)
     (define-key map "Y" 'magit-cherry)
     (define-key map "z" 'magit-stash-popup)
@@ -578,7 +579,7 @@ thinking a buffer belongs to a repo that it doesn't.")
       (with-current-buffer buffer
         (setq list-buffers-directory default-directory))
       (let ((uniquify-buffer-name-style
-             (if (eq uniquify-buffer-name-style 'forward)
+             (if (memq uniquify-buffer-name-style '(nil forward))
                  'post-forward-angle-brackets
                uniquify-buffer-name-style)))
         (uniquify-rationalize-file-buffer-names
@@ -643,8 +644,13 @@ latter is displayed in its place."
                     (rev (if args (cons rev args) rev))
                     (t   (if (member "--cached" args) "staged" "unstaged")))))))
     (if magit-buffer-locked-p
-        (rename-buffer (funcall magit-generate-buffer-name-function
-                                major-mode magit-buffer-locked-p))
+        (let ((name (funcall magit-generate-buffer-name-function
+                             major-mode magit-buffer-locked-p)))
+          (-if-let (locked (get-buffer name))
+              (let ((unlocked (current-buffer)))
+                (set-buffer locked)
+                (kill-buffer unlocked))
+            (rename-buffer name)))
       (user-error "Buffer has no value it could be locked to"))))
 
 (defun magit-mode-bury-buffer (&optional kill-buffer)
@@ -685,31 +691,46 @@ window."
   "Refresh some buffers belonging to the current repository.
 
 Refresh the current buffer if its major mode derives from
-`magit-mode', and refresh the corresponding status buffer."
+`magit-mode', and refresh the corresponding status buffer.
+
+Run hooks `magit-pre-refresh-hook' and `magit-post-refresh-hook'."
   (interactive)
   (unless inhibit-magit-refresh
-    (magit-run-hook-with-benchmark 'magit-pre-refresh-hook)
-    (when (derived-mode-p 'magit-mode)
-      (magit-refresh-buffer))
-    (--when-let (and magit-refresh-status-buffer
-                     (not (derived-mode-p 'magit-status-mode))
-                     (magit-mode-get-buffer 'magit-status-mode))
-      (with-current-buffer it
-        (magit-refresh-buffer)))
-    (magit-auto-revert-buffers)
-    (magit-run-hook-with-benchmark 'magit-post-refresh-hook)))
+    (let ((start (current-time))
+          (magit--refresh-cache (list (cons 0 0))))
+      (when magit-refresh-verbose
+        (message "Refreshing magit..."))
+      (magit-run-hook-with-benchmark 'magit-pre-refresh-hook)
+      (when (derived-mode-p 'magit-mode)
+        (magit-refresh-buffer))
+      (--when-let (and magit-refresh-status-buffer
+                       (not (derived-mode-p 'magit-status-mode))
+                       (magit-mode-get-buffer 'magit-status-mode))
+        (with-current-buffer it
+          (magit-refresh-buffer)))
+      (magit-auto-revert-buffers)
+      (magit-run-hook-with-benchmark 'magit-post-refresh-hook)
+      (when magit-refresh-verbose
+        (message "Refreshing magit...done (%.3fs, cached %s/%s)"
+                 (float-time (time-subtract (current-time) start))
+                 (caar magit--refresh-cache)
+                 (+ (caar magit--refresh-cache)
+                    (cdar magit--refresh-cache)))))))
 
 (defun magit-refresh-all ()
   "Refresh all buffers belonging to the current repository.
 
-Refresh all Magit buffers belonging to the current repository.
+Refresh all Magit buffers belonging to the current repository,
+and revert buffers that visit files located inside the current
+repository.
 
-Also always revert all unmodified buffers that visit files being
-tracked in the current repository."
+Run hooks `magit-pre-refresh-hook' and `magit-post-refresh-hook'."
   (interactive)
+  (magit-run-hook-with-benchmark 'magit-pre-refresh-hook)
   (dolist (buffer (magit-mode-get-buffers))
     (with-current-buffer buffer (magit-refresh-buffer)))
-  (magit-auto-revert-buffers))
+  (magit-auto-revert-buffers)
+  (magit-run-hook-with-benchmark 'magit-post-refresh-hook))
 
 (defvar-local magit-refresh-start-time nil)
 
@@ -717,7 +738,8 @@ tracked in the current repository."
   "Refresh the current Magit buffer."
   (setq magit-refresh-start-time (current-time))
   (let ((refresh (intern (format "%s-refresh-buffer"
-                                 (substring (symbol-name major-mode) 0 -5)))))
+                                 (substring (symbol-name major-mode) 0 -5))))
+        (magit--refresh-cache (or magit--refresh-cache (list (cons 0 0)))))
     (when (functionp refresh)
       (when magit-refresh-verbose
         (message "Refreshing buffer `%s'..." (buffer-name)))
