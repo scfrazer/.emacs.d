@@ -741,8 +741,8 @@
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
-              truncate-lines t
-              truncate-partial-width-windows nil
+              truncate-lines nil
+              truncate-partial-width-windows t
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
