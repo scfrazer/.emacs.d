@@ -58,6 +58,21 @@
   (beginning-of-line)
   (recenter)))
 
+(defun my-java-mode-uncrustify ()
+  "Run uncrustify on marked region, or entire buffer."
+  (interactive "*")
+  (let ((pos (point))
+        beg end)
+  (if (region-active-p)
+      (setq beg (region-beginning)
+            end (region-end))
+    (setq beg (point-min)
+          end (point-max)))
+  (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup") nil t)
+  (goto-char pos)
+  (beginning-of-line)
+  (recenter)))
+
 ;; Hooks
 
 (defun my-c-mode-common-hook ()

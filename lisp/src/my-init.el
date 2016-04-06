@@ -76,9 +76,10 @@
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+(mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
 (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
-(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
+(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
 
 (require 'my-mode-line)
 
