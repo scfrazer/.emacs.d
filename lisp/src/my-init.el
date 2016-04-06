@@ -303,6 +303,9 @@
  :config
  (require 'my-flymake))
 
+(use-package git
+  :bind* (("C-x g" . git-status)))
+
 (use-package grep
   :bind* (("C-c G" . my-rgrep)
           ("C-c g" . my-lgrep))
