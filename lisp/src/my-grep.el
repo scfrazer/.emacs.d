@@ -5,16 +5,18 @@
 (setq-default grep-highlight-matches t
               grep-find-ignored-directories (list ".git" ".hg" ".bzr" ".svn")
               grep-find-ignored-files (list ".#*" "*.o" "*~" "*.so" "*.a" "*.elc" "*.lib" "*.lo" "*.la" "*.pyc")
-              grep-files-aliases '(("all" . "*")
+              grep-files-aliases '(
+                                   ("all" . "*")
                                    ("c" . "*.h *.c")
                                    ("cc" . "*.h *.cc")
                                    ("cpp" . "*.hpp *.cpp")
-                                   ("e" . "*.e")
+                                   ("dv" . "\\.(sv|svh|cpp|hpp)$")
                                    ("el" . "*.el")
                                    ("pl" . "*.pl *.pm")
                                    ("py" . "*.py")
-                                   ("v" . "*.v *.vh *.vg")
-                                   ("sv" . "*.sv *.svh")))
+                                   ("rtl" . "\\.(s|v|vh)$")
+                                   ("vtt" . "\\.(java|php|json|html|js)$")
+                                   ))
 
 (grep-apply-setting 'grep-template "/bin/grep -nH -d skip -I -E -e <R> <C> <F>")
 (grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e /bin/grep -nH -I -E -e <R> <C>")

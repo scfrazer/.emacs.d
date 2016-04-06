@@ -76,9 +76,10 @@
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+(mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
 (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
-(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
+(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
 
 (require 'my-mode-line)
 
@@ -744,8 +745,8 @@
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
-              truncate-lines t
-              truncate-partial-width-windows nil
+              truncate-lines nil
+              truncate-partial-width-windows t
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
