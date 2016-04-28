@@ -104,7 +104,7 @@
    `(show-paren-mismatch-face            ((t :inherit error)))
    `(sqlplus-table-head-face             ((,dark :foreground ,(smf-color 45) :background "black" :slant italic)))
    `(success                             ((,dark :foreground ,(smf-color 120) :background ,(smf-color 22))))
-   `(trailing-whitespace                 ((,dark :foreground ,(smf-color 245) :background ,(smf-color 236))))
+   `(trailing-whitespace                 ((,dark :foreground ,(smf-color 245) :background ,(smf-color 235))))
    `(underline                           ((t :underline t)))
    `(warning                             ((,dark :foreground ,(smf-color 226) :background ,(smf-color 58)) (,light :foreground ,(smf-color 226) :background ,(smf-color 142))))
    `(web-mode-html-attr-custom-face      ((,dark :foreground ,(smf-color 106))))

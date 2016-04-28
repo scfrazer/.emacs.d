@@ -1506,6 +1506,7 @@ amended version of it."
   (unless git-status (error "Not in git-status buffer."))
   (message "Refreshing git status...")
   (git-update-status-files)
+  (git-remove-handled)
   (message "Refreshing git status...done"))
 
 (defun git-status-quit ()
