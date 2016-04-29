@@ -597,9 +597,9 @@
           ("M-t" . my-tmux-copy)))
 
 (use-package vc
-  :defer t
+  :commands (vc-dir)
   :init
-  (setq vc-handled-backends nil)
+  (setq vc-handled-backends '(Git))
   :config
   (require 'my-vc))
 
