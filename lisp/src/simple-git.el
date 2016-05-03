@@ -1,5 +1,7 @@
 ;;; simple-git.el
 
+(require 'log-edit)
+
 (defgroup simple-git nil
   "Simple git."
   :group 'tools)
@@ -128,18 +130,62 @@
   (interactive)
   (let ((file (simple-git-get-current-file)))
     (when file
-      (unless (= (call-process simple-git-executable nil t nil "add" file))
+      (unless (= (call-process simple-git-executable nil t nil "add" file) 0)
         (error (concat "Couldn't add file '" file "'")))
       (simple-git-refresh))))
 
 (defun simple-git-add-tracked ()
   "Add files that are already tracked."
   (interactive)
-  (unless (= (call-process simple-git-executable nil t nil "add" "-u"))
+  (unless (= (call-process simple-git-executable nil t nil "add" "-u") 0)
     (error "Couldn't add tracked files"))
   (simple-git-refresh))
 
-;; TODO
+(defun simple-git-diff-file ()
+  "Diff file."
+  (interactive)
+  (let ((file (simple-git-get-current-file))
+        (buf (get-buffer-create (concat " " simple-git-buf-prefix "Diff*"))))
+    (when file
+      (with-current-buffer buf
+        (setq buffer-read-only nil)
+        (erase-buffer)
+        (unless (= (call-process simple-git-executable nil t nil "diff" file) 0)
+          (error (concat "Couldn't diff file '" file "'")))
+        (goto-char (point-min))
+        (set-buffer-modified-p nil)
+        (diff-mode)
+        (font-lock-fontify-buffer))
+      (set-window-buffer nil buf))))
+
+(defun simple-git-edit-file ()
+  "Edit file."
+  (interactive)
+  (let ((file (simple-git-get-current-file)))
+    (when file
+      (find-file file))))
+
+(defvar simple-git-commit-window-configuration)
+(defvar simple-git-commit-buffer)
+
+(defun simple-git-commit ()
+  "Commit."
+  (interactive)
+  (setq simple-git-commit-window-configuration (current-window-configuration))
+  (setq simple-git-commit-buffer (get-buffer-create (concat " " simple-git-buf-prefix "Commit*")))
+  (log-edit 'simple-git-commit-finish t nil simple-git-commit-buffer))
+
+(defun simple-git-commit-finish ()
+  "Commit callback."
+  (interactive)
+  (when simple-git-commit-buffer
+    (set-window-configuration simple-git-commit-window-configuration)
+    (setq simple-git-commit-window-configuration nil)
+    (kill-buffer simple-git-commit-buffer)
+    (setq simple-git-commit-buffer nil)
+    (unless (= (call-process simple-git-executable nil t nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
+      (error "Couldn't do commit"))))
+
 ;; X          Y     Meaning
 ;; -------------------------------------------------
 ;;           [MD]   not updated
@@ -169,21 +215,21 @@
 (defvar simple-git-mode-map nil
   "`simple-git-mode' keymap.")
 
-;; ? -> show table translation
 ;; k -> checkout -- (ask for confirmation)
-;; C -> commit
-;; P -> push
-;; RET -> edit file
-;; TAB -> diff file
+;; P -> push (credentials?)
+;; ? -> show table translation
 ;; ! -> run git command, sub filename for %
 
 (unless simple-git-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "=") 'simple-git-diff-file)
     (define-key map (kbd "A") 'simple-git-add-tracked)
+    (define-key map (kbd "C") 'simple-git-commit)
     (define-key map (kbd "C-n") 'simple-git-goto-next-file)
     (define-key map (kbd "C-p") 'simple-git-goto-prev-file)
     (define-key map (kbd "M-<") 'simple-git-goto-first-file)
     (define-key map (kbd "M->") 'simple-git-goto-last-file)
+    (define-key map (kbd "RET") 'simple-git-edit-file)
     (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "g") 'simple-git-refresh)
     (define-key map (kbd "n") 'simple-git-goto-next-file)

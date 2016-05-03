@@ -733,6 +733,7 @@
               line-move-visual t
               line-number-display-limit-width 1000
               line-number-mode t
+              log-edit-hook nil
               lpr-command "lpr"
               lpr-lp-system t
               lpr-switches ""
