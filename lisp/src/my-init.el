@@ -218,7 +218,7 @@
   ;; Add csh to magic interpreter modes
  (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
 
-(use-package diff
+(use-package diff-mode
   :defer t
   :defines (diff-mode-map)
   :config

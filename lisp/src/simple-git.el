@@ -1,5 +1,6 @@
 ;;; simple-git.el
 
+(require 'diff)
 (require 'log-edit)
 
 (defgroup simple-git nil
@@ -130,14 +131,14 @@
   (interactive)
   (let ((file (simple-git-get-current-file)))
     (when file
-      (unless (= (call-process simple-git-executable nil t nil "add" file) 0)
+      (unless (= (call-process simple-git-executable nil nil nil "add" file) 0)
         (error (concat "Couldn't add file '" file "'")))
       (simple-git-refresh))))
 
 (defun simple-git-add-tracked ()
   "Add files that are already tracked."
   (interactive)
-  (unless (= (call-process simple-git-executable nil t nil "add" "-u") 0)
+  (unless (= (call-process simple-git-executable nil nil nil "add" "-u") 0)
     (error "Couldn't add tracked files"))
   (simple-git-refresh))
 
@@ -183,10 +184,11 @@
     (setq simple-git-commit-window-configuration nil)
     (kill-buffer simple-git-commit-buffer)
     (setq simple-git-commit-buffer nil)
-    (unless (= (call-process simple-git-executable nil t nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
+    (unless (= (call-process simple-git-executable nil nil nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
       (error "Couldn't do commit"))
     (simple-git-refresh)))
 
+;; -------------------------------------------------
 ;; X          Y     Meaning
 ;; -------------------------------------------------
 ;;           [MD]   not updated
