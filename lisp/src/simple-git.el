@@ -184,7 +184,8 @@
     (kill-buffer simple-git-commit-buffer)
     (setq simple-git-commit-buffer nil)
     (unless (= (call-process simple-git-executable nil t nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
-      (error "Couldn't do commit"))))
+      (error "Couldn't do commit"))
+    (simple-git-refresh)))
 
 ;; X          Y     Meaning
 ;; -------------------------------------------------
