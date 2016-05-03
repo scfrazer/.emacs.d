@@ -31,9 +31,8 @@
 (defun simple-git-find-root (dir)
   "Find root directory."
   (with-temp-buffer
-    (let* ((default-directory dir)
-           (result (call-process simple-git-executable nil t nil "rev-parse" "--show-toplevel")))
-      (unless (= result 0)
+    (let* ((default-directory dir))
+      (unless (= (call-process simple-git-executable nil t nil "rev-parse" "--show-toplevel") 0)
         (error (concat "Couldn't find Git root for directory '" dir "'")))
       (goto-char (point-min))
       (file-name-as-directory (buffer-substring-no-properties (point) (point-at-eol))))))
@@ -46,9 +45,8 @@
 (defun simple-git-get-origin (dir)
   "Get origin."
   (with-temp-buffer
-    (let* ((default-directory dir)
-           (result (call-process simple-git-executable nil t nil "config" "--get" "remote.origin.url")))
-      (unless (= result 0)
+    (let* ((default-directory dir))
+      (unless (= (call-process simple-git-executable nil t nil "config" "--get" "remote.origin.url") 0)
         (error (concat "Couldn't get Git origin for directory '" dir "'")))
       (goto-char (point-min))
       (buffer-substring-no-properties (point) (point-at-eol)))))
@@ -56,34 +54,90 @@
 (defun simple-git-refresh ()
   "Refresh status."
   (interactive)
-  (let ((buf (current-buffer)))
+  (let ((buf (current-buffer))
+        (file (simple-git-get-current-file)))
     (goto-char (point-min))
     (forward-line 2)
     (setq buffer-read-only nil)
     (delete-region (point) (point-max))
     (with-temp-buffer
-      (let ((result (call-process simple-git-executable nil t nil "status" "-b" "--porcelain")))
-        (unless (= result 0)
-          (error (concat "Couldn't get status for directory '" default-directory "'")))
-        (goto-char (point-min))
-        (while (not (eobp))
-          (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\([a-zA-Z0-9_]+/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
-                 (let ((branch (match-string-no-properties 1))
-                       (remote (match-string-no-properties 3))
-                       (state (match-string-no-properties 4)))
-                   (with-current-buffer buf
-                     (insert "Branch:  " branch (or state "") "\n")
-                     (insert "Remote:  " (or remote "NONE") "\n\n"))))
-                ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
-                 (let ((index (match-string-no-properties 1))
-                       (work-tree (match-string-no-properties 2))
-                       (filename (match-string-no-properties 3)))
-                   (with-current-buffer buf
-                     (insert " " index work-tree " -> " filename "\n")))))
-          (forward-line 1))))
-    (simple-git-goto-first-file)
+      (unless (= (call-process simple-git-executable nil t nil "status" "-b" "--porcelain") 0)
+        (error (concat "Couldn't get status for directory '" default-directory "'")))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\([a-zA-Z0-9_]+/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
+               (let ((branch (match-string-no-properties 1))
+                     (remote (match-string-no-properties 3))
+                     (state (match-string-no-properties 4)))
+                 (with-current-buffer buf
+                   (insert "Branch:  " branch (or state "") "\n")
+                   (insert "Remote:  " (or remote "NONE") "\n\n"))))
+              ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
+               (let ((index (match-string-no-properties 1))
+                     (work-tree (match-string-no-properties 2))
+                     (filename (match-string-no-properties 3)))
+                 (with-current-buffer buf
+                   (insert " " index work-tree " -> " filename "\n")))))
+        (forward-line 1)))
+    (goto-char (point-min))
+    (if (and file (search-forward file nil t))
+        (progn
+          (beginning-of-line)
+          (simple-git-goto-next-file))
+      (simple-git-goto-first-file))
     (setq buffer-read-only t)
     (set-buffer-modified-p nil)))
+
+(defun simple-git-goto-first-file ()
+  "Goto first file."
+  (interactive)
+  (goto-char (point-min))
+  (forward-line 4)
+  (simple-git-goto-next-file))
+
+(defun simple-git-goto-last-file ()
+  "Goto last file."
+  (interactive)
+  (goto-char (point-max))
+  (simple-git-goto-prev-file))
+
+(defun simple-git-goto-next-file ()
+  "Goto next file."
+  (interactive)
+  (search-forward "-> " nil t))
+
+(defun simple-git-goto-prev-file ()
+  "Goto previous file."
+  (interactive)
+  (let ((pos (point)))
+    (save-excursion
+      (beginning-of-line)
+      (when (search-backward "-> " nil t)
+        (setq pos (+ (point) 3))))
+    (goto-char pos)))
+
+(defun simple-git-get-current-file ()
+  "Get the current file."
+  (save-excursion
+    (beginning-of-line)
+    (when (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
+      (match-string-no-properties 1))))
+
+(defun simple-git-add-current-file ()
+  "Add the current file."
+  (interactive)
+  (let ((file (simple-git-get-current-file)))
+    (when file
+      (unless (= (call-process simple-git-executable nil t nil "add" file))
+        (error (concat "Couldn't add file '" file "'")))
+      (simple-git-refresh))))
+
+(defun simple-git-add-tracked ()
+  "Add files that are already tracked."
+  (interactive)
+  (unless (= (call-process simple-git-executable nil t nil "add" "-u"))
+    (error "Couldn't add tracked files"))
+  (simple-git-refresh))
 
 ;; TODO
 ;; X          Y     Meaning
@@ -110,41 +164,12 @@
 ;; !           !    ignored
 ;; -------------------------------------------------
 
-(defun simple-git-goto-first-file ()
-  "Goto first file."
-  (interactive)
-  (goto-char (point-min))
-  (simple-git-goto-next-file))
-
-(defun simple-git-goto-last-file ()
-  "Goto last file."
-  (interactive)
-  (goto-char (point-max))
-  (simple-git-goto-prev-file))
-
-(defun simple-git-goto-next-file ()
-  "Goto next file."
-  (interactive)
-  (search-forward "-> " nil t))
-
-(defun simple-git-goto-prev-file ()
-  "Goto previous file."
-  (interactive)
-  (let ((pos (point)))
-    (save-excursion
-      (beginning-of-line)
-      (when (search-backward "-> " nil t)
-        (setq pos (+ (point) 3))))
-    (goto-char pos)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar simple-git-mode-map nil
   "`simple-git-mode' keymap.")
 
 ;; ? -> show table translation
-;; a -> add current file
-;; A -> add -u
 ;; k -> checkout -- (ask for confirmation)
 ;; C -> commit
 ;; P -> push
@@ -154,10 +179,12 @@
 
 (unless simple-git-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "A") 'simple-git-add-tracked)
     (define-key map (kbd "C-n") 'simple-git-goto-next-file)
     (define-key map (kbd "C-p") 'simple-git-goto-prev-file)
     (define-key map (kbd "M-<") 'simple-git-goto-first-file)
     (define-key map (kbd "M->") 'simple-git-goto-last-file)
+    (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "g") 'simple-git-refresh)
     (define-key map (kbd "n") 'simple-git-goto-next-file)
     (define-key map (kbd "p") 'simple-git-goto-prev-file)
