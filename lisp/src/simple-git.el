@@ -67,11 +67,12 @@
           (error (concat "Couldn't get status for directory '" default-directory "'")))
         (goto-char (point-min))
         (while (not (eobp))
-          (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\([a-zA-Z0-9_]+/[a-zA-Z0-9_]+\\)\\)?")
+          (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\([a-zA-Z0-9_]+/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
                  (let ((branch (match-string-no-properties 1))
-                       (remote (match-string-no-properties 3)))
+                       (remote (match-string-no-properties 3))
+                       (state (match-string-no-properties 4)))
                    (with-current-buffer buf
-                     (insert "Branch:  " branch "\n")
+                     (insert "Branch:  " branch (or state "") "\n")
                      (insert "Remote:  " (or remote "NONE") "\n\n"))))
                 ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
                  (let ((index (match-string-no-properties 1))
@@ -80,6 +81,7 @@
                    (with-current-buffer buf
                      (insert " " index work-tree " -> " filename "\n")))))
           (forward-line 1))))
+    (simple-git-goto-first-file)
     (setq buffer-read-only t)
     (set-buffer-modified-p nil)))
 
@@ -108,23 +110,74 @@
 ;; !           !    ignored
 ;; -------------------------------------------------
 
+(defun simple-git-goto-first-file ()
+  "Goto first file."
+  (interactive)
+  (goto-char (point-min))
+  (simple-git-goto-next-file))
+
+(defun simple-git-goto-last-file ()
+  "Goto last file."
+  (interactive)
+  (goto-char (point-max))
+  (simple-git-goto-prev-file))
+
+(defun simple-git-goto-next-file ()
+  "Goto next file."
+  (interactive)
+  (search-forward "-> " nil t))
+
+(defun simple-git-goto-prev-file ()
+  "Goto previous file."
+  (interactive)
+  (let ((pos (point)))
+    (save-excursion
+      (beginning-of-line)
+      (when (search-backward "-> " nil t)
+        (setq pos (+ (point) 3))))
+    (goto-char pos)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar simple-git-mode-map nil
   "`simple-git-mode' keymap.")
 
+;; ? -> show table translation
+;; a -> add current file
+;; A -> add -u
+;; k -> checkout -- (ask for confirmation)
+;; C -> commit
+;; P -> push
+;; RET -> edit file
+;; TAB -> diff file
+;; ! -> run git command, sub filename for %
+
 (unless simple-git-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "g" 'simple-git-refresh)
-    (define-key map "q" 'bury-buffer)
+    (define-key map (kbd "C-n") 'simple-git-goto-next-file)
+    (define-key map (kbd "C-p") 'simple-git-goto-prev-file)
+    (define-key map (kbd "M-<") 'simple-git-goto-first-file)
+    (define-key map (kbd "M->") 'simple-git-goto-last-file)
+    (define-key map (kbd "g") 'simple-git-refresh)
+    (define-key map (kbd "n") 'simple-git-goto-next-file)
+    (define-key map (kbd "p") 'simple-git-goto-prev-file)
+    (define-key map (kbd "q") 'bury-buffer)
     (setq simple-git-mode-map map)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar simple-git-mode-font-lock-keywords
   '(
-    ("^[^:]+:"
-     (0 'font-lock-keyword-face))
+    ("^\\([^:]+\\):"
+     (1 'font-lock-keyword-face))
+    ("\\[\\(ahead\\|behind\\) [0-9]+\\]"
+     (0 'font-lock-warning-face))
+    ("^.\\([MADRCU]\\)"
+     (1 'success))
+    ("^..\\([MADU]\\)"
+     (1 'error))
+    ("^.\\([?]+\\|[!]+\\)"
+     (1 'warning))
     )
   "Keyword highlighting specification for simple-git-mode")
 

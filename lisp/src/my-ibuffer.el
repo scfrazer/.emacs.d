@@ -30,7 +30,8 @@
 
 (defvar my-ibuffer-vc-regexp (regexp-opt (list "*cc-status"
                                                "*clearcase-config-spec"
-                                               "*magit:")))
+                                               "*magit:"
+                                               "*simple-git:")))
 
 (defvar my-ibuffer-star-regexp (regexp-opt (list "*Find"
                                                  "*Man"

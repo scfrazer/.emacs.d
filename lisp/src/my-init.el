@@ -223,11 +223,15 @@
   :defines (diff-mode-map)
   :config
   (progn
-    (setq diff-switches "-b -u")
+    (setq diff-default-read-only t
+          diff-switches "-b -u")
     (bind-keys :map diff-mode-map
                ("q" . my-kill-this-buffer)
                ("n" . diff-hunk-next)
-               ("p" . diff-hunk-prev))))
+               ("p" . diff-hunk-prev))
+    (defun my-diff-mode-hook ()
+      (diff-auto-refine-mode 1))
+    (add-hook 'diff-mode-hook 'my-diff-mode-hook)))
 
 (use-package doxymacs
   :config
@@ -303,9 +307,6 @@
  (defalias 'fly 'flymake-mode)
  :config
  (require 'my-flymake))
-
-(use-package git
-  :bind* (("C-x g" . git-status)))
 
 (use-package grep
   :bind* (("C-c G" . my-rgrep)
@@ -535,6 +536,9 @@
   :mode (("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
   :config
   (require 'my-sgml-mode))
+
+(use-package simple-git
+  :bind* (("C-x g" . simple-git)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)

@@ -15,6 +15,7 @@
                                                                    "*magit:"
                                                                    "*scratch"
                                                                    "*shell"
+                                                                   "*simple-git"
                                                                    "*terminal"
                                                                    "*regman"
                                                                    "*vcs-compile"))))
