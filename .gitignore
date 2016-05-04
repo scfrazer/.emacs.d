@@ -1,10 +1,8 @@
 *archive-contents*
-.hg
-.hgignore
+.git-credentials
 /init-smf.el
 /lisp/src/test.el
 /lisp/src/vc_gen.el
 /lisp/vc_gen.elc
 auto-save-list
 tasks
-
