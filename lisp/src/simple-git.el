@@ -206,11 +206,22 @@
   (simple-git-refresh)
   (message "Pushing ... done"))
 
+(defun simple-git-exec (cmd)
+  "Execute arbitrary command."
+  (interactive "sGit command? ")
+  ;; TODO Get current file and sub wherever % is
+  (with-temp-buffer
+    (unless (= (apply #'call-process simple-git-executable nil t nil (split-string-and-unquote cmd)) 0)
+      (error (concat "Error executing " cmd)))
+    (message (buffer-substring-no-properties (point-min) (point-max))))
+  (simple-git-refresh))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar simple-git-mode-map nil
   "`simple-git-mode' keymap.")
 
+;; TODO
 ;; ? -> show table translation
 ;; -------------------------------------------------
 ;; X          Y     Meaning
@@ -237,10 +248,10 @@
 ;; !           !    ignored
 ;; -------------------------------------------------
 ;;
-;; ! -> run git command, sub filename for %
 
 (unless simple-git-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "!") 'simple-git-exec)
     (define-key map (kbd "=") 'simple-git-diff-file)
     (define-key map (kbd "A") 'simple-git-add-tracked)
     (define-key map (kbd "C") 'simple-git-commit)
