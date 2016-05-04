@@ -188,6 +188,13 @@
       (error "Couldn't do commit"))
     (simple-git-refresh)))
 
+(defun simple-git-push ()
+  "Push."
+  (interactive)
+  (unless (= (call-process simple-git-executable nil nil nil "push") 0)
+    (error "Couldn't push"))
+  (simple-git-refresh))
+
 ;; -------------------------------------------------
 ;; X          Y     Meaning
 ;; -------------------------------------------------
@@ -219,7 +226,6 @@
   "`simple-git-mode' keymap.")
 
 ;; k -> checkout -- (ask for confirmation)
-;; P -> push (credentials?)
 ;; ? -> show table translation
 ;; ! -> run git command, sub filename for %
 
@@ -232,6 +238,7 @@
     (define-key map (kbd "C-p") 'simple-git-goto-prev-file)
     (define-key map (kbd "M-<") 'simple-git-goto-first-file)
     (define-key map (kbd "M->") 'simple-git-goto-last-file)
+    (define-key map (kbd "P") 'simple-git-push)
     (define-key map (kbd "RET") 'simple-git-edit-file)
     (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "g") 'simple-git-refresh)
