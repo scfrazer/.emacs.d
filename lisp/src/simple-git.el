@@ -159,6 +159,15 @@
         (font-lock-fontify-buffer))
       (set-window-buffer nil buf))))
 
+(defun simple-git-discard ()
+  "Discard changes."
+  (interactive)
+  (let ((file (simple-git-get-current-file)))
+    (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
+      (unless (= (call-process simple-git-executable nil nil nil "checkout" "--" file) 0)
+        (error (concat "Couldn't discard changes to file '" file "'")))
+      (simple-git-refresh))))
+
 (defun simple-git-edit-file ()
   "Edit file."
   (interactive)
@@ -191,10 +200,18 @@
 (defun simple-git-push ()
   "Push."
   (interactive)
+  (message "Pushing ...")
   (unless (= (call-process simple-git-executable nil nil nil "push") 0)
     (error "Couldn't push"))
-  (simple-git-refresh))
+  (simple-git-refresh)
+  (message "Pushing ... done"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar simple-git-mode-map nil
+  "`simple-git-mode' keymap.")
+
+;; ? -> show table translation
 ;; -------------------------------------------------
 ;; X          Y     Meaning
 ;; -------------------------------------------------
@@ -219,14 +236,7 @@
 ;; ?           ?    untracked
 ;; !           !    ignored
 ;; -------------------------------------------------
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defvar simple-git-mode-map nil
-  "`simple-git-mode' keymap.")
-
-;; k -> checkout -- (ask for confirmation)
-;; ? -> show table translation
+;;
 ;; ! -> run git command, sub filename for %
 
 (unless simple-git-mode-map
@@ -242,6 +252,7 @@
     (define-key map (kbd "RET") 'simple-git-edit-file)
     (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "g") 'simple-git-refresh)
+    (define-key map (kbd "k") 'simple-git-discard)
     (define-key map (kbd "n") 'simple-git-goto-next-file)
     (define-key map (kbd "p") 'simple-git-goto-prev-file)
     (define-key map (kbd "q") 'bury-buffer)
