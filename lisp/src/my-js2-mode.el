@@ -1,6 +1,6 @@
 ;;; my-js2-mode.el
 
-(require 'tern)
+;; (require 'tern)
 (require 'js-doc)
 (require 'web-beautify)
 (require 'flymake-easy)
@@ -79,7 +79,7 @@
 
 (defun my-js2-mode-hook ()
   (setq-local mode-name "js2")
-;;   (auto-complete-mode 1)
+  ;; (auto-complete-mode 1)
   (bind-keys :map js2-mode-map
              ("M-\\" . ac-start)
              ("C-c C-j" . my-js2-mode-insert-doc)
@@ -90,7 +90,8 @@
              ("]" . my-js2-mode-electric-closer)
              ("}" . my-js2-mode-electric-closer))
   (flymake-eslint-load)
-  (tern-mode))
+  ;; (tern-mode)
+  )
 
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 

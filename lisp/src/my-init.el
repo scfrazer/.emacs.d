@@ -268,18 +268,26 @@
            )
           etags-table-search-up-depth 10
           tags-revert-without-query t)
+;;     (defun my-find-tag (&optional arg)
+;;       "Find tag at point or plain find tag"
+;;       (interactive "P")
+;;       (if (eq major-mode 'js2-mode)
+;;           (if arg (tern-find-definition-by-name) (tern-find-definition))
+;;         (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+;;     (defun my-pop-tag-mark ()
+;;       "Pop tag mark."
+;;       (interactive)
+;;       (if (eq major-mode 'js2-mode)
+;;           (tern-pop-find-definition)
+;;         (pop-tag-mark)))
     (defun my-find-tag (&optional arg)
       "Find tag at point or plain find tag"
       (interactive "P")
-      (if (eq major-mode 'js2-mode)
-          (if arg (tern-find-definition-by-name) (tern-find-definition))
-        (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+      (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
     (defun my-pop-tag-mark ()
       "Pop tag mark."
       (interactive)
-      (if (eq major-mode 'js2-mode)
-          (tern-pop-find-definition)
-        (pop-tag-mark)))
+      (pop-tag-mark))
     (defun my-pop-tag-mark-kill-buffer ()
       "Pop tag mark and kill previous buffer."
       (interactive)
