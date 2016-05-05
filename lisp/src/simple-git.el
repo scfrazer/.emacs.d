@@ -43,17 +43,15 @@
 
 (defun simple-git-init ()
   "Initialize the status buffer."
-  (insert "Root:    " default-directory "\n")
-  (insert "Origin:  " (simple-git-get-origin default-directory) "\n"))
+  (insert "Root:      " default-directory "\n"))
 
-(defun simple-git-get-origin (dir)
-  "Get origin."
+(defun simple-git-get-url (remote)
+  "Get remote URL."
   (with-temp-buffer
-    (let* ((default-directory dir))
-      (unless (= (call-process simple-git-executable nil t nil "config" "--get" "remote.origin.url") 0)
-        (error (concat "Couldn't get Git origin for directory '" dir "'")))
-      (goto-char (point-min))
-      (buffer-substring-no-properties (point) (point-at-eol)))))
+    (unless (= (call-process simple-git-executable nil t nil "config" "--get" (concat "remote." remote ".url")) 0)
+      (error (concat "Couldn't get Git URL for remote '" remote "'")))
+    (goto-char (point-min))
+    (buffer-substring-no-properties (point) (point-at-eol))))
 
 (defun simple-git-refresh ()
   "Refresh status."
@@ -61,7 +59,7 @@
   (let ((buf (current-buffer))
         (file (simple-git-get-current-file)))
     (goto-char (point-min))
-    (forward-line 2)
+    (forward-line 1)
     (setq buffer-read-only nil)
     (delete-region (point) (point-max))
     (with-temp-buffer
@@ -69,13 +67,16 @@
         (error (concat "Couldn't get status for directory '" default-directory "'")))
       (goto-char (point-min))
       (while (not (eobp))
-        (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\([a-zA-Z0-9_]+/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
+        (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\(\\([a-zA-Z0-9_]+\\)/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
                (let ((branch (match-string-no-properties 1))
-                     (remote (match-string-no-properties 3))
-                     (state (match-string-no-properties 4)))
+                     (remote-branch (match-string-no-properties 3))
+                     (remote (match-string-no-properties 4))
+                     (state (match-string-no-properties 5)))
                  (with-current-buffer buf
-                   (insert "Branch:  " branch (or state "") "\n")
-                   (insert "Remote:  " (or remote "NONE") "\n\n"))))
+                   (insert "Branch:    " branch (or state "") "\n")
+                   (insert "Tracking:  " (or remote-branch "NONE") "\n")
+                   (insert "URL:       " (if remote (simple-git-get-url remote) "NONE") "\n")
+                   (insert "\n"))))
               ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
                (let ((index (match-string-no-properties 1))
                      (work-tree (match-string-no-properties 2))
