@@ -1,6 +1,7 @@
 ;;; simple-git.el
 
 (require 'diff)
+(require 'ediff)
 (require 'log-edit)
 
 (defgroup simple-git nil
@@ -159,6 +160,37 @@
         (font-lock-fontify-buffer))
       (set-window-buffer nil buf))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar simple-git-ediff-head-rev-buf)
+
+(defun simple-git-ediff-file ()
+  "ediff file."
+  (interactive)
+  (let ((file (simple-git-get-current-file)) bufB mode)
+    (when file
+      (setq bufB (get-buffer-create (find-file file)))
+      (with-current-buffer bufB
+        (setq mode major-mode))
+      (setq simple-git-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" file)))
+      (with-current-buffer simple-git-ediff-head-rev-buf
+        (erase-buffer)
+        (unless (= (call-process simple-git-executable nil t nil "show" (concat "HEAD:" file)) 0)
+          (error (concat "Couldn't get HEAD revision for file '" file "'")))
+        (goto-char (point-min))
+        (set-auto-mode-0 mode)
+        (set-buffer-modified-p nil))
+      (ediff-buffers simple-git-ediff-head-rev-buf bufB))))
+
+(defun simple-git-ediff-quit-hook ()
+  (when simple-git-ediff-head-rev-buf
+    (kill-buffer simple-git-ediff-head-rev-buf)
+    (setq simple-git-ediff-head-rev-buf nil)))
+
+(add-hook 'ediff-quit-hook 'simple-git-ediff-quit-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun simple-git-discard ()
   "Discard changes."
   (interactive)
@@ -262,6 +294,7 @@
     (define-key map (kbd "P") 'simple-git-push)
     (define-key map (kbd "RET") 'simple-git-edit-file)
     (define-key map (kbd "a") 'simple-git-add-current-file)
+    (define-key map (kbd "e") 'simple-git-ediff-file)
     (define-key map (kbd "g") 'simple-git-refresh)
     (define-key map (kbd "k") 'simple-git-discard)
     (define-key map (kbd "n") 'simple-git-goto-next-file)
