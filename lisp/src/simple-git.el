@@ -56,6 +56,7 @@
 (defun simple-git-refresh ()
   "Refresh status."
   (interactive)
+  (message "Refreshing ...")
   (let ((buf (current-buffer))
         (file (simple-git-get-current-file)))
     (goto-char (point-min))
@@ -91,7 +92,8 @@
           (simple-git-goto-next-file))
       (simple-git-goto-first-file))
     (setq buffer-read-only t)
-    (set-buffer-modified-p nil)))
+    (set-buffer-modified-p nil)
+    (message "")))
 
 (defun simple-git-goto-first-file ()
   "Goto first file."
@@ -133,6 +135,7 @@
   (interactive)
   (let ((file (simple-git-get-current-file)))
     (when file
+      (message "Adding file ...")
       (unless (= (call-process simple-git-executable nil nil nil "add" file) 0)
         (error (concat "Couldn't add file '" file "'")))
       (simple-git-refresh))))
@@ -140,6 +143,7 @@
 (defun simple-git-add-tracked ()
   "Add files that are already tracked."
   (interactive)
+  (message "Adding tracked files ...")
   (unless (= (call-process simple-git-executable nil nil nil "add" "-u") 0)
     (error "Couldn't add tracked files"))
   (simple-git-refresh))
@@ -153,13 +157,15 @@
       (with-current-buffer buf
         (setq buffer-read-only nil)
         (erase-buffer)
+        (message "Diffing ...")
         (unless (= (call-process simple-git-executable nil t nil "diff" file) 0)
           (error (concat "Couldn't diff file '" file "'")))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
         (diff-mode)
         (font-lock-fontify-buffer))
-      (set-window-buffer nil buf))))
+      (set-window-buffer nil buf)
+      (message ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -176,6 +182,7 @@
       (setq simple-git-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" file)))
       (with-current-buffer simple-git-ediff-head-rev-buf
         (erase-buffer)
+        (message "Diffing ...")
         (unless (= (call-process simple-git-executable nil t nil "show" (concat "HEAD:" file)) 0)
           (error (concat "Couldn't get HEAD revision for file '" file "'")))
         (goto-char (point-min))
@@ -197,6 +204,7 @@
   (interactive)
   (let ((file (simple-git-get-current-file)))
     (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
+      (message "Discarding file ...")
       (unless (= (call-process simple-git-executable nil nil nil "checkout" "--" file) 0)
         (error (concat "Couldn't discard changes to file '" file "'")))
       (simple-git-refresh))))
@@ -226,6 +234,7 @@
     (setq simple-git-commit-window-configuration nil)
     (kill-buffer simple-git-commit-buffer)
     (setq simple-git-commit-buffer nil)
+    (message "Committing ...")
     (unless (= (call-process simple-git-executable nil nil nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
       (error "Couldn't do commit"))
     (simple-git-refresh)))
