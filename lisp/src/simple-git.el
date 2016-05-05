@@ -245,8 +245,7 @@
   (message "Pushing ...")
   (unless (= (call-process simple-git-executable nil nil nil "push") 0)
     (error "Couldn't push"))
-  (simple-git-refresh)
-  (message "Pushing ... done"))
+  (simple-git-refresh))
 
 (defun simple-git-exec (cmd)
   "Execute arbitrary command."
