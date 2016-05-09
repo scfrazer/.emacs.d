@@ -18,6 +18,8 @@
 (defun simple-git (dir)
   "Simple Git mode."
   (interactive "DSelect directory: ")
+  (unless (string-match ".+/$" dir)
+    (setq dir (concat dir "/")))
   (setq dir (simple-git-find-root dir))
   (let* ((buf-name (concat simple-git-buf-prefix dir "*"))
          (buf (get-buffer buf-name)))
@@ -169,7 +171,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar simple-git-ediff-head-rev-buf)
+(defvar simple-git-ediff-head-rev-buf nil)
 
 (defun simple-git-ediff-file ()
   "ediff file."
@@ -209,6 +211,16 @@
         (error (concat "Couldn't discard changes to file '" file "'")))
       (simple-git-refresh))))
 
+(defun simple-git-unstage ()
+  "Unstage file"
+  (interactive)
+  (let ((file (simple-git-get-current-file)))
+    (when file
+      (message "Unstaging file ...")
+      (unless (= (call-process simple-git-executable nil nil nil "reset" "HEAD" "--" file) 0)
+        (error (concat "Couldn't unstage file '" file "'")))
+      (simple-git-refresh))))
+
 (defun simple-git-edit-file ()
   "Edit file."
   (interactive)
@@ -216,8 +228,8 @@
     (when file
       (find-file file))))
 
-(defvar simple-git-commit-window-configuration)
-(defvar simple-git-commit-buffer)
+(defvar simple-git-commit-window-configuration nil)
+(defvar simple-git-commit-buffer nil)
 
 (defun simple-git-commit ()
   "Commit."
@@ -302,6 +314,7 @@
     (define-key map (kbd "M->") 'simple-git-goto-last-file)
     (define-key map (kbd "P") 'simple-git-push)
     (define-key map (kbd "RET") 'simple-git-edit-file)
+    (define-key map (kbd "TAB") 'simple-git-diff-file)
     (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "e") 'simple-git-ediff-file)
     (define-key map (kbd "g") 'simple-git-refresh)
@@ -309,6 +322,7 @@
     (define-key map (kbd "n") 'simple-git-goto-next-file)
     (define-key map (kbd "p") 'simple-git-goto-prev-file)
     (define-key map (kbd "q") 'bury-buffer)
+    (define-key map (kbd "u") 'simple-git-unstage)
     (setq simple-git-mode-map map)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
