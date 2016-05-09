@@ -22,7 +22,7 @@
 
 (defface caution
   `((((class color) (background dark)) :foreground ,(smf-color 215) :background ,(smf-color 94))
-    (((class color) (background light)) :foreground "black" :background ,(smf-color 208)))
+    (((class color) (background light)) :foreground "black" :background ,(smf-color 223)))
   "Caution face."
   :group 'faces)
 
@@ -94,7 +94,7 @@
    `(mode-line-inactive                  ((t :foreground ,(smf-color 255) :background ,(smf-color 102))))
    `(my-debug-face                       ((t :inherit caution)))
    `(my-ibuffer-read-only-face           ((t :inherit caution)))
-   `(my-read-only-face                   ((t :inherit caution)))
+   `(my-read-only-face                   ((t :foreground "black" :background ,(smf-color 208))))
    `(outline-1                           ((,dark :foreground ,(smf-color 45))))
    `(outline-2                           ((,dark :foreground ,(smf-color 44))))
    `(outline-3                           ((,dark :foreground ,(smf-color 43))))
