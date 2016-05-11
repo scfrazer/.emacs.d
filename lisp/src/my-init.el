@@ -316,6 +316,11 @@
  :config
  (require 'my-flymake))
 
+(use-package git-timemachine
+  :bind* (("C-x M" . git-timemachine))
+  :config
+  (setq git-timemachine-abbreviation-length 7))
+
 (use-package grep
   :bind* (("C-c G" . my-rgrep)
           ("C-c g" . my-lgrep))
@@ -413,8 +418,7 @@
   (require 'my-debug))
 
 (use-package magit
-  :bind* (("C-x M" . my-magit-history)
-          ("C-x m" . magit-status))
+  :bind* (("C-x m" . magit-status))
   :config
   (progn
     (require 'my-magit)
@@ -546,7 +550,8 @@
   (require 'my-sgml-mode))
 
 (use-package simple-git
-  :bind* (("C-x g" . simple-git)))
+  :bind* (("C-x g" . simple-git)
+          ("C-x G" . simple-git-switch-next)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)

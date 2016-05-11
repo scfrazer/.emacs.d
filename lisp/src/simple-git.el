@@ -34,6 +34,17 @@
       (set-buffer-modified-p nil))
     (switch-to-buffer buf)))
 
+(defun simple-git-switch-next ()
+  "Switch to the next simple-git buffer."
+  (interactive)
+  (let ((bufs (cdr (buffer-list))) found)
+    (while (and (not found) bufs)
+      (if (string-match (concat simple-git-buf-prefix "/.+") (buffer-name (car bufs)))
+          (setq found (car bufs))
+        (setq bufs (cdr bufs))))
+    (when found
+      (switch-to-buffer found))))
+
 (defun simple-git-find-root (dir)
   "Find root directory."
   (with-temp-buffer
