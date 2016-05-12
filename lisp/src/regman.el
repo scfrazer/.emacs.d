@@ -46,10 +46,37 @@
       (with-current-buffer regman-buffer-name
         (setq buffer-read-only nil)
         (erase-buffer)
-        (shell-command (concat regman-program " -f default '" reg "'") regman-buffer-name)
+        (call-process regman-program nil t nil "-f" "default" reg)
         (set-buffer-modified-p nil)
         (regman-mode))
       (pop-to-buffer regman-buffer-name))))
+
+;;;###autoload
+(defun regman-insert-register ()
+  "Insert a register access."
+  (interactive "*")
+  (let ((reg (regman-get-reg nil))
+        (pos (point)))
+    (call-process regman-program nil t nil "-f" "regwt" reg)
+    (indent-region pos (point))))
+
+;;;###autoload
+(defun regman-insert-register-with-reset ()
+  "Insert a register access with reset."
+  (interactive "*")
+  (let ((reg (regman-get-reg nil))
+        (pos (point)))
+    (call-process regman-program nil t nil "-f" "regrwt" reg)
+    (indent-region pos (point))))
+
+;;;###autoload
+(defun regman-insert-register-group ()
+  "Insert a grouped register access."
+  (interactive "*")
+  (let ((reg (regman-get-reg nil))
+        (pos (point)))
+    (call-process regman-program nil t nil "-f" "regawt" reg)
+    (indent-region pos (point))))
 
 (defun regman-get-reg (multiple)
   "Get a register."
