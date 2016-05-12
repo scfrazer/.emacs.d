@@ -43,7 +43,8 @@
           (setq found (car bufs))
         (setq bufs (cdr bufs))))
     (when found
-      (switch-to-buffer found))))
+      (switch-to-buffer found)
+      (simple-git-refresh))))
 
 (defun simple-git-find-root (dir)
   "Find root directory."
