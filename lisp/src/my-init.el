@@ -1845,7 +1845,7 @@ Prefix with C-u to resize the `next-window'."
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
 
-  (add-to-list 'my-compile-command "l2q procyon_compile_src_chipdv -chip_cpp")
+  (add-to-list 'my-compile-command "l2q lightspeed_compile_src_chipdv -chip_cpp")
 
   (require 'ur-log-mode)
 

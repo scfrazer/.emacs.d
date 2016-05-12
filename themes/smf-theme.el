@@ -91,7 +91,7 @@
    `(magit-section-heading                  ((,dark :foreground ,(smf-color 222))))
    `(match                                  ((t :foreground ,(smf-color 231) :background ,(smf-color 62))))
    `(minibuffer-prompt                      ((t :inherit font-lock-keyword-face)))
-   `(mode-line                              ((t :foreground ,(smf-color 252) :background ,(smf-color 24))))
+   `(mode-line                              ((t :foreground ,(smf-color 255) :background ,(smf-color 24))))
    `(mode-line-buffer-id                    ((t :foreground ,(smf-color 220)) (,light :foreground ,(smf-color 20))))
    `(mode-line-inactive                     ((t :foreground ,(smf-color 252) :background ,(smf-color 102))))
    `(my-debug-face                          ((t :inherit caution)))
