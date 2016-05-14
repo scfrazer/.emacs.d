@@ -119,7 +119,7 @@
    `(web-mode-html-tag-bracket-face         ((t :inherit web-mode-html-tag-face)))
    `(web-mode-html-tag-face                 ((t :foreground ,(smf-color 110))))
    `(whitespace-empty                       ((t :inherit trailing-whitespace)))
-   `(whitespace-tab                         ((t :inherit trailing-whitespace)))
+   `(whitespace-tab                         ((,dark :inherit trailing-whitespace) (,light :background ,(smf-color 224))))
    `(whitespace-trailing                    ((t :inherit trailing-whitespace)))
 
    ))
