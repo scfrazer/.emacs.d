@@ -227,7 +227,7 @@
          (filename (cc-status-elm-filename elm))
          (branch (cc-status-elm-branch elm))
          (rev (if arg (clearcase-fprop-predecessor-version filename) (concat branch "/LATEST"))))
-    (set-window-buffer nil (diff-no-select filename (concat filename "@@" rev) "-b -u"))))
+    (set-window-buffer nil (diff-no-select (concat filename "@@" rev) filename "-b -u"))))
 
 (defun cc-status-ediff (&optional arg)
   "Ediff the current file."

@@ -281,7 +281,7 @@ With prefix arg ask for version."
            (rev (if arg
                     (clearcase-read-version-name "Version for comparison: " filename)
                   (clearcase-fprop-predecessor-version filename))))
-      (set-window-buffer nil (diff-no-select filename (concat filename "@@" rev) "-b -u"))))
+      (set-window-buffer nil (diff-no-select (concat filename "@@" rev) filename "-b -u"))))
 
   (defun my-clearcase-gui-diff-current (&optional arg)
     "Do GUI diff of current buffer/dired-file against latest.
