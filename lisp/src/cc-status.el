@@ -1,6 +1,7 @@
 ;;; cc-status.el
 
 (require 'clearcase)
+(require 'diff)
 (eval-when-compile (require 'cl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,6 +218,16 @@
   (interactive)
   (beginning-of-line)
   (find-file (cc-status-elm-filename (cc-status-get-current-elm))))
+
+(defun cc-status-diff (&optional arg)
+  "Diff the current file."
+  (interactive "P")
+  (beginning-of-line)
+  (let* ((elm (cc-status-get-current-elm))
+         (filename (cc-status-elm-filename elm))
+         (branch (cc-status-elm-branch elm))
+         (rev (if arg (clearcase-fprop-predecessor-version filename) (concat branch "/LATEST"))))
+    (set-window-buffer nil (diff-no-select filename (concat filename "@@" rev) "-b -u"))))
 
 (defun cc-status-ediff (&optional arg)
   "Ediff the current file."
@@ -479,6 +490,7 @@
     (define-key map (kbd "<up>") 'cc-status-prev-file)
 
     (define-key map (kbd "RET") 'cc-status-open-file)
+    (define-key map (kbd "TAB") 'cc-status-diff)
     (define-key map "=" 'cc-status-ediff)
     (define-key map "~" 'cc-status-toggle-private)
 

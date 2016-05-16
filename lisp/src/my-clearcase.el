@@ -274,14 +274,14 @@ With prefix arg ask for version."
     "Do diff of current buffer/dired-file against latest.
 With prefix arg ask for version."
     (interactive "P")
-    (call-interactively
-     (if (eq major-mode 'dired-mode)
-         (if arg
-             'clearcase-diff-named-version-dired-file
-           'clearcase-diff-pred-dired-file)
-       (if arg
-           'clearcase-diff-named-version-current-buffer
-         'clearcase-diff-pred-current-buffer))))
+    (let* ((filename (clearcase-fprop-truename
+                      (if (eq major-mode 'dired-mode)
+                          (dired-get-filename)
+                        buffer-file-name)))
+           (rev (if arg
+                    (clearcase-read-version-name "Version for comparison: " filename)
+                  (clearcase-fprop-predecessor-version filename))))
+      (set-window-buffer nil (diff-no-select filename (concat filename "@@" rev) "-b -u"))))
 
   (defun my-clearcase-gui-diff-current (&optional arg)
     "Do GUI diff of current buffer/dired-file against latest.
