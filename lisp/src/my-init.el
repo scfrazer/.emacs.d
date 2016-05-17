@@ -220,12 +220,12 @@
 
 (use-package diff-mode
   :defer t
-  :defines (diff-mode-map)
+  :defines (diff-mode-shared-map)
   :config
   (progn
     (setq diff-default-read-only t
           diff-switches "-b -u")
-    (bind-keys :map diff-mode-map
+    (bind-keys :map diff-mode-shared-map
                ("q" . my-kill-this-buffer)
                ("n" . diff-hunk-next)
                ("p" . diff-hunk-prev))
