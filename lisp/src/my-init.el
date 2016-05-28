@@ -418,7 +418,7 @@
   (require 'my-debug))
 
 (use-package magit
-  :bind* (("C-x m" . magit-status))
+  :commands (magit-status)
   :config
   (progn
     (require 'my-magit)
