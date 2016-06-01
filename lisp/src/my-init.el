@@ -303,7 +303,10 @@
   (defun my-other-file ()
     (interactive)
     (call-interactively
-     (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file)))
+     (case major-mode
+       ('sv-mode 'sv-mode-other-file)
+       ('c++-mode 'my-cc-other-file)
+       (t 'ff-get-other-file))))
   :config
   (require 'my-pop-back)
   (require 'my-ffap))

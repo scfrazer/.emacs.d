@@ -185,6 +185,41 @@
     (goto-char pos)
     (forward-line 3)))
 
+(defun my-cc-other-file (&optional arg)
+  "Go to other file.  With prefix arg go to function definition/implementation in other file."
+  (interactive "P")
+  (if (not arg)
+      (ff-get-other-file)
+    (let* ((sig (my-cc-parse-function-signature))
+           (name (nth 0 sig))
+           (args (nth 1 sig))
+           (namespaces (nth 3 sig))
+           (returns (nth 4 sig))
+           namespace-end)
+      (ff-get-other-file)
+      (widen)
+      (goto-char (point-min))
+      (setq namespace-end (point-max))
+      (catch 'done
+        (while namespaces
+          (if (re-search-forward (concat "\\(class\\|namespace\\|struct\\)\\s-+" (car namespaces) "\\s-*[:{]") namespace-end t)
+              (progn
+                (setq namespaces (cdr namespaces))
+                (backward-char)
+                (search-forward "{")
+                (save-excursion
+                  (backward-char)
+                  (forward-sexp)
+                  (setq namespace-end (point))))
+            (throw 'done t))))
+      (when namespaces
+        (nreverse namespaces)
+        (dolist (ns namespaces)
+          (setq name (concat ns "::" name))))
+      (re-search-forward (concat "^\\s-*" returns "\\s-+" name "\\s-*(") nil t)
+      (back-to-indentation)
+      (recenter))))
+
 ;; Doxymacs
 
 (add-hook 'c++-mode-hook 'doxymacs-mode)
