@@ -117,7 +117,7 @@
    `(web-mode-html-attr-equal-face           ((t :inherit web-mode-html-attr-name-face)))
    `(web-mode-html-attr-name-face            ((,dark :foreground ,(smf-color 108)) (,light :foreground ,(smf-color 65))))
    `(web-mode-html-attr-value-face           ((,dark :foreground ,(smf-color 137)) (,light :foreground ,(smf-color 138))))
-   `(web-mode-current-element-highlight-face ((t :inherit success)))
+   `(web-mode-current-element-highlight-face ((t :weight bold :underline t)))
    `(web-mode-html-tag-bracket-face          ((t :inherit web-mode-html-tag-face)))
    `(web-mode-html-tag-face                  ((,dark :foreground ,(smf-color 110)) (,light :foreground ,(smf-color 67))))
    `(whitespace-empty                        ((t :inherit trailing-whitespace)))
