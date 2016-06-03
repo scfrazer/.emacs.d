@@ -303,7 +303,10 @@
   (defun my-other-file ()
     (interactive)
     (call-interactively
-     (if (equal major-mode 'sv-mode) 'sv-mode-other-file 'ff-get-other-file)))
+     (case major-mode
+       ('sv-mode 'sv-mode-other-file)
+       ('c++-mode 'my-cc-other-file)
+       (t 'ff-get-other-file))))
   :config
   (require 'my-pop-back)
   (require 'my-ffap))
@@ -418,7 +421,7 @@
   (require 'my-debug))
 
 (use-package magit
-  :bind* (("C-x m" . magit-status))
+  :commands (magit-status)
   :config
   (progn
     (require 'my-magit)
@@ -1845,7 +1848,7 @@ Prefix with C-u to resize the `next-window'."
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
 
-  (add-to-list 'my-compile-command "l2q lightspeed_compile_src_chipdv -chip_cpp")
+  (add-to-list 'my-compile-command "l2q lightspeed_compile_src_chipdv -/db_/")
 
   (require 'ur-log-mode)
 
