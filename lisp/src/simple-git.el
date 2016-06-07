@@ -139,10 +139,12 @@
 
 (defun simple-git-get-current-file ()
   "Get the current file."
-  (save-excursion
-    (beginning-of-line)
-    (when (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
-      (match-string-no-properties 1))))
+  (if (string-match (regexp-quote simple-git-buf-prefix) (buffer-name))
+      (save-excursion
+        (beginning-of-line)
+        (when (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
+          (match-string-no-properties 1)))
+    (buffer-file-name)))
 
 (defun simple-git-add-current-file ()
   "Add the current file."
