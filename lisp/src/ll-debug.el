@@ -672,7 +672,7 @@ Uses `query-replace-regexp' internally."
         (match-string 1)))))
 
 (ll-debug-register-mode 'php-mode
-                        "trigger_error(" ");"
+                        "error_log(" ");"
                         '(nil "\""
                               (concat (ll-debug-create-next-debug-string)
                                       " (" (buffer-name) " - "
