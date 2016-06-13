@@ -13,7 +13,7 @@
  '(custom-safe-themes
    (quote
     ("8ed197b4b599034bbd9278618e1768a198706d2679bd09eb56234d8ac89c72e6" "cbdd2fc9a7e1a0485d6c60dcfc9d69d86d3b07297a8d4ea101e8d16e8a6cb90e" "4745a8c153862189cf197d71a0466183633f5dda20fca4d8f95f1013cc9f7d84" default)))
- '(frame-background-mode (quote light))
+ '(frame-background-mode (quote dark))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote
