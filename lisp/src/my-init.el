@@ -762,6 +762,7 @@
               rst-mode-lazy nil
               scroll-conservatively 10000
               scroll-error-top-bottom t
+              scroll-margin 3
               scroll-preserve-screen-position t
               shift-select-mode nil
               show-paren-delay 0
@@ -1829,7 +1830,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-r k"       . kill-rectangle)
  ("M-r n"       . my-rectangle-number-lines)
  ("M-r t"       . string-rectangle)
- ("M-u"         . my-recenter)
+ ("M-u"         . recenter-top-bottom)
  ("M-z"         . redo)
  ("M-}"         . my-forward-paragraph)
  ("M-~"         . previous-error))

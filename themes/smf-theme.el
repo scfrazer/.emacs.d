@@ -21,7 +21,7 @@
     (format "color-%d" color-num)))
 
 (defface caution
-  `((((class color) (background dark)) :foreground ,(smf-color 208))
+  `((((class color) (background dark)) :foreground ,(smf-color 202))
     (((class color) (background light)) :foreground "black" :background ,(smf-color 223)))
   "Caution face."
   :group 'faces)
@@ -100,7 +100,7 @@
    `(my-debug-face                           ((t :inherit caution)))
    `(my-ibuffer-read-only-face               ((t :inherit caution)))
    `(my-narrow-face                          ((t :foreground "black" :background ,(smf-color 226))))
-   `(my-read-only-face                       ((t :foreground "black" :background ,(smf-color 208))))
+   `(my-read-only-face                       ((t :foreground "black" :background ,(smf-color 202))))
    `(outline-1                               ((,dark :foreground ,(smf-color 45)) (,light :foreground ,(smf-color 33))))
    `(outline-2                               ((,dark :foreground ,(smf-color 44)) (,light :foreground ,(smf-color 32))))
    `(outline-3                               ((,dark :foreground ,(smf-color 43)) (,light :foreground ,(smf-color 31))))
@@ -112,7 +112,7 @@
    `(show-paren-mismatch-face                ((t :inherit error)))
    `(sqlplus-table-head-face                 ((t :foreground ,(smf-color 45) :background "black" :slant italic)))
    `(success                                 ((,dark :foreground ,(smf-color 120) :background ,(smf-color 22)) (,light :foreground ,(smf-color 231) :background ,(smf-color 28))))
-   `(trailing-whitespace                     ((,dark :background ,(smf-color 124)) (,light :background ,(smf-color 195))))
+   `(trailing-whitespace                     ((,dark :background ,(smf-color 52)) (,light :background ,(smf-color 195))))
    `(underline                               ((t :underline t)))
    `(warning                                 ((,dark :foreground ,(smf-color 226) :background ,(smf-color 58)) (,light :foreground "black" :background ,(smf-color 226))))
    `(web-mode-current-element-highlight-face ((t :weight bold :underline t)))
