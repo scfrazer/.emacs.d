@@ -3,6 +3,7 @@
 (require 'diff)
 (require 'ediff)
 (require 'log-edit)
+(require 'smerge-mode)
 
 (defgroup simple-git nil
   "Simple git."
@@ -97,7 +98,7 @@
                      (work-tree (match-string-no-properties 2))
                      (filename (match-string-no-properties 3)))
                  (with-current-buffer buf
-                   (insert " " index work-tree " -> " filename "\n")))))
+                   (insert " " index work-tree " ~ " filename "\n")))))
         (forward-line 1)))
     (goto-char (point-min))
     (if (and file (search-forward file nil t))
@@ -125,7 +126,7 @@
 (defun simple-git-goto-next-file ()
   "Goto next file."
   (interactive)
-  (search-forward "-> " nil t))
+  (search-forward "~ " nil t))
 
 (defun simple-git-goto-prev-file ()
   "Goto previous file."
@@ -133,8 +134,8 @@
   (let ((pos (point)))
     (save-excursion
       (beginning-of-line)
-      (when (search-backward "-> " nil t)
-        (setq pos (+ (point) 3))))
+      (when (search-backward "~ " nil t)
+        (setq pos (+ (point) 2))))
     (goto-char pos)))
 
 (defun simple-git-get-current-file ()
@@ -142,7 +143,8 @@
   (if (string-match (regexp-quote simple-git-buf-prefix) (buffer-name))
       (save-excursion
         (beginning-of-line)
-        (when (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
+        (when (or (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
+                  (re-search-forward "~ \\(.+\\)" (point-at-eol) t))
           (match-string-no-properties 1)))
     (buffer-file-name)))
 
@@ -242,6 +244,14 @@
     (when file
       (find-file file))))
 
+(defun simple-git-resolve-file ()
+  "Resolve merge conflicts."
+  (interactive)
+  (let ((file (simple-git-get-current-file)))
+    (when file
+      (find-file file)
+      (call-interactively 'smerge-ediff))))
+
 (defvar simple-git-commit-window-configuration nil)
 (defvar simple-git-commit-buffer nil)
 
@@ -336,6 +346,7 @@
     (define-key map (kbd "n") 'simple-git-goto-next-file)
     (define-key map (kbd "p") 'simple-git-goto-prev-file)
     (define-key map (kbd "q") 'bury-buffer)
+    (define-key map (kbd "r") 'simple-git-resolve-file)
     (define-key map (kbd "u") 'simple-git-unstage)
     (setq simple-git-mode-map map)))
 
@@ -347,6 +358,9 @@
      (1 'font-lock-keyword-face))
     ("\\[\\(ahead\\|behind\\) [0-9]+\\]"
      (0 'font-lock-warning-face))
+    ;; Files with conflicts: (regexp-opt (list "DD" "AU" "UD" "UA" "DU" "AA" "UU"))
+    ("^.\\(?:A[AU]\\|D[DU]\\|U[ADU]\\) ~ \\(.+\\)"
+     (1 'error))
     ("^.\\([MADRCU]\\)"
      (1 'success))
     ("^..\\([MADU]\\)"

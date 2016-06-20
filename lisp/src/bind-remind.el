@@ -2,6 +2,7 @@
 
 ;; TODO Defcustoms, move my specific ones to a different file
 (defvar bind-remind-key-alist '(
+                                ("C-c ^"   . "SMerge")
                                 ("C-c d"   . "Debug")
                                 ("C-c y"   . "Yank to Target")
                                 ("C-x 5"   . "Frame")
@@ -11,8 +12,8 @@
                                 ("C-x t"   . "Task")
                                 ("C-x v"   . "ClearCase")
                                 ("M-r"     . "Rectangle")
-                                ("M-s"     . "Search")
                                 ("M-s h"   . "Highlight")
+                                ("M-s"     . "Search")
                                 )
   "Prefix keys to give binding reminders for.")
 
