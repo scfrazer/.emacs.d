@@ -259,15 +259,17 @@
   (progn
     (require 'etags-select)
     (require 'etags-table)
-    (setq etags-select-use-short-name-completion t
-          etags-table-alist
-          (list
-           '(".*\\.svh?$" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-           '("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" "/auto/luke_user5/scfrazer/tags/sv/TAGS")
-           '("/vob/sse/asic/.*\\.[ch]pp$" "/auto/luke_user5/scfrazer/tags/cpp/TAGS")
-           )
-          etags-table-search-up-depth 10
-          tags-revert-without-query t)
+    (let ((tags-base-dir (cond
+                          ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
+                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags"))))
+      (setq etags-select-use-short-name-completion t
+            etags-table-alist
+            (list
+             `(".*\\.svh?$" ,(concat tags-base-dir "/sv/TAGS"))
+             `("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" ,(concat tags-base-dir "/sv/TAGS"))
+             `("/vob/sse/asic/.*\\.[ch]pp$" ,(concat tags-base-dir "/cpp/TAGS")))
+            etags-table-search-up-depth 10
+            tags-revert-without-query t))
 ;;     (defun my-find-tag (&optional arg)
 ;;       "Find tag at point or plain find tag"
 ;;       (interactive "P")
@@ -1844,7 +1846,8 @@ Prefix with C-u to resize the `next-window'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cisco setup
 
-(when (eq my-location 'RTP)
+(when (or (eq my-location 'RTP)
+          (eq my-location 'SJC))
 
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
