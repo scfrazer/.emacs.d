@@ -36,7 +36,9 @@
                                           "\\.pyc"
                                           "simv"
                                           "rtl/.*spyglass.*"
-                                          ".flopcon")
+                                          ".flopcon"
+                                          ".s_pxf"
+                                          ".v_pxf")
   "*Regexps of view-private elements to ignore."
   :type '(repeat (string :tag "Regexp"))
   :group 'cc-status)
