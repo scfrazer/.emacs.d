@@ -1690,13 +1690,14 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
   (local-set-key (kbd "C-z") 'undo)
+  (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
   (local-set-key (kbd "M-\\") 'completion-at-point)
   (local-set-key (kbd "M-h") 'my-minibuffer-backward)
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
-  (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
+  (local-set-key (kbd "M-z") (lambda () (interactive) nil))
   (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))
 
 (defface my-next-error-face
@@ -1850,9 +1851,9 @@ Prefix with C-u to resize the `next-window'."
           (eq my-location 'SJC))
 
   (require 'vcs-compile)
-  (add-to-list 'vcs-compile-command-list "l2q procyon_targ_build_fbe /build_user/ -/db_/")
+  (add-to-list 'vcs-compile-command-list "l2q lsq_targ_buildpb_chipMinfMl2infGMPP64 /build_test/")
 
-  (add-to-list 'my-compile-command "l2q lightspeed_compile_src_chipdv -/db_/")
+  (add-to-list 'my-compile-command "l2q lsq_compile_src_chipdv -/db_/")
 
   (require 'ur-log-mode)
 

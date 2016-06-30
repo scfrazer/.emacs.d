@@ -206,7 +206,11 @@
           ;; Sort matches and return
           (mapcar 'car (if ido-rotate
                            matches
-                         (sort matches (lambda (x y) (> (cdr x) (cdr y)))))))))))
+                         (sort matches
+                               (lambda (x y)
+                                 (if (= (cdr x) (cdr y))
+                                     (> (length (car y)) (length (car x)))
+                                   (> (cdr x) (cdr y))))))))))))
 
 (defun my-ido-match-get-correlation (str-len char-lookup item)
   "Get the correlation for this item"
