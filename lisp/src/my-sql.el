@@ -21,6 +21,7 @@
         comment-end "")
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'sql-indent-line)
+  (define-key sqlplus-mode-map (kbd "C-c C-c") 'my-sql-connect)
   (sqlup-mode 1))
 
 (add-hook 'sqlplus-mode-hook 'my-sqlplus-mode-hook)
