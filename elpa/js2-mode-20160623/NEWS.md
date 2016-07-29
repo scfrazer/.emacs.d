@@ -1,5 +1,23 @@
 # History of user-visible changes
 
+## 2016-06-23
+
+* New variable `js2-mode-assume-strict`, for use with ES6 modules.
+* Support for JSDoc @callback, @func and @method tags.
+* Object properties are highlighted using a different face:
+  `js2-object-property`, which has no color by default.
+* Experimental support for object rest/spread ECMAScript proposal.
+* `js2-getter-setter-node` is renamed to `js2-method-node`, together with
+  its related functions.  It already handles generator methods, and we
+  added support for async methods (see below), so the old name would get
+  more confusing.
+* Support for default parameters in destructuring.  It should work for both
+  objects and arrays, in both literals and function arguments.
+* New mode: `js2-jsx-mode`, deriving from `js2-mode`.  Supports indentation of
+  JSXElement expressions wrapped within parentheses or as function arguments.
+  Indentation is customizable via `sgml-attribute-offset`.
+* Experimental support for async/await ECMAScript proposal.
+
 ## 20150909
 
 * `js2-mode` now derives from `js-mode`. That means the former
