@@ -422,19 +422,19 @@
   :config
   (require 'my-debug))
 
-(use-package magit
-  :commands (magit-status)
-  :config
-  (progn
-    (require 'my-magit)
-    (setq magit-auto-revert-mode nil
-          magit-backup-mode nil
-          magit-delete-by-moving-to-trash nil
-          magit-diff-auto-show nil
-          magit-popup-show-help-echo nil
-          magit-popup-show-help-section nil
-          magit-repository-directories (list "~/.emacs.d" "~/Projects")
-          magit-repository-directories-depth 2)))
+;; (use-package magit
+;;   :commands (magit-status)
+;;   :config
+;;   (progn
+;;     (require 'my-magit)
+;;     (setq magit-auto-revert-mode nil
+;;           magit-backup-mode nil
+;;           magit-delete-by-moving-to-trash nil
+;;           magit-diff-auto-show nil
+;;           magit-popup-show-help-echo nil
+;;           magit-popup-show-help-section nil
+;;           magit-repository-directories (list "~/.emacs.d" "~/Projects")
+;;           magit-repository-directories-depth 2)))
 
 (use-package markdown-mode
   :mode (("\\.md\\'" . markdown-mode)
@@ -710,7 +710,6 @@
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
-              browse-kill-ring-quit-action (quote kill-and-delete-window)
               browse-kill-ring-separator "---"
               browse-kill-ring-separator-face 'font-lock-function-name-face
               browse-kill-ring-show-preview nil
@@ -1353,7 +1352,7 @@ and copied through iTerm2 to clipboard."
 
 (defvar my-recenter-count nil)
 (defun my-recenter (&optional arg)
-  "Recenter high/middle/low."
+  "Recenter middle/high/low."
   (interactive "P")
   (if arg
       (progn
@@ -1365,12 +1364,12 @@ and copied through iTerm2 to clipboard."
            (let ((pos (window-start)))
              (recenter)
              (when (= pos (window-start))
-               (recenter (/ (window-text-height) 5))
+               (recenter 0)
                (setq my-recenter-count 1))))
           ((= my-recenter-count 1)
-           (recenter (/ (window-text-height) 5)))
+           (recenter 0))
           (t
-           (recenter (/ (* (window-text-height) 4) 5))))
+           (recenter -1)))
     (setq my-recenter-count (1+ my-recenter-count))
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
@@ -1833,7 +1832,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-r k"       . kill-rectangle)
  ("M-r n"       . my-rectangle-number-lines)
  ("M-r t"       . string-rectangle)
- ("M-u"         . recenter-top-bottom)
+ ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-}"         . my-forward-paragraph)
  ("M-~"         . previous-error))

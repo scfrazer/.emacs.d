@@ -5,6 +5,18 @@
 (require 'log-edit)
 (require 'smerge-mode)
 
+;; TODO Use space to mark files to operate on
+;; TODO Move to next line after add
+;;
+;; TODO prefix == C-x g
+;; RET -- goto simple-git buffer
+;; = -- diff
+;; h -- history, i.e. git-timemachine
+;;
+;; TODO in simple-git buffer
+;; k -- on untracked file, deletes it
+;; l -- log?
+
 (defgroup simple-git nil
   "Simple git."
   :group 'tools)
@@ -83,7 +95,7 @@
         (error (concat "Couldn't get status for directory '" default-directory "'")))
       (goto-char (point-min))
       (while (not (eobp))
-        (cond ((looking-at "## \\([a-zA-Z0-9_]+\\)\\([.][.][.]\\(\\([a-zA-Z0-9_]+\\)/[a-zA-Z0-9_]+\\)\\)?\\( .+\\)?")
+        (cond ((looking-at "## \\([a-zA-Z0-9_-]+\\)\\([.][.][.]\\(\\([a-zA-Z0-9_-]+\\)/[a-zA-Z0-9_-]+\\)\\)?\\( .+\\)?")
                (let ((branch (match-string-no-properties 1))
                      (remote-branch (match-string-no-properties 3))
                      (remote (match-string-no-properties 4))
