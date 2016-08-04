@@ -7,6 +7,7 @@
          (cond
           ((string-match "^lx30-vm" hostname) 'RTP)
           ((string-match "^cpp-hw" hostname) 'SJC)
+          ((string-match "^ott-vnc" hostname) 'OTT)
           ((string-match "^SCFRAZER" hostname) 'Work)))))
 
 ;; Need these first
@@ -262,7 +263,8 @@
     (require 'etags-table)
     (let ((tags-base-dir (cond
                           ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags"))))
+                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
+                          ((eq my-location 'OTT) "/auto/kan-dump3/scfrazer/tags"))))
       (setq etags-select-use-short-name-completion t
             etags-table-alist
             (list
@@ -1848,7 +1850,8 @@ Prefix with C-u to resize the `next-window'."
 ;; Cisco setup
 
 (when (or (eq my-location 'RTP)
-          (eq my-location 'SJC))
+          (eq my-location 'SJC)
+          (eq my-location 'OTT))
 
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q lsq_targ_buildpb_chipMinfMl2infGMPP64 /build_test/")
