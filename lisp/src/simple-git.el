@@ -4,18 +4,10 @@
 (require 'ediff)
 (require 'log-edit)
 (require 'smerge-mode)
+(require 'git-timemachine)
 
 ;; TODO Use space to mark files to operate on
-;; TODO Move to next line after add
-;;
-;; TODO prefix == C-x g
-;; RET -- goto simple-git buffer
-;; = -- diff
-;; h -- history, i.e. git-timemachine
-;;
-;; TODO in simple-git buffer
-;; k -- on untracked file, deletes it
-;; l -- log?
+;; TODO l -- new-buffer, cd XXX, git <customizable-log-format> -<customizable_config_num or M-number> (ansi-color-apply-on-region (point-min) (point-max))
 
 (defgroup simple-git nil
   "Simple git."
@@ -55,9 +47,10 @@
       (if (string-match (concat simple-git-buf-prefix "/.+") (buffer-name (car bufs)))
           (setq found (car bufs))
         (setq bufs (cdr bufs))))
-    (when found
-      (switch-to-buffer found)
-      (simple-git-refresh))))
+    (if found
+        (progn (switch-to-buffer found)
+               (simple-git-refresh))
+      (call-interactively 'simple-git))))
 
 (defun simple-git-find-root (dir)
   "Find root directory."
@@ -168,6 +161,7 @@
       (message "Adding file ...")
       (unless (= (call-process simple-git-executable nil nil nil "add" file) 0)
         (error (concat "Couldn't add file '" file "'")))
+      (simple-git-goto-next-file)
       (simple-git-refresh))))
 
 (defun simple-git-add-tracked ()
@@ -196,6 +190,12 @@
         (font-lock-fontify-buffer))
       (set-window-buffer nil buf)
       (message ""))))
+
+(defun simple-git-history ()
+  "Go through git history using git-timemachine."
+  (interactive)
+  (simple-git-edit-file)
+  (call-interactively 'git-timemachine))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -233,11 +233,16 @@
   "Discard changes."
   (interactive)
   (let ((file (simple-git-get-current-file)))
-    (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
-      (message "Discarding file ...")
-      (unless (= (call-process simple-git-executable nil nil nil "checkout" "--" file) 0)
-        (error (concat "Couldn't discard changes to file '" file "'")))
-      (simple-git-refresh))))
+    (if (save-excursion (beginning-of-line) (looking-at " ??"))
+        (when (and file (y-or-n-p (concat "Delete " file "? ")))
+          (if (file-directory-p file)
+              (delete-directory file t)
+            (delete-file file)))
+      (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
+        (message "Discarding file ...")
+        (unless (= (call-process simple-git-executable nil nil nil "checkout" "--" file) 0)
+          (error (concat "Couldn't discard changes to file '" file "'")))
+        (simple-git-refresh)))))
 
 (defun simple-git-unstage ()
   "Unstage file"
@@ -354,6 +359,7 @@
     (define-key map (kbd "a") 'simple-git-add-current-file)
     (define-key map (kbd "e") 'simple-git-ediff-file)
     (define-key map (kbd "g") 'simple-git-refresh)
+    (define-key map (kbd "h") 'simple-git-history)
     (define-key map (kbd "k") 'simple-git-discard)
     (define-key map (kbd "n") 'simple-git-goto-next-file)
     (define-key map (kbd "p") 'simple-git-goto-prev-file)
@@ -361,6 +367,17 @@
     (define-key map (kbd "r") 'simple-git-resolve-file)
     (define-key map (kbd "u") 'simple-git-unstage)
     (setq simple-git-mode-map map)))
+
+(define-prefix-command 'simple-git-global-map)
+(define-key simple-git-global-map (kbd "!") 'simple-git-exec)
+(define-key simple-git-global-map (kbd "=") 'simple-git-diff-file)
+(define-key simple-git-global-map (kbd "RET") 'simple-git-switch-next)
+(define-key simple-git-global-map (kbd "a") 'simple-git-add-current-file)
+(define-key simple-git-global-map (kbd "e") 'simple-git-ediff-file)
+(define-key simple-git-global-map (kbd "h") 'simple-git-history)
+(define-key simple-git-global-map (kbd "k") 'simple-git-discard)
+(define-key simple-git-global-map (kbd "r") 'simple-git-resolve-file)
+(define-key simple-git-global-map (kbd "u") 'simple-git-unstage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -325,7 +325,6 @@
  (require 'my-flymake))
 
 (use-package git-timemachine
-  :bind* (("C-x M" . git-timemachine))
   :config
   (setq git-timemachine-abbreviation-length 7))
 
@@ -558,8 +557,8 @@
   (require 'my-sgml-mode))
 
 (use-package simple-git
-  :bind* (("C-x g" . simple-git)
-          ("C-x G" . simple-git-switch-next)))
+  :config
+  :bind* (("C-x g" . simple-git-global-map)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
