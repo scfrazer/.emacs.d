@@ -234,6 +234,7 @@
     (add-hook 'diff-mode-hook 'my-diff-mode-hook)))
 
 (use-package doxymacs
+  :defer t
   :config
   (progn
     (require 'my-doxymacs)
