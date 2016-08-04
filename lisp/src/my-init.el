@@ -496,7 +496,7 @@
           ("C-c '"  . my-pair-quotes-dwim)
           ("C-c \"" . my-pair-quotes-dwim)
           ("C-c -"  . my-pair-delete)
-          ("C-c ;"  . my-pair-close-all)
+          ("C-c e"  . my-pair-close-all)
           ("M-a"    . my-pair-step-out-backward)
           ("M-e"    . my-pair-step-out-forward)))
 
@@ -593,7 +593,7 @@
   (require 'my-sql))
 
 (use-package term
-  :bind* ("C-c e" . my-term)
+  :commands (my-term)
   :config
   (progn
     (defun my-term ()
@@ -611,8 +611,8 @@
       "Kill terminal buffer after exit."
       (kill-buffer))))
 
-(use-package tern
-  :commands (tern-mode))
+;; (use-package tern
+;;   :commands (tern-mode))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)
@@ -1767,7 +1767,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-y"       . browse-kill-ring)
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c ."       . my-kill-results-buffer)
- ("C-c /"       . my-line-comment)
+ ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . recompile)
  ("C-c N"       . narrow-to-defun)

@@ -85,6 +85,7 @@
    `(js2-jsdoc-tag                           ((t :foreground ,(smf-color 66) :slant italic)))
    `(js2-jsdoc-type                          ((t :foreground ,(smf-color 67) :slant italic)))
    `(js2-jsdoc-value                         ((t :foreground ,(smf-color 180) :slant italic)))
+   `(js2-object-property                     ((,dark :foreground ,(smf-color 152)) (,light :inherit font-lock-type-face)))
    `(js2-warning                             ((t :inherit flymake-warnline)))
    `(lazy-highlight                          ((,dark :foreground ,(smf-color 231) :background ,(smf-color 66)) (,light :background ,(smf-color 181) :foreground "black")))
    `(link                                    ((,dark :foreground ,(smf-color 81) :slant italic :underline t) (,light :foreground ,(smf-color 26) :slant italic :underline t)))

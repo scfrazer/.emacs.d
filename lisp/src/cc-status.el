@@ -38,7 +38,9 @@
                                           "rtl/.*spyglass.*"
                                           ".flopcon"
                                           ".s_pxf"
-                                          ".v_pxf")
+                                          ".v_pxf"
+                                          "Makefile.+rdl"
+                                          "rdl/sysc")
   "*Regexps of view-private elements to ignore."
   :type '(repeat (string :tag "Regexp"))
   :group 'cc-status)
