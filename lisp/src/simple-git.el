@@ -1,13 +1,13 @@
 ;;; simple-git.el
 
+(require 'ansi-color)
 (require 'diff)
 (require 'ediff)
+(require 'git-timemachine)
 (require 'log-edit)
 (require 'smerge-mode)
-(require 'git-timemachine)
 
 ;; TODO Use space to mark files to operate on
-;; TODO l -- new-buffer, cd XXX, git <customizable-log-format> -<customizable_config_num or M-number> (ansi-color-apply-on-region (point-min) (point-max))
 
 (defgroup simple-git nil
   "Simple git."
@@ -309,13 +309,15 @@ Substitute '%' in command with current file name."
     (with-current-buffer buf
       (setq buffer-read-only nil)
       (erase-buffer)
-      (display-buffer buf)
       (insert simple-git-executable " " expanded-cmd "\n")
-      (unless (= (apply #'call-process simple-git-executable nil t t (split-string-and-unquote expanded-cmd)) 0)
+      (unless (= (apply #'call-process simple-git-executable nil t nil (split-string-and-unquote expanded-cmd)) 0)
         (error (concat "Error executing " cmd)))
+      (ansi-color-apply-on-region (point-min) (point-max))
       (setq buffer-read-only t)
       (set-buffer-modified-p nil)
-      (view-mode)))
+      (view-mode)
+      (goto-char (point-min))
+      (display-buffer buf)))
   (simple-git-refresh))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
