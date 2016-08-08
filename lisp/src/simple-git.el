@@ -301,13 +301,21 @@
   (simple-git-refresh))
 
 (defun simple-git-exec (cmd)
-  "Execute arbitrary command."
+  "Execute arbitrary command.
+Substitute '%' in command with current file name."
   (interactive "sGit command? ")
-  ;; TODO Get current file and sub wherever % is
-  (with-temp-buffer
-    (unless (= (apply #'call-process simple-git-executable nil t nil (split-string-and-unquote cmd)) 0)
-      (error (concat "Error executing " cmd)))
-    (message (buffer-substring-no-properties (point-min) (point-max))))
+  (let ((buf (get-buffer-create (concat simple-git-buf-prefix "Exec*")))
+        (expanded-cmd (replace-regexp-in-string "%" (simple-git-get-current-file) cmd)))
+    (with-current-buffer buf
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      (display-buffer buf)
+      (insert simple-git-executable " " expanded-cmd "\n")
+      (unless (= (apply #'call-process simple-git-executable nil t t (split-string-and-unquote expanded-cmd)) 0)
+        (error (concat "Error executing " cmd)))
+      (setq buffer-read-only t)
+      (set-buffer-modified-p nil)
+      (view-mode)))
   (simple-git-refresh))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -376,6 +384,7 @@
 (define-key simple-git-global-map (kbd "e") 'simple-git-ediff-file)
 (define-key simple-git-global-map (kbd "h") 'simple-git-history)
 (define-key simple-git-global-map (kbd "k") 'simple-git-discard)
+(define-key simple-git-global-map (kbd "n") 'simple-git)
 (define-key simple-git-global-map (kbd "r") 'simple-git-resolve-file)
 (define-key simple-git-global-map (kbd "u") 'simple-git-unstage)
 
