@@ -273,18 +273,6 @@
              `("/vob/sse/asic/.*\\.[ch]pp$" ,(concat tags-base-dir "/cpp/TAGS")))
             etags-table-search-up-depth 10
             tags-revert-without-query t))
-;;     (defun my-find-tag (&optional arg)
-;;       "Find tag at point or plain find tag"
-;;       (interactive "P")
-;;       (if (eq major-mode 'js2-mode)
-;;           (if arg (tern-find-definition-by-name) (tern-find-definition))
-;;         (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
-;;     (defun my-pop-tag-mark ()
-;;       "Pop tag mark."
-;;       (interactive)
-;;       (if (eq major-mode 'js2-mode)
-;;           (tern-pop-find-definition)
-;;         (pop-tag-mark)))
     (defun my-find-tag (&optional arg)
       "Find tag at point or plain find tag"
       (interactive "P")
@@ -612,9 +600,6 @@
     (defadvice term-handle-exit (after my-term-handle-exit activate)
       "Kill terminal buffer after exit."
       (kill-buffer))))
-
-;; (use-package tern
-;;   :commands (tern-mode))
 
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-iterm-copy)

@@ -77,6 +77,24 @@
   (interactive)
   (js2-next-error -1))
 
+(define-abbrev js2-mode-abbrev-table
+  "lint"
+  "// eslint-disable-line no-unused-vars")
+
+;; TODO Make this advice
+;;     (defun my-find-tag (&optional arg)
+;;       "Find tag at point or plain find tag"
+;;       (interactive "P")
+;;       (if (eq major-mode 'js2-mode)
+;;           (if arg (tern-find-definition-by-name) (tern-find-definition))
+;;         (if arg (etags-select-find-tag) (etags-select-find-tag-at-point))))
+;;     (defun my-pop-tag-mark ()
+;;       "Pop tag mark."
+;;       (interactive)
+;;       (if (eq major-mode 'js2-mode)
+;;           (tern-pop-find-definition)
+;;         (pop-tag-mark)))
+
 (defun my-js2-mode-hook ()
   (setq-local mode-name "js2")
   ;; (auto-complete-mode 1)
