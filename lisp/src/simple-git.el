@@ -20,6 +20,7 @@
 
 (defconst simple-git-buf-prefix "*simple-git: ")
 
+;;;###autoload
 (defun simple-git (dir)
   "Simple Git mode."
   (interactive "DSelect directory: ")
@@ -39,6 +40,7 @@
       (set-buffer-modified-p nil))
     (switch-to-buffer buf)))
 
+;;;###autoload
 (defun simple-git-switch-next ()
   "Switch to the next simple-git buffer."
   (interactive)
@@ -153,6 +155,7 @@
           (match-string-no-properties 1)))
     (buffer-file-name)))
 
+;;;###autoload
 (defun simple-git-add-current-file ()
   "Add the current file."
   (interactive)
@@ -172,6 +175,7 @@
     (error "Couldn't add tracked files"))
   (simple-git-refresh))
 
+;;;###autoload
 (defun simple-git-diff-file ()
   "Diff file."
   (interactive)
@@ -191,6 +195,7 @@
       (set-window-buffer nil buf)
       (message ""))))
 
+;;;###autoload
 (defun simple-git-history ()
   "Go through git history using git-timemachine."
   (interactive)
@@ -201,6 +206,7 @@
 
 (defvar simple-git-ediff-head-rev-buf nil)
 
+;;;###autoload
 (defun simple-git-ediff-file ()
   "ediff file."
   (interactive)
@@ -229,6 +235,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun simple-git-discard ()
   "Discard changes."
   (interactive)
@@ -244,6 +251,7 @@
           (error (concat "Couldn't discard changes to file '" file "'")))
         (simple-git-refresh)))))
 
+;;;###autoload
 (defun simple-git-unstage ()
   "Unstage file"
   (interactive)
@@ -261,6 +269,7 @@
     (when file
       (find-file file))))
 
+;;;###autoload
 (defun simple-git-resolve-file ()
   "Resolve merge conflicts."
   (interactive)
@@ -300,6 +309,7 @@
     (error "Couldn't push"))
   (simple-git-refresh))
 
+;;;###autoload
 (defun simple-git-exec (cmd)
   "Execute arbitrary command.
 Substitute '%' in command with current file name."
