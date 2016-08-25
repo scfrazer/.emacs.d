@@ -1700,7 +1700,7 @@ Prefix with C-u to resize the `next-window'."
       (overlay-put my-next-error-overlay 'face 'my-next-error-face))))
 
 (defun my-sh-mode-hook ()
-  (when (string-match "\\.zsh.*\\'" buffer-file-name)
+  (when (and buffer-file-name (string-match "\\.zsh.*\\'" buffer-file-name))
     (sh-set-shell "zsh")))
 
 (defun my-word-wrap-on-hook ()

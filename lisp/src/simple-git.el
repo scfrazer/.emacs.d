@@ -240,7 +240,7 @@
   "Discard changes."
   (interactive)
   (let ((file (simple-git-get-current-file)))
-    (if (save-excursion (beginning-of-line) (looking-at " ??"))
+    (if (save-excursion (beginning-of-line) (looking-at " [?][?]"))
         (when (and file (y-or-n-p (concat "Delete " file "? ")))
           (if (file-directory-p file)
               (delete-directory file t)
