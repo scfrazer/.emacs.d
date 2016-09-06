@@ -12,6 +12,8 @@
 
 ;; Need these first
 
+(require 'cl-lib)
+
 (require 'my-font-lock)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'ws 'whitespace-mode)
@@ -296,7 +298,7 @@
   (defun my-other-file ()
     (interactive)
     (call-interactively
-     (case major-mode
+     (cl-case major-mode
        ('sv-mode 'sv-mode-other-file)
        ('c++-mode 'my-cc-other-file)
        (t 'ff-get-other-file))))
@@ -906,7 +908,7 @@ undoable all at once."
       (skip-syntax-backward "w_")
       (skip-syntax-forward "^w")
       (setq beg (point)))
-    (case mode
+    (cl-case mode
       ('upcase (upcase-region beg end))
       ('downcase (downcase-region beg end))
       ('capitalize (capitalize-region beg (1+ beg))))))
