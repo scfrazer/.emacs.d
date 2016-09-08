@@ -5,9 +5,9 @@
                       (getenv "ABBREV_HOSTNAME"))))
     (and (stringp hostname)
          (cond
-          ((string-match "^lx30-vm" hostname) 'RTP)
-          ((string-match "^cpp-hw" hostname) 'SJC)
-          ((string-match "^ott-vnc" hostname) 'OTT)
+          ((string-match "^asic-vm-rtp" hostname) 'RTP)
+          ((string-match "^asic-vm-sjc" hostname) 'SJC)
+          ((string-match "^asic-vm-ott" hostname) 'OTT)
           ((string-match "^SCFRAZER" hostname) 'Work)))))
 
 ;; Need these first
