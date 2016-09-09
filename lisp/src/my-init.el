@@ -997,6 +997,12 @@ undoable all at once."
              (count-lines (point-at-bol)
                           (save-excursion (forward-paragraph) (point-at-eol))))))
 
+(defun cpl ()
+  "Turn on cpl-mode."
+  (interactive)
+  (require 'cpl-mode)
+  (cpl-mode))
+
 (defun my-delete-duplicate-lines (&optional arg)
   "Like `delete-duplicate-lines', but operates on the following paragraph,
 or the region with prefix arg."
