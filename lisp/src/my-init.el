@@ -1285,6 +1285,7 @@ arg do something special."
     (if (/= (buffer-size) (- (point-max) (point-min)))
         (widen)
       (narrow-to-region (region-beginning) (region-end))
+      (my-mode-line-count-lines)
       (goto-char (point-min)))))
 
 (defvar my-paste-mode nil)
