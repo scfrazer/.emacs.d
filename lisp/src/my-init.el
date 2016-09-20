@@ -1393,13 +1393,13 @@ and a number prefix means replace in region."
           (goto-char start)
           (query-replace (nth 0 common) (nth 1 common) nil start end))
       (let (from to)
-        (setq from (buffer-substring (region-beginning) (region-end))
+        (setq from (buffer-substring-no-properties (region-beginning) (region-end))
               to (read-from-minibuffer
                   (format "Query replace %s with: " from) nil nil nil
                   'query-replace-history))
         (goto-char (region-beginning))
         (query-replace from to)
-        (setq query-replace-defaults (cons from to))))))
+        (push (cons from to) query-replace-defaults)))))
 
 (defun my-rectangle-number-lines (start end start-at &optional format)
   "Like `rectangle-number-lines' but with better defaults.

@@ -1185,8 +1185,8 @@ default for next `query-replace'."
                 (concat "\\_<super[.]\\_<\\(" name this-func-re-end) end t)
           (replace-match new-name t nil nil 1)))
       ;; Done
-      (when sv-mode-rename-set-query-replace
-        (setq query-replace-defaults (cons name new-name)))
+;;       (when sv-mode-rename-set-query-replace
+;;         (setq query-replace-defaults (cons name new-name)))
       (set-buffer this-buf)
       (when other-modified
         (message (concat (ff-other-file-name) " was also modified."))))))
