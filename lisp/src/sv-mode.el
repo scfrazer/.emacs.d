@@ -1505,7 +1505,7 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
   (goto-char pos)
   (let ((at-opener (looking-at "\\s-*{")))
     (forward-comment (* -1 (buffer-size)))
-    (unless (or at-opener at-closer (looking-back "[{};,]\\s-*"))
+    (unless (or at-opener at-closer (looking-back "[{};,]\\s-*" (point-min)))
       (setq offset (+ offset sv-mode-basic-offset))))
   (goto-char pos)
   (save-restriction
