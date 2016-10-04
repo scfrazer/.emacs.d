@@ -38,7 +38,7 @@
    `(Man-underline                           ((t :inherit font-lock-variable-name-face)))
    `(avy-lead-face                           ((t :foreground ,(smf-color 226) :background ,(smf-color 161))))
    `(avy-lead-face-0                         ((t :foreground ,(smf-color 161) :background ,(smf-color 25))))
-   `(bm-face                                 ((,dark :background ,(smf-color 53)) (,light :background ,(smf-color 223))))
+   `(bm-face                                 ((t :foreground "black" :background ,(smf-color 184))))
    `(compilation-column-number               ((t :inherit font-lock-variable-name-face)))
    `(compilation-error                       ((t :inherit error)))
    `(compilation-info                        ((t :inherit link)))

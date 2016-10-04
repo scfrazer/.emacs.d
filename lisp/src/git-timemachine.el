@@ -248,7 +248,7 @@ Call with the value of 'buffer-file-name."
        (coding-system buffer-file-coding-system))
   (with-current-buffer (get-buffer-create timemachine-buffer)
    (switch-to-buffer timemachine-buffer)
-   (setq buffer-file-name file-name)
+   ;;(setq buffer-file-name file-name)
    (setq buffer-file-coding-system coding-system)
    (funcall mode)
    (setq git-timemachine-directory git-directory

@@ -72,6 +72,9 @@
             ("C-x C-r" . my-ido-recentf-file)
             ("M-i"     . ido-switch-buffer))
 
+(require 'my-jump-marker)
+(bind-keys* ("M-SPC" . my-jump-marker))
+
 (require 'jump-to-prev-pos)
 (bind-keys* ("M-b" . jump-to-prev-pos))
 
@@ -634,15 +637,13 @@
           ("C-c x" . my-xclip-copy)))
 
 (use-package yank-target
-  :bind* (("C-c Y"     . my-yank-target-go-yank)
-          ("C-c y SPC" . yank-target-set)
+  :bind* (("C-c y SPC" . yank-target-set)
           ("C-c y y"   . yank-target-yank)
           ("C-c y Y"   . yank-target-yank-and-go)
           ("C-c y k"   . yank-target-kill)
           ("C-c y K"   . yank-target-kill-and-go)
           ("C-c y t"   . yank-target-go-target)
-          ("C-c y s"   . yank-target-go-source)
-          ("M-SPC"     . my-yank-target-jump))
+          ("C-c y s"   . yank-target-go-source))
   :config
   (progn
     (defun my-yank-target-go-yank ()
