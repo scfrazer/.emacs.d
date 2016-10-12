@@ -8,10 +8,11 @@
 (defvar my-jump-marker nil)
 (defvar my-jump-marker-overlay nil)
 
-(defun my-jump-marker ()
+(defun my-jump-marker (&optional arg)
   "Set or jump to a temporary marker."
-  (interactive)
-  (if (or (not my-jump-marker)
+  (interactive "P")
+  (if (or arg
+          (not my-jump-marker)
           (not (marker-buffer my-jump-marker))
           (not (marker-position my-jump-marker)))
       (progn
