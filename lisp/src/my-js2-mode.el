@@ -7,7 +7,7 @@
 (require 'flymake-eslint)
 
 (setq-default js2-basic-offset 4
-              js2-global-externs '("window" "require" "define" "jQuery" "tinymce")
+              js2-global-externs '("window" "require" "define" "jQuery" "tinymce" "moment")
               js2-idle-timer-delay 0.5
               js-doc-file-doc-lines '(js-doc-top-line
                                       " * @fileOverview\n"
