@@ -1499,22 +1499,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                        (file-name-directory (buffer-file-name))))))
     (suspend-emacs (and dir (concat "cd " dir)))))
 
-(defun my-theme-dark ()
-  "Set dark theme."
-  (interactive)
-  (customize-set-variable 'frame-background-mode 'dark)
-  (dolist (theme custom-enabled-themes)
-    (disable-theme theme))
-  (load-theme 'smf t))
-
-(defun my-theme-light ()
-  "Set light theme."
-  (interactive)
-  (customize-set-variable 'frame-background-mode 'light)
-  (dolist (theme custom-enabled-themes)
-    (disable-theme theme))
-  (load-theme 'smf t))
-
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")

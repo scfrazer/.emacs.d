@@ -1,6 +1,7 @@
 (deftheme smf-base-dark
   "Base dark colors.")
 
+(customize-set-variable 'frame-background-mode 'dark)
 (load-theme 'smf-base t)
 
 (custom-theme-set-faces

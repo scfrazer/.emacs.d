@@ -1,6 +1,7 @@
 (deftheme smf-base-light
   "Base light colors.")
 
+(customize-set-variable 'frame-background-mode 'light)
 (load-theme 'smf-base t)
 
 (custom-theme-set-faces

@@ -20,4 +20,4 @@
        (grep-apply-setting 'grep-find-template "(find <D> <X> -type f <F> -exec grep -nH -I -E -e <R> <C> {} \\; > /dev/tty) >& /dev/null"))))
 
 ;; Theme
-(load-theme 'smf t)
+(load-theme 'smf-misterioso t)
