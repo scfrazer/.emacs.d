@@ -7,7 +7,6 @@
          (cond
           ((string-match "^asic-vm-rtp" hostname) 'RTP)
           ((string-match "^asic-vm-sjc" hostname) 'SJC)
-          ((string-match "^asic-vm-ott" hostname) 'OTT)
           ((string-match "^SCFRAZER" hostname) 'Work)))))
 
 ;; Need these first
@@ -268,8 +267,7 @@
     (require 'etags-table)
     (let ((tags-base-dir (cond
                           ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
-                          ((eq my-location 'OTT) "/auto/kan-dump3/scfrazer/tags"))))
+                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags"))))
       (setq etags-select-use-short-name-completion t
             etags-table-alist
             (list
@@ -551,7 +549,7 @@
 
 (use-package simple-git
   :config
-  :bind* (("C-x g" . simple-git-global-map)))
+  :bind-keymap (("C-x g" . simple-git-global-map)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
@@ -637,13 +635,7 @@
           ("C-c x" . my-xclip-copy)))
 
 (use-package yank-target
-  :bind* (("C-c y SPC" . yank-target-set)
-          ("C-c y y"   . yank-target-yank)
-          ("C-c y Y"   . yank-target-yank-and-go)
-          ("C-c y k"   . yank-target-kill)
-          ("C-c y K"   . yank-target-kill-and-go)
-          ("C-c y t"   . yank-target-go-target)
-          ("C-c y s"   . yank-target-go-source))
+  :bind-keymap (("C-c y" . yank-target-map))
   :config
   (progn
     (defun my-yank-target-go-yank ()
@@ -1226,7 +1218,7 @@ end of a non-blank line, or insert an 80-column comment line"
 (defun my-minibuffer-backward ()
   "Move backward words or path elements in the minibuffer."
   (interactive)
-  (unless (looking-back "[a-zA-Z0-9_.-]")
+  (unless (looking-back "[a-zA-Z0-9_.-]" (point-at-bol))
     (skip-chars-backward "^a-zA-Z0-9_.-"))
   (skip-chars-backward "a-zA-Z0-9_.-"))
 
@@ -1828,8 +1820,7 @@ Prefix with C-u to resize the `next-window'."
 ;; Cisco setup
 
 (when (or (eq my-location 'RTP)
-          (eq my-location 'SJC)
-          (eq my-location 'OTT))
+          (eq my-location 'SJC))
 
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "l2q lsq_targ_buildpb_chipMinfMl2infGMPP64 /build_test/")
