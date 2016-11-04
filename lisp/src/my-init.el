@@ -105,6 +105,9 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
+(require 'use-package)
+(setq use-package-verbose t)
+
 (require 'my-win)
 (bind-keys* ("C-x 2" . my-win-split-vertically)
             ("C-x 3" . my-win-split-horizontally)
@@ -116,10 +119,6 @@
 (require 'zsh-edit-mode)
 
 ;; Deferred packages
-
-(eval-when-compile
-  (require 'use-package))
-(setq use-package-verbose t)
 
 (use-package align
   :bind* (("C-c A" . align-regexp)
