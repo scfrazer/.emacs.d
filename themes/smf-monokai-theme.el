@@ -7,7 +7,7 @@
  'smf-monokai
 
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 197))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 95) :slant italic)))
+ `(font-lock-comment-face       ((t :foreground ,(smf-color 95) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 141))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 95))))
  `(font-lock-function-name-face ((t :foreground ,(smf-color 148))))

@@ -58,7 +58,7 @@
 
    ;; SMF
 ;;    `(font-lock-builtin-face                  ((,dark :foreground ,(smf-color 210)) (,light :foreground ,(smf-color 94))))
-;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 102) :slant italic) (,light :foreground ,(smf-color 248) :slant italic)))
+;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 102) :italic t) (,light :foreground ,(smf-color 248) :italic t)))
 ;;    `(font-lock-constant-face                 ((,dark :foreground ,(smf-color 149)) (,light :foreground ,(smf-color 106))))
 ;;    `(font-lock-doc-face                      ((,dark :foreground ,(smf-color 223)) (,light :foreground ,(smf-color 244))))
 ;;    `(font-lock-function-name-face            ((,dark :foreground ,(smf-color 178)) (,light :foreground ,(smf-color 130))))
@@ -70,7 +70,7 @@
 
    ;; Misterioso
    `(font-lock-builtin-face                  ((,dark :foreground ,(smf-color 44))))
-   `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 107) :slant italic)))
+   `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 107) :italic t)))
    `(font-lock-constant-face                 ((,dark :foreground ,(smf-color 30))))
    `(font-lock-doc-face                      ((,dark :foreground ,(smf-color 223))))
    `(font-lock-function-name-face            ((,dark :foreground ,(smf-color 50))))
@@ -82,7 +82,7 @@
 
    ;; Monokai
 ;;    `(font-lock-builtin-face                  ((,dark :foreground ,(smf-color 197))))
-;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 95) :slant italic)))
+;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 95) :italic t)))
 ;;    `(font-lock-constant-face                 ((,dark :foreground ,(smf-color 141))))
 ;;    `(font-lock-doc-face                      ((,dark :foreground ,(smf-color 95))))
 ;;    `(font-lock-function-name-face            ((,dark :foreground ,(smf-color 148))))
@@ -94,7 +94,7 @@
 
    ;; Flatland
 ;;    `(font-lock-builtin-face                  ((,dark :foreground ,(smf-color 209))))
-;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 244) :slant italic)))
+;;    `(font-lock-comment-face                  ((,dark :foreground ,(smf-color 244) :italic t)))
 ;;    `(font-lock-constant-face                 ((,dark :foreground ,(smf-color 150))))
 ;;    `(font-lock-doc-face                      ((,dark :foreground ,(smf-color 244))))
 ;;    `(font-lock-function-name-face            ((,dark :foreground ,(smf-color 74))))
@@ -106,8 +106,8 @@
 
    `(font-lock-comment-delimiter-face        ((t :inherit font-lock-comment-face)))
    `(font-lock-doc-string-face               ((t :inherit font-lock-doc-face)))
-   `(font-lock-regexp-grouping-backslash     ((t :weight bold)))
-   `(font-lock-regexp-grouping-construct     ((t :weight bold)))
+   `(font-lock-regexp-grouping-backslash     ((t :bold t)))
+   `(font-lock-regexp-grouping-construct     ((t :bold t)))
    `(font-lock-warning-face                  ((t :inherit warning)))
    `(git-timemachine-minibuffer-author-face  ((t :inherit font-lock-keyword-face)))
    `(git-timemachine-minibuffer-detail-face  ((t :inherit font-lock-string-face)))
@@ -121,15 +121,15 @@
    `(js2-error                               ((t :inherit error)))
    `(js2-external-variable                   ((t :inherit flymake-warnline)))
    `(js2-function-param                      ((t :inherit font-lock-variable-name-face)))
-   `(js2-jsdoc-tag                           ((t :foreground ,(smf-color 66) :slant italic)))
-   `(js2-jsdoc-type                          ((t :foreground ,(smf-color 67) :slant italic)))
-   `(js2-jsdoc-value                         ((t :foreground ,(smf-color 180) :slant italic)))
+   `(js2-jsdoc-tag                           ((t :foreground ,(smf-color 66) :italic t)))
+   `(js2-jsdoc-type                          ((t :foreground ,(smf-color 67) :italic t)))
+   `(js2-jsdoc-value                         ((t :foreground ,(smf-color 180) :italic t)))
    `(js2-object-property                     ((,dark :foreground ,(smf-color 152)) (,light :inherit font-lock-type-face)))
    `(js2-warning                             ((t :inherit flymake-warnline)))
    `(lazy-highlight                          ((,dark :foreground ,(smf-color 231) :background ,(smf-color 66)) (,light :background ,(smf-color 181) :foreground "black")))
-   `(link                                    ((,dark :foreground ,(smf-color 81) :slant italic :underline t) (,light :foreground ,(smf-color 26) :slant italic :underline t)))
-   `(link-visited                            ((,dark :foreground ,(smf-color 212) :slant italic :underline t) (,light :foreground ,(smf-color 93) :slant italic :underline t)))
-   `(linum                                   ((,dark :foreground ,(smf-color 143) :background "black" :slant italic) (,light :foreground ,(smf-color 60) :background ,(smf-color 255) :slant italic)))
+   `(link                                    ((,dark :foreground ,(smf-color 81) :italic t :underline t) (,light :foreground ,(smf-color 26) :italic t :underline t)))
+   `(link-visited                            ((,dark :foreground ,(smf-color 212) :italic t :underline t) (,light :foreground ,(smf-color 93) :italic t :underline t)))
+   `(linum                                   ((,dark :foreground ,(smf-color 143) :background "black" :italic t) (,light :foreground ,(smf-color 60) :background ,(smf-color 255) :italic t)))
    `(match                                   ((t :foreground ,(smf-color 231) :background ,(smf-color 62))))
    `(minibuffer-prompt                       ((t :inherit font-lock-keyword-face)))
    `(mode-line                               ((t :foreground ,(smf-color 255) :background ,(smf-color 24))))
@@ -148,12 +148,12 @@
    `(show-mark-face                          ((,dark :foreground nil :background ,(smf-color 239))))
    `(show-paren-match-face                   ((t :inherit success)))
    `(show-paren-mismatch-face                ((t :inherit error)))
-   `(sqlplus-table-head-face                 ((t :foreground ,(smf-color 45) :background "black" :slant italic)))
+   `(sqlplus-table-head-face                 ((t :foreground ,(smf-color 45) :background "black" :italic t)))
    `(success                                 ((,dark :foreground ,(smf-color 120) :background ,(smf-color 22)) (,light :foreground ,(smf-color 231) :background ,(smf-color 28))))
    `(trailing-whitespace                     ((,dark :background ,(smf-color 52)) (,light :background ,(smf-color 195))))
    `(underline                               ((t :underline t)))
    `(warning                                 ((,dark :foreground ,(smf-color 226) :background ,(smf-color 58)) (,light :foreground "black" :background ,(smf-color 226))))
-   `(web-mode-current-element-highlight-face ((t :weight bold :underline t)))
+   `(web-mode-current-element-highlight-face ((t :bold t :underline t)))
    `(web-mode-html-attr-custom-face          ((,dark :foreground ,(smf-color 106)) (,light :foreground ,(smf-color 143))))
    `(web-mode-html-attr-equal-face           ((t :inherit web-mode-html-attr-name-face)))
    `(web-mode-html-attr-name-face            ((,dark :foreground ,(smf-color 108)) (,light :foreground ,(smf-color 65))))

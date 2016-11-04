@@ -7,7 +7,7 @@
  'smf-misterioso
 
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 44))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 107) :slant italic)))
+ `(font-lock-comment-face       ((t :foreground ,(smf-color 107) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 30))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 223))))
  `(font-lock-function-name-face ((t :foreground ,(smf-color 50))))

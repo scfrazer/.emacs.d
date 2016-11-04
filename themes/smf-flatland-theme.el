@@ -7,7 +7,7 @@
  'smf-flatland
 
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 209))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 244) :slant italic)))
+ `(font-lock-comment-face       ((t :foreground ,(smf-color 244) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 150))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 244))))
  `(font-lock-function-name-face ((t :foreground ,(smf-color 74))))
