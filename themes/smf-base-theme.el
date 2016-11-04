@@ -41,7 +41,7 @@
  `(compilation-mode-line-run               ((t :inherit warning)))
  `(compilation-warning                     ((t :inherit warning)))
  `(cperl-array-face                        ((t :inherit font-lock-variable-name-face :bold t)))
- `(cperl-hash-face                         ((t :inherit font-lock-variable-name-face :italic t)))
+ `(cperl-hash-face                         ((t :inherit font-lock-variable-name-face :bold t :italic t)))
  `(cperl-nonoverridable-face               ((t :inherit font-lock-builtin-face)))
  `(diff-refine-added                       ((t :inherit success)))
  `(diff-refine-removed                     ((t :inherit error)))
