@@ -1526,6 +1526,23 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (let ((ppss (syntax-ppss pos)))
       (or (nth 4 ppss) (nth 3 ppss)))))
 
+(defun my-theme ()
+  "Load a theme."
+  (interactive)
+  (let (themes name choice)
+    (dolist (theme custom-known-themes)
+      (setq name (symbol-name theme))
+      (when (and (string-match "^smf-" name)
+                 (not (string-match "^smf-base" name)))
+        (push name themes)))
+    (setq choice (intern (ido-completing-read "Theme: " (sort themes 'string<) nil t)))
+    (dolist (theme custom-enabled-themes)
+      (unless (or (eq theme 'smf-base)
+                  (eq theme 'smf-base-dark)
+                  (eq theme 'smf-base-light))
+        (disable-theme theme)))
+    (load-theme choice t)))
+
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
   (interactive)
@@ -1885,6 +1902,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'serve 'my-server)
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
+(defalias 'theme 'my-theme)
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
