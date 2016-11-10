@@ -2,7 +2,7 @@
 
 (require 'clearcase)
 (require 'diff)
-(eval-when-compile (require 'cl))
+(require 'cl)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
