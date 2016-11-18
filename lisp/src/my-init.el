@@ -691,8 +691,9 @@
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
-              browse-kill-ring-separator "---"
-              browse-kill-ring-separator-face 'font-lock-function-name-face
+;;               browse-kill-ring-separator "                                                                                "
+              browse-kill-ring-separator "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+              browse-kill-ring-separator-face 'my-browse-kill-ring-separator-face
               browse-kill-ring-show-preview nil
               browse-kill-ring-use-fontification t
               case-fold-search t
@@ -874,6 +875,11 @@ undoable all at once."
   (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
     (beginning-of-line)
     (forward-line -1)))
+
+(defface my-browse-kill-ring-separator-face
+  '((t nil))
+  "Face to highlight kill-ring separators."
+  :group 'faces)
 
 (defvar my-kbd-macro-transient-map
   (let ((map (make-sparse-keymap)))
