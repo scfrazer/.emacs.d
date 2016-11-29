@@ -877,7 +877,7 @@ undoable all at once."
     (forward-line -1)))
 
 (defface my-browse-kill-ring-separator-face
-  '((t nil))
+  '((t :foreground "color-197"))
   "Face to highlight kill-ring separators."
   :group 'faces)
 
@@ -1845,9 +1845,9 @@ Prefix with C-u to resize the `next-window'."
           (eq my-location 'SJC))
 
   (require 'vcs-compile)
-  (add-to-list 'vcs-compile-command-list "l2q lsq_targ_buildpb_chipMinfMl2infGMPP64 /build_test/")
+  (add-to-list 'vcs-compile-command-list "q lsq_targ_buildpb_chipMl2infMpciMpaMfabMhbmGMPP64 /build_test/")
 
-  (add-to-list 'my-compile-command "l2q lsq_compile_src_chipdv -/db_/")
+  (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
 
   (require 'ur-log-mode)
 
