@@ -1399,41 +1399,38 @@ and a number prefix means replace in region."
         (query-replace from to)
         (push (cons from to) query-replace-defaults)))))
 
-(defun my-rectangle-number-lines (start end start-at &optional format)
+(defun my-rectangle-number-lines (&optional arg)
   "Like `rectangle-number-lines' but with better defaults.
 
-START-AT, if non-nil, should be a number from which to begin
-counting.  FORMAT, if non-nil, should be a format string to pass
-to `format' along with the line count.  When called interactively
-with a prefix argument, prompt for START-AT and FORMAT."
-  (interactive
-   (cond ((equal current-prefix-arg '(4))
-          (let* ((start (region-beginning))
-                 (end   (region-end))
-                 (start-at (read-string "Start at: "))
-                 (format "%d"))
-            (if (string-match "[a-zA-Z]" start-at)
-                (setq start-at (string-to-char start-at)
-                      format "%c")
-              (setq start-at (string-to-number start-at)))
-            (list start end start-at format)))
-         ((equal current-prefix-arg '(16))
-          (let* ((start (region-beginning))
-                 (end   (region-end))
-                 (start-at (read-number "Start at: ")))
-            (list start end start-at
-                  (read-string "Format string: " "%d"))))
-         (t
-          (list (region-beginning) (region-end) 0 "%d"))))
-  (delete-extract-rectangle (region-beginning) (region-end))
-  (setq end (point))
-  (when (< end start)
-    (let ((tmp start))
-      (setq start end
-            end tmp)))
-  (let ((rectangle-number-line-counter start-at))
-    (apply-on-rectangle 'rectangle-number-line-callback
-                        start end format)))
+When called with one prefix arg, prompt for starting point.  When
+called with a different prefix arg, prompt for starting point and
+format."
+  (interactive "*P")
+  (let ((start-at 0)
+        (format "%d"))
+    (when arg
+      (setq start-at (read-string "Start at: "))
+      (if (string-match "[a-zA-Z]" start-at)
+          (setq start-at (string-to-char start-at)
+                format "%c")
+        (setq start-at (string-to-number start-at))
+        (unless (equal current-prefix-arg '(4))
+          (setq format (read-string "Format string: " "%d")))))
+    (delete-extract-rectangle (region-beginning) (region-end))
+    (let ((start (mark))
+          (end (point)))
+      (if (< end start)
+          (progn
+            (setq rectangle-number-line-counter (+ (count-lines end start) start-at -1))
+            (apply-on-rectangle 'my-rectangle-reverse-number-line-callback end start format))
+        (setq rectangle-number-line-counter start-at)
+        (apply-on-rectangle 'rectangle-number-line-callback start end format)))))
+
+(defun my-rectangle-reverse-number-line-callback (start _end format-string)
+  (move-to-column start t)
+  (insert (format format-string rectangle-number-line-counter))
+  (setq rectangle-number-line-counter
+        (1- rectangle-number-line-counter)))
 
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
