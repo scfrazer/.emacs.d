@@ -7,6 +7,7 @@
          (cond
           ((string-match "^asic-vm-rtp" hostname) 'RTP)
           ((string-match "^asic-vm-sjc" hostname) 'SJC)
+          ((string-match "^asic-vm-bgl" hostname) 'BGL)
           ((string-match "^SCFRAZER" hostname) 'Work)))))
 
 ;; Need these first
@@ -266,7 +267,8 @@
     (require 'etags-table)
     (let ((tags-base-dir (cond
                           ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags"))))
+                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
+                          ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
       (setq etags-select-use-short-name-completion t
             etags-table-alist
             (list
@@ -1839,7 +1841,8 @@ Prefix with C-u to resize the `next-window'."
 ;; Cisco setup
 
 (when (or (eq my-location 'RTP)
-          (eq my-location 'SJC))
+          (eq my-location 'SJC)
+          (eq my-location 'BGL))
 
   (require 'vcs-compile)
   (add-to-list 'vcs-compile-command-list "q lsq_targ_buildpb_chipMl2infMpciMpaMfabMhbmGMPP64 /build_test/")
