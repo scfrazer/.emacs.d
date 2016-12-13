@@ -7,7 +7,7 @@
 (custom-theme-set-faces
  'smf-base-light
 
-   `(caution                        ((t :foreground "black" :background ,(smf-color 223))
+   `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
    `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
    `(flymake-errline                ((t :inherit nil :background ,(smf-color 224))))
    `(flymake-warnline               ((t :inherit nil :background ,(smf-color 229))))
@@ -18,7 +18,6 @@
    `(link                           ((t :foreground ,(smf-color 26) :italic t :underline t)))
    `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
    `(linum                          ((t :foreground ,(smf-color 60) :background ,(smf-color 255) :italic t)))
-   `(mode-line-buffer-id            ((t :foreground ,(smf-color 20))))
    `(outline-1                      ((t :foreground ,(smf-color 33))))
    `(outline-2                      ((t :foreground ,(smf-color 32))))
    `(outline-3                      ((t :foreground ,(smf-color 31))))
