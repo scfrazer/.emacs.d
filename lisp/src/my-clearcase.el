@@ -339,6 +339,14 @@ With prefix arg ask for version."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; edcs mode
 
+  (defun my-clearcase-edcs-edit (&optional arg)
+    "Like `clearcase-edcs-edit', but only prompts for a view tag
+if started with C-u."
+    (interactive "P")
+    (if arg
+        (call-interactively 'clearcase-edcs-edit)
+      (clearcase-edcs-edit (clearcase-fprop-viewtag default-directory))))
+
   (defun my-clearcase-cs-set-latest-dwim ()
     "Set latest for current line, trying to do-the-right-thing."
     (interactive)

@@ -57,6 +57,8 @@
 (bind-keys* ("C-o". my-buf-toggle))
 
 (require 'my-clearcase)
+(when (boundp 'clearcase-prefix-map)
+  (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
@@ -1535,17 +1537,14 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   "Load a theme."
   (interactive)
   (let (themes name choice)
-    (dolist (theme custom-known-themes)
+    (dolist (theme (custom-available-themes))
       (setq name (symbol-name theme))
       (when (and (string-match "^smf-" name)
                  (not (string-match "^smf-base" name)))
         (push name themes)))
     (setq choice (intern (ido-completing-read "Theme: " (sort themes 'string<) nil t)))
     (dolist (theme custom-enabled-themes)
-      (unless (or (eq theme 'smf-base)
-                  (eq theme 'smf-base-dark)
-                  (eq theme 'smf-base-light))
-        (disable-theme theme)))
+      (disable-theme theme))
     (load-theme choice t)))
 
 (defun my-toggle-buffer-modified ()
