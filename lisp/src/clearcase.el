@@ -2155,10 +2155,13 @@ is specified, save it."
 
 ;;{{{ Checkout
 
-(defun clearcase-checkout-current-buffer ()
+(defun clearcase-checkout-current-buffer (&optional arg)
   "Checkout the file in the current buffer."
-  (interactive)
-  (clearcase-commented-checkout buffer-file-name))
+  (interactive "P")
+  (if arg
+      (let ((clearcase-checkout-arguments (list "-version")))
+        (clearcase-commented-checkout buffer-file-name))
+    (clearcase-commented-checkout buffer-file-name)))
 
 (defun clearcase-checkout-dired-files ()
   "Checkout the selected files."
@@ -2172,10 +2175,12 @@ is specified, save it."
 
 ;; Unreserved versions
 
-(defun clearcase-checkout-unreserved-current-buffer ()
+(defun clearcase-checkout-unreserved-current-buffer (&optional arg)
   "Checkout (unreserved) the file in the current buffer."
-  (interactive)
+  (interactive "P")
   (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
+    (when arg
+      (setq clearcase-checkout-arguments (add-to-list clearcase-checkout-arguments "-version" t)))
     (clearcase-commented-checkout buffer-file-name)))
 
 (defun clearcase-checkout-unreserved-dired-files ()
