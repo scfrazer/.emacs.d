@@ -2180,7 +2180,7 @@ is specified, save it."
   (interactive "P")
   (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster")))
     (when arg
-      (setq clearcase-checkout-arguments (add-to-list clearcase-checkout-arguments "-version" t)))
+      (setq clearcase-checkout-arguments (add-to-list 'clearcase-checkout-arguments "-version" t)))
     (clearcase-commented-checkout buffer-file-name)))
 
 (defun clearcase-checkout-unreserved-dired-files ()
