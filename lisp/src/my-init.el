@@ -75,10 +75,13 @@
             ("M-i"     . ido-switch-buffer))
 
 (require 'my-jump-marker)
-(bind-keys* ("M-SPC" . my-jump-marker))
+;; (bind-keys* ("M-SPC" . my-jump-marker))
 
 (require 'jump-to-prev-pos)
 (bind-keys* ("M-b" . jump-to-prev-pos))
+
+(require 'goto-chg)
+(bind-keys* ("M-SPC" . goto-last-change))
 
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
