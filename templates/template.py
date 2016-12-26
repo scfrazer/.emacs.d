@@ -1,4 +1,4 @@
-#!/router/bin/python-2.7.4
+#!/router/bin/python3-3.5.0
 
 import sys
 import re
@@ -13,13 +13,20 @@ def main():
 
     args = parser.parse_args()
 
+    some_re = re.compile(r'(?P<foo>blah)')
     for filename in args.filename:
 
         try:
             file_obj = open(filename, 'r')
         except IOError:
-            print "*** ERROR: Couldn't open file '%%s'" %% (filename)
+            print("*** ERROR: Couldn't open file '{}'".format(filename))
             sys.exit(1)
+
+        for line in file_obj:
+            match = some_re.search(line)
+            if match:
+                print(line.rstrip(), end='')
+                print('->{}'.format(match.group('foo')))
 
         file_obj.close()
 

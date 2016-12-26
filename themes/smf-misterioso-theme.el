@@ -6,6 +6,7 @@
 (custom-theme-set-faces
  'smf-misterioso
 
+ `(default                      ((t :foreground ,(smf-color 252))))
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 44))))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 107) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 30))))
