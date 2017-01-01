@@ -40,7 +40,8 @@
                                           ".s_pxf"
                                           ".v_pxf"
                                           "Makefile.+rdl"
-                                          "rdl/sysc")
+                                          "rdl/sysc"
+                                          "rdl/ansic")
   "*Regexps of view-private elements to ignore."
   :type '(repeat (string :tag "Regexp"))
   :group 'cc-status)
