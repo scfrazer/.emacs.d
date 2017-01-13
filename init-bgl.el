@@ -1,9 +1,9 @@
 ;;; init-bgl.el
 
 (setq user-emacs-directory "/auto/sse-dump-blr/scfrazer/.emacs.d/")
-(load (concat user-emacs-directory "init.el"))
+(setq recentf-save-file nil)
 
-(setq my-cc-mode-ctags-executable "/auto/sse-dump-blr/scfrazer/local/bin/ctags")
+(load (concat user-emacs-directory "init.el"))
 
 (setq recentf-save-file
       (convert-standard-filename
@@ -11,3 +11,6 @@
          (if view
              (concat "/auto/sse-dump-blr/scfrazer/.recentf-" view)
            "/auto/sse-dump-blr/scfrazer/.recentf"))))
+(recentf-mode t)
+
+(setq my-cc-mode-ctags-executable "/auto/sse-dump-blr/scfrazer/local/bin/ctags")

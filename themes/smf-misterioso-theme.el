@@ -6,10 +6,10 @@
 (custom-theme-set-faces
  'smf-misterioso
 
- `(default                      ((t :foreground ,(smf-color 252))))
+ `(default                      ((t :foreground ,(smf-color 253))))
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 44))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 107) :italic t)))
- `(font-lock-constant-face      ((t :foreground ,(smf-color 30))))
+ `(font-lock-comment-face       ((t :foreground ,(smf-color 108) :italic t)))
+ `(font-lock-constant-face      ((t :foreground ,(smf-color 37))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 223) :italic t)))
  `(font-lock-function-name-face ((t :foreground ,(smf-color 50) :underline t)))
  `(font-lock-keyword-face       ((t :foreground ,(smf-color 214))))

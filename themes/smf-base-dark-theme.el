@@ -10,10 +10,12 @@
    `(default ((((type graphic) (background dark)) (:background "#1d2937" :foreground "#f2f2f2"))))
    `(cursor  ((((type graphic) (background dark)) (:background "#00cd00" :foreground "black"))))
 
-   `(bm-face                        ((t :foreground ,(smf-color 231) :background ,(smf-color 95))))
+   `(bm-face                        ((t :foreground "black" :background ,(smf-color 184))))
    `(caution                        ((t :foreground ,(smf-color 202) :background "black")))
    `(diff-added                     ((t :foreground "green" :background ,(smf-color 237))))
    `(diff-removed                   ((t :foreground "red" :background ,(smf-color 237))))
+   `(ediff-fine-diff-A              ((t :foreground ,(smf-color 255) :background ,(smf-color 55))))
+   `(ediff-fine-diff-B              ((t :foreground ,(smf-color 255) :background ,(smf-color 28))))
    `(error                          ((t :foreground ,(smf-color 210) :background ,(smf-color 52))))
    `(escape-glyph                   ((t :foreground ,(smf-color 166))))
    `(header-line                    ((t :foreground ,(smf-color 255) :background "black")))

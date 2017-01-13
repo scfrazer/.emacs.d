@@ -9,12 +9,13 @@
 (require 'my-clearcase)
 (defvar clearcase-setview-viewtag)
 
-(setq recentf-save-file
-      (convert-standard-filename
-       (let ((view (and use-clearcase clearcase-setview-viewtag)))
-         (if view
-             (concat "~/.recentf-" view)
-           "~/.recentf"))))
+(when recentf-save-file
+  (setq recentf-save-file
+        (convert-standard-filename
+         (let ((view (and use-clearcase clearcase-setview-viewtag)))
+           (if view
+               (concat "~/.recentf-" view)
+             "~/.recentf")))))
 
 (setq recentf-auto-cleanup "11:59pm"
       recentf-exclude (quote ("TAGS" ".*/info/dir" "\\.~.+~" ".*/[0-9]+$"))
@@ -22,6 +23,7 @@
       recentf-max-saved-items 100
       recentf-menu-filter nil)
 
-(recentf-mode t)
+(when recentf-save-file
+  (recentf-mode t))
 
 (provide 'my-recentf)
