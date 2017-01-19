@@ -14,15 +14,20 @@
 ;; (setq-default interprogram-cut-function 'my-interprogram-cut-function)
 
 (defun my-tmux-copy (&optional arg)
-  "Copy last kill to tmux paste buffer.  With prefix arg, copy region."
+  "Copy last kill to tmux paste buffer.  With active region or
+prefix arg, copy region."
   (interactive "P")
-  (my-tmux-copy-text
-   (if arg
-       (buffer-substring-no-properties (region-beginning) (region-end))
-     (substring-no-properties (current-kill 0 t))))
-  (if arg
-      (message "Copied region to tmux buffer")
-    (message "Copied last kill to tmux buffer")))
+  (let ((use-region (or arg (use-region-p))))
+    (my-tmux-copy-text
+     (if use-region
+         (buffer-substring-no-properties (region-beginning) (region-end))
+       (substring-no-properties (current-kill 0 t))))
+    (if use-region
+        (progn
+          (when (use-region-p)
+            (deactivate-mark))
+          (message "Copied region to tmux buffer"))
+      (message "Copied last kill to tmux buffer"))))
 
 (defun my-tmux-copy-text (text)
   "Copy text to tmux buffer."
@@ -39,15 +44,20 @@
                (replace-regexp-in-string "\n" "\\\\\n" text)))))) nil 0))
 
 (defun my-tmux-iterm-copy (&optional arg)
-  "Copy last kill to clipboard through tmux and iterm.  With prefix arg, copy region."
+  "Copy last kill to clipboard through tmux and iterm.  With
+active region or prefix arg, copy region."
   (interactive "P")
-  (my-tmux-iterm-copy-text
-   (if arg
-       (buffer-substring-no-properties (region-beginning) (region-end))
-     (substring-no-properties (current-kill 0 t))))
-  (if arg
-      (message "Copied region to clipboard")
-    (message "Copied last kill to clipboard")))
+  (let ((use-region (or arg (use-region-p))))
+    (my-tmux-iterm-copy-text
+     (if use-region
+         (buffer-substring-no-properties (region-beginning) (region-end))
+       (substring-no-properties (current-kill 0 t))))
+    (if use-region
+        (progn
+          (when (use-region-p)
+            (deactivate-mark))
+          (message "Copied region to clipboard"))
+      (message "Copied last kill to clipboard"))))
 
 (defun my-tmux-iterm-copy-text (text)
   "Copy text to clipboard through tmux and iterm"
