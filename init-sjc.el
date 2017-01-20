@@ -1,6 +1,6 @@
 ;;; init-sjc.el
 
-(setq user-emacs-directory "/auto/cppfs3a/scfrazer/.emacs.d/")
+(setq user-emacs-directory "/auto/asic-home-sjc/scfrazer/.emacs.d/")
 (setq recentf-save-file nil)
 
 (load (concat user-emacs-directory "init.el"))
@@ -9,8 +9,8 @@
       (convert-standard-filename
        (let ((view (and use-clearcase clearcase-setview-viewtag)))
          (if view
-             (concat "/auto/cppfs3a/scfrazer/.recentf-" view)
-           "/auto/cppfs3a/scfrazer/.recentf"))))
+             (concat "/auto/asic-home-sjc/scfrazer/.recentf-" view)
+           "/auto/asic-home-sjc/scfrazer/.recentf"))))
 (recentf-mode t)
 
-(setq my-cc-mode-ctags-executable "/auto/cppfs3a/scfrazer/local/bin/ctags")
+(setq my-cc-mode-ctags-executable "/auto/asic-home-sjc/scfrazer/local/bin/ctags")
