@@ -1,5 +1,7 @@
 ;; my-init.el
 
+(setq vc-follow-symlinks t)
+
 (defvar my-location
   (let ((hostname (or (getenv "HOSTNAME")
                       (getenv "ABBREV_HOSTNAME"))))
