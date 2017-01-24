@@ -9,9 +9,8 @@
                                         "/usr/X11/bin"
                                         "/opt/local/bin")))
 
-(eval-after-load "grep"
-  '(progn
-     (grep-apply-setting 'grep-template "grep -nH -d skip -I -E -e <R> <C> <F>")
-     (grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 grep -nH -I -E -e <R> <C>")))
+(require 'grep)
+(grep-apply-setting 'grep-template "grep -nH -d skip -I -E -e <R> <C> <F>")
+(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 grep -nH -I -E -e <R> <C>")
 
 (load-theme 'smf-misterioso t)
