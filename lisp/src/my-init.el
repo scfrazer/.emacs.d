@@ -555,9 +555,9 @@
   :config
   (require 'my-sgml-mode))
 
-(use-package simple-git
+(use-package git-simple
   :config
-  :bind-keymap (("C-x g" . simple-git-global-map)))
+  :bind-keymap (("C-x g" . git-simple-global-map)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)

@@ -1,4 +1,4 @@
-;;; simple-git.el
+;;; git-simple.el
 
 (require 'ansi-color)
 (require 'diff)
@@ -9,84 +9,84 @@
 
 ;; TODO Use space to mark files to operate on
 
-(defgroup simple-git nil
+(defgroup git-simple nil
   "Simple git."
   :group 'tools)
 
-(defcustom simple-git-executable "git"
+(defcustom git-simple-executable "git"
   "*Git executable."
   :type 'string
-  :group 'simple-git)
+  :group 'git-simple)
 
-(defconst simple-git-buf-prefix "*simple-git: ")
+(defconst git-simple-buf-prefix "*git-simple: ")
 
 ;;;###autoload
-(defun simple-git (dir)
+(defun git-simple (dir)
   "Simple Git mode."
   (interactive "DSelect directory: ")
   (unless (string-match ".+/$" dir)
     (setq dir (concat dir "/")))
-  (setq dir (simple-git-find-root dir))
-  (let* ((buf-name (concat simple-git-buf-prefix dir "*"))
+  (setq dir (git-simple-find-root dir))
+  (let* ((buf-name (concat git-simple-buf-prefix dir "*"))
          (buf (get-buffer buf-name)))
     (unless buf
       (setq buf (get-buffer-create buf-name))
       (set-buffer buf)
       (setq default-directory dir)
-      (simple-git-init)
-      (simple-git-refresh)
-      (simple-git-mode)
+      (git-simple-init)
+      (git-simple-refresh)
+      (git-simple-mode)
       (setq buffer-read-only t)
       (set-buffer-modified-p nil))
     (switch-to-buffer buf)))
 
 ;;;###autoload
-(defun simple-git-switch-next ()
-  "Switch to the next simple-git buffer."
+(defun git-simple-switch-next ()
+  "Switch to the next git-simple buffer."
   (interactive)
   (let ((bufs (cdr (buffer-list))) found)
     (while (and (not found) bufs)
-      (if (string-match (concat simple-git-buf-prefix "/.+") (buffer-name (car bufs)))
+      (if (string-match (concat git-simple-buf-prefix "/.+") (buffer-name (car bufs)))
           (setq found (car bufs))
         (setq bufs (cdr bufs))))
     (if found
         (progn (switch-to-buffer found)
-               (simple-git-refresh))
-      (call-interactively 'simple-git))))
+               (git-simple-refresh))
+      (call-interactively 'git-simple))))
 
-(defun simple-git-find-root (dir)
+(defun git-simple-find-root (dir)
   "Find root directory."
   (with-temp-buffer
     (let* ((default-directory dir))
-      (unless (= (call-process simple-git-executable nil t nil "rev-parse" "--show-toplevel") 0)
+      (unless (= (call-process git-simple-executable nil t nil "rev-parse" "--show-toplevel") 0)
         (error (concat "Couldn't find Git root for directory '" dir "'")))
       (goto-char (point-min))
       (file-name-as-directory (buffer-substring-no-properties (point) (point-at-eol))))))
 
-(defun simple-git-init ()
+(defun git-simple-init ()
   "Initialize the status buffer."
   (insert "Root:      " default-directory "\n"))
 
-(defun simple-git-get-url (remote)
+(defun git-simple-get-url (remote)
   "Get remote URL."
   (with-temp-buffer
-    (unless (= (call-process simple-git-executable nil t nil "config" "--get" (concat "remote." remote ".url")) 0)
+    (unless (= (call-process git-simple-executable nil t nil "config" "--get" (concat "remote." remote ".url")) 0)
       (error (concat "Couldn't get Git URL for remote '" remote "'")))
     (goto-char (point-min))
     (buffer-substring-no-properties (point) (point-at-eol))))
 
-(defun simple-git-refresh ()
+(defun git-simple-refresh ()
   "Refresh status."
   (interactive)
   (message "Refreshing ...")
   (let ((buf (current-buffer))
-        (file (simple-git-get-current-file)))
+        (file (git-simple-get-current-file)))
     (goto-char (point-min))
     (forward-line 1)
     (setq buffer-read-only nil)
     (delete-region (point) (point-max))
     (with-temp-buffer
-      (unless (= (call-process simple-git-executable nil t nil "status" "-b" "--porcelain") 0)
+      (unless (= (call-process git-simple-executable nil t nil "status" "-b" "--porcelain") 0)
         (error (concat "Couldn't get status for directory '" default-directory "'")))
       (goto-char (point-min))
       (while (not (eobp))
@@ -98,7 +98,7 @@
                  (with-current-buffer buf
                    (insert "Branch:    " branch (or state "") "\n")
                    (insert "Tracking:  " (or remote-branch "NONE") "\n")
-                   (insert "URL:       " (if remote (simple-git-get-url remote) "NONE") "\n")
+                   (insert "URL:       " (if remote (git-simple-get-url remote) "NONE") "\n")
                    (insert "\n"))))
               ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
                (let ((index (match-string-no-properties 1))
@@ -111,31 +111,31 @@
     (if (and file (search-forward file nil t))
         (progn
           (beginning-of-line)
-          (simple-git-goto-next-file))
-      (simple-git-goto-first-file))
+          (git-simple-goto-next-file))
+      (git-simple-goto-first-file))
     (setq buffer-read-only t)
     (set-buffer-modified-p nil)
     (message "")))
 
-(defun simple-git-goto-first-file ()
+(defun git-simple-goto-first-file ()
   "Goto first file."
   (interactive)
   (goto-char (point-min))
   (forward-line 4)
-  (simple-git-goto-next-file))
+  (git-simple-goto-next-file))
 
-(defun simple-git-goto-last-file ()
+(defun git-simple-goto-last-file ()
   "Goto last file."
   (interactive)
   (goto-char (point-max))
-  (simple-git-goto-prev-file))
+  (git-simple-goto-prev-file))
 
-(defun simple-git-goto-next-file ()
+(defun git-simple-goto-next-file ()
   "Goto next file."
   (interactive)
   (search-forward "~ " nil t))
 
-(defun simple-git-goto-prev-file ()
+(defun git-simple-goto-prev-file ()
   "Goto previous file."
   (interactive)
   (let ((pos (point)))
@@ -145,9 +145,9 @@
         (setq pos (+ (point) 2))))
     (goto-char pos)))
 
-(defun simple-git-get-current-file ()
+(defun git-simple-get-current-file ()
   "Get the current file."
-  (if (string-match (regexp-quote simple-git-buf-prefix) (buffer-name))
+  (if (string-match (regexp-quote git-simple-buf-prefix) (buffer-name))
       (save-excursion
         (beginning-of-line)
         (when (or (re-search-forward "-> \\(.+\\)" (point-at-eol) t)
@@ -156,90 +156,90 @@
     (buffer-file-name)))
 
 ;;;###autoload
-(defun simple-git-add-current-file ()
+(defun git-simple-add-current-file ()
   "Add the current file."
   (interactive)
-  (let ((file (simple-git-get-current-file)))
+  (let ((file (git-simple-get-current-file)))
     (when file
       (message "Adding file ...")
-      (unless (= (call-process simple-git-executable nil nil nil "add" file) 0)
+      (unless (= (call-process git-simple-executable nil nil nil "add" file) 0)
         (error (concat "Couldn't add file '" file "'")))
-      (simple-git-goto-next-file)
-      (simple-git-refresh))))
+      (git-simple-goto-next-file)
+      (git-simple-refresh))))
 
-(defun simple-git-add-tracked ()
+(defun git-simple-add-tracked ()
   "Add files that are already tracked."
   (interactive)
   (message "Adding tracked files ...")
-  (unless (= (call-process simple-git-executable nil nil nil "add" "-u") 0)
+  (unless (= (call-process git-simple-executable nil nil nil "add" "-u") 0)
     (error "Couldn't add tracked files"))
-  (simple-git-refresh))
+  (git-simple-refresh))
 
 ;;;###autoload
-(defun simple-git-diff-file ()
+(defun git-simple-diff-file ()
   "Diff file."
   (interactive)
-  (let ((file (simple-git-get-current-file))
-        (buf (get-buffer-create (concat " " simple-git-buf-prefix "Diff*"))))
+  (let ((file (git-simple-get-current-file))
+        (buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
     (when file
       (with-current-buffer buf
         (setq buffer-read-only nil)
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process simple-git-executable nil t nil "diff" file) 0)
+        (unless (= (call-process git-simple-executable nil t nil "diff" file) 0)
           (error (concat "Couldn't diff file '" file "'")))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
         (diff-mode)
-        (font-lock-fontify-buffer))
+        (font-lock-ensure))
       (set-window-buffer nil buf)
       (message ""))))
 
 ;;;###autoload
-(defun simple-git-history ()
+(defun git-simple-history ()
   "Go through git history using git-timemachine."
   (interactive)
-  (simple-git-edit-file)
+  (git-simple-edit-file)
   (call-interactively 'git-timemachine))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar simple-git-ediff-head-rev-buf nil)
+(defvar git-simple-ediff-head-rev-buf nil)
 
 ;;;###autoload
-(defun simple-git-ediff-file ()
+(defun git-simple-ediff-file ()
   "ediff file."
   (interactive)
-  (let ((file (simple-git-get-current-file)) bufB mode)
+  (let ((file (git-simple-get-current-file)) bufB mode)
     (when file
       (setq bufB (get-buffer-create (find-file file)))
       (with-current-buffer bufB
         (setq mode major-mode))
-      (setq simple-git-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" file)))
-      (with-current-buffer simple-git-ediff-head-rev-buf
+      (setq git-simple-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" file)))
+      (with-current-buffer git-simple-ediff-head-rev-buf
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process simple-git-executable nil t nil "show" (concat "HEAD:" file)) 0)
+        (unless (= (call-process git-simple-executable nil t nil "show" (concat "HEAD:" file)) 0)
           (error (concat "Couldn't get HEAD revision for file '" file "'")))
         (goto-char (point-min))
         (set-auto-mode-0 mode)
         (set-buffer-modified-p nil))
-      (ediff-buffers simple-git-ediff-head-rev-buf bufB))))
+      (ediff-buffers git-simple-ediff-head-rev-buf bufB))))
 
-(defun simple-git-ediff-quit-hook ()
-  (when simple-git-ediff-head-rev-buf
-    (kill-buffer simple-git-ediff-head-rev-buf)
-    (setq simple-git-ediff-head-rev-buf nil)))
+(defun git-simple-ediff-quit-hook ()
+  (when git-simple-ediff-head-rev-buf
+    (kill-buffer git-simple-ediff-head-rev-buf)
+    (setq git-simple-ediff-head-rev-buf nil)))
 
-(add-hook 'ediff-quit-hook 'simple-git-ediff-quit-hook)
+(add-hook 'ediff-quit-hook 'git-simple-ediff-quit-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun simple-git-discard ()
+(defun git-simple-discard ()
   "Discard changes."
   (interactive)
-  (let ((file (simple-git-get-current-file)))
+  (let ((file (git-simple-get-current-file)))
     (if (save-excursion (beginning-of-line) (looking-at " [?][?]"))
         (when (and file (y-or-n-p (concat "Delete " file "? ")))
           (if (file-directory-p file)
@@ -247,80 +247,86 @@
             (delete-file file)))
       (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
         (message "Discarding file ...")
-        (unless (= (call-process simple-git-executable nil nil nil "checkout" "--" file) 0)
+        (unless (= (call-process git-simple-executable nil nil nil "checkout" "--" file) 0)
           (error (concat "Couldn't discard changes to file '" file "'")))
-        (simple-git-refresh)))))
+        (git-simple-refresh)))))
 
 ;;;###autoload
-(defun simple-git-unstage ()
+(defun git-simple-unstage ()
   "Unstage file"
   (interactive)
-  (let ((file (simple-git-get-current-file)))
+  (let ((file (git-simple-get-current-file)))
     (when file
       (message "Unstaging file ...")
-      (unless (= (call-process simple-git-executable nil nil nil "reset" "HEAD" "--" file) 0)
+      (unless (= (call-process git-simple-executable nil nil nil "reset" "HEAD" "--" file) 0)
         (error (concat "Couldn't unstage file '" file "'")))
-      (simple-git-refresh))))
+      (git-simple-refresh))))
 
-(defun simple-git-edit-file ()
+(defun git-simple-edit-file ()
   "Edit file."
   (interactive)
-  (let ((file (simple-git-get-current-file)))
+  (let ((file (git-simple-get-current-file)))
     (when file
       (find-file file))))
 
+(defun git-simple-grep ()
+  "Run git grep from root."
+  (interactive)
+  ;; TODO
+  )
+
 ;;;###autoload
-(defun simple-git-resolve-file ()
+(defun git-simple-resolve-file ()
   "Resolve merge conflicts."
   (interactive)
-  (let ((file (simple-git-get-current-file)))
+  (let ((file (git-simple-get-current-file)))
     (when file
       (find-file file)
       (call-interactively 'smerge-ediff))))
 
-(defvar simple-git-commit-window-configuration nil)
-(defvar simple-git-commit-buffer nil)
+(defvar git-simple-commit-window-configuration nil)
+(defvar git-simple-commit-buffer nil)
 
-(defun simple-git-commit ()
+(defun git-simple-commit ()
   "Commit."
   (interactive)
-  (setq simple-git-commit-window-configuration (current-window-configuration))
-  (setq simple-git-commit-buffer (get-buffer-create (concat " " simple-git-buf-prefix "Commit*")))
-  (log-edit 'simple-git-commit-finish t nil simple-git-commit-buffer))
+  (setq git-simple-commit-window-configuration (current-window-configuration))
+  (setq git-simple-commit-buffer (get-buffer-create (concat " " git-simple-buf-prefix "Commit*")))
+  (log-edit 'git-simple-commit-finish t nil git-simple-commit-buffer))
 
-(defun simple-git-commit-finish ()
+(defun git-simple-commit-finish ()
   "Commit callback."
   (interactive)
-  (when simple-git-commit-buffer
-    (set-window-configuration simple-git-commit-window-configuration)
-    (setq simple-git-commit-window-configuration nil)
-    (kill-buffer simple-git-commit-buffer)
-    (setq simple-git-commit-buffer nil)
+  (when git-simple-commit-buffer
+    (set-window-configuration git-simple-commit-window-configuration)
+    (setq git-simple-commit-window-configuration nil)
+    (kill-buffer git-simple-commit-buffer)
+    (setq git-simple-commit-buffer nil)
     (message "Committing ...")
-    (unless (= (call-process simple-git-executable nil nil nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
+    (unless (= (call-process git-simple-executable nil nil nil "commit" "-m" (ring-ref log-edit-comment-ring 0)) 0)
       (error "Couldn't do commit"))
-    (simple-git-refresh)))
+    (git-simple-refresh)))
 
-(defun simple-git-push ()
+(defun git-simple-push ()
   "Push."
   (interactive)
   (message "Pushing ...")
-  (unless (= (call-process simple-git-executable nil nil nil "push") 0)
+  (unless (= (call-process git-simple-executable nil nil nil "push") 0)
     (error "Couldn't push"))
-  (simple-git-refresh))
+  (git-simple-refresh))
 
 ;;;###autoload
-(defun simple-git-exec (cmd)
+(defun git-simple-exec (cmd)
   "Execute arbitrary command.
 Substitute '%' in command with current file name."
   (interactive "sGit command? ")
-  (let ((buf (get-buffer-create (concat simple-git-buf-prefix "Exec*")))
-        (expanded-cmd (replace-regexp-in-string "%" (simple-git-get-current-file) cmd)))
+  (let ((buf (get-buffer-create (concat git-simple-buf-prefix "Exec*")))
+        (expanded-cmd (replace-regexp-in-string "%" (git-simple-get-current-file) cmd)))
     (with-current-buffer buf
       (setq buffer-read-only nil)
       (erase-buffer)
-      (insert simple-git-executable " " expanded-cmd "\n")
-      (unless (= (apply #'call-process simple-git-executable nil t nil (split-string-and-unquote expanded-cmd)) 0)
+      (insert git-simple-executable " " expanded-cmd "\n")
+      (unless (= (apply #'call-process git-simple-executable nil t nil (split-string-and-unquote expanded-cmd)) 0)
         (error (concat "Error executing " cmd)))
       (ansi-color-apply-on-region (point-min) (point-max))
       (setq buffer-read-only t)
@@ -328,12 +334,12 @@ Substitute '%' in command with current file name."
       (view-mode)
       (goto-char (point-min))
       (display-buffer buf)))
-  (simple-git-refresh))
+  (git-simple-refresh))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar simple-git-mode-map nil
-  "`simple-git-mode' keymap.")
+(defvar git-simple-mode-map nil
+  "`git-simple-mode' keymap.")
 
 ;; TODO
 ;; ? -> show table translation
@@ -363,46 +369,48 @@ Substitute '%' in command with current file name."
 ;; -------------------------------------------------
 ;;
 
-(unless simple-git-mode-map
+(unless git-simple-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "!") 'simple-git-exec)
-    (define-key map (kbd "=") 'simple-git-diff-file)
-    (define-key map (kbd "A") 'simple-git-add-tracked)
-    (define-key map (kbd "C") 'simple-git-commit)
-    (define-key map (kbd "C-n") 'simple-git-goto-next-file)
-    (define-key map (kbd "C-p") 'simple-git-goto-prev-file)
-    (define-key map (kbd "M-<") 'simple-git-goto-first-file)
-    (define-key map (kbd "M->") 'simple-git-goto-last-file)
-    (define-key map (kbd "P") 'simple-git-push)
-    (define-key map (kbd "RET") 'simple-git-edit-file)
-    (define-key map (kbd "TAB") 'simple-git-diff-file)
-    (define-key map (kbd "a") 'simple-git-add-current-file)
-    (define-key map (kbd "e") 'simple-git-ediff-file)
-    (define-key map (kbd "g") 'simple-git-refresh)
-    (define-key map (kbd "h") 'simple-git-history)
-    (define-key map (kbd "k") 'simple-git-discard)
-    (define-key map (kbd "n") 'simple-git-goto-next-file)
-    (define-key map (kbd "p") 'simple-git-goto-prev-file)
+    (define-key map (kbd "!") 'git-simple-exec)
+    (define-key map (kbd "=") 'git-simple-diff-file)
+    (define-key map (kbd "A") 'git-simple-add-tracked)
+    (define-key map (kbd "C") 'git-simple-commit)
+    (define-key map (kbd "C-n") 'git-simple-goto-next-file)
+    (define-key map (kbd "C-p") 'git-simple-goto-prev-file)
+    (define-key map (kbd "G") 'git-simple-grep)
+    (define-key map (kbd "M-<") 'git-simple-goto-first-file)
+    (define-key map (kbd "M->") 'git-simple-goto-last-file)
+    (define-key map (kbd "P") 'git-simple-push)
+    (define-key map (kbd "RET") 'git-simple-edit-file)
+    (define-key map (kbd "TAB") 'git-simple-diff-file)
+    (define-key map (kbd "a") 'git-simple-add-current-file)
+    (define-key map (kbd "e") 'git-simple-ediff-file)
+    (define-key map (kbd "g") 'git-simple-refresh)
+    (define-key map (kbd "h") 'git-simple-history)
+    (define-key map (kbd "d") 'git-simple-discard)
+    (define-key map (kbd "n") 'git-simple-goto-next-file)
+    (define-key map (kbd "p") 'git-simple-goto-prev-file)
     (define-key map (kbd "q") 'bury-buffer)
-    (define-key map (kbd "r") 'simple-git-resolve-file)
-    (define-key map (kbd "u") 'simple-git-unstage)
-    (setq simple-git-mode-map map)))
+    (define-key map (kbd "r") 'git-simple-resolve-file)
+    (define-key map (kbd "u") 'git-simple-unstage)
+    (setq git-simple-mode-map map)))
 
-(define-prefix-command 'simple-git-global-map)
-(define-key simple-git-global-map (kbd "!") 'simple-git-exec)
-(define-key simple-git-global-map (kbd "=") 'simple-git-diff-file)
-(define-key simple-git-global-map (kbd "RET") 'simple-git-switch-next)
-(define-key simple-git-global-map (kbd "a") 'simple-git-add-current-file)
-(define-key simple-git-global-map (kbd "e") 'simple-git-ediff-file)
-(define-key simple-git-global-map (kbd "h") 'simple-git-history)
-(define-key simple-git-global-map (kbd "k") 'simple-git-discard)
-(define-key simple-git-global-map (kbd "n") 'simple-git)
-(define-key simple-git-global-map (kbd "r") 'simple-git-resolve-file)
-(define-key simple-git-global-map (kbd "u") 'simple-git-unstage)
+(define-prefix-command 'git-simple-global-map)
+(define-key git-simple-global-map (kbd "!") 'git-simple-exec)
+(define-key git-simple-global-map (kbd "=") 'git-simple-diff-file)
+(define-key git-simple-global-map (kbd "G") 'git-simple-grep)
+(define-key git-simple-global-map (kbd "RET") 'git-simple-switch-next)
+(define-key git-simple-global-map (kbd "a") 'git-simple-add-current-file)
+(define-key git-simple-global-map (kbd "e") 'git-simple-ediff-file)
+(define-key git-simple-global-map (kbd "h") 'git-simple-history)
+(define-key git-simple-global-map (kbd "d") 'git-simple-discard)
+(define-key git-simple-global-map (kbd "n") 'git-simple)
+(define-key git-simple-global-map (kbd "r") 'git-simple-resolve-file)
+(define-key git-simple-global-map (kbd "u") 'git-simple-unstage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar simple-git-mode-font-lock-keywords
+(defvar git-simple-mode-font-lock-keywords
   '(
     ("^\\([^:]+\\):"
      (1 'font-lock-keyword-face))
@@ -418,24 +426,24 @@ Substitute '%' in command with current file name."
     ("^.\\([?]+\\|[!]+\\)"
      (1 'warning))
     )
-  "Keyword highlighting specification for simple-git-mode")
+  "Keyword highlighting specification for git-simple-mode")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun simple-git-mode ()
+(defun git-simple-mode ()
   "Simple Git mode.
 
 Key Bindings:
 
-\\{simple-git-mode-map}"
+\\{git-simple-mode-map}"
 
   (interactive)
   (setq truncate-lines t)
-  (setq major-mode 'simple-git-mode)
-  (setq mode-name "simple-git")
-  (use-local-map simple-git-mode-map)
-  (set (make-local-variable 'font-lock-defaults) '(simple-git-mode-font-lock-keywords))
+  (setq major-mode 'git-simple-mode)
+  (setq mode-name "git-simple")
+  (use-local-map git-simple-mode-map)
+  (set (make-local-variable 'font-lock-defaults) '(git-simple-mode-font-lock-keywords))
   (turn-on-font-lock)
-  (run-hooks 'simple-git-mode-hook))
+  (run-hooks 'git-simple-mode-hook))
 
-(provide 'simple-git)
+(provide 'git-simple)
