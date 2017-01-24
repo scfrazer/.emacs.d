@@ -1,11 +1,6 @@
 ;;; git-simple.el
 
-(require 'ansi-color)
-(require 'diff)
 (require 'ediff)
-(require 'git-timemachine)
-(require 'log-edit)
-(require 'smerge-mode)
 
 ;; TODO Use space to mark files to operate on
 
@@ -190,6 +185,7 @@
           (error (concat "Couldn't diff file '" file "'")))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
+        (require 'diff)
         (diff-mode)
         (font-lock-ensure))
       (set-window-buffer nil buf)
@@ -199,6 +195,7 @@
 (defun git-simple-history ()
   "Go through git history using git-timemachine."
   (interactive)
+  (require 'git-timemachine)
   (git-simple-edit-file)
   (call-interactively 'git-timemachine))
 
@@ -269,11 +266,19 @@
     (when file
       (find-file file))))
 
+;;;###autoload
 (defun git-simple-grep ()
   "Run git grep from root."
   (interactive)
-  ;; TODO
-  )
+  (require 'grep)
+  (grep-compute-defaults)
+  (let ((regexp (grep-read-regexp)))
+    (when (and (stringp regexp) (> (length regexp) 0))
+      (let ((command (grep-expand-template "git --no-pager grep -n -e <R> -- <F>" regexp "*")))
+        (add-to-history 'grep-history command)
+        (let ((default-directory (git-simple-find-root default-directory))
+              (compilation-environment (cons "PAGER=" compilation-environment)))
+          (compilation-start command 'grep-mode))))))
 
 ;;;###autoload
 (defun git-simple-resolve-file ()
@@ -281,6 +286,7 @@
   (interactive)
   (let ((file (git-simple-get-current-file)))
     (when file
+      (require 'smerge-mode)
       (find-file file)
       (call-interactively 'smerge-ediff))))
 
@@ -292,6 +298,7 @@
   (interactive)
   (setq git-simple-commit-window-configuration (current-window-configuration))
   (setq git-simple-commit-buffer (get-buffer-create (concat " " git-simple-buf-prefix "Commit*")))
+  (require 'log-edit)
   (log-edit 'git-simple-commit-finish t nil git-simple-commit-buffer))
 
 (defun git-simple-commit-finish ()
@@ -328,6 +335,7 @@ Substitute '%' in command with current file name."
       (insert git-simple-executable " " expanded-cmd "\n")
       (unless (= (apply #'call-process git-simple-executable nil t nil (split-string-and-unquote expanded-cmd)) 0)
         (error (concat "Error executing " cmd)))
+      (require 'ansi-color)
       (ansi-color-apply-on-region (point-min) (point-max))
       (setq buffer-read-only t)
       (set-buffer-modified-p nil)
@@ -398,7 +406,7 @@ Substitute '%' in command with current file name."
 (define-prefix-command 'git-simple-global-map)
 (define-key git-simple-global-map (kbd "!") 'git-simple-exec)
 (define-key git-simple-global-map (kbd "=") 'git-simple-diff-file)
-(define-key git-simple-global-map (kbd "G") 'git-simple-grep)
+(define-key git-simple-global-map (kbd "g") 'git-simple-grep)
 (define-key git-simple-global-map (kbd "RET") 'git-simple-switch-next)
 (define-key git-simple-global-map (kbd "a") 'git-simple-add-current-file)
 (define-key git-simple-global-map (kbd "e") 'git-simple-ediff-file)
