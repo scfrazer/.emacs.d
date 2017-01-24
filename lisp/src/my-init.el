@@ -717,6 +717,7 @@
               dabbrev-case-fold-search nil
               desktop-restore-frames nil
               echo-keystrokes 0.1
+              enable-local-eval t
               eval-expression-print-length nil
               eval-expression-print-level nil
               even-window-heights nil

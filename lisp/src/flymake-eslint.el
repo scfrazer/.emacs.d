@@ -16,16 +16,19 @@
 
 (require 'flymake-easy)
 
+ ;; Compact eslint reporter format
 (defconst flymake-eslint-err-line-patterns
-  '(("^[ ]*\\([0-9]+\\):\\([0-9]+\\)[ ]*\\(.*\\)$" nil 1 2 3))) ;; default eslint reporter format
+  '(("^\\([^:]+\\): line \\([0-9]+\\), col \\([0-9]+\\), \\(.+\\)$" 1 2 3 4)))
 
 (defvar flymake-eslint-executable "eslint"
   "The eslint executable to use for syntax checking.")
 
-;; TODO add some options for eslint CLI
+(defvar flymake-eslint-option-list (list "")
+  "List of eslint options.")
+
 (defun flymake-eslint-command (filename)
   "Construct a command that flymake can use to run eslint on a file."
-  (list flymake-eslint-executable filename))
+  (append (list flymake-eslint-executable "--format" "compact") flymake-eslint-option-list (list filename)))
 
 ;;;###autoload
 (defun flymake-eslint-load ()

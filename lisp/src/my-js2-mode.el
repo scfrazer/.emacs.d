@@ -9,6 +9,7 @@
 (setq-default js2-basic-offset 4
               js2-global-externs '("window" "require" "define" "jQuery" "tinymce" "moment")
               js2-idle-timer-delay 0.5
+              js2-strict-trailing-comma-warning nil
               js-doc-file-doc-lines '(js-doc-top-line
                                       " * @fileOverview\n"
                                       " * @name %F\n"
