@@ -71,6 +71,9 @@
   "The executable to use for formatting JavaScript and JSON.")
 
 (defconst web-beautify-args '("-f" "-"))
+(defconst web-beautify-html-args '("-f" "-"))
+(defconst web-beautify-css-args '("-f" "-"))
+(defconst web-beautify-js-args '("-f" "-"))
 
 (defun web-beautify-command-not-found-message (program)
   "Construct a message about PROGRAM not found."
@@ -132,16 +135,18 @@ By PROGRAM, format current buffer with EXTENSTION."
 
 Formatting is done according to the html-beautify command."
   (interactive)
-  (if (use-region-p)
-      (web-beautify-format-region
-       web-beautify-html-program
-       (region-beginning) (region-end))
-    (web-beautify-html-buffer)))
+  (let ((web-beautify-args web-beautify-html-args))
+    (if (use-region-p)
+        (web-beautify-format-region
+         web-beautify-html-program
+         (region-beginning) (region-end))
+      (web-beautify-html-buffer))))
 
 ;;;###autoload
 (defun web-beautify-html-buffer ()
   "Format the current buffer according to the html-beautify command."
-  (web-beautify-format-buffer web-beautify-html-program "html"))
+  (let ((web-beautify-args web-beautify-html-args))
+    (web-beautify-format-buffer web-beautify-html-program "html")))
 
 ;;;###autoload
 (defun web-beautify-css ()
@@ -149,16 +154,18 @@ Formatting is done according to the html-beautify command."
 
 Formatting is done according to the css-beautify command."
   (interactive)
-  (if (use-region-p)
-      (web-beautify-format-region
-       web-beautify-css-program
-    (region-beginning) (region-end))
-    (web-beautify-css-buffer)))
+  (let ((web-beautify-args web-beautify-css-args))
+    (if (use-region-p)
+        (web-beautify-format-region
+         web-beautify-css-program
+         (region-beginning) (region-end))
+      (web-beautify-css-buffer))))
 
 ;;;###autoload
 (defun web-beautify-css-buffer ()
   "Format the current buffer according to the css-beautify command."
-  (web-beautify-format-buffer web-beautify-css-program "css"))
+  (let ((web-beautify-args web-beautify-css-args))
+    (web-beautify-format-buffer web-beautify-css-program "css")))
 
 ;;;###autoload
 (defun web-beautify-js ()
@@ -166,16 +173,18 @@ Formatting is done according to the css-beautify command."
 
 Formatting is done according to the js-beautify command."
   (interactive)
-  (if (use-region-p)
-      (web-beautify-format-region
-       web-beautify-js-program
-       (region-beginning) (region-end))
-    (web-beautify-js-buffer)))
+  (let ((web-beautify-args web-beautify-js-args))
+    (if (use-region-p)
+        (web-beautify-format-region
+         web-beautify-js-program
+         (region-beginning) (region-end))
+      (web-beautify-js-buffer))))
 
 ;;;###autoload
 (defun web-beautify-js-buffer ()
   "Format the current buffer according to the js-beautify command."
-  (web-beautify-format-buffer web-beautify-js-program "js"))
+  (let ((web-beautify-args web-beautify-js-args))
+    (web-beautify-format-buffer web-beautify-js-program "js")))
 
 
 (provide 'web-beautify)

@@ -23,7 +23,7 @@
 (defvar flymake-eslint-executable "eslint"
   "The eslint executable to use for syntax checking.")
 
-(defvar flymake-eslint-option-list (list "")
+(defvar flymake-eslint-option-list (list "--no-color")
   "List of eslint options.")
 
 (defun flymake-eslint-command (filename)
