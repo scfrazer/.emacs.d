@@ -1,5 +1,12 @@
 # History of user-visible changes
 
+## 2017-01-16
+
+* `js2-include-*-externs` are now evaluated on demand.  As a result,
+  they can now be effectively used as file- or directory-local
+  variables.
+* Support for ES7 exponentiation operator.
+
 ## 2016-06-23
 
 * New variable `js2-mode-assume-strict`, for use with ES6 modules.

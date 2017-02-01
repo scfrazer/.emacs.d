@@ -1,3 +1,15 @@
+2017-01-16  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit '03c679eb9914d58d7d9b7afc2036c482a9a01236' from js2-mode
+
+2016-07-11  Paul Eggert	 <eggert@cs.ucla.edu>
+
+	Fix some quoting problems in doc strings
+
+	Most of these are minor issues involving, e.g., quoting `like this' 
+	instead of 'like this'.	 A few involve escaping ` and ' with a preceding
+	\= when the characters should not be turned into curved single quotes.
+
 2016-06-23  Dmitry Gutov  <dgutov@yandex.ru>
 
 	Merge commit '0cda39255827f283e7578cd469ae42daad9556a2' from js2-mode

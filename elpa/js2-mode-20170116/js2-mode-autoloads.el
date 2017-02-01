@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "js2-imenu-extras" "js2-imenu-extras.el" (22427
-;;;;;;  20738 275960 0))
+;;;### (autoloads nil "js2-imenu-extras" "js2-imenu-extras.el" (22674
+;;;;;;  6304 356773 0))
 ;;; Generated autoloads from js2-imenu-extras.el
 
 (autoload 'js2-imenu-extras-setup "js2-imenu-extras" "\
@@ -19,7 +19,7 @@ Toggle Imenu support for frameworks and structural patterns.
 
 ;;;***
 
-;;;### (autoloads nil "js2-mode" "js2-mode.el" (22427 20738 265953
+;;;### (autoloads nil "js2-mode" "js2-mode.el" (22674 6304 350770
 ;;;;;;  0))
 ;;; Generated autoloads from js2-mode.el
 
@@ -49,14 +49,14 @@ variables (`sgml-basic-offset' et al) locally, like so:
 
   (defun set-jsx-indentation ()
     (setq-local sgml-basic-offset js2-basic-offset))
-  (add-hook 'js2-jsx-mode-hook #'set-jsx-indentation)
+  (add-hook \\='js2-jsx-mode-hook #\\='set-jsx-indentation)
 
 \(fn)" t nil)
 
 ;;;***
 
 ;;;### (autoloads nil nil ("js2-mode-pkg.el" "js2-old-indent.el")
-;;;;;;  (22427 20738 339268 0))
+;;;;;;  (22674 6304 444003 419000))
 
 ;;;***
 
