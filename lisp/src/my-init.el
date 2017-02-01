@@ -423,6 +423,9 @@
   :config
   (require 'my-debug))
 
+(use-package lua-mode
+  :mode (("\\.lua\\'" . lua-mode)))
+
 ;; (use-package magit
 ;;   :commands (magit-status)
 ;;   :config
