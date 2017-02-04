@@ -424,7 +424,10 @@
   (require 'my-debug))
 
 (use-package lua-mode
-  :mode (("\\.lua\\'" . lua-mode)))
+  :mode (("\\.lua\\'" . lua-mode))
+  :config
+  (setq lua-indent-level 4
+        lua-documentation-url "http://www.lua.org/manual/5.3/manual.html"))
 
 ;; (use-package magit
 ;;   :commands (magit-status)
