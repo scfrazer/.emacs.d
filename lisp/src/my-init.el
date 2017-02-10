@@ -671,6 +671,7 @@
 ;; TODO
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
+(autoload 'cpl-mode "cpl-mode" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
@@ -779,6 +780,7 @@
               x-select-enable-primary t
               x-select-enable-clipboard nil)
 
+(add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
@@ -1010,12 +1012,6 @@ undoable all at once."
     (message "%d lines to end of paragraph"
              (count-lines (point-at-bol)
                           (save-excursion (forward-paragraph) (point-at-eol))))))
-
-(defun cpl ()
-  "Turn on cpl-mode."
-  (interactive)
-  (require 'cpl-mode)
-  (cpl-mode))
 
 (defun my-delete-duplicate-lines (&optional arg)
   "Like `delete-duplicate-lines', but operates on the following paragraph,
