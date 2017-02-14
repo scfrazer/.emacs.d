@@ -1921,7 +1921,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
 (defalias 'vtt (lambda () (interactive) (require 'vtt)))
-(defalias 'work (lambda () (interactive) (find-file (expand-file-name "~/Documents/Org/Work.org"))))
+(defalias 'work (lambda () (interactive) (find-file (expand-file-name "/users/scfrazer/Documents/Org/Work.org"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
