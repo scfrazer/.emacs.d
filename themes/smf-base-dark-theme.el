@@ -35,6 +35,8 @@
    `(show-mark-face                 ((t :foreground nil :background ,(smf-color 239))))
    `(success                        ((t :foreground ,(smf-color 120) :background ,(smf-color 22))))
    `(trailing-whitespace            ((t :background ,(smf-color 52))))
+   `(vr/match-0                     ((t :foreground ,(smf-color 255) :background ,(smf-color 125))))
+   `(vr/match-1                     ((t :inherit vr/match-0)))
    `(warning                        ((t :foreground ,(smf-color 226) :background ,(smf-color 58))))
    `(web-mode-html-attr-custom-face ((t :foreground ,(smf-color 106))))
    `(web-mode-html-attr-name-face   ((t :foreground ,(smf-color 108))))

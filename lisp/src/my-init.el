@@ -629,6 +629,12 @@
   :config
   (require 'my-vc))
 
+(use-package visual-regexp
+  :commands (vr/query-replace)
+  :config
+  (setq vr/auto-show-help nil
+        vr/default-replace-preview t))
+
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :config
@@ -1909,7 +1915,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
-(defalias 'qrr 'query-replace-regexp)
+(defalias 'qrr 'vr/query-replace)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
