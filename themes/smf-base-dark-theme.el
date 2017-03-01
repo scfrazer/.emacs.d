@@ -7,8 +7,8 @@
 (custom-theme-set-faces
  'smf-base-dark
 
-   `(default ((((type graphic) (background dark)) (:background "#1d2937" :foreground "#f2f2f2"))))
-   `(cursor  ((((type graphic) (background dark)) (:background "#00cd00" :foreground "black"))))
+   `(default ((((type graphic) (background dark)) (:background "#14181d" :foreground "#ebebeb"))))
+   `(cursor  ((((type graphic) (background dark)) (:background "#ee1289" :foreground "#ffffff"))))
 
    `(bm-face                        ((t :foreground "black" :background ,(smf-color 184))))
    `(caution                        ((t :foreground ,(smf-color 202) :background "black")))
