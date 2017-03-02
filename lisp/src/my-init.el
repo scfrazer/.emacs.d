@@ -1292,6 +1292,13 @@ end of a non-blank line, or insert an 80-column comment line"
     (when word
       (insert word))))
 
+(defun my-minibuffer-regexp-quote ()
+  "Regexp quote the current minibuffer contents."
+  (interactive)
+  (let ((new-input (regexp-quote (minibuffer-contents))))
+    (delete-minibuffer-contents)
+    (insert new-input)))
+
 (defun my-narrow (&optional arg)
   "Narrow to region, or widen if already narrowed, or with prefix
 arg do something special."
@@ -1694,6 +1701,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-/") 'dabbrev-expand)
   (local-set-key (kbd "C-\\") 'expand-abbrev)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
+  (local-set-key (kbd "C-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
   (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
