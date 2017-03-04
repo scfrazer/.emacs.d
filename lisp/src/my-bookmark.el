@@ -19,7 +19,7 @@
               filename (bookmark-get-filename bmk))
         (unless (file-directory-p filename)
           (setq filename (file-name-directory filename)))
-        (unless (string-match "[^a-zA-Z0-9_.~/]" name)
+        (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
           (insert "hash -d " name "=" filename)
           (delete-char -1)
           (newline)))
