@@ -13,7 +13,7 @@
 (defvar my-ffap-line-number nil)
 
 (defadvice ffap-string-at-point (around my-ffap-string-at-point activate)
-  "Capture and expand $(FOO) or ${FOO} or $FOO from env vars."
+  "Capture and expand $(FOO) or ${FOO} or $FOO or $ENV{FOO} from env vars."
   ad-do-it
   (when ad-return-value
     (with-temp-buffer
@@ -22,6 +22,8 @@
       (while (re-search-forward "[$]" nil t)
         (let (env-var)
           (delete-char -1)
+          (when (looking-at "ENV{")
+            (delete-char 3))
           (when (looking-at "[({]")
             (delete-char 1))
           (when (looking-at "[a-zA-Z0-9_]+")
