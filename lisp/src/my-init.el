@@ -62,6 +62,8 @@
 (when (boundp 'clearcase-prefix-map)
   (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
+(require 'easy-escape)
+
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
             ("C-M-p" . my-edit-scroll-up)
@@ -1672,6 +1674,7 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
+  (easy-escape-minor-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
              '("Require"

@@ -45,6 +45,8 @@
  `(cperl-nonoverridable-face               ((t :inherit font-lock-builtin-face)))
  `(diff-refine-added                       ((t :inherit success)))
  `(diff-refine-removed                     ((t :inherit error)))
+ `(easy-escape-delimiter-face              ((t :inherit font-lock-preprocessor-face)))
+ `(easy-escape-face                        ((t :inherit easy-escape-delimiter-face)))
  `(ediff-current-diff-B                    ((t :inherit ediff-current-diff-A)))
  `(ediff-even-diff-B                       ((t :inherit ediff-even-diff-A)))
  `(ediff-fine-diff-B                       ((t :inherit ediff-fine-diff-A)))
