@@ -22,6 +22,7 @@
    `(escape-glyph                   ((t :foreground ,(smf-color 166))))
    `(header-line                    ((t :foreground ,(smf-color 255) :background "black")))
    `(isearch                        ((t :foreground ,(smf-color 231) :background ,(smf-color 203))))
+   `(js2-function-call              ((t :foreground ,(smf-color 182))))
    `(js2-object-property            ((t :foreground ,(smf-color 152))))
    `(lazy-highlight                 ((t :foreground ,(smf-color 231) :background ,(smf-color 66))))
    `(link                           ((t :foreground ,(smf-color 81) :italic t :underline t)))
