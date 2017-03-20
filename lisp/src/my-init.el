@@ -102,6 +102,8 @@
 (bind-keys* ("M-s O" . my-multi-occur)
             ("M-s o" . my-occur))
 
+(require 'my-p4)
+
 (require 'my-recentf)
 
 (require 'redo+)
