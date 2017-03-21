@@ -60,6 +60,8 @@
 
 (require 'my-clearcase)
 (when (boundp 'clearcase-prefix-map)
+  (bind-key* "C-x v" nil)
+  (bind-key* "C-x c" clearcase-prefix-map)
   (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
 (require 'easy-escape)
@@ -1826,7 +1828,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
  ("C-x `"       . my-flymake-goto-next-error)
- ("C-x c"       . clone-indirect-buffer-other-window)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
