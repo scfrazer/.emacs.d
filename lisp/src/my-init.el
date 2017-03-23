@@ -94,9 +94,9 @@
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
-(mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
+;; (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
-(mode-fn-map 'tidy 'web-mode 'web-beautify-html)
+(mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
 
 (require 'my-mode-line)
 
@@ -382,10 +382,10 @@
           lazy-highlight-initial-delay 0)
     (put 'my-recenter 'isearch-scroll t)))
 
-(use-package js2-mode
-  :mode (("\\.js\\'" . js2-mode))
-  :config
-  (require 'my-js2-mode))
+;; (use-package js2-mode
+;;   :mode (("\\.js\\'" . js2-mode))
+;;   :config
+;;   (require 'my-js2-mode))
 
 (use-package less-css-mode
   :mode (("\\.less\\'" . less-css-mode))
@@ -642,19 +642,11 @@
         vr/default-replace-preview t))
 
 (use-package web-mode
-  :mode (("\\.html?\\'" . web-mode))
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.js\\'" . web-mode)
+         ("\\.css\\'" . web-mode))
   :config
-  (progn
-    (setq web-mode-auto-close-style 1
-          web-mode-enable-auto-closing t
-          web-mode-enable-auto-indentation t
-          web-mode-enable-current-element-highlight t
-          web-mode-enable-html-entities-fontification t)
-    (defun my-web-mode-comment-insert ()
-      (interactive)
-      (web-mode-comment-insert))
-    (bind-keys :map web-mode-map
-               ("C-c C-o" . my-web-mode-comment-insert))))
+  (require 'my-web-mode))
 
 (use-package my-xclip
   :bind* (("C-c X" . my-xclip-yank)

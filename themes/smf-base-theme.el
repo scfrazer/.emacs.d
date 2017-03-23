@@ -85,6 +85,7 @@
  `(sqlplus-table-head-face                 ((t :foreground ,(smf-color 45) :background "black" :italic t)))
  `(underline                               ((t :underline t)))
  `(web-mode-current-element-highlight-face ((t :bold t :underline t)))
+ `(web-mode-error-face                     ((t :inherit error)))
  `(web-mode-html-attr-equal-face           ((t :inherit web-mode-html-attr-name-face)))
  `(web-mode-html-tag-bracket-face          ((t :inherit web-mode-html-tag-face)))
  `(whitespace-empty                        ((t :inherit trailing-whitespace)))
