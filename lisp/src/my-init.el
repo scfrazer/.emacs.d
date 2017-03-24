@@ -1824,6 +1824,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
+ ("C-x v"       . (lambda () "Admonish me" (interactive) (ding) (message "Stop it!")))
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
  ("C-x ~"       . my-flymake-goto-prev-error)
