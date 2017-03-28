@@ -508,6 +508,7 @@
           ("C-c >"  . my-pair-close-paren-dwim)
           ("C-c '"  . my-pair-quotes-dwim)
           ("C-c \"" . my-pair-quotes-dwim)
+          ("C-c `"  . my-pair-quotes-dwim)
           ("C-c -"  . my-pair-delete)
           ("C-c e"  . my-pair-close-all)
           ("M-a"    . my-pair-step-out-backward)

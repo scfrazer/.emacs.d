@@ -161,15 +161,20 @@ mode."
 If looking at different quotes, change to the entered quotes."
   (interactive "*")
   (let ((entered-char last-input-event)
-        (current-char (char-after)))
-    (when (= (char-syntax current-char) ?\")
-      (save-excursion
-        (my-pair-forward-sexp)
-        (delete-char -1)
-        (insert entered-char))
-      (delete-char 1)
-      (insert entered-char)
-      (backward-char))))
+        (current-char (char-after))
+        (table (copy-syntax-table (syntax-table))))
+    (modify-syntax-entry ?\' "\"" table)
+    (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?\` "\"" table)
+    (with-syntax-table table
+      (when (= (char-syntax current-char) ?\")
+        (save-excursion
+          (my-pair-forward-sexp)
+          (delete-char -1)
+          (insert entered-char))
+        (delete-char 1)
+        (insert entered-char)
+        (backward-char)))))
 
 (defun my-pair-delete (&optional arg)
   "Forward delete paired chars.  With prefix arg, backward delete."
