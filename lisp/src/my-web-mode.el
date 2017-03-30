@@ -6,7 +6,7 @@
 
 (setq web-mode-auto-close-style 1
       web-mode-enable-auto-closing t
-      web-mode-enable-auto-indentation t
+      web-mode-enable-auto-indentation nil
       web-mode-enable-auto-pairing t
       web-mode-enable-current-element-highlight t
       web-mode-enable-html-entities-fontification t)

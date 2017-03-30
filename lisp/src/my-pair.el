@@ -1,15 +1,5 @@
 ;;; my-pair.el
 
-(defun my-pair-forward-sexp ()
-  "Stop annoying forward-sexp behavior."
-  (let ((forward-sexp-function nil))
-    (forward-sexp)))
-
-(defun my-pair-backward-sexp ()
-  "Stop annoyiny backward-sexp behavior."
-  (let ((forward-sexp-function nil))
-    (backward-sexp)))
-
 (defun my-pair-open-paren-dwim (&optional arg)
   "DWIM for open parenthesis.
 If on the same opener, slurp left and enter slurping transient
@@ -33,7 +23,7 @@ go to beginning of sexp, and enter slurping transient mode."
                 (my-pair-transient-mode))
             ;; Different opener
             (save-excursion
-              (my-pair-forward-sexp)
+              (forward-sexp)
               (delete-char -1)
               (insert (matching-paren entered-char)))
             (delete-char 1)
@@ -42,12 +32,12 @@ go to beginning of sexp, and enter slurping transient mode."
         ;; Anything else
         (unless (or (bolp) (looking-back "\\s-+" (point-at-bol)))
           (condition-case nil
-              (my-pair-backward-sexp)
+              (backward-sexp)
             ((scan-error) nil)))
         (insert entered-char)
-        (my-pair-forward-sexp)
+        (forward-sexp)
         (insert (matching-paren entered-char))
-        (my-pair-backward-sexp)
+        (backward-sexp)
         (my-pair-transient-mode)))))
 
 (defun my-pair-close-paren-dwim (&optional arg)
@@ -74,7 +64,7 @@ mode."
                 (my-pair-transient-mode))
             ;; Different closer
             (save-excursion
-              (my-pair-backward-sexp)
+              (backward-sexp)
               (delete-char 1)
               (insert (matching-paren entered-char)))
             (delete-char -1)
@@ -82,10 +72,10 @@ mode."
         ;; Anything else
         (unless (or (bolp) (looking-back "\\s-+" (point-at-bol)))
           (condition-case nil
-              (my-pair-backward-sexp)
+              (backward-sexp)
             ((scan-error) nil)))
         (insert (matching-paren entered-char))
-        (my-pair-forward-sexp)
+        (forward-sexp)
         (insert entered-char)
         (my-pair-transient-mode)))))
 
@@ -102,14 +92,14 @@ mode."
           (my-pair-slurp-open-1)
         (when (= (char-syntax (char-before)) ?\))
           (save-excursion
-            (my-pair-backward-sexp)
+            (backward-sexp)
             (my-pair-slurp-open-1)))))))
 
 (defun my-pair-slurp-open-1 ()
   "Do the actual slurp open work."
   (let ((char (char-after)))
     (save-excursion
-      (my-pair-backward-sexp)
+      (backward-sexp)
       (insert char))
     (delete-char 1)
     (backward-up-list)))
@@ -127,14 +117,14 @@ mode."
           (my-pair-slurp-close-1)
         (when (= (char-syntax (char-after)) ?\()
           (save-excursion
-            (my-pair-forward-sexp)
+            (forward-sexp)
             (my-pair-slurp-close-1)))))))
 
 (defun my-pair-slurp-close-1 ()
   "Do the actual slurp close work."
   (let ((char (char-before)))
     (save-excursion
-      (my-pair-forward-sexp)
+      (forward-sexp)
       (insert char))
     (delete-char -1)
     (up-list)))
@@ -169,7 +159,7 @@ If looking at different quotes, change to the entered quotes."
     (with-syntax-table table
       (when (= (char-syntax current-char) ?\")
         (save-excursion
-          (my-pair-forward-sexp)
+          (forward-sexp)
           (delete-char -1)
           (insert entered-char))
         (delete-char 1)
@@ -179,29 +169,26 @@ If looking at different quotes, change to the entered quotes."
 (defun my-pair-delete (&optional arg)
   "Forward delete paired chars.  With prefix arg, backward delete."
   (interactive "*P")
-  (if arg
-      (let ((char (char-before))
-            (table (copy-syntax-table (syntax-table))))
-        (when (eq char ?>)
-          (modify-syntax-entry ?< "(>" table)
-          (modify-syntax-entry ?> ")<" table))
-        (when (eq char ?`)
-          (modify-syntax-entry ?` "\"`" table))
-        (with-syntax-table table
-          (save-excursion
-            (my-pair-backward-sexp)
-            (delete-char 1))
-          (delete-char -1)))
-    (let ((char (char-after))
-          (table (copy-syntax-table (syntax-table))))
-      (when (eq char ?<)
-        (modify-syntax-entry ?< "(>" table)
-        (modify-syntax-entry ?> ")<" table))
-      (when (eq char ?`)
-        (modify-syntax-entry ?` "\"`" table))
-      (with-syntax-table table
+  (let ((table (copy-syntax-table (syntax-table)))
+        (char (if arg (char-before) (char-after))))
+    (when (or (eq char ?<) (eq char ?>))
+      (modify-syntax-entry ?< "(>" table)
+      (modify-syntax-entry ?> ")<" table))
+    (when (eq char ?`)
+      (modify-syntax-entry ?` "\"" table))
+    (when (eq char ?\')
+      (modify-syntax-entry ?\' "\"" table))
+    (when (eq char ?\")
+      (modify-syntax-entry ?\" "\"" table))
+    (with-syntax-table table
+      (if arg
+          (progn
+            (save-excursion
+              (backward-sexp)
+              (delete-char 1))
+            (delete-char -1))
         (save-excursion
-          (my-pair-forward-sexp)
+          (forward-sexp)
           (delete-char -1))
         (delete-char 1)))))
 
@@ -232,6 +219,6 @@ If looking at different quotes, change to the entered quotes."
   "Step forward out of current list or string."
   (interactive)
   (my-pair-step-out-backward)
-  (my-pair-forward-sexp))
+  (forward-sexp))
 
 (provide 'my-pair)
