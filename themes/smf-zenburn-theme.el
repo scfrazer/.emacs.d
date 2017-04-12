@@ -14,7 +14,7 @@
  `(font-lock-function-name-face ((t :foreground ,(smf-color 116) :underline t)))
  `(font-lock-keyword-face       ((t :foreground ,(smf-color 180))))
  `(font-lock-preprocessor-face  ((t :foreground ,(smf-color 110))))
- `(font-lock-string-face        ((t :foreground ,(smf-color 174))))
+ `(font-lock-string-face        ((t :foreground ,(smf-color 173))))
  `(font-lock-type-face          ((t :foreground ,(smf-color 109))))
  `(font-lock-variable-name-face ((t :foreground ,(smf-color 144))))
 
