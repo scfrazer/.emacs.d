@@ -45,6 +45,13 @@
     map)
   "my-web-mode-js-map keymap.")
 
+(define-abbrev web-mode-abbrev-table
+  "bind"
+  ""
+  (lambda ()
+    (when (looking-back "this\.\\([^[:space:]]+\\)[[:space:]]+" (point-at-bol))
+      (insert "= this." (match-string-no-properties 1) ".bind(this);"))))
+
 (define-minor-mode my-web-mode-js-mode
   "A minor mode for web-mode editing JavaScript."
   :init-value nil
