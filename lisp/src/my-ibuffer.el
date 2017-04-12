@@ -239,6 +239,13 @@
   (ibuffer-visit-buffer-1-window)
   (my-ediff-dwim))
 
+(defun my-ibuffer-rename-buffer(new-name)
+  "Rename buffer at point."
+  (interactive "sRename buffer (to new name): ")
+  (with-current-buffer (ibuffer-current-buffer)
+    (rename-buffer new-name))
+  (call-interactively 'ibuffer-update))
+
 (defun my-ibuffer (&optional arg)
   "Open ibuffer with point on last buffer name."
   (interactive "P")
@@ -256,6 +263,7 @@
   (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
   (define-key ibuffer-mode-map (kbd "D") 'my-ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "M->") (lambda () (interactive) (goto-char (point-max)) (forward-line -1)))
+  (define-key ibuffer-mode-map (kbd "R") 'my-ibuffer-rename-buffer)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer)
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
   (define-key ibuffer-mode-map (kbd "V") 'ibuffer-forward-filter-group)
