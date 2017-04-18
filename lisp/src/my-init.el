@@ -534,7 +534,8 @@
       "Run phpcbf on buffer."
       (interactive "*")
       (call-process-shell-command (concat my-php-bin-dir "/phpcbf --standard=VTT " (buffer-file-name)))
-      (revert-buffer nil t t))
+      (revert-buffer nil t t)
+      (flymake-start-syntax-check))
     (defun my-php-mode-hook ()
       (font-lock-add-keywords nil '(("default" (0 'font-lock-keyword-face prepend))) 'add-to-end)
       (when my-php-bin-dir
