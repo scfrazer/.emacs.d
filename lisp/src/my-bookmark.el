@@ -10,6 +10,25 @@
   (interactive)
   (bookmark-load bookmark-default-file t))
 
+(defun my-bookmark-reseat ()
+  "Reseat bookmarks in Perforce."
+  (let ((p4-client (getenv "P4CLIENT")))
+    (when p4-client
+      (let* ((p4-ws (or (getenv "P4WS") "/ws"))
+             (user (getenv "USER"))
+             (host (getenv "HOST"))
+             (location (progn (string-match "asic-vm-\\([a-z]+\\)[0-9]+" host) (match-string 1 host)))
+             (client-base (concat p4-ws "/" user "-" location))
+             (client-root (replace-regexp-in-string "[ \t\n]" "" (shell-command-to-string "p4 -F %clientRoot% -ztag info")))
+             (regexp (concat "\\(/vob/sse\\|" client-base "\\)")))
+        (dolist (bmk bookmark-alist)
+          (let ((filename (bookmark-get-filename bmk)))
+            (when (string-match regexp filename)
+              (bookmark-set-filename bmk (replace-regexp-in-string regexp client-root filename)))))))))
+
+(defadvice bookmark-load (after my-bookmark-reseat activate)
+  (my-bookmark-reseat))
+
 (defadvice bookmark-write-file (after my-bookmark-to-shell activate)
   "Convert bookmarks to format zsh and tcsh (yuck!) can use."
   (let (name filename)
@@ -36,19 +55,6 @@
           (newline)))
       (write-file "~/.cshrc_bmk"))))
 
-;; Do this in your .zshrc to use bookmarks:
-;; bmk_file=~/.zsh_bmk
-;; if [[ -f $bmk_file ]]; then
-;;     source $bmk_file
-;; fi
-;; alias bmk_reload='source $bmk_file'
-;; alias bmk_list="sort $bmk_file | sed -nre 's/.+ (.+)=(.+)/\1\t\2/p' | expand --tabs=25"
-;;
-;; Do this in your .cshrc to use bookmarks:
-;; set bmk_file=~/.cshrc_bmk
-;; if ( -f $bmk_file ) source $bmk_file
-;; alias bmk_reload "source $bmk_file"
-;; alias bmk_list "sort $bmk_file | awk 'BEGIN { FS = "'"[ =]" }; { printf("%-25s%s\n", $2, $3) }'"'"
-;; complete - 'c//v'
+(my-bookmark-reseat)
 
 (provide 'my-bookmark)
