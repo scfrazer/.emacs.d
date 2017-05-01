@@ -12,19 +12,18 @@
 
 (defun my-bookmark-reseat ()
   "Reseat bookmarks in Perforce."
-  (let ((p4-client (getenv "P4CLIENT")))
-    (when p4-client
-      (let* ((p4-ws (or (getenv "P4WS") "/ws"))
-             (user (getenv "USER"))
-             (host (getenv "HOST"))
-             (location (progn (string-match "asic-vm-\\([a-z]+\\)[0-9]+" host) (match-string 1 host)))
-             (client-base (concat p4-ws "/" user "-" location))
-             (client-root (replace-regexp-in-string "[ \t\n]" "" (shell-command-to-string "p4 -F %clientRoot% -ztag info")))
-             (regexp (concat "\\(/vob/sse\\|" client-base "\\)")))
+  (let ((proj (getenv "PROJ")))
+    (when proj
+      (let ((p4-ws (getenv "P4WS")) regexp)
+        (unless p4-ws
+          (let* ((host (getenv "HOST"))
+                 (location (progn (string-match "asic-vm-\\([a-z]+\\)[0-9]+" host) (match-string 1 host))))
+            (setq p4-ws (concat "/ws/" (getenv "USER") "-" location))))
+        (setq regexp (concat "\\(/vob/sse\\|" p4-ws "\\)"))
         (dolist (bmk bookmark-alist)
           (let ((filename (bookmark-get-filename bmk)))
             (when (string-match regexp filename)
-              (bookmark-set-filename bmk (replace-regexp-in-string regexp client-root filename)))))))))
+              (bookmark-set-filename bmk (replace-regexp-in-string regexp proj filename)))))))))
 
 (defadvice bookmark-load (after my-bookmark-reseat activate)
   (my-bookmark-reseat))
