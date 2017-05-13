@@ -278,16 +278,24 @@
   (progn
     (require 'etags-select)
     (require 'etags-table)
-    (let ((tags-base-dir (cond
-                          ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                          ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
-                          ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
+    (let ((proj (getenv "PROJ"))
+          tags-base-dir)
+      ;; FIXME Always generate/use relative tags
+      (if proj
+          (progn
+            (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags/scfrazer-tags/tags")
+                                      ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags/scfrazer-tags/tags")
+                                      ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags/scfrazer-tags/tags")))
+            (setq proj (concat proj "/")))
+        (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
+                                  ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
+                                  ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
       (setq etags-select-use-short-name-completion t
-            etags-table-alist
-            (list
-             `(".*\\.svh?$" ,(concat tags-base-dir "/sv/TAGS"))
-             `("/vob/sse/asic/shared/models/PCIE/expertio_PCIE/PCIE/.*" ,(concat tags-base-dir "/sv/TAGS"))
-             `("/vob/sse/asic/.*\\.[ch]pp$" ,(concat tags-base-dir "/cpp/TAGS")))
+            etags-select-relative-root proj
+            etags-table-alist (list
+                               `(,(concat proj ".*\\.svh?$") ,(concat tags-base-dir "/sv/TAGS"))
+                               `(,(concat proj ".*\\.[vs]$") ,(concat tags-base-dir "/v/TAGS"))
+                               `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS")))
             etags-table-search-up-depth 10
             tags-revert-without-query t))
     (defun my-find-tag (&optional arg)

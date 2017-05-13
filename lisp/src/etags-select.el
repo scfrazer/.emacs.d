@@ -59,6 +59,12 @@ matching tag."
   :type 'boolean)
 
 ;;;###autoload
+(defcustom etags-select-relative-root nil
+  "*If non-nil, use this path in front of relative tag paths."
+  :group 'etags-select-mode
+  :type 'string)
+
+;;;###autoload
 (defcustom etags-select-mode-hook nil
   "*List of functions to call on entry to etags-select-mode mode."
   :group 'etags-select-mode
@@ -121,7 +127,7 @@ package, if you set this to t you can just type foo<TAB>."
 (defun etags-select-insert-matches (tagname tag-file tag-count)
   "Insert matches to tagname in tag-file."
   (let ((tag-table-buffer (etags-select-get-tag-table-buffer tag-file))
-        (tag-file-path (file-name-directory tag-file))
+        (tag-file-path (or etags-select-relative-root (file-name-directory tag-file)))
         (tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']" tagname "\\)\^A"
                            "\\|" "\^?" tagname "\^A"
                            "\\|" "\\<" tagname "[ \f\t()=,;]*\^?[0-9,]"
