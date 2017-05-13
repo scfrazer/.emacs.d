@@ -8,6 +8,7 @@
  'smf-base-light
 
    `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
+   ;; `(default                        ((t :foreground "black" :background ,(smf-color 231))))
    `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
    `(flymake-errline                ((t :inherit nil :background ,(smf-color 224))))
    `(flymake-warnline               ((t :inherit nil :background ,(smf-color 229))))
