@@ -43,8 +43,6 @@
  `(cperl-array-face                        ((t :inherit font-lock-variable-name-face :bold t)))
  `(cperl-hash-face                         ((t :inherit font-lock-variable-name-face :bold t :italic t)))
  `(cperl-nonoverridable-face               ((t :inherit font-lock-builtin-face)))
- `(diff-refine-added                       ((t :inherit success)))
- `(diff-refine-removed                     ((t :inherit error)))
  `(easy-escape-delimiter-face              ((t :inherit font-lock-preprocessor-face)))
  `(easy-escape-face                        ((t :inherit easy-escape-delimiter-face)))
  `(ediff-current-diff-B                    ((t :inherit ediff-current-diff-A)))

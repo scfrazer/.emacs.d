@@ -10,6 +10,8 @@
    `(default ((((type graphic) (background light)) (:foreground "#000000" :background "#ffffff"))))
 
    `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
+   `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
+   `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
    `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
    `(flymake-errline                ((t :inherit nil :background ,(smf-color 224))))
    `(flymake-warnline               ((t :inherit nil :background ,(smf-color 229))))

@@ -13,6 +13,8 @@
    `(bm-face                        ((t :foreground "black" :background ,(smf-color 184))))
    `(caution                        ((t :foreground ,(smf-color 202) :background "black")))
    `(diff-added                     ((t :foreground "green" :background ,(smf-color 237))))
+   `(diff-refine-added              ((t :inherit success)))
+   `(diff-refine-removed            ((t :inherit error)))
    `(diff-removed                   ((t :foreground "red" :background ,(smf-color 237))))
    `(ediff-current-diff-A           ((t :background ,(smf-color 53))))
    `(ediff-even-diff-A              ((t :background ,(smf-color 237))))
