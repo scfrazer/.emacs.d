@@ -29,7 +29,7 @@
    `(outline-4                      ((t :foreground ,(smf-color 30))))
    `(outline-5                      ((t :foreground ,(smf-color 29))))
    `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 254))))
-   `(success                        ((t :foreground ,(smf-color 231) :background ,(smf-color 28))))
+   `(success                        ((t :foreground "black" :background ,(smf-color 157))))
    `(trailing-whitespace            ((t :background ,(smf-color 195))))
    `(warning                        ((t :foreground "black" :background ,(smf-color 226))))
    `(web-mode-html-attr-custom-face ((t :foreground ,(smf-color 143))))
