@@ -9,6 +9,7 @@
 
    `(default ((((type graphic) (background light)) (:foreground "#000000" :background "#ffffff"))))
 
+   `(bm-face                        ((t :foreground nil :background ,(smf-color 221))))
    `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
    `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
    `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
@@ -22,7 +23,7 @@
    `(lazy-highlight                 ((t :background ,(smf-color 181) :foreground "black")))
    `(link                           ((t :foreground ,(smf-color 26) :italic t :underline t)))
    `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
-   `(linum                          ((t :foreground ,(smf-color 60) :background ,(smf-color 255) :italic t)))
+   `(linum                          ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))
    `(outline-1                      ((t :foreground ,(smf-color 33))))
    `(outline-2                      ((t :foreground ,(smf-color 32))))
    `(outline-3                      ((t :foreground ,(smf-color 31))))
