@@ -46,7 +46,7 @@
       (with-current-buffer regman-buffer-name
         (setq buffer-read-only nil)
         (erase-buffer)
-        (call-process regman-program nil t nil "-f" "default" reg)
+        (call-process regman-program nil t nil "-f" "default" (concat "^" reg "$"))
         (set-buffer-modified-p nil)
         (regman-mode))
       (pop-to-buffer regman-buffer-name))))
@@ -57,7 +57,7 @@
   (interactive "*")
   (let ((reg (regman-get-reg nil))
         (pos (point)))
-    (call-process regman-program nil t nil "-f" "regwt" reg)
+    (call-process regman-program nil t nil "-f" "regwt" (concat "^" reg "$"))
     (indent-region pos (point))))
 
 ;;;###autoload
@@ -66,7 +66,7 @@
   (interactive "*")
   (let ((reg (regman-get-reg nil))
         (pos (point)))
-    (call-process regman-program nil t nil "-f" "regrwt" reg)
+    (call-process regman-program nil t nil "-f" "regrwt" (concat "^" reg "$"))
     (indent-region pos (point))))
 
 ;;;###autoload
@@ -75,7 +75,7 @@
   (interactive "*")
   (let ((reg (regman-get-reg nil))
         (pos (point)))
-    (call-process regman-program nil t nil "-f" "regawt" reg)
+    (call-process regman-program nil t nil "-f" "regawt" (concat "^" reg "$"))
     (indent-region pos (point))))
 
 (defun regman-get-reg (multiple)

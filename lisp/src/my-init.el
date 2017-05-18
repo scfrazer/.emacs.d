@@ -569,6 +569,9 @@
   :config
   (require 'my-register-list))
 
+(use-package regman
+  :commands (regman regman-insert-register))
+
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
 
@@ -694,7 +697,6 @@
 (autoload 'json-mode "json-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
 (autoload 'rdl-mode "rdl-mode" nil t)
-(autoload 'regman "regman" nil t)
 (autoload 'rst-mode "rst" "reStructured Text Mode" t)
 (autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
 (autoload 'sse-log-mode "sse-log-mode" nil t)

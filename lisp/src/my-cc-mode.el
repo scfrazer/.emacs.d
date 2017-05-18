@@ -120,6 +120,14 @@
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
+;; Abbrevs
+
+(define-abbrev c++-mode-abbrev-table
+  "reg"
+  ""
+  (lambda ()
+    (call-interactively 'regman-insert-register)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Work with C++ functions
 

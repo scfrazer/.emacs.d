@@ -24,6 +24,7 @@
    `(link                           ((t :foreground ,(smf-color 26) :italic t :underline t)))
    `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
    `(linum                          ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))
+   `(my-display-table-face          ((t :foreground ,(smf-color 17) :background ,(smf-color 253))))
    `(outline-1                      ((t :foreground ,(smf-color 33))))
    `(outline-2                      ((t :foreground ,(smf-color 32))))
    `(outline-3                      ((t :foreground ,(smf-color 31))))
