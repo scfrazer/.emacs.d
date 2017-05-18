@@ -85,31 +85,31 @@
      (0 'error))
     ("=>"
      (0 'font-lock-preprocessor-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(stream\\[[^]]*\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\(.+?\\)\\]: \\(stream\\[[^]]*\\]:\\) \\(Added upstream item #[0-9]+\\|Early downstream transaction added:\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-add-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(stream\\[[^]]*\\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\(.+?\\)\\]: \\(stream\\[[^]]*\\]:\\) \\(Matched upstream item #[0-9]+\\) \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face)
      (5 'uvm-log-mode-sb-match-face)
      (6 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) \\(\\*\\*[^]]+\\) \\[\\(.+?\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(MISCMP\\) \\[\\(.+?\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'warning)
      (3 'uvm-log-mode-path-face)
      (4 'uvm-log-mode-msg-face))
-    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\([^ ]+\\)\\]: \\(.*\\)"
+    ("^\\s-*\\([0-9.]+\\s-*[fpnum]?s\\) . \\(.+?\\) \\[\\(.+?\\)\\]: \\(.*\\)"
      (1 'uvm-log-mode-timestamp-face)
      (2 'uvm-log-mode-msg-id-face)
      (3 'uvm-log-mode-path-face)
