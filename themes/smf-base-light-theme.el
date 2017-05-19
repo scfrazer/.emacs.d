@@ -13,6 +13,8 @@
    `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
    `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
    `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
+   `(ediff-current-diff-A           ((t :foreground "black" :background ,(smf-color 225))))
+   `(ediff-fine-diff-A              ((t :foreground "black" :background ,(smf-color 182))))
    `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
    `(flymake-errline                ((t :inherit nil :background ,(smf-color 224))))
    `(flymake-warnline               ((t :inherit nil :background ,(smf-color 229))))
@@ -38,7 +40,7 @@
    `(web-mode-html-attr-name-face   ((t :foreground ,(smf-color 65))))
    `(web-mode-html-attr-value-face  ((t :foreground ,(smf-color 138))))
    `(web-mode-html-tag-face         ((t :foreground ,(smf-color 67))))
-   `(whitespace-tab                 ((t :background ,(smf-color 224))))
+   `(whitespace-tab                 ((t :background ,(smf-color 195))))
 
    )
 
