@@ -140,6 +140,11 @@
                   (name . ,my-ibuffer-star-regexp)))
          )))
 
+(defun my-ibuffer-mark-by-extension-regexp (regexp)
+  (interactive "sMark by extension name (regexp): ")
+  (when regexp
+    (ibuffer-mark-by-file-name-regexp (concat ".*[.]" regexp "$"))))
+
 (defun my-ibuffer-filter-files ()
   "Filter to match non-TAGS files."
   (and (buffer-file-name)
@@ -259,6 +264,7 @@
 (defun my-ibuffer-mode-hook ()
   (ibuffer-auto-mode 1)
   (ibuffer-switch-to-saved-filter-groups "my-groups")
+  (define-key ibuffer-mode-map (kbd "% e") 'my-ibuffer-mark-by-extension-regexp)
   (define-key ibuffer-mode-map (kbd "=") 'my-ibuffer-diff)
   (define-key ibuffer-mode-map (kbd "C-x C-f") nil)
   (define-key ibuffer-mode-map (kbd "D") 'my-ibuffer-do-delete)
@@ -266,6 +272,7 @@
   (define-key ibuffer-mode-map (kbd "R") 'my-ibuffer-rename-buffer)
   (define-key ibuffer-mode-map (kbd "RET") 'ibuffer-visit-buffer)
   (define-key ibuffer-mode-map (kbd "TAB") 'my-ibuffer-toggle-filter-group)
+  (define-key ibuffer-mode-map (kbd "U") (lambda() (interactive) "Unmark all" (ibuffer-unmark-all ?)))
   (define-key ibuffer-mode-map (kbd "V") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "^") 'ibuffer-backward-filter-group)
   (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
