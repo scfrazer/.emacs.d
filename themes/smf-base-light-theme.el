@@ -32,15 +32,14 @@
    `(outline-3                      ((t :foreground ,(smf-color 31))))
    `(outline-4                      ((t :foreground ,(smf-color 30))))
    `(outline-5                      ((t :foreground ,(smf-color 29))))
-   `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 254))))
+   `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 195))))
    `(success                        ((t :foreground "black" :background ,(smf-color 157))))
-   `(trailing-whitespace            ((t :background ,(smf-color 195))))
+   `(trailing-whitespace            ((t :background ,(smf-color 255))))
    `(warning                        ((t :foreground "black" :background ,(smf-color 226))))
    `(web-mode-html-attr-custom-face ((t :foreground ,(smf-color 143))))
    `(web-mode-html-attr-name-face   ((t :foreground ,(smf-color 65))))
    `(web-mode-html-attr-value-face  ((t :foreground ,(smf-color 138))))
    `(web-mode-html-tag-face         ((t :foreground ,(smf-color 67))))
-   `(whitespace-tab                 ((t :background ,(smf-color 195))))
 
    )
 

@@ -45,7 +45,6 @@
    `(web-mode-html-attr-name-face   ((t :foreground ,(smf-color 108))))
    `(web-mode-html-attr-value-face  ((t :foreground ,(smf-color 137))))
    `(web-mode-html-tag-face         ((t :foreground ,(smf-color 110))))
-   `(whitespace-tab                 ((t :background ,(smf-color 237))))
 
    )
 

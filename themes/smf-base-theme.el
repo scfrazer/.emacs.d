@@ -87,6 +87,7 @@
  `(web-mode-html-attr-equal-face           ((t :inherit web-mode-html-attr-name-face)))
  `(web-mode-html-tag-bracket-face          ((t :inherit web-mode-html-tag-face)))
  `(whitespace-empty                        ((t :inherit trailing-whitespace)))
+ `(whitespace-tab                          ((t :inherit trailing-whitespace)))
  `(whitespace-trailing                     ((t :inherit trailing-whitespace)))
 
  )
