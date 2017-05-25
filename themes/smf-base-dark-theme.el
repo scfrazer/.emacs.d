@@ -30,6 +30,7 @@
    `(link                           ((t :foreground ,(smf-color 81) :italic t :underline t)))
    `(link-visited                   ((t :foreground ,(smf-color 212) :italic t :underline t)))
    `(linum                          ((t :foreground ,(smf-color 143) :background "black" :italic t)))
+   `(match                          ((t :foreground ,(smf-color 231) :background ,(smf-color 62))))
    `(outline-1                      ((t :foreground ,(smf-color 45))))
    `(outline-2                      ((t :foreground ,(smf-color 44))))
    `(outline-3                      ((t :foreground ,(smf-color 43))))

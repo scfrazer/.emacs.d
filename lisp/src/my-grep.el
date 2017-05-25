@@ -2,7 +2,7 @@
 
 (require 'grep)
 
-(setq-default grep-highlight-matches t
+(setq-default grep-highlight-matches 'always
               grep-find-ignored-directories (list ".git" ".hg" ".bzr" ".svn")
               grep-find-ignored-files (list ".#*" "*.o" "*~" "*.so" "*.a" "*.elc" "*.lib" "*.lo" "*.la" "*.pyc")
               grep-files-aliases '(
@@ -18,8 +18,8 @@
                                    ("vtt" . "*.java *.php *.json *.html *.js")
                                    ))
 
-(grep-apply-setting 'grep-template "/bin/grep -nH -d skip -I -E -e <R> <C> <F>")
-(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e /bin/grep -nH -I -E -e <R> <C>")
+(grep-apply-setting 'grep-template "grep <C> -nH -d skip -I <X> -E -e <R> <F>")
+(grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e grep -nH -I -E -e <R> <C>")
 
 (defun my-grep-setup-hook ()
   (setenv "TERM" "xterm-color"))
