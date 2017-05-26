@@ -52,6 +52,20 @@
     (when (looking-back "this\.\\([^[:space:]]+\\)[[:space:]]+" (point-at-bol))
       (insert "= this." (match-string-no-properties 1) ".bind(this);"))))
 
+(defun my-web-mode-js-imenu-index ()
+  "Get imenu items in web-mode js variant."
+  (let ((start (point-min)) end
+        (eob (point-max))
+        (item-alist '()))
+    (goto-char start)
+    (while start
+      (setq start (text-property-any start eob 'face 'web-mode-function-name-face))
+      (when start
+        (setq end (or (next-single-property-change start 'face) eob))
+        (push (cons (buffer-substring-no-properties start end) start) item-alist)
+        (setq start end)))
+    (nreverse item-alist)))
+
 (define-minor-mode my-web-mode-js-mode
   "A minor mode for web-mode editing JavaScript."
   :init-value nil
@@ -61,7 +75,8 @@
   (when (string= (file-name-extension (buffer-file-name)) "js")
     (web-mode-set-content-type "jsx")
     (setq comment-start "// "
-          comment-end "")
+          comment-end ""
+          imenu-create-index-function 'my-web-mode-js-imenu-index)
     (my-web-mode-js-mode 1)
     (flymake-eslint-load)))
 
