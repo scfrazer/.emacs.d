@@ -11,7 +11,7 @@
 ;; ido + imenu
 
 (defface my-ido-menu-highlight-tag-face
-  '((t (:foreground "white" :background "cadetblue4")))
+  '((t (:inherit isearch)))
   "Font Lock mode face used to highlight tags."
   :group 'faces)
 
@@ -65,11 +65,24 @@
             (throw 'done t)
           (when (cdr items)
             (setq items (nconc (cdr items) (list (car items))))))))
+    (let ((names (make-hash-table :test 'equal)) name num)
+      (mapc (lambda (item)
+              (setq name (car item))
+              (setq num (gethash name names))
+              (if num
+                  (progn
+                    (setcar item (concat name "<" (number-to-string num) ">"))
+                    (puthash name (1+ num) names))
+                (puthash name 1 names)))
+            items))
     (let* ((item (assoc (ido-completing-read "Goto symbol: " (mapcar 'car items) nil t) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))
       (when pos
+        (when (string-match "\\(.+\\)<[0-9]+>" name)
+          (setq name (match-string 1 name))
+          (setq len (length name)))
         (let ((recenter (not (pos-visible-in-window-p pos))))
           (goto-char pos)
           (when recenter
