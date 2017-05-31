@@ -3,7 +3,7 @@
 
 ;; Copyright 2011-2017 François-Xavier Bois
 
-;; Version: 14.1.4
+;; Version: 15.0.0
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -24,7 +24,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "14.1.4"
+(defconst web-mode-version "15.0.0"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -284,17 +284,16 @@ See web-mode-block-face."
   :group 'web-mode)
 
 (defcustom web-mode-jsx-depth-faces nil
-;;  '(web-mode-jsx-depth-1-face
-;;    web-mode-jsx-depth-2-face
-;;    web-mode-jsx-depth-3-face
-;;    web-mode-jsx-depth-4-face)
+  ;;'(web-mode-jsx-depth-1-face
+  ;;  web-mode-jsx-depth-2-face
+  ;;  web-mode-jsx-depth-3-face
+  ;;  web-mode-jsx-depth-4-face)
   "Each jsx depth has is own face."
   :type 'list
   :group 'web-mode)
 
-(defcustom web-mode-commands-like-expand-region '(web-mode-mark-and-expand
-                                                  er/expand-region
-                                                  mc/mark-next-like-this)
+(defcustom web-mode-commands-like-expand-region
+  '(web-mode-mark-and-expand er/expand-region mc/mark-next-like-this)
   "Add it to here if you have some wrapper function for er/expand-region"
   :type '(repeat function)
   :group 'web-mode)
@@ -701,6 +700,7 @@ Must be used in conjunction with web-mode-enable-block-face."
 (defvar web-mode-obarray nil)
 (defvar web-mode-overlay-tag-start nil)
 (defvar web-mode-overlay-tag-end nil)
+(defvar web-mode-part-beg nil)
 (defvar web-mode-scan-beg nil)
 (defvar web-mode-scan-end nil)
 (defvar web-mode-snippets nil)
@@ -762,7 +762,7 @@ Must be used in conjunction with web-mode-enable-block-face."
     ("closure"          . ("soy"))
     ("ctemplate"        . ("mustache" "handlebars" "hapax" "ngtemplate" "ember"
                            "kite" "meteor" "blaze" "ractive" "velvet"))
-    ("django"           . ("dtl" "twig" "swig" "jinja" "erlydtl" "liquid"
+    ("django"           . ("dtl" "twig" "swig" "jinja" "jinja2" "erlydtl" "liquid"
                            "clabango" "selmer" "nunjucks"))
     ("dust"             . ("dustjs"))
     ("ejs"              . ())
@@ -1853,9 +1853,10 @@ shouldn't be moved back.)")
 
 (defvar web-mode-closure-font-lock-keywords
   (list
-   '("{/?\\([[:alpha:]]+\\)" 1 'web-mode-block-control-face)
-   '("{param[ ]+\\([[:alnum:]]+\\)" 1 'web-mode-symbol-face)
+   '("{\\([@/]?[[:alpha:]]+[?]?\\)" 1 'web-mode-block-control-face)
+   '("{[@]?param[?]?[ ]+\\([[:alnum:]]+[:]?\\)" 1 'web-mode-symbol-face)
    '("\\_<\\(true\\|false\\|null\\)\\_>" 1 'web-mode-type-face)
+   '("\\\_<[[:alpha:]]+:[ ]+\\([[:alpha:]]+\\)" 1 'web-mode-type-face)
    (cons (concat "\\_<\\(" web-mode-closure-keywords "\\)\\_>") '(1 'web-mode-keyword-face))
    '("{\\(alias\\|call\\|delcall\\|delpackage\\|deltemplate\\|namespace\\|template\\)[ ]+\\([[:alnum:].]+\\)" 2 'web-mode-constant-face)
    '("\\(allowemptydefault\\|data\\|desc\\|meaning\\|autoescape\\|private\\|variant\\)=" 0 'web-mode-block-attr-name-face)
@@ -2380,6 +2381,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
   (make-local-variable 'web-mode-minor-engine)
   (make-local-variable 'web-mode-overlay-tag-end)
   (make-local-variable 'web-mode-overlay-tag-start)
+  (make-local-variable 'web-mode-part-beg)
   (make-local-variable 'web-mode-scan-beg)
   (make-local-variable 'web-mode-scan-end)
   (make-local-variable 'web-mode-sql-indent-offset)
@@ -3217,8 +3219,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
        (t
         (setq part-end (1+ part-end))
         (funcall func part-beg part-end)
-        (setq part-beg part-end)
-        )
+        (setq part-beg part-end))
        ) ;cond
       ) ;while
     ))
@@ -3875,8 +3876,8 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                 type (if (eq (aref (match-string-no-properties 0) 1) ?\/) 'close 'open))
           (setq controls (append controls (list (cons type control))))
           )
-         ) ;mason
-        )
+         )
+        ) ;mason
 
        ((string= web-mode-engine "ctemplate")
         (cond
@@ -4123,6 +4124,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                   limit (if (> reg-end (line-end-position)) (line-end-position) reg-end))
             )
            ((web-mode-element-is-void tname)
+            ;;(message "void: tag=%S" tname)
             (setq props (list 'tag-name tname 'tag-type 'void)))
            (t
             (setq props (list 'tag-name tname 'tag-type 'start)))
@@ -4819,18 +4821,22 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           (web-mode-part-scan beg end "jsx" (1+ depth))
           ) ;t
          ) ;cond
-        )
-      )
+        ) ;while
+      ) ;save-excursion
     ))
 
 (defun web-mode-jsx-is-html (&optional pos)
   (interactive)
   (unless pos (setq pos (point)))
-  (let ((depth (get-text-property pos 'jsx-depth)))
+  (let (ret (depth (get-text-property pos 'jsx-depth)))
     (cond
      ((or (null depth) (<= pos 2))
       (setq pos nil))
      ((and (= depth 1) (get-text-property pos 'jsx-beg))
+      (setq pos nil))
+     ((get-text-property pos 'tag-end)
+      (setq pos nil))
+     ((get-text-property pos 'tag-attr-beg)
       (setq pos nil))
      ((get-text-property pos 'jsx-beg)
       (setq pos (null (get-text-property pos 'tag-beg))))
@@ -4841,6 +4847,17 @@ another auto-completion with different ac-sources (e.g. ac-php)")
      ) ;cond
     ;;(message "is-html: %S (depth=%S)" pos depth)
     pos))
+
+(defun web-mode-jsx-is-expr (&optional pos)
+  (cond
+   ((and (get-text-property pos 'jsx-beg)
+         (not (get-text-property pos 'tag-beg)))
+    nil)
+   (t
+    (setq pos (web-mode-jsx-depth-beginning-position pos))
+    (null (get-text-property pos 'tag-beg)))
+   ) ;cond
+  )
 
 (defun web-mode-jsx-depth-beginning-position (&optional pos target-depth)
   (interactive)
@@ -5096,7 +5113,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           (forward-char)
           ) ;if
         )
-       ((and (not (eobp)) (eq ?\< (char-after)) (looking-back "[a-z]"))
+       ((and (not (eobp)) (eq ?\< (char-after)) (looking-back "[a-z]" (point-min)))
         (unless (search-forward ">" (line-end-position) t)
           (setq continue nil))
         )
@@ -5247,26 +5264,19 @@ another auto-completion with different ac-sources (e.g. ac-php)")
       )))
 
 (defun web-mode-propertize (&optional beg end)
-
   (unless beg (setq beg web-mode-change-beg))
   (unless end (setq end web-mode-change-end))
-
   ;;(message "%S %S" web-mode-content-type (get-text-property beg 'part-side))
   ;;(message "propertize: beg(%S) end(%S)" web-mode-change-beg web-mode-change-end)
   ;;(message "%S %S" (get-text-property beg 'part-side) (get-text-property end 'part-side))
-
   (when (and end (> end (point-max)))
     (setq end (point-max)))
-
   ;;(message "propertize: reset web-mode-change-beg|end")
   (setq web-mode-change-beg nil
         web-mode-change-end nil)
-
   (cond
-
    ((or (null beg) (null end))
     nil)
-
    ((and (member web-mode-engine '("php" "asp"))
          (get-text-property beg 'block-side)
          (get-text-property end 'block-side)
@@ -5275,7 +5285,6 @@ another auto-completion with different ac-sources (e.g. ac-php)")
          (not (eq (get-text-property end 'block-token) 'delimiter-end)))
     ;;(message "invalidate block")
     (web-mode-invalidate-block-region beg end))
-
    ((and (or (member web-mode-content-type '("css" "jsx" "javascript"))
              (and (get-text-property beg 'part-side)
                   (get-text-property end 'part-side)
@@ -5284,13 +5293,10 @@ another auto-completion with different ac-sources (e.g. ac-php)")
              ))
     ;;(message "invalidate part (%S > %S)" beg end)
     (web-mode-invalidate-part-region beg end))
-
    (t
     ;;(message "invalidate default (%S > %S)" beg end)
     (web-mode-invalidate-region beg end))
-
    ) ;cond
-
   )
 
 ;; NOTE: il est important d'identifier des caractères en fin de ligne
@@ -6246,13 +6252,11 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            )
           )
         ) ;comment - case
-
        ((web-mode-is-content)
         (setq pair (web-mode-content-boundaries pos))
         (setq beg (car pair)
               end (cdr pair))
         )
-
        ) ;cond
       ;;(message "beg(%S) end(%S)" beg end)
       (when (and beg end)
@@ -6688,8 +6692,12 @@ another auto-completion with different ac-sources (e.g. ac-php)")
 (defun web-mode-buffer-indent ()
   "Indent all buffer."
   (interactive)
-  (indent-region (point-min) (point-max))
-  (delete-trailing-whitespace))
+  (let ((debug t) (ts (current-time)) (sub nil))
+    (indent-region (point-min) (point-max))
+    (when debug
+      (setq sub (time-subtract (current-time) ts))
+      (message "buffer-indet: time elapsed = %Ss %9Sµs" (nth 1 sub) (nth 2 sub)))
+    (delete-trailing-whitespace)))
 
 (defun web-mode-buffer-change-tag-case (&optional type)
   "Change html tag case."
@@ -7020,12 +7028,12 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                         (line-end-position))))
       (setq curr-char (if (string= curr-line "") 0 (aref curr-line 0)))
 
-      (when (or (member language '("php" "blade" "javascript" "jsx" "razor"))
+      (when (or (member language '("php" "blade" "javascript" "jsx" "razor" "css"))
                 (and (member language '("html" "xml"))
                      (not (eq ?\< curr-char))))
         (let (prev)
           (cond
-           ((member language '("html" "xml" "javascript" "jsx"))
+           ((member language '("html" "xml" "javascript" "jsx" "css"))
             (when (setq prev (web-mode-part-previous-live-line reg-beg))
               (setq prev-line (nth 0 prev)
                     prev-indentation (nth 1 prev)
@@ -7097,19 +7105,21 @@ another auto-completion with different ac-sources (e.g. ac-php)")
              (token (plist-get ctx :token))
              (options (plist-get ctx :options))
              (chars (list curr-char prev-char))
-             (tmp nil))
+             (tmp nil)
+             (is_js (member language '("javascript" "jsx" "ejs"))))
 
         ;;(message "%S" language)
         ;;(message "curr-char=[%c] prev-char=[%c]\n%S" curr-char prev-char ctx)
+        ;;(message "options=%S" options)
 
         (cond
 
          ((or (bobp) (= (line-number-at-pos pos) 1))
-          (when debug (message "I01"))
+          (when debug (message "I100"))
           (setq offset 0))
 
          ((string= token "string")
-          (when debug (message "I02 : string"))
+          (when debug (message "I120(%S) string" pos))
           (cond
            ((and web-mode-enable-sql-detection
                  (web-mode-block-token-starts-with (concat "[ \n]*" web-mode-sql-queries)))
@@ -7125,9 +7135,21 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                 )
               ) ;save-excursion
             )
-           ((and (member language '("javascript" "jsx" "ejs"))
-                 (web-mode-is-relayql-string pos))
+           ((and is_js
+                 (web-mode-is-ql-string pos "Relay\.QL"))
             (setq offset (web-mode-relayql-indentation pos))
+            )
+           ((and is_js
+                 (web-mode-is-ql-string pos "gql"))
+            (setq offset (web-mode-relayql-indentation pos "gql"))
+            )
+           ((and is_js
+                 (web-mode-is-ql-string pos "graphql"))
+            (setq offset (web-mode-relayql-indentation pos "graphql"))
+            )
+           ((and is_js
+                 (web-mode-is-html-string pos))
+            (setq offset (web-mode-html-indentation pos))
             )
            (t
             (setq offset nil))
@@ -7135,7 +7157,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           ) ;case string
 
          ((string= token "comment")
-          (when debug (message "I03 : comment"))
+          (when debug (message "I130(%S) comment" pos))
           (if (eq (get-text-property pos 'tag-type) 'comment)
               (web-mode-tag-beginning)
             (goto-char (car
@@ -7179,60 +7201,68 @@ another auto-completion with different ac-sources (e.g. ac-php)")
 
          ((and (string= web-mode-engine "mason")
                (string-match-p "^%" curr-line))
-          (when debug (message "I04"))
+          (when debug (message "I140(%S) mason" pos))
           (setq offset 0))
 
          ((and (get-text-property pos 'block-beg)
                (or (web-mode-block-is-close pos)
                    (web-mode-block-is-inside pos)))
-          (when debug (message "I05"))
+          (when debug (message "I150(%S) block-match" pos))
           (when (web-mode-block-match)
             (setq offset (current-indentation))))
 
          ((eq (get-text-property pos 'block-token) 'delimiter-end)
-          (when debug (message "I06"))
+          (when debug (message "I160(%S) block-beginning" pos))
           (when (web-mode-block-beginning)
             (setq reg-col (current-indentation))
             (setq offset (current-column))))
 
          ((and (get-text-property pos 'tag-beg)
                (eq (get-text-property pos 'tag-type) 'end))
-          (when debug (message "I07"))
+          (when debug (message "I170(%S) tag-match" pos))
           (when (web-mode-tag-match)
             (setq offset (current-indentation))))
 
          ((and (member language '("jsx"))
                (eq curr-char ?\})
                (get-text-property pos 'jsx-end))
-          (when debug (message "I08"))
+          (when debug (message "I180(%S) jsx-expr-end" pos))
           (web-mode-go (1- reg-beg))
           (setq reg-col nil)
-          (setq offset (current-column)))
+          ;;(setq offset (current-column)))
+          (setq offset (current-indentation)))
 
          ((and (member language '("html" "xml" "javascript" "jsx"))
                (get-text-property pos 'tag-type)
                (not (get-text-property pos 'tag-beg))
-               (or (not (string= language "jsx"))
-                   (string= options "is-html")))
-          (when debug (message "I09"))
+               ;;(or (not (string= language "jsx"))
+               ;;    (string= options "is-html"))
+               (not (and (string= language "jsx")
+                         (or (string= options "is-html")
+                             (web-mode-jsx-is-expr pos))))
+               )
+          (when debug (message "I190(%S) attr-indent" pos))
           (cond
            ((and (get-text-property pos 'tag-attr)
                  (get-text-property (1- pos) 'tag-attr)
                  (web-mode-attribute-beginning)
+                 (not (string-match-p "^/?>" curr-line))
                  ;;(progn (message "%S" pos) t)
                  )
             ;;(message "la")
             (cond
              ((eq (logand (get-text-property (point) 'tag-attr-beg) 8) 8)
               (setq offset nil))
-             ((and web-mode-attr-value-indent-offset (web-mode-tag-beginning))
+             ((not (web-mode-tag-beginning))
+              (message "** tag-beginning ** failure")
+              (setq offset nil))
+             (web-mode-attr-value-indent-offset
               (setq offset (+ (current-column) web-mode-attr-value-indent-offset)))
-             (t
-              ;;(message "ici")
-              (web-mode-dom-rsf "=[ ]*[\"']?" pos)
+             ((web-mode-dom-rsf "=[ ]*[\"']?" pos)
               (setq offset (current-column)))
+             (t
+              (setq offset (+ (current-column) web-mode-markup-indent-offset)))
              ) ;cond
-
             )
            ((not (web-mode-tag-beginning))
             )
@@ -7241,7 +7271,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            (web-mode-attr-indent-offset
             (setq offset (+ (current-column) web-mode-attr-indent-offset)))
            ((looking-at-p (concat web-mode-start-tag-regexp "[ ]*\n"))
-            (setq offset (+ (current-column) (or web-mode-attr-indent-offset 4))))
+            (setq offset (+ (current-column) (or web-mode-attr-indent-offset web-mode-code-indent-offset))))
            ((web-mode-attribute-next)
             (setq offset (current-column)))
            ) ;cond
@@ -7250,10 +7280,9 @@ another auto-completion with different ac-sources (e.g. ac-php)")
          ((or (member language '("html" "xml"))
               (and (member language '("jsx"))
                    (string= options "is-html")))
-          (when debug (message "I10"))
+          (when debug (message "I200(%S) web-mode-markup-indentation" pos))
           (cond
            ((get-text-property pos 'tag-beg)
-            ;;(message "ici")
             (setq offset (web-mode-markup-indentation pos))
             )
            ((and web-mode-indentless-elements
@@ -7276,11 +7305,11 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           )
 
          ((string= language "ctemplate")
-          (when debug (message "I11"))
+          (when debug (message "I210(%S) ctemplate" pos))
           (setq offset reg-col))
 
          ((member language '("mako" "web2py"))
-          (when debug (message "I12"))
+          (when debug (message "I220(%S) mako" pos))
           (setq offset (web-mode-python-indentation pos
                                                     curr-line
                                                     reg-col
@@ -7288,7 +7317,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                     reg-beg)))
 
          ((string= language "asp")
-          (when debug (message "I13"))
+          (when debug (message "I230(%S) asp" pos))
           (setq offset (web-mode-asp-indentation pos
                                                  curr-line
                                                  reg-col
@@ -7296,15 +7325,16 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                  reg-beg)))
 
          ((member language '("lsp" "cl-emb"))
-          (when debug (message "I14"))
+          (when debug (message "I240(%S) lsp" pos))
           (setq offset (web-mode-lisp-indentation pos ctx)))
 
          ((member curr-char '(?\} ?\) ?\]))
-          (when debug (message "I15"))
+          (when debug (message "I250(%S) closing-paren" pos))
           (let (ori)
             (if (get-text-property pos 'block-side)
                 (setq ori (web-mode-block-opening-paren-position pos reg-beg))
               (setq ori (web-mode-part-opening-paren-position pos reg-beg)))
+            ;;(message "ori=%S" ori)
             (cond
              ((null ori)
               (setq offset reg-col))
@@ -7319,7 +7349,9 @@ another auto-completion with different ac-sources (e.g. ac-php)")
               (goto-char ori)
               (back-to-indentation)
               (setq offset (current-indentation))
-              (when (get-text-property pos 'jsx-end)
+              ;;(message "ori=%S offset=%S" ori offset)
+              (when (get-text-property pos 'jsx-depth)
+                ;;(when (get-text-property pos 'jsx-end)
                 (setq adjust nil))
               ) ;t
              ) ;cond
@@ -7327,7 +7359,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           )
 
          ((string= language "erb")
-          (when debug (message "I16"))
+          (when debug (message "I260(%S) erb" pos))
           (setq offset (web-mode-ruby-indentation pos
                                                   curr-line
                                                   reg-col
@@ -7335,15 +7367,22 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                   reg-beg)))
 
          ((string= language "css")
-          (when debug (message "I17"))
-          (setq offset (car (web-mode-css-indentation pos
-                                                      reg-col
-                                                      curr-indentation
-                                                      language
-                                                      reg-beg))))
+          (when debug (message "I270(%S) css-indentation" pos))
+          ;;(message "prev=%c" prev-char)
+          (cond
+           ((eq prev-char ?:)
+            (setq offset (+ prev-indentation web-mode-css-indent-offset)))
+           ((eq prev-char ?,)
+            (setq offset prev-indentation))
+           (t
+            (setq offset (car (web-mode-css-indentation pos
+                                                        reg-col
+                                                        curr-indentation
+                                                        language
+                                                        reg-beg))))))
 
          ((string= language "sql")
-          (when debug (message "I18"))
+          (when debug (message "I280(%S) sql" pos))
           (setq offset (car (web-mode-sql-indentation pos
                                                       reg-col
                                                       curr-indentation
@@ -7351,7 +7390,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                       reg-beg))))
 
          ((string= language "markdown")
-          (when debug (message "I19"))
+          (when debug (message "I290(%S) markdown" pos))
           (setq offset (car (web-mode-markdown-indentation pos
                                                            reg-col
                                                            curr-indentation
@@ -7359,7 +7398,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                            reg-beg))))
 
          ((string= language "stylus")
-          (when debug (message "ISTYLUS"))
+          (when debug (message "I295(%S) pos" pos))
           (setq offset (car (web-mode-stylus-indentation pos
                                                          reg-col
                                                          curr-indentation
@@ -7369,20 +7408,20 @@ another auto-completion with different ac-sources (e.g. ac-php)")
          ((and (string= language "razor")
                (string-match-p "^\\." curr-line)
                (string-match-p "^\\." prev-line))
-          (when debug (message "I20"))
+          (when debug (message "I300(%S) razor" pos))
           (setq offset prev-indentation))
 
          ((and (string= language "razor")
                (string-match-p "^case " curr-line)
                (string-match-p "^case " prev-line))
-          (when debug (message "I21"))
+          (when debug (message "I310(%S) razor case" pos))
           (search-backward "case ")
           (setq offset (current-column)))
 
-         ((and (member language '("javascript" "jsx" "ejs"))
+         ((and is_js
                (member ?\. chars)
                (not (string-match-p "^\\.\\.\\." curr-line)))
-          (when debug (message "I22"))
+          (when debug (message "I320(%S) javascript-calls" pos))
           (let (pair)
             (setq pair (web-mode-javascript-calls-beginning-position pos reg-beg))
             ;;(message "%S" pair)
@@ -7414,9 +7453,9 @@ another auto-completion with different ac-sources (e.g. ac-php)")
             ) ;let
           )
 
-         ((and (member language '("javascript" "jsx" "ejs"))
+         ((and is_js
                (member ?\+ chars))
-          (when debug (message "I23"))
+          (when debug (message "I330(%S) javascript-string" pos))
           ;;(message "js-concat")
           (cond
            ((not (web-mode-javascript-string-beginning pos reg-beg))
@@ -7438,7 +7477,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
          ;; #579 , #742
          ((and (member language '("javascript" "jsx" "ejs" "php"))
                (string-match-p "=[>]?$" prev-line))
-          (when debug (message "I24"))
+          (when debug (message "I340(%S)" pos))
           (setq offset (+ prev-indentation web-mode-code-indent-offset))
           ;;(message "ici%S" offset)
           )
@@ -7449,14 +7488,14 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                    (string-match-p "^[&|?:+-]" curr-line))
                (not (and (string= language "php")
                          (string-match-p "^->" curr-line)))
-               (not (and (member language '("javascript" "jsx" "ejs"))
+               (not (and is_js
                          (string-match-p "]:" prev-line)))
                (not (and (eq prev-char ?\:)
                          (string-match-p "^\\(case\\|default\\)" prev-line)))
                )
-          (when debug (message "I25 : ternary"))
+          (when debug (message "I350(%S) ternary" pos))
           (cond
-           ((not (funcall (if (member language '("javascript" "jsx" "ejs"))
+           ((not (funcall (if is_js
                               'web-mode-javascript-statement-beginning
                             'web-mode-block-statement-beginning)
                           pos reg-beg))
@@ -7475,17 +7514,25 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            ) ;cond
           )
 
-         ((and (member language '("javascript" "jsx" "ejs"))
+         ((and is_js
+               (eq prev-char ?\()
+               (string-match-p "=>[ ]*([ ]*$" prev-line))
+          (when debug (message "I355(%S) => (" pos))
+          (setq offset (+ prev-indentation web-mode-code-indent-offset))
+          )
+
+         ((and is_js
                (or (member ?\, chars)
                    (member prev-char '(?\( ?\[))))
-          (when debug (message "I26"))
+          (when debug (message "I360(%S) javascript-args" pos))
           (cond
            ((not (web-mode-javascript-args-beginning pos reg-beg))
             (message "no js args beg")
             )
            ((or (not (cdr (assoc "lineup-args" web-mode-indentation-params)))
-                (looking-at-p "\n"))
-            ;;(message "ici%S" (point))
+                ;;(looking-at-p "\n")
+                (eq (char-after) ?\n)
+                )
             (if (and reg-col (> reg-col (current-indentation)))
                 (setq offset (+ reg-col web-mode-code-indent-offset))
               (setq offset (+ (current-indentation) web-mode-code-indent-offset)))
@@ -7500,12 +7547,10 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            ) ;cond
           )
 
-         ((and (member language '("javascript" "jsx" "ejs"))
+         ((and is_js
                (or (eq prev-char ?\))
-                   (string-match-p "^else$" prev-line))
-               )
-          (when debug (message "I27"))
-          ;;(message "js-ici")
+                   (string-match-p "^else$" prev-line)))
+          (when debug (message "I370(%S)" pos))
           (cond
            ((string-match-p "^else$" prev-line)
             (setq offset (+ prev-indentation web-mode-code-indent-offset))
@@ -7532,11 +7577,11 @@ another auto-completion with different ac-sources (e.g. ac-php)")
          ((and (member language '("php"))
                (or (and (eq prev-char ?\))
                         (string-match-p "^\\(for\\|if\\|while\\)[ ]*(" prev-line))
-                   (and (member language '("javascript" "jsx" "ejs"))
+                   (and is_js
                         (web-mode-part-is-opener prev-pos reg-beg))
                    (string-match-p "^else$" prev-line))
                (not (string-match-p "^\\([{.]\\|->\\)" curr-line)))
-          (when debug (message "I28"))
+          (when debug (message "I380(%S)" pos))
           (cond
            ((and (eq prev-char ?\))
                  (string-match-p "^\\(for\\|if\\|while\\)[ ]*(" prev-line))
@@ -7558,7 +7603,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           )
 
          ((and (member language '("php" "blade")) (string-match-p "^->" curr-line))
-          (when debug (message "I29"))
+          (when debug (message "I390(%S) block-calls" pos))
           (cond
            ((not (web-mode-block-calls-beginning pos reg-beg))
             )
@@ -7578,7 +7623,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            ))
 
          ((member ?\, chars)
-          (when debug (message "I30"))
+          (when debug (message "I400(%S) block-args" pos))
           (cond
            ((not (web-mode-block-args-beginning pos reg-beg))
             ;;(message "ici")
@@ -7595,7 +7640,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
            ))
 
          ((and (string= language "php") (member ?\. chars))
-          (when debug (message "I31"))
+          (when debug (message "I410(%S) block-string" pos))
           (cond
            ((not (web-mode-block-string-beginning pos reg-beg))
             )
@@ -7612,8 +7657,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
             )))
 
          ((member language '("javascript" "jsx" "ejs" "underscore"))
-          (when debug (message "I32 : javascript-indentation"))
-          ;;(message "js-indent")
+          (when debug (message "I420(%S) javascript-indentation" pos))
           (setq offset (car (web-mode-javascript-indentation pos
                                                              reg-col
                                                              curr-indentation
@@ -7621,7 +7665,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                                                              reg-beg))))
 
          (t
-          (when debug (message "I33 : bracket-indentation"))
+          (when debug (message "I430(%S) bracket-indentation" pos))
           (setq offset (car (web-mode-bracket-indentation pos
                                                           reg-col
                                                           curr-indentation
@@ -7680,7 +7724,73 @@ another auto-completion with different ac-sources (e.g. ac-php)")
       (if (>= value 1) (current-indentation) nil)
       )))
 
-(defun web-mode-relayql-indentation (pos)
+(defun web-mode-html-indentation (pos)
+  (save-excursion
+    (let (beg (continue t) end level map offset regexp tag val void)
+    (goto-char pos)
+    (setq beg (web-mode-part-token-beginning-position pos))
+    (cond
+     ((eq (char-after pos) ?\`)
+      (setq offset (web-mode-indentation-at-pos beg)))
+     ((web-mode-looking-back "`[ \n\t]*" pos)
+      (setq offset (+ (web-mode-indentation-at-pos beg) web-mode-markup-indent-offset)))
+     ((looking-at "</\\([a-zA-Z]+\\)")
+      (setq tag (match-string-no-properties 1)
+            regexp (concat "</?" tag)
+            level -1)
+      (while (and continue (re-search-backward regexp beg t))
+        (if (eq (aref (match-string-no-properties 0) 1) ?\/)
+            (setq level (1- level))
+          (setq level (1+ level)))
+        (when (= level 0)
+          (setq continue nil
+                offset (current-indentation)))
+        ) ;while
+      )
+     ((looking-at "[a-zA-Z-]+[ ]?=")
+      (re-search-backward "<[a-zA-Z]+[ ]*" beg t)
+      (setq offset (+ (current-column) (length (match-string-no-properties 0))))
+      )
+     ((looking-at-p "/>")
+      (search-backward "<" beg t)
+      (setq offset (current-column))
+      )
+     (t
+      (setq regexp "</?\\([a-zA-Z]+\\)")
+      ;;(message "point=%S" (point))
+      (while (and continue (re-search-backward regexp beg t))
+        (setq tag (match-string-no-properties 1)
+              end nil
+              void nil)
+        (cond
+         ((eq (aref (match-string-no-properties 0) 1) ?/)
+          (setq end t))
+         ((web-mode-element-is-void tag)
+          (setq void t))
+         (t
+          (save-excursion
+            (when (and (search-forward ">" pos t) (eq (char-before) ?\/))
+              (setq void t))
+            ) ;save-excursion
+          ) ;t
+         ) ;cond
+        (unless void
+          (setq val (or (plist-get map tag) 0))
+          (setq val (if end (1- val) (1+ val)))
+          (setq map (plist-put map tag val))
+          (setq continue (not (> val 0)))
+          ) ;unless
+        ;;(message "pos=%S tag=%S val=%S end=%S void=%S" (point) tag val end void)
+        ) ;while
+      (setq offset (if (and val (> val 0))
+                       (+ (current-indentation) web-mode-markup-indent-offset)
+                     nil))
+      ) ;t
+     ) ;cond
+    offset)))
+
+(defun web-mode-relayql-indentation (pos &optional prefix)
+  (unless prefix (setq prefix "relayql"))
   (let (beg offset level char)
     (setq char (char-after))
     (setq beg (web-mode-part-token-beginning-position pos))
@@ -7690,7 +7800,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
       (setq offset (current-indentation))
       )
      ((member char '(?\) ?\} ?\]))
-      (web-mode-go (web-mode-token-opening-paren-position pos beg "relayql"))
+      (web-mode-go (web-mode-token-opening-paren-position pos beg prefix))
       (setq offset (current-indentation))
       )
      ((setq level (web-mode-bracket-level pos beg))
@@ -7703,22 +7813,19 @@ another auto-completion with different ac-sources (e.g. ac-php)")
     offset))
 
 (defun web-mode-markup-indentation (pos)
-  (let ((offset 0) beg ret depth-beg depth-pos)
-    (when (setq beg (web-mode-markup-indentation-origin pos))
-      (when (and (setq depth-pos (get-text-property pos 'jsx-depth))
-                 (setq depth-beg (get-text-property beg 'jsx-depth))
-                 (progn
-                   (when (and (get-text-property pos 'jsx-beg)
-                              (not (get-text-property pos 'tag-beg)))
-                     (setq depth-pos (1- depth-pos)))
-                   t)
-                 (not (eq depth-beg depth-pos)))
-        (setq beg (web-mode-jsx-depth-beginning-position pos)))
+  (let ((offset 0) beg ret jsx-depth)
+    (when (setq jsx-depth (get-text-property pos 'jsx-depth))
+      (when (and (get-text-property pos 'jsx-beg)
+                 (not (get-text-property pos 'tag-beg)))
+        (setq jsx-depth (1- jsx-depth))))
+    (when (setq beg (web-mode-markup-indentation-origin pos jsx-depth))
+      ;;(message "beg=%S jsx-depth=%S" beg jsx-depth)
       (cond
        ((null (setq ret (web-mode-element-is-opened beg pos)))
         (setq offset (web-mode-indentation-at-pos beg)))
        ((eq ret t)
-        (setq offset (+ (web-mode-indentation-at-pos beg) web-mode-markup-indent-offset)))
+        (setq offset (+ (web-mode-indentation-at-pos beg)
+                        web-mode-markup-indent-offset)))
        (t
         (setq offset ret))
        ) ;cond
@@ -8157,33 +8264,38 @@ another auto-completion with different ac-sources (e.g. ac-php)")
         nil)
       )))
 
-(defun web-mode-markup-indentation-origin (pos)
+(defun web-mode-markup-indentation-origin (pos jsx-depth)
   (save-excursion
-    (let* ((continue (not (bobp)))
-           ;;         (pos (point))
-           (part-side (not (null (get-text-property pos 'part-side)))) ;part-side at the origin
-           (types '(start end void)))
-      (while continue
+    (let* ((found (bobp))
+           (jsx-beg nil)
+           (types '(start end void))
+           (type nil))
+      (when jsx-depth
+        (setq jsx-beg (web-mode-jsx-depth-beginning-position pos jsx-depth)))
+      (while (not found)
         (forward-line -1)
         (if (bobp)
             (setq pos (point)
-                  continue nil)
+                  found t)
           (back-to-indentation)
+          (when (and jsx-beg (< (point) jsx-beg))
+            (goto-char jsx-beg))
           (setq pos (point))
-          (setq continue (not (or (and (null part-side)
-                                       (null (get-text-property pos 'part-side))
-                                       (get-text-property pos 'tag-beg)
-                                       (member (get-text-property pos 'tag-type) types)
-                                       (null (get-text-property (1- pos) 'invisible)))
-                                  (and part-side
-                                       (get-text-property pos 'part-side)
-                                       (get-text-property pos 'tag-beg)
-                                       (member (get-text-property pos 'tag-type) types)
-                                       (null (get-text-property (1- pos) 'invisible)))
-                                  (and (get-text-property pos 'block-beg)
-                                       (not (get-text-property pos 'tag-type))
-                                       (web-mode-block-is-control pos)
-                                       (not (looking-at-p "{% comment"))))))
+          (setq type (get-text-property pos 'tag-type))
+          (setq found (or (and (null jsx-depth)
+                               (null (get-text-property pos 'part-side))
+                               (get-text-property pos 'tag-beg)
+                               (member type types)
+                               (null (get-text-property (1- pos) 'invisible)))
+                          (and jsx-depth
+                               (get-text-property pos 'tag-beg)
+                               (member type types)
+                               (null (get-text-property (1- pos) 'invisible))
+                               (eq (get-text-property pos 'jsx-depth) jsx-depth))
+                          (and (get-text-property pos 'block-beg)
+                               (not type)
+                               (web-mode-block-is-control pos)
+                               (not (looking-at-p "{% comment")))))
           ) ;if
         ) ;while
       ;;(message "indent-origin=%S" pos)
@@ -9016,7 +9128,7 @@ Prompt user if TAG-NAME isn't provided."
 
 (defun web-mode-element-is-void (&optional tag)
   (cond
-   ((eq (get-text-property (point) 'tag-type) 'void)
+   ((and (not tag) (eq (get-text-property (point) 'tag-type) 'void))
     t)
    ((and tag (member tag '("div" "li" "a" "p" "h1" "h2" "h3" "ul" "span" "article" "section" "td" "tr")))
     nil)
@@ -9160,17 +9272,29 @@ Prompt user if TAG-NAME isn't provided."
   )
 
 (defun web-mode-comment-insert ()
-  (cond
-   ((get-text-property (point) 'block-side)
-    (insert "/*  */")
-    (search-backward " */"))
-   ((get-text-property (point) 'part-side)
-    (insert "/*  */")
-    (search-backward " */"))
-   (t
-    (insert "<!--  -->")
-    (search-backward " -->"))
-   )
+  (let ((alt nil) (language nil) (pos (point)))
+    (setq language (web-mode-language-at-pos pos))
+    (cond
+     ((get-text-property pos 'block-side)
+      (insert "/*  */")
+      (search-backward " */"))
+     ((get-text-property pos 'part-side)
+      (cond
+       ((and (setq alt (cdr (assoc language web-mode-comment-formats)))
+             (string= alt "//"))
+        (insert "// ")
+        ;;(search-backward " */")
+        )
+       (t
+        (insert "/*  */")
+        (search-backward " */"))
+       );cond
+      ) ; case part-side
+     (t
+      (insert "<!--  -->")
+      (search-backward " -->"))
+     )
+    )
   )
 
 (defun web-mode-comment-indent-new-line (&optional soft)
@@ -10079,32 +10203,41 @@ Prompt user if TAG-NAME isn't provided."
       )
      ) ;cond
 
-    (when (and web-mode-enable-auto-indentation
-               (member this-command '(self-insert-command))
-               (or (and ctx
-                        (or (plist-get ctx :auto-closed)
-                            (plist-get ctx :auto-expanded)))
-                   (and (> (point) (point-min))
-                        (get-text-property (1- (point)) 'tag-end)
-                        (get-text-property (line-beginning-position) 'tag-beg))))
+    (cond
+     ((not web-mode-enable-auto-opening)
+      )
+     ((and (member this-command '(newline electric-newline-and-maybe-indent newline-and-inden))
+           (get-text-property (point) 'part-side)
+           (eq (get-text-property (point) 'part-token) 'string))
       (indent-according-to-mode)
-      (when (and web-mode-change-end (> web-mode-change-end (point-max)))
-        (message "post-command: enlarge web-mode-change-end")
-        (setq web-mode-change-end (point-max))
-        )
-      ) ;when auto-indent
-
-    (when (and web-mode-enable-auto-indentation
-               (member this-command '(self-insert-command))
-               (member (get-text-property (point) 'part-side) '(javascript jsx))
-               (looking-back "^[ \t]+[]})]" (point-min)))
-      (indent-according-to-mode)
-      ;;(message "%S" (point))
       (when (and web-mode-change-end (> web-mode-change-end (point-max)))
         (message "post-command: enlarge web-mode-change-end")
         (setq web-mode-change-end (point-max))
         )
       )
+     ((and (member this-command '(self-insert-command))
+           (or (and ctx
+                    (or (plist-get ctx :auto-closed)
+                        (plist-get ctx :auto-expanded)))
+               (and (> (point) (point-min))
+                    (get-text-property (1- (point)) 'tag-end)
+                    (get-text-property (line-beginning-position) 'tag-beg))))
+      (indent-according-to-mode)
+      (when (and web-mode-change-end (> web-mode-change-end (point-max)))
+        (message "post-command: enlarge web-mode-change-end")
+        (setq web-mode-change-end (point-max))
+        )
+      )
+     ((and (member this-command '(self-insert-command))
+           (member (get-text-property (point) 'part-side) '(javascript jsx css))
+           (looking-back "^[ \t]+[]})]" (point-min)))
+      (indent-according-to-mode)
+      (when (and web-mode-change-end (> web-mode-change-end (point-max)))
+        (message "post-command: enlarge web-mode-change-end")
+        (setq web-mode-change-end (point-max))
+        )
+      )
+     ) ; cond web-mode-enable-auto-opening
 
     (when web-mode-enable-current-element-highlight
       (web-mode-highlight-current-element))
@@ -10291,7 +10424,6 @@ Prompt user if TAG-NAME isn't provided."
           (forward-char)
         (setq continue nil))
       ) ;while
-;;    (message "pt=%S" (point))
     (point)))
 
 (defun web-mode-tag-attributes-sort (&optional pos)
@@ -10996,8 +11128,11 @@ Prompt user if TAG-NAME isn't provided."
 (defun web-mode-part-beginning-position (&optional pos)
   (unless pos (setq pos (point)))
   (cond
+   (web-mode-part-beg
+    (setq pos web-mode-part-beg))
    ((member web-mode-content-type web-mode-part-content-types)
-    (setq pos (point-min)))
+    (setq pos (point-min)
+          web-mode-part-beg (point-min)))
    ((not (get-text-property pos 'part-side))
     (setq pos nil))
    ((= pos (point-min))
@@ -11129,10 +11264,15 @@ Prompt user if TAG-NAME isn't provided."
         (web-mode-looking-at ".[ \t\n]*" pos)
         (setq pos (+ pos (length (match-string-no-properties 0))))
         )
-       ((web-mode-looking-back "\\_<\\(return\\|echo\\|include\\|print\\)[ \n\t]*" pos)
-        (setq continue nil))
+       ((web-mode-looking-at "\\(return\\|echo\\|include\\|print\\)[ \n]" pos)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=?;,`:]\\|\\(return\\|echo\\|include\\|print\\)" block-beg))
+        (when (not pos)
+          (message "block-string-beginning-position ** search failure **")
+          (setq continue nil
+                pos block-beg)))
        ) ;cond
       ) ;while
     ;;(message "pos=%S" pos)
@@ -11165,10 +11305,15 @@ Prompt user if TAG-NAME isn't provided."
         (setq continue nil)
         (web-mode-looking-at ".[ \t\n]*" pos)
         (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "\\_<\\(return\\|echo\\|include\\|print\\)[ \n\t]*" pos)
-        (setq continue nil))
+       ((web-mode-looking-at "\\(return\\|echo\\|include\\|print\\)[ \n]" pos)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=]\\|\\(return\\|echo\\|include\\|print\\)" block-beg))
+        (when (not pos)
+          (message "block-statement-beginning-position ** search failure **")
+          (setq continue nil
+                pos block-beg)))
        ) ;cond
       ) ;while
     pos))
@@ -11196,10 +11341,16 @@ Prompt user if TAG-NAME isn't provided."
         (web-mode-looking-at ".[ \t\n]*" pos)
         (setq pos (+ pos (length (match-string-no-properties 0)))))
        ((and (string= web-mode-engine "php")
-             (web-mode-looking-back "\\_<\\(extends\\|implements\\)[ \n\t]*" pos))
-        (setq continue nil))
+             (web-mode-looking-at "\\(extends\\|implements\\)[ \n]" pos))
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(]\\|\\(extends\\|implements\\)" block-beg))
+        (when (not pos)
+          (message "block-args-beginning-position ** search failure **")
+          (setq pos block-beg
+                continue nil))
+        ) ;t
        ) ;cond
       ) ;while
     pos))
@@ -11222,14 +11373,19 @@ Prompt user if TAG-NAME isn't provided."
         (setq pos (web-mode-block-opening-paren-position pos block-beg))
         (setq pos (1- pos)))
        ((member char '(?\( ?\[ ?\{ ?\} ?\= ?\? ?\: ?\; ?\,))
-        (setq continue nil)
         (web-mode-looking-at ".[ \t\n]*" pos)
-        (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "\\(return\\|else\\)[ \n\t]*" pos)
-        (setq ;;pos (point)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
+       ((web-mode-looking-at "\\(return\\|else\\)[ \n]" pos)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
               continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=?:;,]\\|\\(return\\|else\\)" block-beg))
+        (when (not pos)
+          (message "block-calls-beginning-position ** search failure **")
+          (setq pos block-beg
+                continue nil))
+        ) ;t
        ) ;cond
       ) ;while
     pos))
@@ -11278,10 +11434,15 @@ Prompt user if TAG-NAME isn't provided."
         (setq continue nil)
         (web-mode-looking-at ".[ \t\n]*" pos)
         (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "\\(return\\)[ \n\t]*" pos)
-        (setq continue nil))
+       ((web-mode-looking-at "\\(return\\)[ \n]" pos)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=?:;,&|]\\|\\(return\\)" reg-beg))
+        (when (not pos)
+          (message "javascript-string-beginning-position ** search failure **")
+          (setq continue nil
+                pos reg-beg)))
        ) ;cond
       ) ;while
     ;;(message "js-statement-beg:%S" pos)
@@ -11327,7 +11488,7 @@ Prompt user if TAG-NAME isn't provided."
         (setq continue nil
               pos reg-beg))
        ((and is-jsx
-             (progn (setq depth-l (get-text-property pos 'jsx-depth)))
+             (progn (setq depth-l (get-text-property pos 'jsx-depth)) t)
              (not (eq depth-l depth-o)))
         ;;(message "%S > depth-o(%S) depth-l(%S)" pos depth-o depth-l)
         (setq pos (previous-single-property-change pos 'jsx-depth))
@@ -11351,24 +11512,38 @@ Prompt user if TAG-NAME isn't provided."
         (setq pos (1- pos)))
        ((and (eq char ?\=)
              (web-mode-looking-back "[<>!=]+" pos reg-beg t))
-        (setq pos (- pos 1 (length (match-string-no-properties 0))))
-        ;;(setq pos (1- pos))
-        ;;(message "%S pos=%S" (match-string-no-properties 0) pos)
-        )
+        (setq pos (- pos 1 (length (match-string-no-properties 0)))))
        ((member char '(?\( ?\{ ?\[ ?\=))
-        (setq continue nil)
         (web-mode-looking-at ".[ \t\n]*" pos)
-        (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "\\_<\\(return\\)[ \n\t]*" pos)
-        (setq continue nil)
-        (web-mode-looking-at "[ \t\n]*" pos)
-        (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "[{,][ \t\n]*[[:alnum:]_]+[ ]*:[ ]*" pos)
-        (setq continue nil)
-        (web-mode-looking-at "[ ]*" pos)
-        (setq pos (+ pos (length (match-string-no-properties 0)))))
+        (setq continue nil
+              pos (+ pos (length (match-string-no-properties 0)))))
+
+       ((web-mode-looking-at "\\(return\\)[ \n]" pos)
+        (setq continue nil
+              pos (+ pos (length (match-string-no-properties 0)))))
+       ((and (eq char ?\:)
+             (web-mode-looking-back "[{,][ \t\n]*[[:alnum:]_]+[ ]*" pos))
+        (web-mode-looking-at ".[ \t\n]*" pos)
+        (setq continue nil
+              pos (+ pos (length (match-string-no-properties 0)))))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=:]\\|\\(return\\)" reg-beg))
+        (when (not pos)
+          (when (not is-jsx) (message "javascript-statement-beginning-position ** search failure **"))
+          (setq continue nil
+                pos reg-beg)))
+
+       ;; ((web-mode-looking-back "\\_<\\(return\\)[ \n\t]*" pos)
+       ;;  (setq continue nil)
+       ;;  (web-mode-looking-at "[ \t\n]*" pos)
+       ;;  (setq pos (+ pos (length (match-string-no-properties 0)))))
+       ;; ((web-mode-looking-back "[{,][ \t\n]*[[:alnum:]_]+[ ]*:[ ]*" pos)
+       ;;  (setq continue nil)
+       ;;  (web-mode-looking-at "[ ]*" pos)
+       ;;  (setq pos (+ pos (length (match-string-no-properties 0)))))
+       ;; (t
+       ;;  (setq pos (1- pos)))
+
        ) ;cond
       ) ;while
     ;;(message "%S -------" pos)
@@ -11397,7 +11572,7 @@ Prompt user if TAG-NAME isn't provided."
         (message "javascript-args-beginning-position ** invalid pos **")
         (setq continue nil))
        ((< pos reg-beg)
-        (message "javascript-args-beginning-position ** failure **")
+        (message "javascript-args-beginning-position ** failure(position) **")
         (setq continue nil
               pos reg-beg))
        ((and blockside
@@ -11417,19 +11592,19 @@ Prompt user if TAG-NAME isn't provided."
         (when (setq pos (web-mode-part-opening-paren-position pos reg-beg))
           (setq pos (1- pos))))
        ((member char '(?\( ?\[ ?\{))
-;;        (web-mode-looking-at ".[ \t\n]*" pos)
         (web-mode-looking-at ".[ ]*" pos)
         (setq pos (+ pos (length (match-string-no-properties 0)))
               continue nil)
-;;        (message "=>%S" pos)
         )
-       ((web-mode-looking-back "\\_<\\(var\\|let\\|return\\|const\\)[ \n\t]+" pos)
-;;        (web-mode-looking-at "[ \t\n]*" pos)
-        (web-mode-looking-at "[ \t]*" pos)
+       ((web-mode-looking-at "\\(var\\|let\\|return\\|const\\)[ \n]" pos)
         (setq pos (+ pos (length (match-string-no-properties 0)))
               continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(]\\|\\(var\\|let\\|return\\|const\\)" reg-beg))
+        (when (not pos)
+          (message "javascript-args-beginning-position ** search failure **")
+          (setq continue nil
+                pos reg-beg)))
        ) ;cond
       ) ;while
     ;;(message "=%S" pos)
@@ -11444,10 +11619,9 @@ Prompt user if TAG-NAME isn't provided."
         (i 0)
         (continue (not (null pos))))
     (unless reg-beg
-      (if blockside
-          (setq reg-beg (web-mode-block-beginning-position pos))
-        (setq reg-beg (web-mode-part-beginning-position pos)))
-      )
+      (setq reg-beg (if blockside
+                        (web-mode-block-beginning-position pos)
+                      (web-mode-part-beginning-position pos))))
     (while continue
       (setq char (char-after pos))
       ;;(message "%S| %S=%c" reg-beg pos char)
@@ -11460,10 +11634,6 @@ Prompt user if TAG-NAME isn't provided."
         (message "javascript-calls-beginning-position ** invalid pos **")
         (setq continue nil))
        ((< pos reg-beg)
-        ;;(forward-char)
-        ;;(skip-chars-forward " \t")
-        ;;(message "pos(%S) reg-beg(%S)" pos reg-beg)
-        ;;(message "javascript-calls-beginning-position ** failure **")
         (setq continue nil
               pos reg-beg))
        ((and blockside
@@ -11478,38 +11648,51 @@ Prompt user if TAG-NAME isn't provided."
              (get-text-property pos 'block-side))
         (when (setq pos (web-mode-block-beginning-position pos))
           (setq pos (1- pos))))
-       ;;((member char '(?\) ?\] ?\}))
-       ;;((member char '(?\s ?\t))
-       ;; (skip-chars-backward " \t" reg-beg))
        ((and (member char '(?\.)) (> i 1))
         (setq dot-pos pos
               pos (1- pos)))
        ((member char '(?\) ?\]))
         (when (setq pos (web-mode-part-opening-paren-position pos reg-beg))
           (setq pos (1- pos)))
-        ;;(message "pos=%S" pos)
         )
        ((member char '(?\( ?\{ ?\} ?\[ ?\= ?\? ?\: ?\; ?\, ?\& ?\| ?\>))
-        ;;(message "1--> %S" pos)
-        (setq continue nil)
         (web-mode-looking-at ".[ \t\n]*" pos)
-        (setq pos (+ pos (length (match-string-no-properties 0)))))
-       ((web-mode-looking-back "\\_<\\(return\\|else\\)[ \n\t]*" pos)
-        ;;(message "2--> %S" pos)
-        (setq continue nil))
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
+       ((web-mode-looking-at "\\(return\\|else\\)[ \n]" pos)
+        (setq pos (+ pos (length (match-string-no-properties 0)))
+              continue nil))
        (t
-        (setq pos (1- pos)))
+        (setq pos (web-mode-rsb-position pos "[\]\[}{)(=?:;,&|>.]\\|\\(return\\|else\\)" reg-beg))
+        (when (not pos)
+          (message "javascript-calls-beginning-position ** search failure **")
+          (setq pos reg-beg
+                continue nil))
+        ) ;t
        ) ;cond
       ) ;while
     ;;(message "pos=%S dot-pos=%S" pos dot-pos)
     (if (null pos) pos (cons pos dot-pos))
     ))
 
-(defun web-mode-is-relayql-string (&optional pos)
+;; Relay.QL , gql, graphql
+(defun web-mode-is-ql-string (pos prefix-regexp)
   (let (beg)
     (cond
      ((and (setq beg (web-mode-part-token-beginning-position pos))
-           (web-mode-looking-back "Relay\.QL" beg))
+           (web-mode-looking-back prefix-regexp beg))
+      beg)
+     (t
+      nil)
+     ) ;cond
+    ))
+
+(defun web-mode-is-html-string (pos)
+  (let (beg)
+    (cond
+     ((and (setq beg (web-mode-part-token-beginning-position pos))
+           (web-mode-looking-at-p "`[ \t\n]*<[a-zA-Z]" beg)
+           (web-mode-looking-back "\\(template\\|html\\)[ ]*[=:][ ]*" beg))
       beg)
      (t
       nil)
@@ -12012,9 +12195,10 @@ Prompt user if TAG-NAME isn't provided."
 (defun web-mode-javascript-args-beginning (&optional pos reg-beg)
   (unless pos (setq pos (point)))
   (unless reg-beg
-    (if (get-text-property pos 'block-side)
-        (setq reg-beg (web-mode-block-beginning-position pos))
-      (setq reg-beg (web-mode-part-beginning-position pos))))
+    (setq reg-beg (if (get-text-property pos 'block-side)
+                      (web-mode-block-beginning-position pos)
+                    (web-mode-part-beginning-position pos))))
+  ;;(message "reg-beg%S" reg-beg)
   (web-mode-go (web-mode-javascript-args-beginning-position pos reg-beg)))
 
 (defun web-mode-javascript-calls-beginning (&optional pos reg-beg)
@@ -12240,6 +12424,13 @@ Prompt user if TAG-NAME isn't provided."
        ) ;cond
       ) ;while
     ret))
+
+(defun web-mode-rsb-position (pos regexp &optional limit noerror)
+  (unless noerror (setq noerror t))
+  (save-excursion
+    (goto-char pos)
+    (if (re-search-backward regexp limit noerror) (point) nil)
+    ))
 
 (defun web-mode-rsb (regexp &optional limit noerror)
   (unless noerror (setq noerror t))
