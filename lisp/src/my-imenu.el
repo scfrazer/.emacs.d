@@ -11,7 +11,7 @@
 ;; ido + imenu
 
 (defface my-ido-menu-highlight-tag-face
-  '((t (:inherit isearch)))
+  '((t (:inherit region)))
   "Font Lock mode face used to highlight tags."
   :group 'faces)
 

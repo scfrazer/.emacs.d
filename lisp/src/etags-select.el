@@ -78,7 +78,7 @@ matching tag."
 
 ;;;###autoload
 (defface etags-select-highlight-tag-face
-  '((t (:inherit isearch)))
+  '((t (:inherit region)))
   "Font Lock mode face used to highlight tags."
   :group 'etags-select-mode)
 

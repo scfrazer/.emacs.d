@@ -64,6 +64,9 @@
         (setq end (or (next-single-property-change start 'face) eob))
         (push (cons (buffer-substring-no-properties start end) start) item-alist)
         (setq start end)))
+    (goto-char (point-min))
+    (while (re-search-forward "^\\s-*\\([^[:space:]]+\\)\\s-*=\\s-*function\\s-+" nil t)
+      (push (cons (match-string-no-properties 1) (match-beginning 1)) item-alist))
     (nreverse item-alist)))
 
 (define-minor-mode my-web-mode-js-mode

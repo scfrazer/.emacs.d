@@ -784,7 +784,7 @@
               show-paren-delay 0
               split-width-threshold nil
               truncate-lines nil
-              truncate-partial-width-windows t
+              truncate-partial-width-windows 40
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
@@ -1957,7 +1957,7 @@ Prefix with C-u to resize the `next-window'."
 
   (defface my-display-table-face
     '((((class color) (background dark)) :foreground "color-201" :background "black")
-      (((class color) (background light)) :foreground "color-125" :background "color-255"))
+      (((class color) (background light)) :foreground "color-125" :background "color-255" :bold t))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 

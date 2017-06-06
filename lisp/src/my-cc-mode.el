@@ -77,8 +77,9 @@
 
 (defun my-c-mode-common-hook ()
   (abbrev-mode -1)
-  (setq comment-start "// ")
-  (setq comment-end "" )
+  (when (equal major-mode 'c-mode)
+    (setq comment-start "// ")
+    (setq comment-end "" ))
   (setq imenu-create-index-function 'my-cc-mode-imenu-create-index-function)
   (define-key c-mode-base-map "}"
     (lambda ()
