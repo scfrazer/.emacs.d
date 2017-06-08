@@ -36,7 +36,7 @@
    `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 195))))
    `(success                        ((t :foreground "black" :background ,(smf-color 157))))
    `(trailing-whitespace            ((t :background ,(smf-color 255))))
-   `(warning                        ((t :foreground "black" :background ,(smf-color 226))))
+   `(warning                        ((t :foreground "black" :background ,(smf-color 227))))
    `(web-mode-html-attr-custom-face ((t :foreground ,(smf-color 143))))
    `(web-mode-html-attr-name-face   ((t :foreground ,(smf-color 65))))
    `(web-mode-html-attr-value-face  ((t :foreground ,(smf-color 138))))
