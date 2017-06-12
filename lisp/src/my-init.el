@@ -155,13 +155,13 @@
           avy-all-windows nil
           avy-case-fold-search nil
           avy-style 'at
-          avy-timeout-seconds 0.5)
-    (defun my-avy-goto-line (arg)
-      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
+          avy-timeout-seconds 5.0)
+    (defun my-avy-goto-line (&optional arg)
+      "Jump to start of a line, or with prefix arg end of a line."
       (interactive "P")
       (if (null arg)
           (call-interactively 'avy-goto-line)
-        (avy-with avy-goto-word-1
+        (avy-with avy-goto-char
           (avy--generic-jump "\n" nil avy-style))))
     (defun my-avy-goto (char)
       "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
@@ -243,7 +243,7 @@
          ("\\.cshrc\\'" . csh-mode))
   :init
   ;; Add csh to magic interpreter modes
- (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
+  (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
 
 (use-package diff-mode
   :defer t
@@ -339,12 +339,12 @@
   (require 'my-ffap))
 
 (use-package flymake
- :bind* (("C-x f" . flymake-start-syntax-check))
- :commands (my-flymake-goto-next-error my-flymake-goto-prev-error)
- :init
- (defalias 'fly 'flymake-mode)
- :config
- (require 'my-flymake))
+  :bind* (("C-x f" . flymake-start-syntax-check))
+  :commands (my-flymake-goto-next-error my-flymake-goto-prev-error)
+  :init
+  (defalias 'fly 'flymake-mode)
+  :config
+  (require 'my-flymake))
 
 (use-package git-timemachine
   :config
@@ -732,7 +732,7 @@
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
-;;               browse-kill-ring-separator "                                                                                "
+              ;;               browse-kill-ring-separator "                                                                                "
               browse-kill-ring-separator "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
               browse-kill-ring-separator-face 'my-browse-kill-ring-separator-face
               browse-kill-ring-show-preview nil
@@ -1523,7 +1523,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive "P")
   (if arg
       (set-register (register-read-with-preview "(Region) Set register:")
-                  (buffer-substring (region-beginning) (region-end)))
+                    (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
 (defun my-suspend-emacs (&optional arg)
@@ -1694,11 +1694,11 @@ Prefix with C-u to resize the `next-window'."
   (easy-escape-minor-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
-             '("Require"
-               "^(require +'\\(\\_<.+\\_>\\)" 1))
+               '("Require"
+                 "^(require +'\\(\\_<.+\\_>\\)" 1))
   (add-to-list 'imenu-generic-expression
-             '("Use Package"
-               "^(use-package +\\(\\_<.+\\_>\\)" 1)))
+               '("Use Package"
+                 "^(use-package +\\(\\_<.+\\_>\\)" 1)))
 
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
