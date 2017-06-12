@@ -147,13 +147,22 @@
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
 
 (use-package avy
-  :bind* (("C-j" . my-avy-goto))
+  :bind* (("C-M-j" . my-avy-goto-line)
+          ("C-j" . avy-goto-char-timer))
   :config
   (progn
     (setq avy-keys (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
           avy-all-windows nil
           avy-case-fold-search nil
-          avy-style 'at)
+          avy-style 'at
+          avy-timeout-seconds 0.5)
+    (defun my-avy-goto-line (arg)
+      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
+      (interactive "P")
+      (if (null arg)
+          (call-interactively 'avy-goto-line)
+        (avy-with avy-goto-word-1
+          (avy--generic-jump "\n" nil avy-style))))
     (defun my-avy-goto (char)
       "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "Char: ")))
