@@ -418,6 +418,11 @@
   :config
   (progn
     (defvar my-linum-format "%4d ")
+    (defvar my-linum-current-line 0)
+    (defface my-linum-current-line-face
+      '((t :inherit linum :inverse-video t))
+      "Face to highlight current line number."
+      :group 'faces)
     (defun my-linum-before-numbering-hook ()
       "Set the linum format."
       (setq-local my-linum-format
@@ -425,9 +430,16 @@
                                         (count-lines (point-min) (point-max))))))
                     (concat "%" (number-to-string width) "d "))))
     (add-hook 'linum-before-numbering-hook 'my-linum-before-numbering-hook)
-    (defun my-linum-format-func (line)
+    (defun my-linum-format-func (line-number)
       "Format the line number."
-      (propertize (format my-linum-format line) 'face 'linum))
+      (propertize (format my-linum-format line-number) 'face
+                  (if (eq line-number my-linum-current-line)
+                      'my-linum-current-line-face
+                    'linum)))
+    (defadvice linum-update (around my-linum-update activate)
+      "Set which line number is the current one."
+      (let ((my-linum-current-line (line-number-at-pos)))
+        ad-do-it))
     (setq linum-format 'my-linum-format-func)))
 
 (use-package ll-debug
