@@ -831,7 +831,7 @@
 
 ;; Comments
 
-(add-to-list 'comment-styles '(my-style t nil t nil))
+(add-to-list 'comment-styles '(my-style t nil t t "My style"))
 (setq-default comment-column 0
               comment-empty-lines t
               comment-fill-column 120
