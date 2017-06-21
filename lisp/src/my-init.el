@@ -1334,13 +1334,16 @@ end of a non-blank line, or insert an 80-column comment line"
   "Narrow to region, or widen if already narrowed, or with prefix
 arg do something special."
   (interactive "P")
-  (if (and arg (equal major-mode 'sv-mode))
-      (sv-mode-narrow-to-scope)
-    (if (/= (buffer-size) (- (point-max) (point-min)))
-        (widen)
-      (narrow-to-region (region-beginning) (region-end))
-      (my-mode-line-count-lines)
-      (goto-char (point-min)))))
+  (if (/= (buffer-size) (- (point-max) (point-min)))
+      (widen)
+    (if (null arg)
+        (narrow-to-region (region-beginning) (region-end))
+      (cond ((equal major-mode 'sv-mode)
+             (sv-mode-narrow-to-scope))
+            (t
+             (narrow-to-defun))))
+    (my-mode-line-count-lines)
+    (goto-char (point-min))))
 
 (defvar my-paste-mode nil)
 (add-to-list 'minor-mode-alist `(my-paste-mode ,(propertize " PASTE " 'face 'warning)))
