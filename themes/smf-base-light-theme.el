@@ -10,7 +10,7 @@
    `(default ((((type graphic) (background light)) (:foreground "#000000" :background "#ffffff"))))
 
    `(bm-face                        ((t :foreground nil :background ,(smf-color 221))))
-   `(caution                        ((t :foreground "black" :background ,(smf-color 223))))
+   `(caution                        ((t :foreground "black" :background ,(smf-color 215))))
    `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
    `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
    `(ediff-current-diff-A           ((t :foreground "black" :background ,(smf-color 110))))
