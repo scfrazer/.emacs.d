@@ -147,15 +147,14 @@
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
 
 (use-package avy
-  :bind* (("C-M-j" . my-avy-goto-line)
-          ("C-j" . avy-goto-char-timer))
+  :bind* (("C-j" . my-avy-goto))
   :config
   (progn
     (setq avy-keys (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
           avy-all-windows nil
           avy-case-fold-search nil
           avy-style 'at
-          avy-timeout-seconds 1.0)
+          avy-timeout-seconds 0.5)
     (defun my-avy-goto-line (&optional arg)
       "Jump to start of a line, or with prefix arg end of a line."
       (interactive "P")
@@ -164,10 +163,11 @@
         (avy-with avy-goto-char
           (avy--generic-jump "\n" nil avy-style))))
     (defun my-avy-goto (char)
-      "Jump to CHAR at a word start, or any char if C-k, or BOL if C-l, or EOL if C-m."
+      "Jump to CHAR at a word start, or string if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "Char: ")))
       (if (= 11 char)
-          (call-interactively 'avy-goto-char)
+          (let ((avy-timeout-seconds 60.0))
+            (call-interactively 'avy-goto-char-timer))
         (if (= 12 char)
             (call-interactively 'avy-goto-line)
           (if (and (not (< 31 char 127))
@@ -500,31 +500,14 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
-(use-package restclient
-  :mode (("\\.rest\\'" . restclient-mode)))
-
-(use-package quick-edit
-  :bind* (("C-f" . qe-unit-move)
-          ("C-w" . qe-unit-kill)
-          ("C-y" . qe-yank)
-          ("M-'" . qe-backward-word-end)
-          ("M-;" . qe-forward-word-end)
-          ("M-H" . qe-backward-word-section)
-          ("M-J" . qe-backward-kill-section)
-          ("M-K" . qe-forward-kill-section)
-          ("M-L" . qe-forward-word-section)
-          ("M-h" . qe-backward-word)
-          ("M-j" . qe-backward-kill)
-          ("M-k" . qe-forward-kill)
-          ("M-l" . qe-forward-word)
-          ("M-n" . qe-forward-paragraph)
-          ("M-p" . qe-backward-paragraph)
-          ("M-w" . qe-unit-copy)))
-
 (use-package org
   :mode (("\\.org\\'" . org-mode))
   :config
   (require 'my-org))
+
+(use-package package
+  :config
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")))
 
 (use-package my-pair
   :bind* (("C-c ("  . my-pair-open-paren-dwim)
@@ -580,6 +563,24 @@
       (setq forward-sexp-function nil))
     (add-hook 'python-mode-hook 'my-python-mode-hook)))
 
+(use-package quick-edit
+  :bind* (("C-f" . qe-unit-move)
+          ("C-w" . qe-unit-kill)
+          ("C-y" . qe-yank)
+          ("M-'" . qe-backward-word-end)
+          ("M-;" . qe-forward-word-end)
+          ("M-H" . qe-backward-word-section)
+          ("M-J" . qe-backward-kill-section)
+          ("M-K" . qe-forward-kill-section)
+          ("M-L" . qe-forward-word-section)
+          ("M-h" . qe-backward-word)
+          ("M-j" . qe-backward-kill)
+          ("M-k" . qe-forward-kill)
+          ("M-l" . qe-forward-word)
+          ("M-n" . qe-forward-paragraph)
+          ("M-p" . qe-backward-paragraph)
+          ("M-w" . qe-unit-copy)))
+
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
 
@@ -592,6 +593,9 @@
 
 (use-package regman
   :commands (regman regman-insert-register))
+
+(use-package restclient
+  :mode (("\\.rest\\'" . restclient-mode)))
 
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
