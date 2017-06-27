@@ -245,8 +245,8 @@
       (when (and file (y-or-n-p (concat "Discard changes to " file "? ")))
         (message "Discarding file ...")
         (unless (= (call-process git-simple-executable nil nil nil "checkout" "--" file) 0)
-          (error (concat "Couldn't discard changes to file '" file "'")))
-        (git-simple-refresh)))))
+          (error (concat "Couldn't discard changes to file '" file "'")))))
+    (git-simple-refresh)))
 
 ;;;###autoload
 (defun git-simple-unstage ()
