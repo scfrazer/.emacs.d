@@ -75,19 +75,25 @@
             ("C-v"   . my-edit-newline-and-indent)
             ("M-RET" . my-edit-newline-and-indent-above))
 
+(require 'goto-chg)
+(bind-keys* ("M-SPC" . goto-last-change))
+
 (require 'my-ido)
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
             ("C-x C-r" . my-ido-recentf-file)
             ("M-i"     . ido-switch-buffer))
 
-(require 'my-jump-marker)
-;; (bind-keys* ("M-SPC" . my-jump-marker))
+(require 'my-isearch)
+;; Use global-set-key so minor modes can override
+(global-set-key (kbd "C-f") 'my-isearch-search-forward-line)
+(global-set-key (kbd "C-r") 'my-isearch-backward)
+(global-set-key (kbd "C-s") 'my-isearch-forward)
+(setq isearch-allow-scroll t
+      lazy-highlight-initial-delay 0)
+(put 'my-recenter 'isearch-scroll t)
 
 (require 'jump-to-prev-pos)
 (bind-keys* ("M-b" . jump-to-prev-pos))
-
-(require 'goto-chg)
-(bind-keys* ("M-SPC" . goto-last-change))
 
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
@@ -390,15 +396,6 @@
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))
 
-(use-package my-isearch
-  :bind* (("C-r" . my-isearch-backward)
-          ("C-s" . my-isearch-forward))
-  :config
-  (progn
-    (setq isearch-allow-scroll t
-          lazy-highlight-initial-delay 0)
-    (put 'my-recenter 'isearch-scroll t)))
-
 ;; (use-package js2-mode
 ;;   :mode (("\\.js\\'" . js2-mode))
 ;;   :config
@@ -485,6 +482,14 @@
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
 
+(use-package multiple-cursors
+  :bind* ("M-r e" . mc/edit-lines)
+  :init
+  (setq-default mc/always-run-for-all t)
+  :config
+  (progn
+    (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)))
+
 (use-package nxml-mode
   :defer t
   :config
@@ -564,8 +569,7 @@
     (add-hook 'python-mode-hook 'my-python-mode-hook)))
 
 (use-package quick-edit
-  :bind* (("C-f" . qe-unit-move)
-          ("C-w" . qe-unit-kill)
+  :bind* (("C-w" . qe-unit-kill)
           ("C-y" . qe-yank)
           ("M-'" . qe-backward-word-end)
           ("M-;" . qe-forward-word-end)
@@ -579,7 +583,9 @@
           ("M-l" . qe-forward-word)
           ("M-n" . qe-forward-paragraph)
           ("M-p" . qe-backward-paragraph)
-          ("M-w" . qe-unit-copy)))
+          ("M-w" . qe-unit-copy)
+          ("M-{" . qe-backward-curly-block)
+          ("M-}" . qe-forward-curly-block)))
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
@@ -935,6 +941,19 @@ undoable all at once."
     (beginning-of-line)
     (forward-line -1)))
 
+(defun my-bounds-of-current-symbol ()
+  "Return bounds of current symbol."
+  (let (beg end)
+    (save-excursion
+      (unless (looking-at "\\sw\\|\\s_")
+        (skip-syntax-backward "^w_"))
+      (skip-syntax-forward "w_")
+      (setq end (point))
+      (skip-syntax-backward "w_")
+      (skip-syntax-forward "^w")
+      (setq beg (point)))
+    (cons beg end)))
+
 (defface my-browse-kill-ring-separator-face
   '((t :foreground "color-197"))
   "Face to highlight kill-ring separators."
@@ -956,15 +975,9 @@ undoable all at once."
 (defun my-case-symbol (mode)
   "Change case of symbol.  MODE is 'upcase 'downcase or 'capitalize."
   (interactive "*S")
-  (let (beg end)
-    (save-excursion
-      (unless (looking-at "\\sw\\|\\s_")
-        (skip-syntax-backward "^w_"))
-      (skip-syntax-forward "w_")
-      (setq end (point))
-      (skip-syntax-backward "w_")
-      (skip-syntax-forward "^w")
-      (setq beg (point)))
+  (let* ((bounds (my-bounds-of-current-symbol))
+         (beg (car bounds))
+         (end (cdr bounds)))
     (cl-case mode
       ('upcase (upcase-region beg end))
       ('downcase (downcase-region beg end))
@@ -1545,6 +1558,23 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                     (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
+(defun my-style-symbol-toggle ()
+  "Toggle style of symbol between camelCase and snake_case."
+  (interactive "*")
+  (save-excursion
+    (let* ((bounds (my-bounds-of-current-symbol))
+           (beg (car bounds))
+           (end (cdr bounds)))
+      (with-no-undo-boundaries
+        (if (progn (goto-char beg) (search-forward "_" end t))
+            (progn
+              (upcase-initials-region beg end)
+              (replace-string "_" "" nil beg end)
+              (downcase-region beg (1+ beg)))
+          (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ beg) end)
+          (setq bounds (my-bounds-of-current-symbol))
+          (downcase-region (car bounds) (cdr bounds)))))))
+
 (defun my-suspend-emacs (&optional arg)
   "Suspend emacs.  With prefix arg, cd to current-directory."
   (interactive "P")
@@ -1829,6 +1859,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c TAB"     . indent-region)
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
+ ("C-c _"       . my-style-symbol-toggle)
  ("C-c c"       . my-comment-or-uncomment-region)
  ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
@@ -1889,7 +1920,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
- ("M-}"         . my-forward-paragraph)
+ ("M-]"         . my-forward-paragraph)
  ("M-~"         . previous-error))
 
 ;; These have to be in this order

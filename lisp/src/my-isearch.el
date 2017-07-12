@@ -44,6 +44,21 @@
   (when isearch-forward (goto-char isearch-other-end))
   (isearch-exit))
 
+;; Avoid byte-compiler warnings
+(defvar mc--this-command)
+
+(defun my-isearch-search-forward-line (str)
+  "`search-forward' only to end-of-line, and exit at other end."
+  (interactive "sSearch on line for: ")
+  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+    (setq mc--this-command `(lambda () (interactive) (my-isearch-search-forward-line-1 ',str))))
+  (my-isearch-search-forward-line-1 str))
+
+(defun my-isearch-search-forward-line-1 (str)
+  "Real work for my-isearch-search-forward-line."
+  (when (search-forward str (point-at-eol) t)
+    (backward-char (length str))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar my-isearch-last-regexp nil)

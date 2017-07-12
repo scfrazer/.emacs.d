@@ -27,6 +27,7 @@
    `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
    `(linum                          ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))
    `(match                          ((t :inherit ediff-fine-diff-A)))
+   `(mc/cursor-face                 ((t :foreground "white" :background ,(smf-color 162))))
    `(my-display-table-face          ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :bold t)))
    `(outline-1                      ((t :foreground ,(smf-color 33))))
    `(outline-2                      ((t :foreground ,(smf-color 32))))

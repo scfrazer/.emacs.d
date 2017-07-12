@@ -11,8 +11,7 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp/company-mode"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
-(put 'inhibit-startup-echo-area-message 'saved-value
-     (setq inhibit-startup-echo-area-message (user-login-name)))
+(setq inhibit-startup-echo-area-message "scfrazer")
 
 (setq-default tramp-mode nil)
 

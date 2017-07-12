@@ -42,11 +42,6 @@
                                       'python-mode)
   "*Major modes where blocks commands should work by indentation")
 
-(defface qe-kill-region-face
-  '((t (:inherit region)))
-  "Face to highlight region that will be killed"
-  :group 'faces)
-
 (defface qe-copy-region-face
   '((t (:inherit region)))
   "Face to highlight region that will be copied"
@@ -54,6 +49,9 @@
 
 (defvar qe-highlight-delay 0.5
   "*How long to highlight.")
+
+;; Avoid byte-compiler warnings
+(defvar mc--this-command)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Motion
@@ -99,7 +97,7 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive)
   (let (done forward-sexp-function)
     (while (not (or done (eobp)))
-      (when (and (re-search-forward "[{}]" nil 'go)
+      (when (and (re-search-forward "{" nil 'go)
                  (not (memq (get-text-property (1- (point)) 'face)
                             '(font-lock-comment-face font-lock-string-face))))
         (when (equal (char-before) ?{)
@@ -107,8 +105,6 @@ depending on the major mode (see `qe-block-indented-modes')."
           (forward-sexp))
         (forward-line)
         (beginning-of-line)
-        (while (and (not (eobp)) (looking-at "^\\s-*$"))
-          (forward-line))
         (setq done t)))))
 
 (defun qe-forward-indented-block ()
@@ -170,7 +166,7 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive)
   (let (done forward-sexp-function)
     (while (not (or done (bobp)))
-      (when (and (re-search-backward "[{}]" nil 'go)
+      (when (and (re-search-backward "}" nil 'go)
                  (not (memq (get-text-property (point) 'face)
                             '(font-lock-comment-face font-lock-string-face))))
         (when (equal (char-after) ?})
@@ -226,7 +222,8 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
             (delete-region (region-beginning) (region-end))
           (kill-region (region-beginning) (region-end)))
       (let ((table (copy-syntax-table (syntax-table))))
-        (modify-syntax-entry ?\' "\"" table)
+        (when (equal (char-after) ?\')
+          (modify-syntax-entry ?\' "\"" table))
         (with-syntax-table table
           (let ((beg (point))
                 (end (progn
@@ -286,7 +283,8 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
             (delete-region (region-beginning) (region-end))
           (kill-region (region-beginning) (region-end)))
       (let ((table (copy-syntax-table (syntax-table))))
-        (modify-syntax-entry ?\' "\"" table)
+        (when (equal (char-before) ?\')
+          (modify-syntax-entry ?\' "\"" table))
         (with-syntax-table table
           (let ((beg (point))
                 (end (progn
@@ -332,152 +330,98 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit
 
-(defun qe-unit-kill (&optional arg)
-  "TODO"
-  (interactive "*P")
-  (let (result)
+(defun qe-unit-kill (key-seq)
+  "Kill by text unit."
+  (interactive (list
+                (read-key-sequence
+                 (if current-prefix-arg
+                     (if (listp current-prefix-arg)
+                         "Delete:"
+                       "(Append) Kill:")
+                   "Kill:"))))
+  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+    (setq mc--this-command `(lambda () (interactive) (qe-unit-kill-1 ',key-seq))))
+  (qe-unit-kill-1 key-seq))
+
+(defun qe-unit-kill-1 (key-seq)
+  "Real work for qe-unit-kill."
+  (let ((bounds (qe-unit-bounds key-seq)))
+    (if current-prefix-arg
+        (if (listp current-prefix-arg)
+            (delete-region (car bounds) (cdr bounds))
+          (append-next-kill)
+          (kill-region (car bounds) (cdr bounds)))
+      (kill-region (car bounds) (cdr bounds)))))
+
+(defvar qe-highlight-num 0)
+(defvar qe-highlight-count 0)
+(defvar qe-highlight-overlays nil)
+
+(defun qe-unit-copy (key-seq)
+  "Copy by text unit."
+  (interactive (list
+                (read-key-sequence
+                 (if current-prefix-arg "(Append) Copy:" "Copy:"))))
+  (setq qe-highlight-num 1)
+  (setq qe-highlight-count 0)
+  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode (fboundp 'mc/num-cursors))
+    (setq qe-highlight-num (mc/num-cursors))
+    (setq mc--this-command `(lambda () (interactive) (qe-unit-copy-1 ',key-seq))))
+  (qe-unit-copy-1 key-seq))
+
+(defun qe-unit-copy-1 (key-seq)
+  "Real work for qe-unit-copy."
+  (let ((bounds (qe-unit-bounds key-seq)))
+    (when current-prefix-arg (append-next-kill))
+    (kill-ring-save (car bounds) (cdr bounds))
     (if (region-active-p)
-        (progn
-          (setq result (cons (region-beginning) (region-end)))
-          (deactivate-mark))
-      (let* ((cmd-keys (this-command-keys))
-             (seq (read-key-sequence
-                   (if arg
-                       (if (listp arg)
-                           "Delete:"
-                         "(Append) Kill:")
-                     "Kill:")))
-             (seq-match-pos (string-match (concat "\\(\\|[-0-9]+\\)*" (regexp-quote seq)) cmd-keys))
-             fcn)
-        (if (and seq-match-pos (= seq-match-pos 0))
-            (setq fcn 'qe-unit-ends-mark)
-          (setq fcn (lookup-key qe-unit-common-map seq)))
-        (unless fcn
-          (error "Unknown key entered for kill text unit"))
-        (setq result (funcall fcn))))
-    (when (and result
-               (consp result)
-               (not (= (car result) (cdr result))))
-      (if arg
-          (if (listp arg)
-              (delete-region (car result) (cdr result))
-            (append-next-kill)
-            (kill-region (car result) (cdr result)))
-        (kill-region (car result) (cdr result))))))
+        (deactivate-mark)
+      (let ((ov (make-overlay (car bounds) (cdr bounds))))
+        (overlay-put ov 'face 'qe-copy-region-face)
+        (push ov qe-highlight-overlays)
+        (setq qe-highlight-count (1+ qe-highlight-count))
+        (when (= qe-highlight-count qe-highlight-num)
+          (sit-for qe-highlight-delay)
+          (while qe-highlight-overlays
+            (delete-overlay (pop qe-highlight-overlays))))))))
 
-(defun qe-unit-copy (&optional arg)
-  "TODO"
-  (interactive "P")
-  (let (result (do-highlight t))
-    (if (region-active-p)
-        (progn
-          (setq result (cons (region-beginning) (region-end)))
-          (deactivate-mark)
-          (setq do-highlight nil))
-      (let* ((cmd-keys (this-command-keys))
-             (seq (read-key-sequence (if arg "(Append) Copy:" "Copy:")))
-             (seq-match-pos (string-match (concat "\\(\\|[-0-9]+\\)*" (regexp-quote seq)) cmd-keys))
-             fcn)
-        (if (and seq-match-pos (= seq-match-pos 0))
-            (setq fcn 'qe-unit-ends-mark)
-          (setq fcn (lookup-key qe-unit-common-map seq)))
-        (unless fcn
-          (error "Unknown key entered for copy text unit"))
-        (save-excursion
-          (setq result (funcall fcn)))))
-    (when (and result
-               (consp result)
-               (not (= (car result) (cdr result))))
-      (when do-highlight
-        (qe-highlight (car result) (cdr result) 'qe-copy-region-face))
-      (when arg (append-next-kill))
-      (kill-ring-save (car result) (cdr result)))))
-
-(defun qe-unit-move ()
-  "TODO"
-  (interactive)
-  (let* ((cmd-keys (this-command-keys))
-         (seq (read-key-sequence "Move:"))
-         (fcn (lookup-key qe-unit-common-map seq))
-         result)
-    (unless fcn
-      (error "Unknown key entered for move text unit"))
-    (push-mark (point) t)
-    (setq result (funcall fcn))
-    (when (and result (consp result))
-      (cond ((member seq '("(" "[" "{" "<" "X"))
-             (goto-char (car result)))
-            ((or (equal seq "T")
-                 (and (equal seq cmd-keys)
-                      (equal real-last-command 'qe-unit-move)))
-             (goto-char (1- (cdr result))))
-            (t
-             (goto-char (cdr result)))))))
-
-(defvar qe-unit-common-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "p") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-paragraph)))
-    (define-key map (kbd "P") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-paragraph)))
-    (define-key map (kbd "b") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-block)))
-    (define-key map (kbd "B") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-block)))
-    (define-key map (kbd "l") 'qe-unit-ends-line)
-    (define-key map (kbd "w") 'qe-unit-ends-forward-word)
-    (define-key map (kbd "W") 'qe-unit-ends-backward-word)
-    (define-key map (kbd "c") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-section)))
-    (define-key map (kbd "C") (lambda () (qe-unit-ends-point-to-fcn 'qe-backward-section)))
-    (define-key map (kbd "m") 'qe-unit-ends-forward-matching)
-    (define-key map (kbd "M") 'qe-unit-ends-backward-matching)
-    (define-key map (kbd "t") 'qe-unit-ends-forward-to-char)
-    (define-key map (kbd "T") 'qe-unit-ends-backward-to-char)
-    (define-key map (kbd "s") 'qe-unit-ends-forward-starts-char)
-    (define-key map (kbd "S") 'qe-unit-ends-backward-starts-char)
-    (define-key map (kbd "e") (lambda () (qe-unit-ends-point-to-fcn 'end-of-line)))
-    (define-key map (kbd "a") (lambda () (qe-unit-ends-point-to-fcn 'beginning-of-line)))
-    (define-key map (kbd "A") (lambda () (qe-unit-ends-point-to-fcn 'back-to-indentation)))
-    (define-key map (kbd "RET") (lambda () (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line)))
-    (define-key map (kbd "TAB") 'qe-unit-ends-forward-whitespace)
-    (define-key map (kbd "h") 'qe-unit-symbol)
-    (define-key map (kbd "\"") (lambda () (qe-region-inside-quotes ?\" 'forward)))
-    (define-key map (kbd "'") (lambda () (qe-region-inside-quotes ?\' 'forward)))
-    (define-key map (kbd "`") (lambda () (qe-region-inside-quotes ?\` 'forward)))
-    (define-key map (kbd ")") (lambda () (qe-region-inside-pair ?\) 'forward)))
-    (define-key map (kbd "]") (lambda () (qe-region-inside-pair ?\] 'forward)))
-    (define-key map (kbd "}") (lambda () (qe-region-inside-pair ?\} 'forward)))
-    (define-key map (kbd ">") (lambda () (qe-region-inside-pair ?\> 'forward)))
-    (define-key map (kbd "(") (lambda () (qe-region-inside-pair ?\) 'backward)))
-    (define-key map (kbd "[") (lambda () (qe-region-inside-pair ?\] 'backward)))
-    (define-key map (kbd "{") (lambda () (qe-region-inside-pair ?\} 'backward)))
-    (define-key map (kbd "<") (lambda () (qe-region-inside-pair ?\> 'backward)))
-    (define-key map (kbd "x") (lambda () (qe-region-xml-content 'forward)))
-    (define-key map (kbd "X") (lambda () (qe-region-xml-content 'backward)))
-    (define-key map (kbd "i") 'qe-unit-ends-inside)
-    (define-key map (kbd "o") 'qe-unit-ends-outside)
-    (define-key map (kbd "SPC") (lambda () (qe-unit-ends-forward-to-char ?\ )))
-    (define-key map (kbd "!") (lambda () (qe-unit-ends-forward-to-char ?!)))
-    (define-key map (kbd "#") (lambda () (qe-unit-ends-forward-to-char ?#)))
-    (define-key map (kbd "$") (lambda () (qe-unit-ends-forward-to-char ?$)))
-    (define-key map (kbd "%") (lambda () (qe-unit-ends-forward-to-char ?%)))
-    (define-key map (kbd "&") (lambda () (qe-unit-ends-forward-to-char ?&)))
-    (define-key map (kbd "*") (lambda () (qe-unit-ends-forward-to-char ?*)))
-    (define-key map (kbd "+") (lambda () (qe-unit-ends-forward-to-char ?+)))
-    (define-key map (kbd ",") (lambda () (qe-unit-ends-forward-to-char ?,)))
-    (define-key map (kbd "-") (lambda () (qe-unit-ends-forward-to-char ?-)))
-    (define-key map (kbd ".") (lambda () (qe-unit-ends-forward-to-char ?.)))
-    (define-key map (kbd "/") (lambda () (qe-unit-ends-forward-to-char ?/)))
-    (define-key map (kbd ":") (lambda () (qe-unit-ends-forward-to-char ?:)))
-    (define-key map (kbd ";") (lambda () (qe-unit-ends-forward-to-char ?\;)))
-    (define-key map (kbd "=") (lambda () (qe-unit-ends-forward-to-char ?=)))
-    (define-key map (kbd "?") (lambda () (qe-unit-ends-forward-to-char ??)))
-    (define-key map (kbd "@") (lambda () (qe-unit-ends-forward-to-char ?@)))
-    (define-key map (kbd "\\") (lambda () (qe-unit-ends-forward-to-char ?\\)))
-    (define-key map (kbd "^") (lambda () (qe-unit-ends-forward-to-char ?^)))
-    (define-key map (kbd "_") (lambda () (qe-unit-ends-forward-to-char ?_)))
-    (define-key map (kbd "|") (lambda () (qe-unit-ends-forward-to-char ?|)))
-    (define-key map (kbd "~") (lambda () (qe-unit-ends-forward-to-char ?~)))
-    map)
-  "Common keymap for unit kill/copy/move.  Functions should return a cons
-cell with beginning/end of region.  Original point position need not be
-preserved.")
+(defun qe-unit-bounds (key-seq)
+  "Get text unit bounds for KEY-SEQ."
+  (let ((first-key (aref key-seq 0)))
+    ;; If C-w or M-w return current region
+    (if (or (equal first-key ?\C-w)
+            (and (equal (length key-seq) 2)
+                 (equal first-key 27)
+                 (equal (aref key-seq 1) ?w)))
+        (cons (region-beginning) (region-end))
+    ;; Decode key
+    (save-excursion
+      (cl-case first-key
+        (?\C-m (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line))
+        (?\" (qe-region-inside-quotes ?\" 'forward))
+        (?\' (qe-region-inside-quotes ?\' 'forward))
+        (?\` (qe-region-inside-quotes ?\` 'forward))
+        (?\} (qe-region-inside-pair ?\} 'forward))
+        (?\) (qe-region-inside-pair ?\) 'forward))
+        (?\] (qe-region-inside-pair ?\] 'forward))
+        (?\> (qe-region-inside-pair ?\> 'forward))
+        (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
+        (?b (qe-unit-ends-point-to-fcn 'qe-forward-block))
+        (?e (qe-unit-ends-point-to-fcn 'end-of-line))
+        (?i (qe-unit-ends-point-to-fcn 'back-to-indentation))
+        (?l (qe-unit-ends-line))
+        (?m (qe-unit-ends-forward-matching))
+        (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
+        (?s 'qe-unit-symbol)
+        (?w (qe-unit-ends-forward-word))
+        (?x (qe-region-xml-content 'forward))
+        (t
+         (if (or (< 31 first-key 48)    ;; space through slash
+                 (< 57 first-key 65)    ;; colon through at-symbol
+                 (< 90 first-key 97)    ;; left-bracket through backtick
+                 (< 122 first-key 127)) ;; left-brace through tilde
+             (qe-unit-ends-forward-to-char first-key)
+           (error "Unknown key entered for text unit"))))))))
 
 (defun qe-unit-ends-point-to-fcn (fcn)
   "Wrap single function call getting end points."
@@ -495,10 +439,6 @@ preserved.")
   "Text unit ends for forward word."
   (cons (point) (progn (skip-syntax-forward "w_") (point))))
 
-(defun qe-unit-ends-backward-word ()
-  "Text unit ends for backward word."
-  (cons (point) (progn (skip-syntax-backward "w_") (point))))
-
 (defun qe-unit-ends-forward-matching ()
   "Text unit ends for forward matching parens."
   (let ((beg (point))
@@ -512,19 +452,6 @@ preserved.")
       (forward-sexp 1)
       (cons beg (point)))))
 
-(defun qe-unit-ends-backward-matching ()
-  "Text unit ends for backward matching parens."
-  (let ((beg (point))
-        (char (char-before))
-        (table (copy-syntax-table (syntax-table)))
-        forward-sexp-function)
-    (when (or (eq char ?<) (eq char ?>))
-      (modify-syntax-entry ?< "(>" table)
-      (modify-syntax-entry ?> ")<" table))
-    (with-syntax-table table
-      (forward-sexp -1)
-      (cons beg (point)))))
-
 (defun qe-unit-ends-forward-to-char (&optional char)
   "Text unit ends for forward to some char."
   (let ((case-fold-search nil))
@@ -536,71 +463,10 @@ preserved.")
                          (backward-char)
                          (point)))))
 
-(defun qe-unit-ends-backward-to-char (&optional char)
-  "Text unit ends for backward over some char."
-  (let ((case-fold-search nil))
-    (unless char
-      (message "Backward to char:")
-      (setq char (read-char)))
-    (cons (point) (progn (search-backward (char-to-string char))
-                         (forward-char)
-                         (point)))))
-
-(defun qe-unit-ends-forward-starts-char (&optional char)
-  "Text unit ends for forward to word starting with char."
-  (let ((case-fold-search nil))
-    (unless char
-      (message "To word starting with char:")
-      (setq char (read-char)))
-    (cons (point) (progn (forward-char)
-                         (re-search-forward (format "\\_<%c" char))
-                         (backward-char)
-                         (point)))))
-
-(defun qe-unit-ends-backward-starts-char (&optional char)
-  "Text unit ends for backward over word starting with char."
-  (let ((case-fold-search nil))
-    (unless char
-      (message "Backward to word starting with char:")
-      (setq char (read-char)))
-    (cons (point) (progn (re-search-backward (format "\\_<%c" char))
-                         (point)))))
-
-(defun qe-unit-ends-mark ()
-  "Text unit ends for mark."
-  (cons (region-beginning) (region-end)))
-
-(defun qe-unit-ends-forward-whitespace ()
-  "Text unit ends for forward whitespace."
-  (cons (point) (progn (skip-syntax-forward " ") (point))))
-
 (defun qe-unit-symbol ()
   "Text unit ends for current symbol."
   (cons (progn (skip-syntax-backward "w_") (point))
         (progn (skip-syntax-forward "w_") (point))))
-
-(defun qe-unit-ends-inside (&optional msg)
-  "Text unit ends for inside quotes/parens."
-  (message (or msg "Inside:"))
-  (let ((char (read-char)))
-    (if (memq char '(?\( ?\) ?\[ ?\] ?\{ ?\} ?\< ?\>))
-        (qe-region-inside-pair char 'inside)
-      (if(memq char '(?\" ?\'))
-          (qe-region-inside-quotes char 'inside)
-        (if (memq char '(?x ?X))
-            (qe-region-xml-content 'inside)
-          (error "Unknown char entered for kill inside text unit"))))))
-
-(defun qe-unit-ends-outside ()
-  "Text unit ends for inside quotes/parens plus the enclosing chars."
-  (let* ((ends (qe-unit-ends-inside "Outside:"))
-         (beg (car ends))
-         (end (cdr ends)))
-    (unless (= beg (point-min))
-      (setq beg (1- beg)))
-    (unless (= end (point-max))
-      (setq end (1+ end)))
-    (cons beg end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utility functions
@@ -633,7 +499,7 @@ preserved.")
                 (skip-chars-forward "a-z0-9")
               (skip-chars-forward "A-Z0-9")
               (when (and (looking-at "[a-z]")
-                         (looking-back "[A-Z0-9][A-Z]"))
+                         (looking-back "[A-Z0-9][A-Z]" (point-at-bol)))
                 (backward-char)))))
       (skip-chars-forward "a-zA-Z0-9"))))
 
@@ -771,15 +637,6 @@ preserved.")
                         (setq depth (1+ depth))))
                     (forward-sexp))))))))
     (cons beg end))))
-
-(defun qe-highlight (beg end &optional face)
-  "Highlight a region temporarily."
-  (unless face
-    (setq face 'isearch))
-  (let ((ov (make-overlay beg end)))
-    (overlay-put ov 'face face)
-    (sit-for qe-highlight-delay)
-    (delete-overlay ov)))
 
 (provide 'quick-edit)
 ;;; quick-edit.el ends here
