@@ -482,12 +482,11 @@
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
 
-(use-package multiple-cursors
-  :bind* ("M-r e" . mc/edit-lines)
-  :init
-  (setq-default mc/always-run-for-all t)
+(use-package mc-edit-lines
+  :bind* (("M-r e" . mc/edit-lines))
   :config
   (progn
+    (setq mc/always-run-for-all t)
     (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)))
 
 (use-package nxml-mode
