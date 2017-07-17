@@ -12,8 +12,8 @@
 //
 // $Id$
 
-#ifndef __%N_%E__
-#define __%N_%E__
+#ifndef _%n_INCLUDED
+#define _%n_INCLUDED
 
 
 

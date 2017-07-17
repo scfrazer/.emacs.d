@@ -6,7 +6,7 @@
 ;; Style
 
 (c-add-style "strou2" '("stroustrup"
-                        (c-basic-offset . 4)
+                        (c-basic-offset . 2)
                         (c-comment-only-line-offset 0 . 0)
                         (c-block-comment-prefix . "")))
 (setq c-default-style "strou2")
@@ -54,9 +54,7 @@
       (setq beg (point-min)
             end (point-max)))
     (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l CPP") nil t)
-    (goto-char pos)
-    (beginning-of-line)
-    (recenter)))
+    (goto-char pos)))
 
 (defun my-java-mode-uncrustify ()
   "Run uncrustify on marked region, or entire buffer."
@@ -69,9 +67,7 @@
       (setq beg (point-min)
             end (point-max)))
     (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup") nil t)
-    (goto-char pos)
-    (beginning-of-line)
-    (recenter)))
+    (goto-char pos)))
 
 ;; Hooks
 
