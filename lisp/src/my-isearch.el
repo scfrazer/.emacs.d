@@ -49,7 +49,7 @@
 
 (defun my-isearch-search-forward-line (str)
   "`search-forward' only to end-of-line, and exit at other end."
-  (interactive "sSearch on line for: ")
+  (interactive "sForward on line to: ")
   (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
     (setq mc--this-command `(lambda () (interactive) (my-isearch-search-forward-line-1 ',str))))
   (my-isearch-search-forward-line-1 str))
