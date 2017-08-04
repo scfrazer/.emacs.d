@@ -29,25 +29,19 @@
                     (nil)))))
 
 (setq-default doxymacs-Qt-blank-multiline-comment-template
-              '("/*!" > n "* " p > n "*/" >))
+              '("//!" p >))
 
 (setq-default doxymacs-Qt-function-comment-template
               '((let ((next-func (doxymacs-find-next-func)))
                   (if next-func
                       (list
                        'l
-                       "/*!" '> 'n
-                       " * \\brief " 'p '> 'n
-                       (when (cdr (assoc 'args next-func))
-                         '(l " *" '> 'n))
+                       "//! " 'p '> 'n
                        (doxymacs-parm-tempo-element (cdr (assoc 'args next-func)))
                        (unless (string-match (regexp-quote (cdr (assoc 'return next-func)))
                                              doxymacs-void-types)
-                         '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
-                             "return " (p "Returns: ") > n))
-                       " */" '>
-                       (unless (looking-at "\\s-*$")
-                         'n))
+                         '(l "//! " (doxymacs-doxygen-command-char)
+                             "return " (p "Returns: ") > n)))
                     (error "Can't find next function declaration.")
                     (nil)))))
 
@@ -61,7 +55,7 @@
                 "param " (car parms) " " (list 'p prompt) '> 'n
                 (doxymacs-parm-tempo-element (cdr parms))))
          ((string= doxymacs-doxygen-style "Qt")
-          (list 'l " * " (doxymacs-doxygen-command-char)
+          (list 'l "//! " (doxymacs-doxygen-command-char)
                 "param " (car parms) " " (list 'p prompt) '> 'n
                 (doxymacs-parm-tempo-element (cdr parms))))
          ((string= doxymacs-doxygen-style "C++")

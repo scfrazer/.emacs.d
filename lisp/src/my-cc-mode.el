@@ -82,6 +82,7 @@
       (interactive)
       (let ((c-electric-flag t))
         (call-interactively 'c-electric-brace))))
+  (define-key c-mode-base-map (kbd "C-c C-f") 'doxymacs-insert-function-comment)
   (define-key c-mode-base-map (kbd "C-c C-s") 'my-cc-create-skeleton-from-prototype)
   (c-set-style "strou2"))
 

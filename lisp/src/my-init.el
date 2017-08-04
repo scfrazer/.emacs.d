@@ -778,6 +778,7 @@
               file-template-paths (list (concat user-emacs-directory "templates/"))
               fill-column 78
               flyspell-mode-map nil
+              font-lock-maximum-decoration '((c-mode . t) (c++-mode . 2) (t . 1))
               hi-lock-auto-select-face t
               highlight-changes-active-string " Chg+"
               highlight-changes-global-modes nil
