@@ -299,11 +299,11 @@
       (if proj
           (progn
             (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                                      ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
+                                      ((eq my-location 'SJC) "/auto/asic-sjc-chipdv0/scfrazer/tags")
                                       ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags")))
             (setq proj (concat proj "/")))
         (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                                  ((eq my-location 'SJC) "/auto/cppfs3a/scfrazer/tags")
+                                  ((eq my-location 'SJC) "/auto/asic-sjc-chipdv0/scfrazer/tags")
                                   ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
       (setq etags-select-use-short-name-completion nil
             etags-select-relative-root proj
