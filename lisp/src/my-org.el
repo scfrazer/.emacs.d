@@ -11,6 +11,7 @@
               org-cycle-separator-lines 1
               org-display-custom-times t
               org-export-author-info nil
+              org-export-copy-to-kill-ring nil
               org-export-creator-info nil
               org-export-time-stamp-file nil
               org-export-with-toc nil
@@ -19,7 +20,7 @@
               org-export-html-style-include-default nil
               org-export-html-validation-link ""
               org-export-htmlize-output-type 'inline-css
-              org-fontify-emphasized-text nil  ; FIXME To avoid /path/names displayed as italics
+              ;; org-fontify-emphasized-text nil
               org-hide-leading-stars nil
               org-id-track-globally nil
               org-imenu-depth 6
@@ -171,6 +172,18 @@ Otherwise: Add a checkbox and update heading accordingly."
     (when buf
       (kill-buffer buf))))
 
+(defun my-org-region-as-src-block (beg end)
+  "Change the current region into a source block."
+  (interactive "r")
+  (save-excursion
+    (goto-char end)
+    (unless (= (point) (point-at-bol))
+      (forward-line 1))
+    (insert "#+end_src\n")
+    (goto-char beg)
+    (beginning-of-line)
+    (insert "#+begin_src sh\n")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-after-load "org"
@@ -255,6 +268,13 @@ Otherwise: Add a checkbox and update heading accordingly."
                               (org-infile-export-plist)))))
     (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
 
+(defun my-org-export-html ()
+  "Export as html and move to non-private spot."
+  (interactive)
+  (let ((filename (concat (file-name-sans-extension (buffer-file-name)) ".html")))
+    (call-interactively 'org-export-as-html)
+    (rename-file filename "/auto/luke_user5/scfrazer/doc" t)))
+
 (defun my-org-export-html-final-hook ()
   "Export html final hook."
   (save-excursion
@@ -280,7 +300,12 @@ Otherwise: Add a checkbox and update heading accordingly."
         (re-search-forward "<span class=\"tag\">" nil t))
       (insert "[")
       (re-search-forward "</span>" nil t)
-      (insert "]"))))
+      (insert "]")))
+
+    (goto-char (point-min))
+    (while (re-search-forward "\n\n</pre>" nil t)
+      (forward-line -1)
+      (delete-char 1)))
 
 (add-hook 'org-export-html-final-hook 'my-org-export-html-final-hook)
 
@@ -354,6 +379,13 @@ Otherwise: Add a checkbox and update heading accordingly."
           (call-process-region (point-min) (point-max) "/usr/sbin/sendmail" nil t nil email-addrs))
         (kill-buffer "*exported-html*")))))
 
+(defun my-org-after-save-hook ()
+  "After buffer save local hook."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^#[+]export-html" nil t)
+      (my-org-export-html))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-mode-hook ()
@@ -391,11 +423,11 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "C-S-e") 'org-end-of-line)
   (define-key org-mode-map (kbd "C-a") 'move-beginning-of-line)
   (define-key org-mode-map (kbd "C-c !") 'my-org-insert-open-time-stamp)
-  (define-key org-mode-map (kbd "C-c C-h") 'my-org-insert-heading)
+  (define-key org-mode-map (kbd "C-c C-e") 'my-org-export-html)
   (define-key org-mode-map (kbd "C-c C-l") 'my-org-link)
   (define-key org-mode-map (kbd "C-c C-n") 'my-org-new)
   (define-key org-mode-map (kbd "C-c C-r") 'org-renumber-ordered-list)
-  (define-key org-mode-map (kbd "C-c C-s") 'org-sort-entries-or-items)
+  (define-key org-mode-map (kbd "C-c C-s") 'my-org-region-as-src-block)
   (define-key org-mode-map (kbd "C-c C-u") 'my-org-up-heading)
   (define-key org-mode-map (kbd "C-c C-w") 'org-cut-subtree)
   (define-key org-mode-map (kbd "C-c C-x") 'my-org-handle-checkbox)
@@ -404,7 +436,9 @@ Otherwise: Add a checkbox and update heading accordingly."
   (define-key org-mode-map (kbd "M-m") 'org-beginning-of-line)
 
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
-  (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end))
+  (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end)
+
+  (add-hook 'after-save-hook 'my-org-after-save-hook t t))
 
 (add-hook 'org-mode-hook 'my-org-mode-hook)
 
