@@ -37,6 +37,19 @@
   (insert last-command-event)
   (indent-according-to-mode))
 
+(define-compilation-mode flow-compilation-mode "flow-compile"
+  "Flow compilation mode."
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       (list '("^Error: \\(.+\\):\\([0-9]+\\)" 1 2))))
+
+(defun my-web-mode-flow-status ()
+  "Show flow errors."
+  (interactive)
+  (let ((npm-bin (replace-regexp-in-string "\n$" "" (shell-command-to-string "npm bin"))))
+    (save-some-buffers (not compilation-ask-about-save)
+                       compilation-save-buffers-predicate)
+    (compilation-start (concat npm-bin "/flow status --color never") 'flow-compilation-mode)))
+
 (defvar my-web-mode-js-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd ")") 'my-web-mode-electric-closer)
@@ -81,6 +94,7 @@
           comment-end ""
           imenu-create-index-function 'my-web-mode-js-imenu-index)
     (my-web-mode-js-mode 1)
+    (local-set-key (kbd "C-c C-f") 'my-web-mode-flow-status)
     (flymake-eslint-load)))
 
 (add-hook 'web-mode-hook 'my-web-mode-hook)
