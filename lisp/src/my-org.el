@@ -211,23 +211,6 @@ Otherwise: Add a checkbox and update heading accordingly."
        "<new></new>"
        (lambda () (backward-char 6)))
 
-     (define-abbrev org-mode-abbrev-table
-       "exam"
-       "#+begin_example\n\n#+end_example"
-       (lambda () (backward-char 14)))
-
-     (define-abbrev org-mode-abbrev-table
-       "src"
-       "#+begin_src \n\n#+end_src"
-       (lambda ()
-         (let ((mode (read-from-minibuffer "Mode? ")))
-           (when (eobp)
-             (insert "\n")
-             (backward-char 1))
-           (backward-char 11)
-           (insert mode)
-           (forward-char 1))))
-
      ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,26 +237,28 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (add-hook 'org-export-preprocess-hook 'my-org-export-preprocess-hook)
 
-(defvar my-org-float-tags t
+(defvar my-org-float-tags nil
   "*Float tags on right side of HTML output")
 
 (defvar my-org-add-bullets nil)
 
 (defadvice org-export-as-html (before my-org-export-as-html activate)
   "Hook to see if section numbers are going to be added."
-  (let ((opt-plist
-         (org-export-process-option-filters
-          (org-combine-plists (org-default-export-plist)
-                              ext-plist
-                              (org-infile-export-plist)))))
-    (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
+  ;; (let ((opt-plist
+  ;;        (org-export-process-option-filters
+  ;;         (org-combine-plists (org-default-export-plist)
+  ;;                             ext-plist
+  ;;                             (org-infile-export-plist)))))
+  ;;   (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
+  )
 
-(defun my-org-export-html ()
+(defun my-org-export-html (&optional dir)
   "Export as html and move to non-private spot."
   (interactive)
   (let ((filename (concat (file-name-sans-extension (buffer-file-name)) ".html")))
     (call-interactively 'org-export-as-html)
-    (rename-file filename "/auto/luke_user5/scfrazer/doc" t)))
+    (when dir
+      (rename-file filename dir t))))
 
 (defun my-org-export-html-final-hook ()
   "Export html final hook."
@@ -383,8 +368,8 @@ Otherwise: Add a checkbox and update heading accordingly."
   "After buffer save local hook."
   (save-excursion
     (goto-char (point-min))
-    (when (re-search-forward "^#[+]export-html" nil t)
-      (my-org-export-html))))
+    (when (re-search-forward "^#[+]export-html\\s-+\\(.+\\)\\s-*$" nil t)
+      (my-org-export-html (match-string-no-properties 1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -438,6 +423,8 @@ Otherwise: Add a checkbox and update heading accordingly."
   (font-lock-add-keywords nil '(("OPENED:" (0 'org-special-keyword t))) 'add-to-end)
   (font-lock-add-keywords nil '(("</?new>" (0 'my-org-new-face t))) 'add-to-end)
 
+  (setq truncate-lines nil)
+
   (add-hook 'after-save-hook 'my-org-after-save-hook t t))
 
 (add-hook 'org-mode-hook 'my-org-mode-hook)
@@ -454,8 +441,7 @@ body {
     padding: 0;
     margin: 0;
     color: #000;
-    font-family: \"Bitstream Vera Sans\", Verdana, sans-serif;
-    font-size: 85%;
+    font-family: sans-serif;
 }
 
 div#content {
@@ -477,7 +463,6 @@ div#content {
 }
 
 h1 {
-    font-family: \"BitStream Vera Sans\", Verdana;
     font-size: 180%;
     margin: -1em -1em .2em;
     padding: 0.75em 1em 0em 1em;
@@ -485,20 +470,26 @@ h1 {
 
 h2 {
     font-size: 150%;
-    padding: .2em;
-    border-bottom: 1px solid #888;
+    text-decoration: underline;
 }
 
 h3 {
     font-size: 120%;
-}
-
-.outline-text-3 {
-    margin: 0em 1em;
+    text-decoration: underline;
 }
 
 h4 {
     font-size: 110%;
+    text-decoration: underline;
+}
+
+h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    margin: 1em 0;
+}
+
+.outline-text-3 {
+    margin: 0em 1em;
 }
 
 .outline-4 {
@@ -507,11 +498,6 @@ h4 {
 
 .outline-text-4 {
     margin: 0em 2em;
-}
-
-h2, h3, h4, h5, h6 {
-    font-weight: normal;
-    margin: 1em 0;
 }
 
 a {
@@ -530,11 +516,12 @@ span.underline {
 }
 
 pre {
-    overflow: auto;
+    display: inline-block;
+    margin: 0;
+    white-space: pre-line;
     border: 1pt solid #AEBDCC;
     background-color: #F3F5F7;
     padding: 5pt;
-    font-family: courier, monospace;
 }
 
 code {
@@ -545,7 +532,6 @@ code {
 
 table {
     border: 1px solid #777;
-    font-size: 100%;
     border-collapse: collapse;
     margin: 1em 0;
 }
@@ -560,8 +546,6 @@ th, td {
 th {
     background: #eee;
 }
-
-ul { list-style-type: square; }
 
 .todo { color: red; }
 .WAITING { color: #cdcd00; }

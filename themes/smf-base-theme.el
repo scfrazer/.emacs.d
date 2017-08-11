@@ -76,6 +76,7 @@
  `(my-ibuffer-read-only-face               ((t :inherit caution)))
  `(my-narrow-face                          ((t :foreground "black" :background ,(smf-color 226))))
  `(my-read-only-face                       ((t :foreground "black" :background ,(smf-color 202))))
+ `(org-level-1                             ((t :inherit outline-1 :underline t)))
  `(region                                  ((t :foreground ,(smf-color 231) :background ,(smf-color 31))))
  `(show-paren-match-face                   ((t :inherit success)))
  `(show-paren-mismatch-face                ((t :inherit error)))
