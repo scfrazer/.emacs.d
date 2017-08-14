@@ -6,11 +6,12 @@
               org-archive-mark-done nil
               org-archive-reversed-order t
               org-archive-save-context-info '(itags ltags olpath)
+              org-author-info nil
               org-completion-use-ido t
               org-cycle-include-plain-lists t
               org-cycle-separator-lines 1
               org-display-custom-times t
-              org-author-info nil
+              org-export-with-sub-superscripts nil
               org-copy-to-kill-ring nil
               org-creator-info nil
               org-time-stamp-file nil
@@ -47,6 +48,7 @@
                                         ("w" . my-org-cut-subtree)
                                         ("y" . org-paste-subtree))
               org-startup-folded nil
+              org-use-sub-superscripts '{}
               org-tags-column -80
               org-time-stamp-custom-formats '("<%a %b %d, %Y>" . "<%a %b %d, %Y %H:%M>")
               org-todo-keywords '((sequence "TODO" "STARTED" "WAITING" "|" "DONE")
@@ -375,7 +377,6 @@ Otherwise: Add a checkbox and update heading accordingly."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-mode-hook ()
-  (setq org-use-sub-superscripts '{})
 
   (modify-syntax-entry ?_ "_")
 
