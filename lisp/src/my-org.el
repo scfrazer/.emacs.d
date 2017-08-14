@@ -10,17 +10,18 @@
               org-cycle-include-plain-lists t
               org-cycle-separator-lines 1
               org-display-custom-times t
-              org-export-author-info nil
-              org-export-copy-to-kill-ring nil
-              org-export-creator-info nil
-              org-export-time-stamp-file nil
-              org-export-with-toc nil
-              org-export-with-section-numbers nil
-              org-export-html-inline-images t
-              org-export-html-style-include-default nil
-              org-export-html-validation-link ""
-              org-export-htmlize-output-type 'inline-css
-              ;; org-fontify-emphasized-text nil
+              org-author-info nil
+              org-copy-to-kill-ring nil
+              org-creator-info nil
+              org-time-stamp-file nil
+              org-with-toc nil
+              org-with-section-numbers nil
+              org-html-head-include-scripts nil
+              org-html-inline-images t
+              org-html-postamble nil
+              org-html-style-include-default nil
+              org-html-validation-link ""
+              org-html-htmlize-output-type 'inline-css
               org-hide-leading-stars nil
               org-id-track-globally nil
               org-imenu-depth 6
@@ -242,21 +243,21 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 (defvar my-org-add-bullets nil)
 
-(defadvice org-export-as-html (before my-org-export-as-html activate)
-  "Hook to see if section numbers are going to be added."
-  ;; (let ((opt-plist
-  ;;        (org-export-process-option-filters
-  ;;         (org-combine-plists (org-default-export-plist)
-  ;;                             ext-plist
-  ;;                             (org-infile-export-plist)))))
-  ;;   (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
-  )
+;; (defadvice org-export-as-html (before my-org-export-as-html activate)
+;;   "Hook to see if section numbers are going to be added."
+;;   (let ((opt-plist
+;;          (org-export-process-option-filters
+;;           (org-combine-plists (org-default-export-plist)
+;;                               ext-plist
+;;                               (org-infile-export-plist)))))
+;;     (setq my-org-add-bullets (not (plist-get opt-plist :section-numbers)))))
+;;   )
 
 (defun my-org-export-html (&optional dir)
   "Export as html and move to non-private spot."
   (interactive)
   (let ((filename (concat (file-name-sans-extension (buffer-file-name)) ".html")))
-    (call-interactively 'org-export-as-html)
+    (org-html-export-to-html)
     (when dir
       (rename-file filename dir t))))
 
@@ -343,32 +344,32 @@ Otherwise: Add a checkbox and update heading accordingly."
       (call-interactively 'org-store-link)
     (call-interactively 'org-insert-link)))
 
-(defun my-org-export-and-email ()
-  "Export and email the file."
-  (interactive)
-  (save-excursion
-    (org-export-as-html 3 nil nil "*exported-html*"))
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^#\\+email_addrs: \\(.+\\)$" nil t)
-      (let ((email-addrs (match-string-no-properties 1)))
-        (with-current-buffer "*exported-html*"
-          (goto-char (point-min))
-          (insert "To: " email-addrs "\n")
-          (insert "From: " (getenv "USER") "\n")
-          (let ((pos (point)))
-            (when (re-search-forward "<title>\\(.+\\)</title>" nil t)
-              (goto-char pos)
-              (insert "Subject: " (match-string-no-properties 1) "\n")))
-          (insert "Content-type: text/html;\n")
-          (call-process-region (point-min) (point-max) "/usr/sbin/sendmail" nil t nil email-addrs))
-        (kill-buffer "*exported-html*")))))
+;; (defun my-org-export-and-email ()
+;;   "Export and email the file."
+;;   (interactive)
+;;   (save-excursion
+;;     (org-export-as-html 3 nil nil "*exported-html*"))
+;;   (save-excursion
+;;     (goto-char (point-min))
+;;     (when (re-search-forward "^#\\+email_addrs: \\(.+\\)$" nil t)
+;;       (let ((email-addrs (match-string-no-properties 1)))
+;;         (with-current-buffer "*exported-html*"
+;;           (goto-char (point-min))
+;;           (insert "To: " email-addrs "\n")
+;;           (insert "From: " (getenv "USER") "\n")
+;;           (let ((pos (point)))
+;;             (when (re-search-forward "<title>\\(.+\\)</title>" nil t)
+;;               (goto-char pos)
+;;               (insert "Subject: " (match-string-no-properties 1) "\n")))
+;;           (insert "Content-type: text/html;\n")
+;;           (call-process-region (point-min) (point-max) "/usr/sbin/sendmail" nil t nil email-addrs))
+;;         (kill-buffer "*exported-html*")))))
 
 (defun my-org-after-save-hook ()
   "After buffer save local hook."
   (save-excursion
     (goto-char (point-min))
-    (when (re-search-forward "^#[+]export-html\\s-+\\(.+\\)\\s-*$" nil t)
+    (when (re-search-forward "^#[+]export-html:\\s-+\\(.+\\)\\s-*$" nil t)
       (my-org-export-html (match-string-no-properties 1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -433,7 +434,7 @@ Otherwise: Add a checkbox and update heading accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default org-export-html-style
+(setq-default org-html-style
 "
 <style type=\"text/css\">
 body {
