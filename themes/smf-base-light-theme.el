@@ -30,6 +30,7 @@
  `(mc/cursor-face                 ((t :foreground "white" :background ,(smf-color 162))))
  `(my-display-table-face          ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :bold t)))
  `(org-block-background           ((t :background "ivory")))
+ `(org-code                       ((t :inherit org-block-background :bold t)))
  `(outline-1                      ((t :foreground ,(smf-color 19))))
  `(outline-2                      ((t :foreground ,(smf-color 23))))
  `(outline-3                      ((t :foreground ,(smf-color 54))))

@@ -1,5 +1,17 @@
 ;;; my-org.el
 
+;; Change code markers from "~" to "`".  Need to do before org is loaded.
+(custom-set-variables
+ '(org-emphasis-alist
+   (quote
+    (("*" bold)
+     ("/" italic)
+     ("_" underline)
+     ("=" org-verbatim verbatim)
+     ("`" org-code verbatim)
+     ("+"
+      (:strike-through t))))))
+
 (require 'org-install)
 
 (setq-default org-archive-location "%s_archive::"
