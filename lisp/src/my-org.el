@@ -3,20 +3,20 @@
 (require 'org-install)
 
 (setq-default org-archive-location "%s_archive::"
-              org-archive-mark-done nil
-              org-archive-reversed-order t
-              org-archive-save-context-info '(itags ltags olpath)
-              org-author-info nil
+              ;; org-archive-mark-done nil
+              ;; org-archive-reversed-order t
+              ;; org-archive-save-context-info '(itags ltags olpath)
+              ;; org-author-info nil
               org-completion-use-ido t
               org-cycle-include-plain-lists t
               org-cycle-separator-lines 1
               org-display-custom-times t
               org-export-with-sub-superscripts nil
-              org-copy-to-kill-ring nil
-              org-creator-info nil
-              org-time-stamp-file nil
-              org-with-toc nil
-              org-with-section-numbers nil
+              ;; org-copy-to-kill-ring nil
+              ;; org-creator-info nil
+              ;; org-time-stamp-file nil
+              ;; org-with-toc nil
+              org-export-with-section-numbers nil
               org-html-head-include-scripts nil
               org-html-inline-images t
               org-html-postamble nil
@@ -24,7 +24,7 @@
               org-html-validation-link ""
               org-html-htmlize-output-type 'inline-css
               org-hide-leading-stars nil
-              org-id-track-globally nil
+              ;; org-id-track-globally nil
               org-imenu-depth 6
               org-link-frame-setup '((file . find-file))
               org-log-done nil
@@ -54,10 +54,10 @@
               org-todo-keywords '((sequence "TODO" "STARTED" "WAITING" "|" "DONE")
                                   (sequence "MAYBE" "SOMEDAY" "|" "CANCELED")
                                   (sequence "|" "REASSIGNED"))
-              org-todo-keyword-faces '(("TODO"       . (:inherit error))
-                                       ("STARTED"    . (:inherit font-lock-function-name-face))
-                                       ("WAITING"    . (:inherit warning))
-                                       ("DONE"       . (:inherit success))
+              org-todo-keyword-faces '(("TODO"       . (:foreground "color-160" :weight bold))
+                                       ("STARTED"    . (:foreground "color-19" :weight bold))
+                                       ("WAITING"    . (:foreground "color-142" :weight bold))
+                                       ("DONE"       . (:foreground "color-22" :weight bold))
                                        ("MAYBE"      . (:inherit font-lock-doc-face))
                                        ("SOMEDAY"    . (:inherit font-lock-doc-face))
                                        ("CANCELED"   . (:inherit font-lock-comment-face))
