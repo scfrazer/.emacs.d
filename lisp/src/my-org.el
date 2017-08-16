@@ -77,6 +77,34 @@
               org-use-speed-commands t
               org-yank-folded-subtrees nil)
 
+;; Bug fixes for change of code marker
+
+(require 'org-element)
+
+(defun org-element-text-markup-successor ()
+  "Search for the next text-markup object.
+Return value is a cons cell whose CAR is a symbol among `bold',
+`italic', `underline', `strike-through', `code' and `verbatim'
+and CDR is beginning position."
+  (save-excursion
+    (unless (bolp) (backward-char))
+    (when (re-search-forward org-emph-re nil t)
+      (let ((marker (match-string 3)))
+        (cons (cond
+               ((equal marker "*") 'bold)
+               ((equal marker "/") 'italic)
+               ((equal marker "_") 'underline)
+               ((equal marker "+") 'strike-through)
+               ((equal marker "`") 'code)
+               ((equal marker "=") 'verbatim)
+               (t (error "Unknown marker at %d" (match-beginning 3))))
+              (match-beginning 2))))))
+
+(defun org-element-code-interpreter (code contents)
+  "Interpret CODE object as Org syntax.
+CONTENTS is nil."
+  (format "`%s`" (org-element-property :value code)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun my-org-cut-subtree ()
@@ -534,13 +562,13 @@ pre {
     margin: 0;
     white-space: pre-line;
     border: 1pt solid #AEBDCC;
-    background-color: #F3F5F7;
+    background-color: ivory;
     padding: 5pt;
 }
 
 code {
     border: 1px solid #ccc;
-    background: #eee;
+    background: ivory;
     padding: 1px;
 }
 

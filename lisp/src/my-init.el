@@ -520,8 +520,6 @@
           ("C-c ]"  . my-pair-close-paren-dwim)
           ("C-c {"  . my-pair-open-paren-dwim)
           ("C-c }"  . my-pair-close-paren-dwim)
-          ("C-c <"  . my-pair-open-paren-dwim)
-          ("C-c >"  . my-pair-close-paren-dwim)
           ("C-c '"  . my-pair-quotes-dwim)
           ("C-c \"" . my-pair-quotes-dwim)
           ("C-c `"  . my-pair-quotes-dwim)
@@ -564,6 +562,9 @@
   (progn
     (require 'my-python)
     (defun my-python-mode-hook ()
+      (bind-keys :map python-mode-map
+                 ("C-c >" . python-indent-shift-right)
+                 ("C-c <" . python-indent-shift-left))
       (setq forward-sexp-function nil))
     (add-hook 'python-mode-hook 'my-python-mode-hook)))
 
