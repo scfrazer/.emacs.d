@@ -1847,8 +1847,7 @@ Prefix with C-u to resize the `next-window'."
 (bind-keys*
  ("<delete>"    . delete-char)
  ("<f1>"        . my-flymake-goto-prev-error)
- ("<f2>"        . my-flymake-show-current-error)
- ("<f3>"        . my-flymake-goto-next-error)
+ ("<f2>"        . my-flymake-goto-next-error)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)

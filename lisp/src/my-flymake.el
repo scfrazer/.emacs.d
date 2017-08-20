@@ -50,10 +50,14 @@
 (defun my-flymake-show-current-error ()
   "Show the current error point is on."
   (interactive)
-  (when (get-char-property (point) 'flymake-overlay)
+  (when (and (boundp 'flymake-mode)
+             flymake-mode
+             (get-char-property (point) 'flymake-overlay))
     (let ((help (get-char-property (point) 'help-echo)))
       (when help
         (message "%s" help)))))
+
+(run-with-idle-timer 1.0 t 'my-flymake-show-current-error)
 
 (setq minor-mode-alist (remove (assq 'flymake-mode minor-mode-alist) minor-mode-alist))
 
