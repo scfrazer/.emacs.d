@@ -346,7 +346,9 @@
 
 (use-package flymake
   :bind* (("C-x f" . flymake-start-syntax-check))
-  :commands (my-flymake-goto-next-error my-flymake-goto-prev-error)
+  :commands (my-flymake-goto-next-error
+             my-flymake-goto-prev-error
+             my-flymake-show-current-error)
   :init
   (defalias 'fly 'flymake-mode)
   :config
@@ -1844,6 +1846,9 @@ Prefix with C-u to resize the `next-window'."
 
 (bind-keys*
  ("<delete>"    . delete-char)
+ ("<f1>"        . my-flymake-goto-prev-error)
+ ("<f2>"        . my-flymake-show-current-error)
+ ("<f3>"        . my-flymake-goto-next-error)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
@@ -1891,7 +1896,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
- ("C-x `"       . my-flymake-goto-next-error)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
@@ -1899,7 +1903,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x v"       . (lambda () "Admonish me" (interactive) (ding) (message "Stop it!")))
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-toggle-window-split)
- ("C-x ~"       . my-flymake-goto-prev-error)
  ("C-z"         . undo)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
@@ -1909,6 +1912,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
+ ("M-]"         . my-forward-paragraph)
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
@@ -1921,7 +1925,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
- ("M-]"         . my-forward-paragraph)
  ("M-~"         . previous-error))
 
 ;; These have to be in this order

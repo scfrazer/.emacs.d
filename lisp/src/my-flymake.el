@@ -39,19 +39,42 @@
   (unless (get-char-property (point) 'flymake-overlay)
     (forward-line -1))
   (flymake-goto-next-error)
-  (when (get-char-property (point) 'flymake-overlay)
-    (let ((help (get-char-property (point) 'help-echo)))
-      (when help
-        (message "%s" help)))))
+  (my-flymake-show-current-error))
 
 (defun my-flymake-goto-prev-error ()
   "Go to prev flymake error and show the error in the minibuffer."
   (interactive)
   (flymake-goto-prev-error)
+  (my-flymake-show-current-error))
+
+(defun my-flymake-show-current-error ()
+  "Show the current error point is on."
+  (interactive)
   (when (get-char-property (point) 'flymake-overlay)
     (let ((help (get-char-property (point) 'help-echo)))
       (when help
         (message "%s" help)))))
+
+(setq minor-mode-alist (remove (assq 'flymake-mode minor-mode-alist) minor-mode-alist))
+
+(defun my-flymake-report-status-advice (orig-fun e-w &optional status)
+  "Format error/warning count."
+  (let ((fmtd-e-w e-w))
+    (when (and (> (length e-w) 0)
+               (string-match "\\([0-9]+\\)/\\([0-9]+\\)" e-w))
+      (let ((errors (match-string 1 e-w))
+            (warnings (match-string 2 e-w)))
+        (setq fmtd-e-w (concat
+                        (if (> (string-to-number errors) 0)
+                            (propertize errors 'face 'error)
+                          errors)
+                        "/"
+                        (if (> (string-to-number warnings) 0)
+                            (propertize warnings 'face 'warning)
+                          warnings)))))
+    (apply orig-fun (list fmtd-e-w status))))
+
+(advice-add 'flymake-report-status :around #'my-flymake-report-status-advice)
 
 (defadvice flymake-start-syntax-check-process (around my-flymake-start-syntax-check-process-advice activate)
   "Don't query to kill flymake process."
