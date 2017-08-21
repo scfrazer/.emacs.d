@@ -4,7 +4,7 @@
 (require 'my-ido)
 
 (setq imenu-max-items 25)
-(setq imenu-max-length 100)
+(setq imenu-max-item-length 115)
 (setq imenu-sort-function nil)
 (add-hook 'imenu-after-jump-hook 'recenter)
 
