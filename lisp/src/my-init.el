@@ -1644,6 +1644,12 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive)
   (set-buffer-modified-p (not (buffer-modified-p))))
 
+(defun my-toggle-tramp ()
+  "Toggle tramp on/off."
+  (interactive)
+  (setq tramp-mode (not tramp-mode))
+  (message (concat "Tramp mode " (if tramp-mode "on" "off"))))
+
 (defun my-toggle-window-split ()
   "Toggle between horizontal/vertical split.
 Only works if there are exactly two windows."
