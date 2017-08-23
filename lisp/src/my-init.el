@@ -746,7 +746,7 @@
   (electric-indent-mode -1))
 
 (when (fboundp 'electric-pair-mode)
-  (electric-pair-mode -1))
+  (electric-pair-mode 1))
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
