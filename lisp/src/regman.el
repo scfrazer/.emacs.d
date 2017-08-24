@@ -49,7 +49,8 @@
         (call-process regman-program nil t nil "-f" "default" (concat "^" reg "$"))
         (set-buffer-modified-p nil)
         (regman-mode))
-      (pop-to-buffer regman-buffer-name))))
+      (pop-to-buffer regman-buffer-name)
+      (goto-char (point-min)))))
 
 ;;;###autoload
 (defun regman-insert-register ()

@@ -20,6 +20,7 @@
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'ws 'whitespace-mode)
 (setq-default my-font-lock-auto-whitespace t)
+(setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
 
 (require 'bind-key)
 (require 'bind-remind)
@@ -65,6 +66,7 @@
   (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
 (require 'easy-escape)
+(setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
 
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
@@ -118,6 +120,7 @@
 
 (require 'show-mark)
 (global-show-mark-mode 1)
+(setq minor-mode-alist (remove (assq 'show-mark-mode minor-mode-alist) minor-mode-alist))
 
 (require 'my-task)
 (require 'my-undo)
@@ -745,8 +748,21 @@
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
 
-(when (fboundp 'electric-pair-mode)
-  (electric-pair-mode 1))
+(electric-pair-mode 1)
+(defun my-electric-pair-post-self-insert-function (orig-fun)
+  (let ((indent-after (and (eq last-command-event ?\n)
+                           (< (1+ (point-min)) (point) (point-max))
+                           (eq (save-excursion
+                                 (skip-chars-backward "\t\s")
+                                 (char-before (1- (point))))
+                               (matching-paren (char-after))))))
+    (apply orig-fun nil)
+    (when indent-after
+      (indent-according-to-mode)
+      (save-excursion
+        (forward-line 1)
+        (indent-according-to-mode)))))
+(advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
@@ -2010,6 +2026,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'theme 'my-theme)
+(defalias 'tramp 'my-toggle-tramp)
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
