@@ -749,6 +749,7 @@
   (electric-indent-mode -1))
 
 (electric-pair-mode 1)
+(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (defun my-electric-pair-post-self-insert-function (orig-fun)
   (let ((indent-after (and (eq last-command-event ?\n)
                            (< (1+ (point-min)) (point) (point-max))
