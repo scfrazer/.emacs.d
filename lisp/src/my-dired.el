@@ -9,12 +9,16 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 (setq dired-auto-revert-buffer t
-      dired-boring-extensions '("~" "#" ".o" ".obj" ".d" ".elc" ".pyc" ".lst" ".log" ".orig" ".keep" ".contrib")
       dired-dwim-target t
       dired-isearch-filenames 'dwim
       dired-listing-switches "-alv"
       dired-recursive-copies 'always
       dired-recursive-deletes 'always)
+
+(defface my-dired-debug-face
+  '((t (:foreground "orange2")))
+  "Debug file face."
+  :group 'dired-faces)
 
 (setq dired-font-lock-keywords
       '(("^. \\([^\n]+\\)\\(:\\)[\n]" (1 font-lock-function-name-face))
@@ -22,10 +26,9 @@
         ("^. [0-9 	]*d[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-keyword-face)))
         ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
         ("^. [0-9 	]*...\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
-        (eval let ((extensions (mapcar 'regexp-quote dired-boring-extensions)))
-              (list
-               (concat "\\(" (mapconcat 'identity extensions "\\|") "\\|#\\)$")
-               '(".+" (dired-move-to-filename) nil (0 font-lock-comment-face))))))
+        ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
+        ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
+        ("~\\|#\\|\\([.]\\(o\\|obj\\|d\\|elc\\|pyc\\|orig\\|keep\\|contrib\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
 
 (when (featurep 'my-clearcase)
   (setq dired-font-lock-keywords
