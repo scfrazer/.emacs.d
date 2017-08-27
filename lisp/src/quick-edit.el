@@ -410,7 +410,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
         (?e (qe-unit-ends-point-to-fcn 'end-of-line))
         (?i (qe-unit-ends-point-to-fcn 'back-to-indentation))
         (?l (qe-unit-ends-line))
-        (?m (qe-unit-ends-forward-matching))
+        (?m (qe-unit-ends-matching))
         (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
         (?s 'qe-unit-symbol)
         (?w (qe-unit-ends-forward-word))
@@ -439,18 +439,31 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
   "Text unit ends for forward word."
   (cons (point) (progn (skip-syntax-forward "w_") (point))))
 
-(defun qe-unit-ends-forward-matching ()
-  "Text unit ends for forward matching parens."
-  (let ((beg (point))
-        (char (char-after))
-        (table (copy-syntax-table (syntax-table)))
-        forward-sexp-function)
+(defun qe-unit-ends-matching ()
+  "Text unit ends matching parens/quotes."
+  (let* ((table (copy-syntax-table (syntax-table)))
+         (char (char-before))
+         (backward (member char '(?> ?\) ?\] ?\} ?\` ?\' ?\")))
+         (beg (point))
+         forward-sexp-function)
+    (unless backward
+      (setq char (char-after)))
     (when (or (eq char ?<) (eq char ?>))
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
+    (when (eq char ?`)
+      (modify-syntax-entry ?` "\"" table))
+    (when (eq char ?\')
+      (modify-syntax-entry ?\' "\"" table))
+    (when (eq char ?\")
+      (modify-syntax-entry ?\" "\"" table))
     (with-syntax-table table
-      (forward-sexp 1)
-      (cons beg (point)))))
+      (if backward
+          (progn
+            (forward-sexp -1)
+            (cons (point) beg))
+        (forward-sexp 1)
+        (cons beg (point))))))
 
 (defun qe-unit-ends-forward-to-char (&optional char)
   "Text unit ends for forward to some char."

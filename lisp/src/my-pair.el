@@ -166,11 +166,14 @@ If looking at different quotes, change to the entered quotes."
         (insert entered-char)
         (backward-char)))))
 
-(defun my-pair-delete (&optional arg)
-  "Forward delete paired chars.  With prefix arg, backward delete."
-  (interactive "*P")
-  (let ((table (copy-syntax-table (syntax-table)))
-        (char (if arg (char-before) (char-after))))
+(defun my-pair-delete ()
+  "Delete paired chars."
+  (interactive "*")
+  (let* ((table (copy-syntax-table (syntax-table)))
+        (char (char-before))
+        (backward (member char '(?> ?\) ?\] ?\} ?\` ?\' ?\"))))
+    (unless backward
+      (setq char (char-after)))
     (when (or (eq char ?<) (eq char ?>))
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
@@ -181,7 +184,7 @@ If looking at different quotes, change to the entered quotes."
     (when (eq char ?\")
       (modify-syntax-entry ?\" "\"" table))
     (with-syntax-table table
-      (if arg
+      (if backward
           (progn
             (save-excursion
               (backward-sexp)
