@@ -1306,6 +1306,12 @@ end of a non-blank line, or insert an 80-column comment line"
   (setq my-layout-window-configuration (current-window-configuration))
   (message "Layout saved"))
 
+(defun my-macroexpand (sexp)
+  (interactive (list (sexp-at-point)))
+  (with-output-to-temp-buffer "*el-macroexpansion*"
+    (pp (macroexpand sexp)))
+  (with-current-buffer "*el-macroexpansion*" (emacs-lisp-mode)))
+
 (defun my-minibuffer-backward ()
   "Move backward words or path elements in the minibuffer."
   (interactive)
