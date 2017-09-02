@@ -9,12 +9,16 @@
 
  `(default ((t :foreground "black" :background ,(smf-color 231))))
 
- `(bm-face                        ((t :foreground nil :background ,(smf-color 221))))
+ `(bm-face                        ((t :foreground "black" :background ,(smf-color 221))))
  `(caution                        ((t :foreground "black" :background ,(smf-color 215))))
+ `(cperl-array-face               ((t :foreground ,(smf-color 172))))
+ `(cperl-hash-face                ((t :foreground ,(smf-color 91))))
  `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
  `(ediff-current-diff-A           ((t :foreground "black" :background ,(smf-color 153))))
+ `(ediff-even-diff-A              ((t :foreground "black" :background ,(smf-color 253))))
  `(ediff-fine-diff-A              ((t :foreground "black" :background ,(smf-color 215))))
+ `(ediff-odd-diff-A               ((t :foreground "black" :background ,(smf-color 253))))
  `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
  `(flymake-errline                ((t :inherit nil :background ,(smf-color 224))))
  `(flymake-warnline               ((t :inherit nil :background ,(smf-color 229))))
