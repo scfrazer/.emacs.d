@@ -1667,12 +1667,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive)
   (set-buffer-modified-p (not (buffer-modified-p))))
 
-(defun my-toggle-tramp ()
-  "Toggle tramp on/off."
-  (interactive)
-  (setq tramp-mode (not tramp-mode))
-  (message (concat "Tramp mode " (if tramp-mode "on" "off"))))
-
 (defun my-toggle-window-split ()
   "Toggle between horizontal/vertical split.
 Only works if there are exactly two windows."
@@ -2033,7 +2027,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'theme 'my-theme)
-(defalias 'tramp 'my-toggle-tramp)
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))

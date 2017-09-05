@@ -8,12 +8,16 @@
   (tooltip-mode -1))
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
-;; (add-to-list 'load-path (concat user-emacs-directory "lisp/company-mode"))
-;; (add-to-list 'load-path (concat user-emacs-directory "lisp/org"))
 
 (setq inhibit-startup-echo-area-message "scfrazer")
 
-(setq-default tramp-mode nil)
+(setq-default tramp-default-method "ssh"
+              tramp-mode nil)
+(defun tramp ()
+  "Toggle tramp on/off."
+  (interactive)
+  (setq tramp-mode (not tramp-mode))
+  (message (concat "Tramp mode " (if tramp-mode "on" "off"))))
 
 (let ((gc-cons-threshold 10000000))
   (require 'package)
