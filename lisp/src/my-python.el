@@ -6,8 +6,8 @@
 (setq-default python-check-command "pylint_etc_wrapper.py -c"
               python-continuation-offset 4
               python-indent 4
-              python-shell-interpreter (if (and (getenv "HOST") (string-match "lx30" (getenv "HOST")))
-                                           "/router/bin/python-2.7.4"
+              python-shell-interpreter (if (and (getenv "HOST") (string-match "asic-vm" (getenv "HOST")))
+                                           "/router/bin/python3-3.5.0"
                                          "/usr/bin/python"))
 
 
