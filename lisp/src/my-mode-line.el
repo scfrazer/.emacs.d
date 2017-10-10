@@ -44,9 +44,8 @@
    "  %p"
    (list 'column-number-mode "  C%c")
    "  " mode-line-buffer-identification
-   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode)
-            (concat "  " (propertize "Mouse" 'face 'my-narrow-face))))
    "  " mode-line-modes
+   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
    (:eval (when (and (boundp 'flymake-mode) flymake-mode)
             (concat " " flymake-mode-line)))
    (:eval (if (and use-clearcase clearcase-setview-viewtag)

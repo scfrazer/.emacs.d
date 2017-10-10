@@ -2055,8 +2055,7 @@ Prefix with C-u to resize the `next-window'."
     (set-display-table-slot standard-display-table 'escape escape-glyph)
     (set-display-table-slot standard-display-table 'control control-glyph))
 
-  (bind-keys* ("<f1>"  . xterm-mouse-mode)
-              ("C-M-z" . my-suspend-emacs)
+  (bind-keys* ("C-M-z" . my-suspend-emacs)
               ("C-_"   . dabbrev-expand)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
