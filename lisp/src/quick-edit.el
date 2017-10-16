@@ -320,9 +320,9 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
   (when (and arg (not (listp arg))) (append-next-kill))
   (let ((beg (point))
         (end (progn
-                 (skip-syntax-backward "_")
-                 (qe-backward-section)
-                 (point))))
+               (skip-syntax-backward "_")
+               (qe-backward-section)
+               (point))))
     (if (and arg (listp arg))
         (delete-region beg end)
       (kill-region beg end))))
@@ -387,41 +387,48 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 
 (defun qe-unit-bounds (key-seq)
   "Get text unit bounds for KEY-SEQ."
-  (let ((first-key (aref key-seq 0)))
+  (let ((first-key (aref key-seq 0))
+        (dir 'forward))
     ;; If C-w or M-w return current region
     (if (or (equal first-key ?\C-w)
             (and (equal (length key-seq) 2)
                  (equal first-key 27)
                  (equal (aref key-seq 1) ?w)))
         (cons (region-beginning) (region-end))
-    ;; Decode key
-    (save-excursion
-      (cl-case first-key
-        (?\C-m (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line))
-        (?\" (qe-region-inside-quotes ?\" 'forward))
-        (?\' (qe-region-inside-quotes ?\' 'forward))
-        (?\` (qe-region-inside-quotes ?\` 'forward))
-        (?\} (qe-region-inside-pair ?\} 'forward))
-        (?\) (qe-region-inside-pair ?\) 'forward))
-        (?\] (qe-region-inside-pair ?\] 'forward))
-        (?\> (qe-region-inside-pair ?\> 'forward))
-        (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
-        (?b (qe-unit-ends-point-to-fcn 'qe-forward-block))
-        (?e (qe-unit-ends-point-to-fcn 'end-of-line))
-        (?i (qe-unit-ends-point-to-fcn 'back-to-indentation))
-        (?l (qe-unit-ends-line))
-        (?m (qe-unit-ends-matching))
-        (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
-        (?s 'qe-unit-symbol)
-        (?w (qe-unit-ends-forward-word))
-        (?x (qe-region-xml-content 'forward))
-        (t
-         (if (or (< 31 first-key 48)    ;; space through slash
-                 (< 57 first-key 65)    ;; colon through at-symbol
-                 (< 90 first-key 97)    ;; left-bracket through backtick
-                 (< 122 first-key 127)) ;; left-brace through tilde
-             (qe-unit-ends-forward-to-char first-key)
-           (error "Unknown key entered for text unit"))))))))
+      (when (equal first-key ?r)
+        (setq dir 'backward
+              first-key (read-char)))
+      ;; Decode key
+      (save-excursion
+        (cl-case first-key
+          (?\C-m (qe-unit-ends-point-to-fcn 'qe-forward-next-blank-line))
+          (?\" (qe-region-inside-quotes ?\" dir))
+          (?\' (qe-region-inside-quotes ?\' dir))
+          (?\` (qe-region-inside-quotes ?\` dir))
+          (?\} (qe-region-inside-pair ?\} dir))
+          (?\) (qe-region-inside-pair ?\) dir))
+          (?\] (qe-region-inside-pair ?\] dir))
+          (?\> (qe-region-inside-pair ?\> dir))
+          (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
+          (?b (qe-unit-ends-point-to-fcn 'qe-forward-block))
+          (?e (qe-unit-ends-point-to-fcn 'end-of-line))
+          (?i (qe-unit-ends-point-to-fcn 'back-to-indentation))
+          (?l (qe-unit-ends-line))
+          (?m (qe-unit-ends-matching))
+          (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
+          (?s 'qe-unit-symbol)
+          (?w (qe-unit-ends-forward-word))
+          (?x (qe-region-xml-content dir))
+          (t
+           (if (and (equal dir 'backward)
+                    (member first-key '(?< ?\( ?\[ ?\{)))
+               (qe-region-inside-pair first-key dir)
+             (if (or (< 31 first-key 48)    ;; space through slash
+                     (< 57 first-key 65)    ;; colon through at-symbol
+                     (< 90 first-key 97)    ;; left-bracket through backtick
+                     (< 122 first-key 127)) ;; left-brace through tilde
+                 (qe-unit-ends-forward-to-char first-key)
+               (error "Unknown key entered for text unit")))))))))
 
 (defun qe-unit-ends-point-to-fcn (fcn)
   "Wrap single function call getting end points."
@@ -643,13 +650,13 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                       (forward-sexp)
                       (setq depth (1- depth)))
                   (if (looking-at "<[a-zA-Z]")
-                    (progn
-                      (forward-sexp)
-                      (backward-char)
-                      (unless (= (char-before) ?/)
-                        (setq depth (1+ depth))))
+                      (progn
+                        (forward-sexp)
+                        (backward-char)
+                        (unless (= (char-before) ?/)
+                          (setq depth (1+ depth))))
                     (forward-sexp))))))))
-    (cons beg end))))
+      (cons beg end))))
 
 (provide 'quick-edit)
 ;;; quick-edit.el ends here
