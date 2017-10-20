@@ -7,7 +7,7 @@
 (custom-theme-set-faces
  'smf-base-light
 
- `(default ((t :foreground "black" :background ,(smf-color 231))))
+ ;; `(default ((t :foreground "black" :background ,(smf-color 231))))
 
  `(bm-face                        ((t :foreground "black" :background ,(smf-color 221))))
  `(caution                        ((t :foreground "black" :background ,(smf-color 215))))
