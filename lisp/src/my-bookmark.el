@@ -16,7 +16,7 @@
     (when proj
       (let ((p4-ws (getenv "P4WS")) regexp)
         (unless p4-ws
-          (setq p4-ws (concat "/ws/" (getenv "USER") "-[a-z]+")))
+          (setq p4-ws (concat ".*/ws/" (getenv "USER") "-[a-z]+")))
         (setq regexp (concat "\\(/vob/sse\\|" p4-ws "/[^/]+\\)"))
         (dolist (bmk bookmark-alist)
           (let ((filename (bookmark-get-filename bmk)))

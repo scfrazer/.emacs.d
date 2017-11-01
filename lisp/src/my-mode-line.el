@@ -51,6 +51,10 @@
    (:eval (if (and use-clearcase clearcase-setview-viewtag)
               (concat "  [View: " clearcase-setview-viewtag "]")
             ""))
+   (:eval (let ((p4-ws (getenv "P4CLIENT")))
+            (if p4-ws
+                (concat "  [P4: " p4-ws "]")
+              "")))
    (:eval (if (and (featurep 'task) task-current-name)
               (concat "  [Task: " (or task-current-name "NONE") "]")
             ""))))

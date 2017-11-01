@@ -9,6 +9,10 @@
                         (c-basic-offset . 2)
                         (c-comment-only-line-offset 0 . 0)
                         (c-block-comment-prefix . "")))
+(c-add-style "strou4" '("stroustrup"
+                        (c-basic-offset . 4)
+                        (c-comment-only-line-offset 0 . 0)
+                        (c-block-comment-prefix . "")))
 (setq c-default-style "strou2")
 
 ;; Default imenu is not very good
