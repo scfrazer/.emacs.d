@@ -12,16 +12,12 @@
 
 (defun my-bookmark-reseat ()
   "Reseat bookmarks in Perforce."
-  (let ((proj (getenv "PROJ")))
-    (when proj
-      (let ((p4-ws (getenv "P4WS")) regexp)
-        (unless p4-ws
-          (setq p4-ws (concat ".*/ws/" (getenv "USER") "-[a-z]+")))
-        (setq regexp (concat "\\(/vob/sse\\|" p4-ws "/[^/]+\\)"))
-        (dolist (bmk bookmark-alist)
-          (let ((filename (bookmark-get-filename bmk)))
-            (when (string-match regexp filename)
-              (bookmark-set-filename bmk (replace-regexp-in-string regexp proj filename)))))))))
+  (let ((proj (getenv "PROJ"))
+        (regexp (concat "/vob/sse\\|.*/ws/" (getenv "USER") "-[a-z]+/[^/]")))
+    (dolist (bmk bookmark-alist)
+      (let ((filename (bookmark-get-filename bmk)))
+        (when (string-match regexp filename)
+          (bookmark-set-filename bmk (replace-regexp-in-string regexp proj filename)))))))
 
 (defadvice bookmark-load (after my-bookmark-reseat activate)
   (my-bookmark-reseat))
