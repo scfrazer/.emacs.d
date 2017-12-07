@@ -3,14 +3,12 @@
 (setq vc-follow-symlinks t)
 
 (defvar my-location
-  (let ((hostname (or (getenv "HOSTNAME")
-                      (getenv "ABBREV_HOSTNAME"))))
-    (and (stringp hostname)
+  (let ((location (getenv "LOCATION")))
+    (and location
          (cond
-          ((string-match "^asic-vm-rtp" hostname) 'RTP)
-          ((string-match "^asic-vm-sjc" hostname) 'SJC)
-          ((string-match "^asic-vm-bgl" hostname) 'BGL)
-          ((string-match "^SCFRAZER" hostname) 'Work)))))
+          ((string-equal "RTP" location) 'RTP)
+          ((string-equal "SJC" location) 'SJC)
+          ((string-equal "BGL" location) 'BGL)))))
 
 ;; Need these first
 
