@@ -13,7 +13,8 @@
                         (c-basic-offset . 4)
                         (c-comment-only-line-offset 0 . 0)
                         (c-block-comment-prefix . "")))
-(setq c-default-style "strou2")
+(setq c-default-style '((cc-mode . "strou2")
+                        (php-mode . "strou4")))
 
 ;; Default imenu is not very good
 
@@ -87,8 +88,7 @@
       (let ((c-electric-flag t))
         (call-interactively 'c-electric-brace))))
   (define-key c-mode-base-map (kbd "C-c C-f") 'doxymacs-insert-function-comment)
-  (define-key c-mode-base-map (kbd "C-c C-s") 'my-cc-create-skeleton-from-prototype)
-  (c-set-style "strou2"))
+  (define-key c-mode-base-map (kbd "C-c C-s") 'my-cc-create-skeleton-from-prototype))
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 

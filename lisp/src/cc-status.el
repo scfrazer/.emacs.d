@@ -26,6 +26,8 @@
                                           "@@"
                                           "ver/build"
                                           "/obj\\(64\\)?"
+                                          "_obj64"
+                                          "\\.a$"
                                           "\\.cmake\\.state"
                                           "rtl/Makefile\\(\\..+\\)?"
                                           "rtl/.+?\\.\\(vlist\\|xpdb\\|args\\|makerule\\)"
