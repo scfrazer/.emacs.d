@@ -52,9 +52,9 @@
 
 (defvar my-web-mode-js-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd ")") 'my-web-mode-electric-closer)
-    (define-key map (kbd "]") 'my-web-mode-electric-closer)
-    (define-key map (kbd "}") 'my-web-mode-electric-closer)
+    ;; (define-key map (kbd ")") 'my-web-mode-electric-closer)
+    ;; (define-key map (kbd "]") 'my-web-mode-electric-closer)
+    ;; (define-key map (kbd "}") 'my-web-mode-electric-closer)
     map)
   "my-web-mode-js-map keymap.")
 

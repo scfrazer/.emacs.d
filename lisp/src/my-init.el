@@ -756,11 +756,15 @@
                                  (char-before (1- (point))))
                                (matching-paren (char-after))))))
     (apply orig-fun nil)
-    (when indent-after
-      (indent-according-to-mode)
-      (save-excursion
-        (forward-line 1)
+    (if indent-after
+      (progn
+        (indent-according-to-mode)
+        (save-excursion
+          (forward-line 1)
+          (indent-according-to-mode)))
+      (when (member last-command-event '(?\) ?\] ?\}))
         (indent-according-to-mode)))))
+
 (advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 
 (setq-default Man-notify-method 'bully
