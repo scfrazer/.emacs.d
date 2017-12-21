@@ -395,9 +395,12 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                  (equal first-key 27)
                  (equal (aref key-seq 1) ?w)))
         (cons (region-beginning) (region-end))
-      (when (equal first-key ?r)
-        (setq dir 'backward
-              first-key (read-char)))
+      (cond ((equal first-key ?r)
+             (setq dir 'backward
+                   first-key (read-char)))
+            ((equal first-key ?i)
+             (setq dir 'inside
+                   first-key (read-char))))
       ;; Decode key
       (save-excursion
         (cl-case first-key
@@ -409,10 +412,10 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?\) (qe-region-inside-pair ?\) dir))
           (?\] (qe-region-inside-pair ?\] dir))
           (?\> (qe-region-inside-pair ?\> dir))
+          (?A (qe-unit-ends-point-to-fcn 'back-to-indentation))
           (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
           (?b (qe-unit-ends-point-to-fcn 'qe-forward-block))
           (?e (qe-unit-ends-point-to-fcn 'end-of-line))
-          (?i (qe-unit-ends-point-to-fcn 'back-to-indentation))
           (?l (qe-unit-ends-line))
           (?m (qe-unit-ends-matching))
           (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
@@ -420,15 +423,18 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?w (qe-unit-ends-forward-word))
           (?x (qe-region-xml-content dir))
           (t
-           (if (and (equal dir 'backward)
-                    (member first-key '(?< ?\( ?\[ ?\{)))
-               (qe-region-inside-pair first-key dir)
-             (if (or (< 31 first-key 48)    ;; space through slash
-                     (< 57 first-key 65)    ;; colon through at-symbol
-                     (< 90 first-key 97)    ;; left-bracket through backtick
-                     (< 122 first-key 127)) ;; left-brace through tilde
-                 (qe-unit-ends-forward-to-char first-key)
-               (error "Unknown key entered for text unit")))))))))
+           (cond ((not (equal dir 'forward))
+                  (if (member first-key '(?< ?\( ?\[ ?\{ ?> ?\) ?\] ?\}))
+                      (qe-region-inside-pair first-key dir)
+                    (when (member first-key '(?\" ?\' ?\`))
+                      (qe-region-inside-quotes first-key dir))))
+                 ((or (< 31 first-key 48)    ;; space through slash
+                      (< 57 first-key 65)    ;; colon through at-symbol
+                      (< 90 first-key 97)    ;; left-bracket through backtick
+                      (< 122 first-key 127)) ;; left-brace through tilde
+                  (qe-unit-ends-forward-to-char first-key))
+                 (t
+                  (error "Unknown key entered for text unit")))))))))
 
 (defun qe-unit-ends-point-to-fcn (fcn)
   "Wrap single function call getting end points."
