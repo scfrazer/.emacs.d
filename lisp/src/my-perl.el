@@ -20,6 +20,15 @@
               flymake-perlcritic-severity 1)
 
 (defun my-cperl-mode-hook ()
+  (define-key cperl-mode-map (kbd "{") nil)
+  (define-key cperl-mode-map (kbd "[") nil)
+  (define-key cperl-mode-map (kbd "(") nil)
+  (define-key cperl-mode-map (kbd "<") nil)
+  (define-key cperl-mode-map (kbd "}") nil)
+  (define-key cperl-mode-map (kbd "]") nil)
+  (define-key cperl-mode-map (kbd ")") nil)
+  (define-key cperl-mode-map (kbd ";") nil)
+  (define-key cperl-mode-map (kbd ":") nil)
   (flymake-mode 1))
 (add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
 
