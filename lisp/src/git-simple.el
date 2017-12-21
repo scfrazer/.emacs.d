@@ -150,6 +150,14 @@
           (match-string-no-properties 1)))
     (buffer-file-name)))
 
+(defun git-simple-get-file-status (file)
+  "Get the status of file."
+  (with-temp-buffer
+    (unless (= (call-process git-simple-executable nil t nil "status" "--porcelain" file) 0)
+      (error (concat "Couldn't get status for file '" file "'")))
+    (goto-char (point-min))
+    (buffer-substring-no-properties (point) (point-at-eol))))
+
 ;;;###autoload
 (defun git-simple-add-current-file ()
   "Add the current file."
@@ -174,14 +182,16 @@
 (defun git-simple-diff-file ()
   "Diff file."
   (interactive)
-  (let ((file (git-simple-get-current-file))
-        (buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
+  (let* ((file (git-simple-get-current-file))
+         (status (git-simple-get-file-status file))
+         (diff-arg (if (and (> (length status) 0) (string= "M" (substring status 0 1))) "--staged" ""))
+         (buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
     (when file
       (with-current-buffer buf
         (setq buffer-read-only nil)
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process git-simple-executable nil t nil "diff" file) 0)
+        (unless (= (call-process git-simple-executable nil t nil "diff" diff-arg file) 0)
           (error (concat "Couldn't diff file '" file "'")))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
@@ -395,7 +405,7 @@ Substitute '%' in command with current file name."
     (define-key map (kbd "e") 'git-simple-ediff-file)
     (define-key map (kbd "g") 'git-simple-refresh)
     (define-key map (kbd "h") 'git-simple-history)
-    (define-key map (kbd "d") 'git-simple-discard)
+    (define-key map (kbd "k") 'git-simple-discard)
     (define-key map (kbd "n") 'git-simple-goto-next-file)
     (define-key map (kbd "p") 'git-simple-goto-prev-file)
     (define-key map (kbd "q") 'bury-buffer)
@@ -411,7 +421,7 @@ Substitute '%' in command with current file name."
 (define-key git-simple-global-map (kbd "a") 'git-simple-add-current-file)
 (define-key git-simple-global-map (kbd "e") 'git-simple-ediff-file)
 (define-key git-simple-global-map (kbd "h") 'git-simple-history)
-(define-key git-simple-global-map (kbd "d") 'git-simple-discard)
+(define-key git-simple-global-map (kbd "k") 'git-simple-discard)
 (define-key git-simple-global-map (kbd "n") 'git-simple)
 (define-key git-simple-global-map (kbd "r") 'git-simple-resolve-file)
 (define-key git-simple-global-map (kbd "u") 'git-simple-unstage)
