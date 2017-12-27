@@ -75,6 +75,8 @@
             ("C-v"   . my-edit-newline-and-indent)
             ("M-RET" . my-edit-newline-and-indent-above))
 
+(require 'my-electric)
+
 (require 'goto-chg)
 (bind-keys* ("M-SPC" . goto-last-change))
 
@@ -743,29 +745,6 @@
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (winner-mode 1)
-(when (fboundp 'electric-indent-mode)
-  (electric-indent-mode -1))
-
-(electric-pair-mode 1)
-(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
-(defun my-electric-pair-post-self-insert-function (orig-fun)
-  (let ((indent-after (and (eq last-command-event ?\n)
-                           (< (1+ (point-min)) (point) (point-max))
-                           (eq (save-excursion
-                                 (skip-chars-backward "\t\s")
-                                 (char-before (1- (point))))
-                               (matching-paren (char-after))))))
-    (apply orig-fun nil)
-    (if indent-after
-      (progn
-        (indent-according-to-mode)
-        (save-excursion
-          (forward-line 1)
-          (indent-according-to-mode)))
-      (when (member last-command-event '(?\) ?\] ?\}))
-        (indent-according-to-mode)))))
-
-(advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 
 (setq-default Man-notify-method 'bully
               backup-inhibited t
