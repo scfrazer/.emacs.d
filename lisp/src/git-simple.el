@@ -184,14 +184,14 @@
   (interactive)
   (let* ((file (git-simple-get-current-file))
          (status (git-simple-get-file-status file))
-         (diff-arg (if (and (> (length status) 0) (string= "M" (substring status 0 1))) "--staged" ""))
+         (diff-arg (if (and (> (length status) 0) (string= "M" (substring status 0 1))) "--staged" "--no-color"))
          (buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
     (when file
       (with-current-buffer buf
         (setq buffer-read-only nil)
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process git-simple-executable nil t nil "diff" diff-arg file) 0)
+        (unless (= (call-process git-simple-executable nil t nil "diff" "--patience" diff-arg file) 0)
           (error (concat "Couldn't diff file '" file "'")))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
