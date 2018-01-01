@@ -148,7 +148,8 @@ mode."
 
 (defun my-pair-quotes-dwim ()
   "DWIM for quotes.
-If looking at different quotes, change to the entered quotes."
+If looking at different quotes, change to the entered quotes.
+Otherwise, wrap next sexp in entered quotes."
   (interactive "*")
   (let ((entered-char last-input-event)
         (current-char (char-after))
@@ -157,14 +158,18 @@ If looking at different quotes, change to the entered quotes."
     (modify-syntax-entry ?\" "\"" table)
     (modify-syntax-entry ?\` "\"" table)
     (with-syntax-table table
-      (when (= (char-syntax current-char) ?\")
-        (save-excursion
-          (forward-sexp)
-          (delete-char -1)
-          (insert entered-char))
-        (delete-char 1)
+      (if (= (char-syntax current-char) ?\")
+          (progn
+            (save-excursion
+              (forward-sexp)
+              (delete-char -1)
+              (insert entered-char))
+            (delete-char 1)
+            (insert entered-char)
+            (backward-char))
         (insert entered-char)
-        (backward-char)))))
+        (forward-sexp)
+        (insert entered-char)))))
 
 (defun my-pair-delete ()
   "Delete paired chars."
