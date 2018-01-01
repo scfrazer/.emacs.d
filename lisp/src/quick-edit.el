@@ -419,7 +419,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?l (qe-unit-ends-line))
           (?m (qe-unit-ends-matching))
           (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
-          (?s 'qe-unit-symbol)
+          (?s (qe-unit-symbol))
           (?w (qe-unit-ends-forward-word))
           (?x (qe-region-xml-content dir))
           (t
