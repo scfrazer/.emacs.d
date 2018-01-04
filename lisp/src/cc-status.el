@@ -234,8 +234,17 @@
   (let* ((elm (cc-status-get-current-elm))
          (filename (cc-status-elm-filename elm))
          (branch (cc-status-elm-branch elm))
-         (rev (if arg (clearcase-fprop-predecessor-version filename) (concat branch "/LATEST"))))
-    (set-window-buffer nil (diff-no-select (concat filename "@@" rev) filename "-b -u"))))
+         (rev (if arg (clearcase-fprop-predecessor-version filename) (concat branch "/LATEST")))
+         (buf (get-buffer-create "*Diff*")))
+    (with-current-buffer buf
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      (call-process "git" nil t nil "diff" "--patience" "--no-index" (concat filename "@@" rev) filename)
+      (goto-char (point-min))
+      (diff-mode)
+      (setq buffer-read-only t)
+      (set-buffer-modified-p nil))
+    (set-window-buffer nil buf)))
 
 (defun cc-status-ediff (&optional arg)
   "Ediff the current file."

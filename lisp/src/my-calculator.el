@@ -21,9 +21,6 @@
   "Replace '=' with '-'"
   (setq ad-return-value (replace-regexp-in-string "=" "-" ad-return-value)))
 
-(defadvice calculator-copy (after my-calculator-copy activate)
-  (message "Copied value to kill-ring"))
-
 ;; Copy defun and remove annoying warning
 
 (defun calculator-string-to-number (str)
@@ -59,6 +56,28 @@
                  (concat str "0"))
                 ((stringp str) (concat str ".0"))
                 (t "0.0"))))))
+
+;; Copy defun and remove separators from result and add message
+
+(defun calculator-copy ()
+  "Copy current number to the `kill-ring'."
+  (interactive)
+  (let ((calculator-displayer
+         (or calculator-copy-displayer calculator-displayer))
+        (calculator-displayers
+         (if calculator-copy-displayer nil calculator-displayers)))
+    (calculator-enter)
+    ;; remove trailing spaces and an index and grouping separator
+    (let ((s (cdr calculator-stack-display)))
+      (when s
+        (kill-new
+         (replace-regexp-in-string
+          calculator-radix-grouping-separator ""
+          (replace-regexp-in-string
+           "^\\([^ ]+\\) *\\(\\[[0-9/]+\\]\\)? *$" "\\1" s)))
+        (message "Copied value to kill-ring")))))
+
+;; Hook
 
 (defun my-calculator-mode-hook ()
   (set-window-dedicated-p nil t)
