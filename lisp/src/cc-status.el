@@ -259,6 +259,40 @@
           (clearcase-ediff-file-with-version filename (clearcase-fprop-predecessor-version filename))
         (clearcase-ediff-file-with-version filename (concat branch "/LATEST"))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar cc-status-grep-file-list nil)
+
+(defun cc-status-grep (&optional arg)
+  "Grep changed/private files for REGEXP."
+  (interactive "P")
+  (let* ((default
+           (if arg
+               (buffer-substring-no-properties (region-beginning) (region-end))
+             (buffer-substring-no-properties
+              (save-excursion (skip-syntax-backward "w_") (point))
+              (save-excursion (skip-syntax-forward "w_") (point)))))
+         (regexp
+          (read-from-minibuffer (format "Search for (default %s): " default) nil nil nil 'grep-regexp-history))
+         (flags
+          (read-from-minibuffer "Extra flags: " "-i")))
+    (setq regexp (if (string= regexp "") default regexp))
+    (setq cc-status-grep-file-list (make-temp-file "cc-status-grep-"))
+    (with-temp-file cc-status-grep-file-list
+      (dolist (elm cc-status-elms)
+        (insert (cc-status-elm-filename elm) "\n")))
+    (compilation-start (concat "xargs -a " cc-status-grep-file-list " egrep --color=always -nH " flags " " regexp) 'grep-mode)))
+
+(defun cc-status-grep-finish-function (buf msg)
+  "Remove the temporary grep file list."
+  (when cc-status-grep-file-list
+    (delete-file cc-status-grep-file-list)
+    (setq cc-status-grep-file-list nil)))
+
+(add-hook 'compilation-finish-functions 'cc-status-grep-finish-function)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun cc-status-mark (&optional arg)
   "Mark a file.  With prefix argument, mark all relevent files."
   (interactive "P")
@@ -509,6 +543,7 @@
     (define-key map (kbd "RET") 'cc-status-open-file)
     (define-key map (kbd "TAB") 'cc-status-diff)
     (define-key map "=" 'cc-status-ediff)
+    (define-key map "G" 'cc-status-grep)
     (define-key map "~" 'cc-status-toggle-private)
 
     (define-key map (kbd "SPC") 'cc-status-mark)

@@ -25,6 +25,7 @@
   (unbind-key "~" clearcase-prefix-map)
 
   (bind-key "="   'my-clearcase-ediff-current                   clearcase-prefix-map)
+  (bind-key "G"   'cc-status-grep                               clearcase-prefix-map)
   (bind-key "O"   'clearcase-checkout-current-buffer            clearcase-prefix-map)
   (bind-key "R"   'my-clearcase-unreserve                       clearcase-prefix-map)
   (bind-key "RET" 'cc-status                                    clearcase-prefix-map)
@@ -47,6 +48,7 @@
   (unbind-key "~" clearcase-dired-prefix-map)
 
   (bind-key "="   'my-clearcase-ediff-current                clearcase-dired-prefix-map)
+  (bind-key "G"   'cc-status-grep                            clearcase-dired-prefix-map)
   (bind-key "O"   'clearcase-checkout-dired-files            clearcase-dired-prefix-map)
   (bind-key "R"   'my-clearcase-unreserve                    clearcase-dired-prefix-map)
   (bind-key "RET" 'cc-status                                 clearcase-dired-prefix-map)
