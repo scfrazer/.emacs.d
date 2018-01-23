@@ -28,7 +28,7 @@
         ("^. [0-9 	]*...\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
         ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
         ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
-        ("~\\|#\\|\\([.]\\(o\\|obj\\|d\\|elc\\|pyc\\|orig\\|keep\\|contrib\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
+        ("~\\|#\\|\\([.]\\(o\\|obj\\|d\\|elc\\|pyc\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
 
 (when (featurep 'my-clearcase)
   (setq dired-font-lock-keywords

@@ -313,7 +313,8 @@
             etags-table-alist (list
                                `(,(concat proj ".*\\.svh?$") ,(concat tags-base-dir "/sv/TAGS"))
                                `(,(concat proj ".*\\.[vs]$") ,(concat tags-base-dir "/v/TAGS"))
-                               `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS")))
+                               `(,(concat proj ".*\\.[ch]$") ,(concat tags-base-dir "/c/TAGS") ,(concat tags-base-dir "/cpp/TAGS"))
+                               `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS") ,(concat tags-base-dir "/c/TAGS")))
             etags-table-search-up-depth 10
             tags-revert-without-query t))
     (defun my-find-tag (&optional arg)
