@@ -13,6 +13,7 @@
  `(caution                        ((t :foreground "black" :background ,(smf-color 215))))
  `(cperl-array-face               ((t :foreground ,(smf-color 172))))
  `(cperl-hash-face                ((t :foreground ,(smf-color 91))))
+ `(cursor                         ((t :background "deeppink2")))
  `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
  `(ediff-current-diff-A           ((t :foreground "black" :background ,(smf-color 153))))
