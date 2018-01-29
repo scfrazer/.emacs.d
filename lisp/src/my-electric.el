@@ -26,11 +26,14 @@
 
 (defun my-electric-pair-inhibit (char)
   (or
+   ;; Same char is next
    (eq char (char-after))
-   (and (eq char (char-before))
-        (eq char (char-before (1- (point)))))
+   ;; Open paren next to word
    (and (eq (char-syntax char) ?\()
-        (eq (char-syntax (following-char)) ?w))))
+        (eq (char-syntax (following-char)) ?w))
+   ;; Quotes closes an open string
+   (and (eq (char-syntax char) ?\")
+        (not (nth 3 (syntax-ppss))))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 
