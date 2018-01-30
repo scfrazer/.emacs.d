@@ -596,12 +596,12 @@
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
 
-(use-package register-list
-  :defer t
-  :init
-  (defalias 'rl 'register-list)
-  :config
-  (require 'my-register-list))
+;; (use-package register-list
+;;   :defer t
+;;   :init
+;;   (defalias 'rl 'register-list)
+;;   :config
+;;   (require 'my-register-list))
 
 (use-package regman
   :commands (regman regman-insert-register))

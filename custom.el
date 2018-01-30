@@ -16,9 +16,7 @@
  '(minibuffer-prompt-properties
    (quote
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
- '(package-selected-packages
-   (quote
-    (plantuml-mode register-list multiple-cursors js2-mode htmlize dash crontab-mode avy)))
+ '(package-selected-packages (quote (web-mode htmlize dash crontab-mode avy)))
  '(safe-local-variable-values
    (quote
     ((js2-additional-externs "localStorage" "chrome" "url")

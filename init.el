@@ -19,7 +19,9 @@
   (setq tramp-mode (not tramp-mode))
   (message (concat "Tramp mode " (if tramp-mode "on" "off"))))
 
-(let ((gc-cons-threshold 10000000))
+(let ((gc-cons-threshold 402653184)
+      (gc-cons-percentage 0.6)
+      (file-name-handler-alist nil))
   (require 'package)
   (package-initialize)
   (require 'my-init))
