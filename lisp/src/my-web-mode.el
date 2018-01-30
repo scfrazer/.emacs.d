@@ -18,7 +18,8 @@
   (web-mode-comment-insert))
 
 (bind-keys :map web-mode-map
-           ("C-c C-o" . my-web-mode-comment-insert))
+           ("C-c C-o" . my-web-mode-comment-insert)
+           ("C-c C-s" . my-web-mode-bind))
 
 (defun my-web-mode-beautify ()
   "Beautify according to mode."
@@ -58,12 +59,19 @@
     map)
   "my-web-mode-js-map keymap.")
 
-(define-abbrev web-mode-abbrev-table
-  "bind"
-  ""
-  (lambda ()
-    (when (looking-back "this\.\\([^[:space:]]+\\)[[:space:]]+" (point-at-bol))
-      (insert "= this." (match-string-no-properties 1) ".bind(this);"))))
+(defun my-web-mode-bind ()
+  "Help with binding functions in React constructor."
+  (interactive)
+  (beginning-of-line)
+  (cond
+   ((looking-at "\\s-*\\([^[:space:]]+\\)\\s-*$")
+    (let ((fn (match-string-no-properties 1)))
+      (delete-region (point) (point-at-eol))
+      (insert "self." fn " = this." fn ".bind(this);")))
+   ((looking-at "\\s-*$")
+    (delete-region (point) (point-at-eol))
+    (insert "let self: any = this; // eslint-disable-line")))
+  (indent-according-to-mode))
 
 (defun my-web-mode-js-imenu-index ()
   "Get imenu items in web-mode js variant."
