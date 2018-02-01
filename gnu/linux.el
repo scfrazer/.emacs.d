@@ -13,4 +13,4 @@
     (setq insert-directory-program ls-vob)))
 
 ;; Theme
-(load-theme 'smf-light t)
+(load-theme 'smf-bright t)
