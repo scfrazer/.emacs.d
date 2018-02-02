@@ -1594,6 +1594,15 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                        (file-name-directory (buffer-file-name))))))
     (suspend-emacs (and dir (concat "cd " dir)))))
 
+(defun my-tab ()
+  "Special TAB key behavior"
+  (interactive)
+  (if (member (char-syntax (following-char)) (list ?\" ?\)))
+      (skip-syntax-forward "\"\)")
+    (call-interactively 'indent-for-tab-command)))
+;; Use global-set-key so minor modes can override
+(global-set-key (kbd "TAB") 'my-tab)
+
 (defun my-tidy-lines ()
   "Tidy up lines in region."
   (interactive "*")
@@ -1887,7 +1896,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-h"         . backward-char)
  ("C-l"         . forward-char)
  ("C-x 5 n"     . set-frame-name)
- ("C-x #"       . linum-mode)
+ ("C-x #"       . global-linum-mode)
  ("C-x ("       . kmacro-start-macro-or-insert-counter)
  ("C-x -"       . my-window-resize)
  ("C-x C-c"     . my-kill-frame-or-emacs)
