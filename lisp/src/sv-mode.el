@@ -538,6 +538,23 @@ move to limit of search and return nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
 
+;; Back-port this from Emacs 25+
+(defvar sv-mode-word-move-empty-char-table nil)
+(defun sv-mode-forward-word-strictly (&optional arg)
+  "Ignore subword-mode."
+  (let ((find-word-boundary-function-table
+         (if (char-table-p sv-mode-word-move-empty-char-table)
+             sv-mode-word-move-empty-char-table
+           (setq sv-mode-word-move-empty-char-table (make-char-table nil)))))
+    (forward-word (or arg 1))))
+(defun sv-mode-backward-word-strictly (&optional arg)
+  "Ignore subword-mode."
+  (let ((find-word-boundary-function-table
+         (if (char-table-p sv-mode-word-move-empty-char-table)
+             sv-mode-word-move-empty-char-table
+           (setq sv-mode-word-move-empty-char-table (make-char-table nil)))))
+    (forward-word (- (or arg 1)))))
+
 (defun sv-mode-backward-sexp ()
   "Go backward over s-expression.  Matching of begin/task/module/etc. to
 end/endtask/endmodule/etc. is done if you are on or after the end expression."
@@ -669,7 +686,7 @@ expression."
         (goto-char (match-beginning 1))
         (setq pos (point))
         (re-search-backward "\\_<\\(task\\|function\\|static\\|automatic\\)\\_>")
-        (forward-word-strictly)
+        (sv-mode-forward-word-strictly)
         (re-search-forward ".*" pos)
         (setq ret (match-string-no-properties 0))
         (setq ret (sv-mode-trim-whitespace ret))
@@ -856,12 +873,12 @@ own function.  This function can be called through abbrevs."
   (if (looking-at "\\s-*`\\(else\\|endif\\)")
       (sv-mode-backward-ifdef)
     (when (sv-mode-re-search-backward sv-mode-end-regexp nil 'go)
-      (forward-word-strictly)
+      (sv-mode-forward-word-strictly)
       (sv-mode-backward-sexp)
       (sv-mode-beginning-of-statement)
       (while (and (looking-at "else") (not (bobp)))
         (when (sv-mode-re-search-backward sv-mode-end-regexp nil 'go)
-          (forward-word-strictly)
+          (sv-mode-forward-word-strictly)
           (sv-mode-backward-sexp)
           (sv-mode-beginning-of-statement)))
       (beginning-of-line))))
@@ -893,11 +910,11 @@ own function.  This function can be called through abbrevs."
   (if (looking-at "\\s-*`\\(ifn?def\\|else\\)")
       (sv-mode-forward-ifdef)
     (when (sv-mode-re-search-forward sv-mode-begin-regexp nil 'go)
-      (backward-word-strictly)
+      (sv-mode-backward-word-strictly)
       (sv-mode-forward-sexp)
       (while (and (looking-at "[ \t\n]*else") (not (eobp)))
         (when (sv-mode-re-search-forward sv-mode-begin-regexp nil 'go)
-          (backward-word-strictly)
+          (sv-mode-backward-word-strictly)
           (sv-mode-forward-sexp)))
       (forward-line))))
 
@@ -960,12 +977,12 @@ end/endtask/endmodule/etc. also."
     (error
      (let ((pos (point)) done)
        (while (and (not done) (sv-mode-re-search-forward sv-mode-begin-end-regexp nil t))
-         (backward-word-strictly)
+         (sv-mode-backward-word-strictly)
          (if (not (looking-at "end\\|join"))
              (if (sv-mode-decl-only-p)
-                 (forward-word-strictly)
+                 (sv-mode-forward-word-strictly)
                (sv-mode-forward-sexp))
-           (forward-word-strictly)
+           (sv-mode-forward-word-strictly)
            (setq done t)))
        (unless done
          (goto-char pos)
@@ -1220,7 +1237,7 @@ default for next `query-replace'."
           (widen)
           (beginning-of-line)
           (when (looking-at "^[ \t]*end")
-            (forward-word-strictly)
+            (sv-mode-forward-word-strictly)
             (sv-mode-backward-sexp)
             (sv-mode-beginning-of-statement)
             (setq indent-line (or (> (current-column) 0)
@@ -1554,7 +1571,7 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
         (current-column))
     (when (looking-at (concat "^[ \t]*" sv-mode-end-regexp))
       (let ((closer (match-string-no-properties 1)))
-        (forward-word-strictly)
+        (sv-mode-forward-word-strictly)
         (sv-mode-backward-sexp)
         (sv-mode-beginning-of-statement)
         (back-to-indentation)
@@ -1747,7 +1764,7 @@ tasks and functions, etc.")
       (if (member item-type (list "class" "struct" "enum" "module" "interface"))
           (when (or (not (string= item-type "class"))
                     (save-excursion
-                      (backward-word-strictly 2)
+                      (sv-mode-backward-word-strictly 2)
                       (not (looking-at "typedef"))))
             (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
             (push (cons (concat (match-string-no-properties 1) " <" item-type ">")
@@ -1831,7 +1848,7 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
        ((member item-type (list "class" "module" "interface" "package"))
         (when (or (not (string= item-type "class"))
                   (save-excursion
-                    (backward-word-strictly 2)
+                    (sv-mode-backward-word-strictly 2)
                     (not (looking-at "typedef"))))
           (sv-mode-re-search-forward "[ \t\n]+\\([a-zA-Z0-9_]+\\)")
           (let* ((name (match-string-no-properties 1))
@@ -1871,9 +1888,9 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
        ((member item-type (list "task" "function" "program"))
         (let ((qualifiers ""))
           (save-excursion
-            (backward-word-strictly)
+            (sv-mode-backward-word-strictly)
             (catch 'done
-              (while (backward-word-strictly)
+              (while (sv-mode-backward-word-strictly)
                 (unless (sv-mode-in-comment-or-string)
                   (if (looking-at "static\\|extern\\|pure\\|local\\|protected\\|virtual")
                       ;; TODO Need some qualifier for 'pure'
