@@ -19,7 +19,8 @@
           (save-excursion
             (forward-line 1)
             (indent-according-to-mode)))
-      (when (member last-command-event '(?\) ?\] ?\}))
+      (when (and (member last-command-event '(?\) ?\] ?\}))
+                 (looking-back "^\\s-*[])}]" (point-at-bol)))
         (indent-according-to-mode)))))
 
 (advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)

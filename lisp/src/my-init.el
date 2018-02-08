@@ -216,6 +216,16 @@
                                     ("vtt" . "\\.(java|php|json|html|js)$")))
     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
+(use-package asm-mode
+  :config
+  (progn
+    (define-key asm-mode-map (kbd "C-j") nil)
+    (define-key asm-mode-map (kbd "C-m") nil)
+    (define-key asm-mode-map (kbd "TAB") 'indent-relative)
+    (defun my-asm-mode-hook ()
+      (setq-local tab-stop-list '(3 11)))
+    (add-hook 'asm-mode-hook 'my-asm-mode-hook)))
+
 (use-package bm
   :bind* (("M-#" . my-bm-toggle-or-show)
           ("M-(" . bm-previous)
@@ -1597,9 +1607,9 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 (defun my-tab ()
   "Special TAB key behavior"
   (interactive)
-  (if (member (char-syntax (following-char)) (list ?\" ?\)))
-      (skip-syntax-forward "\"\)")
-    (call-interactively 'indent-for-tab-command)))
+  (call-interactively 'indent-according-to-mode)
+  (when (member (char-syntax (following-char)) (list ?\" ?\)))
+    (skip-syntax-forward "\"\)")))
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)
 
