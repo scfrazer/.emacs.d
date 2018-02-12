@@ -96,6 +96,7 @@
   :lighter "/js")
 
 (defun my-web-mode-hook ()
+  (setq electric-pair-pairs '((?\" . ?\") (?\' . ?\')))
   (when (string= (file-name-extension (buffer-file-name)) "js")
     (web-mode-set-content-type "jsx")
     (setq comment-start "// "
