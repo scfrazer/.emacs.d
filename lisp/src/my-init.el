@@ -1610,8 +1610,8 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (let ((prev-eol (point-at-eol)))
     (call-interactively 'indent-according-to-mode)
     (when (and (= prev-eol (point-at-eol))
-               (member (char-syntax (following-char)) (list ?\" ?\))))
-      (skip-syntax-forward "\"\)"))))
+               (member (following-char) (list ?\" ?\' ?\` ?\) ?\] ?\} ?\>)))
+      (skip-chars-forward "])}>\"'`"))))
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)
 
