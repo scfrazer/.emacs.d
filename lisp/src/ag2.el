@@ -205,6 +205,7 @@ corresponding value will be used instead."
 (defun ag2-popup-start ()
   "Common popup start code."
   (with-current-buffer (get-buffer-create ag2-popup-buffer-name)
+    (set (make-local-variable 'scroll-margin) 0)
     (setq buffer-read-only nil)
     (erase-buffer)
     (setq ag2-popup-map (make-sparse-keymap))))
