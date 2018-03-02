@@ -213,7 +213,7 @@
     (setq ag2-default-literal t
           ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
                                     ("rtl" . "\\.(s|v|vh)$")
-                                    ("vtt" . "\\.(java|php|json|html|js)$")))
+                                    ("web" . "\\.(js|php|html)$")))
     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
 (use-package asm-mode
