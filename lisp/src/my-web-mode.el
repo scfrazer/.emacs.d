@@ -41,7 +41,7 @@
 (define-compilation-mode flow-compilation-mode "flow-compile"
   "Flow compilation mode."
   (set (make-local-variable 'compilation-error-regexp-alist)
-       (list '("^Error: \\(.+\\):\\([0-9]+\\)" 1 2))))
+       (list '("^.*Error: \\(.+\\):\\([0-9]+\\)" 1 2))))
 
 (defun my-web-mode-flow-status ()
   "Show flow errors."
@@ -51,13 +51,14 @@
                        compilation-save-buffers-predicate)
     (compilation-start (concat npm-bin "/flow status --color never") 'flow-compilation-mode)))
 
-(defvar my-web-mode-js-mode-map
-  (let ((map (make-sparse-keymap)))
-    ;; (define-key map (kbd ")") 'my-web-mode-electric-closer)
-    ;; (define-key map (kbd "]") 'my-web-mode-electric-closer)
-    ;; (define-key map (kbd "}") 'my-web-mode-electric-closer)
-    map)
-  "my-web-mode-js-map keymap.")
+(defun my-web-mode-compilation-finish-function (buf msg)
+  "Fix flow error annoyance"
+  (when (string= (buffer-name buf) "*flow-compilation*")
+    (with-current-buffer buf
+      (goto-char (point-min))
+      (when (search-forward "[0K" nil t)
+        (replace-match "")))))
+(add-to-list 'compilation-finish-functions 'my-web-mode-compilation-finish-function)
 
 (defun my-web-mode-bind ()
   "Help with binding functions in React constructor."
@@ -96,7 +97,7 @@
   :lighter "/js")
 
 (defun my-web-mode-hook ()
-  (setq electric-pair-pairs '((?\" . ?\") (?\' . ?\')))
+  (set (make-local-variable 'electric-pair-pairs) '((?\" . ?\") (?\' . ?\')))
   (when (string= (file-name-extension (buffer-file-name)) "js")
     (web-mode-set-content-type "jsx")
     (setq comment-start "// "
