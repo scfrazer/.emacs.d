@@ -505,6 +505,35 @@
     (setq mc/always-run-for-all t)
     (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)))
 
+(use-package mc-mark-more
+  :bind* (("M-r E" . my-mc/mark-all-in-region))
+  :config
+  (progn
+    (setq mc/always-run-for-all t)
+    (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
+    (defun my-mc/mark-all-in-region (beg end &optional search)
+      "Find and mark all the parts in the region matching the given search"
+      (interactive "r")
+      (let ((search (or search (read-from-minibuffer "Mark all in region: ")))
+            (case-fold-search nil))
+        (if (string= search "")
+            (message "Mark aborted")
+          (progn
+            (mc/remove-fake-cursors)
+            (goto-char beg)
+            (while (search-forward search end t)
+              (goto-char (match-beginning 0))
+              (push-mark)
+              (mc/create-fake-cursor-at-point)
+              (goto-char (min end (point-at-eol))))
+            (let ((first (mc/furthest-cursor-before-point)))
+              (if (not first)
+                  (error "Search failed for %S" search)
+                (mc/pop-state-from-overlay first)))
+            (if (> (mc/num-cursors) 1)
+                (multiple-cursors-mode 1)
+              (multiple-cursors-mode 0))))))))
+
 (use-package nxml-mode
   :defer t
   :config
