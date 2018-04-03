@@ -826,6 +826,7 @@
               shift-select-mode nil
               show-paren-delay 0
               split-width-threshold nil
+              switch-to-buffer-preserve-window-point 'already-displayed
               truncate-lines nil
               truncate-partial-width-windows 40
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
@@ -1073,8 +1074,8 @@ undoable all at once."
   "Count lines to next blank line, or with prefix arg count lines in region."
   (interactive "P")
   (if arg
-      (message "%d lines in region"
-               (count-lines (region-beginning) (region-end)))
+      (let ((current-prefix-arg nil))
+        (call-interactively 'count-words-region))
     (message "%d lines to end of paragraph"
              (count-lines (point-at-bol)
                           (save-excursion (forward-paragraph) (point-at-eol))))))
