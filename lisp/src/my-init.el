@@ -326,6 +326,7 @@
                                `(,(concat proj ".*\\.[ch]$") ,(concat tags-base-dir "/c/TAGS") ,(concat tags-base-dir "/cpp/TAGS"))
                                `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS") ,(concat tags-base-dir "/c/TAGS")))
             etags-table-search-up-depth 10
+            tags-add-tables t
             tags-revert-without-query t))
     (defun my-find-tag (&optional arg)
       "Find tag at point or plain find tag"
