@@ -857,8 +857,8 @@
               show-paren-delay 0
               split-width-threshold nil
               switch-to-buffer-preserve-window-point 'already-displayed
-              truncate-lines nil
-              truncate-partial-width-windows 40
+              truncate-lines t
+              truncate-partial-width-windows nil
               user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
