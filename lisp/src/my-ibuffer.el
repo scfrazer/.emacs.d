@@ -47,7 +47,7 @@
                                                  "*regman"
                                                  "*vcs-compile")))
 
-(defvar my-ibuffer-env-vars-as-bookmarks (list "RESULTSDIR" "HOME_SJC" "VCS_HOME"))
+(defvar my-ibuffer-env-vars-as-bookmarks (list "RESULTSDIR" "PROJ" "HOME_SJC" "VCS_HOME"))
 (defvar my-ibuffer-bookmark-subs nil)
 
 (defun my-ibuffer-build-bookmark-subs ()

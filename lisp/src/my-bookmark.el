@@ -13,7 +13,7 @@
 (defun my-bookmark-reseat ()
   "Reseat bookmarks in Perforce."
   (let ((proj (getenv "PROJ"))
-        (regexp (concat "/vob/sse\\|.*/ws/" (getenv "USER") "-[a-z]+/[^/]")))
+        (regexp (concat "/vob/sse\\|.*/ws/" (getenv "USER") "-[a-z]+/[^/]+")))
     (when proj
       (dolist (bmk bookmark-alist)
         (let ((filename (bookmark-get-filename bmk)))
