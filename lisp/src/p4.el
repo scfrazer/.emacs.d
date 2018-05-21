@@ -1354,7 +1354,7 @@ number is not known or not applicable."
       (let ((new-mode (case status
                         (sync (format " P4:%d" revision))
                         (depot (format " P4:%s" status))
-                        ((add branch edit integrate) (format " P4:%s" status))
+                        ((add branch edit integrate) (format " P4:%d:%s" revision status))
                         (t nil))))
         (when (and new-mode (not p4-mode))
           (run-hooks 'p4-mode-hook))
