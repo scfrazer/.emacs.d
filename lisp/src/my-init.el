@@ -57,11 +57,11 @@
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
 
-(require 'my-clearcase)
-(when (boundp 'clearcase-prefix-map)
-  (bind-key* "C-x v" nil)
-  (bind-key* "C-x c" clearcase-prefix-map)
-  (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
+;; (require 'my-clearcase)
+;; (when (boundp 'clearcase-prefix-map)
+;;   (bind-key* "C-x v" nil)
+;;   (bind-key* "C-x c" clearcase-prefix-map)
+;;   (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
 (require 'easy-escape)
 (setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
@@ -221,9 +221,11 @@
   (progn
     (define-key asm-mode-map (kbd "C-j") nil)
     (define-key asm-mode-map (kbd "C-m") nil)
-    (define-key asm-mode-map (kbd "TAB") 'indent-relative)
+    (define-key asm-mode-map (kbd "TAB") 'asm-indent-line)
+    (setq-default asm-comment-char ?@)
     (defun my-asm-mode-hook ()
-      (setq-local tab-stop-list '(3 11)))
+      ;;(setq-local tab-stop-list '(3 11))
+      )
     (add-hook 'asm-mode-hook 'my-asm-mode-hook)))
 
 (use-package bm
