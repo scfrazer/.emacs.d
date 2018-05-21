@@ -718,8 +718,10 @@ Uses `query-replace-regexp' internally."
                                    (concat "%" fmt)))))
                               (if v1 "\", $time, " "\", $time") v1)
                         '(nil "`uvm_info(\"" (ll-debug-create-next-debug-string)
-                              "\", $sformatf(\"(%s) %s:%0d"
-                              (not (setq v1 (concat "\"" (ll-debug-get-sv-mode-function) "\", `__FILE__, `__LINE__")))
+                              ;; "\", $sformatf(\"(%s) %s:%0d"
+                              ;; (not (setq v1 (concat "\"" (ll-debug-get-sv-mode-function) "\", `__FILE__, `__LINE__")))
+                              "\", $sformatf(\"(%s)"
+                              (not (setq v1 (concat "\"" (ll-debug-get-sv-mode-function) "\"")))
                               ("Variable name: "
                                "  " str "="
                                '(progn
