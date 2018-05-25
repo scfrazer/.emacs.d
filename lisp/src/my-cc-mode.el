@@ -13,7 +13,8 @@
                         (c-basic-offset . 4)
                         (c-comment-only-line-offset 0 . 0)
                         (c-block-comment-prefix . "")))
-(setq c-default-style '((cc-mode . "strou2")
+(setq c-default-style '((c-mode . "strou4")
+                        (cc-mode . "strou2")
                         (php-mode . "strou4")))
 
 ;; Default imenu is not very good
