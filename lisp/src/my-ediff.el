@@ -110,6 +110,11 @@ either do ClearCase diff or Git diff depending on where the file is."
             (when (and (buffer-name x) (string-match "\\.~.+~$" (buffer-name x)))
               (kill-buffer x)))
           buf-list)
+    ;; Kill p4 revision buffers
+    (mapc (lambda (x)
+            (when (and (buffer-name x) (string-match "[*]P4 print .+have[*]$" (buffer-name x)))
+              (kill-buffer x)))
+          buf-list)
     ;; Cleanup ediff buffers
     (mapc (lambda (x)
             (when (setq buf (get-buffer x))

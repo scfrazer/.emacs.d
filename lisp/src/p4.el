@@ -256,13 +256,13 @@ flags."
   :group 'p4-faces)
 
 (defface p4-depot-add-face
-  '((((class color) (background light)) (:foreground "blue"))
+  '((((class color) (background light)) (:foreground "green"))
     (((class color) (background dark)) (:foreground "cyan")))
   "Face used for files open for add."
   :group 'p4-faces)
 
 (defface p4-depot-branch-face
-  '((((class color) (background light)) (:foreground "blue4"))
+  '((((class color) (background light)) (:foreground "magenta"))
     (((class color) (background dark)) (:foreground "sky blue")))
   "Face used for files open for integrate."
   :group 'p4-faces)
@@ -274,7 +274,7 @@ flags."
   :group 'p4-faces)
 
 (defface p4-depot-edit-face
-  '((((class color) (background light)) (:foreground "dark green"))
+  '((((class color) (background light)) (:foreground "dark blue"))
     (((class color) (background dark)) (:foreground "light green")))
   "Face used for files open for edit."
   :group 'p4-faces)
@@ -1770,6 +1770,8 @@ the context to determine the filename if necessary."
   (p4-call-command "diff2" args
                    :mode 'p4-diff-mode :callback 'p4-activate-diff-buffer))
 
+(defvar p4-ediff-window-config nil)
+
 (defun p4-activate-ediff-callback ()
   "Return a callback function that runs ediff on the current
 buffer and the P4 output buffer."
@@ -1778,6 +1780,7 @@ buffer and the P4 output buffer."
       (when (buffer-live-p orig-buffer)
         (p4-fontify-print-buffer t)
         (lexical-let ((depot-buffer (current-buffer)))
+          (set-window-configuration p4-ediff-window-config)
           (ediff-buffers orig-buffer depot-buffer))))))
 
 (defun p4-ediff (prefix)
@@ -1785,6 +1788,7 @@ buffer and the P4 output buffer."
   (interactive "P")
   (if prefix
       (call-interactively 'p4-ediff2)
+    (setq p4-ediff-window-config (current-window-configuration))
     (p4-call-command "print" (list (concat (p4-context-single-filename) "#have"))
                      :after-show (p4-activate-ediff-callback))))
 
@@ -1806,6 +1810,7 @@ When visiting a depot file, type \\[p4-ediff2] and enter the versions."
                                (when (> rev 1) (number-to-string (1- rev))))
            (p4-read-arg-string "Second filespec/revision to diff: "
                                (when (> rev 1) (number-to-string rev))))))
+  (setq p4-ediff-window-config (current-window-configuration))
   (p4-call-command "print" (list (p4-get-file-rev rev1))
    :after-show (p4-activate-ediff2-callback (p4-get-file-rev rev2))))
 
@@ -2049,8 +2054,10 @@ followed by \"delete\"."
   nil
   (p4-call-command cmd args :mode 'p4-opened-list-mode
    :callback (lambda ()
-               (p4-regexp-create-links "\\<change \\([1-9][0-9]*\\) ([a-z]+)"
-                                       'pending "Edit change"))
+               (p4-regexp-create-links "\\<change \\([1-9][0-9]*\\) (.+)"
+                                       'pending "Edit change")
+               (pop-to-buffer "*P4 opened*")
+               (goto-char (point-min)))
    :pop-up-output (lambda () t)))
 
 (defp4cmd* print
@@ -3304,7 +3311,8 @@ is NIL, otherwise return NIL."
 
 (defvar p4-opened-list-font-lock-keywords
   (append p4-basic-list-font-lock-keywords
-          '(("\\<change \\([1-9][0-9]*\\) ([a-z]+)" 1 'p4-change-face))))
+          '(("\\<change \\([1-9][0-9]*\\) (.+)" 1 'p4-change-face)
+            ("\\\(default\\) change (.+)" 1 'p4-change-face))))
 
 (define-derived-mode p4-opened-list-mode p4-basic-list-mode "P4 Opened List"
   (setq font-lock-defaults '(p4-opened-list-font-lock-keywords t)))
@@ -3318,7 +3326,7 @@ is NIL, otherwise return NIL."
 
 (defun p4-opened-list-change (change)
   (interactive 
-   (list (p4-completing-read 'pending "New change: ")))
+   (list (p4-completing-read 'pending "Reopen in change: ")))
   (save-excursion
     (beginning-of-line)
     (when (looking-at p4-basic-list-filename-regexp)
