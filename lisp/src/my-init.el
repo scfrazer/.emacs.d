@@ -1999,7 +1999,7 @@ Prefix with C-u to resize the `next-window'."
           (eq my-location 'BGL))
 
   (require 'vcs-compile)
-  (add-to-list 'vcs-compile-command-list "q lsq_targ_buildpb_chipMl2infMpciMpaMfabMhbmGMPP64 /build_test/")
+  (add-to-list 'vcs-compile-command-list "q aurora_targ_build_chipSicu")
 
   (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
 

@@ -2800,7 +2800,7 @@ the depot."
     (when client
       (cons "default"
             (p4-output-annotations `("changes" "-s" ,status "-c" ,client)
-                                   "^Change \\([1-9][0-9]*\\) .*'\\(.*\\)'"
+                                   "^Change \\([1-9][0-9]*\\) .*?'\\(.*\\)'"
                                    1 2)))))
 
 (defun p4-fetch-pending-completions (completion string)

@@ -133,7 +133,8 @@
          ("Dired" (mode . dired-mode))
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
-         ("VOB" (filename . "/vob"))
+         ;; ("VOB" (filename . "/vob"))
+         ("Workspace" (predicate . (my-ibuffer-worksapce-files)))
          ("Files" (predicate . (my-ibuffer-filter-files)))
          ("Temp" (predicate . (my-ibuffer-filter-buffers)))
          ("*" (or (mode . Custom-mode)
@@ -144,6 +145,14 @@
   (interactive "sMark by extension name (regexp): ")
   (when regexp
     (ibuffer-mark-by-file-name-regexp (concat ".*[.]" regexp "$"))))
+
+(defun my-ibuffer-worksapce-files ()
+  "Filter to match files in a workspace"
+  (let ((proj (getenv "PROJ"))
+        (filename (buffer-file-name)))
+    (and proj
+         filename
+         (string-match (concat "^" proj) (buffer-file-name)))))
 
 (defun my-ibuffer-filter-files ()
   "Filter to match non-TAGS files."

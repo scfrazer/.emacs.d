@@ -10,4 +10,10 @@
 
 (define-key p4-prefix-map "e" 'my-p4-edit)
 
+(defun my-p4-opened ()
+  "Improved p4 opened output."
+  (interactive)
+  ;; TODO
+  )
+
 (provide 'my-p4)
