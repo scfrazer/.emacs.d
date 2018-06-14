@@ -85,6 +85,12 @@ so we can restore it when turning `ido-vertical-mode' off")
                    ido-merged-indicator))
          first)
 
+    (when (and ido-use-faces comps)
+      (let (new-comps)
+        (dolist (comp comps)
+          (push (substring-no-properties comp) new-comps))
+        (setq comps (reverse new-comps))))
+
     (if (and ind ido-use-faces)
         (put-text-property 0 1 'face 'ido-indicator ind))
 
@@ -162,7 +168,7 @@ so we can restore it when turning `ido-vertical-mode' off")
 
 (defun turn-on-ido-vertical ()
   (if (and (eq nil ido-vertical-old-decorations)
-         (eq nil ido-vertical-old-completions))
+           (eq nil ido-vertical-old-completions))
       (progn
         (setq ido-vertical-old-decorations ido-decorations)
         (setq ido-vertical-old-completions (symbol-function 'ido-completions))))

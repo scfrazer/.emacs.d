@@ -3,7 +3,8 @@
 
 (defun smf-color (color-num)
   "Return the color name from a color number."
-  (if (display-graphic-p)
+  (if (or (display-graphic-p)
+          (= (display-color-cells) 16777216))
       (let (r g b)
         (setq color-num (- color-num 16))
         (if (< color-num 216)

@@ -41,7 +41,7 @@
               (if (/= (buffer-size) (- (point-max) (point-min)))
                   (propertize str 'face 'my-narrow-face)
                 str))))
-   "  %p"
+   "  %P"
    (list 'column-number-mode "  C%c")
    "  " mode-line-buffer-identification
    "  " mode-line-modes
