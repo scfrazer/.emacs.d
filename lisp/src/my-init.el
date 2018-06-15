@@ -1694,23 +1694,26 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                  (not (string-match "^smf-base" name)))
         (push name themes)))
     (setq choice (intern (ido-completing-read "Theme: " (sort themes 'string<) nil t)))
-    (dolist (theme custom-enabled-themes)
-      (disable-theme theme))
+    (my-theme-disable-all)
     (load-theme choice t)))
+
+(defun my-theme-disable-all ()
+  "Disable all custom themes."
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme)))
 
 (defun my-theme-dark ()
   "Load my dark theme."
   (interactive)
-  (dolist (theme custom-enabled-themes)
-    (disable-theme theme))
+  (my-theme-disable-all)
   (load-theme 'smf-misterioso t))
 
 (defun my-theme-light ()
   "Load my light theme."
   (interactive)
-  (dolist (theme custom-enabled-themes)
-    (disable-theme theme))
-  (load-theme 'smf-bright t))
+  (my-theme-disable-all)
+  (load-theme 'smf-light t))
 
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
@@ -2079,6 +2082,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tail 'auto-revert-tail-mode)
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'theme 'my-theme)
+(defalias 'theme-off 'my-theme-disable-all)
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))

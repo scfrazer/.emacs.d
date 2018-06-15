@@ -6,16 +6,16 @@
 (custom-theme-set-faces
  'smf-light
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 94))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 248) :italic t)))
- `(font-lock-constant-face      ((t :foreground ,(smf-color 64))))
- `(font-lock-doc-face           ((t :foreground ,(smf-color 244) :italic t)))
- `(font-lock-function-name-face ((t :foreground ,(smf-color 88) :underline t)))
- `(font-lock-keyword-face       ((t :foreground ,(smf-color 18) :bold t)))
- `(font-lock-preprocessor-face  ((t :foreground ,(smf-color 100))))
- `(font-lock-string-face        ((t :foreground ,(smf-color 89))))
- `(font-lock-type-face          ((t :foreground ,(smf-color 24))))
- `(font-lock-variable-name-face ((t :foreground ,(smf-color 22))))
+ `(font-lock-builtin-face       ((t :foreground "deepskyblue4")))
+ `(font-lock-comment-face       ((t :foreground "gray66" :italic t)))
+ `(font-lock-constant-face      ((t :foreground "olivedrab4")))
+ `(font-lock-doc-face           ((t :foreground "slategray4" :italic t)))
+ `(font-lock-function-name-face ((t :foreground "tan4" :underline t)))
+ `(font-lock-keyword-face       ((t :foreground "blue4" :bold t)))
+ `(font-lock-preprocessor-face  ((t :foreground "yellow4")))
+ `(font-lock-string-face        ((t :foreground "violetred4")))
+ `(font-lock-type-face          ((t :foreground "cyan4")))
+ `(font-lock-variable-name-face ((t :foreground "green4")))
 
  )
 
