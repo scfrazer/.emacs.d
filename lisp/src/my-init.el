@@ -1698,6 +1698,20 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
       (disable-theme theme))
     (load-theme choice t)))
 
+(defun my-theme-dark ()
+  "Load my dark theme."
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
+  (load-theme 'smf-misterioso t))
+
+(defun my-theme-light ()
+  "Load my light theme."
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme))
+  (load-theme 'smf-bright t))
+
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
   (interactive)
@@ -2048,6 +2062,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'bcl 'emacs-lisp-byte-compile-and-load)
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
+(defalias 'dark 'my-theme-dark)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fnd 'my-dired-find-name-dired)
@@ -2055,6 +2070,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
+(defalias 'light 'my-theme-light)
 (defalias 'qrr 'vr/query-replace)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
