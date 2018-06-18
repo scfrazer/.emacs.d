@@ -16,7 +16,12 @@
                                    ("py" . "*.py")
                                    ("rtl" . "*.s *.v *.vh")
                                    ("vtt" . "*.java *.php *.json *.html *.js")
-                                   ))
+                                   )
+              grep-mode-line-matches
+              `(" " (:propertize (:eval (concat "[" (int-to-string grep-num-matches-found) "]"))
+                                  face 'success
+                                  help-echo "Number of matches so far")
+                ""))
 
 (grep-apply-setting 'grep-template "grep <C> -nH -d skip -I <X> -E -e <R> <F>")
 (grep-apply-setting 'grep-find-template "find <D> <X> -type f <F> -print0 | xargs -0 -e grep -nH -I -E -e <R> <C>")

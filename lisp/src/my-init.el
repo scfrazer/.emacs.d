@@ -1000,7 +1000,7 @@ undoable all at once."
     (cons beg end)))
 
 (defface my-browse-kill-ring-separator-face
-  '((t :foreground "color-197"))
+  '((t :foreground "deeppink"))
   "Face to highlight kill-ring separators."
   :group 'faces)
 
@@ -2097,8 +2097,8 @@ Prefix with C-u to resize the `next-window'."
   (set-terminal-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((((class color) (background dark)) :foreground "color-201" :background "black")
-      (((class color) (background light)) :foreground "color-125" :background "color-255" :bold t))
+    '((((class color) (background dark)) :foreground "brightmagenta" :background "black")
+      (((class color) (background light)) :foreground "violetred" :background "whitesmoke" :bold t))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
