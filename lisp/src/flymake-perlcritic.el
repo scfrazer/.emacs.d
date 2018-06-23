@@ -77,11 +77,11 @@
      ;; isn't parsable in a way that flymake.el likes.
      (add-to-list 'flymake-err-line-patterns
                   '("\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\)" 1 2 3 4))
-     (let ((mode-and-masks (flymake-get-file-name-mode-and-masks "example.pm")))
-       (setcar mode-and-masks 'flymake-perlcritic-init)
-       (if (nth 1 mode-and-masks)
-           (setcar (nthcdr 1 mode-and-masks) 'flymake-perlcritic-cleanup)
-         (nconc mode-and-masks (list 'flymake-perlcritic-cleanup))))
+     ;; (let ((mode-and-masks (flymake-get-file-name-mode-and-masks "example.pm")))
+     ;;   (setcar mode-and-masks 'flymake-perlcritic-init)
+     ;;   (if (nth 1 mode-and-masks)
+     ;;       (setcar (nthcdr 1 mode-and-masks) 'flymake-perlcritic-cleanup)
+     ;;     (nconc mode-and-masks (list 'flymake-perlcritic-cleanup))))
      (add-hook 'perl-mode-hook (lambda() (flymake-mode 1)))))
 
 (provide 'flymake-perlcritic)

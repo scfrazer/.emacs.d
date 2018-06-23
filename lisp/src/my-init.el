@@ -1924,6 +1924,8 @@ Prefix with C-u to resize the `next-window'."
  ("<delete>"    . delete-char)
  ("<f1>"        . my-flymake-goto-prev-error)
  ("<f2>"        . my-flymake-goto-next-error)
+ ("<f3>"        . previous-error)
+ ("<f4>"        . next-error)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
@@ -1988,7 +1990,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
  ("M-]"         . my-forward-paragraph)
- ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-r M-n"     . my-forward-paragraph-rect)
@@ -1999,8 +2000,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-r p"       . yank-rectangle)
  ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
- ("M-z"         . redo)
- ("M-~"         . previous-error))
+ ("M-z"         . redo))
 
 ;; These have to be in this order
 
