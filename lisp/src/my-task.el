@@ -1,7 +1,7 @@
 ;;; my-task.el
 
 (require 'task)
-(require 'my-clearcase)
+;; (require 'my-clearcase)
 
 (defvar my-task-saving-bookmarks nil)
 
@@ -32,8 +32,8 @@
   (dolist (buf (buffer-list))
     (when (buffer-file-name buf)
       (set-buffer buf)
-      (when (and use-clearcase clearcase-setview-viewtag)
-        (clearcase-hook-find-file-hook))
+      ;; (when (and use-clearcase clearcase-setview-viewtag)
+      ;;   (clearcase-hook-find-file-hook))
       (when (and (featurep 'bm) bm-buffer-persistence)
         (bm-toggle-buffer-persistence)))))
 

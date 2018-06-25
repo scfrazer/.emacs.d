@@ -29,12 +29,12 @@
         ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
         ("~\\|#\\|\\([.]\\(o\\|obj\\|d\\|elc\\|pyc\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
 
-(when (featurep 'my-clearcase)
-  (setq dired-font-lock-keywords
-        (append dired-font-lock-keywords
-                '(("^.+ \\(CHECKOUT-[RU]\\|HIJACK\\)\\s-+[0-9]" 1 'clearcase-dired-checkedout-face)
-                  ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
-                  ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face)))))
+;; (when (featurep 'my-clearcase)
+;;   (setq dired-font-lock-keywords
+;;         (append dired-font-lock-keywords
+;;                 '(("^.+ \\(CHECKOUT-[RU]\\|HIJACK\\)\\s-+[0-9]" 1 'clearcase-dired-checkedout-face)
+;;                   ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
+;;                   ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face)))))
 
 ;; Find marked files in dired, but don't display all at once
 

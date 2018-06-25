@@ -2,19 +2,20 @@
 
 (require 'recentf)
 (require 'midnight)
+(require 'subr-x)
 
 (add-hook 'midnight-hook 'recentf-cleanup)
 (remove-hook 'midnight-hook 'clean-buffer-list)
 
-(require 'my-clearcase)
-(defvar clearcase-setview-viewtag)
+;; (require 'my-clearcase)
+;; (defvar clearcase-setview-viewtag)
 
 (when recentf-save-file
   (setq recentf-save-file
         (convert-standard-filename
-         (let ((view (and use-clearcase clearcase-setview-viewtag)))
-           (if view
-               (concat "~/.recentf-" view)
+         (let ((ws (string-trim-right (shell-command-to-string "p4 -F %clientName% -ztag info"))))
+           (if (not (string= ws "*unknown*"))
+               (concat "~/.recentf-" ws)
              "~/.recentf")))))
 
 (setq recentf-auto-cleanup "11:59pm"

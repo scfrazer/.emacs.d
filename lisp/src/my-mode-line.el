@@ -1,7 +1,7 @@
 ;;; my-mode-line.el
 
-(require 'my-clearcase)
-(defvar clearcase-setview-viewtag)
+;; (require 'my-clearcase)
+;; (defvar clearcase-setview-viewtag)
 
 (defvar my-mode-line-buffer-line-count nil)
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
@@ -48,9 +48,9 @@
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
    (:eval (when (and (boundp 'flymake-mode) flymake-mode)
             (concat " " flymake-mode-line)))
-   (:eval (if (and use-clearcase clearcase-setview-viewtag)
-              (concat "  [View: " clearcase-setview-viewtag "]")
-            ""))
+   ;; (:eval (if (and use-clearcase clearcase-setview-viewtag)
+   ;;            (concat "  [View: " clearcase-setview-viewtag "]")
+   ;;          ""))
    (:eval (let ((p4-ws (getenv "P4CLIENT")))
             (if p4-ws
                 (concat "  [P4: " p4-ws "]")
