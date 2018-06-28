@@ -41,8 +41,8 @@
               (if (/= (buffer-size) (- (point-max) (point-min)))
                   (propertize str 'face 'my-narrow-face)
                 str))))
-   "  %P"
-   (list 'column-number-mode "  C%c")
+   "  %o"
+   (list 'column-number-mode "  C%C")
    "  " mode-line-buffer-identification
    "  " mode-line-modes
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))

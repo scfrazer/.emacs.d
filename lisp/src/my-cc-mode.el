@@ -49,7 +49,7 @@
 
 (defvar my-cc-mode-uncrustify-executable "uncrustify")
 
-(defun my-cc-mode-uncrustify ()
+(defun my-cc-mode-uncrustify-cc ()
   "Run uncrustify on marked region, or entire buffer."
   (interactive "*")
   (let ((pos (point))
@@ -60,6 +60,19 @@
       (setq beg (point-min)
             end (point-max)))
     (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l CPP") nil t)
+    (goto-char pos)))
+
+(defun my-cc-mode-uncrustify-c ()
+  "Run uncrustify on marked region, or entire buffer."
+  (interactive "*")
+  (let ((pos (point))
+        beg end)
+    (if (region-active-p)
+        (setq beg (region-beginning)
+              end (region-end))
+      (setq beg (point-min)
+            end (point-max)))
+    (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l C") nil t)
     (goto-char pos)))
 
 (defun my-java-mode-uncrustify ()
@@ -103,7 +116,7 @@
         ("\\.c$"
          (".h"))
         ("\\.h$"
-         (".cc" ".cpp" ".cxx" ".c" ".C" ".CC"))
+         (".c" ".cc" ".cpp" ".cxx" ".C" ".CC"))
         ("\\.C$"
          (".h" ".H" ".hh" ))
         ("\\.H$"
@@ -116,7 +129,7 @@
          (".hh" ".h"))
         ))
 
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;; (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 ;; Abbrevs
 

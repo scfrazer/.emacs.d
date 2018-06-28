@@ -99,7 +99,8 @@
 
 (require 'mode-fn)
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
-(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify)
+(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify-cc)
+(mode-fn-map 'tidy 'c-mode 'my-cc-mode-uncrustify-c)
 (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
 ;; (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
@@ -300,6 +301,7 @@
   :config
   (require 'my-ediff))
 
+;; FIXME Update to use xref
 (use-package etags
   :bind* (("M-?" . my-find-tag)
           ("M-&" . my-pop-tag-mark-kill-buffer)
@@ -361,6 +363,7 @@
   (require 'my-pop-back)
   (require 'my-ffap))
 
+;; FIXME Update for flymake remake
 (use-package flymake
   :bind* (("C-x f" . flymake-start-syntax-check))
   :commands (my-flymake-goto-next-error
@@ -428,35 +431,6 @@
     (require 'flymake-less)
     (setq-default less-css-compile-at-save t)
     (add-hook 'less-css-mode-hook 'flymake-less-load)))
-
-(use-package linum
-  :commands (linum-mode)
-  :config
-  (progn
-    (defvar my-linum-format "%4d ")
-    (defvar my-linum-current-line 0)
-    (defface my-linum-current-line-face
-      '((t :inherit linum :inverse-video t))
-      "Face to highlight current line number."
-      :group 'faces)
-    (defun my-linum-before-numbering-hook ()
-      "Set the linum format."
-      (setq-local my-linum-format
-                  (let ((width (length (number-to-string
-                                        (count-lines (point-min) (point-max))))))
-                    (concat "%" (number-to-string width) "d "))))
-    (add-hook 'linum-before-numbering-hook 'my-linum-before-numbering-hook)
-    (defun my-linum-format-func (line-number)
-      "Format the line number."
-      (propertize (format my-linum-format line-number) 'face
-                  (if (eq line-number my-linum-current-line)
-                      'my-linum-current-line-face
-                    'linum)))
-    (defadvice linum-update (around my-linum-update activate)
-      "Set which line number is the current one."
-      (let ((my-linum-current-line (line-number-at-pos)))
-        ad-do-it))
-    (setq linum-format 'my-linum-format-func)))
 
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
@@ -790,6 +764,7 @@
 (winner-mode 1)
 
 (setq-default Man-notify-method 'bully
+              auto-hscroll-mode 'current-line
               backup-inhibited t
               bidi-display-reordering nil
               blink-matching-paren-distance nil
@@ -813,11 +788,15 @@
               custom-theme-directory (concat user-emacs-directory "themes")
               dabbrev-case-fold-search nil
               desktop-restore-frames nil
+              display-line-numbers-grow-only t
+              display-line-numbers-widen t
+              display-line-numbers-width 3
               echo-keystrokes 0.1
               enable-local-eval t
               eval-expression-print-length nil
               eval-expression-print-level nil
               even-window-heights nil
+              extended-command-suggest-shorter nil
               file-template-insert-automatically 'ask
               file-template-paths (list (concat user-emacs-directory "templates/"))
               fill-column 78
@@ -1924,8 +1903,6 @@ Prefix with C-u to resize the `next-window'."
  ("<delete>"    . delete-char)
  ("<f1>"        . my-flymake-goto-prev-error)
  ("<f2>"        . my-flymake-goto-next-error)
- ("<f3>"        . previous-error)
- ("<f4>"        . next-error)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
@@ -1960,7 +1937,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-h"         . backward-char)
  ("C-l"         . forward-char)
  ("C-x 5 n"     . set-frame-name)
- ("C-x #"       . global-linum-mode)
+ ("C-x #"       . global-display-line-numbers-mode)
  ("C-x ("       . kmacro-start-macro-or-insert-counter)
  ("C-x -"       . my-window-resize)
  ("C-x C-c"     . my-kill-frame-or-emacs)
@@ -1990,6 +1967,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
  ("M-]"         . my-forward-paragraph)
+ ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-r M-n"     . my-forward-paragraph-rect)
@@ -2000,7 +1978,8 @@ Prefix with C-u to resize the `next-window'."
  ("M-r p"       . yank-rectangle)
  ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
- ("M-z"         . redo))
+ ("M-z"         . redo)
+ ("M-~"         . previous-error))
 
 ;; These have to be in this order
 
