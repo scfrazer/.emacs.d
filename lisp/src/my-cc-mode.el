@@ -17,6 +17,12 @@
                         (cc-mode . "strou2")
                         (php-mode . "strou4")))
 
+;; Modeline format is annoying
+
+(defun my-c-update-modeline (orig-fun)
+  (force-mode-line-update))
+(advice-add 'c-update-modeline :around #'my-c-update-modeline)
+
 ;; Default imenu is not very good
 
 (defvar my-cc-mode-ctags-executable "ctags")

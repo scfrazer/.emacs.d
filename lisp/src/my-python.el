@@ -1,27 +1,48 @@
-;;; my-python.el
+;;; my-python.el  -*- lexical-binding: t -*-
 
 (require 'my-flymake)
 (require 'python)
 
-(setq-default python-check-command "pylint_etc_wrapper.py -c"
-              python-continuation-offset 4
+(setq-default python-continuation-offset 4
               python-indent 4
+              python-flymake-command '("python_flymake.py")
+              python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
+              python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
               python-shell-interpreter (if (and (getenv "HOST") (string-match "asic-vm" (getenv "HOST")))
                                            "/router/bin/python3-3.5.0"
                                          "/usr/bin/python"))
 
+;; (defun my-flymake-python ()
+;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy 'my-flymake-create-temp))
+;;          (local-file (file-relative-name temp-file (file-name-directory buffer-file-name))))
+;;     (list "pylint_etc_wrapper.py" (list local-file))))
+;;
+;; (add-to-list 'flymake-allowed-file-name-masks '(python-mode my-flymake-python))
 
-(defun my-flymake-python ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy 'my-flymake-create-temp))
-         (local-file (file-relative-name temp-file (file-name-directory buffer-file-name))))
-    (list "pylint_etc_wrapper.py" (list local-file))))
-
-(add-to-list 'flymake-allowed-file-name-masks '(python-mode my-flymake-python))
-
-(defun my-python-mode-hook ()
-  (flymake-mode 1)
-  (define-key python-mode-map (kbd "C-c !") 'python-switch-to-python)
-  (define-key python-mode-map (kbd "C-c |") 'python-send-region))
+(defun my-python-flymake (orig-fun report-fn &rest _args)
+  (unless (executable-find (car python-flymake-command))
+    (error "Cannot find a suitable checker"))
+  (when (process-live-p python--flymake-proc)
+    (kill-process python--flymake-proc))
+  (let ((source (current-buffer)))
+    (save-restriction
+      (widen)
+      (setq python--flymake-proc
+            (make-process
+             :name "python-flymake"
+             :noquery t
+             :connection-type 'pipe
+             :buffer (generate-new-buffer " *python-flymake*")
+             :command (list (car python-flymake-command) (buffer-file-name))
+             :sentinel
+             (lambda (proc _event)
+               (when (eq 'exit (process-status proc))
+                 (unwind-protect
+                     (when (with-current-buffer source
+                             (eq proc python--flymake-proc))
+                       (python--flymake-parse-output source proc report-fn))
+                   (kill-buffer (process-buffer proc))))))))))
+(advice-add 'python-flymake :around #'my-python-flymake)
 
 (defun python-imenu-create-index ()
   "Fix declaration item and reverse function calls."
@@ -111,7 +132,5 @@
           (insert arg ", "))
         (delete-char -2))
       (insert ")"))))
-
-(add-hook 'python-mode-hook 'my-python-mode-hook)
 
 (provide 'my-python)

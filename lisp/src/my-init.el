@@ -363,12 +363,10 @@
   (require 'my-pop-back)
   (require 'my-ffap))
 
-;; FIXME Update for flymake remake
 (use-package flymake
-  :bind* (("C-x f" . flymake-start-syntax-check))
-  :commands (my-flymake-goto-next-error
-             my-flymake-goto-prev-error
-             my-flymake-show-current-error)
+  :bind* (("C-x f" . flymake-start))
+  :commands (flymake-goto-next-error
+             flymake-goto-prev-error)
   :init
   (defalias 'fly 'flymake-mode)
   :config
@@ -584,9 +582,12 @@
   (progn
     (require 'my-python)
     (defun my-python-mode-hook ()
+      (flymake-mode 1)
       (bind-keys :map python-mode-map
+                 ("C-c !" . python-switch-to-python)
+                 ("C-c <" . python-indent-shift-left)
                  ("C-c >" . python-indent-shift-right)
-                 ("C-c <" . python-indent-shift-left))
+                 ("C-c |" . python-send-region))
       (setq forward-sexp-function nil))
     (add-hook 'python-mode-hook 'my-python-mode-hook)))
 
@@ -1901,8 +1902,8 @@ Prefix with C-u to resize the `next-window'."
 
 (bind-keys*
  ("<delete>"    . delete-char)
- ("<f1>"        . my-flymake-goto-prev-error)
- ("<f2>"        . my-flymake-goto-next-error)
+ ("<f1>"        . flymake-goto-prev-error)
+ ("<f2>"        . flymake-goto-next-error)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)

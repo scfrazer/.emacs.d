@@ -46,8 +46,8 @@
    "  " mode-line-buffer-identification
    "  " mode-line-modes
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
-   (:eval (when (and (boundp 'flymake-mode) flymake-mode)
-            (concat " " flymake-mode-line)))
+   ;; (:eval (when (and (boundp 'flymake-mode) flymake-mode)
+   ;;          (concat " " flymake-mode-line)))
    ;; (:eval (if (and use-clearcase clearcase-setview-viewtag)
    ;;            (concat "  [View: " clearcase-setview-viewtag "]")
    ;;          ""))

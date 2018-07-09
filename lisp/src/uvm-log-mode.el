@@ -48,7 +48,7 @@
   :group 'uvm-log-mode)
 
 (defface uvm-log-mode-debug-msg-face
-  '((t :foreground "#FFAF00"))
+  '((t :foreground "darkorange2"))
   "Font Lock mode face used to highlight debug messages."
   :group 'uvm-log-mode)
 
