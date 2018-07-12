@@ -66,6 +66,10 @@
 (require 'easy-escape)
 (setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
 
+(require 'filladapt)
+(setq filladapt-mode-line-string nil)
+(setq-default filladapt-mode t)
+
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
             ("C-M-p" . my-edit-scroll-up)

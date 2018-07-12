@@ -36,7 +36,9 @@
     (with-temp-buffer
       (shell-command
        (concat my-cc-mode-ctags-executable " -e "
-               (cond ((equal mode 'c++-mode)
+               (cond ((equal mode 'c-mode)
+                      "--language-force=c --c-kinds=cdfnpstuvx")
+                     ((equal mode 'c++-mode)
                       "--language-force=c++ --c++-kinds=cdfmnpstuvx")
                      ((equal mode 'java-mode)
                       "--language-force=java --java-kinds=-efg"))

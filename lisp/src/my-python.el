@@ -5,7 +5,7 @@
 
 (setq-default python-continuation-offset 4
               python-indent 4
-              python-flymake-command '("python_flymake.py")
+              python-flymake-command '("flymake_python")
               python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
               python-shell-interpreter (if (and (getenv "HOST") (string-match "asic-vm" (getenv "HOST")))
