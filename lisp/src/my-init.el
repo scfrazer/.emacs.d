@@ -769,7 +769,7 @@
 (winner-mode 1)
 
 (setq-default Man-notify-method 'bully
-              auto-hscroll-mode 'current-line
+              auto-hscroll-mode t ;;'current-line
               backup-inhibited t
               bidi-display-reordering nil
               blink-matching-paren-distance nil
@@ -858,6 +858,7 @@
 
 (add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
+(add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
@@ -2004,7 +2005,7 @@ Prefix with C-u to resize the `next-window'."
 
   (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
 
-  (require 'ur-log-mode)
+  (require 'rel-log-mode)
 
   (defun dv-lint ()
     (interactive)

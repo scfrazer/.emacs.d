@@ -1,4 +1,5 @@
-#!/router/bin/python3-3.5.0
+#!/router/bin/python3
+# -*- mode: python -*-
 
 import sys
 import re
