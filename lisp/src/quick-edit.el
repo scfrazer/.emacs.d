@@ -420,6 +420,8 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?m (qe-unit-ends-matching))
           (?p (qe-unit-ends-point-to-fcn 'qe-forward-paragraph))
           (?s (qe-unit-symbol))
+          (?t (qe-unit-ends-forward-to-char))
+          (?T (qe-unit-ends-forward-to-starting-char))
           (?w (qe-unit-ends-forward-word))
           (?x (qe-region-xml-content dir))
           (t
@@ -479,7 +481,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
         (cons beg (point))))))
 
 (defun qe-unit-ends-forward-to-char (&optional char)
-  "Text unit ends for forward to some char."
+  "Text unit ends for forward to char."
   (let ((case-fold-search nil))
     (unless char
       (message "To char:")
@@ -488,6 +490,16 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                          (search-forward (char-to-string char))
                          (backward-char)
                          (point)))))
+
+(defun qe-unit-ends-forward-to-starting-char ()
+  "Text unit ends for forward to a word starting with char."
+  (let ((case-fold-search nil))
+    (message "To char:")
+    (let ((char (read-char)))
+      (cons (point) (progn (forward-char)
+                           (re-search-forward (concat "\\_<" (char-to-string char)) nil t)
+                           (backward-char)
+                           (point))))))
 
 (defun qe-unit-symbol ()
   "Text unit ends for current symbol."
@@ -549,7 +561,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
          (end beg)
          (table (copy-syntax-table (syntax-table)))
          open close forward-sexp-function)
-    (when (or (eq char ?<) (eq char ?>))
+    (when (or (eq char ?\<) (eq char ?\>))
       (modify-syntax-entry ?< "(>" table)
       (modify-syntax-entry ?> ")<" table))
     (cond ((or (eq char ?() (eq char ?)))

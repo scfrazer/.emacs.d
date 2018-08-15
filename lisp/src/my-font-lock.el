@@ -65,6 +65,7 @@
             (eq major-mode 'dired-mode))
     (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
     (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
+    (font-lock-add-keywords nil (list (cons "\\_<\\(XXX\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
     (font-lock-add-keywords nil (list (cons "\\_<\\([Ff][Ii][Xx]\\([Mm][Ee]\\)?\\)\\_>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
 
 (add-hook 'font-lock-mode-hook 'my-font-lock-mode-hook)
