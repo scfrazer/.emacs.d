@@ -856,6 +856,8 @@
               x-select-enable-primary t
               x-select-enable-clipboard nil)
 
+(setq completion-ignored-extensions (delete ".bin" completion-ignored-extensions))
+
 (add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
@@ -863,6 +865,7 @@
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
+(add-to-list 'auto-mode-alist '("\\.signature\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
 (add-to-list 'auto-mode-alist '("\\.zsh.*\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
@@ -970,6 +973,32 @@ undoable all at once."
   (while (and (not (bobp)) (re-search-forward regexp (line-end-position) t))
     (beginning-of-line)
     (forward-line -1)))
+
+(defun my-backup ()
+  "Create a backup (.keep) of a file."
+  (interactive)
+  (let* ((filename (buffer-file-name))
+         (backups
+          (directory-files
+           (file-name-directory filename) t
+          (concat (file-name-nondirectory filename) ".keep.[0-9]+")))
+        (extension ".keep"))
+    (when backups
+      (setq extension (format ".keep.%d" (1+ (length backups)))))
+    (copy-file filename (concat filename extension) t)
+    (message
+     (format "Backed up file to %s" (concat (file-name-nondirectory filename) extension)))))
+
+(defun my-backup-set-mode ()
+  "Set the mode of backup files to the mode of the original."
+  (interactive)
+  (let ((backup-regexp "\\.\\(keep\\|contrib\\)\\(\\.[0-9]+\\)?$") mode)
+    (when (and (buffer-file-name) (string-match backup-regexp (buffer-file-name)))
+      (let ((name (replace-regexp-in-string backup-regexp "" (buffer-file-name))))
+        (setq mode (let ((case-fold-search t))
+                     (assoc-default name auto-mode-alist 'string-match)))
+        (when mode
+          (set-auto-mode-0 mode))))))
 
 (defun my-bounds-of-current-symbol ()
   "Return bounds of current symbol."
@@ -1816,7 +1845,8 @@ Prefix with C-u to resize the `next-window'."
 (defun my-find-file-hook ()
   (when (or (equal (buffer-name) "config_tree.txt")
             (equal (buffer-name) "topology.txt"))
-    (my-word-wrap-on-hook)))
+    (my-word-wrap-on-hook))
+  (my-backup-set-mode))
 
 (defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
   "Insert a bookmarked dir using ido."
