@@ -330,18 +330,22 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit
 
-(defun qe-unit-kill (key-seq)
+(defun qe-unit-kill ()
   "Kill by text unit."
-  (interactive (list
-                (read-key-sequence
-                 (if current-prefix-arg
-                     (if (listp current-prefix-arg)
-                         "Delete:"
-                       "(Append) Kill:")
-                   "Kill:"))))
-  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
-    (setq mc--this-command `(lambda () (interactive) (qe-unit-kill-1 ',key-seq))))
-  (qe-unit-kill-1 key-seq))
+  (interactive)
+  (if (region-active-p)
+      (if current-prefix-arg
+          (delete-region (region-beginning) (region-end))
+        (kill-region (region-beginning) (region-end)))
+    (let ((key-seq (read-key-sequence
+                    (if current-prefix-arg
+                        (if (listp current-prefix-arg)
+                            "Delete:"
+                          "(Append) Kill:")
+                      "Kill:"))))
+      (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+        (setq mc--this-command `(lambda () (interactive) (qe-unit-kill-1 ',key-seq))))
+      (qe-unit-kill-1 key-seq))))
 
 (defun qe-unit-kill-1 (key-seq)
   "Real work for qe-unit-kill."
@@ -357,17 +361,20 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 (defvar qe-highlight-count 0)
 (defvar qe-highlight-overlays nil)
 
-(defun qe-unit-copy (key-seq)
+(defun qe-unit-copy ()
   "Copy by text unit."
-  (interactive (list
-                (read-key-sequence
-                 (if current-prefix-arg "(Append) Copy:" "Copy:"))))
-  (setq qe-highlight-num 1)
-  (setq qe-highlight-count 0)
-  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode (fboundp 'mc/num-cursors))
-    (setq qe-highlight-num (mc/num-cursors))
-    (setq mc--this-command `(lambda () (interactive) (qe-unit-copy-1 ',key-seq))))
-  (qe-unit-copy-1 key-seq))
+  (interactive)
+    (if (region-active-p)
+        (progn
+          (when current-prefix-arg (append-next-kill))
+          (kill-ring-save (region-beginning) (region-end)))
+      (let ((key-seq (read-key-sequence (if current-prefix-arg "(Append) Copy:" "Copy:"))))
+        (setq qe-highlight-num 1)
+        (setq qe-highlight-count 0)
+        (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode (fboundp 'mc/num-cursors))
+          (setq qe-highlight-num (mc/num-cursors))
+          (setq mc--this-command `(lambda () (interactive) (qe-unit-copy-1 ',key-seq))))
+        (qe-unit-copy-1 key-seq))))
 
 (defun qe-unit-copy-1 (key-seq)
   "Real work for qe-unit-copy."

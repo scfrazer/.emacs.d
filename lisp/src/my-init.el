@@ -82,7 +82,7 @@
 (require 'my-electric)
 
 (require 'goto-chg)
-(bind-keys* ("M-SPC" . goto-last-change))
+(bind-keys* ("C-M-SPC" . goto-last-change))
 
 (require 'my-ido)
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
@@ -351,6 +351,9 @@
         (my-pop-tag-mark)
         (unless (equal buf (current-buffer))
           (kill-buffer buf))))))
+
+(use-package expand-region
+  :bind* (("M-SPC" . er/expand-region)))
 
 (use-package ffap
   :bind* (("C-c f" . my-ffap)
