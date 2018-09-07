@@ -9,13 +9,35 @@
 (defun sb-imenu-install-speedbar-variables ()
   "Install speedbar variables."
   (setq sb-imenu-key-map (speedbar-make-specialized-keymap))
-  (define-key sb-imenu-key-map (kbd "RET") 'speedbar-edit-line))
+  (define-key sb-imenu-key-map (kbd "RET") 'speedbar-edit-line)
+  (define-key sb-imenu-key-map (kbd "TAB") 'sb-imenu-toggle-line-expansion))
+
+(defun sb-imenu-toggle-line-expansion ()
+  "Toggle line expansion and stay in place."
+  (interactive)
+  (save-excursion
+    (speedbar-toggle-line-expansion)))
 
 (if (featurep 'speedbar)
     (sb-imenu-install-speedbar-variables)
   (add-hook 'speedbar-load-hook 'sb-imenu-install-speedbar-variables))
 
 (speedbar-add-expansion-list '("sb-imenu" nil sb-imenu-key-map sb-imenu-buttons))
+
+;; prettify-symbols-mode doesn't work in speedbar, so compose characters ourself
+(defun sb-imenu-prettify-text (start length)
+  "Prettify speedbar in text mode."
+  (unless speedbar-use-images
+    (save-excursion
+      (goto-char start)
+      (cond ((looking-at " =>")
+             (compose-region start (+ start length) ?•))
+            ((looking-at ".\\+.")
+             (compose-region start (+ start length) ?►))
+            ((looking-at ".-.")
+             (compose-region start (+ start length) ?▼))))))
+
+(advice-add #'speedbar-insert-image-button-maybe :after #'sb-imenu-prettify-text)
 
 (defvar sb-imenu-active-buffer nil)
 

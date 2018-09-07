@@ -306,51 +306,51 @@
   (require 'my-ediff))
 
 ;; FIXME Update to use xref
-(use-package etags
-  :bind* (("M-?" . my-find-tag)
-          ("M-&" . my-pop-tag-mark-kill-buffer)
-          ("M-*" . my-pop-tag-mark))
-  :config
-  (progn
-    (require 'etags-select)
-    (require 'etags-table)
-    (let ((proj (getenv "PROJ"))
-          tags-base-dir)
-      ;; FIXME Always generate/use relative tags
-      (if proj
-          (progn
-            (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                                      ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
-                                      ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags")))
-            (setq proj (concat proj "/")))
-        (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-                                  ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
-                                  ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
-      (setq etags-select-use-short-name-completion nil
-            etags-select-relative-root proj
-            etags-table-alist (list
-                               `(,(concat proj ".*\\.svh?$") ,(concat tags-base-dir "/sv/TAGS"))
-                               `(,(concat proj ".*\\.[vs]$") ,(concat tags-base-dir "/v/TAGS"))
-                               `(,(concat proj ".*\\.[ch]$") ,(concat tags-base-dir "/c/TAGS") ,(concat tags-base-dir "/cpp/TAGS"))
-                               `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS") ,(concat tags-base-dir "/c/TAGS")))
-            etags-table-search-up-depth 10
-            tags-add-tables t
-            tags-revert-without-query t))
-    (defun my-find-tag (&optional arg)
-      "Find tag at point or plain find tag"
-      (interactive "P")
-      (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
-    (defun my-pop-tag-mark ()
-      "Pop tag mark."
-      (interactive)
-      (pop-tag-mark))
-    (defun my-pop-tag-mark-kill-buffer ()
-      "Pop tag mark and kill previous buffer."
-      (interactive)
-      (let ((buf (current-buffer)))
-        (my-pop-tag-mark)
-        (unless (equal buf (current-buffer))
-          (kill-buffer buf))))))
+;; (use-package etags
+;;   :bind* (("M-?" . my-find-tag)
+;;           ("M-&" . my-pop-tag-mark-kill-buffer)
+;;           ("M-*" . my-pop-tag-mark))
+;;   :config
+;;   (progn
+;;     (require 'etags-select)
+;;     (require 'etags-table)
+;;     (let ((proj (getenv "PROJ"))
+;;           tags-base-dir)
+;;       ;; FIXME Always generate/use relative tags
+;;       (if proj
+;;           (progn
+;;             (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
+;;                                       ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
+;;                                       ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags")))
+;;             (setq proj (concat proj "/")))
+;;         (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
+;;                                   ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
+;;                                   ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
+;;       (setq etags-select-use-short-name-completion nil
+;;             etags-select-relative-root proj
+;;             etags-table-alist (list
+;;                                `(,(concat proj ".*\\.svh?$") ,(concat tags-base-dir "/sv/TAGS"))
+;;                                `(,(concat proj ".*\\.[vs]$") ,(concat tags-base-dir "/v/TAGS"))
+;;                                `(,(concat proj ".*\\.[ch]$") ,(concat tags-base-dir "/c/TAGS") ,(concat tags-base-dir "/cpp/TAGS"))
+;;                                `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS") ,(concat tags-base-dir "/c/TAGS")))
+;;             etags-table-search-up-depth 10
+;;             tags-add-tables t
+;;             tags-revert-without-query t))
+;;     (defun my-find-tag (&optional arg)
+;;       "Find tag at point or plain find tag"
+;;       (interactive "P")
+;;       (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
+;;     (defun my-pop-tag-mark ()
+;;       "Pop tag mark."
+;;       (interactive)
+;;       (pop-tag-mark))
+;;     (defun my-pop-tag-mark-kill-buffer ()
+;;       "Pop tag mark and kill previous buffer."
+;;       (interactive)
+;;       (let ((buf (current-buffer)))
+;;         (my-pop-tag-mark)
+;;         (unless (equal buf (current-buffer))
+;;           (kill-buffer buf))))))
 
 (use-package expand-region
   :bind* (("M-SPC" . er/expand-region)))
@@ -642,7 +642,6 @@
   (require 'my-sgml-mode))
 
 (use-package git-simple
-  :config
   :bind-keymap (("C-x g" . git-simple-global-map)))
 
 (use-package my-sort-lines
@@ -650,19 +649,10 @@
   :init
   (defalias 'sl 'my-sort-lines))
 
-(use-package speedbar
+(use-package sr-speedbar
   :bind* ("C-c I" . sr-speedbar-toggle)
   :config
-  (progn
-    (require 'sr-speedbar)
-    (require 'sb-imenu)
-    (setq speedbar-indentation-width 2
-          speedbar-initial-expansion-list-name "sb-imenu"
-          speedbar-use-images nil)
-    (speedbar-add-supported-extension ".v")
-    (speedbar-add-supported-extension ".sv")
-    (speedbar-add-supported-extension ".svh")
-    (speedbar-add-supported-extension ".aop")))
+  (require 'my-speedbar))
 
 (use-package sv-mode
   :mode (("\\.aop\\'" . sv-mode)
@@ -725,6 +715,31 @@
 (use-package my-xclip
   :bind* (("C-c X" . my-xclip-yank)
           ("C-c x" . my-xclip-copy)))
+
+(use-package xref
+  :bind* (("M-?" . xref-find-definitions)
+          ("M-*" . xref-pop-marker-stack))
+  :config
+  (progn
+    (require 'etags-table)
+    (defun my-xref-next-line ()
+      (interactive)
+      (end-of-line)
+      (re-search-forward "^[0-9]+:" nil t)
+      (beginning-of-line))
+    (defun my-xref-prev-line ()
+      (interactive)
+      (beginning-of-line)
+      (re-search-backward "^[0-9]+:" nil t))
+    (defun my-xref--show-xref-buffer (xrefs alist)
+      (with-current-buffer (get-buffer xref-buffer-name)
+        (shrink-window-if-larger-than-buffer)
+        (my-xref-next-line)))
+    (advice-add #'xref--show-xref-buffer :after #'my-xref--show-xref-buffer)
+    (define-key xref--xref-buffer-mode-map (kbd "RET") #'xref-goto-xref)
+    (define-key xref--xref-buffer-mode-map (kbd "TAB")  #'xref-quit-and-goto-xref)
+    (define-key xref--xref-buffer-mode-map (kbd "n") #'my-xref-next-line)
+    (define-key xref--xref-buffer-mode-map (kbd "p") #'my-xref-prev-line)))
 
 (use-package yank-target
   :bind-keymap (("C-c y" . yank-target-map))
@@ -836,6 +851,7 @@
               mouse-highlight 1
               mouse-yank-at-point t
               parens-require-spaces nil
+              pulse-flag t
               redisplay-dont-pause t
               rst-mode-lazy nil
               scroll-conservatively 10000
@@ -1827,6 +1843,22 @@ Prefix with C-u to resize the `next-window'."
   (if (equal (ad-get-arg 0) "*scratch*")
       (bury-buffer)
     ad-do-it))
+
+(defun my-pulse-momentary-highlight-region (orig-fun start end &optional face)
+  "If pulsing enabled but not available, blink it instead."
+  (if (and pulse-flag (not (pulse-available-p)))
+      (let ((ov (make-overlay start end))
+            (idx 0))
+        (while (< idx 3)
+          (overlay-put ov 'face face)
+          (sit-for 0.3)
+          (overlay-put ov 'face nil)
+          (sit-for 0.2)
+          (setq idx (1+ idx)))
+        (delete-overlay ov))
+    (apply orig-fun start end face)))
+
+(advice-add 'pulse-momentary-highlight-region :around #'my-pulse-momentary-highlight-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks

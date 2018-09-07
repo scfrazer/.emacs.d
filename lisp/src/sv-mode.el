@@ -2000,9 +2000,9 @@ PARSE-TYPE is 'class, 'module, or nil for anything else."
   (define-key sv-speedbar-key-map (kbd "RET") 'speedbar-edit-line)
   (define-key sv-speedbar-key-map (kbd "SPC") 'sv-speedbar-expand-line))
 
-(if (featurep 'speedbar)
-    (sv-mode-install-speedbar-variables)
-  (add-hook 'speedbar-load-hook 'sv-mode-install-speedbar-variables))
+;; (if (featurep 'speedbar)
+;;     (sv-mode-install-speedbar-variables)
+;;   (add-hook 'speedbar-load-hook 'sv-mode-install-speedbar-variables))
 
 (defun sv-speedbar-buttons (buffer)
   "Create a speedbar display to browse a SystemVerilog file
