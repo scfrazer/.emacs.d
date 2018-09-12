@@ -1177,6 +1177,15 @@ or the region with prefix arg."
         (delete-blank-lines)
         (message "Trailing whitespace and excess blank lines removed.")))))
 
+(defun my-display-line-numbers (&optional arg)
+  "Turn on line numbers, with ARG do it globally."
+  (interactive "P")
+  (if arg
+      (let ((current-prefix-arg nil))
+        (call-interactively 'global-display-line-numbers-mode))
+    (let ((current-prefix-arg nil))
+      (call-interactively 'display-line-numbers-mode))))
+
 (defun my-dos2unix ()
   "Remove ^M's from file."
   (interactive "*")
@@ -2008,7 +2017,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-h"         . backward-char)
  ("C-l"         . forward-char)
  ("C-x 5 n"     . set-frame-name)
- ("C-x #"       . global-display-line-numbers-mode)
+ ("C-x #"       . my-display-line-numbers)
  ("C-x ("       . kmacro-start-macro-or-insert-counter)
  ("C-x -"       . my-window-resize)
  ("C-x C-c"     . my-kill-frame-or-emacs)
