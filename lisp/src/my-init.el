@@ -1339,7 +1339,7 @@ end of a non-blank line, or insert an 80-column comment line"
   "Kill a *special* or cloned buffer in a second window."
   (interactive)
   (when (> (count-windows) 1)
-    (let ((regexp (concat "\\`" (regexp-opt '("*scratch" "*sqlplus"))))
+    (let ((regexp (concat "\\`" (regexp-opt '("*scratch" "*SPEEDBAR" "*sqlplus"))))
           (windows (window-list-1 (next-window)))
           buf)
       (catch 'done
