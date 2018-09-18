@@ -13,6 +13,8 @@
 (speedbar-add-supported-extension ".svh")
 (speedbar-add-supported-extension ".aop")
 
+(advice-remove 'pop-to-buffer #'ad-Advice-pop-to-buffer)
+
 ;; (define-key speedbar-mode-map (kbd "TAB") 'my-speedbar-toggle-line-expansion)
 ;; 
 ;; (defun my-speedbar-toggle-line-expansion ()
