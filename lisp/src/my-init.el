@@ -105,8 +105,9 @@
 (mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify-cc)
 (mode-fn-map 'tidy 'c-mode 'my-cc-mode-uncrustify-c)
-(mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
+;; (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
+(mode-fn-map 'tidy 'perl-mode 'my-perl-tidy)
 ;; (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
 (mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
@@ -257,12 +258,12 @@
   :config
   (require 'my-cc-mode))
 
-(use-package cperl-mode
-  :defer t
-  :init
-  (defalias 'perl-mode 'cperl-mode)
-  :config
-  (require 'my-perl))
+;; (use-package cperl-mode
+;;   :defer t
+;;   :init
+;;   (defalias 'perl-mode 'cperl-mode)
+;;   :config
+;;   (require 'my-perl))
 
 (use-package csh-mode
   :mode (("\\.csh\\'" . csh-mode)
@@ -555,6 +556,10 @@
           ("M-a"    . my-pair-step-out-backward)
           ("M-e"    . my-pair-step-out-forward)))
 
+(use-package perl-mode
+  :config
+  (require 'my-perl))
+
 (use-package php-mode
   :mode (("\\.php\\'" . php-mode))
   :config
@@ -764,7 +769,7 @@
 ;; TODO
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
-(autoload 'cpl-mode "cpl-mode" nil t)
+;; (autoload 'cpl-mode "cpl-mode" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
@@ -877,7 +882,7 @@
 
 (setq completion-ignored-extensions (delete ".bin" completion-ignored-extensions))
 
-(add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
+;; (add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))

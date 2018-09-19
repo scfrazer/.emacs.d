@@ -57,7 +57,7 @@
       (when tags
         (when (string= (caar tags) "*Rescan*")
           (setq tags (cdr tags)))
-        (when tags
+        (when (and tags (not (null (car tags))))
           (sb-imenu-populate tags 0))))))
 
 (defun sb-imenu-get-active-buffer ()

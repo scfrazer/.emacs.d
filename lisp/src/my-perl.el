@@ -1,34 +1,82 @@
-;;; my-perl.el
+;;; my-perl.el  -*- lexical-binding: t -*-
 
 (require 'my-flymake)
 
-(defalias 'perl-mode 'cperl-mode)
+(setq-default perl-flymake-command '("flymake_perl"))
 
-(setq-default cperl-break-one-line-blocks-when-indent nil
-              cperl-close-paren-offset -4
-              cperl-continued-brace-offset -4
-              cperl-continued-statement-offset 4
-              cperl-fix-hanging-brace-when-indent nil
-              cperl-highlight-variables-indiscriminately t
-              cperl-indent-left-aligned-comments t
-              cperl-indent-level 4
-              cperl-indent-parens-as-block t
-              cperl-invalid-face nil
-              cperl-label-offset -4
-              cperl-merge-trailing-else t)
-
-(defun my-cperl-mode-hook ()
-  (define-key cperl-mode-map (kbd "{") nil)
-  (define-key cperl-mode-map (kbd "[") nil)
-  (define-key cperl-mode-map (kbd "(") nil)
-  (define-key cperl-mode-map (kbd "<") nil)
-  (define-key cperl-mode-map (kbd "}") nil)
-  (define-key cperl-mode-map (kbd "]") nil)
-  (define-key cperl-mode-map (kbd ")") nil)
-  (define-key cperl-mode-map (kbd ";") nil)
-  (define-key cperl-mode-map (kbd ":") nil)
+(defun my-perl-mode-hook ()
   (flymake-mode 1))
-(add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
+(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+
+(defun my-perl-flymake (orig-fun report-fn &rest _args)
+  (unless (executable-find (car perl-flymake-command))
+    (error "Cannot find a suitable checker"))
+
+  (when (process-live-p perl--flymake-proc)
+    (kill-process perl--flymake-proc))
+
+  (let* ((source (current-buffer))
+         (filename (buffer-file-name))
+         (regexp (format "^\\(.+\\) at %s line \\([0-9]+\\)" filename)))
+    (save-restriction
+      (widen)
+      (setq
+       perl--flymake-proc
+       (make-process
+        :name "perl-flymake"
+        :noquery t
+        :connection-type 'pipe
+        :buffer (generate-new-buffer " *perl-flymake*")
+        :command (list (car perl-flymake-command) (buffer-file-name))
+        :sentinel
+        (lambda (proc _event)
+          (when (eq 'exit (process-status proc))
+            (unwind-protect
+                (if (with-current-buffer source (eq proc perl--flymake-proc))
+                    (with-current-buffer (process-buffer proc)
+                      (goto-char (point-min))
+                      (cl-loop
+                       while (search-forward-regexp regexp nil t)
+                       for msg = (match-string 1)
+                       for (beg . end) = (flymake-diag-region
+                                          source
+                                          (string-to-number (match-string 2)))
+                       for type =
+                       (if (string-match
+                            "\\(Scalar value\\|Useless use\\|Unquoted string\\)"
+                            msg)
+                           :warning
+                         :error)
+                       collect (flymake-make-diagnostic source
+                                                        beg
+                                                        end
+                                                        type
+                                                        msg)
+                       into diags
+                       finally (funcall report-fn diags))
+                      (goto-char (point-min))
+                      (cl-loop
+                       while (search-forward-regexp "\\([0-9]+\\): <\\([0-9]+\\)> \\(.+\\)" nil t)
+                       for msg = (match-string 3)
+                       for (beg . end) = (flymake-diag-region
+                                          source
+                                          (string-to-number (match-string 1)))
+                       for type =
+                       (if (> (string-to-number (match-string 2)) 3)
+                           :error
+                         :warning)
+                       collect (flymake-make-diagnostic source
+                                                        beg
+                                                        end
+                                                        type
+                                                        msg)
+                       into diags
+                       finally (funcall report-fn diags)))
+                  (flymake-log :debug "Canceling obsolete check %s"
+                               proc))
+              (kill-buffer (process-buffer proc))))))))))
+
+(advice-add 'perl-flymake :around #'my-perl-flymake)
 
 (defun my-perl-tidy (&optional arg)
   "Run perltidy on marked region, or entire buffer."

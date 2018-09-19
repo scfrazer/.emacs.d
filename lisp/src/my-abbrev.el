@@ -52,7 +52,7 @@
         (insert "if some_variable == match_1:\n do_stuff()\n else:\n do_default_stuff()")
         (indent-region beg (point))
         (goto-char (+ beg 3)))
-       ((member major-mode '(cperl-mode cpl-mode))
+       ((member major-mode '(perl-mode cperl-mode cpl-mode))
         (insert "if ($some_variable == match_1) {\n do_stuff();\n } else {\n do_default_stuff();\n }")
         (indent-region beg (point))
         (goto-char (+ beg 4)))
