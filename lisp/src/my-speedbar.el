@@ -15,9 +15,10 @@
 
 (advice-remove 'pop-to-buffer #'ad-Advice-pop-to-buffer)
 
-(defun my-speedbar-mode-hook ()
-  (setq auto-hscroll-mode nil))
+(defun my-speedbar-reset-point (&optional arg)
+  (with-current-buffer speedbar-buffer
+    (goto-char (point-at-bol))))
 
-(add-hook 'speedbar-mode-hook 'my-speedbar-mode-hook)
+(advice-add #'speedbar-refresh :after #'my-speedbar-reset-point)
 
 (provide 'my-speedbar)

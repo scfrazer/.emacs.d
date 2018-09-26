@@ -61,7 +61,7 @@
       (setq name (bookmark-name-from-full-record bmk)
             filename (bookmark-get-filename bmk))
       (when (string-match ".+/$" filename)
-        (unless (string-match "[^a-zA-Z0-9_.~/]" name)
+        (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
           (push (cons (concat "^" (expand-file-name filename) "\\(.*\\)")
                       (concat "$" name))
                 my-ibuffer-bookmark-subs)))))
