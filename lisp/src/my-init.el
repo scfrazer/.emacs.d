@@ -79,6 +79,9 @@
             ("C-v"   . my-edit-newline-and-indent)
             ("M-RET" . my-edit-newline-and-indent-above))
 
+(require 'my-ediff)
+(bind-keys* ("C-c =" . my-ediff-dwim))
+
 (require 'my-electric)
 
 (require 'goto-chg)
@@ -297,14 +300,6 @@
         (doxymacs-font-lock)))
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
     (add-hook 'sv-mode-hook 'doxymacs-mode)))
-
-(use-package ediff
-  :bind* ("C-c =" . my-ediff-dwim)
-  :commands (ediff-buffers ediff-files)
-  :init
-  (defalias 'eb 'ediff-buffers)
-  :config
-  (require 'my-ediff))
 
 ;; FIXME Update to use xref
 ;; (use-package etags

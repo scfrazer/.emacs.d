@@ -131,6 +131,6 @@ either do ClearCase diff or Git diff depending on where the file is."
 
 (add-hook 'ediff-before-setup-hook 'my-ediff-before-setup-hook)
 (add-hook 'ediff-keymap-setup-hook 'my-ediff-keymap-setup-hook)
-(add-hook 'ediff-quit-hook 'my-ediff-quit-hook)
+(add-hook 'ediff-quit-hook 'my-ediff-quit-hook t)
 
 (provide 'my-ediff)
