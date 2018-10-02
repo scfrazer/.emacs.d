@@ -43,17 +43,17 @@
 
 (defun sb-imenu-buttons (dir depth)
   "Show imenu tags for current buffer."
-  (let (tags buf buf-name)
+  (let (tags buf-name)
     (sb-imenu-get-active-buffer)
     (when sb-imenu-active-buffer
       (with-current-buffer sb-imenu-active-buffer
-        (setq buf-name (or (buffer-file-name) (buffer-name)))
+        (setq buf-name (buffer-name))
         (setq imenu--index-alist nil)
         (condition-case nil
             (imenu--make-index-alist t)
           (error nil))
         (setq tags (copy-alist imenu--index-alist)))
-      (insert buf-name ":\n\n")
+      (setq-local header-line-format buf-name)
       (when tags
         (when (string= (caar tags) "*Rescan*")
           (setq tags (cdr tags)))

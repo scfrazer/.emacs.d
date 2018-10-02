@@ -15,7 +15,8 @@
                         (c-block-comment-prefix . "")))
 (setq c-default-style '((c-mode . "strou4")
                         (cc-mode . "strou2")
-                        (php-mode . "strou4")))
+                        (php-mode . "strou4")
+                        (java-mode . "strou4")))
 
 ;; Modeline format is annoying
 
