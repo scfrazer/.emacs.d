@@ -52,13 +52,40 @@
         (condition-case nil
             (imenu--make-index-alist t)
           (error nil))
-        (setq tags (copy-alist imenu--index-alist)))
+        (setq tags (sb-imenu-make-tree imenu--index-alist)))
       (setq-local header-line-format buf-name)
       (when tags
         (when (string= (caar tags) "*Rescan*")
           (setq tags (cdr tags)))
         (when (and tags (not (null (car tags))))
           (sb-imenu-populate tags 0))))))
+
+(defun sb-imenu-make-tree (tag-alist)
+  "If TAG-ALIST is flat, turn it into a alist tree using class separators."
+  (catch 'is-tree
+    (let (tree)
+      (dolist (el tag-alist)
+        (let ((loc (cdr el)))
+          (if (not (numberp loc))
+              (throw 'is-tree (copy-alist tag-alist))
+            (setq tree (sb-imenu-recursive-make-tree (split-string (car el) "::\\|[.]") loc tree)))))
+      tree)))
+
+(defun sb-imenu-recursive-make-tree (pieces loc tree)
+  "Recursively insert into alist tree."
+  (let* ((piece (car pieces))
+         (new-pieces (cdr pieces))
+         (new-tree (assoc piece tree)))
+    (if new-pieces
+        (progn
+          (if new-tree
+              (when (numberp (cdr new-tree))
+                (setcdr new-tree nil))
+            (add-to-list 'tree (cons piece nil) t)
+            (setq new-tree (assoc piece tree)))
+          (setf (cdr new-tree) (sb-imenu-recursive-make-tree new-pieces loc (cdr new-tree))))
+      (add-to-list 'tree (cons piece loc) t))
+    tree))
 
 (defun sb-imenu-get-active-buffer ()
   "Get the active buffer."

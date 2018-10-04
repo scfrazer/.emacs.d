@@ -14,6 +14,7 @@
  `(cursor                         ((t :background "deeppink2")))
  `(diff-refine-added              ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed            ((t :foreground "black" :background ,(smf-color 217))))
+ `(easy-escape-delimiter-face     ((t :foreground "green4" :background "gray95")))
  `(ediff-current-diff-A           ((t :foreground "black" :background ,(smf-color 153))))
  `(ediff-even-diff-A              ((t :foreground "black" :background ,(smf-color 253))))
  `(ediff-fine-diff-A              ((t :foreground "black" :background ,(smf-color 215))))
