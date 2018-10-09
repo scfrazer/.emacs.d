@@ -120,7 +120,7 @@
         (6 (or (string-match (concat my-ibuffer-vc-regexp "\\|" my-ibuffer-star-regexp) (buffer-name))
                (eq major-mode 'Custom-mode)) font-lock-type-face)
         (5 (string-match "^*sqlplus:" (buffer-name)) font-lock-string-face)
-        (4 (string-match "^*" (buffer-name)) font-lock-comment-face)
+        (4 (or (string-match "^*" (buffer-name)) (string= (buffer-name) "TAGS")) font-lock-comment-face)
         (3 (buffer-modified-p) error)
         (2 (and (null (buffer-file-name)) (string-match "^[^*]" (buffer-name))) font-lock-string-face)
         (1 buffer-read-only my-ibuffer-read-only-face)))

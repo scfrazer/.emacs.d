@@ -5,6 +5,7 @@
               speedbar-indentation-width 2
               speedbar-initial-expansion-list-name "sb-imenu"
               speedbar-use-images nil
+              sr-speedbar-width 50
               sr-speedbar-default-width 50
               sr-speedbar-right-side nil)
 

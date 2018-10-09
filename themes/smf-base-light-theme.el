@@ -41,6 +41,7 @@
  `(outline-3                      ((t :foreground ,(smf-color 89))))
  `(outline-4                      ((t :foreground ,(smf-color 130))))
  `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 195))))
+ `(speedbar-button-face           ((t :foreground "black")))
  `(sqlplus-table-odd-rows-face    ((t :background ,(smf-color 254))))
  `(success                        ((t :foreground "black" :background ,(smf-color 157))))
  `(trailing-whitespace            ((t :background ,(smf-color 255))))

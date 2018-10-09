@@ -2021,9 +2021,9 @@ BUFFER is the buffer speedbar is requesting buttons for."
               (setq sv-speedbar-cached-data (sv-mode-imenu-create-index-function-complex)))))
         (setq parsed-data sv-speedbar-cached-data)))
     (when parsed-data
+      (setq-local header-line-format (buffer-name buffer))
       (erase-buffer)
       (goto-char (point-min))
-      (insert (buffer-file-name buffer) "\n\n")
       (sv-speedbar-populate parsed-data 0))))
 
 (defun sv-speedbar-after-save-hook ()

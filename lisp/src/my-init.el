@@ -184,7 +184,7 @@
       "Jump to CHAR at a word start, or string if C-k, or BOL if C-l, or EOL if C-m."
       (interactive (list (read-char "Char: ")))
       (if (= 11 char)
-          (let ((avy-timeout-seconds 60.0))
+          (let ((avy-timeout-seconds 1.0))
             (call-interactively 'avy-goto-char-timer))
         (if (= 12 char)
             (call-interactively 'avy-goto-line)
@@ -300,53 +300,6 @@
         (doxymacs-font-lock)))
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
     (add-hook 'sv-mode-hook 'doxymacs-mode)))
-
-;; FIXME Update to use xref
-;; (use-package etags
-;;   :bind* (("M-?" . my-find-tag)
-;;           ("M-&" . my-pop-tag-mark-kill-buffer)
-;;           ("M-*" . my-pop-tag-mark))
-;;   :config
-;;   (progn
-;;     (require 'etags-select)
-;;     (require 'etags-table)
-;;     (let ((proj (getenv "PROJ"))
-;;           tags-base-dir)
-;;       ;; FIXME Always generate/use relative tags
-;;       (if proj
-;;           (progn
-;;             (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-;;                                       ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
-;;                                       ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags")))
-;;             (setq proj (concat proj "/")))
-;;         (setq tags-base-dir (cond ((eq my-location 'RTP) "/auto/luke_user5/scfrazer/tags")
-;;                                   ((eq my-location 'SJC) "/auto/asic-sjc-blkdv4/scfrazer/tags")
-;;                                   ((eq my-location 'BGL) "/auto/sse-dump-blr/scfrazer/tags"))))
-;;       (setq etags-select-use-short-name-completion nil
-;;             etags-select-relative-root proj
-;;             etags-table-alist (list
-;;                                `(,(concat proj ".*\\.svh?$") ,(concat tags-base-dir "/sv/TAGS"))
-;;                                `(,(concat proj ".*\\.[vs]$") ,(concat tags-base-dir "/v/TAGS"))
-;;                                `(,(concat proj ".*\\.[ch]$") ,(concat tags-base-dir "/c/TAGS") ,(concat tags-base-dir "/cpp/TAGS"))
-;;                                `(,(concat proj ".*\\.[ch]pp$") ,(concat tags-base-dir "/cpp/TAGS") ,(concat tags-base-dir "/c/TAGS")))
-;;             etags-table-search-up-depth 10
-;;             tags-add-tables t
-;;             tags-revert-without-query t))
-;;     (defun my-find-tag (&optional arg)
-;;       "Find tag at point or plain find tag"
-;;       (interactive "P")
-;;       (if arg (etags-select-find-tag) (etags-select-find-tag-at-point)))
-;;     (defun my-pop-tag-mark ()
-;;       "Pop tag mark."
-;;       (interactive)
-;;       (pop-tag-mark))
-;;     (defun my-pop-tag-mark-kill-buffer ()
-;;       "Pop tag mark and kill previous buffer."
-;;       (interactive)
-;;       (let ((buf (current-buffer)))
-;;         (my-pop-tag-mark)
-;;         (unless (equal buf (current-buffer))
-;;           (kill-buffer buf))))))
 
 (use-package expand-region
   :bind* (("M-SPC" . er/expand-region)))
@@ -722,22 +675,25 @@
   :config
   (progn
     (require 'etags-table)
+    (setq etags-table-search-up-depth 10
+          tags-add-tables t
+          tags-revert-without-query t)
     (defun my-xref-next-line ()
       (interactive)
       (end-of-line)
-      (re-search-forward "^[0-9]+:" nil t)
+      (re-search-forward "^\\s-*[0-9]+:" nil t)
       (beginning-of-line))
     (defun my-xref-prev-line ()
       (interactive)
       (beginning-of-line)
-      (re-search-backward "^[0-9]+:" nil t))
+      (re-search-backward "^\\s-*[0-9]+:" nil t))
     (defun my-xref--show-xref-buffer (xrefs alist)
       (with-current-buffer (get-buffer xref-buffer-name)
-        (shrink-window-if-larger-than-buffer)
+        (fit-window-to-buffer nil (/ (frame-height) 2))
         (my-xref-next-line)))
     (advice-add #'xref--show-xref-buffer :after #'my-xref--show-xref-buffer)
-    (define-key xref--xref-buffer-mode-map (kbd "RET") #'xref-goto-xref)
-    (define-key xref--xref-buffer-mode-map (kbd "TAB")  #'xref-quit-and-goto-xref)
+    (define-key xref--button-map (kbd "RET") #'xref-quit-and-goto-xref)
+    (define-key xref--button-map (kbd "TAB")  #'xref-goto-xref)
     (define-key xref--xref-buffer-mode-map (kbd "n") #'my-xref-next-line)
     (define-key xref--xref-buffer-mode-map (kbd "p") #'my-xref-prev-line)))
 
@@ -2080,6 +2036,14 @@ Prefix with C-u to resize the `next-window'."
   (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
 
   (require 'rel-log-mode)
+
+  (let ((proj (getenv "PROJ")))
+    (when proj
+      (setq etags-table-alist (list
+                               `(,(concat proj "/.+\\.svh?$") ,(concat proj "/tags/sv/TAGS"))
+                               `(,(concat proj "/.+\\.[vs]$") ,(concat proj "/tags/v/TAGS"))
+                               `(,(concat proj "/.+\\.[ch]$") ,(concat proj "/tags/c/TAGS"))
+                               `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))))
 
   (defun dv-lint ()
     (interactive)

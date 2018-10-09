@@ -2,6 +2,7 @@
 
 (require 'my-doxymacs)
 (require 'find-file)
+(require 'sb-imenu-ctags)
 
 ;; Style
 
@@ -23,36 +24,6 @@
 (defun my-c-update-modeline (orig-fun)
   (force-mode-line-update))
 (advice-add 'c-update-modeline :around #'my-c-update-modeline)
-
-;; Default imenu is not very good
-
-(defvar my-cc-mode-ctags-executable "ctags")
-
-(defun my-cc-mode-imenu-create-index-function ()
-  (let ((filename (buffer-file-name))
-        (mode major-mode)
-        (pos nil)
-        (prev-pos -1)
-        (item-alist '()))
-    (with-temp-buffer
-      (shell-command
-       (concat my-cc-mode-ctags-executable " -e "
-               (cond ((equal mode 'c-mode)
-                      "--language-force=c --c-kinds=cdfnpstuvx")
-                     ((equal mode 'c++-mode)
-                      "--language-force=c++ --c++-kinds=cdfmnpstuvx")
-                     ((equal mode 'java-mode)
-                      "--language-force=java --java-kinds=-efg"))
-               " --extra=+q -f- " filename) t)
-      (goto-char (point-max))
-      (while (not (bobp))
-        (forward-line -1)
-        (when (looking-at ".+\\(.+\\)[0-9]+,\\([0-9]+\\)")
-          (setq pos (1+ (string-to-number (match-string-no-properties 2))))
-          (unless (= pos prev-pos)
-            (push (cons (match-string-no-properties 1) pos) item-alist))
-          (setq prev-pos pos))))
-    item-alist))
 
 ;; Uncrustify
 
@@ -104,7 +75,7 @@
   (when (equal major-mode 'c-mode)
     (setq comment-start "// ")
     (setq comment-end "" ))
-  (setq imenu-create-index-function 'my-cc-mode-imenu-create-index-function)
+  (setq imenu-create-index-function 'sb-imenu-ctags-create-index)
   (define-key c-mode-base-map (kbd "C-c C-f") 'doxymacs-insert-function-comment)
   (define-key c-mode-base-map (kbd "C-c C-s") 'my-cc-create-skeleton-from-prototype))
 

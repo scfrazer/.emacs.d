@@ -3,6 +3,8 @@
 (require 'imenu)
 (require 'speedbar)
 
+(defvar sb-imenu-populate-tag-function 'sb-imenu-populate-tag)
+
 (defvar sb-imenu-key-map nil
   "speedbar imenu keymap.")
 
@@ -40,6 +42,7 @@
 (advice-add #'speedbar-insert-image-button-maybe :after #'sb-imenu-prettify-text)
 
 (defvar sb-imenu-active-buffer nil)
+(defvar sb-imenu-active-buffer-mode nil)
 
 (defun sb-imenu-buttons (dir depth)
   "Show imenu tags for current buffer."
@@ -89,7 +92,8 @@
 
 (defun sb-imenu-get-active-buffer ()
   "Get the active buffer."
-  (setq sb-imenu-active-buffer nil)
+  (setq sb-imenu-active-buffer nil
+        sb-imenu-active-buffer-mode nil)
   (condition-case nil
       (with-selected-frame (dframe-select-attached-frame (speedbar-current-frame))
         (sb-imenu-get-interesting-buffer))
@@ -103,24 +107,33 @@
     (dolist (buffer (buffer-list))
       (unless (string-match "^[ *]" (buffer-name buffer))
         (setq sb-imenu-active-buffer buffer)
+        (with-current-buffer buffer
+          (setq sb-imenu-active-buffer-mode major-mode))
         (throw 'done buffer)))))
 
 (defun sb-imenu-populate (tags level)
   "Populate speedbar from imenu tags."
-  (dolist (item tags)
-    (if (imenu--subalist-p item)
-        (progn
-          (speedbar-make-tag-line 'curly
-                                  ?- 'sb-imenu-expand-line
-                                  (cdr item)
-                                  (car item) 'sb-imenu-expand-line (cdr item)
-                                  'font-lock-type-face level)
-          (sb-imenu-populate (cdr item) (1+ level)))
-      (speedbar-make-tag-line 'statictag
-                              nil nil
-                              nil
-                              (car item) 'sb-imenu-go (cdr item)
-                              'font-lock-variable-name-face level))))
+  (let (is-expandable tag-info)
+    (dolist (item tags)
+      (setq is-expandable (imenu--subalist-p item))
+      (setq tag-info (funcall sb-imenu-populate-tag-function (car item) is-expandable))
+      (if is-expandable
+          (progn
+            (speedbar-make-tag-line 'curly
+                                    ?- 'sb-imenu-expand-line
+                                    (cdr item)
+                                    (car tag-info) 'sb-imenu-expand-line (cdr item)
+                                    (cdr tag-info) level)
+            (sb-imenu-populate (cdr item) (1+ level)))
+        (speedbar-make-tag-line 'statictag
+                                nil nil
+                                nil
+                                (car tag-info) 'sb-imenu-go (cdr item)
+                                (cdr tag-info) level)))))
+
+(defun sb-imenu-populate-tag (tag is-expandable)
+  "Take a tag and return a list with the transformed tag and a face to use."
+  (list tag (if is-expandable 'font-lock-keyword-face 'font-lock-variable-name-face)))
 
 (defun sb-imenu-expand-line (text token indent)
   "Expand/contract the item under the cursor."
