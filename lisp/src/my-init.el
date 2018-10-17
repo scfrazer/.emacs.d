@@ -85,7 +85,7 @@
 (require 'my-electric)
 
 (require 'goto-chg)
-(bind-keys* ("C-M-SPC" . goto-last-change))
+(bind-keys* ("C-M-@" . goto-last-change))
 
 (require 'my-ido)
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
@@ -301,8 +301,8 @@
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
     (add-hook 'sv-mode-hook 'doxymacs-mode)))
 
-(use-package expand-region
-  :bind* (("M-SPC" . er/expand-region)))
+;; (use-package expand-region
+;;   :bind* (("C-M-@" . er/expand-region)))
 
 (use-package ffap
   :bind* (("C-c f" . my-ffap)
@@ -2002,6 +2002,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
+ ("M-SPC"       . (lambda () "Insert space in front." (interactive) (insert " ") (backward-char)))
  ("M-]"         . my-forward-paragraph)
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)

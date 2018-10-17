@@ -35,8 +35,16 @@
   ;;  ;; Quotes closes an open string
   ;;  (and (eq (char-syntax char) ?\")
   ;;       (not (nth 3 (syntax-ppss)))))
-  (and (not (eolp))
-       (not (eq (char-syntax (following-char)) ? ))))
+  (let ((syn-this (char-syntax char))
+        (syn-next (char-syntax (following-char))))
+    (cond
+     ((eq syn-this ?\")
+      (or (eq syn-next ?w)
+          (eq syn-next ?_)
+          (not (nth 3 (syntax-ppss)))))
+     (t
+      (and (not (eolp))
+           (not (eq syn-next ? )))))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 
