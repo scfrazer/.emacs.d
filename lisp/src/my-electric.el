@@ -26,15 +26,17 @@
 (advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 
 (defun my-electric-pair-inhibit (char)
-  (or
-   ;; Same char is next
-   (eq char (char-after))
-   ;; Open paren next to word
-   (and (eq (char-syntax char) ?\()
-        (eq (char-syntax (following-char)) ?w))
-   ;; Quotes closes an open string
-   (and (eq (char-syntax char) ?\")
-        (not (nth 3 (syntax-ppss))))))
+  ;; (or
+  ;;  ;; Same char is next
+  ;;  (eq char (char-after))
+  ;;  ;; Open paren next to word
+  ;;  (and (eq (char-syntax char) ?\()
+  ;;       (eq (char-syntax (following-char)) ?w))
+  ;;  ;; Quotes closes an open string
+  ;;  (and (eq (char-syntax char) ?\")
+  ;;       (not (nth 3 (syntax-ppss)))))
+  (and (not (eolp))
+       (not (eq (char-syntax (following-char)) ? ))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 
