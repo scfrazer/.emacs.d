@@ -97,15 +97,12 @@ depending on the major mode (see `qe-block-indented-modes')."
   (interactive)
   (let (done forward-sexp-function)
     (while (not (or done (eobp)))
-      (when (and (re-search-forward "{" nil 'go)
-                 (not (memq (get-text-property (1- (point)) 'face)
-                            '(font-lock-comment-face font-lock-string-face))))
-        (when (equal (char-before) ?{)
-          (backward-char)
-          (forward-sexp))
-        (forward-line)
-        (beginning-of-line)
-        (setq done t)))))
+      (when (looking-at "\\s-*{")
+        (setq done t))
+      (forward-sexp))
+    (when done
+      (forward-line)
+      (beginning-of-line))))
 
 (defun qe-forward-indented-block ()
   "Goes forward to next line at the same or less indentation."
@@ -501,7 +498,7 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 (defun qe-unit-ends-forward-to-starting-char ()
   "Text unit ends for forward to a word starting with char."
   (let ((case-fold-search nil))
-    (message "To char:")
+    (message "To word starting with char:")
     (let ((char (read-char)))
       (cons (point) (progn (forward-char)
                            (re-search-forward (concat "\\<" (char-to-string char)) nil t)

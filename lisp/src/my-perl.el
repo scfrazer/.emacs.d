@@ -1,8 +1,25 @@
 ;;; my-perl.el  -*- lexical-binding: t -*-
 
+(require 'perl-mode)
 (require 'my-flymake)
 
 (setq-default perl-flymake-command '("flymake_perl"))
+
+;; Fix variable expression requiring it being equal to something
+(setq perl-imenu-generic-expression
+      '(;; Functions
+        (nil "^[ \t]*sub\\s-+\\([-[:alnum:]+_:]+\\)" 1)
+        ;;Variables
+        ("Variables" "^\\(?:my\\|our\\)\\s-+\\([$@%][-[:alnum:]+_:]+\\)" 1)
+        ("Packages" "^[ \t]*package\\s-+\\([-[:alnum:]+_:]+\\);" 1)
+        ("Doc sections" "^=head[0-9][ \t]+\\(.*\\)" 1)))
+
+(defun my-perl-set-indent (arg)
+  "Set indent."
+  (interactive "nIndent level: ")
+  (setq-default perl-indent-level arg
+                perl-continued-statement-offset arg
+                perl-continued-brace-offset (* -1 arg)))
 
 (defun my-perl-mode-hook ()
   (flymake-mode 1))
@@ -78,20 +95,17 @@
 
 (advice-add 'perl-flymake :around #'my-perl-flymake)
 
-(defun my-perl-tidy (&optional arg)
+(defun my-perl-tidy ()
   "Run perltidy on marked region, or entire buffer."
   (interactive "*P")
   (let ((pos (point))
-        (profile "~/.perltidyrc")
         beg end)
-  (when arg
-    (setq profile (read-file-name "perltidy profile: " "~/" nil t ".perltidyrc")))
   (if (region-active-p)
       (setq beg (region-beginning)
             end (region-end))
     (setq beg (point-min)
           end (point-max)))
-  (shell-command-on-region beg end (concat "perltidy -q -pro=" (expand-file-name profile)) nil t)
+  (shell-command-on-region beg end (format "perltidy -q -i=%d" perl-indent-level) nil t)
   (goto-char pos)))
 
 (provide 'my-perl)

@@ -341,8 +341,8 @@
     (require 'my-grep-ed)
     (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
 
-(use-package hide-region
-  :bind* ("C-x C-h" . hide-region-toggle))
+;; (use-package hide-region
+;;   :bind* ("C-x C-h" . hide-region-toggle))
 
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
