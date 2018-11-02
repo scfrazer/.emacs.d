@@ -97,7 +97,7 @@
 
 (defun my-perl-tidy ()
   "Run perltidy on marked region, or entire buffer."
-  (interactive "*P")
+  (interactive "*")
   (let ((pos (point))
         beg end)
   (if (region-active-p)
