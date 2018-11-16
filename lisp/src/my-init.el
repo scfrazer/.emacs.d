@@ -52,6 +52,9 @@
 (bind-keys* ("C-\\" . expand-abbrev))
 (setq save-abbrevs nil)
 
+(require 'my-avy)
+(bind-keys*("C-j" . my-avy-goto))
+
 (require 'my-bookmark)
 
 (require 'my-buf)
@@ -163,66 +166,6 @@
       (let ((regexp (concat "\\(\\s-*\\)" (regexp-quote (char-to-string (read-char "Align to char:"))))))
         (save-excursion
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
-
-(use-package avy
-  :bind* (("C-j" . my-avy-goto))
-  :config
-  (progn
-    (setq avy-keys (nconc (number-sequence ?a ?z) (number-sequence ?A ?Z))
-          avy-all-windows nil
-          avy-case-fold-search nil
-          avy-style 'at
-          avy-timeout-seconds 0.5)
-    (defun my-avy-goto-line (&optional arg)
-      "Jump to start of a line, or with prefix arg end of a line."
-      (interactive "P")
-      (if (null arg)
-          (call-interactively 'avy-goto-line)
-        (avy-with avy-goto-char
-          (avy--generic-jump "\n" nil avy-style))))
-    (defun my-avy-insert-line ()
-      (interactive "*")
-      (let ((pos (point)))
-        (call-interactively 'avy-goto-line)
-        (copy-region-as-kill (point-at-bol) (point-at-eol))
-        (goto-char pos)
-        (yank)
-        (insert "\n")))
-    (defun my-avy-goto (char)
-      "Jump to CHAR at a word start, or string if C-k, or BOL if C-l, or EOL if C-m."
-      (interactive (list (read-char "Char: ")))
-      (cond ((= 11 char)
-             (let ((avy-timeout-seconds 0))
-               (call-interactively 'avy-goto-char-timer)))
-            ((= 12 char)
-             (call-interactively 'avy-goto-line))
-            ((= 15 char)
-             (call-interactively 'my-avy-insert-line))
-            ((and (not (< 31 char 127))
-                  (not (= 13 char)))
-             (error "Unknown char"))
-            (t
-             (avy-with avy-goto-word-1
-               (let* ((str (string char))
-                      (regex (cond ((= 13 char)
-                                    "\n")
-                                   ((= 32 char)
-                                    "\\s-+")
-                                   ((string= str ".")
-                                    "\\.")
-                                   ((and avy-word-punc-regexp
-                                         (string-match avy-word-punc-regexp str))
-                                    (regexp-quote str))
-                                   ((< 64 char 91)
-                                    (concat "\\b" str "\\|" str "[a-z0-9]"))
-                                   (t
-                                    (concat "\\b" str)))))
-                 (if (eq major-mode 'php-mode)
-                     (let ((table (copy-syntax-table (syntax-table))))
-                       (modify-syntax-entry ?$ "." table)
-                       (with-syntax-table table
-                         (avy--generic-jump regex nil avy-style)))
-                   (avy--generic-jump regex nil avy-style)))))))))
 
 (use-package ag2
   :bind* (("M-s G" . ag2)
@@ -579,7 +522,24 @@
           ("M-p" . qe-backward-paragraph)
           ("M-w" . qe-unit-copy)
           ("M-{" . qe-backward-curly-block)
-          ("M-}" . qe-forward-curly-block)))
+          ("M-}" . qe-forward-curly-block))
+  :config
+  (progn
+    (defun my-qe-unit-copy-1 (orig-fun key-seq)
+      (if (= (aref key-seq 0) ?o)
+          (let* ((pos (point))
+                 (at-bol (= (point-at-bol) pos))
+                 str)
+            (goto-char (avy--line))
+            (unless at-bol
+              (back-to-indentation))
+            (setq str (buffer-substring-no-properties (point) (point-at-eol)))
+            (goto-char pos)
+            (insert str)
+            (when at-bol
+              (insert "\n")))
+        (apply orig-fun (list key-seq))))
+    (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
