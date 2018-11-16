@@ -2053,7 +2053,8 @@ Prefix with C-u to resize the `next-window'."
     (when proj
       (setq etags-table-alist (list
                                `(,(concat proj "/.+\\.svh?$") ,(concat proj "/tags/sv/TAGS"))
-                               `(,(concat proj "/.+\\.[vs]$") ,(concat proj "/tags/v/TAGS"))
+                               `(,(concat proj "/.+\\.vh?$") ,(concat proj "/tags/v/TAGS"))
+                               `(,(concat proj "/.+\\.s$") ,(concat proj "/tags/v/TAGS"))
                                `(,(concat proj "/.+\\.[ch]$") ,(concat proj "/tags/c/TAGS"))
                                `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))))
 
