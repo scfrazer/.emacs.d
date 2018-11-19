@@ -530,14 +530,15 @@
           (let* ((pos (point))
                  (at-bol (= (point-at-bol) pos))
                  str)
-            (goto-char (avy--line))
-            (unless at-bol
-              (back-to-indentation))
+            (if at-bol
+                (goto-char (avy--line))
+              (avy--process (avy--regex-candidates "^\\s-*\\([^ \t\n]\\)" nil nil nil 1) (avy--style-fn avy-style)))
             (setq str (buffer-substring-no-properties (point) (point-at-eol)))
             (goto-char pos)
             (insert str)
             (when at-bol
-              (insert "\n")))
+              (insert "\n"))
+            (goto-char pos))
         (apply orig-fun (list key-seq))))
     (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
 
