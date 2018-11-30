@@ -8,7 +8,7 @@
 
  `(font-lock-builtin-face       ((t :foreground ,(smf-color 94))))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 248) :italic t)))
- `(font-lock-constant-face      ((t :foreground ,(smf-color 106))))
+ `(font-lock-constant-face      ((t :foreground ,(smf-color 106) :italic t)))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 244) :italic t)))
  `(font-lock-function-name-face ((t :foreground ,(smf-color 130) :underline t)))
  `(font-lock-keyword-face       ((t :foreground ,(smf-color 19) :bold t)))
