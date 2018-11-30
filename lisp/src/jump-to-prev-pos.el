@@ -34,6 +34,8 @@
                                       'self-insert-command
                                       'forward-char
                                       'backward-char
+                                      'right-char
+                                      'left-char
                                       'next-line
                                       'previous-line)
   "Commands for jtpp to ignore when saving positions."
