@@ -251,7 +251,7 @@
       (p4o-refresh)
       (p4-refresh-buffers))))
 
-(defun p4o-changelist-success (cmd buffer)
+(defun p4o-change-success (cmd buffer)
   "Callback after changelist creation/modification succeeds."
   (let (client)
     (save-excursion
@@ -277,17 +277,17 @@
   (p4-form-command "change" nil :move-to "Description:\n\t"
                    :mode 'p4-change-form-mode
                    :head-text p4-change-head-text
-                   :success-callback 'p4o-changelist-success))
+                   :success-callback 'p4o-change-success))
 
 (defp4cmd p4o-edit-changelist ()
   "change"
-  "Edit a changelist."
+  "Edit changelist on current line."
   (interactive)
   (when-let ((changelist (p4o-get-current-changelist)))
     (p4-form-command "change" (list changelist) :move-to "Description:\n\t"
                      :mode 'p4-change-form-mode
                      :head-text p4-change-head-text
-                     :success-callback 'p4o-changelist-success)))
+                     :success-callback 'p4o-change-success)))
 
 (defun p4o-reopen ()
   "Reopen marked files into a different changelist."
@@ -315,13 +315,38 @@
       (p4o-refresh)
       (p4-refresh-buffers))))
 
-(defun p4o-submit ()
-  "Submit changelist or marked files."
+(defun p4o-submit-success (cmd buffer)
+  (let (client)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^Client:\t\\(.+\\)" nil t)
+        (setq client (match-string-no-properties 1))))
+    (p4-change-update-form buffer "submitted" "^Change \\(?:[0-9]+ renamed change \\)?\\([0-9]+\\)\\(?: and\\)? submitted\\.$")
+    (p4-refresh-buffers)
+    (dolist (buf (buffer-list))
+      (when (string-match "[*]P4 \\(submit\\|change\\)" (buffer-name buf))
+        (kill-buffer buf)))
+    (when client
+      (let* ((buf (get-buffer (concat "*p4o " client "*")))
+             (win (get-buffer-window buf)))
+        (when win
+          (select-window win))
+        (with-current-buffer buf
+          (p4o-refresh))))))
+
+(defp4cmd p4o-submit (&optional args)
+  "submit"
+  "Submit changelist on current line."
   (interactive)
-  ;; TODO
-  (p4o-unmark-all)
-  (p4o-refresh)
-  (p4-refresh-buffers))
+  (when-let ((changelist (p4o-get-current-changelist)))
+    (setq changelist (if (string= changelist "default") nil (list changelist)))
+    (save-some-buffers nil (lambda () (or (not p4-do-find-file) p4-vc-status)))
+    (p4-form-command "change" changelist :move-to "Description:\n\t"
+                     :commit-cmd "submit"
+                     :mode 'p4-change-form-mode
+                     :head-text p4-submit-head-text
+                     :success-callback 'p4o-submit-success
+                     :failure-callback 'p4-submit-failure)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
