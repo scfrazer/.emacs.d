@@ -237,7 +237,7 @@
     (setq diff-default-read-only t
           diff-switches "-b -u")
     (bind-keys :map diff-mode-shared-map
-               ("q" . my-kill-this-buffer)
+               ("q" . kill-this-buffer)
                ("n" . diff-hunk-next)
                ("p" . diff-hunk-prev))
     (defun my-diff-mode-hook ()

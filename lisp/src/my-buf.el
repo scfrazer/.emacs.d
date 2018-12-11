@@ -16,6 +16,7 @@
                                                                    "*scratch"
                                                                    "*shell"
                                                                    "*git-simple"
+                                                                   "*p4o"
                                                                    "*terminal"
                                                                    "*regman"
                                                                    "*vcs-compile"))))
