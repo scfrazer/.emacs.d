@@ -22,8 +22,6 @@
  `(flymake-warning                ((t :background "lightyellow")))
  `(header-line                    ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
  `(isearch                        ((t :background "coral2" :foreground ,(smf-color 231))))
- `(js2-function-call              ((t :foreground ,(smf-color 55))))
- `(js2-object-property            ((t :foreground ,(smf-color 25))))
  `(lazy-highlight                 ((t :background "coral4" :foreground ,(smf-color 231))))
  `(link                           ((t :foreground ,(smf-color 26) :italic t :underline t)))
  `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
