@@ -134,10 +134,12 @@
     ;; `(error ((,class (:foreground ,nord11 :weight bold))))
     `(error ((,class (:foreground "white"))))
     `(escape-glyph ((,class (:foreground ,nord12))))
-    `(font-lock-builtin-face ((,class (:foreground ,nord9))))
+    ;; `(font-lock-builtin-face ((,class (:foreground ,nord9))))
+    `(font-lock-builtin-face ((,class (:foreground ,nord8))))
     `(font-lock-comment-face ((,class (:foreground ,nord-comment :italic t))))
     `(font-lock-comment-delimiter-face ((,class (:foreground ,nord-comment :italic t))))
-    `(font-lock-constant-face ((,class (:foreground ,nord9))))
+    ;; `(font-lock-constant-face ((,class (:foreground ,nord9 :italic t))))
+    `(font-lock-constant-face ((,class (:foreground ,nord15 :italic t))))
     `(font-lock-doc-face ((,class (:foreground ,nord-comment :italic t))))
     `(font-lock-function-name-face ((,class (:foreground ,nord8 :underline t))))
     `(font-lock-keyword-face ((,class (:foreground ,nord9 :bold t))))
@@ -154,7 +156,6 @@
     `(shadow ((,class (:foreground ,nord3))))
     `(underline ((,class (:underline t))))
     ;; `(warning ((,class (:foreground ,nord13 :weight bold))))
-    `(warning ((,class (:foreground "white"))))
 
     ;; +--- Syntax ---+
     ;; > C
@@ -295,7 +296,7 @@
     `(vc-state-base ((,class (:foreground ,nord4))))
     `(vc-up-to-date-state ((,class (:foreground ,nord8))))
     ;; `(vertical-border ((,class (:foreground ,nord2))))
-    `(vertical-border ((,class (:foreground ,nord4 :background ,nord-uniform-mode-lines-background))))
+    `(vertical-border ((,class (:foreground ,nord8 :background ,nord-uniform-mode-lines-background))))
     `(which-func ((,class (:foreground ,nord8))))
     `(whitespace-big-indent ((,class (:foreground ,nord3 :background ,nord0))))
     `(whitespace-empty ((,class (:foreground ,nord3 :background ,nord0))))
