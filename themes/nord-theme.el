@@ -130,7 +130,7 @@
     ;; +--- Base ---+
     `(bold ((,class (:weight bold))))
     `(bold-italic ((,class (:weight bold :slant italic))))
-    `(default ((,class (:foreground ,nord4 :background ,nord0))))
+    ;; `(default ((,class (:foreground ,nord4 :background ,nord0))))
     ;; `(error ((,class (:foreground ,nord11 :weight bold))))
     `(error ((,class (:foreground "white"))))
     `(escape-glyph ((,class (:foreground ,nord12))))
