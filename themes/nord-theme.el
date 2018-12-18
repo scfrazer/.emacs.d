@@ -131,7 +131,8 @@
     `(bold ((,class (:weight bold))))
     `(bold-italic ((,class (:weight bold :slant italic))))
     `(default ((,class (:foreground ,nord4 :background ,nord0))))
-    `(error ((,class (:foreground ,nord11 :weight bold))))
+    ;; `(error ((,class (:foreground ,nord11 :weight bold))))
+    `(error ((,class (:foreground "white"))))
     `(escape-glyph ((,class (:foreground ,nord12))))
     `(font-lock-builtin-face ((,class (:foreground ,nord9))))
     `(font-lock-comment-face ((,class (:foreground ,nord-comment :italic t))))
@@ -148,11 +149,12 @@
     `(font-lock-string-face ((,class (:foreground ,nord14))))
     `(font-lock-type-face ((,class (:foreground ,nord7))))
     `(font-lock-variable-name-face ((,class (:foreground ,nord4))))
-    `(font-lock-warning-face ((,class (:foreground ,nord13))))
+    ;; `(font-lock-warning-face ((,class (:foreground ,nord13))))
     `(italic ((,class (:slant italic))))
     `(shadow ((,class (:foreground ,nord3))))
     `(underline ((,class (:underline t))))
-    `(warning ((,class (:foreground ,nord13 :weight bold))))
+    ;; `(warning ((,class (:foreground ,nord13 :weight bold))))
+    `(warning ((,class (:foreground "white"))))
 
     ;; +--- Syntax ---+
     ;; > C
@@ -176,7 +178,8 @@
     `(diff-removed ((,class (:foreground ,nord11))))
 
     ;; +--- UI ---+
-    `(border ((,class (:foreground ,nord4))))
+    ;; `(border ((,class (:foreground ,nord4))))
+    `(border ((,class (:foreground ,nord4 :background ,nord-uniform-mode-lines-background))))
     `(buffer-menu-buffer ((,class (:foreground ,nord4 :weight bold))))
     `(button ((,class (:background ,nord0 :foreground ,nord8 :box (:line-width 2 :color ,nord4 :style sunken-button)))))
     `(completions-annotations ((,class (:foreground ,nord9))))
@@ -261,7 +264,8 @@
     `(secondary-selection ((,class (:background ,nord2))))
     `(show-paren-match-face ((,class (:foreground ,nord0 :background ,nord8))))
     `(show-paren-mismatch-face ((,class (:background ,nord11))))
-    `(success ((,class (:foreground ,nord14))))
+    ;; `(success ((,class (:foreground ,nord14))))
+    `(success ((,class (:foreground "white"))))
     `(term ((,class (:foreground ,nord4 :background ,nord0))))
     `(term-color-black ((,class (:foreground ,nord1 :background ,nord1))))
     `(term-color-white ((,class (:foreground ,nord5 :background ,nord5))))
@@ -290,7 +294,8 @@
     `(vc-removed-state ((,class (:foreground ,nord11))))
     `(vc-state-base ((,class (:foreground ,nord4))))
     `(vc-up-to-date-state ((,class (:foreground ,nord8))))
-    `(vertical-border ((,class (:foreground ,nord2))))
+    ;; `(vertical-border ((,class (:foreground ,nord2))))
+    `(vertical-border ((,class (:foreground ,nord4 :background ,nord-uniform-mode-lines-background))))
     `(which-func ((,class (:foreground ,nord8))))
     `(whitespace-big-indent ((,class (:foreground ,nord3 :background ,nord0))))
     `(whitespace-empty ((,class (:foreground ,nord3 :background ,nord0))))
@@ -484,7 +489,7 @@
    `(diff-hl-change ((,class (:background ,nord13))))
    `(diff-hl-insert ((,class (:background ,nord14))))
    `(diff-hl-delete ((,class (:background ,nord11))))
-   
+
     ;; > Evil
     `(evil-ex-info ((,class (:foreground ,nord8))))
     `(evil-ex-substitute-replacement ((,class (:foreground ,nord9))))
@@ -660,10 +665,10 @@
     `(font-latex-string-face ((,class (:foreground ,nord14))))
     `(font-latex-match-reference-keywords ((,class (:foreground ,nord9))))
     `(font-latex-match-variable-keywords ((,class (:foreground ,nord4))))
-    `(ido-only-match ((,class (:foreground ,nord8))))
+    ;; `(ido-only-match ((,class (:foreground ,nord8))))
+    ;; `(ido-first-match ((,class (:foreground ,nord8 :weight bold))))
+    ;; `(ido-subdir ((,class (:foreground ,nord9))))
     `(org-sexp-date ((,class (:foreground ,nord7))))
-    `(ido-first-match ((,class (:foreground ,nord8 :weight bold))))
-    `(ido-subdir ((,class (:foreground ,nord9))))
     `(org-quote ((,class (:inherit org-block :slant italic))))
     `(org-verse ((,class (:inherit org-block :slant italic))))
     `(org-agenda-date-weekend ((,class (:foreground ,nord9))))

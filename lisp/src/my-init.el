@@ -2125,7 +2125,7 @@ Prefix with C-u to resize the `next-window'."
   (set-terminal-coding-system 'utf-8)
 
   (defface my-display-table-face
-    '((((class color) (background dark)) :foreground "brightmagenta" :background "black")
+    '((((class color) (background dark)) :foreground "yellow2" :background "gray33")
       (((class color) (background light)) :foreground "violetred" :background "whitesmoke" :bold t))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
