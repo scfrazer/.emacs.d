@@ -167,17 +167,17 @@
         (save-excursion
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
 
-(use-package ag2
-  :bind* (("M-s G" . ag2)
-          ("M-s g" . ag2-local))
-  :config
-  (progn
-    (require 'my-grep-ed)
-    (setq ag2-default-literal t
-          ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
-                                    ("rtl" . "\\.(s|v|vh)$")
-                                    ("web" . "\\.(js|php|html)$")))
-    (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
+;; (use-package ag2
+;;   :bind* (("M-s G" . ag2)
+;;           ("M-s g" . ag2-local))
+;;   :config
+;;   (progn
+;;     (require 'my-grep-ed)
+;;     (setq ag2-default-literal t
+;;           ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
+;;                                     ("rtl" . "\\.(s|v|vh)$")
+;;                                     ("web" . "\\.(js|php|html)$")))
+;;     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
 
 (use-package asm-mode
   :config
@@ -563,6 +563,10 @@
 
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
+
+(use-package my-rg
+  :bind* (("M-s G" . rg-dwim)
+          ("M-s g" . rg)))
 
 (use-package sgml-mode
   :mode (("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
@@ -2034,10 +2038,9 @@ Prefix with C-u to resize the `next-window'."
           (eq my-location 'SJC)
           (eq my-location 'BGL))
 
-  (require 'vcs-compile)
-  (add-to-list 'vcs-compile-command-list "q aurora_targ_build_chipSicu")
-
-  (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
+  ;; (require 'vcs-compile)
+  ;; (add-to-list 'vcs-compile-command-list "q aurora_targ_build_chipSicu")
+  ;; (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
 
   (require 'rel-log-mode)
 
@@ -2048,14 +2051,19 @@ Prefix with C-u to resize the `next-window'."
                                `(,(concat proj "/.+\\.vh?$") ,(concat proj "/tags/v/TAGS"))
                                `(,(concat proj "/.+\\.s$") ,(concat proj "/tags/v/TAGS"))
                                `(,(concat proj "/.+\\.[ch]$") ,(concat proj "/tags/c/TAGS"))
-                               `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))))
+                               `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))
 
-  (defun dv-lint ()
-    (interactive)
-    (compilation-mode)
-    (hl-line-mode 1)
-    (set (make-local-variable 'compilation-error-regexp-alist)
-         (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
+      (require 'project)
+      (defun my-project-find (dir)
+        (cons 'vc (getenv "PROJ")))
+      (setq project-find-functions (list #'my-project-find))))
+
+  ;; (defun dv-lint ()
+  ;;   (interactive)
+  ;;   (compilation-mode)
+  ;;   (hl-line-mode 1)
+  ;;   (set (make-local-variable 'compilation-error-regexp-alist)
+  ;;        (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
 
   (eval-after-load "ll-debug"
     '(progn

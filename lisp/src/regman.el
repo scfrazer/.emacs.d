@@ -23,8 +23,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar regman-base-path
-  "/vob/sse/asic/shared/ver/build/mmap"
+(defvar regman-base-path (concat (getenv "PROJ") "/asic/shared/ver/build/mmap")
   "Base regman path.")
 
 (defvar regman-program nil
