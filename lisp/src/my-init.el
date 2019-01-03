@@ -2056,7 +2056,7 @@ Prefix with C-u to resize the `next-window'."
       (require 'project)
       (defun my-project-find (dir)
         (cons 'vc (getenv "PROJ")))
-      (setq project-find-functions (list #'my-project-find))))
+      (add-to-list 'project-find-functions #'my-project-find)))
 
   ;; (defun dv-lint ()
   ;;   (interactive)
