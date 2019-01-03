@@ -23,6 +23,7 @@ below current window."
                                             "*grep"
                                             "*magit-diff"
                                             "*regman"
+                                            "*rg"
                                             "*vcs-compile"
                                             ))) buffer))
 

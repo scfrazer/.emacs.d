@@ -13,6 +13,7 @@
                                                                    "*grep"
                                                                    "*info"
                                                                    "*magit:"
+                                                                   "*rg"
                                                                    "*scratch"
                                                                    "*shell"
                                                                    "*git-simple"

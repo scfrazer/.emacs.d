@@ -42,6 +42,7 @@
                                                  "*compilation"
                                                  "*grep"
                                                  "*info"
+                                                 "*rg"
                                                  "*scratch"
                                                  "*shell"
                                                  "*terminal"
