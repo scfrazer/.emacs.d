@@ -1,6 +1,8 @@
 ;;; my-dired.el
 
 (require 'dired)
+(require 'dired-subtree)
+(require 'dired-rainbow)
 (require 'my-font-lock)
 (require 'my-ibuffer)
 
@@ -12,7 +14,8 @@
       dired-isearch-filenames 'dwim
       dired-listing-switches "-alv"
       dired-recursive-copies 'always
-      dired-recursive-deletes 'always)
+      dired-recursive-deletes 'always
+      dired-subtree-line-prefix "   »")
 
 (defface my-dired-debug-face
   '((t (:foreground "orange2")))

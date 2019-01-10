@@ -258,6 +258,10 @@
 ;; (use-package expand-region
 ;;   :bind* (("C-M-@" . er/expand-region)))
 
+(use-package my-fd
+  :bind* (("M-s F" . my-fd-project)
+          ("M-s f" . my-fd-current)))
+
 (use-package ffap
   :bind* (("C-c f" . my-ffap)
           ("C-c o" . my-other-file))
@@ -290,8 +294,8 @@
   (setq git-timemachine-abbreviation-length 7))
 
 (use-package grep
-  :bind* (("C-c G" . my-rgrep)
-          ("C-c g" . my-lgrep))
+  :bind* (("M-s G" . my-rgrep)
+          ("M-s g" . my-lgrep))
   :config
   (progn
     (require 'my-grep)
@@ -565,8 +569,8 @@
   :bind* ("C-c R" . revbufs))
 
 (use-package my-rg
-  :bind* (("M-s G" . rg-dwim)
-          ("M-s g" . rg)))
+  :bind* (("C-c G" . my-rg-project)
+          ("C-c g" . my-rg-current)))
 
 (use-package sgml-mode
   :mode (("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
