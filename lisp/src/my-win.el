@@ -14,6 +14,7 @@
 below current window."
   (string-match (concat "\\`" (regexp-opt '(
                                             "*Compile-Log"
+                                            "*Fd"
                                             "*Find"
                                             "*Help"
                                             "*Ibuffer"

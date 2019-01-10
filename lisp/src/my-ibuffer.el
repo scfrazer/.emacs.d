@@ -34,7 +34,8 @@
                                                "*git-simple:"
                                                "*p4o")))
 
-(defvar my-ibuffer-star-regexp (regexp-opt (list "*Find"
+(defvar my-ibuffer-star-regexp (regexp-opt (list "*Fd"
+                                                 "*Find"
                                                  "*Man"
                                                  "*Occur"
                                                  "*ag"
@@ -136,7 +137,7 @@
          ("Org" (mode . org-mode))
          ("ELisp" (mode . emacs-lisp-mode))
          ;; ("VOB" (filename . "/vob"))
-         ("Workspace" (predicate . (my-ibuffer-worksapce-files)))
+         ("Workspace" (predicate . (my-ibuffer-workspace-files)))
          ("Files" (predicate . (my-ibuffer-filter-files)))
          ("Temp" (predicate . (my-ibuffer-filter-buffers)))
          ("*" (or (mode . Custom-mode)
@@ -148,12 +149,13 @@
   (when regexp
     (ibuffer-mark-by-file-name-regexp (concat ".*[.]" regexp "$"))))
 
-(defun my-ibuffer-worksapce-files ()
+(defun my-ibuffer-workspace-files ()
   "Filter to match files in a workspace"
   (let ((proj (getenv "PROJ"))
         (filename (buffer-file-name)))
     (and proj
          filename
+         (my-ibuffer-filter-files)
          (string-match (concat "^" proj) (buffer-file-name)))))
 
 (defun my-ibuffer-filter-files ()

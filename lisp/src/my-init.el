@@ -261,6 +261,8 @@
 (use-package my-fd
   :bind* (("M-s F" . my-fd-project)
           ("M-s f" . my-fd-current)))
+(defalias 'fd 'my-fd-current)
+(defalias 'fd-p 'my-fd-project)
 
 (use-package ffap
   :bind* (("C-c f" . my-ffap)

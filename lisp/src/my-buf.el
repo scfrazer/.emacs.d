@@ -3,7 +3,8 @@
 ;; Ignore buffers
 
 (defvar my-buf-always-show-regexps (list (concat "^"
-                                                 (regexp-opt (list "*Find"
+                                                 (regexp-opt (list "*Fd"
+                                                                   "*Find"
                                                                    "*Man"
                                                                    "*Occur"
                                                                    "*ag"
@@ -45,7 +46,8 @@
            (condition-case nil
                (with-current-buffer name
                  (and (equal major-mode 'dired-mode)
-                      (not (string= name "*Find*"))))
+                      (not (or (string= name "*Find*")
+                               (string= name "*Fd*")))))
              (error nil)))))
 
 ;; Toggle buffers
