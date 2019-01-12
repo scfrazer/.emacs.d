@@ -54,9 +54,13 @@ With ARG do literal with current region."
       (call-interactively 'my-rg-project-region)
     (call-interactively 'my-rg-project-ask)))
 
+(define-key rg-mode-map "C-n" nil)
+(define-key rg-mode-map "C-p" nil)
 (define-key rg-mode-map "C-x C-q" 'wgrep-change-to-wgrep-mode)
 (define-key rg-mode-map "G" 'my-rg-toggle-group)
 (define-key rg-mode-map "L" 'rg-list-searches)
+(define-key rg-mode-map "N" 'rg-next-file)
+(define-key rg-mode-map "P" 'rg-prev-file)
 (define-key rg-mode-map "l" 'rg-rerun-change-literal)
 
 (provide 'my-rg)
