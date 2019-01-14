@@ -5,7 +5,7 @@
 (setq-default rg-custom-type-aliases nil
               rg-hide-command nil)
 
-(rg-define-toggle "-uu" "I")
+(rg-define-toggle "-uu" "u")
 (rg-define-toggle "--word-regexp" "w")
 
 (defun my-rg-toggle-group ()
@@ -62,5 +62,52 @@ With ARG do literal with current region."
 (define-key rg-mode-map "N" 'rg-next-file)
 (define-key rg-mode-map "P" 'rg-prev-file)
 (define-key rg-mode-map "l" 'rg-rerun-change-literal)
+
+(defun my-rg-header-render-toggle (on)
+  "Return a fontified toggle symbol.
+If ON is non nil, render \"on\" string, otherwise render \"off\"
+string."
+  `(:eval (let* ((on ,on)
+                 (value (if on "on" "off"))
+                 (face (if on 'rg-toggle-on-face 'rg-toggle-off-face)))
+            (propertize value 'face face))))
+
+(defun rg-create-header-line (search full-command)
+  "Create the header line for SEARCH.
+If FULL-COMMAND specifies if the full command line search was done."
+  (let ((itemspace "  "))
+    (setq header-line-format
+          (if full-command
+              (list (rg-header-render-label "command line") "no refinement")
+            (list
+             (rg-header-render-label `((rg-search-literal ,search)
+                                       ("literal" rg-literal-face)
+                                       ("regexp" rg-regexp-face)))
+             `(:eval (rg-search-pattern ,search))
+             itemspace
+             (rg-header-render-label "files")
+             `(:eval (let ((str (rg-search-files ,search)))
+                       (if (string= str "all")
+                           str
+                         (propertize str 'face 'font-lock-warning-face))))
+             itemspace
+             (rg-header-render-label "case")
+             (my-rg-header-render-toggle
+              `(not (member "-i" (rg-search-toggle-flags ,search))))
+             itemspace
+             (rg-header-render-label "word")
+             (my-rg-header-render-toggle
+              `(member "--word-regexp" (rg-search-toggle-flags ,search)))
+             itemspace
+             (rg-header-render-label ".ignore")
+             (my-rg-header-render-toggle
+              `(not (member "--no-ignore" (rg-search-toggle-flags ,search))))
+             itemspace
+             (rg-header-render-label "unlimited")
+             (my-rg-header-render-toggle
+              `(member "-uu" (rg-search-toggle-flags ,search)))
+             itemspace
+             (rg-header-render-label "hits")
+             '(:eval (format "%d" rg-hit-count)))))))
 
 (provide 'my-rg)

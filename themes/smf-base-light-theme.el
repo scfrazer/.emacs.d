@@ -45,7 +45,6 @@
  `(p4o-merge-face                 ((t :background "lightyellow")))
  `(rg-literal-face                ((t :foreground "lightblue")))
  `(rg-regexp-face                 ((t :foreground "yellow")))
- `(rg-toggle-on-face              ((t :foreground "lightgreen")))
  `(show-mark-face                 ((t :foreground "black" :background ,(smf-color 195))))
  `(speedbar-button-face           ((t :foreground "black")))
  `(sqlplus-table-odd-rows-face    ((t :background ,(smf-color 254))))

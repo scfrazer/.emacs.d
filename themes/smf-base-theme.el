@@ -69,6 +69,8 @@
  `(my-read-only-face                       ((t :foreground "black" :background ,(smf-color 202))))
  `(org-level-1                             ((t :inherit outline-1 :underline t)))
  `(region                                  ((t :foreground ,(smf-color 231) :background ,(smf-color 31))))
+ `(rg-toggle-on-face                       ((t :inherit warning)))
+ `(rg-toggle-off-face                      ((t nil)))
  `(show-paren-match                        ((t :inherit success)))
  `(show-paren-mismatch                     ((t :inherit error)))
  `(sqlplus-table-head-face                 ((t :foreground ,(smf-color 45) :background "black" :italic t)))
