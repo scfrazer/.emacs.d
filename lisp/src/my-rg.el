@@ -3,7 +3,7 @@
 (require 'rg)
 
 (setq-default rg-custom-type-aliases nil
-              rg-hide-command nil)
+              rg-hide-command t)
 
 (rg-define-toggle "-uu" "u")
 (rg-define-toggle "--word-regexp" "w")
@@ -103,7 +103,7 @@ If FULL-COMMAND specifies if the full command line search was done."
              (my-rg-header-render-toggle
               `(not (member "--no-ignore" (rg-search-toggle-flags ,search))))
              itemspace
-             (rg-header-render-label "unlimited")
+             (rg-header-render-label "unrestricted")
              (my-rg-header-render-toggle
               `(member "-uu" (rg-search-toggle-flags ,search)))
              itemspace
