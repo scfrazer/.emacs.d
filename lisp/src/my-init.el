@@ -24,27 +24,7 @@
 (require 'bind-remind)
 
 (require 'my-dired)
-(require 'dired-narrow)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
-(unbind-key "C-o" dired-mode-map)
-(unbind-key "s"   dired-mode-map)
-(bind-keys :map dired-mode-map
-           ("/"        . dired-narrow)
-           ("SPC"      . my-dired-toggle-mark)
-           ("<return>" . my-dired-open)
-           ("J"        . my-dired-jump-to-prev-dir)
-           ("M-<"      . my-dired-beginning-of-buffer)
-           ("M->"      . my-dired-end-of-buffer)
-           ("RET"      . my-dired-open)
-           ("b"        . my-dired-toggle-path)
-           ("j"        . my-dired-jump-to-dir)
-           ("n"        . my-dired-next-line)
-           ("o"        . my-dired-do-find-file)
-           ("p"        . my-dired-previous-line)
-           ("s h"      . dired-hide-subdir)
-           ("s i"      . dired-maybe-insert-subdir)
-           ("s k"      . dired-kill-subdir)
-           ("u"        . my-dired-up-dir))
 
 ;; Required packages
 
@@ -1877,7 +1857,6 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-/") 'dabbrev-expand)
   (local-set-key (kbd "C-\\") 'expand-abbrev)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
-  (local-set-key (kbd "C-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
   (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
@@ -1886,6 +1865,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
+  (local-set-key (kbd "M-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
   (local-set-key (kbd "M-z") (lambda () (interactive) nil))
   (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))

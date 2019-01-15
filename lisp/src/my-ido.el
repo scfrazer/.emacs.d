@@ -88,7 +88,6 @@
 (defadvice ido-init-completion-maps (after my-ido-init-map activate)
   (define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
   (define-key ido-common-completion-map (kbd "M-$") 'my-ido-use-bookmark-dir))
-(ido-init-completion-maps) ;; For pre-23.3 Emacs
 
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)
   (when my-ido-doing-bookmark-dir
@@ -153,6 +152,7 @@
       (set-keymap-parent map ido-common-completion-map)
       (setq ido-completion-map map))))
 
+(defvar ido-cur-list)
 (defun my-ido-recentf-remove-file-at-head ()
   "Remove the file at the head of `ido-matches' from the recentf list."
   (interactive)
@@ -270,6 +270,10 @@ If cursor is not at the end of the user input, move to end of input."
     (setq ido-text "")
     (setq ido-exit 'edit)
     (exit-minibuffer)))
+
+;; Keys
+
+(define-key ido-buffer-completion-map (kbd "C-x C-r") 'ido-toggle-virtual-buffers)
 
 ;; Hook
 

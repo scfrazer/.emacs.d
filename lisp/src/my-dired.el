@@ -10,12 +10,12 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(setq dired-auto-revert-buffer t
-      dired-isearch-filenames 'dwim
-      dired-listing-switches "-alv"
-      dired-recursive-copies 'always
-      dired-recursive-deletes 'always
-      dired-subtree-line-prefix "   »")
+(setq-default dired-auto-revert-buffer t
+              dired-isearch-filenames 'dwim
+              dired-listing-switches "-alv"
+              dired-recursive-copies 'always
+              dired-recursive-deletes 'always
+              dired-subtree-line-prefix "  ")
 
 (defface my-dired-debug-face
   '((t (:foreground "orange2")))
@@ -219,5 +219,68 @@
   (toggle-truncate-lines))
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)
+
+;; Subtree
+
+;; (defvar my-dired-subtree-depth 0)
+;; 
+;; (defun dired-subtree--readin (dir-name)
+;;   "Read in the directory.
+;; Return a string suitable for insertion in `dired' buffer."
+;;   (with-temp-buffer
+;;     (insert-directory dir-name dired-listing-switches nil t)
+;;     (delete-char -1)
+;;     (goto-char (point-min))
+;;     (delete-region
+;;      (progn (beginning-of-line) (point))
+;;      (progn (forward-line
+;;              (if (save-excursion
+;;                    (forward-line 1)
+;;                    (end-of-line)
+;;                    (looking-back "\\." (point-at-bol)))
+;;                  3 1))
+;;             (point)))
+;;     (while (not (eobp))
+;;       (insert "  ")
+;;       (dired-move-to-filename)
+;;       (insert-char ?  (* my-dired-subtree-depth 2))
+;;       (forward-line))
+;;     (setq my-dired-subtree-depth 0)
+;;     (buffer-string)))
+;; 
+;; (defun my-dired-subtree-insert ()
+;;   "Insert subtree under this directory."
+;;   (interactive)
+;;   (when (and (dired-subtree--dired-line-is-directory-or-link-p)
+;;              (not (dired-subtree--is-expanded-p)))
+;;     (let ((parent (dired-subtree--get-ov (1- (point)))))
+;;       (setq my-dired-subtree-depth (or (and parent (1+ (overlay-get parent 'dired-subtree-depth))) 1))
+;;       (dired-subtree-insert))))
+;; 
+;; (defun my-dired-subtree-toggle ()
+;;   "Insert subtree at point or remove it if it was not present."
+;;   (interactive)
+;;   (if (dired-subtree--is-expanded-p)
+;;       (progn
+;;         (dired-next-line 1)
+;;         (dired-subtree-remove))
+;;       (save-excursion (my-dired-subtree-insert))))
+
+;; Keymap
+
+(define-key dired-mode-map (kbd "C-o") nil)
+(define-key dired-mode-map (kbd "J") 'my-dired-jump-to-prev-dir)
+(define-key dired-mode-map (kbd "M-<") 'my-dired-beginning-of-buffer)
+(define-key dired-mode-map (kbd "M->") 'my-dired-end-of-buffer)
+(define-key dired-mode-map (kbd "RET") 'my-dired-open)
+(define-key dired-mode-map (kbd "SPC") 'my-dired-toggle-mark)
+;; (define-key dired-mode-map (kbd "TAB") 'my-dired-subtree-toggle)
+(define-key dired-mode-map (kbd "TAB") 'dired-subtree-toggle)
+(define-key dired-mode-map (kbd "b") 'my-dired-toggle-path)
+(define-key dired-mode-map (kbd "j") 'my-dired-jump-to-dir)
+(define-key dired-mode-map (kbd "n") 'my-dired-next-line)
+(define-key dired-mode-map (kbd "o") 'my-dired-do-find-file)
+(define-key dired-mode-map (kbd "p") 'my-dired-previous-line)
+(define-key dired-mode-map (kbd "u") 'my-dired-up-dir)
 
 (provide 'my-dired)
