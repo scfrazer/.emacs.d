@@ -85,9 +85,8 @@
       (setq ido-exit 'refresh)
       (exit-minibuffer))))
 
-(defadvice ido-init-completion-maps (after my-ido-init-map activate)
-  (define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
-  (define-key ido-common-completion-map (kbd "M-$") 'my-ido-use-bookmark-dir))
+(define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
+(define-key ido-common-completion-map (kbd "M-$") 'my-ido-use-bookmark-dir)
 
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)
   (when my-ido-doing-bookmark-dir
@@ -273,7 +272,7 @@ If cursor is not at the end of the user input, move to end of input."
 
 ;; Keys
 
-(define-key ido-buffer-completion-map (kbd "C-x C-r") 'ido-toggle-virtual-buffers)
+(define-key ido-buffer-completion-map (kbd "C-r") 'ido-toggle-virtual-buffers)
 
 ;; Hook
 

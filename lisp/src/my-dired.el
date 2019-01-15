@@ -12,10 +12,10 @@
 
 (setq-default dired-auto-revert-buffer t
               dired-isearch-filenames 'dwim
-              dired-listing-switches "-alv"
+              dired-listing-switches "-alv --time-style=long-iso"
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
-              dired-subtree-line-prefix "  ")
+              dired-subtree-line-prefix "")
 
 (defface my-dired-debug-face
   '((t (:foreground "orange2")))
@@ -176,9 +176,11 @@
 (defun my-dired-up-dir ()
   "Go up a directory."
   (interactive)
-  (let ((current-dir (dired-current-directory)))
-    (find-alternate-file "..")
-    (dired-goto-file current-dir)))
+  (if (> (dired-subtree--get-depth (dired-subtree--get-ov)) 0)
+      (dired-subtree-up)
+    (let ((current-dir (dired-current-directory)))
+      (find-alternate-file "..")
+      (dired-goto-file current-dir))))
 
 ;; Smarter movement
 
@@ -222,49 +224,26 @@
 
 ;; Subtree
 
-;; (defvar my-dired-subtree-depth 0)
-;; 
-;; (defun dired-subtree--readin (dir-name)
-;;   "Read in the directory.
-;; Return a string suitable for insertion in `dired' buffer."
-;;   (with-temp-buffer
-;;     (insert-directory dir-name dired-listing-switches nil t)
-;;     (delete-char -1)
-;;     (goto-char (point-min))
-;;     (delete-region
-;;      (progn (beginning-of-line) (point))
-;;      (progn (forward-line
-;;              (if (save-excursion
-;;                    (forward-line 1)
-;;                    (end-of-line)
-;;                    (looking-back "\\." (point-at-bol)))
-;;                  3 1))
-;;             (point)))
-;;     (while (not (eobp))
-;;       (insert "  ")
-;;       (dired-move-to-filename)
-;;       (insert-char ?  (* my-dired-subtree-depth 2))
-;;       (forward-line))
-;;     (setq my-dired-subtree-depth 0)
-;;     (buffer-string)))
-;; 
-;; (defun my-dired-subtree-insert ()
-;;   "Insert subtree under this directory."
-;;   (interactive)
-;;   (when (and (dired-subtree--dired-line-is-directory-or-link-p)
-;;              (not (dired-subtree--is-expanded-p)))
-;;     (let ((parent (dired-subtree--get-ov (1- (point)))))
-;;       (setq my-dired-subtree-depth (or (and parent (1+ (overlay-get parent 'dired-subtree-depth))) 1))
-;;       (dired-subtree-insert))))
-;; 
-;; (defun my-dired-subtree-toggle ()
-;;   "Insert subtree at point or remove it if it was not present."
-;;   (interactive)
-;;   (if (dired-subtree--is-expanded-p)
-;;       (progn
-;;         (dired-next-line 1)
-;;         (dired-subtree-remove))
-;;       (save-excursion (my-dired-subtree-insert))))
+(defun my-dired-subtree-after-insert ()
+  "Adjust inserted names to be tree-like."
+  (setq buffer-read-only nil)
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^..[-?dl]" nil t)
+      (dired-move-to-filename)
+      (let ((parent-col (current-column)) depth col)
+        (while (not (eobp))
+          (forward-line)
+          (dired-move-to-filename)
+          (setq depth (dired-subtree--get-depth (dired-subtree--get-ov)))
+          (when (> depth 0)
+            (let ((goal (+ parent-col (* 2 depth)))
+                  (col (current-column)))
+              (when (< col goal)
+                (insert-char ?  (- goal col)))))))))
+  (setq buffer-read-only t))
+
+(add-hook 'dired-subtree-after-insert-hook 'my-dired-subtree-after-insert)
 
 ;; Keymap
 
@@ -272,9 +251,10 @@
 (define-key dired-mode-map (kbd "J") 'my-dired-jump-to-prev-dir)
 (define-key dired-mode-map (kbd "M-<") 'my-dired-beginning-of-buffer)
 (define-key dired-mode-map (kbd "M->") 'my-dired-end-of-buffer)
+(define-key dired-mode-map (kbd "N") 'dired-subtree-next-sibling)
+(define-key dired-mode-map (kbd "P") 'dired-subtree-previous-sibling)
 (define-key dired-mode-map (kbd "RET") 'my-dired-open)
 (define-key dired-mode-map (kbd "SPC") 'my-dired-toggle-mark)
-;; (define-key dired-mode-map (kbd "TAB") 'my-dired-subtree-toggle)
 (define-key dired-mode-map (kbd "TAB") 'dired-subtree-toggle)
 (define-key dired-mode-map (kbd "b") 'my-dired-toggle-path)
 (define-key dired-mode-map (kbd "j") 'my-dired-jump-to-dir)
