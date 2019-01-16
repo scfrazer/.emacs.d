@@ -87,7 +87,8 @@ If FULL-COMMAND specifies if the full command line search was done."
              itemspace
              (rg-header-render-label "files")
              `(:eval (let ((str (rg-search-files ,search)))
-                       (if (string= str "all")
+                       (if (or (string= str "all")
+                               (string= str "any"))
                            str
                          (propertize str 'face 'font-lock-warning-face))))
              itemspace
