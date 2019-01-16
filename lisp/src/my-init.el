@@ -825,6 +825,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               x-select-enable-clipboard nil)
 
 (setq completion-ignored-extensions (delete ".bin" completion-ignored-extensions))
+(add-to-list 'completion-ignored-extensions ".d")
 
 ;; (add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))

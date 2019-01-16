@@ -2,7 +2,6 @@
 
 (require 'dired)
 (require 'dired-subtree)
-(require 'dired-rainbow)
 (require 'my-font-lock)
 (require 'my-ibuffer)
 
@@ -12,32 +11,23 @@
 
 (setq-default dired-auto-revert-buffer t
               dired-isearch-filenames 'dwim
-              dired-listing-switches "-alv --time-style=long-iso"
+              dired-listing-switches "-alv --group-directories-first --time-style=long-iso"
               dired-recursive-copies 'always
               dired-recursive-deletes 'always
               dired-subtree-line-prefix "")
 
+;; Colorize
+
 (defface my-dired-debug-face
-  '((t (:foreground "orange2")))
+  '((t (:foreground "darkorange2")))
   "Debug file face."
   :group 'dired-faces)
 
-(setq dired-font-lock-keywords
-      '(("^. \\([^\n]+\\)\\(:\\)[\n]" (1 font-lock-function-name-face))
-        ("^[^ \n]" (0 font-lock-constant-face) (".+" (dired-move-to-filename) nil (0 dired-marked-face)))
-        ("^. [0-9 	]*d[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-keyword-face)))
-        ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
-        ("^. [0-9 	]*...\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
-        ("^. [0-9 	]*l[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-string-face)))
-        ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
-        ("~\\|#\\|\\([.]\\(o\\|obj\\|d\\|elc\\|pyc\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
-
-;; (when (featurep 'my-clearcase)
-;;   (setq dired-font-lock-keywords
-;;         (append dired-font-lock-keywords
-;;                 '(("^.+ \\(CHECKOUT-[RU]\\|HIJACK\\)\\s-+[0-9]" 1 'clearcase-dired-checkedout-face)
-;;                   ("^.+ \\(cc-element\\)\\s-+[0-9]" 1 'clearcase-dired-element-face)
-;;                   ("^  \\[ClearCase View: \\(.*\\)\\]" 1 font-lock-builtin-face)))))
+(font-lock-add-keywords
+ 'dired-mode
+ '(("^. [0-9 	]*-..\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
+   ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
+   ("~\\|#\\|\\([.]\\(d\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
 
 ;; Find marked files in dired, but don't display all at once
 
@@ -105,17 +95,6 @@
       (when curr-filename
         (dired-goto-file curr-filename)))))
 
-;; Modified find-name-dired
-
-(defun my-dired-find-name-dired (&optional arg)
-  "Same as `find-name-dired', but uses default dir unless there is a prefix arg."
-  (interactive "P")
-  (if arg
-      (call-interactively 'find-name-dired)
-    (find-name-dired
-     default-directory
-     (read-from-minibuffer "Find-name (filename wildcard): "))))
-
 ;; Update display
 
 (defvar my-dired-path-uses-bookmarks nil)
@@ -144,19 +123,6 @@
                   path))
               ":")))
   (set-buffer-modified-p nil))
-
-(defun my-dired-after-readin-hook ()
-  (interactive)
-  (my-dired-update-path)
-  ;; Sort directories first
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2)
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max))))
-  (dired-insert-set-properties (point-min) (point-max))
-  (set-buffer-modified-p nil))
-
-(add-hook 'dired-after-readin-hook 'my-dired-after-readin-hook)
 
 ;; Toggle current file mark in dired
 
