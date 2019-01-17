@@ -10,45 +10,53 @@
   (interactive)
   (bookmark-load bookmark-default-file t))
 
-(defun my-bookmark-reseat ()
-  "Reseat bookmarks in Perforce."
-  (let ((proj (or (getenv "PROJ") "/vob/sse"))
-        (regexp (concat "/vob/sse\\|.*/ws/" (getenv "USER") "-[a-z]+/[^/]+")))
-    (when proj
-      (dolist (bmk bookmark-alist)
-        (let ((filename (bookmark-get-filename bmk)))
-          (when (string-match regexp filename)
-            (bookmark-set-filename bmk (replace-regexp-in-string regexp proj filename))))))))
+(defun my-bookmark-munge-filenames (coding)
+  "Munge bookmark filenames."
+  (dolist (var (list "PROJ" "WSPATH"))
+    (when-let ((val (getenv var)))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward (concat "\\(" val "\\)") nil t)
+          (replace-match (concat "$" var) t))))))
 
-(defadvice bookmark-load (after my-bookmark-reseat activate)
-  (my-bookmark-reseat))
+(advice-add #'bookmark-insert-file-format-version-stamp :after #'my-bookmark-munge-filenames)
 
-(defadvice bookmark-write-file (after my-bookmark-to-shell activate)
+(defun my-bookmark-unmunge-filenames ()
+  "Unmunge bookmark filenames."
+  (dolist (var (list "PROJ" "WSPATH"))
+    (when-let ((val (getenv var)))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward (concat "\\([$]" var "\\)") nil t)
+          (replace-match val t))))))
+
+(advice-add #'bookmark-alist-from-buffer :before #'my-bookmark-unmunge-filenames)
+
+(defun my-bookmark-write-shell-bookmarks (file)
   "Convert bookmarks to format zsh and tcsh (yuck!) can use."
-  (let (name filename)
-    (with-temp-buffer
-      (dolist (bmk bookmark-alist)
-        (setq name (bookmark-name-from-full-record bmk)
-              filename (bookmark-get-filename bmk))
-        (unless (file-directory-p filename)
-          (setq filename (file-name-directory filename)))
-        (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
-          (insert "hash -d " name "=" filename)
-          (delete-char -1)
-          (newline)))
-      (write-file "~/.zsh_bmk")
-      (erase-buffer)
-      (dolist (bmk bookmark-alist)
-        (setq name (bookmark-name-from-full-record bmk)
-              filename (bookmark-get-filename bmk))
-        (unless (file-directory-p filename)
-          (setq filename (file-name-directory filename)))
-        (unless (string-match "[^a-zA-Z0-9_.~/]" name)
-          (insert "set " name "=" filename)
-          (delete-char -1)
-          (newline)))
-      (write-file "~/.cshrc_bmk"))))
+  (my-bookmark-write-shell-bookmark "hash -d " "~/.zsh_bmk")
+  (my-bookmark-write-shell-bookmark "set " "~/.cshrc_bmk"))
 
-(my-bookmark-reseat)
+(defun my-bookmark-write-shell-bookmark (line-prefix bmk-filename)
+  "Write a shell bookmark file using line-prefix."
+    (with-temp-buffer
+      (let (name filename)
+        (dolist (bmk bookmark-alist)
+          (setq name (bookmark-name-from-full-record bmk)
+                filename (bookmark-get-filename bmk))
+          (unless (file-directory-p filename)
+            (setq filename (file-name-directory filename)))
+          (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
+            (dolist (var (list "PROJ" "WSPATH"))
+              (when-let ((val (getenv var)))
+                (setq filename (replace-regexp-in-string val (concat "$" var) filename t))))
+            (insert line-prefix name "=" filename)
+            (delete-char -1)
+            (newline))))
+      (write-file bmk-filename)))
+
+(advice-add #'bookmark-write-file :after #'my-bookmark-write-shell-bookmarks)
+
+(my-bookmark-reload)
 
 (provide 'my-bookmark)
