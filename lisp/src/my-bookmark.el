@@ -58,6 +58,4 @@
 
 (advice-add #'bookmark-write-file :after #'my-bookmark-write-shell-bookmarks)
 
-(my-bookmark-reload)
-
 (provide 'my-bookmark)

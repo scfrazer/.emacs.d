@@ -36,6 +36,7 @@
 (bind-keys*("C-j" . my-avy-goto))
 
 (require 'my-bookmark)
+(my-bookmark-reload)
 
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
