@@ -28,7 +28,8 @@
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward (concat "\\([$]" var "\\)") nil t)
-          (replace-match val t))))))
+          (replace-match val t)))))
+  (set-buffer-modified-p nil))
 
 (advice-add #'bookmark-alist-from-buffer :before #'my-bookmark-unmunge-filenames)
 
