@@ -605,9 +605,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :mode (("\\.aop\\'" . sv-mode)
          ("\\.sv\\'" . sv-mode)
          ("\\.sva\\'" . sv-mode)
-         ("\\.svh\\'" . sv-mode)
-         ("\\.v\\'" . sv-mode)
-         ("\\.vh\\'" . sv-mode))
+         ("\\.svh\\'" . sv-mode))
   :config
   (require 'my-sv-mode))
 
@@ -645,6 +643,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq vc-handled-backends '(Git))
   :config
   (require 'my-vc))
+
+(use-package verilog-mode
+  :mode (("\\.v\\'" . verilog-mode)
+         ("\\.vh\\'" . verilog-mode))
+  :config
+  (require 'my-verilog-mode))
 
 (use-package visual-regexp
   :commands (vr/query-replace)
