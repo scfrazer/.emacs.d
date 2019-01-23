@@ -1,5 +1,22 @@
 ;;; my-verilog-mode.el
 
+(setq-default verilog-active-low-regexp ".+_n$"
+              verilog-auto-endcomments nil
+              verilog-auto-indent-on-newline nil
+              verilog-auto-inst-dot-name t
+              verilog-auto-inst-interfaced-ports t
+              verilog-auto-newline nil
+              verilog-case-indent 4
+              verilog-cexp-indent 4
+              verilog-highlight-grouping-keywords t
+              verilog-indent-level 4
+              verilog-indent-level-behavioral 4
+              verilog-indent-level-declaration 4
+              verilog-indent-level-directive 0
+              verilog-indent-level-module 4)
+
+(require 'verilog-mode)
+
 ;; ;;; Enhancements to verilog-mode
 ;;
 ;; (unless (fboundp 'hs-special-modes-alist)

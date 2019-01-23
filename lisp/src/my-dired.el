@@ -27,7 +27,8 @@
  'dired-mode
  '(("^. [0-9 	]*-..\\(x\\|...x\\|......x\\)[^:]" (".+" (dired-move-to-filename) nil (0 font-lock-variable-name-face)))
    ("[.]log$" (".+" (dired-move-to-filename) nil (0 'my-dired-debug-face)))
-   ("~\\|#\\|\\([.]\\(d\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))))
+   ("~\\|#\\|\\([.]\\(d\\|orig\\|keep\\(\.[0-9]+\\)?\\|contrib\\(\.[0-9]+\\)?\\)$\\)" (".+" (dired-move-to-filename) nil (0 font-lock-comment-face))))
+ 'append)
 
 ;; Find marked files in dired, but don't display all at once
 
