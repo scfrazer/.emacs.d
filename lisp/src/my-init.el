@@ -166,7 +166,7 @@
     (define-key asm-mode-map (kbd "C-j") nil)
     (define-key asm-mode-map (kbd "C-m") nil)
     (define-key asm-mode-map (kbd "TAB") 'asm-indent-line)
-    (setq-default asm-comment-char ?@)
+    (setq-default asm-comment-char ?\;)
     (defun my-asm-mode-hook ()
       ;;(setq-local tab-stop-list '(3 11))
       )

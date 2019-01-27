@@ -368,9 +368,13 @@
 ;;         )
 ;;       "Verilog port helper functions")
 
+(define-key verilog-mode-map (kbd ":") nil)
+(define-key verilog-mode-map (kbd ";") nil)
+(define-key verilog-mode-map (kbd "RET") nil)
+(define-key verilog-mode-map (kbd "TAB") nil)
+(define-key verilog-mode-map (kbd "`") nil)
+
 (defun my-verilog-mode-hook ()
-  ;; (define-key verilog-mode-map "\M-*" nil)
-  ;; (define-key verilog-mode-map ":" nil)
   ;; (modify-syntax-entry ?` ".")
   ;; (setq imenu-generic-expression nil)
   ;; (setq imenu-create-index-function 'verilog-imenu-create-index-function)
