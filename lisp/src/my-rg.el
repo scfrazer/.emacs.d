@@ -7,6 +7,7 @@
 
 (rg-define-toggle "-uu" "u")
 (rg-define-toggle "--word-regexp" "w")
+(rg-define-toggle "-z" "z")
 
 (defun my-rg-toggle-group ()
   "Toggle grouping and rerun."
@@ -107,6 +108,10 @@ If FULL-COMMAND specifies if the full command line search was done."
              (rg-header-render-label "unrestricted")
              (my-rg-header-render-toggle
               `(member "-uu" (rg-search-toggle-flags ,search)))
+             itemspace
+             (rg-header-render-label "zip")
+             (my-rg-header-render-toggle
+              `(member "-z" (rg-search-toggle-flags ,search)))
              itemspace
              (rg-header-render-label "hits")
              '(:eval (format "%d" rg-hit-count)))))))
