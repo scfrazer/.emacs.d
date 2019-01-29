@@ -304,60 +304,60 @@
 ;;       (setq final-alist (verilog-imenu-create-add-item-alist "Modules" module-alist final-alist)))
 ;;     final-alist))
 ;;
-;; ;;; Align
-;;
-;; (require 'align)
-;;
-;; (defcustom align-verilog-rules-list
-;;   `(
-;;     (verilog-declaration
-;;      (regexp . "\\(logic\\|input\\|output\\|inout\\|wire\\|reg\\)\\(\\s-+[[][^]]+[]]\\|\\)\\(\\s-+\\)\\S-")
-;;      (group . (3)))
-;;
-;;     (verilog-asgn_param
-;;      (regexp . "\\(assign\\|parameter\\)\\(\\s-+\\)\\S-")
-;;      (group . (2)))
-;;
-;;     (verilog-assign
-;;      (regexp . "\\S-+\\(\\s-*\\)[!=><]+\\(\\s-*\\)\\S-")
-;;      (group . (1 2)))
-;;
-;;     (verilog-ports-no-comment
-;;      (regexp . "[.][a-zA-Z0-9_]+\\(\\s-+\\)\\S-")
-;;      (group . (1)))
-;;
-;;     (verilog-ports-comment
-;;      (regexp . "[.][a-zA-Z0-9_]+\\(\\s-+\\)\\S-.*\\(\\s-+\\)[/]+")
-;;      (group . (1 2)))
-;;     )
-;;   "Verilog alignment rules."
-;;   :type align-rules-list-type
-;;   :group 'align)
-;;
-;; (defcustom align-exclude-verilog-rules-list
-;;   `(
-;;     (exc-dq-string
-;;      (regexp . "\"\\([^\"\n]+\\)\"")
-;;      (repeat . t)
-;;      (modes . align-dq-string-modes))
-;;
-;;     (exc-open-comment
-;;      (regexp . ,(function (lambda (end reverse)
-;;         (funcall (if reverse 're-search-backward 're-search-forward)
-;;                  (concat "[^ \t\n\\\\]" (regexp-quote comment-start)
-;;                          "\\(.+\\)$") end t))))
-;;      (modes . align-open-comment-modes))
-;;     )
-;;   "Verilog alignment exclusion rules."
-;;   :type align-exclude-rules-list-type
-;;   :group 'align)
-;;
-;; (put 'align-verilog-rules-list 'risky-local-variable t)
-;; (put 'align-exclude-verilog-rules-list 'risky-local-variable t)
-;;
-;; (add-to-list 'align-dq-string-modes 'verilog-mode)
-;; (add-to-list 'align-open-comment-modes 'verilog-mode)
-;;
+;;; Align
+
+(require 'align)
+
+(defcustom align-verilog-rules-list
+  `(
+    (verilog-declaration
+     (regexp . "\\(logic\\|input\\|output\\|inout\\|wire\\|reg\\)\\(\\s-+[[][^]]+[]]\\|\\)\\(\\s-+\\)\\S-")
+     (group . (3)))
+
+    (verilog-asgn_param
+     (regexp . "\\(assign\\|parameter\\)\\(\\s-+\\)\\S-")
+     (group . (2)))
+
+    (verilog-assign
+     (regexp . "\\S-+\\(\\s-*\\)[!=><]+\\(\\s-*\\)\\S-")
+     (group . (1 2)))
+
+    (verilog-ports-no-comment
+     (regexp . "[.][a-zA-Z0-9_]+\\(\\s-+\\)\\S-")
+     (group . (1)))
+
+    (verilog-ports-comment
+     (regexp . "[.][a-zA-Z0-9_]+\\(\\s-+\\)\\S-.*\\(\\s-+\\)[/]+")
+     (group . (1 2)))
+    )
+  "Verilog alignment rules."
+  :type align-rules-list-type
+  :group 'align)
+
+(defcustom align-exclude-verilog-rules-list
+  `(
+    (exc-dq-string
+     (regexp . "\"\\([^\"\n]+\\)\"")
+     (repeat . t)
+     (modes . align-dq-string-modes))
+
+    (exc-open-comment
+     (regexp . ,(function (lambda (end reverse)
+        (funcall (if reverse 're-search-backward 're-search-forward)
+                 (concat "[^ \t\n\\\\]" (regexp-quote comment-start)
+                         "\\(.+\\)$") end t))))
+     (modes . align-open-comment-modes))
+    )
+  "Verilog alignment exclusion rules."
+  :type align-exclude-rules-list-type
+  :group 'align)
+
+(put 'align-verilog-rules-list 'risky-local-variable t)
+(put 'align-exclude-verilog-rules-list 'risky-local-variable t)
+
+(add-to-list 'align-dq-string-modes 'verilog-mode)
+(add-to-list 'align-open-comment-modes 'verilog-mode)
+
 ;;  ;;; Hook
 ;;
 ;; (defvar verilog-port-menu
@@ -368,6 +368,11 @@
 ;;         )
 ;;       "Verilog port helper functions")
 
+(defun my-verilog-mode-auto-inst ()
+  "Auto-inst stuff."
+  (interactive)
+  (verilog-auto-inst))
+
 (define-key verilog-mode-map (kbd ":") nil)
 (define-key verilog-mode-map (kbd ";") nil)
 (define-key verilog-mode-map (kbd "RET") nil)
@@ -375,12 +380,11 @@
 (define-key verilog-mode-map (kbd "`") nil)
 
 (defun my-verilog-mode-hook ()
-  ;; (modify-syntax-entry ?` ".")
+  (modify-syntax-entry ?` ".")
   ;; (setq imenu-generic-expression nil)
   ;; (setq imenu-create-index-function 'verilog-imenu-create-index-function)
-  ;; (setq align-mode-rules-list align-verilog-rules-list)
-  ;; (setq align-exclude-rules-list align-exclude-verilog-rules-list)
-  )
+  (setq align-mode-rules-list align-verilog-rules-list)
+  (setq align-exclude-rules-list align-exclude-verilog-rules-list))
 
 (add-hook 'verilog-mode-hook 'my-verilog-mode-hook)
 
