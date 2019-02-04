@@ -2,6 +2,7 @@
 
 (require 'sv-mode)
 (require 'quick-edit)
+(require 'my-verilog-mode)
 
 (defun my-sv-mode-expand-reg ()
   "Expand register definition."
@@ -148,9 +149,17 @@ With prefix argument, add a condition."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(dolist (rule (reverse align-verilog-rules-list))
+  (add-to-list 'sv-mode-align-rules-list rule))
+(dolist (rule (reverse align-exclude-verilog-rules-list))
+  (add-to-list 'sv-mode-align-exclude-rules-list rule))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
+  ;; (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
+  (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))

@@ -602,10 +602,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (require 'my-speedbar))
 
 (use-package sv-mode
-  :mode (("\\.aop\\'" . sv-mode)
-         ("\\.sv\\'" . sv-mode)
+  :mode (("\\.sv\\'" . sv-mode)
+         ("\\.svh\\'" . sv-mode)
          ("\\.sva\\'" . sv-mode)
-         ("\\.svh\\'" . sv-mode))
+         ("\\.v\\'" . sv-mode)
+         ("\\.vh\\'" . sv-mode))
   :config
   (require 'my-sv-mode))
 
@@ -644,11 +645,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (require 'my-vc))
 
-(use-package verilog-mode
-  :mode (("\\.v\\'" . verilog-mode)
-         ("\\.vh\\'" . verilog-mode))
-  :config
-  (require 'my-verilog-mode))
+;; (use-package verilog-mode
+;;   :mode (("\\.v\\'" . verilog-mode)
+;;          ("\\.vh\\'" . verilog-mode))
+;;   :config
+;;   (require 'my-verilog-mode))
 
 (use-package visual-regexp
   :commands (vr/query-replace)
@@ -1985,6 +1986,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
+ ("C-x a"       . align)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
