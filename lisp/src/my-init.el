@@ -138,7 +138,8 @@
 
 (use-package align
   :bind* (("C-c A" . align-regexp)
-          ("C-c a" . my-align))
+          ("C-c a" . align)
+          ("C-x a" . my-align))
   :config
   (progn
     (defun my-align ()
@@ -635,7 +636,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (kill-buffer))))
 
 (use-package my-tmux
-  :bind* (("M-c" . my-tmux-iterm-copy)
+  :bind* (;;("M-c" . my-tmux-iterm-copy)
           ("M-t" . my-tmux-copy)))
 
 (use-package vc
@@ -1460,7 +1461,8 @@ and copied through iTerm2 to clipboard."
       (when (getenv "TMUX")
         (require 'my-tmux)
         (my-tmux-copy-text filename)
-        (my-tmux-iterm-copy-text filename))
+        ;;(my-tmux-iterm-copy-text filename)
+        )
       (message filename))))
 
 (defun my-prettify ()
@@ -1986,7 +1988,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . (lambda () (interactive) (my-window-resize t)))
- ("C-x a"       . align)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
