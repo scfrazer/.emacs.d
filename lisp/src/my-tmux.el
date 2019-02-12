@@ -41,29 +41,29 @@ prefix arg, copy region."
               "\\\"" "\"'\"'\""
               (replace-regexp-in-string
                "!" "\\\\!"
-               (replace-regexp-in-string "\n" "\\\\\n" text)))))) nil 0))
+               (replace-regexp-in-string "\n" "\\\\\n" text))))))
+   nil 0))
 
-;; (defun my-tmux-iterm-copy (&optional arg)
-;;   "Copy last kill to clipboard through tmux and iterm.  With
-;; active region or prefix arg, copy region."
-;;   (interactive "P")
-;;   (let ((use-region (or arg (use-region-p))))
-;;     (my-tmux-iterm-copy-text
-;;      (if use-region
-;;          (buffer-substring-no-properties (region-beginning) (region-end))
-;;        (substring-no-properties (current-kill 0 t))))
-;;     (if use-region
-;;         (progn
-;;           (when (use-region-p)
-;;             (deactivate-mark))
-;;           (message "Copied region to clipboard"))
-;;       (message "Copied last kill to clipboard"))))
-;; 
-;; (defun my-tmux-iterm-copy-text (text)
-;;   "Copy text to clipboard through tmux and iterm"
-;;   (interactive)
-;;   (send-string-to-terminal
-;;    (format "\033Ptmux;\033\033]50;CopyToClipboard\007%s\033\033]50;EndCopy\007\033\\" text))
-;;   (redraw-display))
+(defun my-tmux-term-copy (&optional arg)
+  "Copy last kill to clipboard through tmux and terminal.  With
+active region or prefix arg, copy region."
+  (interactive "P")
+  (let ((use-region (or arg (use-region-p))))
+    (my-tmux-term-copy-text
+     (if use-region
+         (buffer-substring-no-properties (region-beginning) (region-end))
+       (substring-no-properties (current-kill 0 t))))
+    (if use-region
+        (progn
+          (when (use-region-p)
+            (deactivate-mark))
+          (message "Copied region to clipboard"))
+      (message "Copied last kill to clipboard"))))
+
+(defun my-tmux-term-copy-text (text)
+  "Copy text to clipboard through tmux and iterm"
+  (interactive)
+  (send-string-to-terminal (format "\033Ptmux;\033\033]52;c;%s\a\033\\" (base64-encode-string text t)))
+  (redraw-display))
 
 (provide 'my-tmux)

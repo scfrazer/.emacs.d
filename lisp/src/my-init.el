@@ -169,8 +169,7 @@
     (define-key asm-mode-map (kbd "TAB") 'asm-indent-line)
     (setq-default asm-comment-char ?\;)
     (defun my-asm-mode-hook ()
-      ;;(setq-local tab-stop-list '(3 11))
-      )
+      nil)
     (add-hook 'asm-mode-hook 'my-asm-mode-hook)))
 
 (use-package bm
@@ -239,6 +238,9 @@
 
 ;; (use-package expand-region
 ;;   :bind* (("C-M-@" . er/expand-region)))
+
+(use-package dump-mode
+  :mode (("\\.dump\\'" . dump-mode)))
 
 (use-package my-fd
   :bind* (("M-s F" . my-fd-project)
@@ -636,7 +638,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (kill-buffer))))
 
 (use-package my-tmux
-  :bind* (;;("M-c" . my-tmux-iterm-copy)
+  :bind* (("M-c" . my-tmux-term-copy)
           ("M-t" . my-tmux-copy)))
 
 (use-package vc

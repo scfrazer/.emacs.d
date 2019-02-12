@@ -42,7 +42,7 @@
   "Disable whitespace for this buffer."
   (or buffer-read-only
       (string-match "\\s-*\\*.+\\*" (buffer-name))
-      (member major-mode '(Info-mode))
+      (member major-mode '(Info-mode asm-mode dump-mode))
       (and (stringp (buffer-file-name))
            (string-match "\\(\.log\\|config_tree.txt\\|\.el\.gz\\)\\'" (buffer-file-name)))))
 
