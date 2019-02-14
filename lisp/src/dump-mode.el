@@ -23,7 +23,11 @@
      (1 'font-lock-function-name-face))
     ("^[0-9]+:.+"
      (0 'font-lock-comment-face))
-    ("^\\s-+\\([a-fA-F0-9]+\\):\\s-+\\(\\([a-fA-F0-9]+\\s-+\\)+\\)\\([a-zA-Z0-9_.]+\\)"
+    ("^\\s-+\\([a-fA-F0-9]+\\):\\s-+\\(\\([a-fA-F0-9]+\\s-+\\)+\\)\\('.+'\\)"
+     (1 'font-lock-string-face)
+     (2 'font-lock-builtin-face)
+     (4 'font-lock-string-face))
+    ("^\\s-+\\([a-fA-F0-9]+\\):\\s-+\\(\\([a-fA-F0-9]+\\s-+\\)+\\)\\([a-zA-Z_.][a-zA-Z0-9_.]+\\)"
      (1 'font-lock-string-face)
      (2 'font-lock-builtin-face)
      (4 'font-lock-keyword-face))
