@@ -26,6 +26,7 @@
  `(ediff-odd-diff-A               ((t :foreground "black" :background ,(smf-color 253))))
  `(error                          ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
  `(flymake-error                  ((t :background "mistyrose")))
+ `(flymake-note                   ((t :background "thistle1")))
  `(flymake-warning                ((t :background "lightyellow")))
  `(header-line                    ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
  `(isearch                        ((t :background "coral2" :foreground ,(smf-color 231))))
