@@ -10,7 +10,7 @@
 ;; (require 'my-clearcase)
 ;; (defvar clearcase-setview-viewtag)
 
-(when recentf-save-file
+(when (and recentf-save-file (executable-find "p4"))
   (setq recentf-save-file
         (convert-standard-filename
          (let ((ws (string-trim-right (shell-command-to-string "p4 -F %clientName% -ztag info"))))
