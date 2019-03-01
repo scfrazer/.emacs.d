@@ -30,7 +30,7 @@
  `(flymake-warning                ((t :background "lightyellow")))
  `(header-line                    ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
  `(isearch                        ((t :background "coral2" :foreground ,(smf-color 231))))
- `(lazy-highlight                 ((t :background "coral4" :foreground ,(smf-color 231))))
+ `(lazy-highlight                 ((t :background "cornsilk" :foreground "black")))
  `(link                           ((t :foreground ,(smf-color 26) :italic t :underline t)))
  `(link-visited                   ((t :foreground ,(smf-color 93) :italic t :underline t)))
  `(line-number                    ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))

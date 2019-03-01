@@ -1146,6 +1146,12 @@ or the region with prefix arg."
     (let ((current-prefix-arg nil))
       (call-interactively 'display-line-numbers-mode))))
 
+(defun my-dos-coding-system ()
+  "Change buffer coding system to DOS."
+  (interactive)
+  (let ((coding-system-for-read 'utf-8-dos))
+    (revert-buffer nil t)))
+
 (defun my-dos2unix ()
   "Remove ^M's from file."
   (interactive "*")
@@ -2099,6 +2105,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dark 'my-theme-dark)
+(defalias 'dos 'my-dos-coding-system)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fnd 'my-dired-find-name-dired)
