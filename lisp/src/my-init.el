@@ -2122,6 +2122,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tdoe 'toggle-debug-on-error)
 (defalias 'theme 'my-theme)
 (defalias 'theme-off 'my-theme-disable-all)
+(defalias 'tmux (lambda () (interactive) (find-file (expand-file-name "~/.tmux.history"))))
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
