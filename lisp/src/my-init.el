@@ -1469,8 +1469,7 @@ and copied through iTerm2 to clipboard."
       (when (getenv "TMUX")
         (require 'my-tmux)
         (my-tmux-copy-text filename)
-        ;;(my-tmux-iterm-copy-text filename)
-        )
+        (my-tmux-term-copy-text filename))
       (message filename))))
 
 (defun my-prettify ()
