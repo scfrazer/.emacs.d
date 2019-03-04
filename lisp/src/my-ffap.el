@@ -37,6 +37,10 @@
       (goto-char (point-min))
       (while (re-search-forward "[$(){}]" nil t)
         (replace-match ""))
+      ;; Perforce paths
+      (goto-char (point-min))
+      (when (and (looking-at "//") (getenv "WSPATH"))
+        (replace-match (concat (getenv "WSPATH") "/")))
       ;; Map DOS drives into WSL paths
       (goto-char (point-min))
       (while (re-search-forward "^\\([a-zA-Z]\\):" nil t)
