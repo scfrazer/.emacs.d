@@ -14,7 +14,7 @@
   (if (null arg)
       (call-interactively 'avy-goto-line)
     (avy-with avy-goto-char
-      (avy--generic-jump "\n" nil avy-style))))
+      (avy-jump "\n"))))
 
 (defun my-avy-goto (char)
   "Jump to CHAR at a word start, or string if C-k, or BOL if C-l, or EOL if C-m."
@@ -47,7 +47,7 @@
                  (let ((table (copy-syntax-table (syntax-table))))
                    (modify-syntax-entry ?$ "." table)
                    (with-syntax-table table
-                     (avy--generic-jump regex nil avy-style)))
-               (avy--generic-jump regex nil avy-style)))))))
+                     (avy-jump regex)))
+               (avy-jump regex)))))))
 
 (provide 'my-avy)
