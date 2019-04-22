@@ -829,7 +829,7 @@ own function.  This function can be called through abbrevs."
     (when matched
       (cond
        ;; Case
-       ((looking-at "case")
+       ((looking-at "case[xz]?")
         (forward-sexp 2))
        ;; Macros without semicolons
        ((looking-at sv-mode-macros-without-semi-regexp)
@@ -2254,7 +2254,7 @@ Key Bindings:
   (setq sv-mode-begin-regexp
         (concat "\\_<\\("
                 (regexp-opt
-                 (append (list "begin" "case" "class" "clocking" "config" "fork"
+                 (append (list "begin" "case" "casex" "casez" "class" "clocking" "config" "fork"
                                "function" "generate" "covergroup" "interface" "module"
                                "package" "primitive" "program" "property" "randsequence"
                                "specify" "sequence" "table" "task"
@@ -2332,7 +2332,7 @@ Key Bindings:
 
   (setq sv-mode-begin-end-regexp (concat sv-mode-begin-regexp "\\|" sv-mode-end-regexp))
 
-  (setq sv-mode-bos-regexp (concat "[;})]\\|\\_<\\(begin\\|fork\\|do\\|case\\)\\_>\\|"
+  (setq sv-mode-bos-regexp (concat "[;})]\\|\\_<\\(begin\\|fork\\|do\\|case[xz]?\\)\\_>\\|"
                                    (regexp-opt '("`define" "`else" "`elsif"
                                                  "`endif" "`ifdef" "`ifndef"
                                                  "`include" "`timescale" "`undef")) ".*\\|"

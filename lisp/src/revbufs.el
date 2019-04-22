@@ -65,7 +65,7 @@
                  (setq orphans (nconc orphans (list buf))))
                 ;; If file modified since buf visit, buf is either a conflict
                 ;; (if it's modified) or we should revert it.
-                ((not (verify-visited-file-modtime buf))
+                (t ;; (not (verify-visited-file-modtime buf))
                  (if (buffer-modified-p buf)
                      (setq conflicts (nconc conflicts (list buf)))
                    (with-current-buffer buf

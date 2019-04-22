@@ -376,17 +376,15 @@
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
 
-(use-package mc-edit-lines
-  :bind* (("M-r e" . mc/edit-lines))
+(use-package multiple-cursors
+  :bind* (("M-r E" . my-mc/mark-all-in-region)
+          ("M-r e" . mc/edit-lines))
   :config
   (progn
-    (setq mc/always-run-for-all t)
-    (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)))
-
-(use-package mc-mark-more
-  :bind* (("M-r E" . my-mc/mark-all-in-region))
-  :config
-  (progn
+    (defvar my-mc-mark nil)
+    (make-variable-buffer-local 'my-mc-mark)
+    (defvar my-mc-point nil)
+    (make-variable-buffer-local 'my-mc-point)
     (setq mc/always-run-for-all t)
     (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
     (defun my-mc/mark-all-in-region (beg end &optional search)
@@ -410,7 +408,18 @@
                 (mc/pop-state-from-overlay first)))
             (if (> (mc/num-cursors) 1)
                 (multiple-cursors-mode 1)
-              (multiple-cursors-mode 0))))))))
+              (multiple-cursors-mode 0))))))
+    (defun my-mc-save (&optional arg)
+      (setq my-mc-mark (mark t))
+      (setq my-mc-point (point-marker)))
+    (advice-add #'mc/edit-lines :before #'my-mc-save)
+    (advice-add #'my-mc/mark-all-in-region :before #'my-mc-save)
+    (defun my-mc-restore ()
+      (when (and my-mc-point (marker-position my-mc-point))
+        (goto-char my-mc-point))
+        (when my-mc-mark
+          (set-mark my-mc-mark)))
+    (add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)))
 
 (use-package nxml-mode
   :defer t
@@ -1553,15 +1562,26 @@ format."
         (setq start-at (string-to-number start-at))
         (unless (equal current-prefix-arg '(4))
           (setq format (read-string "Format string: " "%d")))))
-    (delete-extract-rectangle (region-beginning) (region-end))
-    (let ((start (mark))
-          (end (point)))
-      (if (< end start)
-          (progn
-            (setq rectangle-number-line-counter (+ (count-lines end start) start-at -1))
-            (apply-on-rectangle 'my-rectangle-reverse-number-line-callback end start format))
-        (setq rectangle-number-line-counter start-at)
-        (apply-on-rectangle 'rectangle-number-line-callback start end format)))))
+    (if (and (fboundp 'multiple-cursors-mode) multiple-cursors-mode)
+        (progn
+          (setq rectangle-number-line-counter start-at
+                rectangle-number-line-format format)
+          (mc/for-each-cursor-ordered
+           (mc/execute-command-for-fake-cursor 'my-rectangle-mc-callback cursor)))
+      (delete-extract-rectangle (region-beginning) (region-end))
+      (let ((start (mark))
+            (end (point)))
+        (if (< end start)
+            (progn
+              (setq rectangle-number-line-counter (+ (count-lines end start) start-at -1))
+              (apply-on-rectangle 'my-rectangle-reverse-number-line-callback end start format))
+          (setq rectangle-number-line-counter start-at)
+          (apply-on-rectangle 'rectangle-number-line-callback start end format))))))
+
+(defun my-rectangle-mc-callback ()
+  (interactive)
+  (insert (format rectangle-number-line-format rectangle-number-line-counter))
+  (setq rectangle-number-line-counter (1+ rectangle-number-line-counter)))
 
 (defun my-rectangle-reverse-number-line-callback (start _end format-string)
   (move-to-column start t)
@@ -2051,9 +2071,9 @@ Prefix with C-u to resize the `next-window'."
   (let ((proj (getenv "PROJ")))
     (when proj
       (setq etags-table-alist (list
-                               `(,(concat proj "/.+\\.svh?$") ,(concat proj "/tags/sv/TAGS"))
-                               `(,(concat proj "/.+\\.vh?$") ,(concat proj "/tags/v/TAGS"))
-                               `(,(concat proj "/.+\\.s$") ,(concat proj "/tags/v/TAGS"))
+                               `(,(concat proj "/.+\\.svh?$") ,(concat proj "/tags/sv/TAGS") ,(concat proj "/tags/v/TAGS"))
+                               `(,(concat proj "/.+\\.vh?$") ,(concat proj "/tags/v/TAGS") ,(concat proj "/tags/sv/TAGS"))
+                               `(,(concat proj "/.+\\.s$") ,(concat proj "/tags/v/TAGS") ,(concat proj "/tags/sv/TAGS"))
                                `(,(concat proj "/.+\\.[ch]$") ,(concat proj "/tags/c/TAGS"))
                                `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))
 

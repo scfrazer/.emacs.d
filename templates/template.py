@@ -5,6 +5,9 @@ import sys
 import re
 from argparse import ArgumentParser
 
+
+################################################################################
+
 def main():
 
     parser = ArgumentParser(description='TBD description')
@@ -30,6 +33,7 @@ def main():
                 print('->{}'.format(match.group('foo')))
 
         file_obj.close()
+
 
 ################################################################################
 
