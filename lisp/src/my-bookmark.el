@@ -8,7 +8,8 @@
 (defun my-bookmark-reload ()
   "Reload bookmarks"
   (interactive)
-  (bookmark-load bookmark-default-file t))
+  (when (file-exists-p bookmark-default-file)
+    (bookmark-load bookmark-default-file t)))
 
 (defun my-bookmark-munge-filenames (coding)
   "Munge bookmark filenames."
