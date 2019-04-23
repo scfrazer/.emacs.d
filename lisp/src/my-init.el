@@ -748,7 +748,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (show-paren-mode t)
 (delete-selection-mode t)
-(transient-mark-mode -1)
+;; (transient-mark-mode -1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (winner-mode 1)

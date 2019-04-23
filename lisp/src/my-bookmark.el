@@ -36,8 +36,8 @@
 
 (defun my-bookmark-write-shell-bookmarks (file)
   "Convert bookmarks to format zsh and tcsh (yuck!) can use."
-  (my-bookmark-write-shell-bookmark "hash -d " "~/.zsh_bmk")
-  (my-bookmark-write-shell-bookmark "set " "~/.cshrc_bmk"))
+  (my-bookmark-write-shell-bookmark "hash -d " "~/.zsh_bmk"))
+  ;; (my-bookmark-write-shell-bookmark "set " "~/.cshrc_bmk"))
 
 (defun my-bookmark-write-shell-bookmark (line-prefix bmk-filename)
   "Write a shell bookmark file using line-prefix."
