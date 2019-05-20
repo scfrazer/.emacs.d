@@ -5,5 +5,6 @@
 /lisp/src/vc_gen.el
 /lisp/vc_gen.elc
 auto-save-list
+elpa/gnupg
 tasks
 tramp
