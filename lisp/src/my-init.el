@@ -210,6 +210,15 @@
   ;; Add csh to magic interpreter modes
   (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
 
+(use-package deft
+  :bind* ("<f8>" . deft)
+  :commands (deft)
+  :config
+  (setq deft-auto-save-interval 0
+        deft-current-sort-method 'title
+        deft-directory "~/Documents/Org"
+        deft-extensions '("txt" "md" "org")))
+
 (use-package diff-mode
   :defer t
   :defines (diff-mode-shared-map)
@@ -370,8 +379,22 @@
 ;;           magit-repository-directories-depth 2)))
 
 (use-package markdown-mode
-  :mode (("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode)))
+  :commands (markdown-mode gfm-mode)
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
+  (progn
+    (setq markdown-fontify-code-blocks-natively t
+          markdown-hide-markup t
+          markdown-list-item-bullets '("•" "◦" "►"))
+    ;; TODO Header faces inherit from outline
+    ;; TODO Checkbox face bold
+    ;; TODO Code/pre/inline background light gray
+    ;; TODO Markdown list face color (ivory?)
+    ;; TODO Add task faces, and don't add regular TODO font-locking
+    ;; TODO Add function to set task state (maybe tie into C-c C-d?)
+    ;; TODO Keybinds ... maybe promote/demote/move/etc. as hydra?
+    ))
 
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
