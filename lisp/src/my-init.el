@@ -214,10 +214,10 @@
   :bind* ("<f8>" . deft)
   :commands (deft)
   :config
-  (setq deft-auto-save-interval 0
-        deft-current-sort-method 'title
-        deft-directory "~/Documents/Org"
-        deft-extensions '("txt" "md" "org")))
+  (setq-default deft-auto-save-interval 0
+                deft-current-sort-method 'title
+                deft-directory "~/Documents/Org"
+                deft-extensions '("txt" "md" "org")))
 
 (use-package diff-mode
   :defer t
@@ -384,15 +384,39 @@
          ("\\.markdown\\'" . markdown-mode))
   :config
   (progn
-    (setq markdown-fontify-code-blocks-natively t
-          markdown-hide-markup t
-          markdown-list-item-bullets '("•" "◦" "►"))
-    ;; TODO Header faces inherit from outline
-    ;; TODO Checkbox face bold
-    ;; TODO Code/pre/inline background light gray
-    ;; TODO Markdown list face color (ivory?)
-    ;; TODO Add task faces, and don't add regular TODO font-locking
-    ;; TODO Add function to set task state (maybe tie into C-c C-d?)
+    (setq-default markdown-fontify-code-blocks-natively t
+                  markdown-hide-markup t
+                  markdown-list-item-bullets '("•" "◦" "▪" "▫"))
+    (defconst my-markdown-task-keywords
+      '(("TODO"       . (0 '(:foreground "red3" :weight bold)))
+        ("STARTED"    . (0 '(:foreground "blue4" :weight bold)))
+        ("WAITING"    . (0 '(:foreground "darkorange3" :weight bold)))
+        ("DONE"       . (0 '(:foreground "green4" :weight bold)))
+        ("MAYBE"      . (0 '(:inherit font-lock-doc-face)))
+        ("SOMEDAY"    . (0 '(:inherit font-lock-doc-face)))
+        ("CANCELED"   . (0 '(:inherit font-lock-comment-face)))
+        ("REASSIGNED" . (0 '(:inherit font-lock-comment-face)))))
+    (font-lock-add-keywords 'gfm-mode my-markdown-task-keywords)
+    (font-lock-add-keywords 'markdown-mode my-markdown-task-keywords)
+    (defconst my-markdown-task-re ".*\\(TODO\\|STARTED\\|WAITING\\|DONE\\|MAYBE\\|SOMEDAY\\|CANCELED\\|REASSIGNED\\)")
+    (defun my-markdown-set-task-state ()
+      "Set the current task state."
+      (interactive)
+      (beginning-of-line)
+      (when (re-search-forward my-markdown-task-re (point-at-eol) t)
+        (backward-word)
+        (when-let ((state (ido-completing-read "Set task state:" '("TODO" "STARTED" "WAITING" "DONE" "MAYBE" "SOMEDAY" "CANCELED" "REASSIGNED"))))
+          (kill-word 1)
+          (insert state)
+          (backward-word))))
+    (defun my-markdown-do (orig-fun)
+      (interactive)
+      (if (save-excursion
+            (beginning-of-line)
+            (looking-at my-markdown-task-re))
+          (my-markdown-set-task-state)
+        (apply orig-fun '())))
+    (advice-add 'markdown-do :around #'my-markdown-do)
     ;; TODO Keybinds ... maybe promote/demote/move/etc. as hydra?
     ))
 

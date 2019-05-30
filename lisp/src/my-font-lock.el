@@ -61,7 +61,7 @@
   "Font-lock mode hook."
   (my-font-lock-whitespace-hook)
   (when (or (and comment-start font-lock-keywords
-                 (not (eq major-mode 'org-mode)))
+                 (not (member major-mode (list 'gfm-mode 'markdown-mode 'org-mode))))
             (eq major-mode 'dired-mode))
     (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
     (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
