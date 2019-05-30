@@ -387,6 +387,7 @@
     (setq-default markdown-fontify-code-blocks-natively t
                   markdown-hide-markup t
                   markdown-list-item-bullets '("•" "◦" "▪" "▫"))
+    ;; Task states
     (defconst my-markdown-task-keywords
       '(("TODO"       . (0 '(:foreground "red3" :weight bold)))
         ("STARTED"    . (0 '(:foreground "blue4" :weight bold)))
@@ -398,17 +399,19 @@
         ("REASSIGNED" . (0 '(:inherit font-lock-comment-face)))))
     (font-lock-add-keywords 'gfm-mode my-markdown-task-keywords)
     (font-lock-add-keywords 'markdown-mode my-markdown-task-keywords)
-    (defconst my-markdown-task-re ".*\\(TODO\\|STARTED\\|WAITING\\|DONE\\|MAYBE\\|SOMEDAY\\|CANCELED\\|REASSIGNED\\)")
+    (defconst my-markdown-task-states (mapcar #'car my-markdown-task-keywords))
+    (defconst my-markdown-task-re (concat ".*\\(" (string-join my-markdown-task-states "\\|") "\\)"))
     (defun my-markdown-set-task-state ()
       "Set the current task state."
       (interactive)
       (beginning-of-line)
       (when (re-search-forward my-markdown-task-re (point-at-eol) t)
         (backward-word)
-        (when-let ((state (ido-completing-read "Set task state:" '("TODO" "STARTED" "WAITING" "DONE" "MAYBE" "SOMEDAY" "CANCELED" "REASSIGNED"))))
+        (when-let ((state (ido-completing-read "Set task state:" my-markdown-task-states)))
           (kill-word 1)
           (insert state)
           (backward-word))))
+    ;; Have markdown-do learn about task states
     (defun my-markdown-do (orig-fun)
       (interactive)
       (if (save-excursion
@@ -417,6 +420,11 @@
           (my-markdown-set-task-state)
         (apply orig-fun '())))
     (advice-add 'markdown-do :around #'my-markdown-do)
+    ;; Always show header markup
+    (defun my-markdown-fontify-headings (orig-fun last)
+      (let ((markdown-hide-markup nil))
+        (apply orig-fun (list last))))
+    (advice-add 'markdown-fontify-headings :around #'my-markdown-fontify-headings)
     ;; TODO Keybinds ... maybe promote/demote/move/etc. as hydra?
     ))
 
