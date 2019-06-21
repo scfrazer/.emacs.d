@@ -26,7 +26,7 @@
 
 (defvar my-ido-doing-bookmark-dir nil)
 (defvar my-ido-exiting-with-slash nil)
-(defvar my-ido-env-vars-as-bookmarks (list "RESULTSDIR" "PROJ" "HOME_SJC" "VCS_HOME"))
+(defvar my-ido-env-vars-as-bookmarks (list "PROJECT_ROOT"))
 
 (defun my-ido-bookmark-jump (&optional arg)
   "Jump to bookmark using ido"

@@ -13,7 +13,7 @@
 
 (defun my-bookmark-munge-filenames (coding)
   "Munge bookmark filenames."
-  (dolist (var (list "PROJ" "WSPATH"))
+  (dolist (var (list "PROJECT_ROOT"))
     (when-let ((val (getenv var)))
       (save-excursion
         (goto-char (point-min))
@@ -24,7 +24,7 @@
 
 (defun my-bookmark-unmunge-filenames ()
   "Unmunge bookmark filenames."
-  (dolist (var (list "PROJ" "WSPATH"))
+  (dolist (var (list "PROJECT_ROOT"))
     (when-let ((val (getenv var)))
       (save-excursion
         (goto-char (point-min))
@@ -49,7 +49,7 @@
           (unless (file-directory-p filename)
             (setq filename (file-name-directory filename)))
           (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
-            (dolist (var (list "PROJ" "WSPATH"))
+            (dolist (var (list "PROJECT_ROOT"))
               (when-let ((val (getenv var)))
                 (setq filename (replace-regexp-in-string val (concat "$" var) filename t))))
             (insert line-prefix name "=" filename)

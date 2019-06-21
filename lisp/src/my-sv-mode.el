@@ -4,28 +4,6 @@
 (require 'quick-edit)
 (require 'my-verilog-mode)
 
-(defun my-sv-mode-expand-reg ()
-  "Expand register definition."
-  (interactive)
-  (back-to-indentation)
-  (let* ((orig (buffer-substring-no-properties (point) (point-at-eol)))
-         (pieces (split-string orig "[.]" t)))
-    (kill-region (point-at-bol) (point-at-eol))
-    (sv-mode-indent-line)
-    (when (string-match ".*/test/.*" (buffer-file-name))
-      (insert "csco_rmap_pkg::"))
-    (dolist (piece pieces)
-      (insert piece "_t::"))
-    (delete-char -2)
-    (insert " ")
-    (save-excursion
-      (insert (car (last pieces)) " = m_" (car pieces) "_rmap.")
-      (setq pieces (cdr pieces))
-      (dolist (piece pieces)
-        (insert "m_" piece "."))
-      (delete-char -1)
-      (insert ";"))))
-
 (defun my-sv-mode-bit-vector ()
   "Expand bit vector."
   (interactive)
@@ -158,7 +136,6 @@ With prefix argument, add a condition."
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  ;; (define-key sv-mode-map (kbd "C-c C-e") 'my-sv-mode-expand-reg)
   (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))

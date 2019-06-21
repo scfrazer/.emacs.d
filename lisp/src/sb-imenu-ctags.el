@@ -58,7 +58,7 @@
 ;; m  methods
 ;; p  packages
 
-;; ctags --c++-kinds=cdfmnpstuvx --extra=+q -x --sort=no -f- $PROJ/asic/shared/ver/chipdv/env/src/pktgen/sse_pkt_mon_lz.cpp
+;; ctags --c++-kinds=cdfmnpstuvx --extra=+q -x --sort=no -f- foo.cpp
 ;;
 ;; (defun my-create-index ()
 ;;   (let ((filename "/auto/asic-sjc-legacy/users/scfrazer/ws/scfrazer-sjc/scfrazer-lsp-sjc1/asic/shared/ver/chipdv/env/src/pktgen/sse_pkt_mon_lz.cpp")

@@ -2,14 +2,6 @@
 
 (setq vc-follow-symlinks t)
 
-(defvar my-location
-  (let ((location (getenv "LOCATION")))
-    (and location
-         (cond
-          ((string-equal "RTP" location) 'RTP)
-          ((string-equal "SJC" location) 'SJC)
-          ((string-equal "BGL" location) 'BGL)))))
-
 ;; Need these first
 
 (require 'cl-lib)
@@ -40,12 +32,6 @@
 
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
-
-;; (require 'my-clearcase)
-;; (when (boundp 'clearcase-prefix-map)
-;;   (bind-key* "C-x v" nil)
-;;   (bind-key* "C-x c" clearcase-prefix-map)
-;;   (bind-key "e" 'my-clearcase-edcs-edit clearcase-prefix-map))
 
 (require 'easy-escape)
 (setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
@@ -89,13 +75,9 @@
 (bind-keys* ("M-b" . jump-to-prev-pos))
 
 (require 'mode-fn)
-(mode-fn-map 'html 'org-mode 'org-export-as-html)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify-cc)
 (mode-fn-map 'tidy 'c-mode 'my-cc-mode-uncrustify-c)
-;; (mode-fn-map 'tidy 'cperl-mode 'my-perl-tidy)
-(mode-fn-map 'tidy 'java-mode 'my-java-mode-uncrustify)
 (mode-fn-map 'tidy 'perl-mode 'my-perl-tidy)
-;; (mode-fn-map 'tidy 'js2-mode 'web-beautify-js)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
 (mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
 
@@ -149,18 +131,6 @@
         (save-excursion
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
 
-;; (use-package ag2
-;;   :bind* (("M-s G" . ag2)
-;;           ("M-s g" . ag2-local))
-;;   :config
-;;   (progn
-;;     (require 'my-grep-ed)
-;;     (setq ag2-default-literal t
-;;           ag2-files-aliases-alist '(("dv" . "\\.(sv|svh|cpp|hpp)$")
-;;                                     ("rtl" . "\\.(s|v|vh)$")
-;;                                     ("web" . "\\.(js|php|html)$")))
-;;     (bind-key "C-x C-q" 'grep-ed-start ag2-mode-map)))
-
 (use-package asm-mode
   :config
   (progn
@@ -196,13 +166,6 @@
   :config
   (require 'my-cc-mode))
 
-;; (use-package cperl-mode
-;;   :defer t
-;;   :init
-;;   (defalias 'perl-mode 'cperl-mode)
-;;   :config
-;;   (require 'my-perl))
-
 (use-package csh-mode
   :mode (("\\.csh\\'" . csh-mode)
          ("\\.cshrc\\'" . csh-mode))
@@ -216,7 +179,7 @@
   :config
   (setq-default deft-auto-save-interval 0
                 deft-current-sort-method 'title
-                deft-directory "~/Documents/Org"
+                deft-directory "~/notes"
                 deft-extensions '("txt" "md" "org")))
 
 (use-package diff-mode
@@ -244,12 +207,6 @@
         (doxymacs-font-lock)))
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
     (add-hook 'sv-mode-hook 'doxymacs-mode)))
-
-;; (use-package expand-region
-;;   :bind* (("C-M-@" . er/expand-region)))
-
-(use-package dump-mode
-  :mode (("\\.dump\\'" . dump-mode)))
 
 (use-package my-fd
   :bind* (("M-s F" . my-fd-project)
@@ -297,9 +254,6 @@
     (require 'my-grep-ed)
     (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
 
-;; (use-package hide-region
-;;   :bind* ("C-x C-h" . hide-region-toggle))
-
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
 
@@ -328,11 +282,6 @@
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))
 
-;; (use-package js2-mode
-;;   :mode (("\\.js\\'" . js2-mode))
-;;   :config
-;;   (require 'my-js2-mode))
-
 (use-package less-css-mode
   :mode (("\\.less\\'" . less-css-mode))
   :config
@@ -357,12 +306,6 @@
           ("C-c d r"   . ll-debug-renumber))
   :config
   (require 'my-debug))
-
-(use-package lua-mode
-  :mode (("\\.lua\\'" . lua-mode))
-  :config
-  (setq lua-indent-level 4
-        lua-documentation-url "http://www.lua.org/manual/5.3/manual.html"))
 
 ;; (use-package magit
 ;;   :commands (magit-status)
@@ -491,11 +434,6 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
-(use-package org
-  :mode (("\\.org\\'" . org-mode))
-  :config
-  (require 'my-org))
-
 (use-package package
   :config
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")))
@@ -518,34 +456,6 @@
 (use-package perl-mode
   :config
   (require 'my-perl))
-
-(use-package php-mode
-  :mode (("\\.php\\'" . php-mode))
-  :config
-  (progn
-    (require 'flymake)
-    (defvar my-php-bin-dir
-      (cond
-       ((eq my-location 'RTP) "/nfs/ibunobackup2/scfrazer/local/php/bin")
-       ((eq my-location 'SJC) "/auto/vtt/www/prod/dev/local/bin")))
-    (defun flymake-php-init ()
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list (concat my-php-bin-dir "/php-lint") (list local-file))))
-    (defun my-php-tidy ()
-      "Run phpcbf on buffer."
-      (interactive "*")
-      (call-process-shell-command (concat my-php-bin-dir "/phpcbf --standard=VTT " (buffer-file-name)))
-      (revert-buffer nil t t)
-      (flymake-start-syntax-check))
-    (defun my-php-mode-hook ()
-      (font-lock-add-keywords nil '(("default" (0 'font-lock-keyword-face prepend))) 'add-to-end)
-      (when my-php-bin-dir
-        (flymake-mode 1)))
-    (add-hook 'php-mode-hook 'my-php-mode-hook)))
 
 (use-package python
   :defer t
@@ -601,19 +511,6 @@
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
-
-;; (use-package register-list
-;;   :defer t
-;;   :init
-;;   (defalias 'rl 'register-list)
-;;   :config
-;;   (require 'my-register-list))
-
-(use-package regman
-  :commands (regman regman-insert-register))
-
-(use-package restclient
-  :mode (("\\.rest\\'" . restclient-mode)))
 
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
@@ -677,30 +574,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (require 'my-sv-mode))
 
-(use-package sqlplus
-  :mode (("\\.sqp\\'" . sqlplus-mode))
-  :config
-  (require 'my-sql))
-
-(use-package term
-  :commands (my-term)
-  :config
-  (progn
-    (defun my-term ()
-      "Like `term', but use default shell without prompting."
-      (interactive)
-      (set-buffer
-       (make-term "terminal" (or explicit-shell-file-name
-                                 (getenv "ESHELL")
-                                 (getenv "SHELL")
-                                 "/bin/sh")))
-      (term-mode)
-      (term-char-mode)
-      (switch-to-buffer "*terminal*"))
-    (defadvice term-handle-exit (after my-term-handle-exit activate)
-      "Kill terminal buffer after exit."
-      (kill-buffer))))
-
 (use-package my-tmux
   :bind* (("M-c" . my-tmux-term-copy)
           ("M-t" . my-tmux-copy)))
@@ -711,12 +584,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq vc-handled-backends '(Git))
   :config
   (require 'my-vc))
-
-;; (use-package verilog-mode
-;;   :mode (("\\.v\\'" . verilog-mode)
-;;          ("\\.vh\\'" . verilog-mode))
-;;   :config
-;;   (require 'my-verilog-mode))
 
 (use-package visual-regexp
   :commands (vr/query-replace)
@@ -786,7 +653,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; TODO
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 (autoload 'compile "compile" nil t)
-;; (autoload 'cpl-mode "cpl-mode" nil t)
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
@@ -794,16 +660,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'json-mode "json-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
-(autoload 'rdl-mode "rdl-mode" nil t)
-(autoload 'rst-mode "rst" "reStructured Text Mode" t)
-(autoload 'specterx-mode "specterx-mode" "SpecterX mode" t)
-(autoload 'sse-log-mode "sse-log-mode" nil t)
-(autoload 'uvm-log-mode "uvm-log-mode" nil t)
-(autoload 'vsif-mode "vsif-mode" "VSIF mode" t)
 
 (show-paren-mode t)
 (delete-selection-mode t)
-;; (transient-mark-mode -1)
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (winner-mode 1)
@@ -817,7 +676,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               browse-kill-ring-highlight-current-entry nil
               browse-kill-ring-maximum-display-length 400
               browse-kill-ring-no-duplicates t
-              ;;               browse-kill-ring-separator "                                                                                "
               browse-kill-ring-separator "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
               browse-kill-ring-separator-face 'my-browse-kill-ring-separator-face
               browse-kill-ring-show-preview nil
@@ -875,7 +733,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               parens-require-spaces nil
               pulse-flag t
               redisplay-dont-pause t
-              rst-mode-lazy nil
               scroll-conservatively 10000
               scroll-error-top-bottom t
               scroll-margin 3
@@ -886,7 +743,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               switch-to-buffer-preserve-window-point 'already-displayed
               truncate-lines t
               truncate-partial-width-windows nil
-              user-mail-address (concat "<" (getenv "USER") "@cisco.com>")
+              user-mail-address (concat "<" (getenv "USER") "@microsoft.com>")
               visible-bell t
               warning-suppress-types (list '(undo discard-info))
               winner-boring-buffers (list "*Completions*" "*Help*" "*Apropos*" "*buffer-selection*")
@@ -900,22 +757,13 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (setq completion-ignored-extensions (delete ".bin" completion-ignored-extensions))
 (add-to-list 'completion-ignored-extensions ".d")
 
-;; (add-to-list 'auto-mode-alist '(".+/cm/.+/.+\\.pl\\'" . cpl-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*\\'" . makefile-mode))
 (add-to-list 'auto-mode-alist '("\\.bin\\'" . hexl-mode))
 (add-to-list 'auto-mode-alist '("\\.cfg\\'" . btext-mode))
 (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.rdlh?\\'" . rdl-mode))
-(add-to-list 'auto-mode-alist '("\\.s\\'" . specterx-mode))
-(add-to-list 'auto-mode-alist '("\\.sdc\\'" . tcl-mode))
-(add-to-list 'auto-mode-alist '("\\.signature\\'" . hexl-mode))
-(add-to-list 'auto-mode-alist '("\\.vsif\\'" . vsif-mode))
-(add-to-list 'auto-mode-alist '("\\.xdc\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.zsh.*\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
-(add-to-list 'auto-mode-alist '("dve_gui.log\\'" . uvm-log-mode))
-(add-to-list 'auto-mode-alist '("run.log\\'" . uvm-log-mode))
 
 ;; Comments
 
@@ -924,7 +772,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               comment-empty-lines t
               comment-fill-column 120
               comment-style 'my-style)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -1991,7 +1838,6 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'next-error-hook 'my-next-error-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
-(add-hook 'uvm-log-mode-hook 'my-word-wrap-on-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; After loads
@@ -2010,9 +1856,6 @@ Prefix with C-u to resize the `next-window'."
      (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
-     ;; (add-to-list 'file-template-mapping-alist '("\\.js$" . "template.js"))
-     (add-to-list 'file-template-mapping-alist '("\\.php$" . "template.php"))
-     (add-to-list 'file-template-mapping-alist '("\\.s$" . "template.s"))
      (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
      (add-to-list 'file-template-mapping-alist '("\\.svh$" . "template.svh"))
@@ -2111,59 +1954,12 @@ Prefix with C-u to resize the `next-window'."
 (bind-key* "C-c h I" 'info-apropos)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Cisco setup
+;; Work setup
 
-(when (or (eq my-location 'RTP)
-          (eq my-location 'SJC)
-          (eq my-location 'BGL))
-
-  ;; (require 'vcs-compile)
-  ;; (add-to-list 'vcs-compile-command-list "q aurora_targ_build_chipSicu")
-  ;; (add-to-list 'my-compile-command "q lsq_compile_src_chipdv")
-
-  (require 'rel-log-mode)
-
-  (let ((proj (getenv "PROJ")))
-    (when proj
-      (setq etags-table-alist (list
-                               `(,(concat proj "/.+\\.svh?$") ,(concat proj "/tags/sv/TAGS") ,(concat proj "/tags/v/TAGS"))
-                               `(,(concat proj "/.+\\.vh?$") ,(concat proj "/tags/v/TAGS") ,(concat proj "/tags/sv/TAGS"))
-                               `(,(concat proj "/.+\\.s$") ,(concat proj "/tags/v/TAGS") ,(concat proj "/tags/sv/TAGS"))
-                               `(,(concat proj "/.+\\.[ch]$") ,(concat proj "/tags/c/TAGS"))
-                               `(,(concat proj "/.+\\.[ch]pp$") ,(concat proj "/tags/cpp/TAGS"))))
-
-      (require 'project)
-      (defun my-project-find (dir)
-        (cons 'vc (getenv "PROJ")))
-      (add-to-list 'project-find-functions #'my-project-find)))
-
-  ;; (defun dv-lint ()
-  ;;   (interactive)
-  ;;   (compilation-mode)
-  ;;   (hl-line-mode 1)
-  ;;   (set (make-local-variable 'compilation-error-regexp-alist)
-  ;;        (list '("^.+\\s-+line:\\s-+\\([0-9]+\\)\\s-+in file:\\s-+\\([^ \t\n]+\\)" 2 1))))
-
-  (eval-after-load "ll-debug"
-    '(progn
-       (ll-debug-register-mode 'c++-mode
-                               "dvc_info(" ");"
-                               '(nil "\"" (ll-debug-create-next-debug-string) "\\n\")")
-                               '(nil "\"" (ll-debug-create-next-debug-string) " (" (ll-debug-get-c++-function-name) ")"
-                                     ("Variable name: "
-                                      "  " str "="
-                                      '(progn
-                                         (if v1
-                                             (setq v1 (concat v1 ", " str))
-                                           (setq v1 str))
-                                         nil)
-                                      (let ((fmt (read-string "Format: ")))
-                                        (cond
-                                         ((string= (downcase fmt) "x")
-                                          (concat "0x%" fmt))
-                                         (t
-                                          (concat "%" fmt)))))
-                                     (if v1 "\\n\", " "\\n\"") v1)))))
+(require 'project)
+(defun my-project-find (dir)
+  (cons 'vc (getenv "PROJECT_ROOT")))
+(add-to-list 'project-find-functions #'my-project-find)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
@@ -2186,7 +1982,6 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'file 'my-put-file-name-on-clipboard)
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
-(defalias 'hli 'highlight-indentation-mode)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
 (defalias 'light 'my-theme-light)
@@ -2202,9 +1997,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tmux (lambda () (interactive) (find-file (expand-file-name "~/.tmux.history"))))
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
-(defalias 'vc_gen (lambda () (interactive) (require 'vc_gen)))
-(defalias 'vtt (lambda () (interactive) (require 'vtt)))
-(defalias 'work (lambda () (interactive) (find-file (expand-file-name "/users/scfrazer/Documents/Org/Work.org"))))
+(defalias 'work (lambda () (interactive) (find-file (expand-file-name "/users/scfrazer/notes/todo.md"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup

@@ -28,9 +28,7 @@
   "Current buffer marker face."
   :group 'faces)
 
-(defvar my-ibuffer-vc-regexp (regexp-opt (list "*cc-status"
-                                               "*clearcase-config-spec"
-                                               "*magit:"
+(defvar my-ibuffer-vc-regexp (regexp-opt (list "*magit:"
                                                "*git-simple:"
                                                "*p4o")))
 
@@ -38,7 +36,6 @@
                                                  "*Find"
                                                  "*Man"
                                                  "*Occur"
-                                                 "*ag"
                                                  "*calculator"
                                                  "*compilation"
                                                  "*grep"
@@ -47,10 +44,9 @@
                                                  "*scratch"
                                                  "*shell"
                                                  "*terminal"
-                                                 "*regman"
-                                                 "*vcs-compile")))
+                                                 )))
 
-(defvar my-ibuffer-env-vars-as-bookmarks (list "RESULTSDIR" "PROJ" "HOME_SJC" "VCS_HOME"))
+(defvar my-ibuffer-env-vars-as-bookmarks (list "PROJECT_ROOT"))
 (defvar my-ibuffer-bookmark-subs nil)
 
 (defun my-ibuffer-build-bookmark-subs ()
@@ -151,7 +147,7 @@
 
 (defun my-ibuffer-workspace-files ()
   "Filter to match files in a workspace"
-  (let ((proj (getenv "PROJ"))
+  (let ((proj (getenv "PROJECT_ROOT"))
         (filename (buffer-file-name)))
     (and proj
          filename
