@@ -2,7 +2,7 @@
 
 (require 'sv-mode)
 (require 'quick-edit)
-(require 'my-verilog-mode)
+;; (require 'my-verilog-mode)
 
 (defun my-sv-mode-bit-vector ()
   "Expand bit vector."
@@ -136,7 +136,7 @@ With prefix argument, add a condition."
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
+  ;; (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))

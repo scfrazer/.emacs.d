@@ -363,6 +363,12 @@
           (my-markdown-set-task-state)
         (apply orig-fun '())))
     (advice-add 'markdown-do :around #'my-markdown-do)
+    (defconst markdown-regex-header
+      "^\\(?:\\([^\r\n\t -].*\\)\n\\(?:\\(=+\\)\\|\\(-+\\)\\)\\|\\(#+[ \t]*\\)\\(.*?\\)\\([ \t]*#*\\)\\)$"
+      "Allow space after #")
+    (defconst markdown-regex-header-atx
+      "^\\(#+\\)[ \t]*\\(.*?\\)[ \t]*\\(#*\\)$"
+      "Allow space after #")
     ;; Always show header markup
     (defun my-markdown-fontify-headings (orig-fun last)
       (let ((markdown-hide-markup nil))
@@ -1959,7 +1965,7 @@ Prefix with C-u to resize the `next-window'."
 (require 'project)
 (defun my-project-find (dir)
   (cons 'vc (getenv "PROJECT_ROOT")))
-(add-to-list 'project-find-functions #'my-project-find)))
+(add-to-list 'project-find-functions #'my-project-find)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
