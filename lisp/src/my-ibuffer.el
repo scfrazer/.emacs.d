@@ -46,7 +46,7 @@
                                                  "*terminal"
                                                  )))
 
-(defvar my-ibuffer-env-vars-as-bookmarks (list "PROJECT_ROOT"))
+(defvar my-ibuffer-env-vars-as-bookmarks (list "WORKSPACE"))
 (defvar my-ibuffer-bookmark-subs nil)
 
 (defun my-ibuffer-build-bookmark-subs ()
@@ -147,7 +147,7 @@
 
 (defun my-ibuffer-workspace-files ()
   "Filter to match files in a workspace"
-  (let ((proj (getenv "PROJECT_ROOT"))
+  (let ((proj (getenv "WORKSPACE"))
         (filename (buffer-file-name)))
     (and proj
          filename

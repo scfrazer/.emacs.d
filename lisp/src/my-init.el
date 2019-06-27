@@ -1964,7 +1964,7 @@ Prefix with C-u to resize the `next-window'."
 
 (require 'project)
 (defun my-project-find (dir)
-  (cons 'vc (getenv "PROJECT_ROOT")))
+  (cons 'vc (getenv "WORKSPACE")))
 (add-to-list 'project-find-functions #'my-project-find)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

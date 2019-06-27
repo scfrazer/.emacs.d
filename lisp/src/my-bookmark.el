@@ -5,6 +5,8 @@
 (setq bookmark-save-flag 1)
 (setq bookmark-sort-flag nil)
 
+(defvar my-bookmark-proj-roots (list "WORKSPACE" "PROJECT_ROOT" "PROJECT_PATH"))
+
 (defun my-bookmark-reload ()
   "Reload bookmarks"
   (interactive)
@@ -13,7 +15,7 @@
 
 (defun my-bookmark-munge-filenames (coding)
   "Munge bookmark filenames."
-  (dolist (var (list "PROJECT_ROOT"))
+  (dolist (var my-bookmark-proj-roots)
     (when-let ((val (getenv var)))
       (save-excursion
         (goto-char (point-min))
@@ -24,7 +26,7 @@
 
 (defun my-bookmark-unmunge-filenames ()
   "Unmunge bookmark filenames."
-  (dolist (var (list "PROJECT_ROOT"))
+  (dolist (var my-bookmark-proj-roots)
     (when-let ((val (getenv var)))
       (save-excursion
         (goto-char (point-min))
@@ -37,7 +39,6 @@
 (defun my-bookmark-write-shell-bookmarks (file)
   "Convert bookmarks to format zsh and tcsh (yuck!) can use."
   (my-bookmark-write-shell-bookmark "hash -d " "~/.zsh_bmk"))
-  ;; (my-bookmark-write-shell-bookmark "set " "~/.cshrc_bmk"))
 
 (defun my-bookmark-write-shell-bookmark (line-prefix bmk-filename)
   "Write a shell bookmark file using line-prefix."
@@ -49,7 +50,7 @@
           (unless (file-directory-p filename)
             (setq filename (file-name-directory filename)))
           (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
-            (dolist (var (list "PROJECT_ROOT"))
+            (dolist (var my-bookmark-proj-roots)
               (when-let ((val (getenv var)))
                 (setq filename (replace-regexp-in-string val (concat "$" var) filename t))))
             (insert line-prefix name "=" filename)
