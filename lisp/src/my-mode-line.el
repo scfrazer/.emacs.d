@@ -46,18 +46,12 @@
    "  " mode-line-buffer-identification
    "  " mode-line-modes
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
-   ;; (:eval (when (and (boundp 'flymake-mode) flymake-mode)
-   ;;          (concat " " flymake-mode-line)))
-   ;; (:eval (if (and use-clearcase clearcase-setview-viewtag)
-   ;;            (concat "  [View: " clearcase-setview-viewtag "]")
-   ;;          ""))
-   (:eval (let ((p4-ws (getenv "P4CLIENT")))
-            (if (and p4-ws (not (string= p4-ws (getenv "USER"))))
-                (concat "  [P4: " p4-ws "]")
-              "")))
+   (:eval (let ((workspace-path (getenv "WORKSPACE")))
+            (when workspace-path
+              (concat "  [WS: " (file-name-nondirectory workspace-path) "]")))
    (:eval (if (and (featurep 'task) task-current-name)
               (concat "  [Task: " (or task-current-name "NONE") "]")
-            ""))))
+            "")))))
 
 (nbutlast mode-line-modes 1)
 
