@@ -8,9 +8,7 @@
               python-flymake-command '("flymake_python")
               python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
-              python-shell-interpreter (if (and (getenv "HOST") (string-match "asic-vm" (getenv "HOST")))
-                                           "/router/bin/python3-3.5.0"
-                                         "/usr/bin/python"))
+              python-shell-interpreter "python3w")
 
 (defun my-python-flymake (orig-fun report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))

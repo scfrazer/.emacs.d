@@ -4,6 +4,7 @@
 
 (setq-default flymake-no-changes-timeout nil
               flymake-start-syntax-check-on-newline nil
+              flymake-start-on-flymake-mode nil
               flymake-wrap-around nil)
 
 (defun my-flymake-show-current-error ()

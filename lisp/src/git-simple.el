@@ -85,7 +85,7 @@
         (error (concat "Couldn't get status for directory '" default-directory "'")))
       (goto-char (point-min))
       (while (not (eobp))
-        (cond ((looking-at "## \\([a-zA-Z0-9_-]+\\)\\([.][.][.]\\(\\([a-zA-Z0-9_-]+\\)/[a-zA-Z0-9_-]+\\)\\)?\\( .+\\)?")
+        (cond ((looking-at "## \\([a-zA-Z0-9_/-]+\\)\\([.][.][.]\\(\\([a-zA-Z0-9_-]+\\)/[a-zA-Z0-9_/-]+\\)\\)?\\( .+\\)?")
                (let ((branch (match-string-no-properties 1))
                      (remote-branch (match-string-no-properties 3))
                      (remote (match-string-no-properties 4))
