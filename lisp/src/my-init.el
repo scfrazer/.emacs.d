@@ -1230,7 +1230,7 @@ end of a non-blank line, or insert an 80-column comment line"
       (catch 'done
         (dolist (win windows)
           (setq buf (window-buffer win))
-          (when (and (string-match "\\`*\\|.+<[0-9]+>\\'" (buffer-name buf))
+          (when (and (string-match "\\`\\*\\|.+<[0-9]+>\\'" (buffer-name buf))
                      (not (string-match regexp (buffer-name buf))))
             (delete-windows-on buf)
             (kill-buffer buf)
