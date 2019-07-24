@@ -56,7 +56,7 @@
  `(ediff-odd-diff-B                         ((t :inherit ediff-odd-diff-A)))
  `(font-lock-comment-delimiter-face         ((t :inherit font-lock-comment-face)))
  `(font-lock-doc-string-face                ((t :inherit font-lock-doc-face)))
- `(font-lock-regexp-grouping-backslash      ((t :bold t)))
+ `(font-lock-regexp-grouping-backslash      ((t :inherit font-lock-regexp-grouping-construct)))
  `(font-lock-regexp-grouping-construct      ((t :bold t)))
  `(font-lock-warning-face                   ((t :inherit warning)))
  `(git-timemachine-minibuffer-author-face   ((t :inherit font-lock-keyword-face)))

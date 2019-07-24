@@ -33,8 +33,8 @@
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
 
-(require 'easy-escape)
-(setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
+;; (require 'easy-escape)
+;; (setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
 
 (require 'filladapt)
 (setq filladapt-mode-line-string nil)
@@ -131,16 +131,8 @@
         (save-excursion
           (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
 
-(use-package asm-mode
-  :config
-  (progn
-    (define-key asm-mode-map (kbd "C-j") nil)
-    (define-key asm-mode-map (kbd "C-m") nil)
-    (define-key asm-mode-map (kbd "TAB") 'asm-indent-line)
-    (setq-default asm-comment-char ?\;)
-    (defun my-asm-mode-hook ()
-      nil)
-    (add-hook 'asm-mode-hook 'my-asm-mode-hook)))
+(use-package as-mode
+  :mode (("\\.s\\'" . as-mode)))
 
 (use-package bm
   :bind* (("M-#" . my-bm-toggle-or-show)
@@ -328,7 +320,7 @@
   :config
   (progn
     (setq-default markdown-fontify-code-blocks-natively t
-                  markdown-hide-markup t
+                  markdown-hide-markup nil
                   markdown-list-item-bullets '("•" "◦" "▪" "▫"))
     ;; Task states
     (defconst my-markdown-task-keywords
@@ -1772,7 +1764,7 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
-  (easy-escape-minor-mode 1)
+  ;; (easy-escape-minor-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
                '("Require"
@@ -1937,7 +1929,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
- ("M-SPC"       . (lambda () "Insert space in front." (interactive) (insert " ") (backward-char)))
+ ("M-SPC"       . rectangle-mark-mode)
  ("M-]"         . my-forward-paragraph)
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
@@ -2036,6 +2028,10 @@ Prefix with C-u to resize the `next-window'."
 (let ((extra-config (concat user-emacs-directory (symbol-name system-type) ".el")))
   (when (file-exists-p extra-config)
     (load-file extra-config)))
+
+(let ((confidential (concat user-emacs-directory "lisp/confidential.elc")))
+  (when (file-exists-p confidential)
+    (load-file confidential)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Finish up

@@ -2,5 +2,7 @@
 auto-save-list
 bookmarks
 elpa/gnupg
+lisp/confidential.elc
+lisp/src/confidential.el
 tasks
 tramp
