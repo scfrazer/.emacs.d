@@ -6,9 +6,12 @@
   "Like `occur', but with prefix arg take the string from the region."
   (interactive "P")
   (if arg
-      (occur (read-from-minibuffer "List lines matching regexp: "
-                                   (regexp-quote (buffer-substring (region-beginning) (region-end)))
-                                   nil nil 'regexp-history))
+      (let ((regexp (read-from-minibuffer
+                     "List lines matching regexp: "
+                     (regexp-quote (buffer-substring (region-beginning) (region-end))) nil nil
+                     'regexp-history)))
+        (deactivate-mark)
+        (occur regexp))
     (let* ((search-spaces-regexp search-whitespace-regexp)
            (default (buffer-substring-no-properties
                      (point)
@@ -40,6 +43,7 @@
       (unless (my-buf-ignore-buffer (buffer-name buf))
         (push buf bufs)))
     (when bufs
+      (deactivate-mark)
       (multi-occur bufs regexp))))
 
 (defun my-occur-mode-hook ()

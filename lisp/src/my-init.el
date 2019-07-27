@@ -93,6 +93,8 @@
 
 (require 'redo+)
 
+(require 'sh-script)
+
 (require 'show-mark)
 (global-show-mark-mode 1)
 (setq minor-mode-alist (remove (assq 'show-mark-mode minor-mode-alist) minor-mode-alist))
@@ -372,51 +374,6 @@
 (use-package mdabbrev
   :bind* ("M-/" . mdabbrev-expand))
 
-(use-package multiple-cursors
-  :bind* (("M-r E" . my-mc/mark-all-in-region)
-          ("M-r e" . mc/edit-lines))
-  :config
-  (progn
-    (defvar my-mc-mark nil)
-    (make-variable-buffer-local 'my-mc-mark)
-    (defvar my-mc-point nil)
-    (make-variable-buffer-local 'my-mc-point)
-    (setq mc/always-run-for-all t)
-    (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
-    (defun my-mc/mark-all-in-region (beg end &optional search)
-      "Find and mark all the parts in the region matching the given search"
-      (interactive "r")
-      (let ((search (or search (read-from-minibuffer "Mark all in region: ")))
-            (case-fold-search nil))
-        (if (string= search "")
-            (message "Mark aborted")
-          (progn
-            (mc/remove-fake-cursors)
-            (goto-char beg)
-            (while (search-forward search end t)
-              (goto-char (match-beginning 0))
-              (push-mark)
-              (mc/create-fake-cursor-at-point)
-              (goto-char (min end (point-at-eol))))
-            (let ((first (mc/furthest-cursor-before-point)))
-              (if (not first)
-                  (error "Search failed for %S" search)
-                (mc/pop-state-from-overlay first)))
-            (if (> (mc/num-cursors) 1)
-                (multiple-cursors-mode 1)
-              (multiple-cursors-mode 0))))))
-    (defun my-mc-save (&optional arg)
-      (setq my-mc-mark (mark t))
-      (setq my-mc-point (point-marker)))
-    (advice-add #'mc/edit-lines :before #'my-mc-save)
-    (advice-add #'my-mc/mark-all-in-region :before #'my-mc-save)
-    (defun my-mc-restore ()
-      (when (and my-mc-point (marker-position my-mc-point))
-        (goto-char my-mc-point))
-        (when my-mc-mark
-          (set-mark my-mc-mark)))
-    (add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)))
-
 (use-package nxml-mode
   :defer t
   :config
@@ -506,6 +463,16 @@
             (goto-char pos))
         (apply orig-fun (list key-seq))))
     (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
+
+(use-package my-rectangle
+  :bind* (("M-SPC" . rectangle-mark-mode)
+          ("M-r E" . my-mc/mark-all-in-region)
+          ("M-r c" . my-rectangle-copy)
+          ("M-r e" . mc/edit-lines)
+          ("M-r k" . kill-rectangle)
+          ("M-r n" . my-rectangle-number-lines)
+          ("M-r p" . yank-rectangle)
+          ("M-r t" . string-rectangle)))
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
@@ -1435,6 +1402,7 @@ and a number prefix means replace in region."
               (start (region-beginning))
               (end (region-end)))
           (goto-char start)
+          (deactivate-mark)
           (query-replace (nth 0 common) (nth 1 common) nil start end))
       (let (from to)
         (setq from (buffer-substring-no-properties (region-beginning) (region-end))
@@ -1442,52 +1410,9 @@ and a number prefix means replace in region."
                   (format "Query replace %s with: " from) nil nil nil
                   'query-replace-history))
         (goto-char (region-beginning))
+        (deactivate-mark)
         (query-replace from to)
         (push (cons from to) query-replace-defaults)))))
-
-(defun my-rectangle-number-lines (&optional arg)
-  "Like `rectangle-number-lines' but with better defaults.
-
-When called with one prefix arg, prompt for starting point.  When
-called with a different prefix arg, prompt for starting point and
-format."
-  (interactive "*P")
-  (let ((start-at 0)
-        (format "%d"))
-    (when arg
-      (setq start-at (read-string "Start at: "))
-      (if (string-match "[a-zA-Z]" start-at)
-          (setq start-at (string-to-char start-at)
-                format "%c")
-        (setq start-at (string-to-number start-at))
-        (unless (equal current-prefix-arg '(4))
-          (setq format (read-string "Format string: " "%d")))))
-    (if (and (fboundp 'multiple-cursors-mode) multiple-cursors-mode)
-        (progn
-          (setq rectangle-number-line-counter start-at
-                rectangle-number-line-format format)
-          (mc/for-each-cursor-ordered
-           (mc/execute-command-for-fake-cursor 'my-rectangle-mc-callback cursor)))
-      (delete-extract-rectangle (region-beginning) (region-end))
-      (let ((start (mark))
-            (end (point)))
-        (if (< end start)
-            (progn
-              (setq rectangle-number-line-counter (+ (count-lines end start) start-at -1))
-              (apply-on-rectangle 'my-rectangle-reverse-number-line-callback end start format))
-          (setq rectangle-number-line-counter start-at)
-          (apply-on-rectangle 'rectangle-number-line-callback start end format))))))
-
-(defun my-rectangle-mc-callback ()
-  (interactive)
-  (insert (format rectangle-number-line-format rectangle-number-line-counter))
-  (setq rectangle-number-line-counter (1+ rectangle-number-line-counter)))
-
-(defun my-rectangle-reverse-number-line-callback (start _end format-string)
-  (move-to-column start t)
-  (insert (format format-string rectangle-number-line-counter))
-  (setq rectangle-number-line-counter
-        (1- rectangle-number-line-counter)))
 
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
@@ -1539,22 +1464,22 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                     (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
-(defun my-style-symbol-toggle ()
-  "Toggle style of symbol between camelCase and snake_case."
-  (interactive "*")
-  (save-excursion
-    (let* ((bounds (my-bounds-of-current-symbol))
-           (beg (car bounds))
-           (end (cdr bounds)))
-      (with-no-undo-boundaries
-        (if (progn (goto-char beg) (search-forward "_" end t))
-            (progn
-              (upcase-initials-region beg end)
-              (replace-string "_" "" nil beg end)
-              (downcase-region beg (1+ beg)))
-          (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ beg) end)
-          (setq bounds (my-bounds-of-current-symbol))
-          (downcase-region (car bounds) (cdr bounds)))))))
+;; (defun my-style-symbol-toggle ()
+;;   "Toggle style of symbol between camelCase and snake_case."
+;;   (interactive "*")
+;;   (save-excursion
+;;     (let* ((bounds (my-bounds-of-current-symbol))
+;;            (beg (car bounds))
+;;            (end (cdr bounds)))
+;;       (with-no-undo-boundaries
+;;         (if (progn (goto-char beg) (search-forward "_" end t))
+;;             (progn
+;;               (upcase-initials-region beg end)
+;;               (replace-string "_" "" nil beg end)
+;;               (downcase-region beg (1+ beg)))
+;;           (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ beg) end)
+;;           (setq bounds (my-bounds-of-current-symbol))
+;;           (downcase-region (car bounds) (cdr bounds)))))))
 
 (defun my-suspend-emacs (&optional arg)
   "Suspend emacs.  With prefix arg, cd to current-directory."
@@ -1740,6 +1665,7 @@ Prefix with C-u to resize the `next-window'."
       (bury-buffer)
     ad-do-it))
 
+(eval-when-compile (require 'pulse))
 (defun my-pulse-momentary-highlight-region (orig-fun start end &optional face)
   "If pulsing enabled but not available, blink it instead."
   (if (and pulse-flag (not (pulse-available-p)))
@@ -1882,7 +1808,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c TAB"     . indent-region)
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
- ("C-c _"       . my-style-symbol-toggle)
+ ;; ("C-c _"       . my-style-symbol-toggle)
  ("C-c c"       . my-comment-or-uncomment-region)
  ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
@@ -1929,18 +1855,12 @@ Prefix with C-u to resize the `next-window'."
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
  ("M-Q"         . my-unfill)
- ("M-SPC"       . rectangle-mark-mode)
  ("M-]"         . my-forward-paragraph)
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-r M-n"     . my-forward-paragraph-rect)
  ("M-r M-p"     . my-backward-paragraph-rect)
- ("M-r c"       . (lambda () "Copy rectangle with visual feedback." (interactive) (activate-mark) (rectangle-mark-mode) (sit-for 0.5) (call-interactively 'copy-rectangle-as-kill)))
- ("M-r k"       . kill-rectangle)
- ("M-r n"       . my-rectangle-number-lines)
- ("M-r p"       . yank-rectangle)
- ("M-r t"       . string-rectangle)
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-~"         . previous-error))
@@ -1995,7 +1915,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'tmux (lambda () (interactive) (find-file (expand-file-name "~/.tmux.history"))))
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
-(defalias 'work (lambda () (interactive) (find-file (expand-file-name "/users/scfrazer/notes/todo.md"))))
+(defalias 'work (lambda () (interactive) (find-file (expand-file-name "/home/scfrazer/notes/todo.md"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
