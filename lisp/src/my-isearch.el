@@ -8,6 +8,7 @@
   (when (and arg (mark t))
     (let ((start (region-beginning)))
       (setq my-isearch-region-str (buffer-substring-no-properties start (region-end)))
+      (deactivate-mark)
       (goto-char start)))
   (isearch-mode t))
 
@@ -17,6 +18,7 @@
   (when (and arg (mark t))
     (let ((start (region-beginning)))
       (setq my-isearch-region-str (buffer-substring-no-properties start (region-end)))
+      (deactivate-mark)
       (goto-char start)))
   (isearch-mode nil))
 

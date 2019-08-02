@@ -465,14 +465,8 @@
     (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
 
 (use-package my-rectangle
-  :bind* (("M-SPC" . rectangle-mark-mode)
-          ("M-r E" . my-mc/mark-all-in-region)
-          ("M-r c" . my-rectangle-copy)
-          ("M-r e" . mc/edit-lines)
-          ("M-r k" . kill-rectangle)
-          ("M-r n" . my-rectangle-number-lines)
-          ("M-r p" . yank-rectangle)
-          ("M-r t" . string-rectangle)))
+  :bind* (("M-SPC" . my-push-mark)
+          ("M-r"   . mc/edit-lines)))
 
 (use-package my-reformat
   :bind* ("C-c ," . my-reformat-comma-delimited-items))
@@ -518,7 +512,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("C" smerge-combine-with-next)
     ("r" smerge-resolve)
     ("k" smerge-kill-current)
-    ("q" nil "cancel" :color blue)))
+    ("q" nil "cancel" :color blue))
+    (defun my-smerge-mode-hook ()
+      (call-interactively 'smerge-hydra/body))
+    (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
+  (defalias 'merge 'smerge-hydra/body))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
@@ -537,6 +535,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
          ("\\.v\\'" . sv-mode)
          ("\\.vh\\'" . sv-mode))
   :config
+  (require 'verilog-mode)
   (require 'my-sv-mode))
 
 (use-package my-tmux
@@ -1775,6 +1774,7 @@ Prefix with C-u to resize the `next-window'."
        (goto-char (point-max)))
      (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
+(defvar file-template-mapping-alist)
 (eval-after-load "file-template"
   '(progn
      (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
@@ -1859,8 +1859,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-`"         . next-error)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
- ("M-r M-n"     . my-forward-paragraph-rect)
- ("M-r M-p"     . my-backward-paragraph-rect)
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-~"         . previous-error))

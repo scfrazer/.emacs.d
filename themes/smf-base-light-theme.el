@@ -31,7 +31,7 @@
  `(font-lock-regexp-grouping-construct ((t :background "whitesmoke" :bold t)))
  `(header-line                         ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
  `(isearch                             ((t :background "coral2" :foreground ,(smf-color 231))))
- `(lazy-highlight                      ((t :background "cornsilk" :foreground "black")))
+ `(lazy-highlight                      ((t :background "lightsteelblue" :foreground "black")))
  `(line-number                         ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))
  `(line-number-current-line            ((t :inherit line-number :inverse-video t)))
  `(link                                ((t :foreground ,(smf-color 26) :italic t :underline t)))

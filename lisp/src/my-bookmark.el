@@ -15,12 +15,16 @@
 
 (defun my-bookmark-munge-filenames (coding)
   "Munge bookmark filenames."
-  (dolist (var my-bookmark-proj-roots)
-    (when-let ((val (getenv var)))
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward (concat "\\(" val "\\)") nil t)
-          (replace-match (concat "$" var) t))))))
+  (when-let ((home-dir (getenv "HOME")))
+    (dolist (var my-bookmark-proj-roots)
+      (when-let ((val (getenv var)))
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward "filename . \"~/" nil t)
+            (replace-match (concat "filename . \"" home-dir "/") t))
+          (goto-char (point-min))
+          (while (re-search-forward (concat "\\(" val "\\)") nil t)
+            (replace-match (concat "$" var) t)))))))
 
 (advice-add #'bookmark-insert-file-format-version-stamp :after #'my-bookmark-munge-filenames)
 
@@ -46,7 +50,7 @@
       (let (name filename)
         (dolist (bmk bookmark-alist)
           (setq name (bookmark-name-from-full-record bmk)
-                filename (bookmark-get-filename bmk))
+                filename (expand-file-name (bookmark-get-filename bmk)))
           (unless (file-directory-p filename)
             (setq filename (file-name-directory filename)))
           (unless (string-match "[^-a-zA-Z0-9_.~/]" name)

@@ -3,53 +3,10 @@
 (require 'rect)
 (require 'multiple-cursors)
 
-(defvar my-mc-mark nil)
-(make-variable-buffer-local 'my-mc-mark)
-(defvar my-mc-point nil)
-(make-variable-buffer-local 'my-mc-point)
-(setq mc/always-run-for-all t)
-(define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
-(defun my-mc/mark-all-in-region (beg end &optional search)
-  "Find and mark all the parts in the region matching the given search"
-  (interactive "r")
-  (let ((search (or search (read-from-minibuffer "Mark all in region: ")))
-        (case-fold-search nil))
-    (if (string= search "")
-        (message "Mark aborted")
-      (progn
-        (mc/remove-fake-cursors)
-        (goto-char beg)
-        (while (search-forward search end t)
-          (goto-char (match-beginning 0))
-          (push-mark)
-          (mc/create-fake-cursor-at-point)
-          (goto-char (min end (point-at-eol))))
-        (let ((first (mc/furthest-cursor-before-point)))
-          (if (not first)
-              (error "Search failed for %S" search)
-            (mc/pop-state-from-overlay first)))
-        (if (> (mc/num-cursors) 1)
-            (multiple-cursors-mode 1)
-          (multiple-cursors-mode 0))))))
-(defun my-mc-save (&optional arg)
-  (setq my-mc-mark (mark t))
-  (setq my-mc-point (point-marker)))
-(advice-add #'mc/edit-lines :before #'my-mc-save)
-(advice-add #'my-mc/mark-all-in-region :before #'my-mc-save)
-(defun my-mc-restore ()
-  (when (and my-mc-point (marker-position my-mc-point))
-    (goto-char my-mc-point))
-  (when my-mc-mark
-    (set-mark my-mc-mark)))
-(add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)
-
-(defun my-rectangle-copy ()
-  "Copy rectangle with visual feedback."
+(defun my-push-mark ()
+  "Wrap `push-mark' in an interactive form."
   (interactive)
-  (activate-mark)
-  (rectangle-mark-mode)
-  (sit-for 0.5)
-  (call-interactively 'copy-rectangle-as-kill))
+  (push-mark))
 
 (defvar rectangle-number-line-counter nil)
 (defvar my-rectangle-number-line-format nil)
@@ -97,5 +54,56 @@ format."
   (insert (format format-string rectangle-number-line-counter))
   (setq rectangle-number-line-counter
         (1- rectangle-number-line-counter)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Multiple cursors
+
+(defvar my-mc-mark nil)
+(make-variable-buffer-local 'my-mc-mark)
+
+(defvar my-mc-point nil)
+(make-variable-buffer-local 'my-mc-point)
+
+(setq-default mc/always-run-for-all t)
+(define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
+
+(defun my-mc/mark-all-in-region (beg end &optional search)
+  "Find and mark all the parts in the region matching the given search"
+  (interactive "r")
+  (let ((search (or search (read-from-minibuffer "Mark all in region: ")))
+        (case-fold-search nil))
+    (if (string= search "")
+        (message "Mark aborted")
+      (progn
+        (mc/remove-fake-cursors)
+        (goto-char beg)
+        (while (search-forward search end t)
+          (goto-char (match-beginning 0))
+          (push-mark)
+          (mc/create-fake-cursor-at-point)
+          (goto-char (min end (point-at-eol))))
+        (let ((first (mc/furthest-cursor-before-point)))
+          (if (not first)
+              (error "Search failed for %S" search)
+            (mc/pop-state-from-overlay first)))
+        (if (> (mc/num-cursors) 1)
+            (multiple-cursors-mode 1)
+          (multiple-cursors-mode 0))))))
+
+(defun my-mc-save (&optional arg)
+  (unless (region-active-p)
+    (activate-mark))
+  (setq my-mc-mark (mark t))
+  (setq my-mc-point (point-marker)))
+(advice-add #'mc/edit-lines :before #'my-mc-save)
+(advice-add #'my-mc/mark-all-in-region :before #'my-mc-save)
+
+(defun my-mc-restore ()
+  (when (and my-mc-point (marker-position my-mc-point))
+    (goto-char my-mc-point))
+  (when my-mc-mark
+    (set-mark my-mc-mark))
+  (deactivate-mark))
+(add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)
 
 (provide 'my-rectangle)

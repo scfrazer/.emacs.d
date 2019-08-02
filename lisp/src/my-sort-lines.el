@@ -68,7 +68,7 @@ REVERSE (non-nil means reverse order), BEG and END (region to sort)."
   "Sort following paragraph, or region with prefix arg."
   (interactive "*P")
   (save-excursion
-    (if arg
+    (if (or arg (region-active-p))
         (my-sort-lines-naturally nil (region-beginning) (region-end))
       (my-sort-lines-naturally nil (point-at-bol)
                                (save-excursion

@@ -127,10 +127,12 @@ With prefix argument, add a condition."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(dolist (rule (reverse align-verilog-rules-list))
-  (add-to-list 'sv-mode-align-rules-list rule))
-(dolist (rule (reverse align-exclude-verilog-rules-list))
-  (add-to-list 'sv-mode-align-exclude-rules-list rule))
+(when (boundp align-verilog-rules-list)
+  (dolist (rule (reverse align-verilog-rules-list))
+    (add-to-list 'sv-mode-align-rules-list rule)))
+(when (boundp align-exclude-verilog-rules-list)
+  (dolist (rule (reverse align-exclude-verilog-rules-list))
+    (add-to-list 'sv-mode-align-exclude-rules-list rule)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
