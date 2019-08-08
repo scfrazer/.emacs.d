@@ -1,5 +1,7 @@
-#!/router/bin/python3
-# -*- mode: python -*-
+#!/usr/bin/env python
+'''
+Description
+'''
 
 import sys
 import re
@@ -9,7 +11,9 @@ from argparse import ArgumentParser
 ################################################################################
 
 def main():
-
+    '''
+    Description
+    '''
     parser = ArgumentParser(description='TBD description')
 
     parser.add_argument('-q', '--quit', action='store_true', help='Immediately quit')

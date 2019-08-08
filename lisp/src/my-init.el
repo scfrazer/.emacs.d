@@ -413,7 +413,7 @@
   (require 'my-perl))
 
 (use-package python
-  :defer t
+  :mode (("\\.py\\'" . python-mode))
   :config
   (progn
     (require 'my-python)
