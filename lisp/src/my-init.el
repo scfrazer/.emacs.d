@@ -87,7 +87,7 @@
 (bind-keys* ("M-s O" . my-multi-occur)
             ("M-s o" . my-occur))
 
-(require 'my-p4)
+;; (require 'my-p4)
 
 (require 'my-recentf)
 
@@ -513,9 +513,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("r" smerge-resolve)
     ("k" smerge-kill-current)
     ("q" nil "cancel" :color blue))
-    (defun my-smerge-mode-hook ()
-      (call-interactively 'smerge-hydra/body))
-    (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
+    ;; (defun my-smerge-mode-hook ()
+    ;;   (call-interactively 'smerge-hydra/body))
+    ;; (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
   (defalias 'merge 'smerge-hydra/body))
 
 (use-package my-sort-lines
