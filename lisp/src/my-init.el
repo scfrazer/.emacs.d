@@ -567,14 +567,25 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
           ("C-c x" . my-xclip-copy)))
 
 (use-package xref
-  :bind* (("M-?" . xref-find-definitions)
-          ("M-*" . xref-pop-marker-stack))
+  :bind* (("M-&" . my-xref-pop-marker-stack-kill-buffer)
+          ("M-*" . xref-pop-marker-stack)
+          ("M-?" . xref-find-definitions))
   :config
   (progn
-    (require 'etags-table)
-    (setq etags-table-search-up-depth 10
+    (setq default-tags-table-function 'my-tags-table-function
           tags-add-tables t
           tags-revert-without-query t)
+    (defun my-tags-table-function ()
+      "Locate any dominating TAGS file."
+      (let ((tags-dir (locate-dominating-file default-directory "TAGS")))
+        (when tags-dir
+          (concat tags-dir "TAGS"))))
+    (defun my-xref-pop-marker-stack-kill-buffer ()
+      (interactive)
+      (let ((buf (current-buffer)))
+        (xref-pop-marker-stack)
+        (unless (equal (current-buffer) buf)
+          (kill-buffer buf))))
     (defun my-xref-next-line ()
       (interactive)
       (end-of-line)
@@ -1710,8 +1721,6 @@ Prefix with C-u to resize the `next-window'."
   (let* ((enable-recursive-minibuffers t)
          (dir (my-ido-get-bookmark-dir)))
     (when dir
-      (when arg
-        (setq dir (concat "/view/CPPDVTOOLS.view" dir)))
       (insert dir))))
 
 (defun my-minibuffer-setup-hook ()

@@ -26,15 +26,12 @@
 
 (defvar my-ido-doing-bookmark-dir nil)
 (defvar my-ido-exiting-with-slash nil)
-(defvar my-ido-env-vars-as-bookmarks (list "WORKSPACE"))
 
 (defun my-ido-bookmark-jump (&optional arg)
   "Jump to bookmark using ido"
   (interactive "P")
   (let ((dir (my-ido-get-bookmark-dir)))
     (when dir
-      (when arg
-        (setq dir (concat "/view/CPPDVTOOLS.view/" dir)))
       (setq my-dired-prev-dir (dired-current-directory))
       (find-alternate-file (if my-ido-exiting-with-slash
                                (ido-read-directory-name "Jump to dir: " dir nil t)
@@ -44,10 +41,10 @@
   "Get the directory of a bookmark."
   (let* ((my-ido-doing-bookmark-dir t)
          (bmk-list (bookmark-all-names))
-         (name (ido-completing-read "Use dir of bookmark: " (append my-ido-env-vars-as-bookmarks bmk-list) nil t))
+         (name (ido-completing-read "Use dir of bookmark: " (append (list "/") bmk-list) nil t))
          bmk)
-    (if (not (member name bmk-list))
-        (getenv name)
+    (if (string= name "/")
+        "~"
       (setq bmk (bookmark-get-bookmark name))
       (when bmk
         (setq bookmark-alist (delete bmk bookmark-alist))
@@ -67,9 +64,7 @@
                 dir)))))
 
 (defun my-ido-dired-mode-hook ()
-  (define-key dired-mode-map "~" 'my-ido-bookmark-jump)
-  (define-key dired-mode-map "$" 'my-ido-bookmark-jump)
-  (define-key dired-mode-map (kbd "M-$") 'my-ido-bookmark-jump))
+  (define-key dired-mode-map "~" 'my-ido-bookmark-jump))
 
 (add-hook 'dired-mode-hook 'my-ido-dired-mode-hook)
 
@@ -79,14 +74,11 @@
   (let* ((enable-recursive-minibuffers t)
          (dir (my-ido-get-bookmark-dir)))
     (when dir
-      (if arg
-          (ido-set-current-directory (concat "/view/CPPDVTOOLS.view/" dir))
-        (ido-set-current-directory dir))
+      (ido-set-current-directory dir)
       (setq ido-exit 'refresh)
       (exit-minibuffer))))
 
-(define-key ido-common-completion-map (kbd "$") 'my-ido-use-bookmark-dir)
-(define-key ido-common-completion-map (kbd "M-$") 'my-ido-use-bookmark-dir)
+(define-key ido-common-completion-map (kbd "~") 'my-ido-use-bookmark-dir)
 
 (defadvice ido-setup-completion-map (after my-ido-bookmark-dir-map activate)
   (when my-ido-doing-bookmark-dir
@@ -162,7 +154,8 @@
       (when filename
         (setq recentf-list (delq t (mapcar (lambda (x) (or (string= x filename)
                                                            (string= (file-name-nondirectory x) filename)
-                                                           x)) recentf-list)))
+                                                           x))
+                                           recentf-list)))
         (setq ido-cur-list (delq filename ido-cur-list))))))
 
 ;; ido + tags
