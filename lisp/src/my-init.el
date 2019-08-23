@@ -224,13 +224,24 @@
   (require 'my-ffap))
 
 (use-package flymake
-  :bind* (("C-x f" . flymake-start))
   :commands (flymake-goto-next-error
              flymake-goto-prev-error)
   :init
   (defalias 'fly 'flymake-mode)
   :config
   (require 'my-flymake))
+
+(use-package fzf
+  :bind* (("C-x f" . my-fzf))
+  :commands (my-fzf)
+  :config
+  (progn
+    (require 'fzf)
+    (defun my-fzf ()
+      (interactive)
+      (let ((dir (or (car (project-roots (project-current)))
+                     default-directory)))
+        (fzf/start dir)))))
 
 (use-package git-simple
   :bind-keymap (("C-x g" . git-simple-global-map)))
@@ -1676,7 +1687,7 @@ Prefix with C-u to resize the `next-window'."
                  "^(use-package +\\(\\_<.+\\_>\\)" 1)))
 
 (defun my-find-file-hook ()
-  (when (or (equal (buffer-name) "config_tree.txt")
+  (when (or (equal (buffer-name) "sim.log")
             (equal (buffer-name) "topology.txt"))
     (my-word-wrap-on-hook))
   (my-backup-set-mode))
