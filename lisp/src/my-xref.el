@@ -4,6 +4,7 @@
 
 (setq-default default-tags-table-function 'my-tags-table-function
               tags-add-tables t
+              tags-case-fold-search nil
               tags-revert-without-query t)
 
 (defun my-tags-table-function ()

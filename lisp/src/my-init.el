@@ -577,10 +577,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind* (("C-c X" . my-xclip-yank)
           ("C-c x" . my-xclip-copy)))
 
-(use-package my-xref
+(use-package xref
   :bind* (("M-&" . my-xref-pop-marker-stack-kill-buffer)
           ("M-*" . xref-pop-marker-stack)
-          ("M-?" . xref-find-definitions)))
+          ("M-?" . xref-find-definitions))
+  :config
+  (require 'my-xref))
 
 (use-package yank-target
   :bind-keymap (("C-c y" . yank-target-map))
