@@ -1430,12 +1430,12 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
               (setq sv-mode-scope-overlay-1 (make-overlay beg-1 end-1)))
             (if beg-2
                 (progn
-                  (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-match-face)
+                  (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-match)
                   (if sv-mode-scope-overlay-2
                       (move-overlay sv-mode-scope-overlay-2 beg-2 end-2)
                     (setq sv-mode-scope-overlay-2 (make-overlay beg-2 end-2)))
-                  (overlay-put sv-mode-scope-overlay-2 'face 'show-paren-match-face))
-              (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-mismatch-face)))
+                  (overlay-put sv-mode-scope-overlay-2 'face 'show-paren-match))
+              (overlay-put sv-mode-scope-overlay-1 'face 'show-paren-mismatch)))
           (add-hook 'pre-command-hook 'sv-mode-idle-timer-done))))))
 
 (defun sv-mode-idle-timer-done ()
