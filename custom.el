@@ -11,7 +11,7 @@
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
- '(frame-background-mode (quote dark))
+ '(frame-background-mode (quote light))
  '(jedi:complete-on-dot t)
  '(jedi:server-command
    (quote
@@ -22,7 +22,7 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (fzf company-jedi jedi-direx relint yaml-mode deft markdown-mode company ggtags fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (fzf relint yaml-mode deft markdown-mode company fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
  '(safe-local-variable-values
    (quote
     ((js2-additional-externs "localStorage" "chrome" "url")
