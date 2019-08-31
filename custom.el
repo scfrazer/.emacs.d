@@ -15,14 +15,14 @@
  '(jedi:complete-on-dot t)
  '(jedi:server-command
    (quote
-    ("python3w" "/home/scfrazer/.emacs.d/elpa/jedi-core-20190620.1820/jediepcserver.py")))
+    ("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py")))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (fzf relint yaml-mode deft markdown-mode company fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (jedi jedi-direx company-jedi fzf relint yaml-mode deft markdown-mode company fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
  '(safe-local-variable-values
    (quote
     ((js2-additional-externs "localStorage" "chrome" "url")
