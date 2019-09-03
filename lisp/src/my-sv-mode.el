@@ -191,7 +191,7 @@ With prefix argument, add a condition."
 
 (defadvice expand-abbrev (around my-sv-expand-abbrev-advice activate)
   (if (and (equal major-mode 'sv-mode)
-           (looking-back "[0-9]"))
+           (looking-back "[0-9]") (point-at-bol))
       (my-sv-mode-bit-vector)
     ad-do-it))
 
