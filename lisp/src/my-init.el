@@ -426,17 +426,7 @@
 (use-package python
   :mode (("\\.py\\'" . python-mode))
   :config
-  (progn
-    (require 'my-python)
-    (defun my-python-mode-hook ()
-      (flymake-mode 1)
-      (bind-keys :map python-mode-map
-                 ("C-c !" . python-switch-to-python)
-                 ("C-c <" . python-indent-shift-left)
-                 ("C-c >" . python-indent-shift-right)
-                 ("C-c |" . python-send-region))
-      (setq forward-sexp-function nil))
-    (add-hook 'python-mode-hook 'my-python-mode-hook)))
+  (require 'my-python))
 
 (use-package quick-edit
   :bind* (("C-w" . qe-unit-kill)

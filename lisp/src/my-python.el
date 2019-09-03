@@ -8,7 +8,11 @@
               python-flymake-command '("flymake_python")
               python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
-              python-shell-interpreter "python3w")
+              python-shell-interpreter "python3w"
+
+              jedi:complete-on-dot t
+              jedi:install-imenu t
+              jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py"))
 
 (defun my-python-flymake (orig-fun report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))
@@ -35,6 +39,17 @@
                    (kill-buffer (process-buffer proc))))))))))
 (advice-add 'python-flymake :around #'my-python-flymake)
 
+(defun my-python-mode-hook ()
+  (flymake-mode 1)
+  (jedi:setup)
+  (bind-keys :map python-mode-map
+             ("C-c !" . python-switch-to-python)
+             ("C-c <" . python-indent-shift-left)
+             ("C-c >" . python-indent-shift-right)
+             ("C-c |" . python-send-region))
+  (setq forward-sexp-function nil))
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
 (define-abbrev python-mode-abbrev-table
   "sup"
   "super"
@@ -44,7 +59,7 @@
   (interactive)
   (let (fn args class)
     (save-excursion
-      (while (python-beginning-of-block)
+      (while (python-nav-beginning-of-block)
         (when (looking-at "\\s-*def\\s-+\\([a-zA-Z0-9_]+\\)")
           (setq fn (match-string-no-properties 1))
           (save-excursion

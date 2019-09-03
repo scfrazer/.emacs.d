@@ -14,11 +14,6 @@
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
  '(frame-background-mode (quote light))
- '(jedi:complete-on-dot t)
- '(jedi:install-imenu t)
- '(jedi:server-command
-   (quote
-    ("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py")))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote
