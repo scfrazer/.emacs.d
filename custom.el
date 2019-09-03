@@ -7,12 +7,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ac-max-width 50)
+ '(ac-quick-help-delay 0.5)
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
  '(frame-background-mode (quote light))
  '(jedi:complete-on-dot t)
+ '(jedi:install-imenu t)
  '(jedi:server-command
    (quote
     ("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py")))
@@ -22,7 +25,7 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (jedi jedi-direx company-jedi fzf relint yaml-mode deft markdown-mode company fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (jedi jedi-direx fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
  '(safe-local-variable-values
    (quote
     ((js2-additional-externs "localStorage" "chrome" "url")
