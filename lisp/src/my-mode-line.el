@@ -48,10 +48,10 @@
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
    (:eval (let ((workspace-path (getenv "WORKSPACE")))
             (when workspace-path
-              (concat "  [WS: " (file-name-nondirectory workspace-path) "]")))
+              (concat "  [WS: " (file-name-nondirectory workspace-path) "]"))))
    (:eval (if (and (featurep 'task) task-current-name)
               (concat "  [Task: " (or task-current-name "NONE") "]")
-            "")))))
+            ""))))
 
 (nbutlast mode-line-modes 1)
 

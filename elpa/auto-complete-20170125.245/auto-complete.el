@@ -1791,11 +1791,11 @@ If given a prefix argument, select the previous candidate."
                       (run-at-time ac-flycheck-poll-completion-end-interval
                                    nil
                                    #'flycheck-handle-idle-change))
-              ad-do-it))))
-    (when (featurep 'flymake)
-      (ad-disable-advice 'flymake-on-timer-event 'around 'ac-flymake-stop-advice))
-    (when (featurep 'flycheck)
-      (ad-disable-advice 'flycheck-handle-idle-change 'around 'ac-flycheck-stop-advice))))
+              ad-do-it))))))
+    ;; (when (featurep 'flymake)
+    ;;   (ad-disable-advice 'flymake-on-timer-event 'around 'ac-flymake-stop-advice))
+    ;; (when (featurep 'flycheck)
+    ;;   (ad-disable-advice 'flycheck-handle-idle-change 'around 'ac-flycheck-stop-advice))))
 
 (defun ac-setup ()
   (if ac-trigger-key

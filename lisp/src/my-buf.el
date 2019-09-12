@@ -7,9 +7,6 @@
                                                                    "*Find"
                                                                    "*Man"
                                                                    "*Occur"
-                                                                   "*ag"
-                                                                   "*cc-status"
-                                                                   "*clearcase-config-spec"
                                                                    "*compilation"
                                                                    "*grep"
                                                                    "*info"
@@ -18,9 +15,7 @@
                                                                    "*scratch"
                                                                    "*shell"
                                                                    "*git-simple"
-                                                                   "*p4o"
                                                                    "*terminal"
-                                                                   "*regman"
                                                                    "*vcs-compile"))))
   "*Buffer regexps to always show when buffer switching.")
 

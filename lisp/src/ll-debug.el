@@ -744,6 +744,15 @@ Uses `query-replace-regexp' internally."
                                 "\"")
                               v1 "), UVM_LOW"))
 
+(ll-debug-register-mode 'python-mode
+                        "print(" ")"
+                        '(nil "f'" (ll-debug-create-next-debug-string) "'")
+                        '(nil "f'" (ll-debug-create-next-debug-string)
+                              ("Variable: "
+                               "  " str "={" str "}")
+                              "'")
+                        )
+
 (defun ll-debug-renumber ()
   "Renumber the debug messages in order."
   (interactive)

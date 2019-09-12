@@ -62,13 +62,13 @@
       (when (string-match ".+/$" filename)
         (unless (string-match "[^-a-zA-Z0-9_.~/]" name)
           (push (cons (concat "^" (expand-file-name filename) "\\(.*\\)")
-                      (concat "$" name))
+                      (concat "~" name))
                 my-ibuffer-bookmark-subs)))))
   (dolist (var my-ibuffer-env-vars-as-bookmarks)
     (let ((dir (getenv var)))
       (when dir
         (push (cons (concat "^" (expand-file-name dir) "/\\(.*\\)")
-                    (concat "$" var))
+                    (concat "~" var))
               my-ibuffer-bookmark-subs))))
   (setq my-ibuffer-bookmark-subs
         (sort my-ibuffer-bookmark-subs (lambda (x y) (string< (car y) (car x))))))

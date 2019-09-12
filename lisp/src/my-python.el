@@ -2,6 +2,7 @@
 
 (require 'my-flymake)
 (require 'python)
+(require 'jedi-core)
 
 (setq-default python-continuation-offset 4
               python-indent 4
@@ -11,8 +12,14 @@
               python-shell-interpreter "python3w"
 
               jedi:complete-on-dot t
-              jedi:install-imenu t
+              ;; jedi:install-imenu t
               jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py"))
+
+(defun jedi:tooltip-show (string)
+  (let ((tip (popup-tip (concat "\n " string " \n") :nowait t)))
+    (sit-for 5.0)
+    (popup-delete tip)))
+  ;; (popup-tip (concat "\n " string " \n")))
 
 (defun my-python-flymake (orig-fun report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))

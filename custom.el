@@ -9,7 +9,9 @@
  ;; If there is more than one, they won't work right.
  '(ac-max-width 50)
  '(ac-quick-help-delay 0.5)
+ '(ac-stop-flymake-on-completing nil)
  '(ac-use-fuzzy t)
+ '(ac-use-menu-map t)
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))

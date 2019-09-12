@@ -1670,6 +1670,7 @@ Prefix with C-u to resize the `next-window'."
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
   ;; (easy-escape-minor-mode 1)
+  (auto-complete-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
                '("Require"
