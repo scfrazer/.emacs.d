@@ -77,7 +77,7 @@
 (require 'mode-fn)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify-cc)
 (mode-fn-map 'tidy 'c-mode 'my-cc-mode-uncrustify-c)
-(mode-fn-map 'tidy 'perl-mode 'my-perl-tidy)
+;; (mode-fn-map 'tidy 'perl-mode 'my-perl-tidy)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
 (mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
 
@@ -420,6 +420,7 @@
           ("M-e"    . my-pair-step-out-forward)))
 
 (use-package perl-mode
+  :mode (("\\.pl\\'" . perl-mode))
   :config
   (require 'my-perl))
 
@@ -486,9 +487,10 @@
 
 (use-package smerge-mode
   :config
-  (defhydra smerge-hydra
-    (:color pink :hint nil :post (smerge-auto-leave))
-    "
+  (progn
+    (defhydra smerge-hydra
+      (:color pink :hint nil :post (smerge-auto-leave))
+      "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
 _n_ext       _b_ase               _<_: upper/base        _C_ombine
@@ -497,27 +499,27 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ^^           _a_ll                _R_efine
 ^^           _RET_: current       _E_diff
 "
-    ("n" smerge-next)
-    ("p" smerge-prev)
-    ("b" smerge-keep-base)
-    ("u" smerge-keep-upper)
-    ("l" smerge-keep-lower)
-    ("a" smerge-keep-all)
-    ("RET" smerge-keep-current)
-    ("\C-m" smerge-keep-current)
-    ("<" smerge-diff-base-upper)
-    ("=" smerge-diff-upper-lower)
-    (">" smerge-diff-base-lower)
-    ("R" smerge-refine)
-    ("E" smerge-ediff)
-    ("C" smerge-combine-with-next)
-    ("r" smerge-resolve)
-    ("k" smerge-kill-current)
-    ("q" nil "cancel" :color blue))
-    ;; (defun my-smerge-mode-hook ()
-    ;;   (call-interactively 'smerge-hydra/body))
-    ;; (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
-  (defalias 'merge 'smerge-hydra/body))
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("R" smerge-refine)
+      ("E" smerge-ediff)
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("q" nil "cancel" :color blue))
+    (defun my-smerge-mode-hook ()
+      (call-interactively 'smerge-hydra/body))
+    (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
+    (defalias 'merge 'smerge-hydra/body)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
