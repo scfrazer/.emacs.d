@@ -231,6 +231,27 @@
   :config
   (require 'my-flymake))
 
+(use-package flyspell
+  :bind* (;; TODO ("<f3>" . my-flyspell-goto-prev-error)
+          ("<f4>" . flyspell-goto-next-error))
+  :commands (flyspell-prog-mode)
+  :init
+  (progn
+    (defun my-flyspell-prog-mode ()
+      "Turn on `flyspell-prog-mode' and check the buffer"
+      (interactive)
+      (flyspell-prog-mode)
+      (flyspell-buffer))
+    (defalias 'spell 'my-flyspell-prog-mode))
+  :config
+  (progn
+    (defun my-flyspell-generic-progmode-verify (orig-fun)
+      (and (apply orig-fun '())
+           (save-excursion
+             (skip-syntax-backward "w")
+             (not (looking-at ".*[A-Z].*[A-Z]")))))
+    (advice-add #'flyspell-generic-progmode-verify :around #'my-flyspell-generic-progmode-verify)))
+
 (use-package fzf
   :bind* (("C-x f" . my-fzf))
   :commands (my-fzf)

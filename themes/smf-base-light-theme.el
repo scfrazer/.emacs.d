@@ -28,6 +28,8 @@
  `(flymake-error                       ((t :background "mistyrose")))
  `(flymake-note                        ((t :background "thistle1")))
  `(flymake-warning                     ((t :background "lightyellow")))
+ `(flyspell-duplicate                  ((t :background "thistle1")))
+ `(flyspell-incorrect                  ((t :background "thistle1")))
  `(font-lock-regexp-grouping-construct ((t :background "whitesmoke" :bold t)))
  `(header-line                         ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
  `(isearch                             ((t :background "coral2" :foreground ,(smf-color 231))))

@@ -11,7 +11,7 @@
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
               python-shell-interpreter "python3w"
 
-              jedi:complete-on-dot t
+              jedi:complete-on-dot nil
               ;; jedi:install-imenu t
               jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py"))
 
@@ -46,14 +46,25 @@
                    (kill-buffer (process-buffer proc))))))))))
 (advice-add 'python-flymake :around #'my-python-flymake)
 
+(defun my-python-indent-shift-left (start end)
+  (interactive "r")
+  (deactivate-mark t)
+  (python-indent-shift-left start end))
+
+(defun my-python-indent-shift-right (start end)
+  (interactive "r")
+  (deactivate-mark t)
+  (python-indent-shift-right start end))
+
 (defun my-python-mode-hook ()
   (flymake-mode 1)
   (jedi:setup)
   (bind-keys :map python-mode-map
              ("C-c !" . python-switch-to-python)
-             ("C-c <" . python-indent-shift-left)
-             ("C-c >" . python-indent-shift-right)
-             ("C-c |" . python-send-region))
+             ("C-c <" . my-python-indent-shift-left)
+             ("C-c >" . my-python-indent-shift-right)
+             ("C-c |" . python-send-region)
+             ("C-c /" . jedi:complete))
   (setq forward-sexp-function nil))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
