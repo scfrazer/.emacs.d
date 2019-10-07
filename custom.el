@@ -7,15 +7,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ac-auto-start nil)
  '(ac-max-width 50)
  '(ac-quick-help-delay 0.5)
  '(ac-stop-flymake-on-completing nil)
+ '(ac-trigger-key "C-c /")
  '(ac-use-fuzzy t)
  '(ac-use-menu-map t)
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
+ '(flyspell-mode-line-string " Sp")
  '(frame-background-mode (quote light))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties

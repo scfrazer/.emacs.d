@@ -477,7 +477,7 @@
                  str)
             (if at-bol
                 (goto-char (avy--line))
-              (avy--process (avy--regex-candidates "^\\s-*\\([^ \t\n]\\)" nil nil nil 1) (avy--style-fn avy-style)))
+              (avy-process (avy--regex-candidates "^\\s-*\\([^ \t\n]\\)" nil nil nil 1)))
             (setq str (buffer-substring-no-properties (point) (point-at-eol)))
             (goto-char pos)
             (insert str)
@@ -537,10 +537,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("r" smerge-resolve)
       ("k" smerge-kill-current)
       ("q" nil "cancel" :color blue))
-    (defun my-smerge-mode-hook ()
-      (call-interactively 'smerge-hydra/body))
-    (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
-    (defalias 'merge 'smerge-hydra/body)))
+    ;; (defun my-smerge-mode-hook ()
+    ;;   (call-interactively 'smerge-hydra/body))
+    ;; (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
+    ))
+(defalias 'merge 'smerge-hydra/body)
 
 (use-package my-sort-lines
   :commands (my-sort-lines)

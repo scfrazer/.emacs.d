@@ -37,7 +37,7 @@
                                       diags-by-type)))
                      (flymake--backend-state-diags state)))
              flymake--backend-state)
-    `((:propertize " Flymake"
+    `((:propertize " Lint"
                    mouse-face mode-line-highlight
                    help-echo
                    ,(concat (format "%s known backends\n" (length known))

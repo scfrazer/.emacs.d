@@ -13,15 +13,15 @@
 
               jedi:complete-on-dot nil
               ;; jedi:install-imenu t
-              jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py"))
+              jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py")
+              jedi:tooltip-method nil)
 
-(defun jedi:tooltip-show (string)
-  (let ((tip (popup-tip (concat "\n " string " \n") :nowait t)))
-    (sit-for 5.0)
-    (popup-delete tip)))
-  ;; (popup-tip (concat "\n " string " \n")))
+;; (defun jedi:tooltip-show (string)
+;;   (let ((tip (popup-tip (concat "» " string " «") :nowait t)))
+;;     (sit-for 5.0)
+;;     (popup-delete tip)))
 
-(defun my-python-flymake (orig-fun report-fn &rest _args)
+(defun my-python-flymake (_ report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))
     (error "Cannot find a suitable checker"))
   (when (process-live-p python--flymake-proc)
