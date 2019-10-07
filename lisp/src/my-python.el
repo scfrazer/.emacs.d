@@ -21,6 +21,18 @@
 ;;     (sit-for 5.0)
 ;;     (popup-delete tip)))
 
+(cl-defun jedi:get-in-function-call--construct-call-signature
+    (&key params index call_name)
+  (if (not index)
+      (concat call_name "()")
+    (let ((current-arg (nth index params)))
+      (if (and current-arg (null jedi:tooltip-method))
+          (progn
+            (setf (nth index params)
+                  (propertize current-arg 'face 'jedi:highlight-function-argument))
+            (concat (propertize call_name 'face font-lock-function-name-face) ": " "(" (mapconcat #'identity params ", ") ")"))
+        (concat call_name "(" (mapconcat #'identity params ", ") ")")))))
+
 (defun my-python-flymake (_ report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))
     (error "Cannot find a suitable checker"))
