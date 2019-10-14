@@ -25,16 +25,20 @@
 
 (advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 
+;; (defun my-electric-pair-inhibit (char)
+;;   (let ((syn-next (char-syntax (following-char))))
+;;     (or
+;;      (eq char (char-after))
+;;      (eq syn-next ?w)
+;;      (eq syn-next ?_)
+;;      (eq syn-next ?/)
+;;      (eq syn-next ?\\)
+;;      (and (eq (char-syntax char) ?\")
+;;           (not (nth 3 (syntax-ppss)))))))
 (defun my-electric-pair-inhibit (char)
   (let ((syn-next (char-syntax (following-char))))
-    (or
-     (eq char (char-after))
-     (eq syn-next ?w)
-     (eq syn-next ?_)
-     (eq syn-next ?/)
-     (eq syn-next ?\\)
-     (and (eq (char-syntax char) ?\")
-          (not (nth 3 (syntax-ppss)))))))
+    (not (or (eq syn-next ? )
+             (eq syn-next ?>)))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 

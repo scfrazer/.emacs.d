@@ -24,6 +24,7 @@
  `(ediff-even-diff-A                   ((t :foreground "black" :background ,(smf-color 253))))
  `(ediff-fine-diff-A                   ((t :foreground "black" :background ,(smf-color 215))))
  `(ediff-odd-diff-A                    ((t :foreground "black" :background ,(smf-color 253))))
+ `(eldoc-highlight-function-argument   ((t :background "lightsteelblue2" :bold t)))
  `(error                               ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
  `(flymake-error                       ((t :background "mistyrose")))
  `(flymake-note                        ((t :background "thistle1")))

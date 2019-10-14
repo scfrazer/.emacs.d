@@ -18,8 +18,11 @@
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
+ '(eldoc-echo-area-use-multiline-p t)
+ '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
  '(frame-background-mode (quote light))
+ '(jedi:tooltip-method nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote

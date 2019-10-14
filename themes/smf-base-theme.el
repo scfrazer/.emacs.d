@@ -66,6 +66,7 @@
  `(ido-first-match                          ((t :inherit warning)))
  `(ido-only-match                           ((t :inherit success)))
  `(ido-subdir                               ((t :inherit font-lock-keyword-face)))
+ `(jedi:highlight-function-argument         ((t :inherit eldoc-highlight-function-argument)))
  `(markdown-code-face                       ((t :inherit default :italic t)))
  `(markdown-gfm-checkbox-face               ((t :inherit font-lock-builtin-face :bold t)))
  `(markdown-header-face                     ((t :inherit outline-1 :underline t)))
