@@ -7,6 +7,17 @@
               flymake-start-on-flymake-mode nil
               flymake-wrap-around nil)
 
+(setq-default flymake-diagnostic-types-alist
+  `((:error
+     . ((flymake-category . flymake-error)
+        (priority . -1)))
+    (:warning
+     . ((flymake-category . flymake-warning)
+        (priority . -1)))
+    (:note
+     . ((flymake-category . flymake-note)
+        (priority . -1)))))
+
 (defun my-flymake-show-current-error ()
   "Show the current error point is on."
   (interactive)
