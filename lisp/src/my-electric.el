@@ -37,7 +37,8 @@
 ;;           (not (nth 3 (syntax-ppss)))))))
 (defun my-electric-pair-inhibit (char)
   (let ((syn-next (char-syntax (following-char))))
-    (not (or (eq syn-next ? )
+    (not (or (eq syn-next ?\))
+             (eq syn-next ? )
              (eq syn-next ?>)))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)

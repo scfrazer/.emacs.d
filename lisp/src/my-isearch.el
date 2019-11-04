@@ -49,17 +49,27 @@
 ;; Avoid byte-compiler warnings
 (defvar mc--this-command)
 
-(defun my-isearch-search-forward-line (str)
+(defun my-isearch-search-forward-line (&optional arg)
   "`search-forward' only to end-of-line, and exit at other end."
-  (interactive "sForward on line to: ")
-  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
-    (setq mc--this-command `(lambda () (interactive) (my-isearch-search-forward-line-1 ',str))))
-  (my-isearch-search-forward-line-1 str))
+  (interactive "*P")
+  (let (str)
+    (if arg
+        (setq str (read-string "Forward on line to string: "))
+      (message "Forward on line to char:")
+      (setq str (char-to-string (read-char))))
+    (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+      (setq mc--this-command `(lambda () (interactive) (my-isearch-search-forward-line-1 ',str))))
+    (my-isearch-search-forward-line-1 str)))
 
 (defun my-isearch-search-forward-line-1 (str)
   "Real work for my-isearch-search-forward-line."
-  (when (search-forward str (point-at-eol) t)
-    (backward-char (length str))))
+  (let ((pos (point)))
+    (when (looking-at (regexp-quote str))
+      (forward-char (length str)))
+    (if (search-forward str (point-at-eol) t)
+        (backward-char (length str))
+      (goto-char pos)
+      nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

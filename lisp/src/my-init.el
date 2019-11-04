@@ -223,6 +223,14 @@
   (require 'my-pop-back)
   (require 'my-ffap))
 
+(use-package fill-function-arguments
+  :bind* ("C-c ," . fill-function-arguments-dwim)
+  :config
+  (progn
+    (setq-default fill-function-arguments-first-argument-same-line t
+                  fill-function-arguments-last-argument-same-line t
+                  fill-function-arguments-indent-after-fill t)))
+
 (use-package flymake
   :commands (flymake-goto-next-error
              flymake-goto-prev-error)
@@ -475,9 +483,9 @@
           (let* ((pos (point))
                  (at-bol (= (point-at-bol) pos))
                  str)
-            (if at-bol
-                (goto-char (avy--line))
-              (avy-process (avy--regex-candidates "^\\s-*\\([^ \t\n]\\)" nil nil nil 1)))
+            (goto-char (if at-bol
+                           (avy--line)
+                         (car (avy-process (avy--regex-candidates "^\\s-*\\([^ \t\n]\\)" nil nil nil 1)))))
             (setq str (buffer-substring-no-properties (point) (point-at-eol)))
             (goto-char pos)
             (insert str)
@@ -491,8 +499,8 @@
   :bind* (("M-SPC" . my-push-mark)
           ("M-r"   . mc/edit-lines)))
 
-(use-package my-reformat
-  :bind* ("C-c ," . my-reformat-comma-delimited-items))
+;; (use-package my-reformat
+;;   :bind* ("C-c ," . my-reformat-comma-delimited-items))
 
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
@@ -507,6 +515,8 @@
   (require 'my-sgml-mode))
 
 (use-package smerge-mode
+  :commands (smerge-mode
+             smerge-ediff)
   :config
   (progn
     (defhydra smerge-hydra
@@ -537,11 +547,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("r" smerge-resolve)
       ("k" smerge-kill-current)
       ("q" nil "cancel" :color blue))
-    ;; (defun my-smerge-mode-hook ()
-    ;;   (call-interactively 'smerge-hydra/body))
-    ;; (add-hook 'smerge-mode-hook 'my-smerge-mode-hook)
-    ))
-(defalias 'merge 'smerge-hydra/body)
+    (defalias 'conflicts 'smerge-hydra/body)))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
@@ -1041,6 +1047,24 @@ or the region with prefix arg."
   (while (search-forward (string ?\C-m) nil t)
     (replace-match ""))
   (goto-char (point-min)))
+
+;; (defun my-edebug-remove-instrumentation ()
+;;   "Remove Edebug instrumentation from all functions."
+;;   (interactive)
+;;   (let ((functions nil))
+;;     (mapatoms
+;;      (lambda (symbol)
+;;        (when (and (functionp symbol)
+;;                   (get symbol 'edebug))
+;;          (let ((unwrapped (edebug-unwrap* (symbol-function symbol))))
+;;            (unless (equal unwrapped (symbol-function symbol))
+;;              (push symbol functions)
+;;              (setf (symbol-function symbol) unwrapped)))))
+;;      obarray)
+;;     (if (not functions)
+;;         (message "Found no functions to remove instrumentation from")
+;;       (message "Remove edebug instrumentation from %s"
+;;                (mapconcat #'symbol-name functions ", ")))))
 
 (defun my-editor-mode ()
   "For use when invoked as $EDITOR."
@@ -1805,7 +1829,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c ."       . my-kill-results-buffer)
  ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
- ("C-c M"       . recompile)
+ ("C-c M"       . smerge-ediff)
  ("C-c N"       . narrow-to-defun)
  ("C-c T"       . tidy)
  ("C-c TAB"     . indent-region)
@@ -1846,7 +1870,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
- ("C-x v"       . (lambda () "Admonish me" (interactive) (ding) (message "Stop it!")))
  ("C-x w"       . my-clone-file)
  ("C-x |"       . my-win-split-horizontally)
  ("C-z"         . undo)
