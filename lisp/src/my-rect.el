@@ -1,36 +1,34 @@
-;;; my-rectangle.el
+;;; my-rect.el
 
 (require 'rect)
 (require 'multiple-cursors)
 
-;; (defhydra smerge-hydra
-;;   (:color pink :hint nil :post (smerge-auto-leave))
-;;   "
-;; ^Move^       ^Keep^               ^Diff^                 ^Other^
-;; ^^-----------^^-------------------^^---------------------^^-------
-;; _n_ext       _b_ase               _<_: upper/base        _C_ombine
-;; _p_rev       _u_pper              _=_: upper/lower       _r_esolve
-;; ^^           _l_ower              _>_: base/lower        _k_ill current
-;; ^^           _a_ll                _R_efine
-;; ^^           _RET_: current       _E_diff
-;; "
-;;   ("n" smerge-next)
-;;   ("p" smerge-prev)
-;;   ("b" smerge-keep-base)
-;;   ("u" smerge-keep-upper)
-;;   ("l" smerge-keep-lower)
-;;   ("a" smerge-keep-all)
-;;   ("RET" smerge-keep-current)
-;;   ("\C-m" smerge-keep-current)
-;;   ("<" smerge-diff-base-upper)
-;;   ("=" smerge-diff-upper-lower)
-;;   (">" smerge-diff-base-lower)
-;;   ("R" smerge-refine)
-;;   ("E" smerge-ediff)
-;;   ("C" smerge-combine-with-next)
-;;   ("r" smerge-resolve)
-;;   ("k" smerge-kill-current)
-;;   ("q" nil "cancel" :color blue))
+;; TODO -- M-# => number lines in multi-cursor mode
+
+;; n -- next lines matching prev-char
+;; N -- next lines matching next-char
+;; p -- prev lines matching prev-char
+;; P -- prev lines matching next-char
+;; e -- multi-cursor edit lines
+;; # -- insert number (C-u prefix does magic)
+;; k -- kill-rectangle
+;; t -- insert text
+;; q -- quit
+
+(defhydra my-rect
+  (:exit nil :foreign-keys run :hint nil)
+  "
+^Move^                                ^Action^
+^^------------------------------------^^------
+_n_ext Next lines matching prev-char  _e_ Multi-cursor edit
+_p_rev Prev lines matching prev-char  _SPC_ Push mark
+
+"
+  ("SPC" my-push-mark)
+  ("n" next-line)
+  ("p" previous-line)
+  ("e" mc/edit-lines)
+  ("q" nil "Quit" :color blue))
 
 (defun my-push-mark ()
   "Wrap `push-mark' in an interactive form."
@@ -38,9 +36,9 @@
   (push-mark))
 
 (defvar rectangle-number-line-counter nil)
-(defvar my-rectangle-number-line-format nil)
+(defvar my-rect-number-line-format nil)
 
-(defun my-rectangle-number-lines (&optional arg)
+(defun my-rect-number-lines (&optional arg)
   "Like `rectangle-number-lines' but with better defaults.
 
 When called with one prefix arg, prompt for starting point.  When
@@ -60,25 +58,25 @@ format."
     (if (and (fboundp 'multiple-cursors-mode) multiple-cursors-mode)
         (progn
           (setq rectangle-number-line-counter start-at
-                my-rectangle-number-line-format format)
+                my-rect-number-line-format format)
           (mc/for-each-cursor-ordered
-           (mc/execute-command-for-fake-cursor 'my-rectangle-mc-callback cursor)))
+           (mc/execute-command-for-fake-cursor 'my-rect-mc-callback cursor)))
       (delete-extract-rectangle (region-beginning) (region-end))
       (let ((start (mark))
             (end (point)))
         (if (< end start)
             (progn
               (setq rectangle-number-line-counter (+ (count-lines end start) start-at -1))
-              (apply-on-rectangle 'my-rectangle-reverse-number-line-callback end start format))
+              (apply-on-rectangle 'my-rect-reverse-number-line-callback end start format))
           (setq rectangle-number-line-counter start-at)
           (apply-on-rectangle 'rectangle-number-line-callback start end format))))))
 
-(defun my-rectangle-mc-callback ()
+(defun my-rect-mc-callback ()
   (interactive)
-  (insert (format my-rectangle-number-line-format rectangle-number-line-counter))
+  (insert (format my-rect-number-line-format rectangle-number-line-counter))
   (setq rectangle-number-line-counter (1+ rectangle-number-line-counter)))
 
-(defun my-rectangle-reverse-number-line-callback (start _end format-string)
+(defun my-rect-reverse-number-line-callback (start _end format-string)
   (move-to-column start t)
   (insert (format format-string rectangle-number-line-counter))
   (setq rectangle-number-line-counter
@@ -135,4 +133,4 @@ format."
   (deactivate-mark))
 (add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)
 
-(provide 'my-rectangle)
+(provide 'my-rect)

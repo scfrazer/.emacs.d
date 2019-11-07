@@ -495,9 +495,8 @@
         (apply orig-fun (list key-seq))))
     (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
 
-(use-package my-rectangle
-  :bind* (("M-SPC" . my-push-mark)
-          ("M-r"   . mc/edit-lines)))
+(use-package my-rect
+  :bind* (("M-r" . my-rect/body)))
 
 ;; (use-package my-reformat
 ;;   :bind* ("C-c ," . my-reformat-comma-delimited-items))
