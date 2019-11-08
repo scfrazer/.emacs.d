@@ -137,7 +137,7 @@
   :mode (("\\.s\\'" . as-mode)))
 
 (use-package bm
-  :bind* (("M-#" . my-bm-toggle-or-show)
+  :bind* (("M-^" . my-bm-toggle-or-show)
           ("M-(" . bm-previous)
           ("M-)" . bm-next))
   :config
@@ -496,7 +496,9 @@
     (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
 
 (use-package my-rect
-  :bind* (("M-r" . my-rect/body)))
+  :bind* (("M-#" . my-rect-number-lines)
+          ("M-SPC" . my-rect-push-mark)
+          ("M-r" . my-rect/body)))
 
 ;; (use-package my-reformat
 ;;   :bind* ("C-c ," . my-reformat-comma-delimited-items))
@@ -802,34 +804,6 @@ undoable all at once."
   (setq buffer-read-only t)
   (set-buffer-modified-p nil))
 
-(defun my-backward-paragraph-rect ()
-  "Move backward over what looks like a similar set of lines."
-  (interactive)
-  (let* ((col (current-column))
-         (look-fwd (looking-back "^\\s-*" (point-at-bol)))
-         (regexp (regexp-quote
-                  (buffer-substring-no-properties
-                   (point)
-                   (save-excursion
-                     (if look-fwd
-                         (progn
-                           (skip-syntax-forward " ")
-                           (unless (eolp) (forward-char 1)))
-                       (skip-syntax-backward " ")
-                       (unless (bolp) (backward-char 1)))
-                     (point)))))
-         (again t))
-    (while again
-      (forward-line -1)
-      (setq again (not (bobp)))
-      (unless (and (= (move-to-column col) col)
-                   (if look-fwd
-                       (looking-at regexp)
-                     (looking-back regexp (point-at-bol))))
-        (forward-line 1)
-        (move-to-column col)
-        (setq again nil)))))
-
 (defun my-backward-regexp (regexp)
   "Skip lines backward containing a regexp."
   (interactive "sSkip lines backward containing regexp: ")
@@ -1102,34 +1076,6 @@ or the region with prefix arg."
   (while (and (looking-at "^\\s-*$") (not (eobp)))
     (forward-line))
   (re-search-forward "^\\s-*$" nil 'go))
-
-(defun my-forward-paragraph-rect ()
-  "Move forward over what looks like a similar set of lines."
-  (interactive)
-  (let* ((col (current-column))
-         (look-fwd (looking-back "^\\s-*" (point-at-bol)))
-         (regexp (regexp-quote
-                  (buffer-substring-no-properties
-                   (point)
-                   (save-excursion
-                     (if look-fwd
-                         (progn
-                           (skip-syntax-forward " ")
-                           (unless (eolp) (forward-char 1)))
-                       (skip-syntax-backward " ")
-                       (unless (bolp) (backward-char 1)))
-                     (point)))))
-         (again t))
-    (while again
-      (forward-line 1)
-      (setq again (not (eobp)))
-      (unless (and (= (move-to-column col) col)
-                   (if look-fwd
-                       (looking-at regexp)
-                     (looking-back regexp (point-at-bol))))
-        (forward-line -1)
-        (move-to-column col)
-        (setq again nil)))))
 
 (defun my-forward-regexp (regexp)
   "Skip lines containing a regexp."

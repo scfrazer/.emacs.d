@@ -5,37 +5,83 @@
 
 ;; TODO -- M-# => number lines in multi-cursor mode
 
-;; n -- next lines matching prev-char
-;; N -- next lines matching next-char
-;; p -- prev lines matching prev-char
-;; P -- prev lines matching next-char
-;; e -- multi-cursor edit lines
-;; # -- insert number (C-u prefix does magic)
-;; k -- kill-rectangle
-;; t -- insert text
-;; q -- quit
-
 (defhydra my-rect
-  (:exit nil :foreign-keys run :hint nil)
+  (:foreign-keys run :hint nil)
   "
-^Move^                                ^Action^
-^^------------------------------------^^------
-_n_ext Next lines matching prev-char  _e_ Multi-cursor edit
-_p_rev Prev lines matching prev-char  _SPC_ Push mark
+^Move^                         ^Action^
+^^-----------------------------^^------
+_n_ext Next-lines/this-char    _SPC_ Push mark
+_p_rev Prev-lines/this-char    _e_ Multi-cursor edit
+_N_ext Next-lines/prev-char    _#_ Insert numbers
+_P_rev Prev-lines/prev-char    _k_ Kill rectangle
+                             _t_ Insert text
 
 "
-  ("SPC" my-push-mark)
-  ("n" next-line)
-  ("p" previous-line)
-  ("e" mc/edit-lines)
-  ("q" nil "Quit" :color blue))
+  ("SPC" my-rect-push-mark)
+  ("n" (lambda ()
+         (interactive)
+         (my-rect-push-mark)
+         (my-rect-next-lines t)))
+  ("N" (lambda ()
+         (interactive)
+         (my-rect-push-mark)
+         (my-rect-next-lines)))
+  ("p" (lambda ()
+         (interactive)
+         (my-rect-push-mark)
+         (my-rect-prev-lines t)))
+  ("P" (lambda ()
+         (interactive)
+         (my-rect-push-mark)
+         (my-rect-prev-lines)))
+  ("e" my-mc/edit-lines :exit t)
+  ("#" my-rect-number-lines :exit t)
+  ("k" kill-rectangle :exit t)
+  ("t" string-rectangle :exit t)
+  ("\C-g" nil :exit t)
+  ("q" nil "Quit" :exit t))
 
-(defun my-push-mark ()
+(defun my-rect-push-mark ()
   "Wrap `push-mark' in an interactive form."
   (interactive)
   (push-mark))
 
-(defvar rectangle-number-line-counter nil)
+(defun my-rect-next-lines(&optional look-fwd)
+  "Move over next lines looking at backward or forward char."
+  (interactive)
+  (let* ((col (current-column))
+         (look-fwd (or look-fwd (= col 0)))
+         (char (if look-fwd (char-after) (char-before)))
+         (again t))
+    (while again
+      (forward-line 1)
+      (setq again (not (eobp)))
+      (unless (and (= (move-to-column col) col)
+                   (equal char (if look-fwd (char-after) (char-before))))
+        (forward-line -1)
+        (move-to-column col)
+        (setq again nil)))))
+
+(defun my-rect-prev-lines (&optional look-fwd)
+  "Move over previous lines looking at backward or forward char."
+  (interactive)
+  (let* ((col (current-column))
+         (look-fwd (or look-fwd (= col 0)))
+         (char (if look-fwd (char-after) (char-before)))
+         (again t))
+    (while again
+      (forward-line -1)
+      (setq again (not (bobp)))
+      (unless (and (= (move-to-column col) col)
+                   (equal char (if look-fwd (char-after) (char-before))))
+        (forward-line 1)
+        (move-to-column col)
+        (setq again nil)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Number lines
+
+(defvar rectangle-number-line-counter)
 (defvar my-rect-number-line-format nil)
 
 (defun my-rect-number-lines (&optional arg)
@@ -71,28 +117,49 @@ format."
           (setq rectangle-number-line-counter start-at)
           (apply-on-rectangle 'rectangle-number-line-callback start end format))))))
 
-(defun my-rect-mc-callback ()
-  (interactive)
-  (insert (format my-rect-number-line-format rectangle-number-line-counter))
-  (setq rectangle-number-line-counter (1+ rectangle-number-line-counter)))
-
 (defun my-rect-reverse-number-line-callback (start _end format-string)
   (move-to-column start t)
   (insert (format format-string rectangle-number-line-counter))
   (setq rectangle-number-line-counter
         (1- rectangle-number-line-counter)))
 
+(defun my-rect-mc-callback ()
+  (interactive)
+  (insert (format my-rect-number-line-format rectangle-number-line-counter))
+  (setq rectangle-number-line-counter (1+ rectangle-number-line-counter)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Multiple cursors
 
-(defvar my-mc-mark nil)
-(make-variable-buffer-local 'my-mc-mark)
-
-(defvar my-mc-point nil)
-(make-variable-buffer-local 'my-mc-point)
-
 (setq-default mc/always-run-for-all t)
 (define-key mc/keymap (kbd "RET") 'mc/keyboard-quit)
+
+(defun my-mc/edit-lines ()
+  "Like `mc/edit-lines', but without needing mark active."
+  (interactive)
+  (when mark-active
+    (deactivate-mark))
+  (mc/remove-fake-cursors)
+  (let* ((col (current-column))
+         (beg (mark t))
+         (end (point))
+         (num-lines (- (line-number-at-pos end) (line-number-at-pos beg))))
+    (unless (= num-lines 0)
+      (save-excursion
+        (goto-char beg)
+        (mc/create-fake-cursor-at-point)
+        (while (not (= num-lines 0))
+          (if (< num-lines 0)
+              (progn
+                (previous-logical-line 1 nil)
+                (incf num-lines))
+            (next-logical-line 1 nil)
+            (decf num-lines))
+          (move-to-column col)
+          (when (and (not (= num-lines 0))
+                     (equal col (current-column)))
+            (mc/create-fake-cursor-at-point))))
+      (multiple-cursors-mode 1))))
 
 (defun my-mc/mark-all-in-region (beg end &optional search)
   "Find and mark all the parts in the region matching the given search"
@@ -116,21 +183,5 @@ format."
         (if (> (mc/num-cursors) 1)
             (multiple-cursors-mode 1)
           (multiple-cursors-mode 0))))))
-
-(defun my-mc-save (&optional arg)
-  (unless (region-active-p)
-    (activate-mark))
-  (setq my-mc-mark (mark t))
-  (setq my-mc-point (point-marker)))
-(advice-add #'mc/edit-lines :before #'my-mc-save)
-(advice-add #'my-mc/mark-all-in-region :before #'my-mc-save)
-
-(defun my-mc-restore ()
-  (when (and my-mc-point (marker-position my-mc-point))
-    (goto-char my-mc-point))
-  (when my-mc-mark
-    (set-mark my-mc-mark))
-  (deactivate-mark))
-(add-hook 'multiple-cursors-mode-disabled-hook 'my-mc-restore)
 
 (provide 'my-rect)

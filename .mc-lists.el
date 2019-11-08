@@ -10,4 +10,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+        my-rect-number-lines
         ))
