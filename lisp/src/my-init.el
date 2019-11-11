@@ -179,7 +179,11 @@
                   deft-strip-summary-regexp "\\([\n\t]\\|^[^#].*$\\)")
     (defun my-deft-parse-summary (orig-fun contents title)
       (replace-regexp-in-string "[ ]+" " " (apply orig-fun (list contents title))))
-    (advice-add #'deft-parse-summary :around #'my-deft-parse-summary)))
+    (advice-add #'deft-parse-summary :around #'my-deft-parse-summary)
+    (defun my-deft-open-file-hook ()
+      (when (get-buffer deft-buffer)
+        (kill-buffer deft-buffer)))
+    (add-hook 'deft-open-file-hook 'my-deft-open-file-hook)))
 
 (use-package diff-mode
   :defer t
