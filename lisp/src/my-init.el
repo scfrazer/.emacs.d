@@ -171,10 +171,15 @@
   :bind* ("<f8>" . deft)
   :commands (deft)
   :config
-  (setq-default deft-auto-save-interval 0
-                deft-current-sort-method 'title
-                deft-directory "~/notes"
-                deft-extensions '("txt" "md" "org")))
+  (progn
+    (setq-default deft-auto-save-interval 0
+                  deft-current-sort-method 'title
+                  deft-directory "~/notes"
+                  deft-extensions '("txt" "md" "org")
+                  deft-strip-summary-regexp "\\([\n\t]\\|^[^#].*$\\)")
+    (defun my-deft-parse-summary (orig-fun contents title)
+      (replace-regexp-in-string "[ ]+" " " (apply orig-fun (list contents title))))
+    (advice-add #'deft-parse-summary :around #'my-deft-parse-summary)))
 
 (use-package diff-mode
   :defer t

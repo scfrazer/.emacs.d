@@ -18,6 +18,7 @@
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
  '(custom-safe-themes t)
+ '(deft-new-file-format "Notes-%Y-%m-%d.md")
  '(eldoc-echo-area-use-multiline-p t)
  '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
