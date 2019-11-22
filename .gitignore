@@ -7,3 +7,4 @@ lisp/confidential.elc
 lisp/src/confidential.el
 tasks
 tramp
+transient

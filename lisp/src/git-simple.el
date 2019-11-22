@@ -218,17 +218,18 @@
 (defun git-simple-ediff-file ()
   "ediff file."
   (interactive)
-  (let ((file (git-simple-get-current-file)) bufB mode)
+  (let ((file (git-simple-get-current-file)) bufB mode rel-file-path)
     (when file
       (setq bufB (get-buffer-create (find-file file)))
       (with-current-buffer bufB
         (setq mode major-mode))
-      (setq git-simple-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" file)))
+      (setq rel-file-path (file-relative-name file (git-simple-find-root (file-name-directory file))))
+      (setq git-simple-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" rel-file-path)))
       (with-current-buffer git-simple-ediff-head-rev-buf
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process git-simple-executable nil t nil "show" (concat "HEAD:" file)) 0)
-          (error (concat "Couldn't get HEAD revision for file '" file "'")))
+        (unless (= (call-process git-simple-executable nil t nil "show" (concat "HEAD:" rel-file-path)) 0)
+          (error (concat "Couldn't get HEAD revision for file '" rel-file-path "'")))
         (goto-char (point-min))
         (set-auto-mode-0 mode)
         (set-buffer-modified-p nil))
@@ -391,6 +392,7 @@ Substitute '%' in command with current file name."
 (unless git-simple-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "!") 'git-simple-exec)
+    (define-key map (kbd "-") 'git-simple-ediff-file)
     (define-key map (kbd "=") 'git-simple-diff-file)
     (define-key map (kbd "A") 'git-simple-add-tracked)
     (define-key map (kbd "C") 'git-simple-commit)
@@ -403,7 +405,6 @@ Substitute '%' in command with current file name."
     (define-key map (kbd "RET") 'git-simple-edit-file)
     (define-key map (kbd "TAB") 'git-simple-diff-file)
     (define-key map (kbd "a") 'git-simple-add-current-file)
-    (define-key map (kbd "e") 'git-simple-ediff-file)
     (define-key map (kbd "g") 'git-simple-refresh)
     (define-key map (kbd "h") 'git-simple-history)
     (define-key map (kbd "k") 'git-simple-discard)
@@ -416,11 +417,11 @@ Substitute '%' in command with current file name."
 
 (define-prefix-command 'git-simple-global-map)
 (define-key git-simple-global-map (kbd "!") 'git-simple-exec)
+(define-key git-simple-global-map (kbd "-") 'git-simple-ediff-file)
 (define-key git-simple-global-map (kbd "=") 'git-simple-diff-file)
-(define-key git-simple-global-map (kbd "g") 'git-simple-grep)
 (define-key git-simple-global-map (kbd "RET") 'git-simple-switch-next)
 (define-key git-simple-global-map (kbd "a") 'git-simple-add-current-file)
-(define-key git-simple-global-map (kbd "e") 'git-simple-ediff-file)
+(define-key git-simple-global-map (kbd "g") 'git-simple-grep)
 (define-key git-simple-global-map (kbd "h") 'git-simple-history)
 (define-key git-simple-global-map (kbd "k") 'git-simple-discard)
 (define-key git-simple-global-map (kbd "n") 'git-simple)

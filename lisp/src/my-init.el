@@ -33,9 +33,6 @@
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
 
-;; (require 'easy-escape)
-;; (setq minor-mode-alist (remove (assq 'easy-escape-minor-mode minor-mode-alist) minor-mode-alist))
-
 (require 'filladapt)
 (setq filladapt-mode-line-string nil)
 (setq-default filladapt-mode t)
@@ -86,8 +83,6 @@
 (require 'my-occur)
 (bind-keys* ("M-s O" . my-multi-occur)
             ("M-s o" . my-occur))
-
-;; (require 'my-p4)
 
 (require 'my-recentf)
 
@@ -159,13 +154,6 @@
   :defer t
   :config
   (require 'my-cc-mode))
-
-(use-package csh-mode
-  :mode (("\\.csh\\'" . csh-mode)
-         ("\\.cshrc\\'" . csh-mode))
-  :init
-  ;; Add csh to magic interpreter modes
-  (add-to-list 'interpreter-mode-alist '("csh" . csh-mode)))
 
 (use-package deft
   :bind* ("<f8>" . deft)
@@ -275,16 +263,42 @@
   :config
   (progn
     (require 'fzf)
+    (require 'my-dired)
     (defun my-fzf ()
       (interactive)
       (let ((dir (or (car (project-roots (project-current)))
                      default-directory)))
-        (fzf/start dir)))))
+        (if (not (equal major-mode 'dired-mode))
+            (fzf/start dir)
+          (let ((process-environment
+                 (cons (concat "FZF_DEFAULT_COMMAND=fd --type d") process-environment)))
+            (fzf/start dir)))))
+    (defun fzf/after-term-handle-exit (process-name msg)
+      (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
+             (lines (split-string text "\n" t "\s*>\s+"))
+             (line (car (last (butlast lines 1))))
+             (selected (split-string line ":"))
+             (file (expand-file-name (pop selected)))
+             (linenumber (pop selected)))
+        (kill-buffer "*fzf*")
+        (jump-to-register :fzf-windows)
+        (when (file-exists-p file)
+          (if (file-directory-p file)
+              (progn
+                (setq my-dired-prev-dir (dired-current-directory))
+                (find-alternate-file file))
+            (find-file file)))
+        (when linenumber
+          (goto-char (point-min))
+          (forward-line (- (string-to-number linenumber) 1))
+          (back-to-indentation)))
+      (advice-remove 'term-handle-exit #'fzf/after-term-handle-exit))))
 
 (use-package git-simple
   :bind-keymap (("C-x g" . git-simple-global-map)))
 
 (use-package git-timemachine
+  :defer t
   :config
   (setq git-timemachine-abbreviation-length 7))
 
@@ -324,15 +338,6 @@
 
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))
-
-(use-package less-css-mode
-  :mode (("\\.less\\'" . less-css-mode))
-  :config
-  (progn
-    (require 'flymake-easy)
-    (require 'flymake-less)
-    (setq-default less-css-compile-at-save t)
-    (add-hook 'less-css-mode-hook 'flymake-less-load)))
 
 (use-package ll-debug
   :bind* (("C-c d C"   . my-debug-comment-region-after-copy)
@@ -509,9 +514,6 @@
           ("M-SPC" . my-rect-push-mark)
           ("M-r" . my-rect/body)))
 
-;; (use-package my-reformat
-;;   :bind* ("C-c ," . my-reformat-comma-delimited-items))
-
 (use-package revbufs
   :bind* ("C-c R" . revbufs))
 
@@ -580,8 +582,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (require 'my-sv-mode))
 
 (use-package my-tmux
-  :bind* (("M-c" . my-tmux-term-copy)
-          ("M-t" . my-tmux-copy)))
+  :bind* (("C-t" . my-tmux-copy)))
 
 (use-package vc
   :commands (vc-dir)
@@ -602,10 +603,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
          ("\\.css\\'" . web-mode))
   :config
   (require 'my-web-mode))
-
-(use-package my-xclip
-  :bind* (("C-c X" . my-xclip-yank)
-          ("C-c x" . my-xclip-copy)))
 
 (use-package xref
   :bind* (("M-&" . my-xref-pop-marker-stack-kill-buffer)
@@ -1671,7 +1668,6 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
-  ;; (easy-escape-minor-mode 1)
   (auto-complete-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
@@ -1758,7 +1754,6 @@ Prefix with C-u to resize the `next-window'."
 (defvar file-template-mapping-alist)
 (eval-after-load "file-template"
   '(progn
-     (add-to-list 'file-template-mapping-alist '("\\.csh$" . "template.csh"))
      (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
      (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))

@@ -23,6 +23,24 @@
   (my-vc-git-command "Unstaged"
                      (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
+(defun my-vc-activate ()
+  (interactive)
+  (unless vc-mode
+    (let ((vc-handled-backends my-vc-handled-backends))
+      (vc-find-file-hook))))
+
+(defun my-vc-ediff (&optional rev)
+  "Use ediff with vc."
+  (interactive)
+  (unless (buffer-file-name)
+    (error "Current buffer is not visiting a file"))
+  (when (and (buffer-modified-p)
+             (y-or-n-p (message "Buffer %s is modified. Save buffer? " (buffer-name))))
+    (save-buffer (current-buffer)))
+  (my-vc-activate)
+  (ediff-load-version-control)
+  (ediff-vc-internal (or rev "") ""))
+
 ;; (define-key vc-prefix-map [(r)] 'vc-revert-buffer)
 ;; (define-key vc-dir-mode-map [(r)] 'vc-revert-buffer)
 (define-key vc-prefix-map [(a)] 'my-vc-git-add)
