@@ -35,7 +35,7 @@
       (cond ((looking-at " =>")
              (compose-region start (+ start length) ?•))
             ((looking-at ".\\+.")
-             (compose-region start (+ start length) ?►))
+             (compose-region start (+ start length) ?▶))
             ((looking-at ".-.")
              (compose-region start (+ start length) ?▼))))))
 

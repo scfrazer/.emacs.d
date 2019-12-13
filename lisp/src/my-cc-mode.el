@@ -3,6 +3,7 @@
 (require 'my-doxymacs)
 (require 'find-file)
 (require 'sb-imenu-ctags)
+(require 'align)
 
 ;; Style
 
@@ -15,9 +16,18 @@
                         (c-comment-only-line-offset 0 . 0)
                         (c-block-comment-prefix . "")))
 (setq c-default-style '((c-mode . "strou4")
-                        (cc-mode . "strou2")
+                        (cc-mode . "strou4")
+                        (c++-mode . "strou4")
                         (php-mode . "strou4")
                         (java-mode . "strou4")))
+
+;; Align
+
+(add-to-list 'align-rules-list
+             '(my-c++-colon-delimiter
+               (regexp . "\\(\\s-+\\):\\(\\s-+\\)")
+               (group . (1 2))
+               (modes . align-c++-modes)))
 
 ;; Modeline format is annoying
 
@@ -72,10 +82,9 @@
 
 (defun my-c-mode-common-hook ()
   (abbrev-mode -1)
-  (when (equal major-mode 'c-mode)
-    (setq comment-start "// ")
-    (setq comment-end "" )
-    (flymake-mode 1))
+  (setq comment-start "// ")
+  (setq comment-end "" )
+  (flymake-mode 1)
   (setq imenu-create-index-function 'sb-imenu-ctags-create-index)
   (define-key c-mode-base-map (kbd "C-c C-f") 'doxymacs-insert-function-comment)
   (define-key c-mode-base-map (kbd "C-c C-s") 'my-cc-create-skeleton-from-prototype))

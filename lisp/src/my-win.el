@@ -44,6 +44,17 @@ With prefix arg, stay in current window but show different buffer in new window.
   (when arg
     (other-window -1)))
 
+(defun my-win-split-vertically-small ()
+  "Like `split-window-vertically', but small other window and
+show different buffer in new window."
+  (interactive)
+  (split-window-vertically (round (* (frame-height) -0.333)))
+  (recenter)
+  (other-window 1)
+  (my-buf-toggle)
+  (recenter)
+  (other-window -1))
+
 (defun my-win-split-horizontally (&optional arg)
   "Like `split-window-horizontally', but switch to other window after split.
 With prefix arg, stay in current window but show different buffer in new window."

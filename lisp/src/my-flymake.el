@@ -18,6 +18,8 @@
      . ((flymake-category . flymake-note)
         (priority . -1)))))
 
+(put 'flymake-note 'mode-line-face 'caution)
+
 (defun my-flymake-show-current-error ()
   "Show the current error point is on."
   (interactive)

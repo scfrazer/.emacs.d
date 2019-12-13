@@ -264,10 +264,12 @@
   (progn
     (require 'fzf)
     (require 'my-dired)
-    (defun my-fzf ()
-      (interactive)
+    (defun my-fzf (&optional arg)
+      (interactive "P")
       (let ((dir (or (car (project-roots (project-current)))
                      default-directory)))
+        (when arg
+          (setq dir (read-directory-name "Starting directory? " dir)))
         (if (not (equal major-mode 'dired-mode))
             (fzf/start dir)
           (let ((process-environment
@@ -1784,7 +1786,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-c TAB"     . indent-region)
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
- ;; ("C-c _"       . my-style-symbol-toggle)
  ("C-c c"       . my-comment-or-uncomment-region)
  ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
@@ -1815,6 +1816,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x M-q"     . my-toggle-buffer-modified)
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
  ("C-x SPC"     . fixup-whitespace)
+ ("C-x _"       . my-win-split-vertically-small)
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
@@ -1837,6 +1839,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-~"         . previous-error))
+ ;; ("C-c _"       . my-style-symbol-toggle)
 
 ;; These have to be in this order
 

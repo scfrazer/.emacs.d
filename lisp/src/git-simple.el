@@ -218,7 +218,7 @@
 (defun git-simple-ediff-file ()
   "ediff file."
   (interactive)
-  (let ((file (git-simple-get-current-file)) bufB mode rel-file-path)
+  (let ((file (expand-file-name (git-simple-get-current-file))) bufB mode rel-file-path)
     (when file
       (setq bufB (get-buffer-create (find-file file)))
       (with-current-buffer bufB
