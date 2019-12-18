@@ -21,7 +21,7 @@
                       "--language-force=c++ --c++-kinds=cdfmnpstuvx")
                      ((equal mode 'java-mode)
                       "--language-force=java --java-kinds=-efg"))
-               " --extra=+q -f- " filename) t)
+               " --extras=+q -f- " filename) t)
       (goto-char (point-max))
       (while (not (bobp))
         (forward-line -1)

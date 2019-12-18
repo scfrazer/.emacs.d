@@ -208,7 +208,6 @@
       (ff-get-other-file)
     (let* ((sig (my-cc-parse-function-signature))
            (name (nth 0 sig))
-           (args (nth 1 sig))
            (namespaces (nth 3 sig))
            (returns (nth 4 sig))
            namespace-end)
@@ -232,7 +231,8 @@
         (nreverse namespaces)
         (dolist (ns namespaces)
           (setq name (concat ns "::" name))))
-      (re-search-forward (concat "^\\s-*" returns "\\s-+" name "\\s-*(") nil t)
+      (unless (re-search-forward (concat "^\\s-*" returns "\\s-+" name "\\s-*(") nil t)
+        (re-search-forward (concat "^.+" name "\\s-*(") nil t))
       (back-to-indentation)
       (recenter))))
 

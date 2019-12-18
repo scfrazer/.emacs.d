@@ -27,7 +27,7 @@
  `(eldoc-highlight-function-argument   ((t :background "lightsteelblue2" :bold t)))
  `(error                               ((t :foreground ,(smf-color 231) :background ,(smf-color 124))))
  `(flymake-error                       ((t :background "mistyrose")))
- `(flymake-note                        ((t :background "thistle1")))
+ `(flymake-note                        ((t :background "papayawhip")))
  `(flymake-warning                     ((t :background "lightyellow")))
  `(flyspell-duplicate                  ((t :background "thistle1")))
  `(flyspell-incorrect                  ((t :background "thistle1")))
