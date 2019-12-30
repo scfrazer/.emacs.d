@@ -14,12 +14,18 @@
 (c-add-style "strou4" '("stroustrup"
                         (c-basic-offset . 4)
                         (c-comment-only-line-offset 0 . 0)
+                        (c-offsets-alist . ((innamespace . [0])))
                         (c-block-comment-prefix . "")))
 (setq c-default-style '((c-mode . "strou4")
                         (cc-mode . "strou4")
                         (c++-mode . "strou4")
                         (php-mode . "strou4")
                         (java-mode . "strou4")))
+
+;; Config
+
+(dolist (type (list "unique_ptr" "shared_ptr" "weak_ptr" "auto_ptr"))
+  (add-to-list 'c++-font-lock-extra-types type))
 
 ;; Align
 
@@ -124,10 +130,42 @@
 ;; Abbrevs
 
 (define-abbrev c++-mode-abbrev-table
-  "reg"
+  "up"
+  "std::unique_ptr<>"
+  (lambda ()
+    (backward-char 1)))
+
+(define-abbrev c++-mode-abbrev-table
+  "sp"
+  "std::shared_ptr<>"
+  (lambda ()
+    (backward-char 1)))
+
+(define-abbrev c++-mode-abbrev-table
+  "wp"
+  "std::weak_ptr<>"
+  (lambda ()
+    (backward-char 1)))
+
+(define-abbrev c++-mode-abbrev-table
+  "mp"
   ""
   (lambda ()
-    (call-interactively 'regman-insert-register)))
+    (if (looking-back "\\s-+\\([a-zA-Z0-9_]+\\)\\s-*=\\s-*" (point-at-bol))
+        (let ((pos (point))
+              (var (match-string-no-properties 1))
+              std var-type pointer-type)
+          (save-excursion
+            (c-beginning-of-defun)
+            (when (re-search-forward (concat "\\(std::\\)?\\(unique\\|shared\\|weak\\)_ptr<\\(.+\\)>\\s-+" var) pos t)
+              (setq std (match-string-no-properties 1))
+              (setq pointer-type (match-string-no-properties 2))
+              (setq var-type (match-string-no-properties 3))))
+          (when pointer-type
+            (insert std "make_" pointer-type "<" var-type ">();")
+            (backward-char 2)))
+      (insert "std::make_unique<>()")
+      (backward-char 3))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Work with C++ functions

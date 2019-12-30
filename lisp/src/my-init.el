@@ -266,14 +266,16 @@
     (require 'my-dired)
     (defun my-fzf (&optional arg)
       (interactive "P")
-      (let ((dir (or (car (project-roots (project-current)))
-                     default-directory)))
+      (let ((dir (or (car (project-roots (project-current))) default-directory))
+            ignore)
         (when arg
-          (setq dir (read-directory-name "Starting directory? " dir)))
+          (setq ignore " --no-ignore"))
         (if (not (equal major-mode 'dired-mode))
-            (fzf/start dir)
+            (let ((process-environment
+                   (cons (concat "FZF_DEFAULT_COMMAND=fd --type f --hidden" ignore) process-environment)))
+              (fzf/start dir))
           (let ((process-environment
-                 (cons (concat "FZF_DEFAULT_COMMAND=fd --type d") process-environment)))
+                 (cons (concat "FZF_DEFAULT_COMMAND=fd --type d --hidden" ignore) process-environment)))
             (fzf/start dir)))))
     (defun fzf/after-term-handle-exit (process-name msg)
       (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
@@ -1852,7 +1854,8 @@ Prefix with C-u to resize the `next-window'."
 
 (require 'project)
 (defun my-project-find (dir)
-  (cons 'vc (getenv "WORKSPACE")))
+  (when-let ((ws (getenv "WORKSPACE")))
+    (cons 'vc ws)))
 (add-to-list 'project-find-functions #'my-project-find)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
