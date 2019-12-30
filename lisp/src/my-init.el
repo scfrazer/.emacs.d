@@ -258,45 +258,12 @@
     (advice-add #'flyspell-generic-progmode-verify :around #'my-flyspell-generic-progmode-verify)))
 
 (use-package fzf
-  :bind* (("C-x f" . my-fzf))
-  :commands (my-fzf)
+  :bind* (("C-x f" . my-fzf-project-file)
+          ("C-x F" . my-fzf-any-local-file)
+          ("C-x d" . my-fzf-project-directory)
+          ("C-x D" . my-fzf-any-local-directory))
   :config
-  (progn
-    (require 'fzf)
-    (require 'my-dired)
-    (defun my-fzf (&optional arg)
-      (interactive "P")
-      (let ((dir (or (car (project-roots (project-current))) default-directory))
-            ignore)
-        (when arg
-          (setq ignore " --no-ignore"))
-        (if (not (equal major-mode 'dired-mode))
-            (let ((process-environment
-                   (cons (concat "FZF_DEFAULT_COMMAND=fd --type f --hidden" ignore) process-environment)))
-              (fzf/start dir))
-          (let ((process-environment
-                 (cons (concat "FZF_DEFAULT_COMMAND=fd --type d --hidden" ignore) process-environment)))
-            (fzf/start dir)))))
-    (defun fzf/after-term-handle-exit (process-name msg)
-      (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
-             (lines (split-string text "\n" t "\s*>\s+"))
-             (line (car (last (butlast lines 1))))
-             (selected (split-string line ":"))
-             (file (expand-file-name (pop selected)))
-             (linenumber (pop selected)))
-        (kill-buffer "*fzf*")
-        (jump-to-register :fzf-windows)
-        (when (file-exists-p file)
-          (if (file-directory-p file)
-              (progn
-                (setq my-dired-prev-dir (dired-current-directory))
-                (find-alternate-file file))
-            (find-file file)))
-        (when linenumber
-          (goto-char (point-min))
-          (forward-line (- (string-to-number linenumber) 1))
-          (back-to-indentation)))
-      (advice-remove 'term-handle-exit #'fzf/after-term-handle-exit))))
+  (require 'my-fzf))
 
 (use-package git-simple
   :bind-keymap (("C-x g" . git-simple-global-map)))
