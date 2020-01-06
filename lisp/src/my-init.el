@@ -237,9 +237,10 @@
   (require 'my-flymake))
 
 (use-package flyspell
-  :bind* (;; TODO ("<f3>" . my-flyspell-goto-prev-error)
-          ("<f4>" . flyspell-goto-next-error))
-  :commands (flyspell-prog-mode)
+  ;; :bind* (;; TODO ("<f3>" . my-flyspell-goto-prev-error)
+  ;;         ("<f4>" . flyspell-goto-next-error))
+  :commands (flyspell-prog-mode
+             my-flyspell-prog-mode)
   :init
   (progn
     (defun my-flyspell-prog-mode ()
@@ -1046,7 +1047,21 @@ or the region with prefix arg."
       (fill-region (region-beginning) (region-end))
     (fill-paragraph nil)))
 
-(defun my-forward-paragraph ()
+(defun my-fixme-next (&optional arg)
+  "Go to next FIXME, or previous with prefix arg."
+  (interactive "P")
+  (let ((case-fold-search nil) (pos (point)))
+    (if arg
+        (unless (re-search-backward "\\bFIXME\\b" nil t)
+          (message "No previous FIXMEs"))
+      (when (looking-at "\\bFIXME\\b")
+        (forward-char 5))
+      (if (re-search-forward "\\bFIXME\\b" nil t)
+          (backward-char 5)
+        (goto-char pos)
+        (message "No more FIXMEs")))))
+
+  (defun my-forward-paragraph ()
   "Move to next blank line after some text."
   (interactive)
   (beginning-of-line)
@@ -1519,6 +1534,20 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (my-theme-disable-all)
   (load-theme 'smf-light t))
 
+(defun my-todo-next (&optional arg)
+  "Go to next TODO, or previous with prefix arg."
+  (interactive "P")
+  (let ((case-fold-search nil) (pos (point)))
+    (if arg
+        (unless (re-search-backward "\\bTODO\\b" nil t)
+          (message "No previous TODOs"))
+      (when (looking-at "\\bTODO\\b")
+        (forward-char 4))
+      (if (re-search-forward "\\bTODO\\b" nil t)
+          (backward-char 4)
+        (goto-char pos)
+        (message "No more TODOs")))))
+
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
   (interactive)
@@ -1739,6 +1768,8 @@ Prefix with C-u to resize the `next-window'."
  ("<delete>"    . delete-char)
  ("<f1>"        . flymake-goto-prev-error)
  ("<f2>"        . flymake-goto-next-error)
+ ("<f3>"        . my-fixme-next)
+ ("<f4>"        . my-todo-next)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
