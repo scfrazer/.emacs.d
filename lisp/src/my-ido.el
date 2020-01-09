@@ -2,9 +2,9 @@
 
 (require 'ido)
 (require 'my-buf)
+(require 'my-fzf)
 (require 'bookmark)
 (require 'recentf)
-;; (require 'etags)
 (require 'ido-vertical-mode)
 
 (setq ido-enable-flex-matching t
@@ -263,6 +263,22 @@ If cursor is not at the end of the user input, move to end of input."
     (setq ido-exit 'edit)
     (exit-minibuffer)))
 
+;; Fuzzy find file
+
+(defun my-ido-fzf ()
+  "Fuzzy find file under directory being input"
+  (interactive)
+  (setq ido-exit 'fallback)
+  (setq ido-fallback 'my-ido-fzf-start)
+  (exit-minibuffer))
+
+(defun my-ido-fzf-start ()
+  "Start fzf from ido"
+  (interactive)
+  (let ((process-environment
+         (cons "FZF_DEFAULT_COMMAND=fd --type f --hidden --exclude .git --no-ignore" process-environment)))
+    (fzf/start ido-current-directory)))
+
 ;; Keys
 
 (define-key ido-buffer-completion-map (kbd "C-r") 'ido-toggle-virtual-buffers)
@@ -277,6 +293,7 @@ If cursor is not at the end of the user input, move to end of input."
   (define-key ido-completion-map (kbd "C-e") 'my-ido-edit-input)
   (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
+  (define-key ido-completion-map (kbd "C-s") 'my-ido-fzf)
   (define-key ido-completion-map (kbd "C-t") 'ido-toggle-case)
   (define-key ido-completion-map (kbd "SPC") 'ido-restrict-to-matches))
 
