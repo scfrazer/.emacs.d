@@ -417,7 +417,9 @@
 
 (use-package package
   :config
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")))
+  (progn
+    (setq-default package-check-signature nil)
+    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))))
 
 (use-package my-pair
   :bind* (("C-c ("  . my-pair-open-paren-dwim)
