@@ -206,8 +206,8 @@ depending on the major mode (see `qe-block-indented-modes')."
 2. Else if at the beginning of a word, kill the word and trailing whitespace
 3. Else if in the middle of a word, kill the rest of the word
 4. Else if looking at whitespace, kill whitespace forward
-5. Else if looking at punctuation, kill punctuation forward
-6. Else if looking at an open bracket/brace/paren, kill sexp forward
+5. Else if looking at an open bracket/brace/paren, kill sexp forward
+6. Else if looking at punctuation, kill punctuation forward
 7. Else if looking at a quotation mark, kill quoted text
 8. Else kill next char
 With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
@@ -231,10 +231,11 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                               (skip-syntax-forward "w_"))
                              ((qe-looking-at-syntax " ")
                               (skip-syntax-forward " "))
+                             ;; Some modes do special things for parentheses
+                             ((= (car (syntax-after (point))) 4)
+                              (forward-sexp))
                              ((qe-looking-at-syntax ".")
                               (skip-syntax-forward "."))
-                             ((qe-looking-at-syntax "(")
-                              (forward-sexp))
                              ((qe-looking-at-syntax "\"")
                               (let ((c (char-after)) region)
                                 (forward-char)
@@ -267,8 +268,8 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 1. If region is active, kill it
 2. Else if looking back at whitespace, kill backward whitespace and word
 3. Else if in the middle of a word, kill backward word
-4. Else if looking at punctuation, kill backward punctuation
-5. Else if looking at an close bracket/brace/paren, kill backward sexp
+4. Else if looking at an close bracket/brace/paren, kill backward sexp
+5. Else if looking at punctuation, kill backward punctuation
 6. Else if looking at a quotation mark, kill backward quoted text
 7. Else kill previous char
 With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append kill."
@@ -293,10 +294,12 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                                 (skip-syntax-backward "w_")))
                              ((qe-looking-back-syntax "w_")
                               (skip-syntax-backward "w_"))
+                             ;; Some modes do special things for parentheses
+                             ((and (not (bobp))
+                                   (= (car (syntax-after (1- (point)))) 5))
+                              (backward-sexp))
                              ((qe-looking-back-syntax ".")
                               (skip-syntax-backward "."))
-                             ((qe-looking-back-syntax ")")
-                              (backward-sexp))
                              ((qe-looking-back-syntax "\"")
                               (backward-char)
                               (let ((c (char-after)) region)

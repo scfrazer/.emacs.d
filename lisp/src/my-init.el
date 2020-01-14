@@ -394,6 +394,9 @@
       (let ((markdown-hide-markup nil))
         (apply orig-fun (list last))))
     (advice-add 'markdown-fontify-headings :around #'my-markdown-fontify-headings)
+    (defun my-markdown-mode-hook ()
+      (my-word-wrap-on-hook))
+    (add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
     ;; TODO Keybinds ... maybe promote/demote/move/etc. as hydra?
     ))
 
