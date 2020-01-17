@@ -51,6 +51,12 @@
 
 (require 'my-electric)
 
+(require 'my-fzf)
+(bind-keys* ("C-x f" . my-fzf-project-file)
+            ("C-x F" . my-fzf-any-local-file)
+            ("C-x d" . my-fzf-project-directory)
+            ("C-x D" . my-fzf-any-local-directory))
+
 (require 'goto-chg)
 (bind-keys* ("C-M-@" . goto-last-change))
 
@@ -58,6 +64,20 @@
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
             ("C-x C-r" . my-ido-recentf-file)
             ("M-i"     . ido-switch-buffer))
+(progn
+  (defun my-ido-fzf ()
+    "Fuzzy find file under directory being input"
+    (interactive)
+    (setq ido-exit 'fallback)
+    (setq ido-fallback 'my-ido-fzf-start)
+    (exit-minibuffer))
+  (defun my-ido-fzf-start ()
+    "Start fzf from ido"
+    (interactive)
+    (let ((process-environment
+           (cons "FZF_DEFAULT_COMMAND=fd --type f --hidden --exclude .git --no-ignore" process-environment)))
+      (fzf/start ido-current-directory)))
+  (define-key ido-file-completion-map (kbd "C-s") 'my-ido-fzf))
 
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override
@@ -257,14 +277,6 @@
              (skip-syntax-backward "w")
              (not (looking-at ".*[A-Z].*[A-Z]")))))
     (advice-add #'flyspell-generic-progmode-verify :around #'my-flyspell-generic-progmode-verify)))
-
-(use-package fzf
-  :bind* (("C-x f" . my-fzf-project-file)
-          ("C-x F" . my-fzf-any-local-file)
-          ("C-x d" . my-fzf-project-directory)
-          ("C-x D" . my-fzf-any-local-directory))
-  :config
-  (require 'my-fzf))
 
 (use-package git-simple
   :bind-keymap (("C-x g" . git-simple-global-map)))
