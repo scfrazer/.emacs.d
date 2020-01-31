@@ -16,9 +16,11 @@
                         (c-comment-only-line-offset 0 . 0)
                         (c-offsets-alist . ((innamespace . [0])))
                         (c-block-comment-prefix . "")))
-(setq c-default-style '((c-mode . "strou4")
-                        (cc-mode . "strou4")
-                        (c++-mode . "strou4")
+(c-add-style "allman" '("bsd"
+                      (c-basic-offset . 4)))
+(setq c-default-style '((c-mode . "allman")
+                        (cc-mode . "allman")
+                        (c++-mode . "allman")
                         (php-mode . "strou4")
                         (java-mode . "strou4")))
 
