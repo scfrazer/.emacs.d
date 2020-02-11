@@ -17,7 +17,8 @@
                         (c-offsets-alist . ((innamespace . [0])))
                         (c-block-comment-prefix . "")))
 (c-add-style "allman" '("bsd"
-                      (c-basic-offset . 4)))
+                        (topmost-intro . -)
+                        (c-basic-offset . 4)))
 (setq c-default-style '((c-mode . "allman")
                         (cc-mode . "allman")
                         (c++-mode . "allman")
@@ -43,48 +44,18 @@
   (force-mode-line-update))
 (advice-add 'c-update-modeline :around #'my-c-update-modeline)
 
-;; Uncrustify
+;; Tidy
 
-(defvar my-cc-mode-uncrustify-executable "uncrustify")
+(defvar my-cc-mode-tidy-executable "clang-format")
 
-(defun my-cc-mode-uncrustify-cc ()
-  "Run uncrustify on marked region, or entire buffer."
+(defun my-cc-mode-tidy ()
+  "Run formatter on buffer."
   (interactive "*")
-  (let ((pos (point))
-        beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning)
-              end (region-end))
-      (setq beg (point-min)
-            end (point-max)))
-    (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l CPP") nil t)
-    (goto-char pos)))
-
-(defun my-cc-mode-uncrustify-c ()
-  "Run uncrustify on marked region, or entire buffer."
-  (interactive "*")
-  (let ((pos (point))
-        beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning)
-              end (region-end))
-      (setq beg (point-min)
-            end (point-max)))
-    (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup -l C") nil t)
-    (goto-char pos)))
-
-(defun my-java-mode-uncrustify ()
-  "Run uncrustify on marked region, or entire buffer."
-  (interactive "*")
-  (let ((pos (point))
-        beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning)
-              end (region-end))
-      (setq beg (point-min)
-            end (point-max)))
-    (shell-command-on-region beg end (concat my-cc-mode-uncrustify-executable " -q --no-backup") nil t)
-    (goto-char pos)))
+  (save-buffer)
+  (let ((line-num (line-number-at-pos)))
+    (shell-command (concat my-cc-mode-tidy-executable " -style=file -i " (buffer-file-name)))
+    (revert-buffer t t)
+    (goto-line line-num)))
 
 ;; Hooks
 

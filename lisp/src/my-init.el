@@ -92,9 +92,8 @@
 (bind-keys* ("M-b" . jump-to-prev-pos))
 
 (require 'mode-fn)
-(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-uncrustify-cc)
-(mode-fn-map 'tidy 'c-mode 'my-cc-mode-uncrustify-c)
-;; (mode-fn-map 'tidy 'perl-mode 'my-perl-tidy)
+(mode-fn-map 'tidy 'c++-mode 'my-cc-mode-tidy)
+(mode-fn-map 'tidy 'c-mode 'my-cc-mode-tidy)
 (mode-fn-map 'tidy 'php-mode 'my-php-tidy)
 (mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
 
