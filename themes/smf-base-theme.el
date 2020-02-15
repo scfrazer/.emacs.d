@@ -31,8 +31,8 @@
 
  `(Man-overstrike                           ((t :inherit link)))
  `(Man-underline                            ((t :inherit font-lock-variable-name-face)))
- `(avy-lead-face                            ((t :foreground ,(smf-color 226) :background ,(smf-color 161))))
- `(avy-lead-face-0                          ((t :foreground ,(smf-color 161) :background ,(smf-color 25))))
+ `(avy-lead-face                            ((t :foreground ,(smf-color 226) :background ,(smf-color 161) :bold t)))
+ `(avy-lead-face-0                          ((t :foreground ,(smf-color 161) :background ,(smf-color 25) :bold t)))
  `(compilation-column-number                ((t :inherit font-lock-variable-name-face)))
  `(compilation-error                        ((t :inherit error)))
  `(compilation-info                         ((t :inherit link)))

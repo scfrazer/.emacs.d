@@ -495,7 +495,15 @@
               (insert "\n"))
             (goto-char pos))
         (apply orig-fun (list key-seq))))
-    (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)))
+    (advice-add 'qe-unit-copy-1 :around #'my-qe-unit-copy-1)
+    (defun my-qe-unit-bounds (orig-fun key-seq)
+      (if (= (aref key-seq 0) 12) ;; C-l
+          (cons (point)
+                (save-excursion
+                  (goto-char (avy--line))
+                  (point)))
+        (apply orig-fun (list key-seq))))
+    (advice-add 'qe-unit-bounds :around #'my-qe-unit-bounds)))
 
 (use-package my-rect
   :bind* (("M-#" . my-rect-number-lines)
