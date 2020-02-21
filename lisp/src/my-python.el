@@ -70,13 +70,14 @@
 
 (defun my-python-mode-hook ()
   (flymake-mode 1)
-  (jedi:setup)
+  ;; (jedi:setup)
   (bind-keys :map python-mode-map
              ("C-c !" . python-switch-to-python)
              ("C-c <" . my-python-indent-shift-left)
              ("C-c >" . my-python-indent-shift-right)
              ("C-c |" . python-send-region)
-             ("C-c /" . jedi:complete))
+             ;; ("C-c /" . jedi:complete)
+             )
   (setq forward-sexp-function nil))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
