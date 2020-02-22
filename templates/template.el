@@ -1,4 +1,4 @@
-;;; %b
+;;; %b  -*- lexical-binding: t; -*-
 
 %@
 
