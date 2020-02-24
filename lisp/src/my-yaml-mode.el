@@ -3,6 +3,7 @@
 ;; Lint
 
 (defvar yaml-flymake-command "yamllint")
+(defvar yaml-flymake-options '("-f" "parsable"))
 (defvar-local yaml--flymake-proc nil)
 
 (defun my-yaml-flymake (report-fn &rest _args)
@@ -19,7 +20,7 @@
              :noquery t
              :connection-type 'pipe
              :buffer (generate-new-buffer " *yaml-flymake*")
-             :command (list yaml-flymake-command (buffer-file-name))
+             :command (append (cons yaml-flymake-command yaml-flymake-options) (cons (buffer-file-name) nil))
              :sentinel
              (lambda (proc _event)
                (when (eq 'exit (process-status proc))
@@ -35,13 +36,13 @@
     (goto-char (point-min))
     (cl-loop
      while (search-forward-regexp
-            "^\\s-*\\([0-9]+\\):[0-9]+\\s-+\\(.+\\)$"
+            "^[^:]+:\\([0-9]+\\):[0-9]+:\\s-+\\(.+\\)$"
             nil t)
      for msg = (match-string 2)
      for (beg . end) = (flymake-diag-region
                         source
                         (string-to-number (match-string 1)))
-     for type = (if (string-match "^warning" msg)
+     for type = (if (string-match "^[[]warning[]]" msg)
                     :warning
                   :error)
      collect (flymake-make-diagnostic source
