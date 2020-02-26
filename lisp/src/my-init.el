@@ -1884,8 +1884,8 @@ Prefix with C-u to resize the `next-window'."
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
-  (let ((truncation-glyph (make-glyph-code ?→ 'my-display-table-face))
-        (wrap-glyph (make-glyph-code ?↓ 'my-display-table-face))
+  (let ((truncation-glyph (make-glyph-code ?⇄ 'my-display-table-face))
+        (wrap-glyph (make-glyph-code ?↲ 'my-display-table-face))
         (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
         (control-glyph (make-glyph-code ?^ 'my-display-table-face))
         (vertical-border-glyph (make-glyph-code ?│ 'my-display-table-face)))
