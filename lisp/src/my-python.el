@@ -6,7 +6,7 @@
 
 (setq-default python-continuation-offset 4
               python-indent 4
-              python-flymake-command '("flymake_python")
+              python-flymake-command '("flymake_python3w")
               python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
               python-shell-interpreter "python3w"
@@ -47,7 +47,7 @@
              :noquery t
              :connection-type 'pipe
              :buffer (generate-new-buffer " *python-flymake*")
-             :command (list (car python-flymake-command) (buffer-file-name))
+             :command (append python-flymake-command (list (buffer-file-name)))
              :sentinel
              (lambda (proc _event)
                (when (eq 'exit (process-status proc))
