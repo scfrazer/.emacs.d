@@ -482,30 +482,27 @@
       "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
-_n_ext       _b_ase               _<_: upper/base        _C_ombine
-_p_rev       _u_pper              _=_: upper/lower       _r_esolve
-^^           _l_ower              _>_: base/lower        _k_ill current
-^^           _a_ll                _R_efine
-^^           _RET_: current       _E_diff
+_n_ext       _o_urs (upper)       _<_: base/upper        _k_ill current
+_p_rev       _b_ase (middle)      _=_: upper/lower
+^^           _t_heirs (lower)     _>_: base/lower
+^^           _a_ll                _r_efine
+^^           _RET_: current       _e_diff
 "
       ("n" smerge-next)
       ("p" smerge-prev)
+      ("o" smerge-keep-upper)
       ("b" smerge-keep-base)
-      ("u" smerge-keep-upper)
-      ("l" smerge-keep-lower)
+      ("t" smerge-keep-lower)
       ("a" smerge-keep-all)
       ("RET" smerge-keep-current)
       ("\C-m" smerge-keep-current)
       ("<" smerge-diff-base-upper)
       ("=" smerge-diff-upper-lower)
       (">" smerge-diff-base-lower)
-      ("R" smerge-refine)
-      ("E" smerge-ediff)
-      ("C" smerge-combine-with-next)
-      ("r" smerge-resolve)
+      ("r" smerge-refine)
+      ("e" smerge-ediff)
       ("k" smerge-kill-current)
-      ("q" nil "cancel" :color blue))
-    (defalias 'conflicts 'smerge-hydra/body)))
+      ("q" nil "cancel" :color blue))))
 
 (use-package my-sort-lines
   :commands (my-sort-lines)
@@ -861,15 +858,15 @@ undoable all at once."
              (blue (/ (nth 2 color-values) 256)))
         (insert (format "#%02X%02X%02X" red green blue))))))
 
-(defvar my-compile-command (list compile-command))
 (defun my-compile ()
-  "Call `compile' with selection of commands."
+  "DTRT to 'compile' this file."
   (interactive)
-  (setq compile-command
-        (ido-completing-read "Compile command: " my-compile-command))
-  (call-interactively 'compile)
-  (setq my-compile-command (delq compile-command my-compile-command))
-  (add-to-list 'my-compile-command compile-command))
+  (cond ((and (boundp 'smerge-mode) smerge-mode)
+         (call-interactively 'smerge-hydra/body))
+        ((and (boundp 'flymake-mode) flymake-mode)
+         (flymake-start))
+        (t
+         (call-interactively 'compile))))
 
 (defun my-comment-or-uncomment-region ()
   "Like `comment-or-uncomment-region', but always uses lines."

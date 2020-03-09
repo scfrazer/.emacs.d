@@ -79,7 +79,7 @@
   :group 'languages)
 
 ;;;###autoload
-(defcustom sv-mode-basic-offset 3
+(defcustom sv-mode-basic-offset 4
   "*Indentation of statements with respect to containing block."
   :group 'sv-mode
   :type 'integer)
