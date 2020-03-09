@@ -53,8 +53,10 @@
 
 (require 'my-fzf)
 (bind-keys* ("C-x f" . my-fzf-project-file)
-            ("C-x F" . my-fzf-any-local-file)
-            ("C-x d" . my-fzf-project-directory)
+            ("C-x F" . my-fzf-any-project-file)
+            ("C-x l" . my-fzf-local-file)
+            ("C-x L" . my-fzf-any-local-file)
+            ("C-x d" . my-fzf-any-project-directory)
             ("C-x D" . my-fzf-any-local-directory))
 
 (require 'goto-chg)
@@ -1685,7 +1687,13 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
   (local-set-key (kbd "M-z") (lambda () (interactive) nil))
-  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))
+  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir)
+  (local-set-key (kbd "C-x D") 'my-fzf-any-local-directory)
+  (local-set-key (kbd "C-x F") 'my-fzf-any-project-file)
+  (local-set-key (kbd "C-x L") 'my-fzf-any-local-file)
+  (local-set-key (kbd "C-x d") 'my-fzf-any-project-directory)
+  (local-set-key (kbd "C-x f") 'my-fzf-project-file)
+  (local-set-key (kbd "C-x l") 'my-fzf-local-file))
 
 (defface my-next-error-face
   '((t (:underline t)))
