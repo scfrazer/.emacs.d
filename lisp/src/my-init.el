@@ -7,6 +7,7 @@
 (require 'cl-lib)
 
 (require 'my-font-lock)
+(require 'highlight-indent-guides)
 (defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'ws 'whitespace-mode)
 (setq-default my-font-lock-auto-whitespace t)
@@ -1705,6 +1706,9 @@ Prefix with C-u to resize the `next-window'."
       (setq my-next-error-overlay (make-overlay (point-at-bol) (point-at-eol)))
       (overlay-put my-next-error-overlay 'face 'my-next-error-face))))
 
+(defun my-prog-mode-hook ()
+  (highlight-indent-guides-mode 1))
+
 (defun my-sh-mode-hook ()
   (when (and buffer-file-name (string-match "\\.zsh.*\\'" buffer-file-name))
     (sh-set-shell "zsh")))
@@ -1719,6 +1723,7 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'next-error-hook 'my-next-error-hook)
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

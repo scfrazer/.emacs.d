@@ -23,6 +23,8 @@
  '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
  '(frame-background-mode (quote light))
+ '(highlight-indent-guides-delay 0.5)
+ '(highlight-indent-guides-method (quote character))
  '(jedi:tooltip-method nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
