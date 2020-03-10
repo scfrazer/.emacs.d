@@ -139,6 +139,7 @@
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
   ;; (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
+  (highlight-indent-guides-mode 1)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))
@@ -148,18 +149,6 @@
 (add-hook 'sv-mode-hook 'my-sv-mode-hook)
 
 (add-to-list 'sv-mode-macros-without-semi "`csco_[a-z_]+")
-
-(defadvice sv-mode-create-skeleton-from-prototype (before ct-co-sv-mode-create-proto activate)
-  (when (ff-other-file-name)
-    (ff-get-other-file))
-  (let ((filename (buffer-file-name)))
-    (when (and (string-match "^/vob/" filename)
-               (not (file-writable-p filename)))
-      (let ((clearcase-checkout-arguments (list "-unreserved" "-nmaster"))
-            (clearcase-suppress-checkout-comments t))
-        (clearcase-commented-checkout filename)))
-    (when (ff-other-file-name)
-      (switch-to-buffer (other-buffer)))))
 
 (defadvice qe-forward-block (around sv-forward-block activate)
   (if (equal major-mode 'sv-mode)
