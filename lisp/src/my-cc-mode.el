@@ -63,6 +63,7 @@
   (abbrev-mode -1)
   (setq comment-start "// ")
   (setq comment-end "" )
+  (highlight-indent-guides-mode 1)
   (flymake-mode 1)
   (setq imenu-create-index-function 'sb-imenu-ctags-create-index)
   (define-key c-mode-base-map (kbd "C-c C-f") 'doxymacs-insert-function-comment)
