@@ -45,7 +45,10 @@
      (checkdoc-force-docstrings-flag)
      (folded-file . t)
      (clearcase-version-stamp-active . t))))
- '(speedbar-indentation-width 4))
+ '(speedbar-indentation-width 4)
+ '(yank-excluded-properties
+   (quote
+    (category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

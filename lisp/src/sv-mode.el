@@ -1098,6 +1098,8 @@ function/task definition/implementation in other file."
         (when (sv-mode-re-search-forward prev-func-re nil 'go)
           (sv-mode-re-search-forward (concat "end" prev-func-type ".+"))
           (forward-line 1)))
+      (when (eobp)
+        (re-search-backward "^\\s-*`endif" (point-at-bol 0) nil))
       (insert "\n")
       (sv-mode-insert-prototype proto namespaces)
       (insert "\n" (sv-mode-determine-end-expr) "\n")
@@ -1127,8 +1129,8 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   (back-to-indentation)
   (save-excursion
     (forward-line -2)
-    (insert "\n")
     (sv-mode-indent-line)
+    (insert "\n")
     (insert-char ?/ (- 80 (- (point) (point-at-bol))))
     (insert "\n")))
 
