@@ -5,4 +5,4 @@
 
 %@
 
-`endif
+`endif // %N

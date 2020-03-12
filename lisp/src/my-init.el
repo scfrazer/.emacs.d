@@ -7,11 +7,15 @@
 (require 'cl-lib)
 
 (require 'my-font-lock)
-(require 'highlight-indent-guides)
-(defalias 'fl 'font-lock-fontify-buffer)
-(defalias 'ws 'whitespace-mode)
 (setq-default my-font-lock-auto-whitespace t)
 (setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
+
+(require 'highlight-indent-guides)
+(defun my-highlight-indent-guides-auto-set-faces (orig-fun)
+  (set-face-foreground 'highlight-indent-guides-character-face
+                       (color-lighten-name (face-foreground 'font-lock-comment-face) 25)))
+(advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
+(setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
 
 (require 'bind-key)
 (require 'bind-remind)
@@ -1862,6 +1866,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'dos 'my-dos-coding-system)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
+(defalias 'fl 'font-lock-fontify-buffer)
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
 (defalias 'ind 'my-indent)
@@ -1880,6 +1885,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'uniq 'my-delete-duplicate-lines)
 (defalias 'unt 'my-untabity)
 (defalias 'work (lambda () (interactive) (find-file (expand-file-name "/home/scfrazer/notes/todo.md"))))
+(defalias 'ws 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; System setup
