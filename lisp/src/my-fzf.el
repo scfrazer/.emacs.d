@@ -18,7 +18,7 @@
 
 (defun my-fzf-any-project-file ()
   "Find any project file."
-  (interactive "P")
+  (interactive)
   (my-fzf-start "f" nil t))
 
 (defun my-fzf-local-file ()
