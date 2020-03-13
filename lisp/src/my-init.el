@@ -60,10 +60,10 @@
 (require 'my-electric)
 
 (require 'my-fzf)
-(bind-keys* ("C-x f" . my-fzf-project-file)
-            ("C-x F" . my-fzf-any-project-file)
-            ("C-x l" . my-fzf-local-file)
-            ("C-x L" . my-fzf-any-local-file)
+(bind-keys* ("C-x w" . my-fzf-project-file)
+            ("C-x W" . my-fzf-any-project-file)
+            ("C-x f" . my-fzf-local-file)
+            ("C-x F" . my-fzf-any-local-file)
             ("C-x d" . my-fzf-any-project-directory)
             ("C-x D" . my-fzf-any-local-directory))
 
