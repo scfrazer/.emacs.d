@@ -12,8 +12,11 @@
 
 (require 'highlight-indent-guides)
 (defun my-highlight-indent-guides-auto-set-faces (orig-fun)
-  (set-face-foreground 'highlight-indent-guides-character-face
-                       (color-lighten-name (face-foreground 'font-lock-comment-face) 25)))
+  (if (equal frame-background-mode 'light)
+      (set-face-foreground 'highlight-indent-guides-character-face
+                           (color-lighten-name (face-foreground 'font-lock-comment-face) 25))
+    (set-face-foreground 'highlight-indent-guides-character-face
+                           (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
 (advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
 (setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
 
