@@ -19,6 +19,16 @@
   (setq tramp-mode (not tramp-mode))
   (message (concat "Tramp mode " (if tramp-mode "on" "off"))))
 
+(defun my-package-menu--refresh (&optional packages keywords)
+  (setq tabulated-list-format
+        `[("Package" 38 package-menu--name-predicate)
+          ("Version" 13 nil)
+          ("Status"  10 package-menu--status-predicate)
+          ,@(if (cdr package-archives)
+                '(("Archive" 10 package-menu--archive-predicate)))
+          ("Description" 0 nil)]))
+(advice-add #'package-menu--refresh :before #'my-package-menu--refresh)
+
 (let ((gc-cons-threshold 402653184)
       (gc-cons-percentage 0.6)
       (file-name-handler-alist nil))
