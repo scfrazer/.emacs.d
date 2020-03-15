@@ -464,8 +464,7 @@
     (advice-add 'qe-unit-bounds :around #'my-qe-unit-bounds)))
 
 (use-package my-rect
-  :bind* (("M-#" . my-rect-number-lines)
-          ("M-SPC" . my-rect-push-mark)
+  :bind* (("M-SPC" . my-rect-push-mark)
           ("M-r" . my-rect/body)))
 
 (use-package revbufs
@@ -593,7 +592,6 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
 (autoload 'file-template-auto-insert "file-template" nil t)
 (autoload 'file-template-find-file-not-found-hook "file-template" nil t)
 (autoload 'file-template-insert "file-template" nil t)
-(autoload 'highlight-indentation-mode "highlight-indentation" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'json-mode "json-mode" nil t)
 (autoload 'makefile-mode "make-mode" nil t)
@@ -1652,7 +1650,6 @@ Prefix with C-u to resize the `next-window'."
 
 (defun my-emacs-lisp-mode-hook ()
   (setq comment-column 0)
-  (auto-complete-mode 1)
   (local-set-key (kbd "C-x M-e") 'pp-macroexpand-last-sexp)
   (add-to-list 'imenu-generic-expression
                '("Require"
@@ -1682,6 +1679,12 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-\\") 'expand-abbrev)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
+  (local-set-key (kbd "C-x D") 'my-fzf-any-local-directory)
+  (local-set-key (kbd "C-x F") 'my-fzf-any-local-file)
+  (local-set-key (kbd "C-x W") 'my-fzf-any-project-file)
+  (local-set-key (kbd "C-x d") 'my-fzf-any-project-directory)
+  (local-set-key (kbd "C-x f") 'my-fzf-local-file)
+  (local-set-key (kbd "C-x w") 'my-fzf-project-file)
   (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
   (local-set-key (kbd "M-\\") 'completion-at-point)
@@ -1692,13 +1695,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
   (local-set-key (kbd "M-z") (lambda () (interactive) nil))
-  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir)
-  (local-set-key (kbd "C-x D") 'my-fzf-any-local-directory)
-  (local-set-key (kbd "C-x F") 'my-fzf-any-project-file)
-  (local-set-key (kbd "C-x L") 'my-fzf-any-local-file)
-  (local-set-key (kbd "C-x d") 'my-fzf-any-project-directory)
-  (local-set-key (kbd "C-x f") 'my-fzf-project-file)
-  (local-set-key (kbd "C-x l") 'my-fzf-local-file))
+  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))
 
 (defface my-next-error-face
   '((t (:underline t)))
@@ -1748,7 +1745,6 @@ Prefix with C-u to resize the `next-window'."
 (defvar file-template-mapping-alist)
 (eval-after-load "file-template"
   '(progn
-     (add-to-list 'file-template-mapping-alist '("\\.e$" . "template.e"))
      (add-to-list 'file-template-mapping-alist '("\\.html?$" . "template.html"))
      (add-to-list 'file-template-mapping-alist '("\\.sh$" . "template.sh"))
      (add-to-list 'file-template-mapping-alist '("\\.sv$" . "template.sv"))
@@ -1815,7 +1811,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
- ("C-x w"       . my-clone-file)
  ("C-x |"       . my-win-split-horizontally)
  ("C-z"         . undo)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
@@ -1833,7 +1828,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-~"         . previous-error))
- ;; ("C-c _"       . my-style-symbol-toggle)
 
 ;; These have to be in this order
 

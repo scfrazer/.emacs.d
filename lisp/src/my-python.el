@@ -2,36 +2,13 @@
 
 (require 'my-flymake)
 (require 'python)
-(require 'jedi-core)
 
 (setq-default python-continuation-offset 4
               python-indent 4
               python-flymake-command '("flymake_python3w")
               python-flymake-command-output-pattern (list "^[^:]+:\\([0-9]+\\): \\(WARNING\\|ERROR\\): \\(.+\\)$" 1 nil 2 3)
               python-flymake-msg-alist '(("WARNING" . :warning) ("ERROR" . :error))
-              python-shell-interpreter "python3w"
-
-              jedi:complete-on-dot nil
-              ;; jedi:install-imenu t
-              jedi:server-command '("python3w" "/home/scfrazer/toolkit/bin/jediepcserver.py")
-              jedi:tooltip-method nil)
-
-;; (defun jedi:tooltip-show (string)
-;;   (let ((tip (popup-tip (concat "» " string " «") :nowait t)))
-;;     (sit-for 5.0)
-;;     (popup-delete tip)))
-
-(cl-defun jedi:get-in-function-call--construct-call-signature
-    (&key params index call_name)
-  (if (not index)
-      (concat call_name "()")
-    (let ((current-arg (nth index params)))
-      (if (and current-arg (null jedi:tooltip-method))
-          (progn
-            (setf (nth index params)
-                  (propertize current-arg 'face 'jedi:highlight-function-argument))
-            (concat (propertize call_name 'face font-lock-function-name-face) ": " "(" (mapconcat #'identity params ", ") ")"))
-        (concat call_name "(" (mapconcat #'identity params ", ") ")")))))
+              python-shell-interpreter "python3w")
 
 (defun my-python-flymake (_ report-fn &rest _args)
   (unless (executable-find (car python-flymake-command))
@@ -70,14 +47,11 @@
 
 (defun my-python-mode-hook ()
   (flymake-mode 1)
-  ;; (jedi:setup)
   (bind-keys :map python-mode-map
              ("C-c !" . python-switch-to-python)
              ("C-c <" . my-python-indent-shift-left)
              ("C-c >" . my-python-indent-shift-right)
-             ("C-c |" . python-send-region)
-             ;; ("C-c /" . jedi:complete)
-             )
+             ("C-c |" . python-send-region))
   (setq forward-sexp-function nil))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
