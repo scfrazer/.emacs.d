@@ -1899,12 +1899,12 @@ Prefix with C-u to resize the `next-window'."
 
   (defface my-display-table-face
     '((((class color) (background dark)) :foreground "yellow2" :background "gray33")
-      (((class color) (background light)) :foreground "violetred" :background "whitesmoke" :bold t))
+      (((class color) (background light)) :foreground "violetred" :background "whitesmoke"))
     "Face for terminal truncation/wrapping glyphs."
     :group 'faces)
 
   (let ((truncation-glyph (make-glyph-code ?⇄ 'my-display-table-face))
-        (wrap-glyph (make-glyph-code ?↲ 'my-display-table-face))
+        (wrap-glyph (make-glyph-code ?⤸ 'my-display-table-face))
         (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
         (control-glyph (make-glyph-code ?^ 'my-display-table-face))
         (vertical-border-glyph (make-glyph-code ?│ 'my-display-table-face)))

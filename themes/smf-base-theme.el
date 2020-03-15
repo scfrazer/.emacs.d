@@ -41,6 +41,7 @@
  `(compilation-mode-line-fail               ((t :inherit error)))
  `(compilation-mode-line-run                ((t :inherit warning)))
  `(compilation-warning                      ((t :inherit warning)))
+ `(completions-annotations                  ((t :italic nil)))
  `(cperl-nonoverridable-face                ((t :inherit font-lock-builtin-face)))
  `(dired-directory                          ((t :inherit font-lock-keyword-face)))
  `(dired-header                             ((t :inherit font-lock-function-name-face)))

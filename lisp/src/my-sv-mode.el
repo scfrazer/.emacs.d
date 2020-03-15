@@ -2,7 +2,6 @@
 
 (require 'sv-mode)
 (require 'quick-edit)
-;; (require 'my-verilog-mode)
 
 (defun my-sv-mode-bit-vector ()
   "Expand bit vector."
@@ -136,9 +135,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun my-sv-mode-prettify ()
+  (let ((spec '(("<=" default "<═"))))
+    (dolist (s spec)
+      (let ((regexp (nth 0 s))
+            (face (nth 1 s))
+            (repl (nth 2 s)))
+        (font-lock-add-keywords nil
+                                `((,regexp 0
+                                           (prog1 ',face
+                                             (add-text-properties (match-beginning 0) (match-end 0)
+                                                                  '(display ,repl)))))))))
+  (push 'display font-lock-extra-managed-props)
+  (push 'composition font-lock-extra-managed-props))
+
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  ;; (define-key sv-mode-map (kbd "C-c C-e") 'my-verilog-mode-auto-inst)
+  (when (string-match "/rtl/" (buffer-file-name))
+    (my-sv-mode-prettify))
   (highlight-indent-guides-mode 1)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
