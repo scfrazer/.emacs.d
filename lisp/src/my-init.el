@@ -41,9 +41,7 @@
 (require 'my-buf)
 (bind-keys* ("C-o". my-buf-toggle))
 
-(require 'filladapt)
-(setq filladapt-mode-line-string nil)
-(setq-default filladapt-mode t)
+(require 'compile)
 
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
@@ -58,6 +56,10 @@
 (bind-keys* ("C-c =" . my-ediff-dwim))
 
 (require 'my-electric)
+
+(require 'filladapt)
+(setq filladapt-mode-line-string nil)
+(setq-default filladapt-mode t)
 
 (require 'my-fzf)
 (bind-keys* ("C-x w" . my-fzf-project-file)
