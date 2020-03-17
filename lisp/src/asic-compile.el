@@ -7,14 +7,21 @@
   "ASIC compilation mode."
   (set (make-local-variable 'compilation-error-regexp-alist)
        (list
-        '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3)  ;; VCS
-        '("^[*][*][*] LINT.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1))))  ;; SV Lint
-
-(defun asic-compilation-read-command (command)
-  (read-shell-command "ASIC compile command: " command
-                      (if (equal (car compile-history) command)
-                          '(compile-history . 1)
-                        'compile-history)))
+        '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3) ;; VCS
+        '("^[*][*][*] LINT.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1) ;; SV Lint
+        ))
+  (set (make-local-variable 'compilation-error-regexp-alist-alist) nil)
+  (set (make-local-variable 'compilation-mode-font-lock-keywords)
+       (list
+        `(,(concat "\\_<\\(" (regexp-opt '("warning"  "Warning" "WARNING")) "\\)\\_>")
+          (1 'warning))
+        `(,(concat "\\_<\\(" (regexp-opt '("error"  "Error" "ERROR")) "\\)\\_>")
+          (1 'error))
+        `(,(concat "\\_<\\(" (regexp-opt '("pass" "passed" "Passed" "PASSED")) "\\)\\_>")
+          (1 'success))
+        `(,(concat "\\_<\\(" (regexp-opt '("fail" "failed" "Failed" "FAILED")) "\\)\\_>")
+          (1 'error))
+        )))
 
 (defvar asic-compile-command nil)
 (defvar asic-compile-command-list

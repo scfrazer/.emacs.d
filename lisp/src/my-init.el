@@ -1747,7 +1747,22 @@ Prefix with C-u to resize the `next-window'."
        (define-key compilation-mode-map "}" 'compilation-next-file)
        (setq truncate-lines nil)
        (goto-char (point-max)))
-     (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
+     (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
+     (setq-default compilation-mode-line-errors
+                   '(" ["
+                     (:eval (if (> compilation-num-errors-found 0)
+                                (list (int-to-string compilation-num-errors-found) 'face 'error)
+                              (list "0" 'face 'default)))
+                     " "
+                     (:eval (if (> compilation-num-warnings-found 0)
+                                (list (int-to-string compilation-num-warnings-found) 'face 'warning)
+                              (list "0" 'face 'default)))
+                     " "
+                     (:eval (if (> compilation-num-infos-found 0)
+                                (list (int-to-string compilation-num-infos-found) 'face 'caution)
+                              (list "0" 'face 'default)))
+                     "]"))
+     ))
 
 (defvar file-template-mapping-alist)
 (eval-after-load "file-template"
