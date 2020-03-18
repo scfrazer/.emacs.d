@@ -533,8 +533,10 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
          ("\\.v\\'" . sv-mode)
          ("\\.vh\\'" . sv-mode))
   :config
-  (require 'verilog-mode)
-  (require 'my-sv-mode))
+  (progn
+    (setq-default verilog-error-regexp-emacs-alist nil)
+    (require 'verilog-mode)
+    (require 'my-sv-mode)))
 
 (use-package my-tmux
   :bind* (("C-t" . my-tmux-copy)))
@@ -1877,8 +1879,6 @@ Prefix with C-u to resize the `next-window'."
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(defalias 'bc 'emacs-lisp-byte-compile)
-(defalias 'bcl 'emacs-lisp-byte-compile-and-load)
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
 (defalias 'dark 'my-theme-dark)
