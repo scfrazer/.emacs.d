@@ -64,6 +64,11 @@
  `(web-mode-html-attr-name-face        ((t :foreground ,(smf-color 65))))
  `(web-mode-html-attr-value-face       ((t :foreground ,(smf-color 138))))
  `(web-mode-html-tag-face              ((t :foreground ,(smf-color 67))))
+ ;; `(wgrep-delete-face ((t)))
+ ;; `(wgrep-done-face ((t)))
+ ;; `(wgrep-face ((t)))
+ ;; `(wgrep-file-face ((t)))
+ ;; `(wgrep-reject-face ((t)))
 
  )
 

@@ -561,6 +561,12 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
   :config
   (require 'my-web-mode))
 
+(use-package wgrep
+  :commands (wgrep-change-to-wgrep-mode)
+  :config
+  (setq-default wgrep-auto-save-buffer t
+                wgrep-too-many-file-length 1000))
+
 (use-package xref
   :bind* (("M-&" . my-xref-pop-marker-stack-kill-buffer)
           ("M-*" . xref-pop-marker-stack)
