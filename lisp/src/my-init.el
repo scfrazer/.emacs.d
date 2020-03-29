@@ -886,6 +886,8 @@ undoable all at once."
          (flymake-start))
         ((equal major-mode 'emacs-lisp-mode)
          (emacs-lisp-byte-compile))
+        ((equal major-mode 'sv-mode)
+         (call-interactively 'asic-compile))
         (t
          (call-interactively 'compile))))
 
@@ -1800,7 +1802,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-c ."       . my-kill-results-buffer)
  ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
- ("C-c M"       . asic-compile)
  ("C-c N"       . narrow-to-defun)
  ("C-c T"       . tidy)
  ("C-c TAB"     . indent-region)

@@ -16,7 +16,7 @@
                                                                    "*shell"
                                                                    "*git-simple"
                                                                    "*terminal"
-                                                                   "*vcs-compile"))))
+                                                                   "*asic-compile"))))
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-buf-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
