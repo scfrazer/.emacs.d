@@ -25,7 +25,7 @@ below current window."
                                             "*magit-diff"
                                             "*regman"
                                             "*rg"
-                                            "*vcs-compile"
+                                            "*asic-compile"
                                             ))) buffer))
 
 
