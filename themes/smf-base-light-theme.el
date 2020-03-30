@@ -10,6 +10,7 @@
  `(bm-face                             ((t :foreground "black" :background ,(smf-color 221))))
  `(caution                             ((t :foreground "black" :background ,(smf-color 215))))
  `(cursor                              ((t :background "deeppink2")))
+ `(diff-changed                        ((t :background "#dfefff")))
  `(diff-refine-added                   ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed                 ((t :foreground "black" :background ,(smf-color 217))))
  `(dired-marked                        ((t :background "lightgoldenrodyellow")))
@@ -64,11 +65,6 @@
  `(web-mode-html-attr-name-face        ((t :foreground ,(smf-color 65))))
  `(web-mode-html-attr-value-face       ((t :foreground ,(smf-color 138))))
  `(web-mode-html-tag-face              ((t :foreground ,(smf-color 67))))
- ;; `(wgrep-delete-face ((t)))
- ;; `(wgrep-done-face ((t)))
- ;; `(wgrep-face ((t)))
- ;; `(wgrep-file-face ((t)))
- ;; `(wgrep-reject-face ((t)))
 
  )
 
