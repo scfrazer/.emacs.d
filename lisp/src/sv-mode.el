@@ -105,6 +105,9 @@ Otherwise indent them as usual."
   :group 'sv-mode
   :type 'boolean)
 
+(defcustom sv-mode-add-package-name nil
+  "*Non-nil means add package name when appropriate.")
+
 ;;;###autoload
 (defcustom sv-mode-macros-without-semi
   '("`uvm_[a-z_]+")
@@ -669,8 +672,8 @@ expression."
 '(('type . TYPE)
   ('name . NAME)
   ('ret . TYPE)
-  ('args . '((NAME . TYPE)
-             (NAME . TYPE))))"
+  ('args . '((NAME TYPE INIT-VAL)
+             (NAME TYPE INIT-VAL))))"
   (let ((type "")
         (name "")
         (ret nil)
@@ -697,7 +700,7 @@ expression."
         (setq pos (point))
         (re-search-forward ")\\s-*;")
         (let ((arg-string (buffer-substring-no-properties pos (match-beginning 0)))
-              arg-strings arg-name arg-type)
+              arg-strings arg-name arg-type arg-init-val)
           (setq arg-string (replace-regexp-in-string "\n" " " arg-string))
           (with-temp-buffer
             (insert arg-string)
@@ -711,16 +714,19 @@ expression."
                 (setq pos (point))))
             (push (buffer-substring-no-properties pos (point)) arg-strings))
           (dolist (str arg-strings)
-            (when (string-match "\\(.+\\)=" str)
-              (setq str (match-string 1 str)))
+            (if (string-match "\\(.+\\)=\\(.+\\)" str)
+                (setq arg-init-val (match-string 2 str)
+                      str (match-string 1 str))
+              (setq arg-init-val nil))
             (setq str (sv-mode-trim-whitespace str))
             (if (string-match "\\(.+\\)\\s-+\\(.+\\)$" str)
                 (setq arg-type (match-string 1 str)
                       arg-name (match-string 2 str))
               (setq arg-name str))
             (unless (string= str "")
-              (setq args (cons (cons (sv-mode-trim-whitespace arg-name)
-                                     (sv-mode-trim-whitespace arg-type))
+              (setq args (cons (list (sv-mode-trim-whitespace arg-name)
+                                     (sv-mode-trim-whitespace arg-type)
+                                     (sv-mode-trim-whitespace arg-init-val))
                                args)))))))
     (list (cons 'type type)
           (cons 'name name)
@@ -1101,10 +1107,9 @@ function/task definition/implementation in other file."
           (forward-line 1)))
       (when (eobp)
         (re-search-backward "^\\s-*`endif" (point-at-bol 0) nil))
-      (insert "\n")
       (sv-mode-insert-prototype proto namespaces)
-      (insert "\n" (sv-mode-determine-end-expr) "\n")
-      (forward-line -2)
+      (insert "\n" (sv-mode-determine-end-expr) "\n\n")
+      (forward-line -3)
       (funcall sv-mode-finish-skeleton-function proto namespaces))))
 
 (defun sv-mode-insert-prototype (proto namespaces)
@@ -1116,7 +1121,11 @@ function/task definition/implementation in other file."
     (insert ns "::"))
   (insert (cdr (assoc 'name proto)) "(")
   (dolist (arg (cdr (assoc 'args proto)))
-    (insert (cdr arg) " " (car arg) ", "))
+    (insert (nth 1 arg)
+            " "
+            (nth 0 arg)
+            (if (nth 2 arg) (concat " = " (nth 2 arg)) "")
+            ", "))
   (when (cdr (assoc 'args proto))
     (delete-char -2))
   (insert ");"))
@@ -1127,13 +1136,7 @@ function/task prototype, and NAMESPACES is the list of namespaces."
   (end-of-line)
   (insert "\n//! \\todo Implement this " (cdr (assoc 'type proto)))
   (sv-mode-indent-line)
-  (back-to-indentation)
-  (save-excursion
-    (forward-line -2)
-    (sv-mode-indent-line)
-    (insert "\n")
-    (insert-char ?/ (- 80 (- (point) (point-at-bol))))
-    (insert "\n")))
+  (back-to-indentation))
 
 (defun sv-mode-rename ()
   "Rename function/task, endfunction/endtask, super() call.
@@ -1376,7 +1379,7 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
      "`uvm_" type
      (if parameters "_param_utils" "_utils")
      (if begin "_begin(" "(")
-     (sv-mode-get-package-name t)
+     (if sv-mode-add-package-name (sv-mode-get-package-name t) "")
      name
      (if parameters parameters "")
      ")")
@@ -1385,10 +1388,9 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
       (let (pos)
         (insert "\n")
         (sv-mode-indent-line)
-        (setq pos (point))
-        (insert "\n`uvm_" type "_utils_end")
+        (insert "`uvm_" type "_utils_end")
         (sv-mode-indent-line)
-        (goto-char pos)))))
+        (beginning-of-line)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Idle matching of begin/end pairs
