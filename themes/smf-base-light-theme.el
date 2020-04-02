@@ -10,6 +10,7 @@
  `(bm-face                             ((t :foreground "black" :background ,(smf-color 221))))
  `(caution                             ((t :foreground "black" :background ,(smf-color 215))))
  `(cursor                              ((t :background "deeppink2")))
+ `(diff-changed                        ((t :background "#dfefff")))
  `(diff-refine-added                   ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed                 ((t :foreground "black" :background ,(smf-color 217))))
  `(dired-marked                        ((t :background "lightgoldenrodyellow")))
