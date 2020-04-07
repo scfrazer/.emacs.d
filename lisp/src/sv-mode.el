@@ -230,16 +230,12 @@ Otherwise indent them as usual."
            (args (cdr (assoc 'args proto)))
            (ret (cdr (assoc 'ret proto))))
       (list 'l
-            "/*!" '> 'n
-            " * \\brief " 'p '> 'n
-            (when args
-              '(l " *" '> 'n))
+            "//! " 'p '> 'n
             (doxymacs-parm-tempo-element (mapcar 'car args))
             (when (and ret (not (string= ret "void")))
-              '(l " *" '> 'n " * " (doxymacs-doxygen-command-char)
+              '(l "//! " '> 'n (doxymacs-doxygen-command-char)
                   "return " (p "Returns: ") > n))
-            " */" '>
-            (unless (looking-at "\\s-*$") 'n))))
+            (unless (looking-at "\\s-*$") '>))))
   "*Doxymacs function comment template."
   :group 'sv-mode
   :type 'sexp)
@@ -663,8 +659,10 @@ expression."
           (when (looking-at "\\s-*#\\s-*(")
             (goto-char (1- (match-end 0)))
             (let ((end-pos (save-excursion (forward-sexp) (point))))
-              (while (re-search-forward "type\\s-+\\([`a-zA-Z0-9_]+\\)" end-pos t)
-                (push (match-string-no-properties 1) parameters)))))))
+              (while (re-search-forward ".+?\\([`a-zA-Z0-9_]+\\)\\s-*\\([=,)]\\)" end-pos t)
+                (push (match-string-no-properties 1) parameters)
+                (when (string= (match-string-no-properties 2) "=")
+                  (re-search-forward "[,)]" end-pos t))))))))
     (list name (nreverse parameters))))
 
 (defun sv-mode-parse-prototype ()
@@ -1107,9 +1105,10 @@ function/task definition/implementation in other file."
           (forward-line 1)))
       (when (eobp)
         (re-search-backward "^\\s-*`endif" (point-at-bol 0) nil))
+      (insert "\n")
       (sv-mode-insert-prototype proto namespaces)
-      (insert "\n" (sv-mode-determine-end-expr) "\n\n")
-      (forward-line -3)
+      (insert "\n" (sv-mode-determine-end-expr) "\n")
+      (forward-line -2)
       (funcall sv-mode-finish-skeleton-function proto namespaces))))
 
 (defun sv-mode-insert-prototype (proto namespaces)
@@ -1134,7 +1133,7 @@ function/task definition/implementation in other file."
   "Default finish task/function skeleton function.  PROTO is the parsed
 function/task prototype, and NAMESPACES is the list of namespaces."
   (end-of-line)
-  (insert "\n//! \\todo Implement this " (cdr (assoc 'type proto)))
+  (insert "\n// TODO Implement this " (cdr (assoc 'type proto)))
   (sv-mode-indent-line)
   (back-to-indentation))
 

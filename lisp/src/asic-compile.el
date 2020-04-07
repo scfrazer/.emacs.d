@@ -7,7 +7,7 @@
   (list
    '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3) ;; VCS
    '("^[*][*][*] LINT.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1) ;; SV Lint
-   '("^[*][*][*] SEMANTIC ERROR.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1) ;; SV Lint
+   '("^[*][*][*] \\(SEMANTIC\\|COMPILE\\) ERROR.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 3 2) ;; SV Lint
    ))
 
 (defvar asic-compile-error-regexp-alist-alist nil)

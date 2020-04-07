@@ -1,6 +1,7 @@
 ;;; my-sv-mode.el
 
 (require 'sv-mode)
+(require 'doxymacs)
 (require 'quick-edit)
 
 (defun my-sv-mode-bit-vector ()
@@ -154,6 +155,7 @@
   (when (string-match "/rtl/" (buffer-file-name))
     (my-sv-mode-prettify))
   (highlight-indent-guides-mode 1)
+  (doxymacs-mode 1)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv"))

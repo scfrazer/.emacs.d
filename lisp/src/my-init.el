@@ -224,14 +224,14 @@
 
 (use-package doxymacs
   :defer t
+  :bind-keymap (("C-c D" . doxymacs-mode-map))
   :config
   (progn
     (require 'my-doxymacs)
     (defun my-doxymacs-font-lock-hook ()
       (when (member major-mode (list 'c-mode 'c++-mode 'sv-mode))
         (doxymacs-font-lock)))
-    (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
-    (add-hook 'sv-mode-hook 'doxymacs-mode)))
+    (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)))
 
 (use-package my-fd
   :bind* (("M-s F" . my-fd-project)
@@ -886,7 +886,7 @@ undoable all at once."
          (flymake-start))
         ((equal major-mode 'emacs-lisp-mode)
          (emacs-lisp-byte-compile))
-        ((equal major-mode 'sv-mode)
+        ((member major-mode (list 'sv-mode 'asic-compile-mode))
          (call-interactively 'asic-compile))
         (t
          (call-interactively 'compile))))
@@ -1858,6 +1858,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
+ ("M-|"         . highlight-indent-guides-mode)
  ("M-~"         . previous-error))
 
 ;; These have to be in this order

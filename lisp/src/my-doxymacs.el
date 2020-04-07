@@ -52,21 +52,24 @@
         (cond
          ((string= doxymacs-doxygen-style "JavaDoc")
           (list 'l " * " (doxymacs-doxygen-command-char)
-                "param " (car parms) " " (list 'p prompt) '> 'n
+                "param " (car parms) " - " (list 'p prompt) '> 'n
                 (doxymacs-parm-tempo-element (cdr parms))))
          ((string= doxymacs-doxygen-style "Qt")
           (list 'l "//! " (doxymacs-doxygen-command-char)
-                "param " (car parms) " " (list 'p prompt) '> 'n
+                "param " (car parms) " - " (list 'p prompt) '> 'n
                 (doxymacs-parm-tempo-element (cdr parms))))
          ((string= doxymacs-doxygen-style "C++")
           (list 'l "/// " (doxymacs-doxygen-command-char)
-                "param " (car parms) " " (list 'p prompt) '> 'n
+                "param " (car parms) " - " (list 'p prompt) '> 'n
                 (doxymacs-parm-tempo-element (cdr parms))))
          (t
           (doxymacs-invalid-style))))
     nil))
 
-(setq-default doxymacs-doxygen-style "Qt")
+(setq-default doxymacs-doxygen-style "Qt"
+              doxymacs-command-character "@"
+              doxymacs-member-comment-start "//! "
+              doxymacs-member-comment-end "")
 
 (defun my-doxymacs-make-toc ()
   "Create a table of contents since doxygen \tableofcontents doesn't seem to work."
