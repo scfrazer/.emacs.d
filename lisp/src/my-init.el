@@ -147,17 +147,15 @@
 ;; Deferred packages
 
 (use-package align
-  :bind* (("C-c A" . align-regexp)
-          ("C-c a" . align)
-          ("C-x a" . my-align))
+  :bind* (("C-c A" . my-align-regexp)
+          ("C-c a" . align))
   :config
   (progn
-    (defun my-align ()
-      "Align to an entered char."
+    (defun my-align-regexp ()
+      "`align-regexp' but case-sensitive."
       (interactive "*")
-      (let ((regexp (concat "\\(\\s-*\\)" (regexp-quote (char-to-string (read-char "Align to char:"))))))
-        (save-excursion
-          (align-regexp (region-beginning) (region-end) regexp 1 align-default-spacing))))))
+      (let ((case-fold-search nil))
+        (call-interactively 'align-regexp)))))
 
 (use-package as-mode
   :mode (("\\.s\\'" . as-mode)))
@@ -1119,21 +1117,23 @@ end of a non-blank line, or insert an 80-column comment line"
     (beginning-of-line)
     (if (re-search-forward cs (point-at-eol) t)
         (backward-char (length cs))
-      (if (looking-at "\\s-*$")
-          (let (char)
-            (goto-char pos)
-            (insert comment-start)
-            (delete-horizontal-space)
-            (setq char (char-before))
-            (insert-char char (- 80 (- (point) (point-at-bol)) (length comment-end)))
-            (insert comment-end))
-        (end-of-line)
-        (insert "  " comment-start)
-        (delete-horizontal-space)
-        (insert " ")
-        (when (> (length comment-end) 0)
-          (save-excursion
-            (insert " " comment-end)))))))
+      (if (and (boundp 'doxymacs-mode) doxymacs-mode)
+          (doxymacs-insert-member-comment)
+        (if (looking-at "\\s-*$")
+            (let (char)
+              (goto-char pos)
+              (insert comment-start)
+              (delete-horizontal-space)
+              (setq char (char-before))
+              (insert-char char (- 80 (- (point) (point-at-bol)) (length comment-end)))
+              (insert comment-end))
+          (end-of-line)
+          (insert "  " comment-start)
+          (delete-horizontal-space)
+          (insert " ")
+          (when (> (length comment-end) 0)
+            (save-excursion
+              (insert " " comment-end))))))))
 
 (defun my-kill-frame-or-emacs ()
   "Kill a frame or emacs"
@@ -1462,7 +1462,8 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
     (call-interactively 'indent-according-to-mode)
     (when (and (= prev-eol (point-at-eol))
                (member (following-char) (list ?\" ?\' ?\` ?\) ?\] ?\} ?\>)))
-      (skip-chars-forward "])}>\"'`"))))
+      ;; Old behavior: (skip-chars-forward "])}>\"'`")
+      (forward-char 1))))
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)
 
