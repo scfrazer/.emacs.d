@@ -45,7 +45,7 @@
    (list 'column-number-mode "  C%C")
    "  " mode-line-buffer-identification
    "  " mode-line-modes
-   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◧"))
+   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◓"))
    (:eval (let ((workspace-path (getenv "WORKSPACE")))
             (when workspace-path
               (concat "  [WS: " (file-name-nondirectory workspace-path) "]"))))
