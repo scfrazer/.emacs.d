@@ -1457,12 +1457,13 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 (defun my-tab ()
   "Special TAB key behavior"
   (interactive)
-  (let ((prev-eol (point-at-eol)))
+  (let ((prev-pos (point))
+        pos)
     (call-interactively 'indent-according-to-mode)
-    ;; (when (and (= prev-eol (point-at-eol))
-    ;;            (member (following-char) (list ?\" ?\' ?\` ?\) ?\] ?\} ?\>)))
-    ;;   (skip-chars-forward "])}>\"'`"))))
-    (when (= prev-eol (point-at-eol))
+    (setq pos (point))
+    (when (and (= prev-pos pos)
+               (not (looking-back "^[[:space:]]*" (point-at-bol)))
+               (not (looking-at "[[:space:]]*$")))
       (my-pair-step-out-forward))))
 
 ;; Use global-set-key so minor modes can override
