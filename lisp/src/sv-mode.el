@@ -784,7 +784,7 @@ Users should change `sv-mode-uvm-info-function' to point to their
 own function.  This function can be called through abbrevs."
   (interactive "sVerbosity? ")
   (sv-mode-guess-uvm-tag)
-  (insert "`uvm_info(\"" sv-mode-uvm-tag "\", \"TODO\", " verbosity ");")
+  (insert "`uvm_info(\"" sv-mode-uvm-tag "\", \"TODO\", " verbosity ")")
   (sv-mode-indent-line)
   (search-backward "TODO"))
 
@@ -794,7 +794,7 @@ Users should change `sv-mode-uvm-err-function' to point to their
 own function.  This function can be called through abbrevs."
   (interactive "sType? ")
   (sv-mode-guess-uvm-tag)
-  (insert "`uvm_" type "(\"" sv-mode-uvm-tag "\", \"TODO\");")
+  (insert "`uvm_" type "(\"" sv-mode-uvm-tag "\", \"TODO\")")
   (sv-mode-indent-line)
   (search-backward "TODO"))
 

@@ -397,6 +397,7 @@
     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))))
 
 (use-package my-pair
+  :demand t
   :bind* (("C-c ("     . my-pair-open-paren-dwim)
           ("C-c )"     . my-pair-close-paren-dwim)
           ("C-c ["     . my-pair-open-paren-dwim)
