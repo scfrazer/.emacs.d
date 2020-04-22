@@ -2,7 +2,8 @@
 
 (require 'rg)
 
-(setq-default rg-custom-type-aliases nil
+(setq-default rg-ignore-ripgreprc nil
+              rg-custom-type-aliases nil
               rg-hide-command t)
 
 (rg-define-toggle "--max-depth 1" "m")
