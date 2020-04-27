@@ -2,7 +2,8 @@
 
 (setq-default markdown-fontify-code-blocks-natively t
               markdown-hide-markup nil
-              markdown-list-item-bullets '("•" "◦" "▪" "▫"))
+              markdown-list-item-bullets '("•" "◦" "▪" "▫")
+              markdown-unordered-list-item-prefix "* ")
 
 ;; Task states
 (defconst my-markdown-task-keywords

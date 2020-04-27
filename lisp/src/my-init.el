@@ -1806,6 +1806,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c ."       . my-kill-results-buffer)
  ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
+ ("C-c M"       . asic-compile)
  ("C-c N"       . narrow-to-defun)
  ("C-c T"       . tidy)
  ("C-c TAB"     . indent-region)

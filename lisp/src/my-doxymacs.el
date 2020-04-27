@@ -68,7 +68,7 @@
 
 (setq-default doxymacs-doxygen-style "Qt"
               doxymacs-command-character "@"
-              doxymacs-member-comment-start "//! "
+              doxymacs-member-comment-start "//!< "
               doxymacs-member-comment-end "")
 
 (defun my-doxymacs-make-toc ()

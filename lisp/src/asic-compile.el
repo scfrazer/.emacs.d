@@ -8,6 +8,7 @@
    '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3) ;; VCS
    '("^[*][*][*] LINT.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1) ;; SV Lint
    '("^[*][*][*] \\(SEMANTIC\\|COMPILE\\) ERROR.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 3 2) ;; SV Lint
+   '("^\\([^:]+\\):\\([0-9]+\\): warning: .+$" 1 2) ;; Doxygen
    ))
 
 (defvar asic-compile-error-regexp-alist-alist nil)
@@ -30,7 +31,8 @@
 (defvar asic-compile-command nil)
 (defvar asic-compile-command-list
   (list "$WORKSPACE/lawson/test/bin/run_build"
-        "$WORKSPACE/lawson/test/bin/run_dv_lint"))
+        "$WORKSPACE/lawson/test/bin/run_dv_lint"
+        "$WORKSPACE/lawson/test/bin/run_doxygen"))
 
 (defun asic-compile ()
   "ASIC compile."
