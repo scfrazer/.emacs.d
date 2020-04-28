@@ -467,6 +467,7 @@
     (advice-add 'qe-unit-bounds :around #'my-qe-unit-bounds)))
 
 (use-package my-rect
+  :commands (my-mc/edit-lines)
   :bind* (("M-SPC" . my-rect-push-mark)
           ("M-r" . my-rect/body)))
 
@@ -1859,6 +1860,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-Q"         . my-unfill)
  ("M-]"         . my-forward-paragraph)
  ("M-`"         . next-error)
+ ("M-e"         . my-mc/edit-lines)
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
