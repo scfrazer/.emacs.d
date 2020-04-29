@@ -313,7 +313,6 @@
 (use-package icomplete-vertical
   :demand t
   :custom
-  ;; (completion-styles '(partial-completion substring))
   (completion-category-overrides '((file (styles basic substring))))
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
@@ -406,6 +405,10 @@
                ("C-c >" . my-nxml-forward-balanced)
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
+
+(use-package orderless
+  :demand t
+  :custom (completion-styles '(orderless)))
 
 (use-package package
   :config
