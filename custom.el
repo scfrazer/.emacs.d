@@ -26,9 +26,6 @@
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method (quote character))
- '(icomplete-mode t)
- '(icomplete-vertical-mode t)
- '(ido-vertical-indicator "  ")
  '(jedi:tooltip-method nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties

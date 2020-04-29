@@ -32,7 +32,7 @@
 (defvar asic-compile-command-list
   (list "$WORKSPACE/lawson/test/bin/run_build"
         "$WORKSPACE/lawson/test/bin/run_dv_lint"
-        "$WORKSPACE/lawson/test/bin/run_doxygen"))
+        "$WORKSPACE/lawson/doc/run_doxygen"))
 
 (defun asic-compile ()
   "ASIC compile."
