@@ -19,6 +19,21 @@
       ido-ignore-buffers '(my-buf-ignore-buffer))
 
 (ido-mode 1)
+(setq-default ido-vertical-indicator ""
+              ido-vertical-decorations (list "\n"     ; left bracket around prospect list
+                                             ""      ; right bracket around prospect list
+                                             "\n"    ; separator between prospects, depends on `ido-separator`
+                                             "\n..." ; inserted at the end of a truncated list of prospects
+                                             "["     ; left bracket around common match string
+                                             "]"     ; right bracket around common match string
+                                             " [No match]"
+                                             " [Matched]"
+                                             " [Not readable]"
+                                             " [Too big]"
+                                             " [Confirm]"
+                                             "\n "   ; left bracket around the sole remaining completion
+                                             ""      ; right bracket around the sole remaining completion
+                                             ))
 (ido-vertical-mode 1)
 
 ;; ido + bookmarks

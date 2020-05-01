@@ -203,6 +203,25 @@
       (message ""))))
 
 ;;;###autoload
+(defun git-simple-diff-repo ()
+  "Diff repo."
+  (interactive)
+  (let ((buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
+    (with-current-buffer buf
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      (message "Diffing ...")
+      (unless (= (call-process git-simple-executable nil t nil "diff" "--patience" "--no-color") 0)
+        (error "Couldn't diff repo"))
+      (goto-char (point-min))
+      (set-buffer-modified-p nil)
+      (require 'diff)
+      (diff-mode)
+      (font-lock-ensure))
+    (set-window-buffer nil buf)
+    (message "")))
+
+;;;###autoload
 (defun git-simple-history ()
   "Go through git history using git-timemachine."
   (interactive)
@@ -392,6 +411,7 @@ Substitute '%' in command with current file name."
 (unless git-simple-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "!") 'git-simple-exec)
+    (define-key map (kbd "+") 'git-simple-diff-repo)
     (define-key map (kbd "-") 'git-simple-ediff-file)
     (define-key map (kbd "=") 'git-simple-diff-file)
     (define-key map (kbd "A") 'git-simple-add-tracked)

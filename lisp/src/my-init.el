@@ -320,11 +320,20 @@
   :config
   (icomplete-mode)
   (icomplete-vertical-mode)
+  :init
+  (progn
+    (defun my-icomplete-default-or-first ()
+      (interactive)
+      (if (> (icomplete--field-end) (icomplete--field-beg))
+          (minibuffer-force-complete-and-exit)
+        ;; TODO default ? default : first-choice
+        (minibuffer-complete-and-exit))))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
-              ("<up>" . icomplete-backward-completions)
-              ("C-n" . icomplete-forward-completions)
-              ("C-p" . icomplete-backward-completions)))
+              ("<up>"   . icomplete-backward-completions)
+              ("C-n"    . icomplete-forward-completions)
+              ("C-p"    . icomplete-backward-completions)
+              ("RET"    . my-icomplete-default-or-first)))
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
