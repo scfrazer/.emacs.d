@@ -17,6 +17,9 @@
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
+ '(completion-category-overrides (quote ((file (styles basic substring)))))
+ '(completion-ignore-case t t)
+ '(completion-styles (quote (orderless)))
  '(custom-safe-themes t)
  '(deft-new-file-format "Notes-%Y-%m-%d.md")
  '(eldoc-echo-area-use-multiline-p t)
@@ -33,7 +36,9 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+ '(read-buffer-completion-ignore-case t)
+ '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
    (quote
     ((js2-additional-externs "localStorage" "chrome" "url")
