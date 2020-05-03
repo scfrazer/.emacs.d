@@ -313,6 +313,9 @@
 (use-package icomplete-vertical
   :demand t
   :custom
+  (icomplete-compute-delay 0)
+  (icomplete-delay-completions-threshold 10000)
+  (icomplete-max-delay-chars 0)
   (completion-category-overrides '((file (styles basic substring))))
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)

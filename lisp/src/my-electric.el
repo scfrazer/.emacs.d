@@ -2,6 +2,8 @@
 
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
+(when (fboundp 'minibuffer-electric-default-mode)
+  (minibuffer-electric-default-mode 1))
 
 (electric-pair-mode 1)
 
