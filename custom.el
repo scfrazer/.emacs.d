@@ -29,6 +29,9 @@
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method (quote character))
+ '(icomplete-compute-delay 0)
+ '(icomplete-delay-completions-threshold 10000)
+ '(icomplete-max-delay-chars 0)
  '(jedi:tooltip-method nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
@@ -36,7 +39,7 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (auto-highlight-symbol esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values

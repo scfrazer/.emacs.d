@@ -127,14 +127,12 @@
 (setq ibuffer-saved-filter-groups
       `(("my-groups"
          ("VC" (name . ,my-ibuffer-vc-regexp))
-         ("SQL" (or (mode . sqlplus-mode)
-                    (name . "^*sqlplus:")))
          ("Dired" (mode . dired-mode))
-         ("Doc" (or (mode . org-mode)
-                    (mode . gfm-mode)
-                    (mode . markdown-mode)))
+         ("Doc" (and (not (predicate . (my-ibuffer-workspace-files)))
+                     (or (mode . org-mode)
+                         (mode . gfm-mode)
+                         (mode . markdown-mode))))
          ("ELisp" (mode . emacs-lisp-mode))
-         ;; ("VOB" (filename . "/vob"))
          ("Workspace" (predicate . (my-ibuffer-workspace-files)))
          ("Files" (predicate . (my-ibuffer-filter-files)))
          ("Temp" (predicate . (my-ibuffer-filter-buffers)))

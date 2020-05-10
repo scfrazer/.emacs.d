@@ -1383,7 +1383,7 @@ and copied through iTerm2 to clipboard."
   (let ((filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
         (error "Buffer is not visiting a file")
-      (let ((new-name (read-file-name "Rename file to: " filename)))
+      (let ((new-name (ido-read-file-name "Rename file to: " filename)))
         (rename-file filename new-name t)
         (set-visited-file-name new-name t t)))))
 
