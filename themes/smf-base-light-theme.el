@@ -37,6 +37,7 @@
  `(ido-vertical-first-match-face       ((t :inherit font-lock-string-face :bold t)))
  `(ido-vertical-only-match-face        ((t :foreground "darkgreen" :bold t)))
  `(ido-vertical-match-face             ((t :inherit font-lock-builtin-face :underline t)))
+ `(info-header-xref                    ((t :foreground "skyblue2" :italic t)))
  `(isearch                             ((t :background "coral2" :foreground ,(smf-color 231))))
  `(lazy-highlight                      ((t :background "lightsteelblue" :foreground "black")))
  `(line-number                         ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :italic t)))

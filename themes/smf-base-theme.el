@@ -26,6 +26,36 @@
   "Caution face."
   :group 'faces)
 
+(defface outline-1
+  '((t :inherit font-lock-function-name-face))
+  "Level 1."
+  :group 'outlines)
+
+(defface outline-2
+  '((t :inherit font-lock-variable-name-face))
+  "Level 2."
+  :group 'outlines)
+
+(defface outline-3
+  '((t :inherit font-lock-keyword-face))
+  "Level 3."
+  :group 'outlines)
+
+(defface outline-4
+  '((t :inherit font-lock-comment-face))
+  "Level 4."
+  :group 'outlines)
+
+(defface outline-5
+  '((t :inherit font-lock-type-face))
+  "Level 5."
+  :group 'outlines)
+
+(defface outline-6
+  '((t :inherit font-lock-constant-face))
+  "Level 6."
+  :group 'outlines)
+
 (custom-theme-set-faces
  'smf-base
 
@@ -74,7 +104,11 @@
  `(ido-vertical-first-match-face            ((t :inherit default :bold t)))
  `(ido-vertical-only-match-face             ((t :inherit font-lock-variable-name-face :bold t)))
  `(ido-vertical-match-face                  ((t :inherit font-lock-builtin-face :bold t :underline t)))
- `(jedi:highlight-function-argument         ((t :inherit eldoc-highlight-function-argument)))
+ `(info-menu-star                           ((t :inherit font-lock-string-face)))
+ `(info-title-1                             ((t :inherit outline-1)))
+ `(info-title-2                             ((t :inherit outline-2)))
+ `(info-title-3                             ((t :inherit outline-3)))
+ `(info-title-4                             ((t :inherit outline-4)))
  `(markdown-code-face                       ((t :inherit default :italic t)))
  `(markdown-gfm-checkbox-face               ((t :inherit font-lock-builtin-face :bold t)))
  `(markdown-header-face                     ((t :inherit outline-1 :underline t)))

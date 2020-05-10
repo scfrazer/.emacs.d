@@ -330,6 +330,8 @@
       (if (> (icomplete--field-end) (icomplete--field-beg))
           (minibuffer-force-complete-and-exit)
         ;; TODO default ? default : first-choice
+        ;; TODO minibuffer-default var
+        ;; TODO number of comps
         (minibuffer-complete-and-exit))))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
