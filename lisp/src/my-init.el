@@ -163,6 +163,32 @@
 (use-package asic-compile
   :commands (asic-compile))
 
+(use-package auto-highlight-symbol
+  :demand t
+  :custom
+  (ahs-suppress-log t)
+  (ahs-select-invisible 'skip)
+  (ahs-case-fold-search nil)
+  (ahs-inhibit-face-list nil)
+  :config
+  (progn
+    (defun my-ahs-mode-maybe (orig-fun)
+      (unless (or (minibufferp (current-buffer))
+                  (memq major-mode (list 'dired-mode 'ibuffer-mode)))
+        (auto-highlight-symbol-mode t)))
+    (advice-add #'ahs-mode-maybe :around #'my-ahs-mode-maybe)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M--") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "C-x C-'") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "C-x C-a") nil)
+    (setq minor-mode-alist (remove (assq 'auto-highlight-symbol-mode minor-mode-alist) minor-mode-alist))
+    (global-auto-highlight-symbol-mode t))
+  :bind* (("<f5>" . ahs-backward)
+          ("<f6>" . ahs-forward)))
+
 (use-package bm
   :bind* (("M-^" . my-bm-toggle-or-show)
           ("M-(" . bm-previous)
@@ -1080,20 +1106,35 @@ or the region with prefix arg."
     (fill-paragraph nil)))
 
 (defun my-fixme-next (&optional arg)
-  "Go to next FIXME, or previous with prefix arg."
+  "Go to next TODO/FIXME, or FIXME with prefix arg."
   (interactive "P")
   (let ((case-fold-search nil) (pos (point)))
     (if arg
+        (progn
+          (when (looking-at "\\bFIXME\\b")
+            (skip-chars-forward "A-Za-z"))
+          (if (re-search-forward "\\bFIXME\\b" nil t)
+              (goto-char (match-beginning 0))
+            (goto-char pos)
+            (message "No more FIXMEs")))
+      (when (looking-at "\\b\\(FIXME\\|TODO\\)\\b")
+        (skip-chars-forward "A-Za-z"))
+      (if (re-search-forward "\\b\\(FIXME\\|TODO\\)\\b" nil t)
+          (goto-char (match-beginning 0))
+        (goto-char pos)
+        (message "No more FIXMEs/TODOs")))))
+
+(defun my-fixme-prev (&optional arg)
+  "Go to previous TODO/FIXME, or FIXME with prefix arg."
+  (interactive "P")
+  (let ((case-fold-search nil))
+    (if arg
         (unless (re-search-backward "\\bFIXME\\b" nil t)
           (message "No previous FIXMEs"))
-      (when (looking-at "\\bFIXME\\b")
-        (forward-char 5))
-      (if (re-search-forward "\\bFIXME\\b" nil t)
-          (backward-char 5)
-        (goto-char pos)
-        (message "No more FIXMEs")))))
+      (unless (re-search-backward "\\b\\(FIXME\\|TODO\\)\\b" nil t)
+        (message "No previous FIXMEs/TODOs")))))
 
-  (defun my-forward-paragraph ()
+(defun my-forward-paragraph ()
   "Move to next blank line after some text."
   (interactive)
   (beginning-of-line)
@@ -1572,20 +1613,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (my-theme-disable-all)
   (load-theme 'smf-light t))
 
-(defun my-todo-next (&optional arg)
-  "Go to next TODO, or previous with prefix arg."
-  (interactive "P")
-  (let ((case-fold-search nil) (pos (point)))
-    (if arg
-        (unless (re-search-backward "\\bTODO\\b" nil t)
-          (message "No previous TODOs"))
-      (when (looking-at "\\bTODO\\b")
-        (forward-char 4))
-      (if (re-search-forward "\\bTODO\\b" nil t)
-          (backward-char 4)
-        (goto-char pos)
-        (message "No more TODOs")))))
-
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
   (interactive)
@@ -1829,8 +1856,8 @@ Prefix with C-u to resize the `next-window'."
  ("<delete>"    . delete-char)
  ("<f1>"        . flymake-goto-prev-error)
  ("<f2>"        . flymake-goto-next-error)
- ("<f3>"        . my-fixme-next)
- ("<f4>"        . my-todo-next)
+ ("<f3>"        . my-fixme-prev)
+ ("<f4>"        . my-fixme-next)
  ("C-/"         . dabbrev-expand)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
