@@ -295,8 +295,6 @@
   (require 'my-flymake))
 
 (use-package flyspell
-  ;; :bind* (;; TODO ("<f3>" . my-flyspell-goto-prev-error)
-  ;;         ("<f4>" . flyspell-goto-next-error))
   :commands (flyspell-prog-mode
              my-flyspell-prog-mode)
   :init
@@ -351,20 +349,18 @@
   (icomplete-vertical-mode)
   :init
   (progn
-    (defun my-icomplete-default-or-first ()
+    (defun my-icomplete-dwim ()
       (interactive)
-      (if (> (icomplete--field-end) (icomplete--field-beg))
-          (minibuffer-force-complete-and-exit)
-        ;; TODO default ? default : first-choice
-        ;; TODO minibuffer-default var
-        ;; TODO number of comps
-        (minibuffer-complete-and-exit))))
+      (when (and (= (icomplete--field-end) (icomplete--field-beg))
+                 minibuffer-default)
+        (insert minibuffer-default))
+      (minibuffer-force-complete-and-exit)))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
               ("<up>"   . icomplete-backward-completions)
               ("C-n"    . icomplete-forward-completions)
               ("C-p"    . icomplete-backward-completions)
-              ("RET"    . my-icomplete-default-or-first)))
+              ("RET"    . my-icomplete-dwim)))
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
