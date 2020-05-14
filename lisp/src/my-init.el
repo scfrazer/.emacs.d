@@ -351,13 +351,19 @@
   (progn
     (defun my-icomplete-dwim ()
       (interactive)
-      (when (and (= (icomplete--field-end) (icomplete--field-beg))
-                 minibuffer-default)
-        (insert minibuffer-default))
-      (minibuffer-force-complete-and-exit)))
+      (let ((beg (icomplete--field-beg))
+            (end (icomplete--field-end)))
+      (if (> end beg)
+          (if (completion-all-sorted-completions beg end)
+              (minibuffer-force-complete-and-exit)
+            (exit-minibuffer))
+        (when minibuffer-default
+          (insert minibuffer-default))
+        (minibuffer-force-complete-and-exit)))))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
               ("<up>"   . icomplete-backward-completions)
+              ("C-j"    . exit-minibuffer)
               ("C-n"    . icomplete-forward-completions)
               ("C-p"    . icomplete-backward-completions)
               ("RET"    . my-icomplete-dwim)))
