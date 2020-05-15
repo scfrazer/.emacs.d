@@ -19,6 +19,12 @@
                            (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
 (advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
 (setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
+(defun my-buffer-substring--filter (beg end &optional delete)
+  (let ((string (subst-char-in-string highlight-indent-guides-character ?  (buffer-substring beg end))))
+    (when delete
+      (delete-region beg end))
+    string))
+(setq filter-buffer-substring-function #'my-buffer-substring--filter)
 
 (require 'bind-key)
 (require 'bind-remind)
@@ -537,8 +543,9 @@
   :bind* ("C-c R" . revbufs))
 
 (use-package my-rg
-  :bind* (("C-c G" . my-rg-project)
-          ("C-c g" . my-rg-current)))
+  :bind* (("C-c G"   . my-rg-project)
+          ("C-c g"   . my-rg-current)
+          ("C-c M-g" . my-rg-regexp-ask)))
 
 (use-package sgml-mode
   :mode (("\\.\\(xml\\|xsl\\|rng\\)\\'" . sgml-mode))
@@ -1917,6 +1924,8 @@ Prefix with C-u to resize the `next-window'."
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
  ("M-!"         . my-shell-command-on-current-file)
  ("M-%"         . my-query-replace)
+ ("M-<f3>"     . (lambda () (interactive) (my-fixme-prev t)))
+ ("M-<f4>"     . (lambda () (interactive) (my-fixme-next t)))
  ("M-="         . my-count-lines)
  ("M-N"         . scroll-up-command)
  ("M-P"         . scroll-down-command)
@@ -2009,6 +2018,9 @@ Prefix with C-u to resize the `next-window'."
     (set-display-table-slot standard-display-table 'escape escape-glyph)
     (set-display-table-slot standard-display-table 'control control-glyph)
     (set-display-table-slot standard-display-table 'vertical-border vertical-border-glyph))
+
+  (define-key function-key-map "[1;3R" (kbd "M-<f3>"))
+  (define-key function-key-map "[1;3S" (kbd "M-<f4>"))
 
   (bind-keys* ("C-M-z" . my-suspend-emacs)
               ("C-_"   . dabbrev-expand)))

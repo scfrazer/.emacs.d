@@ -17,6 +17,12 @@
   (setq rg-group-result (not rg-group-result))
   (rg-rerun))
 
+(rg-define-search my-rg-regexp-ask
+  :query ask
+  :format regexp
+  :files ask
+  :dir current)
+
 (rg-define-search my-rg-current-ask
   :query ask
   :format literal
