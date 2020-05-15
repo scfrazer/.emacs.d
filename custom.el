@@ -43,7 +43,7 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (modus-vivendi-theme auto-highlight-symbol esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint yaml-mode deft markdown-mode fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (modus-vivendi-theme auto-highlight-symbol esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint deft fd-dired dired-rainbow dired-subtree rg hydra doneburn-theme spacemacs-theme expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values

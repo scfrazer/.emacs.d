@@ -7,7 +7,7 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.4-dev
-;; Package-Version: 20200509.1525
+;; Package-Version: 20200514.16
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -633,7 +633,7 @@ This variant of `rx' supports common Markdown named REGEXPS."
   "Regular expression matches HTML comment closing.")
 
 (defconst markdown-regex-link-inline
-  "\\(?1:!\\)?\\(?2:\\[\\)\\(?3:[^]^][^]]*\\|\\)\\(?4:\\]\\)\\(?5:(\\)\\(?6:[^)]*?\\)\\(?:\\s-+\\(?7:\"[^\"]*\"\\)\\)?\\(?8:)\\)"
+  "\\(?1:!\\)?\\(?2:\\[\\)\\(?3:\\^?\\(?:\\\\\\]\\|[^]]\\)*\\|\\)\\(?4:\\]\\)\\(?5:(\\)\\(?6:[^)]*?\\)\\(?:\\s-+\\(?7:\"[^\"]*\"\\)\\)?\\(?8:)\\)"
   "Regular expression for a [text](file) or an image link ![text](file).
 Group 1 matches the leading exclamation point (optional).
 Group 2 matches the opening square bracket.
@@ -2804,7 +2804,7 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
   "Match REGEX from point to LAST.
 REGEX is either `markdown-regex-math-inline-single' for matching
 $..$ or `markdown-regex-math-inline-double' for matching $$..$$."
-  (when (and markdown-enable-math (markdown-match-inline-generic regex last))
+  (when (markdown-match-inline-generic regex last)
     (let ((begin (match-beginning 1)) (end (match-end 1)))
       (prog1
           (if (or (markdown-range-property-any
@@ -2839,15 +2839,29 @@ $..$ or `markdown-regex-math-inline-double' for matching $$..$$."
 
 (defun markdown-match-math-single (last)
   "Match single quoted $..$ math from point to LAST."
-  (markdown-match-math-generic markdown-regex-math-inline-single last))
+  (when markdown-enable-math
+    (when (and (char-equal (char-after) ?$)
+               (not (bolp))
+               (not (char-equal (char-before) ?\\))
+               (not (char-equal (char-before) ?$)))
+      (forward-char -1))
+    (markdown-match-math-generic markdown-regex-math-inline-single last)))
 
 (defun markdown-match-math-double (last)
   "Match double quoted $$..$$ math from point to LAST."
-  (markdown-match-math-generic markdown-regex-math-inline-double last))
+  (when markdown-enable-math
+    (when (and (char-equal (char-after) ?$)
+               (char-equal (char-after (1+ (point))) ?$)
+               (not (bolp))
+               (not (char-equal (char-before) ?\\))
+               (not (char-equal (char-before) ?$)))
+      (forward-char -1))
+    (markdown-match-math-generic markdown-regex-math-inline-double last)))
 
 (defun markdown-match-math-display (last)
   "Match bracketed display math \[..\] and \\[..\\] from point to LAST."
-  (markdown-match-math-generic markdown-regex-math-display last))
+  (when markdown-enable-math
+    (markdown-match-math-generic markdown-regex-math-display last)))
 
 (defun markdown-match-propertized-text (property last)
   "Match text with PROPERTY from point to LAST.
@@ -8303,10 +8317,12 @@ or \\[markdown-toggle-inline-images]."
           (when (and imagep
                      (not (zerop (length file))))
             (unless (file-exists-p file)
-              (when (and markdown-display-remote-images
-                         (member (downcase (url-type (url-generic-parse-url file)))
-                                 markdown-remote-image-protocols))
-                (setq file (markdown--get-remote-image file))))
+              (let* ((download-file (funcall markdown-translate-filename-function file))
+                     (valid-url (ignore-errors
+                                  (member (downcase (url-type (url-generic-parse-url download-file)))
+                                          markdown-remote-image-protocols))))
+                (when (and markdown-display-remote-images valid-url)
+                  (setq file (markdown--get-remote-image download-file)))))
             (when (file-exists-p file)
               (let* ((abspath (if (file-name-absolute-p file)
                                   file
