@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "icomplete-vertical" "20200504.1916" "Display icomplete candidates vertically" '((emacs "24.4")) :commit "fe835acce91b0f088c8d27801bf42e24bb2dbab5" :keywords '("convenience" "completion") :authors '(("Omar Antolín Camarena" . "omar@matem.unam.mx")) :maintainer '("Omar Antolín Camarena" . "omar@matem.unam.mx") :url "https://github.com/oantolin/icomplete-vertical")
