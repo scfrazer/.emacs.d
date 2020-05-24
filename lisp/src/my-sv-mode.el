@@ -152,7 +152,7 @@
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (when (string-match "/rtl/" (buffer-file-name))
+  (when (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name))
     (my-sv-mode-prettify))
   (highlight-indent-guides-mode 1)
   (doxymacs-mode 1)
