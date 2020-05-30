@@ -26,7 +26,6 @@
  '(icomplete-compute-delay 0)
  '(icomplete-delay-completions-threshold 10000)
  '(icomplete-max-delay-chars 0)
- '(ido-ubiquitous-mode t)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote
