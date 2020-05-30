@@ -340,39 +340,39 @@
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
 
-(use-package icomplete-vertical
-  :demand t
-  :custom
-  (icomplete-compute-delay 0)
-  (icomplete-delay-completions-threshold 10000)
-  (icomplete-max-delay-chars 0)
-  (completion-category-overrides '((file (styles basic substring))))
-  (read-file-name-completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
-  (completion-ignore-case t)
-  :config
-  (icomplete-mode)
-  (icomplete-vertical-mode)
-  :init
-  (progn
-    (defun my-icomplete-dwim ()
-      (interactive)
-      (let ((beg (icomplete--field-beg))
-            (end (icomplete--field-end)))
-      (if (> end beg)
-          (if (completion-all-sorted-completions beg end)
-              (minibuffer-force-complete-and-exit)
-            (exit-minibuffer))
-        (when minibuffer-default
-          (insert minibuffer-default))
-        (minibuffer-force-complete-and-exit)))))
-  :bind (:map icomplete-minibuffer-map
-              ("<down>" . icomplete-forward-completions)
-              ("<up>"   . icomplete-backward-completions)
-              ("C-j"    . exit-minibuffer)
-              ("C-n"    . icomplete-forward-completions)
-              ("C-p"    . icomplete-backward-completions)
-              ("RET"    . my-icomplete-dwim)))
+;; (use-package icomplete-vertical
+;;   :demand t
+;;   :custom
+;;   (icomplete-compute-delay 0)
+;;   (icomplete-delay-completions-threshold 10000)
+;;   (icomplete-max-delay-chars 0)
+;;   (completion-category-overrides '((file (styles basic substring))))
+;;   (read-file-name-completion-ignore-case t)
+;;   (read-buffer-completion-ignore-case t)
+;;   (completion-ignore-case t)
+;;   :config
+;;   (icomplete-mode)
+;;   (icomplete-vertical-mode)
+;;   :init
+;;   (progn
+;;     (defun my-icomplete-dwim ()
+;;       (interactive)
+;;       (let ((beg (icomplete--field-beg))
+;;             (end (icomplete--field-end)))
+;;       (if (> end beg)
+;;           (if (completion-all-sorted-completions beg end)
+;;               (minibuffer-force-complete-and-exit)
+;;             (exit-minibuffer))
+;;         (when minibuffer-default
+;;           (insert minibuffer-default))
+;;         (minibuffer-force-complete-and-exit)))))
+;;   :bind (:map icomplete-minibuffer-map
+;;               ("<down>" . icomplete-forward-completions)
+;;               ("<up>"   . icomplete-backward-completions)
+;;               ("C-j"    . exit-minibuffer)
+;;               ("C-n"    . icomplete-forward-completions)
+;;               ("C-p"    . icomplete-backward-completions)
+;;               ("RET"    . my-icomplete-dwim)))
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
@@ -454,9 +454,9 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
-(use-package orderless
-  :demand t
-  :custom (completion-styles '(orderless)))
+;; (use-package orderless
+;;   :demand t
+;;   :custom (completion-styles '(orderless)))
 
 (use-package package
   :config

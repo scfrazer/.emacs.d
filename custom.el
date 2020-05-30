@@ -7,23 +7,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-auto-start nil)
- '(ac-max-width 50)
- '(ac-quick-help-delay 0.5)
- '(ac-stop-flymake-on-completing nil)
- '(ac-trigger-key "C-c /")
- '(ac-use-fuzzy t)
- '(ac-use-menu-map t)
  '(ahs-case-fold-search nil)
  '(ahs-inhibit-face-list nil)
  '(ahs-select-invisible (quote skip))
  '(ahs-suppress-log t)
+ '(amx-backend (quote ido))
+ '(amx-mode t)
+ '(amx-show-key-bindings nil)
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
- '(completion-category-overrides (quote ((file (styles basic substring)))))
- '(completion-ignore-case t t)
- '(completion-styles (quote (orderless)))
  '(custom-safe-themes t)
  '(deft-new-file-format "Notes-%Y-%m-%d.md")
  '(eldoc-echo-area-use-multiline-p t)
@@ -36,28 +29,68 @@
  '(icomplete-compute-delay 0)
  '(icomplete-delay-completions-threshold 10000)
  '(icomplete-max-delay-chars 0)
- '(jedi:tooltip-method nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    (quote
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (markdown-mode yaml-mode modus-vivendi-theme auto-highlight-symbol esup orderless modus-operandi-theme icomplete-vertical bm browse-kill-ring dash-functional fill-function-arguments flymake-easy flymake-eslint flymake-perlcritic goto-chg ido-vertical-mode iflipb popup visual-regexp web-beautify web-mode with-editor json-mode use-package highlight-indent-guides git-timemachine fzf relint deft fd-dired dired-subtree rg hydra expand-region sr-speedbar filladapt multiple-cursors htmlize dash crontab-mode avy)))
+    (amx
+     auto-highlight-symbol
+     avy
+     bm
+     browse-kill-ring
+     crontab-mode
+     dash
+     dash-functional
+     deft
+     dired-subtree
+     esup
+     expand-region
+     fd-dired
+     fill-function-arguments
+     filladapt
+     flymake-easy
+     flymake-eslint
+     flymake-perlcritic
+     fzf
+     git-timemachine
+     goto-chg
+     highlight-indent-guides
+     htmlize
+     hydra
+     icomplete-vertical
+     ido-completing-read+
+     ido-vertical-mode
+     iflipb
+     json-mode
+     markdown-mode
+     modus-operandi-theme
+     modus-vivendi-theme
+     multiple-cursors
+     orderless
+     popup
+     relint
+     rg
+     sr-speedbar
+     use-package
+     visual-regexp
+     web-beautify
+     web-mode
+     with-editor
+     yaml-mode)))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
    (quote
-    ((js2-additional-externs "localStorage" "chrome" "url")
-     (eval modify-syntax-entry 35 "<")
+    ((eval modify-syntax-entry 35 "<")
      (eval modify-syntax-entry 10 ">")
      (sgml-always-quote-attributes)
      (sgml-indent-step . 1)
      (sgml-indent-data . t)
      (checkdoc-permit-comma-termination-flag . t)
      (checkdoc-force-docstrings-flag)
-     (folded-file . t)
-     (clearcase-version-stamp-active . t))))
+     (folded-file . t))))
  '(speedbar-indentation-width 4)
  '(yank-excluded-properties
    (quote
