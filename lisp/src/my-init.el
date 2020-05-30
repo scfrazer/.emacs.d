@@ -1875,6 +1875,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-y"       . browse-kill-ring)
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c ."       . my-kill-results-buffer)
+ ("C-c /"       . complete-tag)
  ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . asic-compile)
