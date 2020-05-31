@@ -959,6 +959,13 @@ undoable all at once."
         (t
          (call-interactively 'compile))))
 
+(defun my-complete-tag ()
+  (interactive)
+  (or tags-table-list
+      tags-file-name
+      (visit-tags-table-buffer))
+  (call-interactively 'complete-tag))
+
 (defun my-comment-or-uncomment-region ()
   "Like `comment-or-uncomment-region', but always uses lines."
   (interactive "*")
@@ -1868,6 +1875,7 @@ Prefix with C-u to resize the `next-window'."
  ("<f3>"        . my-fixme-prev)
  ("<f4>"        . my-fixme-next)
  ("C-/"         . dabbrev-expand)
+ ("C-M-_"       . my-complete-tag)
  ("C-M-h"       . backward-sexp)
  ("C-M-k"       . delete-region)
  ("C-M-l"       . forward-sexp)
@@ -1875,7 +1883,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-M-y"       . browse-kill-ring)
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c ."       . my-kill-results-buffer)
- ("C-c /"       . complete-tag)
  ("C-c ;"       . my-line-comment)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . asic-compile)
