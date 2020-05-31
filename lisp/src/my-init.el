@@ -340,39 +340,35 @@
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
 
-;; (use-package icomplete-vertical
-;;   :demand t
-;;   :custom
-;;   (icomplete-compute-delay 0)
-;;   (icomplete-delay-completions-threshold 10000)
-;;   (icomplete-max-delay-chars 0)
-;;   (completion-category-overrides '((file (styles basic substring))))
-;;   (read-file-name-completion-ignore-case t)
-;;   (read-buffer-completion-ignore-case t)
-;;   (completion-ignore-case t)
-;;   :config
-;;   (icomplete-mode)
-;;   (icomplete-vertical-mode)
-;;   :init
-;;   (progn
-;;     (defun my-icomplete-dwim ()
-;;       (interactive)
-;;       (let ((beg (icomplete--field-beg))
-;;             (end (icomplete--field-end)))
-;;       (if (> end beg)
-;;           (if (completion-all-sorted-completions beg end)
-;;               (minibuffer-force-complete-and-exit)
-;;             (exit-minibuffer))
-;;         (when minibuffer-default
-;;           (insert minibuffer-default))
-;;         (minibuffer-force-complete-and-exit)))))
-;;   :bind (:map icomplete-minibuffer-map
-;;               ("<down>" . icomplete-forward-completions)
-;;               ("<up>"   . icomplete-backward-completions)
-;;               ("C-j"    . exit-minibuffer)
-;;               ("C-n"    . icomplete-forward-completions)
-;;               ("C-p"    . icomplete-backward-completions)
-;;               ("RET"    . my-icomplete-dwim)))
+(use-package icomplete-vertical
+  :custom
+  (icomplete-compute-delay 0)
+  (icomplete-delay-completions-threshold 10000)
+  (icomplete-max-delay-chars 0)
+  (completion-category-overrides '((file (styles basic substring))))
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t)
+  :init
+  (progn
+    (defun my-icomplete-dwim ()
+      (interactive)
+      (let ((beg (icomplete--field-beg))
+            (end (icomplete--field-end)))
+        (if (> end beg)
+            (if (completion-all-sorted-completions beg end)
+                (minibuffer-force-complete-and-exit)
+              (exit-minibuffer))
+          (when minibuffer-default
+            (insert minibuffer-default))
+          (minibuffer-force-complete-and-exit)))))
+  :bind (:map icomplete-minibuffer-map
+              ("<down>" . icomplete-forward-completions)
+              ("<up>"   . icomplete-backward-completions)
+              ("C-j"    . exit-minibuffer)
+              ("C-n"    . icomplete-forward-completions)
+              ("C-p"    . icomplete-backward-completions)
+              ("RET"    . my-icomplete-dwim)))
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
@@ -1272,6 +1268,15 @@ end of a non-blank line, or insert an 80-column comment line"
   (setq my-layout-window-configuration (current-window-configuration))
   (message "Layout saved"))
 
+(defun my-m-x ()
+  (interactive)
+  (let ((completion-styles '(orderless)))
+    (icomplete-mode 1)
+    (icomplete-vertical-mode 1)
+    (call-interactively 'execute-extended-command)
+    (icomplete-vertical-mode -1)
+    (icomplete-mode -1)))
+
 (defun my-macroexpand (sexp)
   (interactive (list (sexp-at-point)))
   (with-output-to-temp-buffer "*el-macroexpansion*"
@@ -1944,6 +1949,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
+ ("M-x"         . my-m-x)
  ("M-z"         . redo)
  ("M-|"         . highlight-indent-guides-mode)
  ("M-~"         . previous-error))
