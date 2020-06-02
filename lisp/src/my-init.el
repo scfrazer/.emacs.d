@@ -1268,15 +1268,6 @@ end of a non-blank line, or insert an 80-column comment line"
   (setq my-layout-window-configuration (current-window-configuration))
   (message "Layout saved"))
 
-(defun my-m-x ()
-  (interactive)
-  (let ((completion-styles '(orderless)))
-    (icomplete-mode 1)
-    (icomplete-vertical-mode 1)
-    (call-interactively 'execute-extended-command)
-    (icomplete-vertical-mode -1)
-    (icomplete-mode -1)))
-
 (defun my-macroexpand (sexp)
   (interactive (list (sexp-at-point)))
   (with-output-to-temp-buffer "*el-macroexpansion*"
@@ -1440,6 +1431,16 @@ and copied through iTerm2 to clipboard."
     (setq my-recenter-count (1+ my-recenter-count))
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
+
+(defun my-read-extended-command (orig-fun)
+  (let ((completion-styles '(orderless)) command)
+    (icomplete-mode 1)
+    (icomplete-vertical-mode 1)
+    (setq command (apply orig-fun '()))
+    (icomplete-vertical-mode -1)
+    (icomplete-mode -1)
+    command))
+(advice-add 'read-extended-command :around #'my-read-extended-command)
 
 (defun my-rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
@@ -1949,7 +1950,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
- ("M-x"         . my-m-x)
  ("M-z"         . redo)
  ("M-|"         . highlight-indent-guides-mode)
  ("M-~"         . previous-error))

@@ -14,6 +14,8 @@
  '(clean-buffer-list-kill-buffer-names
    (quote
     ("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*")))
+ '(completion-category-overrides (quote ((file (styles basic substring)))))
+ '(completion-ignore-case t t)
  '(custom-safe-themes t)
  '(deft-new-file-format "Notes-%Y-%m-%d.md")
  '(eldoc-echo-area-use-multiline-p t)
@@ -32,7 +34,7 @@
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(package-selected-packages
    (quote
-    (auto-highlight-symbol avy bm browse-kill-ring crontab-mode dash dash-functional deft dired-subtree expand-region fd-dired fill-function-arguments filladapt flymake-easy flymake-eslint flymake-perlcritic fzf git-timemachine goto-chg highlight-indent-guides htmlize hydra icomplete-vertical ido-completing-read+ ido-vertical-mode iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode)))
+    (gruvbox-theme hc-zenburn-theme auto-highlight-symbol avy bm browse-kill-ring crontab-mode dash dash-functional deft dired-subtree expand-region fd-dired fill-function-arguments filladapt flymake-easy flymake-eslint flymake-perlcritic fzf git-timemachine goto-chg highlight-indent-guides htmlize hydra icomplete-vertical ido-completing-read+ ido-vertical-mode iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode)))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
