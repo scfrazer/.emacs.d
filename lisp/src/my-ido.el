@@ -35,6 +35,7 @@
                                              ""      ; right bracket around the sole remaining completion
                                              ))
 (ido-vertical-mode 1)
+(ido-at-point-mode 1)
 
 ;; ido + bookmarks
 
@@ -272,7 +273,8 @@ If cursor is not at the end of the user input, move to end of input."
   (interactive)
   (if (not (eobp))
       (end-of-line)
-    (setq ido-current-directory (concat (abbreviate-file-name ido-current-directory) ido-text))
+    (when ido-current-directory
+      (setq ido-current-directory (concat (abbreviate-file-name ido-current-directory) ido-text)))
     (setq ido-text "")
     (setq ido-exit 'edit)
     (exit-minibuffer)))
@@ -288,6 +290,7 @@ If cursor is not at the end of the user input, move to end of input."
   (define-key (cdr ido-minor-mode-map-entry) [remap kill-buffer] nil)
   (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
   (define-key ido-completion-map (kbd "<up>") 'ido-prev-match)
+  (define-key ido-completion-map (kbd "C-x C-e") 'my-ido-edit-input)
   (define-key ido-completion-map (kbd "C-e") 'my-ido-edit-input)
   (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
