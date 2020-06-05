@@ -678,6 +678,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
 (winner-mode 1)
+(windmove-default-keybindings 'meta)
 
 (setq-default Man-notify-method 'bully
               auto-hscroll-mode t ;;'current-line
