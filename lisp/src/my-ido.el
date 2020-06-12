@@ -35,7 +35,8 @@
                                              ""      ; right bracket around the sole remaining completion
                                              ))
 (ido-vertical-mode 1)
-(ido-at-point-mode 1)
+(when (fboundp 'ido-at-point-mode)
+  (ido-at-point-mode 1))
 
 ;; ido + bookmarks
 
