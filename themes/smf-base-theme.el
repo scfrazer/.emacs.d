@@ -130,6 +130,8 @@
  `(my-read-only-face                        ((t :foreground "black" :background ,(smf-color 202))))
  `(org-level-1                              ((t :inherit outline-1))) ;; :underline t)))
  `(region                                   ((t :foreground ,(smf-color 231) :background ,(smf-color 31))))
+ `(rg-match-position-face                   ((t :inherit line-number)))
+ `(rg-line-number-face                      ((t :inherit line-number)))
  `(rg-toggle-off-face                       ((t nil)))
  `(rg-toggle-on-face                        ((t :inherit warning)))
  `(show-paren-match                         ((t :inherit success)))

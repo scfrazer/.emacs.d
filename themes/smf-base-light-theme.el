@@ -8,8 +8,8 @@
  'smf-base-light
 
  `(ahs-definition-face                 ((t :background "honeydew2")))
- `(ahs-face                            ((t :background "#f4f4ff")))
- `(ahs-plugin-defalt-face              ((t :inherit ahs-face)))
+ `(ahs-face                            ((t :background "ghostwhite")))
+ `(ahs-plugin-defalt-face              ((t :background "whitesmoke")))
  `(bm-face                             ((t :foreground "black" :background ,(smf-color 221))))
  `(caution                             ((t :foreground "black" :background ,(smf-color 215))))
  `(cursor                              ((t :background "deeppink2")))
