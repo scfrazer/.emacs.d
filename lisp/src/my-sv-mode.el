@@ -152,7 +152,8 @@
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (when (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name))
+  (when (and (buffer-file-name)
+             (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name)))
     (my-sv-mode-prettify))
   (highlight-indent-guides-mode 1)
   (doxymacs-mode 1)
@@ -274,5 +275,9 @@
   (lambda()
     (insert "phase.drop_objection(this);")
     (sv-mode-indent-line)))
+
+(define-abbrev sv-mode-abbrev-table
+  "lint"
+  "//@DVT_LINTER_WAIVER \"\" DISABLE ")
 
 (provide 'my-sv-mode)

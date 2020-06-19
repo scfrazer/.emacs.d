@@ -233,8 +233,8 @@ Otherwise indent them as usual."
             "//! " 'p '> 'n
             (doxymacs-parm-tempo-element (mapcar 'car args))
             (when (and ret (not (string= ret "void")))
-              '(l "//! " '> 'n (doxymacs-doxygen-command-char)
-                  "return " (p "Returns: ") > n))
+              '(l "//! " (doxymacs-doxygen-command-char)
+                  "return - " (p "Returns: ") > n))
             (unless (looking-at "\\s-*$") '>))))
   "*Doxymacs function comment template."
   :group 'sv-mode
