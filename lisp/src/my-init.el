@@ -163,8 +163,12 @@
       (let ((case-fold-search nil))
         (call-interactively 'align-regexp)))))
 
-(use-package as-mode
-  :mode (("\\.s\\'" . as-mode)))
+(use-package asm-mode
+  :config
+  (progn
+    (defun my-asm-mode-hook ()
+      (setq imenu-generic-expression (list '(nil "\\(^[a-zA-Z_][a-zA-Z0-9_]+\\):" 1))))
+    (add-hook 'asm-mode-hook 'my-asm-mode-hook)))
 
 (use-package asic-compile
   :commands (asic-compile))
