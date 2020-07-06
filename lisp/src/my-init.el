@@ -380,8 +380,9 @@
   (require 'my-ibuffer))
 
 (use-package iflipb
-  :bind* (("M-," . iflipb-previous-buffer)
-          ("M-." . iflipb-next-buffer))
+  :bind* (("C-x k" . iflipb-kill-buffer)
+          ("M-,"   . iflipb-previous-buffer)
+          ("M-."   . iflipb-next-buffer))
   :config
   (progn
     (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
@@ -1934,7 +1935,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . my-win-split-vertically-small)
  ("C-x e"       . my-call-last-kbd-macro)
- ("C-x k"       . kill-buffer)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
  ("C-x |"       . my-win-split-horizontally)

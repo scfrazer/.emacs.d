@@ -152,9 +152,9 @@
 
 (defun my-sv-mode-hook ()
   (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  (when (and (buffer-file-name)
-             (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name)))
-    (my-sv-mode-prettify))
+  ;; (when (and (buffer-file-name)
+  ;;            (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name)))
+  ;;   (my-sv-mode-prettify))
   (highlight-indent-guides-mode 1)
   (doxymacs-mode 1)
   (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
