@@ -68,10 +68,10 @@
 (setq-default filladapt-mode t)
 
 (require 'my-fzf)
-(bind-keys* ("C-x w" . my-fzf-project-file)
-            ("C-x W" . my-fzf-any-project-file)
-            ("C-x f" . my-fzf-local-file)
-            ("C-x F" . my-fzf-any-local-file)
+(bind-keys* ("C-x f" . my-fzf-project-file)
+            ;; ("C-x W" . my-fzf-any-project-file)
+            ("C-x F" . my-fzf-local-file)
+            ;; ("C-x F" . my-fzf-any-local-file)
             ("C-x d" . my-fzf-any-project-directory)
             ("C-x D" . my-fzf-any-local-directory))
 
@@ -268,8 +268,8 @@
     (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)))
 
 (use-package my-fd
-  :bind* (("M-s F" . my-fd-project)
-          ("M-s f" . my-fd-current)))
+  :bind* (("M-s f" . my-fd-project)
+          ("M-s F" . my-fd-current)))
 (defalias 'fd 'my-fd-current)
 (defalias 'fd-p 'my-fd-project)
 
