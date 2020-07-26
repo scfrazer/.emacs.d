@@ -7,6 +7,9 @@
 (custom-theme-set-faces
  'smf-base-dark
 
+ `(ahs-definition-face            ((t :background "darkslategray")))
+ `(ahs-face                       ((t :background "gray20")))
+ `(ahs-plugin-defalt-face         ((t :foreground "snow" :background "#303050")))
  `(bm-face                        ((t :foreground "white" :background "dodgerblue4")))
  `(caution                        ((t :foreground "white" :background "darkorange3")))
  `(cursor                         ((t :background "deeppink2")))

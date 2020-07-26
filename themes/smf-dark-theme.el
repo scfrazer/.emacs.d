@@ -6,17 +6,19 @@
 (custom-theme-set-faces
  'smf-dark
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 210))))
- `(font-lock-comment-face       ((t :foreground ,(smf-color 102) :italic t)))
- `(font-lock-constant-face      ((t :foreground ,(smf-color 149) :italic t)))
- `(font-lock-doc-face           ((t :foreground ,(smf-color 223) :italic t)))
- `(font-lock-function-name-face ((t :foreground ,(smf-color 178) :underline t)))
- `(font-lock-keyword-face       ((t :foreground ,(smf-color 39) :bold t)))
- `(font-lock-preprocessor-face  ((t :foreground ,(smf-color 220))))
- `(font-lock-string-face        ((t :foreground ,(smf-color 180))))
- `(font-lock-type-face          ((t :foreground ,(smf-color 123))))
- `(font-lock-variable-name-face ((t :foreground ,(smf-color 84))))
+;; `(default                      ((t :foreground "white" :background "gray10")))
+ `(font-lock-builtin-face       ((t :foreground "lightskyblue3")))
+ `(font-lock-comment-face       ((t :foreground "gray50" :italic t)))
+ `(font-lock-constant-face      ((t :foreground "deepskyblue3" :italic t)))
+ `(font-lock-doc-face           ((t :foreground "thistle4" :italic t)))
+ `(font-lock-function-name-face ((t :foreground "slategray3" :underline t)))
+ `(font-lock-keyword-face       ((t :foreground "steelblue3" :bold t)))
+ `(font-lock-preprocessor-face  ((t :foreground "lightgoldenrod2")))
+ `(font-lock-string-face        ((t :foreground "mistyrose3")))
+ `(font-lock-type-face          ((t :foreground "cadetblue3")))
+ `(font-lock-variable-name-face ((t :foreground "paleturquoise3")))
 
  )
+
 
 (provide-theme 'smf-dark)
