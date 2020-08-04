@@ -35,6 +35,15 @@
                    (kill-buffer (process-buffer proc))))))))))
 (advice-add 'python-flymake :around #'my-python-flymake)
 
+(defun my-python-tidy ()
+  "Run formatter on buffer."
+  (interactive "*")
+  (save-buffer)
+  (let ((line-num (line-number-at-pos)))
+    (shell-command (concat "black " (buffer-file-name)))
+    (revert-buffer t t)
+    (goto-line line-num)))
+
 (defun my-python-indent-shift-left (start end)
   (interactive "r")
   (deactivate-mark t)
