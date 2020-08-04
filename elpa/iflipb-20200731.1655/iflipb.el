@@ -4,8 +4,8 @@
 ;;
 ;; Author: Joel Rosdahl <joel@rosdahl.net>
 ;; Version: 1.5
-;; Package-Version: 20200711.1135
-;; Package-Commit: 83e698f312a6e621f6d2c87b27d1e4acce96b4bf
+;; Package-Version: 20200731.1655
+;; Package-Commit: d48884212499cd128d103c5ceba3173a90ebd2b4
 ;; License: BSD-3-clause
 ;; URL: https://github.com/jrosdahl/iflipb
 ;;
@@ -331,7 +331,8 @@ This is the original order of buffers to the left of
 
 (defun iflipb-first-iflipb-buffer-switch-command ()
   "Determine if this is the first iflipb invocation this round."
-  (not (string-match "^iflipb-" (symbol-name last-command))))
+  (and (symbolp last-command) ; Could be a lambda
+       (not (string-match "^iflipb-" (symbol-name last-command)))))
 
 (defun iflipb-restore-buffers ()
   "Helper function that restores the buffer list to the original state."

@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "modus-operandi-theme" "20200804.735" "Accessible light theme (WCAG AAA)" '((emacs "26.1")) :commit "d35509a1b008a6d872deb8668cc8437436233e32" :keywords '("faces" "theme" "accessibility") :authors '(("Protesilaos Stavrou" . "info@protesilaos.com")) :maintainer '("Protesilaos Stavrou" . "info@protesilaos.com") :url "https://gitlab.com/protesilaos/modus-themes")
