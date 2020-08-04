@@ -385,7 +385,9 @@
           ("M-."   . iflipb-next-buffer))
   :config
   (progn
-    (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
+    (setq iflipb-format-buffers-function 'iflipb-format-buffers-vertically
+          iflipb-format-buffers-height 8
+          iflipb-ignore-buffers 'my-buf-ignore-buffer)))
 
 (use-package my-imenu
   :bind* ("M-G" . my-ido-imenu-nav)
