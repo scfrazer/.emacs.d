@@ -216,8 +216,7 @@
       (setq ibuffer-formats (nreverse formats))
       (ibuffer-recompile-formats)
       (setq ibuffer-cached-formats ibuffer-formats
-            ibuffer-cached-eliding-string ibuffer-eliding-string
-            ibuffer-cached-elide-long-columns (with-no-warnings ibuffer-elide-long-columns))
+            ibuffer-cached-eliding-string ibuffer-eliding-string)
       (when (featurep 'ibuf-ext)
         (setq ibuffer-cached-filter-formats ibuffer-filter-format-alist))))
   ad-do-it)

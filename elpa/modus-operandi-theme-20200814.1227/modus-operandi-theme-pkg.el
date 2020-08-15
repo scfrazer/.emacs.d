@@ -1,0 +1,2 @@
+;;; Generated package description from /home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200814.1227/modus-operandi-theme.el  -*- no-byte-compile: t -*-
+(define-package "modus-operandi-theme" "20200814.1227" "Accessible light theme (WCAG AAA)" '((emacs "26.1")) :commit "dbfffe919a8c10100bb60eb06170076bf27f6128" :keywords '("faces" "theme" "accessibility") :authors '(("Protesilaos Stavrou" . "info@protesilaos.com")) :maintainer '("Protesilaos Stavrou" . "info@protesilaos.com") :url "https://gitlab.com/protesilaos/modus-themes")

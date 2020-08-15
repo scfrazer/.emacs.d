@@ -76,17 +76,17 @@
   "Version string for filladapt.")
 
 ;; BLOB to make custom stuff work even without customize
-(eval-and-compile
-  (condition-case ()
-      (require 'custom)
-    (error nil))
-  (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
-      nil ;; We've got what we needed
-    ;; We have the old custom-library, hack around it!
-    (defmacro defgroup (&rest args)
-      nil)
-    (defmacro defcustom (var value doc &rest args) 
-      (` (defvar (, var) (, value) (, doc))))))
+;; (eval-and-compile
+;;   (condition-case ()
+;;       (require 'custom)
+;;     (error nil))
+;;   (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
+;;       nil ;; We've got what we needed
+;;     ;; We have the old custom-library, hack around it!
+;;     (defmacro defgroup (&rest args)
+;;       nil)
+;;     (defmacro defcustom (var value doc &rest args) 
+;;       (` (defvar (, var) (, value) (, doc))))))
 
 (defgroup filladapt nil
   "Enhanced filling"

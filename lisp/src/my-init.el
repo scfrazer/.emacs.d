@@ -345,6 +345,7 @@
   :bind* ("C-c #" . hl-line-mode))
 
 (use-package icomplete-vertical
+  :requires icomplete
   :custom
   (icomplete-compute-delay 0)
   (icomplete-delay-completions-threshold 10000)
