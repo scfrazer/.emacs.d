@@ -350,30 +350,30 @@
   (icomplete-compute-delay 0)
   (icomplete-delay-completions-threshold 10000)
   (icomplete-max-delay-chars 0)
-  (completion-category-overrides '((file (styles basic substring))))
+  (completion-styles '(flex basic partial-completion substring))
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
-  :init
-  (progn
-    (defun my-icomplete-dwim ()
-      (interactive)
-      (let ((beg (icomplete--field-beg))
-            (end (icomplete--field-end)))
-        (if (> end beg)
-            (if (completion-all-sorted-completions beg end)
-                (minibuffer-force-complete-and-exit)
-              (exit-minibuffer))
-          (when minibuffer-default
-            (insert minibuffer-default))
-          (minibuffer-force-complete-and-exit)))))
+  ;; :init
+  ;; (progn
+  ;;   (defun my-icomplete-dwim ()
+  ;;     (interactive)
+  ;;     (let ((beg (icomplete--field-beg))
+  ;;           (end (icomplete--field-end)))
+  ;;       (if (> end beg)
+  ;;           (if (completion-all-sorted-completions beg end)
+  ;;               (minibuffer-force-complete-and-exit)
+  ;;             (exit-minibuffer))
+  ;;         (when minibuffer-default
+  ;;           (insert minibuffer-default))
+  ;;         (minibuffer-force-complete-and-exit)))))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
               ("<up>"   . icomplete-backward-completions)
               ("C-j"    . exit-minibuffer)
               ("C-n"    . icomplete-forward-completions)
-              ("C-p"    . icomplete-backward-completions)
-              ("RET"    . my-icomplete-dwim)))
+              ("C-p"    . icomplete-backward-completions)))
+(fido-mode 1)
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
@@ -386,9 +386,7 @@
           ("M-."   . iflipb-next-buffer))
   :config
   (progn
-    (setq iflipb-format-buffers-function 'iflipb-format-buffers-vertically
-          iflipb-format-buffers-height 8
-          iflipb-ignore-buffers 'my-buf-ignore-buffer)))
+    (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
 
 (use-package my-imenu
   :bind* ("M-G" . my-ido-imenu-nav)
@@ -419,20 +417,6 @@
   :config
   (require 'my-debug))
 
-;; (use-package magit
-;;   :commands (magit-status)
-;;   :config
-;;   (progn
-;;     (require 'my-magit)
-;;     (setq magit-auto-revert-mode nil
-;;           magit-backup-mode nil
-;;           magit-delete-by-moving-to-trash nil
-;;           magit-diff-auto-show nil
-;;           magit-popup-show-help-echo nil
-;;           magit-popup-show-help-section nil
-;;           magit-repository-directories (list "~/.emacs.d" "~/Projects")
-;;           magit-repository-directories-depth 2)))
-
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("\\.md\\'" . gfm-mode)
@@ -458,10 +442,6 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
-;; (use-package orderless
-;;   :demand t
-;;   :custom (completion-styles '(orderless)))
-
 (use-package package
   :config
   (progn
@@ -470,18 +450,20 @@
 
 (use-package my-pair
   :demand t
-  :bind* (("C-c ("     . my-pair-open-paren-dwim)
-          ("C-c )"     . my-pair-close-paren-dwim)
-          ("C-c ["     . my-pair-open-paren-dwim)
-          ("C-c ]"     . my-pair-close-paren-dwim)
-          ("C-c {"     . my-pair-open-paren-dwim)
-          ("C-c }"     . my-pair-close-paren-dwim)
-          ("C-c '"     . my-pair-quotes-dwim)
-          ("C-c \""    . my-pair-quotes-dwim)
-          ("C-c `"     . my-pair-quotes-dwim)
-          ("C-c -"     . my-pair-delete)
-          ("C-c e"     . my-pair-close-all)
-          ("<backtab>" . my-pair-step-out-backward)))
+  :bind* (("C-M-d" . my-pair-step-out-forward)
+          ("M-'"   . my-pair-step-out-forward)
+          ("C-M-u" . my-pair-step-out-backward)
+          ("C-c '" . my-pair-quotes-dwim)
+          ("C-c (" . my-pair-open-paren-dwim)
+          ("C-c )" . my-pair-close-paren-dwim)
+          ("C-c -" . my-pair-delete)
+          ("C-c [" . my-pair-open-paren-dwim)
+          ("C-c \"". my-pair-quotes-dwim)
+          ("C-c ]" . my-pair-close-paren-dwim)
+          ("C-c `" . my-pair-quotes-dwim)
+          ("C-c e" . my-pair-close-all)
+          ("C-c {" . my-pair-open-paren-dwim)
+          ("C-c }" . my-pair-close-paren-dwim)))
 
 (use-package perl-mode
   :mode (("\\.pl\\'" . perl-mode))
@@ -496,7 +478,7 @@
 (use-package quick-edit
   :bind* (("C-w" . qe-unit-kill)
           ("C-y" . qe-yank)
-          ("M-'" . qe-backward-word-end)
+          ;; ("M-'" . qe-backward-word-end)
           ("M-;" . qe-forward-word-end)
           ("M-H" . qe-backward-word-section)
           ("M-J" . qe-backward-kill-section)
@@ -1441,15 +1423,15 @@ and copied through iTerm2 to clipboard."
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
 
-(defun my-read-extended-command (orig-fun)
-  (let ((completion-styles '(orderless)) command)
-    (icomplete-mode 1)
-    (icomplete-vertical-mode 1)
-    (setq command (apply orig-fun '()))
-    (icomplete-vertical-mode -1)
-    (icomplete-mode -1)
-    command))
-(advice-add 'read-extended-command :around #'my-read-extended-command)
+;; (defun my-read-extended-command (orig-fun)
+;;   (let ((completion-styles '(orderless)) command)
+;;     (icomplete-mode 1)
+;;     (icomplete-vertical-mode 1)
+;;     (setq command (apply orig-fun '()))
+;;     (icomplete-vertical-mode -1)
+;;     (icomplete-mode -1)
+;;     command))
+;; (advice-add 'read-extended-command :around #'my-read-extended-command)
 
 (defun my-rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
@@ -1567,13 +1549,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   (interactive)
   (if (looking-at "[])}>'\"]")
       (forward-char)
-    (let ((prev-pos (point)) pos)
-      (call-interactively 'indent-according-to-mode)
-      (setq pos (point))
-      (when (and (= prev-pos pos)
-                 (not (looking-back "^[[:space:]]*" (point-at-bol)))
-                 (not (looking-at "[[:space:]]*$")))
-        (my-pair-step-out-forward)))))
+    (call-interactively 'indent-according-to-mode)))
 
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)
