@@ -345,28 +345,15 @@
   :bind* ("C-c #" . hl-line-mode))
 
 (use-package icomplete-vertical
-  :requires icomplete
+  :requires (icomplete orderless)
   :custom
   (icomplete-compute-delay 0)
   (icomplete-delay-completions-threshold 10000)
   (icomplete-max-delay-chars 0)
-  (completion-styles '(flex basic partial-completion substring))
+  (completion-styles '(orderless flex basic partial-completion substring))
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
-  ;; :init
-  ;; (progn
-  ;;   (defun my-icomplete-dwim ()
-  ;;     (interactive)
-  ;;     (let ((beg (icomplete--field-beg))
-  ;;           (end (icomplete--field-end)))
-  ;;       (if (> end beg)
-  ;;           (if (completion-all-sorted-completions beg end)
-  ;;               (minibuffer-force-complete-and-exit)
-  ;;             (exit-minibuffer))
-  ;;         (when minibuffer-default
-  ;;           (insert minibuffer-default))
-  ;;         (minibuffer-force-complete-and-exit)))))
   :bind (:map icomplete-minibuffer-map
               ("<down>" . icomplete-forward-completions)
               ("<up>"   . icomplete-backward-completions)
