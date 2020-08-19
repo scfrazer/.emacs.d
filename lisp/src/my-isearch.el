@@ -1,5 +1,10 @@
 ;;; my-isearch.el
 
+(setq isearch-allow-scroll t
+      isearch-lazy-count t
+      lazy-count-prefix-format "(%s/%s) "
+      lazy-highlight-initial-delay 0)
+
 (defvar my-isearch-region-str nil)
 
 (defun my-isearch-forward (&optional arg)

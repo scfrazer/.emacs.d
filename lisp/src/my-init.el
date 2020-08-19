@@ -102,8 +102,6 @@
 (global-set-key (kbd "C-f") 'my-isearch-search-forward-line)
 (global-set-key (kbd "C-r") 'my-isearch-backward)
 (global-set-key (kbd "C-s") 'my-isearch-forward)
-(setq isearch-allow-scroll t
-      lazy-highlight-initial-delay 0)
 (put 'my-recenter 'isearch-scroll t)
 
 (require 'jump-to-prev-pos)
@@ -361,6 +359,7 @@
               ("C-n"    . icomplete-forward-completions)
               ("C-p"    . icomplete-backward-completions)))
 (fido-mode 1)
+(icomplete-vertical-mode 1)
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
