@@ -362,10 +362,10 @@ Setup wgrep preparation.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20200612.1038/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20200820.1325/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20200612.1038/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20200820.1325/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -717,10 +717,10 @@ with the specified `:load-path' the module cannot be found.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.4/undo-tree-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.5/undo-tree-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.4/undo-tree-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.5/undo-tree-autoloads.el") (car load-path))))
 
 
 
@@ -729,6 +729,11 @@ Toggle undo-tree mode.
 With no argument, this command toggles the mode.
 A positive prefix argument turns the mode on.
 A negative prefix argument turns it off.
+
+If called interactively, enable Undo-Tree mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 Undo-tree-mode replaces Emacs' standard undo feature with a more
 powerful yet easier to use version, that treats the undo history
@@ -743,6 +748,8 @@ Within the undo-tree visualizer, the following keys are available:
   \\{undo-tree-visualizer-mode-map}
 
 \(fn &optional ARG)" t nil)
+
+(put 'global-undo-tree-mode 'globalized-minor-mode t)
 
 (defvar global-undo-tree-mode nil "\
 Non-nil if Global Undo-Tree mode is enabled.
@@ -766,14 +773,14 @@ See `undo-tree-mode' for more information on Undo-Tree mode.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "undo-tree" '("undo-" "turn-on-undo-tree-mode" "*undo-tree-id-counter*" "buffer-undo-tree")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "undo-tree" '("*undo-tree-id-counter*" "buffer-undo-tree" "turn-on-undo-tree-mode" "undo-")))
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20200719.955/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20200719.955/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1486,10 +1493,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200814.1227/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200820.1512/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200814.1227/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200820.1512/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1499,10 +1506,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200814.1227/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200820.1512/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200814.1227/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200820.1512/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1951,10 +1958,10 @@ result of `defhydra'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/htmlize-20191111.2130/htmlize-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/htmlize-20200816.746/htmlize-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/htmlize-20191111.2130/htmlize-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/htmlize-20200816.746/htmlize-autoloads.el") (car load-path))))
 
 
 
@@ -3207,7 +3214,7 @@ Toggle Auto Highlight Symbol Mode
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/rg-20200703.1250" "/home/scfrazer/.emacs.d/elpa/transient-20200719.955" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/rg-20200703.1250" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:
