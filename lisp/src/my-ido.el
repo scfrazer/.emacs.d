@@ -31,7 +31,7 @@
                                              " [Not readable]"
                                              " [Too big]"
                                              " [Confirm]"
-                                             "\n "   ; left bracket around the sole remaining completion
+                                             "\n"    ; left bracket around the sole remaining completion
                                              ""      ; right bracket around the sole remaining completion
                                              ))
 (ido-vertical-mode 1)

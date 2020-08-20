@@ -97,6 +97,8 @@
       (fzf/start ido-current-directory)))
   (define-key ido-file-completion-map (kbd "C-s") 'my-ido-fzf))
 
+(require 'my-icomplete)
+
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "C-f") 'my-isearch-search-forward-line)
@@ -341,25 +343,6 @@
 
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
-
-(use-package icomplete-vertical
-  :requires (icomplete orderless)
-  :custom
-  (icomplete-compute-delay 0)
-  (icomplete-delay-completions-threshold 10000)
-  (icomplete-max-delay-chars 0)
-  (completion-styles '(orderless flex basic partial-completion substring))
-  (read-file-name-completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
-  (completion-ignore-case t)
-  :bind (:map icomplete-minibuffer-map
-              ("<down>" . icomplete-forward-completions)
-              ("<up>"   . icomplete-backward-completions)
-              ("C-j"    . exit-minibuffer)
-              ("C-n"    . icomplete-forward-completions)
-              ("C-p"    . icomplete-backward-completions)))
-(fido-mode 1)
-(icomplete-vertical-mode 1)
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
@@ -1409,16 +1392,6 @@ and copied through iTerm2 to clipboard."
     (setq my-recenter-count (1+ my-recenter-count))
     (when (> my-recenter-count 2)
       (setq my-recenter-count 0))))
-
-;; (defun my-read-extended-command (orig-fun)
-;;   (let ((completion-styles '(orderless)) command)
-;;     (icomplete-mode 1)
-;;     (icomplete-vertical-mode 1)
-;;     (setq command (apply orig-fun '()))
-;;     (icomplete-vertical-mode -1)
-;;     (icomplete-mode -1)
-;;     command))
-;; (advice-add 'read-extended-command :around #'my-read-extended-command)
 
 (defun my-rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."

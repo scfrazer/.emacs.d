@@ -37,6 +37,8 @@
  `(flyspell-incorrect                  ((t :background "thistle1")))
  `(font-lock-regexp-grouping-construct ((t :background "whitesmoke" :bold t)))
  `(header-line                         ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
+ `(ido-first-match                     ((t :inherit font-lock-string-face :bold t)))
+ `(ido-only-match                      ((t :foreground "darkgreen" :bold t)))
  `(ido-vertical-first-match-face       ((t :inherit font-lock-string-face :bold t)))
  `(ido-vertical-only-match-face        ((t :foreground "darkgreen" :bold t)))
  `(ido-vertical-match-face             ((t :inherit font-lock-builtin-face :underline t)))
