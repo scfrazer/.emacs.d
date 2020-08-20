@@ -78,18 +78,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar my-isearch-last-regexp nil)
-
-(defadvice isearch-mode (before my-isearch-mode activate)
-  "Remember if last isearch was regular or regexp."
-  (setq my-isearch-last-regexp isearch-regexp))
-
-(defadvice isearch-repeat (before my-isearch-repeat activate)
-  "If last isearch was a regexp, do it this time even if normal isearch was called."
-  (setq isearch-regexp (or isearch-regexp
-                           (and (eq isearch-forward (eq direction 'forward))
-                                (equal isearch-string "")
-                                my-isearch-last-regexp))))
+;; (defvar my-isearch-last-regexp nil)
+;;
+;; (defadvice isearch-mode (before my-isearch-mode activate)
+;;   "Remember if last isearch was regular or regexp."
+;;   (setq my-isearch-last-regexp isearch-regexp))
+;;
+;; (defadvice isearch-repeat (before my-isearch-repeat activate)
+;;   "If last isearch was a regexp, do it this time even if normal isearch was called."
+;;   (setq isearch-regexp (or isearch-regexp
+;;                            (and (eq isearch-forward (eq direction 'forward))
+;;                                 (equal isearch-string "")
+;;                                 my-isearch-last-regexp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

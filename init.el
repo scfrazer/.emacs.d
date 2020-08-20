@@ -28,6 +28,7 @@
                 '(("Archive" 10 package-menu--archive-predicate)))
           ("Description" 0 nil)]))
 (advice-add #'package-menu--refresh :before #'my-package-menu--refresh)
+(setq-default package-quickstart t)
 
 (let ((gc-cons-threshold 402653184)
       (gc-cons-percentage 0.6)

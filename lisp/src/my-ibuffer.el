@@ -28,9 +28,8 @@
   "Current buffer marker face."
   :group 'faces)
 
-(defvar my-ibuffer-vc-regexp (regexp-opt (list "*magit:"
-                                               "*git-simple:"
-                                               "*p4o")))
+(defvar my-ibuffer-vc-regexp (regexp-opt (list "*vc-dir"
+                                               "*git-simple:")))
 
 (defvar my-ibuffer-star-regexp (regexp-opt (list "*Fd"
                                                  "*Find"

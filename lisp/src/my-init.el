@@ -244,15 +244,15 @@
   :defines (diff-mode-shared-map)
   :config
   (progn
-    (setq diff-default-read-only t
-          diff-switches "-b -u")
+    (setq-default diff-default-read-only t
+                  diff-font-lock-prettify t
+                  diff-font-lock-syntax t
+                  diff-refine 'font-lock
+                  diff-switches "-b -u")
     (bind-keys :map diff-mode-shared-map
                ("q" . kill-this-buffer)
                ("n" . diff-hunk-next)
-               ("p" . diff-hunk-prev))
-    (defun my-diff-mode-hook ()
-      (diff-auto-refine-mode 1))
-    (add-hook 'diff-mode-hook 'my-diff-mode-hook)))
+               ("p" . diff-hunk-prev))))
 
 (use-package doxymacs
   :defer t
@@ -672,6 +672,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
               case-fold-search t
               column-number-mode t
               compare-ignore-whitespace t
+              compilation-context-lines t
               compilation-scroll-output 'first-error
               completions-format 'vertical
               confirm-kill-emacs 'y-or-n-p

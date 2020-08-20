@@ -16,6 +16,7 @@
                                                                    "*shell"
                                                                    "*git-simple"
                                                                    "*terminal"
+                                                                   "*vc-dir"
                                                                    "*asic-compile"))))
   "*Buffer regexps to always show when buffer switching.")
 
