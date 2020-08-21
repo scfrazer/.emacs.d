@@ -1,53 +1,52 @@
 ;;; my-imenu-extras.el
 
 (require 'imenu)
-(require 'my-ido)
 
 (setq imenu-max-items 25)
 (setq imenu-max-item-length 115)
 (setq imenu-sort-function nil)
 (add-hook 'imenu-after-jump-hook 'recenter)
 
-;; ido + imenu
+;; completing-read + imenu
 
-(defface my-ido-menu-highlight-tag-face
+(defface my-imenu-highlight-tag-face
   '((t (:inherit region)))
   "Font Lock mode face used to highlight tags."
   :group 'faces)
 
-(defun my-ido-menu-highlight (beg end)
+(defun my-imenu-highlight (beg end)
   "Highlight a region temporarily."
   (let ((ov (make-overlay beg end))
         (idx 0))
     (while (< idx 3)
-      (overlay-put ov 'face 'my-ido-menu-highlight-tag-face)
+      (overlay-put ov 'face 'my-imenu-highlight-tag-face)
       (sit-for 0.3)
       (overlay-put ov 'face nil)
       (sit-for 0.2)
       (setq idx (1+ idx)))
     (delete-overlay ov)))
 
-(defvar my-ido-imenu-prefix-symbols nil
+(defvar my-imenu-prefix-symbols nil
   "*Prefix symbols with their menu drill-downs.")
-(make-local-variable 'my-ido-imenu-prefix-symbols)
+(make-local-variable 'my-imenu-prefix-symbols)
 
-(defun my-ido-imenu-add-symbols (prefix symbols result)
+(defun my-imenu-add-symbols (prefix symbols result)
   (when (listp symbols)
     (dolist (symbol symbols)
       (cond ((and (listp symbol) (imenu--subalist-p symbol))
-             (setq result (my-ido-imenu-add-symbols (if my-ido-imenu-prefix-symbols
+             (setq result (my-imenu-add-symbols (if my-imenu-prefix-symbols
                                                         (concat prefix (car symbol) " > ")
                                                       "")
                                                     symbol result)))
             ((listp symbol)
-             (push (cons (concat (when my-ido-imenu-prefix-symbols prefix) (car symbol)) (cdr symbol)) result))
+             (push (cons (concat (when my-imenu-prefix-symbols prefix) (car symbol)) (cdr symbol)) result))
             ((stringp symbol)
              (let ((pos (get-text-property 1 'org-imenu-marker symbol)))
                (when pos
-                 (push (cons (concat (when my-ido-imenu-prefix-symbols prefix) symbol) pos) result)))))))
+                 (push (cons (concat (when my-imenu-prefix-symbols prefix) symbol) pos) result)))))))
   result)
 
-(defun my-ido-imenu-goto-symbol ()
+(defun my-imenu-goto-symbol ()
   "Goto to an imenu symbol using ido"
   (interactive)
   (imenu--cleanup)
@@ -58,7 +57,7 @@
                        (buffer-substring-no-properties
                         (save-excursion (skip-syntax-backward "w_") (point))
                         (save-excursion (skip-syntax-forward "w_") (point))))))
-    (setq items (nreverse (my-ido-imenu-add-symbols nil imenu--index-alist items)))
+    (setq items (nreverse (my-imenu-add-symbols nil imenu--index-alist items)))
     (catch 'done
       (dotimes (idx (length items))
         (if (string-match guess (caar items))
@@ -75,7 +74,7 @@
                     (puthash name (1+ num) names))
                 (puthash name 1 names)))
             items))
-    (let* ((item (assoc (ido-completing-read "Goto symbol: " (mapcar 'car items) nil t) items))
+    (let* ((item (assoc (completing-read "Goto symbol: " (mapcar 'car items) nil t) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))
@@ -88,13 +87,13 @@
           (when recenter
             (recenter))
           (if (looking-at (regexp-quote name))
-              (my-ido-menu-highlight pos (+ pos len))
+              (my-imenu-highlight pos (+ pos len))
             (if (search-forward name (point-at-eol) t)
                 (progn
                   (goto-char (- (point) len))
-                  (my-ido-menu-highlight (point) (+ (point) len)))
+                  (my-imenu-highlight (point) (+ (point) len)))
               (goto-char (point-at-bol))
-              (my-ido-menu-highlight (point) (point-at-eol)))))))))
+              (my-imenu-highlight (point) (point-at-eol)))))))))
 
 ;; Better imenu entry point
 

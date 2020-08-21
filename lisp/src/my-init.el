@@ -358,12 +358,12 @@
     (setq iflipb-ignore-buffers 'my-buf-ignore-buffer)))
 
 (use-package my-imenu
-  :bind* ("M-G" . my-ido-imenu-nav)
-  :commands (my-ido-imenu-goto-symbol)
+  :bind* ("M-G" . my-imenu-nav)
+  :commands (my-imenu-goto-symbol)
   :init
-  (defun my-ido-imenu-nav (&optional arg)
+  (defun my-imenu-nav (&optional arg)
     (interactive "P")
-    (if arg (my-pop-back-imenu) (my-ido-imenu-goto-symbol)))
+    (if arg (my-pop-back-imenu) (my-imenu-goto-symbol)))
   :config
   (require 'my-pop-back))
 
@@ -1559,7 +1559,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
       (when (and (string-match "^smf-" name)
                  (not (string-match "^smf-base" name)))
         (push name themes)))
-    (setq choice (intern (ido-completing-read "Theme: " (sort themes 'string<) nil t)))
+    (setq choice (intern (completing-read "Theme: " (sort themes 'string<) nil t)))
     (my-theme-disable-all)
     (load-theme choice t)))
 

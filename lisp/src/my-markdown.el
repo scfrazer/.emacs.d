@@ -26,7 +26,7 @@
   (beginning-of-line)
   (when (re-search-forward my-markdown-task-re (point-at-eol) t)
     (backward-word)
-    (when-let ((state (ido-completing-read "Set task state:" my-markdown-task-states)))
+    (when-let ((state (completing-read "Set task state:" my-markdown-task-states)))
       (kill-word 1)
       (insert state)
       (backward-word))))

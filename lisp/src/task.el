@@ -67,7 +67,6 @@
 
 (require 'desktop)
 (require 'dired)
-(require 'ido)
 
 ;; Customizable
 
@@ -192,7 +191,7 @@ Needs to end with \"/\"."
 (defun task-save-as ()
   "Save task with a new name."
   (interactive)
-  (let ((name (ido-completing-read "Save task as: " (task-get-saved-tasks) nil nil nil task-name-hist)))
+  (let ((name (completing-read "Save task as: " (task-get-saved-tasks) nil nil nil task-name-hist)))
     (make-directory (concat task-top-dir name) t)
     (task-save name)))
 
@@ -201,7 +200,7 @@ Needs to end with \"/\"."
   "Load task."
   (interactive)
   (unless name
-    (setq name (ido-completing-read "Load task: " (task-get-saved-tasks) nil t nil task-name-hist)))
+    (setq name (completing-read "Load task: " (task-get-saved-tasks) nil t nil task-name-hist)))
   (if (equal name task-current-name)
       (desktop-clear)
     (task-quit))

@@ -1,7 +1,6 @@
 ;;; asic-compile.el -*- lexical-binding: t; -*-
 
 (require 'compile)
-(require 'ido)
 
 (defvar asic-compile-error-regexp-alist
   (list
@@ -44,7 +43,7 @@
   "ASIC compile."
   (interactive)
   (setq asic-compile-command
-        (ido-completing-read "ASIC compile command: " asic-compile-command-list nil nil nil compile-history))
+        (completing-read "ASIC compile command: " asic-compile-command-list nil nil nil compile-history))
   (save-some-buffers (not compilation-ask-about-save)
                      compilation-save-buffers-predicate)
   (let ((default-directory (or (getenv "WORKSPACE") default-directory)))
