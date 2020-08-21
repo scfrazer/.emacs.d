@@ -4,13 +4,14 @@
 (require 'orderless)
 (require 'icomplete-vertical)
 
-(setq-default icomplete-compute-delay 0
-              icomplete-delay-completions-threshold 10000
-              icomplete-max-delay-chars 0
-              completion-styles '(orderless flex basic partial-completion substring)
-              read-file-name-completion-ignore-case t
+(setq-default completion-ignore-case t
+              completion-styles '(orderless)
+              icomplete-compute-delay 0.2
+              icomplete-delay-completions-threshold 100
+              icomplete-max-delay-chars 2
+              icomplete-tidy-shadowed-file-names t
               read-buffer-completion-ignore-case t
-              completion-ignore-case t)
+              read-file-name-completion-ignore-case t)
 
 (define-key icomplete-minibuffer-map (kbd "<down>") 'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "<up>")   'icomplete-backward-completions)
