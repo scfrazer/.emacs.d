@@ -98,7 +98,7 @@
  `(highlight-indent-guides-character-face   ((t :inherit font-lock-comment-face :italic nil)))
  `(highlight-indent-guides-even-face        ((t :inherit highlight-indent-guides-character-face)))
  `(highlight-indent-guides-odd-face         ((t :inherit highlight-indent-guides-character-face)))
- `(hl-line                                  ((t :inherit nil :underline t)))
+ `(hl-line                                  ((t :inherit nil)))
  `(icomplete-first-match                    ((t :inherit font-lock-string-face :bold t)))
  `(ido-subdir                               ((t :inherit font-lock-keyword-face)))
  `(ido-vertical-first-match-face            ((t :inherit default :bold t)))
