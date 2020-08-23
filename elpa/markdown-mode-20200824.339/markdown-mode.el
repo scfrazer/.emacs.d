@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20200815.203
-;; Package-Commit: ef2cb4d94af68908a4963afa492afba876725128
+;; Package-Version: 20200824.339
+;; Package-Commit: cd10c7a524a0e60c39b6bdbd3d0956c85cb6c862
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -6685,15 +6685,15 @@ setext header, but should not be folded."
 ;; This function was originally derived from `org-cycle' from org.el.
 (defun markdown-cycle (&optional arg)
   "Visibility cycling for Markdown mode.
-If ARG is t, perform global visibility cycling.  If the point is
-at an atx-style header, cycle visibility of the corresponding
-subtree.  Otherwise, indent the current line or insert a tab,
-as appropriate, by calling `indent-for-tab-command'."
+This function is called with a `\\[universal-argument]' or if ARG is t, perform
+global visibility cycling.  If the point is at an atx-style header, cycle
+visibility of thecorresponding subtree.  Otherwise, indent the current line
+ or insert a tab, as appropriate, by calling `indent-for-tab-command'."
   (interactive "P")
   (cond
 
    ;; Global cycling
-   ((eq arg t)
+   (arg
     (cond
      ;; Move from overview to contents
      ((and (eq last-command this-command)

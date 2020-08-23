@@ -1493,10 +1493,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200820.1512/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200824.752/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200820.1512/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200824.752/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1506,10 +1506,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200820.1512/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200824.752/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200820.1512/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200824.752/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1530,10 +1530,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200815.203/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200824.339/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200815.203/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200824.339/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2029,10 +2029,10 @@ HTMLize dired-marked files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200528.2128/highlight-indent-guides-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200528.2128/highlight-indent-guides-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el") (car load-path))))
 
 
 
@@ -2040,12 +2040,15 @@ HTMLize dired-marked files.
 Automatically calculate indent guide faces.
 If this feature is enabled, calculate reasonable values for the indent guide
 colors based on the current theme's colorscheme, and set them appropriately.
-This runs whenever a theme is loaded, but it can also be run interactively.
-
-\(fn)" t nil)
+This runs whenever a theme is loaded, but it can also be run interactively." t nil)
 
 (autoload 'highlight-indent-guides-mode "highlight-indent-guides" "\
 Display indent guides in a buffer.
+
+If called interactively, enable Highlight-Indent-Guides mode if
+ARG is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 

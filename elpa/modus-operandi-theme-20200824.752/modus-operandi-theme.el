@@ -1,11 +1,11 @@
-;;; modus-vivendi-theme.el --- Accessible dark theme (WCAG AAA) -*- lexical-binding:t -*-
+;;; modus-operandi-theme.el --- Accessible light theme (WCAG AAA) -*- lexical-binding:t -*-
 
 ;; Copyright (c) 2019-2020 Free Software Foundation, Inc.
 
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://gitlab.com/protesilaos/modus-themes
-;; Package-Version: 20200820.1512
-;; Package-Commit: 976b05e54c67a5b26598fe209375deae8f544c49
+;; Package-Version: 20200824.752
+;; Package-Commit: 5400cd92e15a713db44b4d7b77db78cb5d02fed7
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: faces, theme, accessibility
@@ -41,30 +41,30 @@
 ;; The theme provides the following customisation options, all of which
 ;; are disabled by default:
 ;;
-;;     modus-vivendi-theme-slanted-constructs             (boolean)
-;;     modus-vivendi-theme-bold-constructs                (boolean)
-;;     modus-vivendi-theme-variable-pitch-headings        (boolean)
-;;     modus-vivendi-theme-rainbow-headings               (boolean)
-;;     modus-vivendi-theme-section-headings               (boolean)
-;;     modus-vivendi-theme-scale-headings                 (boolean)
-;;     modus-vivendi-theme-fringes                        (choice)
-;;     modus-vivendi-theme-org-blocks                     (choice)
-;;     modus-vivendi-theme-prompts                        (choice)
-;;     modus-vivendi-theme-3d-modeline                    (boolean)
-;;     modus-vivendi-theme-subtle-diffs                   (boolean)
-;;     modus-vivendi-theme-faint-syntax                   (boolean)
-;;     modus-vivendi-theme-intense-hl-line                (boolean)
-;;     modus-vivendi-theme-intense-paren-match            (boolean)
-;;     modus-vivendi-theme-completions                    (choice)
-;;     modus-vivendi-theme-override-colors-alist          (alist)
+;;     modus-operandi-theme-slanted-constructs             (boolean)
+;;     modus-operandi-theme-bold-constructs                (boolean)
+;;     modus-operandi-theme-variable-pitch-headings        (boolean)
+;;     modus-operandi-theme-rainbow-headings               (boolean)
+;;     modus-operandi-theme-section-headings               (boolean)
+;;     modus-operandi-theme-scale-headings                 (boolean)
+;;     modus-operandi-theme-fringes                        (choice)
+;;     modus-operandi-theme-org-blocks                     (choice)
+;;     modus-operandi-theme-prompts                        (choice)
+;;     modus-operandi-theme-3d-modeline                    (boolean)
+;;     modus-operandi-theme-subtle-diffs                   (boolean)
+;;     modus-operandi-theme-faint-syntax                   (boolean)
+;;     modus-operandi-theme-intense-hl-line                (boolean)
+;;     modus-operandi-theme-intense-paren-match            (boolean)
+;;     modus-operandi-theme-completions                    (choice)
+;;     modus-operandi-theme-override-colors-alist          (alist)
 ;;
 ;; The default scale is as follows (it can be customised as well):
 ;;
-;;     modus-vivendi-theme-scale-1 1.05
-;;     modus-vivendi-theme-scale-2 1.1
-;;     modus-vivendi-theme-scale-3 1.15
-;;     modus-vivendi-theme-scale-4 1.2
-;;     modus-vivendi-theme-scale-5 1.3
+;;     modus-operandi-theme-scale-1 1.05
+;;     modus-operandi-theme-scale-2 1.1
+;;     modus-operandi-theme-scale-3 1.15
+;;     modus-operandi-theme-scale-4 1.2
+;;     modus-operandi-theme-scale-5 1.3
 ;;
 ;; What follows is the list of explicitly supported packages or face
 ;; groups (there are implicitly supported packages as well, which
@@ -340,8 +340,8 @@
 
 
 
-(deftheme modus-vivendi
-  "Dark theme that conforms with the highest accessibility
+(deftheme modus-operandi
+  "Light theme that conforms with the highest accessibility
   standard for colour contrast between background and
   foreground elements (WCAG AAA).")
 
@@ -359,7 +359,7 @@ between foreground and background is >= 7:1)."
   :group 'faces
   :prefix "modus-theme-"
   :link '(url-link :tag "GitLab" "https://gitlab.com/protesilaos/modus-themes")
-  :tag "Modus Vivendi")
+  :tag "Modus Operandi")
 
 (defface modus-theme-subtle-red nil nil)
 (defface modus-theme-subtle-green nil nil)
@@ -424,38 +424,38 @@ between foreground and background is >= 7:1)."
 
 ;; User-facing customisation options.  They are all deactivated by
 ;; default (users must opt in).
-(defcustom modus-vivendi-theme-slanted-constructs nil
+(defcustom modus-operandi-theme-slanted-constructs nil
   "Use slanted text in more code constructs (italics or oblique)."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-bold-constructs nil
+(defcustom modus-operandi-theme-bold-constructs nil
   "Use bold text in more code constructs."
   :type 'boolean)
 
-(define-obsolete-variable-alias 'modus-vivendi-theme-proportional-fonts
-  'modus-vivendi-theme-variable-pitch-headings "`modus-vivendi-theme' 0.11.0")
+(define-obsolete-variable-alias 'modus-operandi-theme-proportional-fonts
+  'modus-operandi-theme-variable-pitch-headings "`modus-operandi-theme' 0.11.0")
 
-(defcustom modus-vivendi-theme-proportional-fonts nil
+(defcustom modus-operandi-theme-proportional-fonts nil
   "Use proportional fonts (variable-pitch) in headings."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-variable-pitch-headings nil
+(defcustom modus-operandi-theme-variable-pitch-headings nil
   "Use proportional fonts (variable-pitch) in headings."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-rainbow-headings nil
+(defcustom modus-operandi-theme-rainbow-headings nil
   "Use more saturated colours for headings."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-section-headings nil
+(defcustom modus-operandi-theme-section-headings nil
   "Use a background and an overline in headings."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-scale-headings nil
+(defcustom modus-operandi-theme-scale-headings nil
   "Use font scaling for headings."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-scale-1 1.05
+(defcustom modus-operandi-theme-scale-1 1.05
   "Font size that is slightly larger than the base value.
 The default is a floating point that is interpreted as a multiple
 of the base font size.  However, the variable also accepts an
@@ -466,8 +466,8 @@ For more on the matter, read the documentation of
 `set-face-attribute', specifically the ':height' section."
   :type 'number)
 
-(defcustom modus-vivendi-theme-scale-2 1.1
-  "Font size slightly larger than `modus-vivendi-theme-scale-1'.
+(defcustom modus-operandi-theme-scale-2 1.1
+  "Font size slightly larger than `modus-operandi-theme-scale-1'.
 The default is a floating point that is interpreted as a multiple
 of the base font size.  However, the variable also accepts an
 integer, understood as an absolute height (e.g. a value of 140 is
@@ -477,8 +477,8 @@ For more on the matter, read the documentation of
 `set-face-attribute', specifically the ':height' section."
   :type 'number)
 
-(defcustom modus-vivendi-theme-scale-3 1.15
-  "Font size slightly larger than `modus-vivendi-theme-scale-2'.
+(defcustom modus-operandi-theme-scale-3 1.15
+  "Font size slightly larger than `modus-operandi-theme-scale-2'.
 The default is a floating point that is interpreted as a multiple
 of the base font size.  However, the variable also accepts an
 integer, understood as an absolute height (e.g. a value of 140 is
@@ -488,8 +488,8 @@ For more on the matter, read the documentation of
 `set-face-attribute', specifically the ':height' section."
   :type 'number)
 
-(defcustom modus-vivendi-theme-scale-4 1.2
-  "Font size slightly larger than `modus-vivendi-theme-scale-3'.
+(defcustom modus-operandi-theme-scale-4 1.2
+  "Font size slightly larger than `modus-operandi-theme-scale-3'.
 The default is a floating point that is interpreted as a multiple
 of the base font size.  However, the variable also accepts an
 integer, understood as an absolute height (e.g. a value of 140 is
@@ -499,8 +499,8 @@ For more on the matter, read the documentation of
 `set-face-attribute', specifically the ':height' section."
   :type 'number)
 
-(defcustom modus-vivendi-theme-scale-5 1.3
-  "Font size slightly larger than `modus-vivendi-theme-scale-4'.
+(defcustom modus-operandi-theme-scale-5 1.3
+  "Font size slightly larger than `modus-operandi-theme-scale-4'.
 The default is a floating point that is interpreted as a multiple
 of the base font size.  However, the variable also accepts an
 integer, understood as an absolute height (e.g. a value of 140 is
@@ -510,14 +510,14 @@ For more on the matter, read the documentation of
 `set-face-attribute', specifically the ':height' section."
   :type 'number)
 
-(define-obsolete-variable-alias 'modus-vivendi-theme-visible-fringes
-  'modus-vivendi-theme-fringes "`modus-vivendi-theme' 0.12.0")
+(define-obsolete-variable-alias 'modus-operandi-theme-visible-fringes
+  'modus-operandi-theme-fringes "`modus-operandi-theme' 0.12.0")
 
-(defcustom modus-vivendi-theme-visible-fringes nil
+(defcustom modus-operandi-theme-visible-fringes nil
   "Use a visible style for fringes."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-fringes nil
+(defcustom modus-operandi-theme-fringes nil
   "Define the visibility of fringes.
 
 Nil means the fringes have no background colour.  Option `subtle'
@@ -529,23 +529,23 @@ pronounced greyscale value."
           (const :tag "Subtle greyscale background" subtle)
           (const :tag "Intense greyscale background" intense)))
 
-(define-obsolete-variable-alias 'modus-vivendi-theme-distinct-org-blocks
-  'modus-vivendi-theme-org-blocks "`modus-vivendi-theme' 0.11.0")
+(define-obsolete-variable-alias 'modus-operandi-theme-distinct-org-blocks
+  'modus-operandi-theme-org-blocks "`modus-operandi-theme' 0.11.0")
 
-(defcustom modus-vivendi-theme-distinct-org-blocks nil
+(defcustom modus-operandi-theme-distinct-org-blocks nil
   "Use a distinct neutral background for `org-mode' blocks."
   :type 'boolean)
 
-(define-obsolete-variable-alias 'modus-vivendi-theme-rainbow-org-src-blocks
-  'modus-vivendi-theme-org-blocks "`modus-vivendi-theme' 0.11.0")
+(define-obsolete-variable-alias 'modus-operandi-theme-rainbow-org-src-blocks
+  'modus-operandi-theme-org-blocks "`modus-operandi-theme' 0.11.0")
 
-(defcustom modus-vivendi-theme-rainbow-org-src-blocks nil
+(defcustom modus-operandi-theme-rainbow-org-src-blocks nil
   "Use colour-coded backgrounds for `org-mode' source blocks.
 The colour in use depends on the language (send feedback to
 include more languages)."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-org-blocks nil
+(defcustom modus-operandi-theme-org-blocks nil
   "Use a subtle grey or colour-coded background for Org blocks.
 
 Nil means that the block will have no background of its own and
@@ -567,22 +567,22 @@ association list)."
           (const :tag "Subtle grey block background" greyscale)
           (const :tag "Colour-coded background per programming language" rainbow)))
 
-(defcustom modus-vivendi-theme-3d-modeline nil
+(defcustom modus-operandi-theme-3d-modeline nil
   "Use a three-dimensional style for the active mode line."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-subtle-diffs nil
+(defcustom modus-operandi-theme-subtle-diffs nil
   "Use fewer/dim backgrounds in `diff-mode', `ediff',`magit'."
   :type 'boolean)
 
-(define-obsolete-variable-alias 'modus-vivendi-theme-intense-standard-completions
-  'modus-vivendi-theme-completions "`modus-vivendi-theme' 0.12.0")
+(define-obsolete-variable-alias 'modus-operandi-theme-intense-standard-completions
+  'modus-operandi-theme-completions "`modus-operandi-theme' 0.12.0")
 
-(defcustom modus-vivendi-theme-intense-standard-completions nil
+(defcustom modus-operandi-theme-intense-standard-completions nil
   "Use prominent backgrounds for Icomplete, Ido, or similar."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-completions nil
+(defcustom modus-operandi-theme-completions nil
   "Apply special styles to the UI of completion frameworks.
 This concerns Icomplete, Ivy, Helm, Selectrum, Ido, as well as
 any other tool meant to enhance their experience.  The effect
@@ -609,7 +609,7 @@ latter group will revert to an even more nuanced aesthetic."
           (const :tag "Subtle backgrounds for various elements" moderate)
           (const :tag "Radical alternative to the framework's looks" opinionated)))
 
-(defcustom modus-vivendi-theme-prompts nil
+(defcustom modus-operandi-theme-prompts nil
   "Use subtle or intense styles for minibuffer and REPL prompts.
 
 Nil means to only use an accented foreground colour.
@@ -622,15 +622,15 @@ effect than the former."
           (const :tag "Subtle accented background for the prompt" subtle)
           (const :tag "Intense background and foreground for the prompt" intense)))
 
-(defcustom modus-vivendi-theme-intense-hl-line nil
+(defcustom modus-operandi-theme-intense-hl-line nil
   "Use more prominent background for `hl-line-mode'."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-intense-paren-match nil
+(defcustom modus-operandi-theme-intense-paren-match nil
   "Use more prominent colour for parenthesis matching."
   :type 'boolean)
 
-(defcustom modus-vivendi-theme-faint-syntax nil
+(defcustom modus-operandi-theme-faint-syntax nil
   "Use less saturated colours for code syntax highlighting."
   :type 'boolean)
 
@@ -638,108 +638,108 @@ effect than the former."
 
 ;; Helper functions that are meant to ease the implementation of the
 ;; above customisation options.
-(defun modus-vivendi-theme-bold-weight ()
+(defun modus-operandi-theme-bold-weight ()
   "Conditional use of a heavier text weight."
-  (when modus-vivendi-theme-bold-constructs
+  (when modus-operandi-theme-bold-constructs
     (list :inherit 'bold)))
 
-(defun modus-vivendi-theme-fringe (subtlebg intensebg)
+(defun modus-operandi-theme-fringe (subtlebg intensebg)
   "Conditional use of background colours for fringes.
 SUBTLEBG should be a subtle greyscale value.  INTENSEBG must be a
 more pronounced greyscale colour."
-  (pcase modus-vivendi-theme-fringes
+  (pcase modus-operandi-theme-fringes
     ('intense (list :background intensebg))
     ('subtle (list :background subtlebg))
     (_ (list :background nil))))
 
-(defun modus-vivendi-theme-prompt (mainfg subtlebg subtlefg intensebg intensefg)
+(defun modus-operandi-theme-prompt (mainfg subtlebg subtlefg intensebg intensefg)
   "Conditional use of background colours for prompts.
 MAINFG is the prompt's standard foreground.  SUBTLEBG should be a
 subtle accented background that works with SUBTLEFG.  INTENSEBG
 must be a more pronounced accented colour that should be
 combinable with INTENSEFG."
-  (pcase modus-vivendi-theme-prompts
+  (pcase modus-operandi-theme-prompts
     ('intense (list :background intensebg :foreground intensefg))
     ('subtle (list :background subtlebg :foreground subtlefg))
     (_ (list :background nil :foreground mainfg))))
 
-(defun modus-vivendi-theme-paren (normalbg intensebg)
+(defun modus-operandi-theme-paren (normalbg intensebg)
   "Conditional use of intense colours for matching parentheses.
 NORMALBG should the special palette colour 'bg-paren-match' or
 something similar.  INTENSEBG must be easier to discern next to
 other backgrounds, such as the special palette colour
 'bg-paren-match-intense'."
-  (if modus-vivendi-theme-intense-paren-match
+  (if modus-operandi-theme-intense-paren-match
       (list :background intensebg)
     (list :background normalbg)))
 
-(defun modus-vivendi-theme-syntax-foreground (normal faint)
+(defun modus-operandi-theme-syntax-foreground (normal faint)
   "Apply foreground value to code syntax.
 NORMAL is the more saturated colour, which should be the default.
 FAINT is the less saturated colour."
-  (if modus-vivendi-theme-faint-syntax
+  (if modus-operandi-theme-faint-syntax
       (list :foreground faint)
     (list :foreground normal)))
 
-(defun modus-vivendi-theme-heading-foreground (subtle rainbow)
+(defun modus-operandi-theme-heading-foreground (subtle rainbow)
   "Apply foreground value to headings.
 SUBTLE is the default aesthetic.  RAINBOW is the saturated one."
-  (if modus-vivendi-theme-rainbow-headings
+  (if modus-operandi-theme-rainbow-headings
       (list :foreground rainbow)
     (list :foreground subtle)))
 
-(defun modus-vivendi-theme-heading-block (bg fg)
+(defun modus-operandi-theme-heading-block (bg fg)
   "Conditionally extend heading styles.
 Apply BG to background and FG to overline."
-  (if modus-vivendi-theme-section-headings
+  (if modus-operandi-theme-section-headings
       (append
        (and (>= emacs-major-version 27) '(:extend t))
        (list :background bg :overline fg))
     (list :background nil :overline nil)))
 
-(defun modus-vivendi-theme-org-todo-block (bgbox fgbox fg)
+(defun modus-operandi-theme-org-todo-block (bgbox fgbox fg)
   "Conditionally extend the styles of Org keywords.
 BGBOX applies to the background.  FGBOX applies to the foreground
 and the border.  FG is used when no block style is in effect."
-  (if modus-vivendi-theme-section-headings
+  (if modus-operandi-theme-section-headings
       (list :background bgbox :foreground fgbox :box (list :color fgbox))
     (list :foreground fg)))
 
-(defun modus-vivendi-theme-org-block (bgblk)
+(defun modus-operandi-theme-org-block (bgblk)
   "Conditionally set the background of Org blocks.
 BGBLK applies to a distinct neutral background.  Else blocks have
 no background of their own (the default), so they look the same
 as the rest of the buffer.
 
-`modus-vivendi-theme-org-blocks' also accepts a `rainbow' option
+`modus-operandi-theme-org-blocks' also accepts a `rainbow' option
 which is applied conditionally to `org-src-block-faces' (see the
 theme's source code)."
-  (if (eq modus-vivendi-theme-org-blocks 'greyscale)
+  (if (eq modus-operandi-theme-org-blocks 'greyscale)
       (append
        (and (>= emacs-major-version 27) '(:extend t))
        (list :background bgblk))
     (list :background nil)))
 
-(defun modus-vivendi-theme-org-block-delim (bgaccent fgaccent bg fg)
+(defun modus-operandi-theme-org-block-delim (bgaccent fgaccent bg fg)
   "Conditionally set the styles of Org block delimiters.
 BG, FG, BGACCENT, FGACCENT apply a background and foreground
 colour respectively.
 
 The former pair is a greyscale combination that should be more
 distinct than the background of the block.  It is applied to the
-default styles or when `modus-vivendi-theme-org-blocks' is set
+default styles or when `modus-operandi-theme-org-blocks' is set
 to `greyscale'.
 
 The latter pair should be more subtle than the background of the
-block, as it is used when `modus-vivendi-theme-org-blocks' is
+block, as it is used when `modus-operandi-theme-org-blocks' is
 set to `rainbow'."
-  (pcase modus-vivendi-theme-org-blocks
+  (pcase modus-operandi-theme-org-blocks
     ('greyscale (append (and (>= emacs-major-version 27) '(:extend t))
                         (list :background bg :foreground fg)))
     ('rainbow (list :background bgaccent :foreground fgaccent))
     (_ (list :background bg :foreground fg))))
 
-(defun modus-vivendi-theme-modeline-box (col3d col &optional btn int)
+(defun modus-operandi-theme-modeline-box (col3d col &optional btn int)
   "Control the box properties of the mode line.
 COL3D is the border that is intended for the three-dimensional
 modeline.  COL applies to the two-dimensional modeline.  Optional
@@ -747,45 +747,45 @@ BTN provides the 3d button style.  Optional INT defines a border
 width."
   (let* ((style (if btn 'released-button nil))
          (int (if int int 1)))
-    (if modus-vivendi-theme-3d-modeline
+    (if modus-operandi-theme-3d-modeline
         (list :line-width int :color col3d :style style)
       (list :line-width 1 :color col :style nil))))
 
-(defun modus-vivendi-theme-modeline-props (bg3d fg3d &optional bg fg)
+(defun modus-operandi-theme-modeline-props (bg3d fg3d &optional bg fg)
   "Control the background and foreground of the mode line.
 BG is the modeline's background.  FG is the modeline's
 foreground.  BG3D and FG3D apply to the three-dimensional
 modeline style."
-  (if modus-vivendi-theme-3d-modeline
+  (if modus-operandi-theme-3d-modeline
       (list :background bg3d :foreground fg3d)
     (list :background bg :foreground fg)))
 
-(defun modus-vivendi-theme-diffs (subtle-bg subtle-fg intense-bg intense-fg)
-  "Colour combinations for `modus-vivendi-theme-subtle-diffs'.
+(defun modus-operandi-theme-diffs (subtle-bg subtle-fg intense-bg intense-fg)
+  "Colour combinations for `modus-operandi-theme-subtle-diffs'.
 
 SUBTLE-BG should be similar or the same as the main background.
 SUBTLE-FG should be an appropriate accent value.  INTENSE-BG
 should be one of the dedicated backgrounds for diffs.  INTENSE-FG
 should be one of the dedicated foregrounds for diffs"
-  (if modus-vivendi-theme-subtle-diffs
+  (if modus-operandi-theme-subtle-diffs
       (list :background subtle-bg :foreground subtle-fg)
     (list :background intense-bg :foreground intense-fg)))
 
-(defun modus-vivendi-theme-standard-completions (mainfg subtlebg intensebg intensefg)
-  "Combinations for `modus-vivendi-theme-completions'.
+(defun modus-operandi-theme-standard-completions (mainfg subtlebg intensebg intensefg)
+  "Combinations for `modus-operandi-theme-completions'.
 These are intended for Icomplete, Ido, and related.
 
 MAINFG is an accented foreground value.  SUBTLEBG is an accented
 background value that can be combined with MAINFG.  INTENSEBG and
 INTENSEFG are accented colours that are designed to be used in
 tandem."
-  (pcase modus-vivendi-theme-completions
+  (pcase modus-operandi-theme-completions
     ('opinionated (list :background intensebg :foreground intensefg))
     ('moderate (list :background subtlebg :foreground mainfg))
     (_ (list :foreground mainfg))))
 
-(defun modus-vivendi-theme-extra-completions (subtleface intenseface altface &optional altfg bold)
-  "Combinations for `modus-vivendi-theme-completions'.
+(defun modus-operandi-theme-extra-completions (subtleface intenseface altface &optional altfg bold)
+  "Combinations for `modus-operandi-theme-completions'.
 These are intended for Helm, Ivy, Selectrum, etc.
 
 SUBTLEFACE and INTENSEFACE are custom theme faces that combine a
@@ -797,17 +797,17 @@ from the UI's default aesthetics.  Optional ALTFG is meant to be
 used in tandem with it.
 
 Optional BOLD will apply a heavier weight to the text."
-  (pcase modus-vivendi-theme-completions
+  (pcase modus-operandi-theme-completions
     ('opinionated (list :inherit (list altface bold)
                         :foreground (if altfg altfg 'unspecified)))
     ('moderate (list :inherit (list subtleface bold)))
     (_ (list :inherit (list intenseface bold)))))
 
-(defun modus-vivendi-theme-scale (amount)
+(defun modus-operandi-theme-scale (amount)
   "Scale heading by AMOUNT.
 
 AMOUNT is a customisation option."
-  (when modus-vivendi-theme-scale-headings
+  (when modus-operandi-theme-scale-headings
     (list :height amount)))
 
 ;;; Colour palette
@@ -820,113 +820,113 @@ AMOUNT is a customisation option."
 ;; adapted from zenbern-theme.el, last seen at commit 7dd7968:
 ;; https://github.com/bbatsov/zenburn-emacs
 (eval-and-compile
-  (defconst modus-vivendi-theme-default-colors-alist
+  (defconst modus-operandi-theme-default-colors-alist
     '(;; base values
-      ("bg-main" . "#000000") ("fg-main" . "#ffffff")
-      ("bg-alt" . "#181a20") ("fg-alt" . "#a8a8a8")
-      ("bg-dim" . "#110b11") ("fg-dim" . "#e0e6f0")
+      ("bg-main" . "#ffffff") ("fg-main" . "#000000")
+      ("bg-alt" . "#f0f0f0") ("fg-alt" . "#505050")
+      ("bg-dim" . "#f8f8f8") ("fg-dim" . "#282828")
       ;; specifically for on/off states (e.g. `mode-line')
       ;;
       ;; must be combined with themselves
-      ("bg-active" . "#2f2f2f") ("fg-active" . "#f5f5f5")
-      ("bg-inactive" . "#202020") ("fg-inactive" . "#bebebe")
+      ("bg-active" . "#e0e0e0") ("fg-active" . "#191919")
+      ("bg-inactive" . "#efedef") ("fg-inactive" . "#424242")
       ;; special base values, used only for cases where the above
       ;; fg-* or bg-* cannot or should not be used (to avoid confusion)
       ;; must be combined with: {fg,bg}-{main,alt,dim}
-      ("bg-special-cold" . "#203448") ("fg-special-cold" . "#c6eaff")
-      ("bg-special-mild" . "#00322e") ("fg-special-mild" . "#bfebe0")
-      ("bg-special-warm" . "#382f27") ("fg-special-warm" . "#f8dec0")
-      ("bg-special-calm" . "#392a48") ("fg-special-calm" . "#fbd6f4")
+      ("bg-special-cold" . "#dde3f4") ("fg-special-cold" . "#093060")
+      ("bg-special-mild" . "#c4ede0") ("fg-special-mild" . "#184034")
+      ("bg-special-warm" . "#f0e0d4") ("fg-special-warm" . "#5d3026")
+      ("bg-special-calm" . "#f8ddea") ("fg-special-calm" . "#61284f")
       ;; styles for the main constructs
       ;;
       ;; must be combined with: `bg-main', `bg-alt', `bg-dim'
-      ("red" . "#ff8059") ("green" . "#44bc44")
-      ("yellow" . "#eecc00") ("blue" . "#29aeff")
-      ("magenta" . "#feacd0") ("cyan" . "#00d3d0")
+      ("red" . "#a60000") ("green" . "#005e00")
+      ("yellow" . "#813e00") ("blue" . "#0030a6")
+      ("magenta" . "#721045") ("cyan" . "#00538b")
       ;; styles for common, but still specialised constructs
       ;;
       ;; must be combined with: `bg-main', `bg-alt', `bg-dim'
-      ("red-alt" . "#f4923b") ("green-alt" . "#80d200")
-      ("yellow-alt" . "#cfdf30") ("blue-alt" . "#72a4ff")
-      ("magenta-alt" . "#f78fe7") ("cyan-alt" . "#4ae8fc")
+      ("red-alt" . "#972500") ("green-alt" . "#315b00")
+      ("yellow-alt" . "#70480f") ("blue-alt" . "#223fbf")
+      ("magenta-alt" . "#8f0075") ("cyan-alt" . "#30517f")
       ;; same purpose as above, just slight differences
       ;;
       ;; must be combined with: `bg-main', `bg-alt', `bg-dim'
-      ("red-alt-other" . "#ff9977") ("green-alt-other" . "#00cd68")
-      ("yellow-alt-other" . "#f0ce43") ("blue-alt-other" . "#00bdfa")
-      ("magenta-alt-other" . "#b6a0ff") ("cyan-alt-other" . "#6ae4b9")
+      ("red-alt-other" . "#a0132f") ("green-alt-other" . "#145c33")
+      ("yellow-alt-other" . "#863927") ("blue-alt-other" . "#0000bb")
+      ("magenta-alt-other" . "#5317ac") ("cyan-alt-other" . "#005a5f")
       ;; styles for desaturated foreground text, intended for use with
-      ;; the `modus-vivendi-theme-faint-syntax' option
+      ;; the `modus-operandi-theme-faint-syntax' option
       ;;
       ;; must be combined with: `bg-main', `bg-alt', `bg-dim'
-      ("red-faint" . "#ffa0a0") ("green-faint" . "#88cf88")
-      ("yellow-faint" . "#d2b580") ("blue-faint" . "#92baff")
-      ("magenta-faint" . "#e0b2d6") ("cyan-faint" . "#a0bfdf")
+      ("red-faint" . "#7f1010") ("green-faint" . "#104410")
+      ("yellow-faint" . "#5f4400") ("blue-faint" . "#002f88")
+      ("magenta-faint" . "#752f50") ("cyan-faint" . "#12506f")
 
-      ("red-alt-faint" . "#f5aa80") ("green-alt-faint" . "#a8cf88")
-      ("yellow-alt-faint" . "#cabf77") ("blue-alt-faint" . "#a4b0ff")
-      ("magenta-alt-faint" . "#ef9fe4") ("cyan-alt-faint" . "#90c4ed")
+      ("red-alt-faint" . "#702f00") ("green-alt-faint" . "#30440f")
+      ("yellow-alt-faint" . "#5d5000") ("blue-alt-faint" . "#003f78")
+      ("magenta-alt-faint" . "#702565") ("cyan-alt-faint" . "#354f6f")
 
-      ("red-alt-other-faint" . "#ff9fbf") ("green-alt-other-faint" . "#88cfaf")
-      ("yellow-alt-other-faint" . "#d0ba95") ("blue-alt-other-faint" . "#8fc5ff")
-      ("magenta-alt-other-faint" . "#d0b4ff") ("cyan-alt-other-faint" . "#a4d0bb")
+      ("red-alt-other-faint" . "#7f002f") ("green-alt-other-faint" . "#0f443f")
+      ("yellow-alt-other-faint" . "#5e3a20") ("blue-alt-other-faint" . "#1f2f6f")
+      ("magenta-alt-other-faint" . "#5f3f7f") ("cyan-alt-other-faint" . "#2e584f")
       ;; styles for elements that should be very subtle, yet accented
       ;;
       ;; must be combined with: `bg-main', `bg-alt', `bg-dim' or any of
       ;; the "nuanced" backgrounds
-      ("red-nuanced" . "#ffcccc") ("green-nuanced" . "#b8e2b8")
-      ("yellow-nuanced" . "#dfdfb0") ("blue-nuanced" . "#bfd9ff")
-      ("magenta-nuanced" . "#e5cfef") ("cyan-nuanced" . "#a8e5e5")
+      ("red-nuanced" . "#5f0000") ("green-nuanced" . "#004000")
+      ("yellow-nuanced" . "#3f3000") ("blue-nuanced" . "#201f55")
+      ("magenta-nuanced" . "#541f4f") ("cyan-nuanced" . "#0f3360")
       ;; styles for slightly accented background
       ;;
       ;; must be combined with any of the above foreground values
-      ("red-nuanced-bg" . "#2c0614") ("green-nuanced-bg" . "#001904")
-      ("yellow-nuanced-bg" . "#221000") ("blue-nuanced-bg" . "#0f0e39")
-      ("magenta-nuanced-bg" . "#230631") ("cyan-nuanced-bg" . "#041529")
+      ("red-nuanced-bg" . "#fff1f0") ("green-nuanced-bg" . "#ecf7ed")
+      ("yellow-nuanced-bg" . "#fff3da") ("blue-nuanced-bg" . "#f3f3ff")
+      ("magenta-nuanced-bg" . "#fdf0ff") ("cyan-nuanced-bg" . "#ebf6fa")
       ;; styles for elements that should draw attention to themselves
       ;;
       ;; must be combined with: `bg-main'
-      ("red-intense" . "#fb6859") ("green-intense" . "#00fc50")
-      ("yellow-intense" . "#ffdd00") ("blue-intense" . "#00a2ff")
-      ("magenta-intense" . "#ff8bd4") ("cyan-intense" . "#30ffc0")
+      ("red-intense" . "#b60000") ("green-intense" . "#006800")
+      ("yellow-intense" . "#904200") ("blue-intense" . "#1111ee")
+      ("magenta-intense" . "#7000e0") ("cyan-intense" . "#205b93")
       ;; styles for background elements that should be visible yet
       ;; subtle
       ;;
       ;; must be combined with: `fg-dim'
-      ("red-subtle-bg" . "#762422") ("green-subtle-bg" . "#2f4a00")
-      ("yellow-subtle-bg" . "#604200") ("blue-subtle-bg" . "#10387c")
-      ("magenta-subtle-bg" . "#49366e") ("cyan-subtle-bg" . "#00415e")
+      ("red-subtle-bg" . "#f2b0a2") ("green-subtle-bg" . "#aecf90")
+      ("yellow-subtle-bg" . "#e4c340") ("blue-subtle-bg" . "#b5d0ff")
+      ("magenta-subtle-bg" . "#f0d3ff") ("cyan-subtle-bg" . "#c0efff")
       ;; styles for background elements that should be visible and
       ;; distinguishable
       ;;
       ;; must be combined with: `fg-main'
-      ("red-intense-bg" . "#a4202a") ("green-intense-bg" . "#006800")
-      ("yellow-intense-bg" . "#874900") ("blue-intense-bg" . "#2a40b8")
-      ("magenta-intense-bg" . "#7042a2") ("cyan-intense-bg" . "#005f88")
+      ("red-intense-bg" . "#ff8892") ("green-intense-bg" . "#5ada88")
+      ("yellow-intense-bg" . "#f5df23") ("blue-intense-bg" . "#6aaeff")
+      ("magenta-intense-bg" . "#d5baff") ("cyan-intense-bg" . "#42cbd4")
       ;; styles for refined contexts where both the foreground and the
       ;; background need to have the same/similar hue
       ;;
       ;; must be combined with themselves OR the foregrounds can be
       ;; combined with any of the base backgrounds
-      ("red-refine-bg" . "#77002a") ("red-refine-fg" . "#ffb9ab")
-      ("green-refine-bg" . "#00422a") ("green-refine-fg" . "#9ff0cf")
-      ("yellow-refine-bg" . "#693200") ("yellow-refine-fg" . "#e2d980")
-      ("blue-refine-bg" . "#242679") ("blue-refine-fg" . "#8ec6ff")
-      ("magenta-refine-bg" . "#71206a") ("magenta-refine-fg" . "#ffcaf0")
-      ("cyan-refine-bg" . "#004065") ("cyan-refine-fg" . "#8ae4f2")
+      ("red-refine-bg" . "#ffcccc") ("red-refine-fg" . "#780000")
+      ("green-refine-bg" . "#aceaac") ("green-refine-fg" . "#004c00")
+      ("yellow-refine-bg" . "#fff29a") ("yellow-refine-fg" . "#604000")
+      ("blue-refine-bg" . "#8ac7ff") ("blue-refine-fg" . "#002288")
+      ("magenta-refine-bg" . "#ffccff") ("magenta-refine-fg" . "#770077")
+      ("cyan-refine-bg" . "#8eecf4") ("cyan-refine-fg" . "#004850")
       ;; styles that are meant exclusively for the mode line
       ;;
       ;; must be combined with: `bg-active', `bg-inactive'
-      ("red-active" . "#ffa49e") ("green-active" . "#70e030")
-      ("yellow-active" . "#efdf00") ("blue-active" . "#00ccff")
-      ("magenta-active" . "#d0acff") ("cyan-active" . "#00ddc0")
+      ("red-active" . "#930000") ("green-active" . "#005300")
+      ("yellow-active" . "#703700") ("blue-active" . "#0033c0")
+      ("magenta-active" . "#6320a0") ("cyan-active" . "#004882")
       ;; styles that are meant exclusively for the fringes
       ;;
       ;; must have a minimum contrast ratio of 1.5:1 with `bg-inactive'
       ;; and be combined with `fg-main' or `fg-dim'
-      ("red-fringe-bg" . "#8f0040") ("green-fringe-bg" . "#006000")
-      ("yellow-fringe-bg" . "#6f4a00") ("blue-fringe-bg" . "#3a30ab")
-      ("magenta-fringe-bg" . "#692089") ("cyan-fringe-bg" . "#0068a0")
+      ("red-fringe-bg" . "#ff9a9a") ("green-fringe-bg" . "#86cf86")
+      ("yellow-fringe-bg" . "#e0c050") ("blue-fringe-bg" . "#82afff")
+      ("magenta-fringe-bg" . "#f0a3ff") ("cyan-fringe-bg" . "#00d6e0")
       ;; styles reserved for specific faces
       ;;
       ;; `bg-hl-line' is between `bg-dim' and `bg-alt', so it should
@@ -961,87 +961,91 @@ AMOUNT is a customisation option."
       ;; the window divider colours apply to faces with just an fg value
       ;;
       ;; all pairs are combinable with themselves
-      ("bg-hl-line" . "#151823")
-      ("bg-paren-match" . "#5f362f")
-      ("bg-paren-match-intense" . "#255650")
-      ("bg-region" . "#3c3c3c")
+      ("bg-hl-line" . "#f2eff3")
+      ("bg-paren-match" . "#e0af82")
+      ("bg-paren-match-intense" . "#70af9f")
+      ("bg-region" . "#bcbcbc")
 
-      ("bg-tab-bar" . "#2c2c2c")
-      ("bg-tab-active" . "#0e0e0e")
-      ("bg-tab-inactive" . "#3d3d3d")
-      ("fg-tab-active" . "#5ac3cf")
+      ("bg-tab-bar" . "#d5d5d5")
+      ("bg-tab-active" . "#f6f6f6")
+      ("bg-tab-inactive" . "#bdbdbd")
+      ("fg-tab-active" . "#30169e")
 
-      ("fg-escape-char-construct" . "#e7a59a")
-      ("fg-escape-char-backslash" . "#abab00")
+      ("fg-escape-char-construct" . "#8b1030")
+      ("fg-escape-char-backslash" . "#654d0f")
 
-      ("fg-lang-error" . "#ef8690")
-      ("fg-lang-warning" . "#b0aa00")
-      ("fg-lang-note" . "#9d9def")
+      ("fg-lang-error" . "#9f004f")
+      ("fg-lang-warning" . "#604f0f")
+      ("fg-lang-note" . "#4040ae")
 
-      ("fg-window-divider-inner" . "#646464")
-      ("fg-window-divider-outer" . "#969696")
+      ("fg-window-divider-inner" . "#888888")
+      ("fg-window-divider-outer" . "#585858")
 
-      ("fg-unfocused" . "#93959b")
+      ("fg-unfocused" . "#56576d")
 
-      ("bg-header" . "#212121") ("fg-header" . "#dddddd")
+      ("bg-header" . "#e5e5e5") ("fg-header" . "#2a2a2a")
 
-      ("bg-whitespace" . "#170016") ("fg-whitespace" . "#a4959f")
+      ("bg-whitespace" . "#fff8fc") ("fg-whitespace" . "#645060")
 
-      ("bg-diff-heading" . "#304466") ("fg-diff-heading" . "#dadffe")
-      ("bg-diff-added" . "#0a280a") ("fg-diff-added" . "#94ba94")
-      ("bg-diff-changed" . "#2a2000") ("fg-diff-changed" . "#b0ba9f")
-      ("bg-diff-removed" . "#40160f") ("fg-diff-removed" . "#c6adaa")
+      ("bg-diff-heading" . "#b7c2dd") ("fg-diff-heading" . "#043355")
+      ("bg-diff-added" . "#d4fad4") ("fg-diff-added" . "#004500")
+      ("bg-diff-changed" . "#fcefcf") ("fg-diff-changed" . "#524200")
+      ("bg-diff-removed" . "#ffe8ef") ("fg-diff-removed" . "#691616")
 
-      ("bg-diff-refine-added" . "#005a36") ("fg-diff-refine-added" . "#e0f6e0")
-      ("bg-diff-refine-changed" . "#585800") ("fg-diff-refine-changed" . "#ffffcc")
-      ("bg-diff-refine-removed" . "#852828") ("fg-diff-refine-removed" . "#ffd9eb")
+      ("bg-diff-refine-added" . "#94cf94") ("fg-diff-refine-added" . "#002a00")
+      ("bg-diff-refine-changed" . "#cccf8f") ("fg-diff-refine-changed" . "#302010")
+      ("bg-diff-refine-removed" . "#daa2b0") ("fg-diff-refine-removed" . "#400000")
 
-      ("bg-diff-focus-added" . "#203d20") ("fg-diff-focus-added" . "#b4ddb4")
-      ("bg-diff-focus-changed" . "#4a3a10") ("fg-diff-focus-changed" . "#d0daaf")
-      ("bg-diff-focus-removed" . "#5e2526") ("fg-diff-focus-removed" . "#eebdba")
+      ("bg-diff-focus-added" . "#bbeabb") ("fg-diff-focus-added" . "#002c00")
+      ("bg-diff-focus-changed" . "#ecdfbf") ("fg-diff-focus-changed" . "#392900")
+      ("bg-diff-focus-removed" . "#efcbcf") ("fg-diff-focus-removed" . "#4a0000")
 
-      ("bg-diff-neutral-0" . "#575757") ("fg-diff-neutral-0" . "#fcfcfc")
-      ("bg-diff-neutral-1" . "#454545") ("fg-diff-neutral-1" . "#dddddd")
-      ("bg-diff-neutral-2" . "#313131") ("fg-diff-neutral-2" . "#bfbfbf")
+      ("bg-diff-neutral-0" . "#979797") ("fg-diff-neutral-0" . "#040404")
+      ("bg-diff-neutral-1" . "#b0b0b0") ("fg-diff-neutral-1" . "#252525")
+      ("bg-diff-neutral-2" . "#cccccc") ("fg-diff-neutral-2" . "#3a3a3a")
 
-      ("bg-mark-sel" . "#002f2f") ("fg-mark-sel" . "#60cfa2")
-      ("bg-mark-del" . "#5a0000") ("fg-mark-del" . "#ff99aa")
-      ("bg-mark-alt" . "#3f2210") ("fg-mark-alt" . "#f0aa20"))
-    "The entire palette of `modus-vivendi-theme'.
+      ("bg-mark-sel" . "#a0f0cf") ("fg-mark-sel" . "#005040")
+      ("bg-mark-del" . "#ffccbb") ("fg-mark-del" . "#840040")
+      ("bg-mark-alt" . "#f5d88f") ("fg-mark-alt" . "#782900"))
+    "The entire palette of `modus-operandi-theme'.
 Each element has the form (NAME . HEX).")
 
-  (defcustom modus-vivendi-theme-override-colors-alist '()
-    "Place to override default theme colors.
-You can override a subset of the theme's default colors by
-defining them in this alist."
+  (defcustom modus-operandi-theme-override-colors-alist '()
+    "Association list of palette colour overrides.
+Values can be mapped to variables, using the same syntax as the
+one present in `modus-operandi-theme-default-colors-alist'.
+
+This is only meant for do-it-yourself usage, with the
+understanding that the user is responsible for the resulting
+contrast ratio between new and existing colours."
     :type '(alist
             :key-type (string :tag "Name")
             :value-type (string :tag " Hex")))
 
-  (defmacro modus-vivendi-theme-with-color-variables (&rest body)
+  (defmacro modus-operandi-theme-with-color-variables (&rest body)
     "`let' bind all colours around BODY.
 Also bind `class' to ((class color) (min-colors 89))."
     (declare (indent 0))
     `(let ((class '((class color) (min-colors 89)))
            ,@(mapcar (lambda (cons)
                        (list (intern (car cons)) (cdr cons)))
-                     (append modus-vivendi-theme-default-colors-alist
-                             modus-vivendi-theme-override-colors-alist))
+                     (append modus-operandi-theme-default-colors-alist
+                             modus-operandi-theme-override-colors-alist))
            ;; simple conditional styles that evaluate user-facing
            ;; customisation options
            (modus-theme-slant
-            (if modus-vivendi-theme-slanted-constructs 'italic 'normal))
+            (if modus-operandi-theme-slanted-constructs 'italic 'normal))
            (modus-theme-variable-pitch
-            (if modus-vivendi-theme-variable-pitch-headings 'variable-pitch 'default)))
+            (if modus-operandi-theme-variable-pitch-headings 'variable-pitch 'default)))
        ,@body)))
 
 
 
 ;;; Faces
 
-(modus-vivendi-theme-with-color-variables
+(modus-operandi-theme-with-color-variables
   (custom-theme-set-faces
-   'modus-vivendi
+   'modus-operandi
 ;;;; custom faces
    ;; these bespoke faces are inherited by other constructs below
 ;;;;; subtle coloured backgrounds
@@ -1126,14 +1130,14 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(modus-theme-mark-sel ((,class :inherit bold :background ,bg-mark-sel :foreground ,fg-mark-sel)))
    `(modus-theme-mark-symbol ((,class :inherit bold :foreground ,blue-alt)))
 ;;;;; other custom faces
-   `(modus-theme-hl-line ((,class :background ,(if modus-vivendi-theme-intense-hl-line
+   `(modus-theme-hl-line ((,class :background ,(if modus-operandi-theme-intense-hl-line
                                                    bg-active bg-hl-line)
                                   (and (>= emacs-major-version 27) '(:extend t)))))
 ;;;; standard faces
 ;;;;; absolute essentials
    `(default ((,class :background ,bg-main :foreground ,fg-main)))
    `(cursor ((,class :background ,fg-main)))
-   `(fringe ((,class ,@(modus-vivendi-theme-fringe bg-inactive bg-active)
+   `(fringe ((,class ,@(modus-operandi-theme-fringe bg-inactive bg-active)
                      :foreground ,fg-main)))
    `(vertical-border ((,class :foreground ,fg-window-divider-inner)))
 ;;;;; basic and/or ungrouped styles
@@ -1146,12 +1150,12 @@ Also bind `class' to ((class color) (min-colors 89))."
    ;; (set-face-attribute 'bold nil :weight 'semibold)
    `(bold ((,class :weight bold)))
    `(comint-highlight-input ((,class :inherit bold)))
-   `(comint-highlight-prompt ((,class ,@(modus-vivendi-theme-bold-weight)
-                                      ,@(modus-vivendi-theme-prompt cyan
-                                                                    blue-nuanced-bg
-                                                                    blue-alt
-                                                                    blue-refine-bg
-                                                                    fg-main))))
+   `(comint-highlight-prompt ((,class ,@(modus-operandi-theme-bold-weight)
+                                      ,@(modus-operandi-theme-prompt cyan
+                                                                     blue-nuanced-bg
+                                                                     blue-alt
+                                                                     blue-refine-bg
+                                                                     fg-main))))
    `(error ((,class :inherit bold :foreground ,red)))
    `(escape-glyph ((,class :foreground ,fg-escape-char-construct)))
    `(file-name-shadow ((,class :foreground ,fg-unfocused)))
@@ -1162,11 +1166,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(italic ((,class :slant italic)))
    `(nobreak-hyphen ((,class :foreground ,fg-escape-char-construct)))
    `(nobreak-space ((,class :foreground ,fg-escape-char-construct :underline t)))
-   `(minibuffer-prompt ((,class ,@(modus-vivendi-theme-prompt cyan-alt-other
-                                                              cyan-nuanced-bg
-                                                              cyan
-                                                              cyan-refine-bg
-                                                              fg-main))))
+   `(minibuffer-prompt ((,class ,@(modus-operandi-theme-prompt cyan-alt-other
+                                                               cyan-nuanced-bg
+                                                               cyan
+                                                               cyan-refine-bg
+                                                               fg-main))))
    `(mm-command-output ((,class :foreground ,red-alt-other)))
    `(mm-uu-extract ((,class :background ,bg-dim :foreground ,fg-special-mild)))
    `(next-error ((,class :inherit modus-theme-subtle-red)))
@@ -1250,8 +1254,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(apropos-function-button ((,class :foreground ,magenta-alt-other :underline t)))
    `(apropos-keybinding ((,class :inherit bold :foreground ,cyan)))
    `(apropos-misc-button ((,class :foreground ,cyan-alt-other :underline t)))
-   `(apropos-property ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt)))
-   `(apropos-symbol ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,blue-nuanced :underline t)))
+   `(apropos-property ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt)))
+   `(apropos-symbol ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,blue-nuanced :underline t)))
    `(apropos-user-option-button ((,class :foreground ,green-alt-other :underline t)))
    `(apropos-variable-button ((,class :foreground ,blue :underline t)))
 ;;;;; apt-sources-list
@@ -1268,7 +1272,7 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; auctex and Tex
    `(font-latex-bold-face ((,class :inherit bold :foreground ,fg-special-calm)))
    `(font-latex-doctex-documentation-face ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
-   `(font-latex-doctex-preprocessor-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red-alt-other)))
+   `(font-latex-doctex-preprocessor-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red-alt-other)))
    `(font-latex-italic-face ((,class :foreground ,fg-special-calm :slant italic)))
    `(font-latex-math-face ((,class :foreground ,cyan-alt-other)))
    `(font-latex-script-char-face ((,class :foreground ,cyan-alt-other)))
@@ -1278,9 +1282,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(font-latex-sectioning-3-face ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,blue-nuanced)))
    `(font-latex-sectioning-4-face ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,blue-nuanced)))
    `(font-latex-sectioning-5-face ((,class :inherit ,modus-theme-variable-pitch :foreground ,blue-nuanced)))
-   `(font-latex-sedate-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt-other)))
+   `(font-latex-sedate-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt-other)))
    `(font-latex-slide-title-face ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,cyan-nuanced
-                                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(font-latex-string-face ((,class :foreground ,blue-alt)))
    `(font-latex-subscript-face ((,class :height 0.95)))
    `(font-latex-superscript-face ((,class :height 0.95)))
@@ -1319,7 +1323,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(bongo-album-title ((,class :foreground ,cyan-active)))
    `(bongo-artist ((,class :foreground ,magenta-active)))
    `(bongo-currently-playing-track ((,class :inherit bold)))
-   `(bongo-elapsed-track-part ((,class :background ,blue-refine-bg :foreground ,blue-refine-fg :underline t)))
+   `(bongo-elapsed-track-part ((,class :inherit modus-theme-subtle-magenta :underline t)))
    `(bongo-filled-seek-bar ((,class :background ,blue-subtle-bg :foreground ,fg-main)))
    `(bongo-marked-track ((,class :foreground ,fg-mark-alt)))
    `(bongo-marked-track-line ((,class :background ,bg-mark-alt)))
@@ -1363,7 +1367,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(cfw:face-sunday ((,class :inherit bold :background ,bg-alt :foreground ,magenta-alt-other)))
    `(cfw:face-title ((,class :inherit ,modus-theme-variable-pitch
                              :foreground ,fg-special-warm
-                             ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                             ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(cfw:face-today ((,class :inherit bold :foreground ,blue)))
    `(cfw:face-today-title ((,class :inherit modus-theme-special-mild :box t)))
    `(cfw:face-toolbar ((,class :background ,bg-active :foreground ,bg-active)))
@@ -1478,20 +1482,20 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(company-posframe-metadata ((,class :background ,bg-inactive :foreground ,fg-inactive)))
 ;;;;; compilation feedback
    `(compilation-column-number ((,class :foreground ,magenta-alt-other)))
-   `(compilation-error ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red)))
+   `(compilation-error ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red)))
    `(compilation-info ((,class :foreground ,fg-special-cold)))
    `(compilation-line-number ((,class :foreground ,fg-special-warm)))
-   `(compilation-mode-line-exit ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,blue-active)))
-   `(compilation-mode-line-fail ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red-active)))
-   `(compilation-mode-line-run ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-active)))
-   `(compilation-warning ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,yellow)))
+   `(compilation-mode-line-exit ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,blue-active)))
+   `(compilation-mode-line-fail ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red-active)))
+   `(compilation-mode-line-run ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-active)))
+   `(compilation-warning ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,yellow)))
 ;;;;; completions
    `(completions-annotations ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
-   `(completions-common-part ((,class ,@(modus-vivendi-theme-standard-completions
+   `(completions-common-part ((,class ,@(modus-operandi-theme-standard-completions
                                          cyan-alt-other cyan-nuanced-bg
                                          yellow-refine-bg yellow-refine-fg))))
    `(completions-first-difference ((,class :inherit bold
-                                           ,@(modus-vivendi-theme-standard-completions
+                                           ,@(modus-operandi-theme-standard-completions
                                               blue-alt-other blue-nuanced-bg
                                               cyan-subtle-bg fg-dim))))
 ;;;;; counsel
@@ -1621,17 +1625,17 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(diff-hl-insert ((,class :inherit modus-theme-fringe-green)))
    `(diff-hl-reverted-hunk-highlight ((,class :inherit (modus-theme-active-magenta bold))))
 ;;;;; diff-mode
-   `(diff-added ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-added ((,class ,@(modus-operandi-theme-diffs
                             bg-main green
                             bg-diff-focus-added fg-diff-focus-added))))
-   `(diff-changed ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-changed ((,class ,@(modus-operandi-theme-diffs
                               bg-main yellow
                               bg-diff-focus-changed fg-diff-focus-changed))))
    `(diff-context ((,class :foreground ,fg-unfocused)))
    `(diff-file-header ((,class :inherit bold :foreground ,blue)))
    `(diff-function ((,class :foreground ,fg-special-cold)))
    `(diff-header ((,class :foreground ,blue-nuanced)))
-   `(diff-hunk-header ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-hunk-header ((,class ,@(modus-operandi-theme-diffs
                                   bg-alt blue-alt
                                   bg-diff-heading fg-diff-heading))))
    `(diff-index ((,class :inherit bold :foreground ,blue-alt)))
@@ -1639,16 +1643,16 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(diff-indicator-changed ((,class :inherit diff-changed)))
    `(diff-indicator-removed ((,class :inherit diff-removed)))
    `(diff-nonexistent ((,class :inherit (modus-theme-neutral bold))))
-   `(diff-refine-added ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-refine-added ((,class ,@(modus-operandi-theme-diffs
                                    bg-diff-added fg-diff-added
                                    bg-diff-refine-added fg-diff-refine-added))))
-   `(diff-refine-changed ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-refine-changed ((,class ,@(modus-operandi-theme-diffs
                                      bg-diff-changed fg-diff-changed
                                      bg-diff-refine-changed fg-diff-refine-changed))))
-   `(diff-refine-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-refine-removed ((,class ,@(modus-operandi-theme-diffs
                                      bg-diff-removed fg-diff-removed
                                      bg-diff-refine-removed fg-diff-refine-removed))))
-   `(diff-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-removed ((,class ,@(modus-operandi-theme-diffs
                               bg-main red
                               bg-diff-focus-removed fg-diff-focus-removed))))
 ;;;;; dim-autoload
@@ -1664,9 +1668,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(dired-symlink ((,class :foreground ,cyan-alt :underline t)))
    `(dired-warning ((,class :inherit bold :foreground ,yellow)))
 ;;;;; dired-async
-   `(dired-async-failures ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red-active)))
-   `(dired-async-message ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,green-active)))
-   `(dired-async-mode-message ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,cyan-active)))
+   `(dired-async-failures ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red-active)))
+   `(dired-async-message ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,green-active)))
+   `(dired-async-mode-message ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,cyan-active)))
 ;;;;; dired-git
    `(dired-git-branch-else ((,class :inherit bold :foreground ,magenta-alt)))
    `(dired-git-branch-master ((,class :inherit bold :foreground ,magenta-alt-other)))
@@ -1779,16 +1783,16 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ebdb-role-defunct ((,class :foreground ,fg-alt)))
    `(eieio-custom-slot-tag-face ((,class :foreground ,red-alt)))
 ;;;;; ediff
-   `(ediff-current-diff-A ((,class ,@(modus-vivendi-theme-diffs
+   `(ediff-current-diff-A ((,class ,@(modus-operandi-theme-diffs
                                       bg-alt red
                                       bg-diff-removed fg-diff-removed))))
-   `(ediff-current-diff-Ancestor ((,class ,@(modus-vivendi-theme-diffs
+   `(ediff-current-diff-Ancestor ((,class ,@(modus-operandi-theme-diffs
                                              bg-alt fg-special-cold
                                              bg-special-cold fg-special-cold))))
-   `(ediff-current-diff-B ((,class ,@(modus-vivendi-theme-diffs
+   `(ediff-current-diff-B ((,class ,@(modus-operandi-theme-diffs
                                       bg-alt green
                                       bg-diff-added fg-diff-added))))
-   `(ediff-current-diff-C ((,class ,@(modus-vivendi-theme-diffs
+   `(ediff-current-diff-C ((,class ,@(modus-operandi-theme-diffs
                                       bg-alt yellow
                                       bg-diff-changed fg-diff-changed))))
    `(ediff-even-diff-A ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
@@ -1804,7 +1808,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ediff-odd-diff-B ((,class :background ,bg-diff-neutral-2 :foreground ,fg-diff-neutral-2)))
    `(ediff-odd-diff-C ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
 ;;;;; eglot
-   `(eglot-mode-line ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-active)))
+   `(eglot-mode-line ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-active)))
 ;;;;; el-search
    `(el-search-highlight-in-prompt-face ((,class :inherit bold :foreground ,magenta-alt)))
    `(el-search-match ((,class :inherit modus-theme-intense-green)))
@@ -1904,12 +1908,12 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(eshell-ls-special ((,class :inherit bold :foreground ,magenta)))
    `(eshell-ls-symlink ((,class :foreground ,cyan :underline t)))
    `(eshell-ls-unreadable ((,class :background ,bg-inactive :foreground ,fg-inactive)))
-   `(eshell-prompt ((,class ,@(modus-vivendi-theme-bold-weight)
-                            ,@(modus-vivendi-theme-prompt green-alt-other
-                                                          green-nuanced-bg
-                                                          green-alt
-                                                          green-refine-bg
-                                                          fg-main))))
+   `(eshell-prompt ((,class ,@(modus-operandi-theme-bold-weight)
+                            ,@(modus-operandi-theme-prompt green-alt-other
+                                                           green-nuanced-bg
+                                                           green-alt
+                                                           green-refine-bg
+                                                           fg-main))))
 ;;;;; eshell-fringe-status
    `(eshell-fringe-status-failure ((,class :foreground ,red)))
    `(eshell-fringe-status-success ((,class :foreground ,green)))
@@ -1927,7 +1931,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(eshell-git-prompt-robyrussell-git-dirty-face ((,class :foreground ,yellow)))
    `(eshell-git-prompt-robyrussell-git-face ((,class :foreground ,blue)))
 ;;;;; eshell-prompt-extras (epe)
-   `(epe-dir-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,blue)))
+   `(epe-dir-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,blue)))
    `(epe-git-dir-face ((,class :foreground ,red-alt-other)))
    `(epe-git-face ((,class :foreground ,cyan-alt)))
    `(epe-pipeline-delimiter-face ((,class :foreground ,green-alt)))
@@ -1984,7 +1988,7 @@ Also bind `class' to ((class color) (min-colors 89))."
       (,class :foreground ,fg-lang-error :underline t)))
    `(flycheck-error-list-checker-name ((,class :foreground ,magenta-active)))
    `(flycheck-error-list-column-number ((,class :foreground ,fg-special-cold)))
-   `(flycheck-error-list-error ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red)))
+   `(flycheck-error-list-error ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red)))
    `(flycheck-error-list-filename ((,class :foreground ,blue)))
    `(flycheck-error-list-highlight ((,class :inherit modus-theme-hl-line)))
    `(flycheck-error-list-id ((,class :foreground ,magenta-alt-other)))
@@ -2006,11 +2010,11 @@ Also bind `class' to ((class color) (min-colors 89))."
       (,class :foreground ,fg-lang-warning :underline t)))
 ;;;;; flycheck-indicator
    `(flycheck-indicator-disabled ((,class :foreground ,fg-inactive :slant ,modus-theme-slant)))
-   `(flycheck-indicator-error ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red-active)))
-   `(flycheck-indicator-info ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,blue-active)))
-   `(flycheck-indicator-running ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-active)))
-   `(flycheck-indicator-success ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,green-active)))
-   `(flycheck-indicator-warning ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,yellow-active)))
+   `(flycheck-indicator-error ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red-active)))
+   `(flycheck-indicator-info ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,blue-active)))
+   `(flycheck-indicator-running ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-active)))
+   `(flycheck-indicator-success ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,green-active)))
+   `(flycheck-indicator-warning ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,yellow-active)))
 ;;;;; flycheck-posframe
    `(flycheck-posframe-background-face ((,class :background ,bg-alt)))
    `(flycheck-posframe-border-face ((,class :foreground ,fg-alt)))
@@ -2043,7 +2047,7 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; flyspell-correct
    `(flyspell-correct-highlight-face ((,class :inherit modus-theme-refine-green)))
 ;;;;; flx
-   `(flx-highlight-face ((,class ,@(modus-vivendi-theme-extra-completions
+   `(flx-highlight-face ((,class ,@(modus-operandi-theme-extra-completions
                                     'modus-theme-subtle-magenta
                                     'modus-theme-intense-magenta
                                     'modus-theme-nuanced-magenta
@@ -2063,37 +2067,37 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; fold-this
    `(fold-this-overlay ((,class :inherit modus-theme-special-mild)))
 ;;;;; font-lock
-   `(font-lock-builtin-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-builtin-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         magenta-alt magenta-alt-faint)
-                                     ,@(modus-vivendi-theme-bold-weight))))
+                                     ,@(modus-operandi-theme-bold-weight))))
    `(font-lock-comment-delimiter-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
    `(font-lock-comment-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
-   `(font-lock-constant-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-constant-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                          blue-alt-other blue-alt-other-faint))))
-   `(font-lock-doc-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-doc-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                     fg-special-cold cyan-alt-other-faint)
                                  :slant ,modus-theme-slant)))
-   `(font-lock-function-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-function-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                               magenta magenta-faint))))
-   `(font-lock-keyword-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-keyword-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         magenta-alt-other magenta-alt-other-faint)
-                                     ,@(modus-vivendi-theme-bold-weight))))
-   `(font-lock-negation-char-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                     ,@(modus-operandi-theme-bold-weight))))
+   `(font-lock-negation-char-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                               yellow yellow-faint)
-                                           ,@(modus-vivendi-theme-bold-weight))))
-   `(font-lock-preprocessor-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                           ,@(modus-operandi-theme-bold-weight))))
+   `(font-lock-preprocessor-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              red-alt-other red-alt-other-faint))))
    `(font-lock-regexp-grouping-backslash ((,class :inherit bold :foreground ,fg-escape-char-backslash)))
    `(font-lock-regexp-grouping-construct ((,class :inherit bold :foreground ,fg-escape-char-construct)))
-   `(font-lock-string-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-string-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                        blue-alt blue-alt-faint))))
-   `(font-lock-type-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-type-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                      magenta-alt magenta-alt-faint))))
-   `(font-lock-variable-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-variable-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                               cyan cyan-faint))))
-   `(font-lock-warning-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(font-lock-warning-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         yellow-active yellow-alt-faint)
-                                     ,@(modus-vivendi-theme-bold-weight))))
+                                     ,@(modus-operandi-theme-bold-weight))))
 ;;;;; forge
    `(forge-post-author ((,class :inherit bold :foreground ,fg-main)))
    `(forge-post-date ((,class :foreground ,fg-special-cold)))
@@ -2115,37 +2119,37 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(fountain-paren ((,class :foreground ,cyan)))
    `(fountain-scene-heading ((,class :inherit bold :foreground ,blue-nuanced)))
    `(fountain-section-heading ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
-                                       ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                       ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(fountain-section-heading-1 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
-                                         ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                         ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(fountain-section-heading-2 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-warm
-                                         ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3))))
+                                         ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3))))
    `(fountain-section-heading-3 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-mild
-                                         ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-2))))
+                                         ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2))))
    `(fountain-section-heading-4 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-calm
-                                         ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-1))))
+                                         ,@(modus-operandi-theme-scale modus-operandi-theme-scale-1))))
    `(fountain-section-heading-5 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-calm)))
    `(fountain-synopsis ((,class :foreground ,cyan-alt)))
    `(fountain-trans ((,class :foreground ,yellow-alt-other)))
 ;;;;; geiser
-   `(geiser-font-lock-autodoc-current-arg ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-autodoc-current-arg ((,class ,@(modus-operandi-theme-syntax-foreground
                                                       magenta magenta-faint))))
-   `(geiser-font-lock-autodoc-identifier ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-autodoc-identifier ((,class ,@(modus-operandi-theme-syntax-foreground
                                                      blue blue-faint))))
-   `(geiser-font-lock-doc-button ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-doc-button ((,class ,@(modus-operandi-theme-syntax-foreground
                                              cyan-alt cyan-alt-faint)
                                           :underline t)))
    `(geiser-font-lock-doc-link ((,class :inherit link)))
-   `(geiser-font-lock-error-link ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-error-link ((,class ,@(modus-operandi-theme-syntax-foreground
                                              red-alt red-alt-faint)
                                           :underline t)))
-   `(geiser-font-lock-image-button ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-image-button ((,class ,@(modus-operandi-theme-syntax-foreground
                                                green-alt green-alt-faint)
                                             :underline t)))
    `(geiser-font-lock-repl-input ((,class :inherit bold)))
-   `(geiser-font-lock-repl-output ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-repl-output ((,class ,@(modus-operandi-theme-syntax-foreground
                                               magenta-alt-other magenta-alt-other-faint))))
-   `(geiser-font-lock-repl-prompt ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(geiser-font-lock-repl-prompt ((,class ,@(modus-operandi-theme-syntax-foreground
                                               cyan-alt-other cyan-alt-other-faint))))
    `(geiser-font-lock-xref-header ((,class :inherit bold)))
    `(geiser-font-lock-xref-link ((,class :inherit link)))
@@ -2162,6 +2166,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(git-commit-overlong-summary ((,class :inherit modus-theme-refine-yellow)))
    `(git-commit-pseudo-header ((,class :inherit bold :foreground ,fg-alt)))
    `(git-commit-summary ((,class :foreground ,magenta-alt-other)))
+;;;;; git-rebase
+   `(git-rebase-comment-hash ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
+   `(git-rebase-comment-heading ((,class :inherit bold :foreground ,fg-dim :slant ,modus-theme-slant)))
+   `(git-rebase-description ((,class :foreground ,fg-main)))
+   `(git-rebase-hash ((,class :foreground ,cyan-alt-other)))
 ;;;;; git-gutter
    `(git-gutter:added ((,class :inherit modus-theme-fringe-green)))
    `(git-gutter:deleted ((,class :inherit modus-theme-fringe-red)))
@@ -2187,11 +2196,6 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(git-lens-header ((,class :inherit bold :height 1.1 :foreground ,cyan)))
    `(git-lens-modified ((,class :inherit bold :foreground ,yellow)))
    `(git-lens-renamed ((,class :inherit bold :foreground ,magenta)))
-;;;;; git-rebase
-   `(git-rebase-comment-hash ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
-   `(git-rebase-comment-heading ((,class :inherit bold :foreground ,fg-dim :slant ,modus-theme-slant)))
-   `(git-rebase-description ((,class :foreground ,fg-main)))
-   `(git-rebase-hash ((,class :foreground ,cyan-alt-other)))
 ;;;;; git-timemachine
    `(git-timemachine-commit ((,class :inherit bold :foreground ,yellow-active)))
    `(git-timemachine-minibuffer-author-face ((,class :foreground ,fg-special-warm)))
@@ -2299,7 +2303,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-eshell-prompts-promptidx ((,class :foreground ,cyan-active)))
    `(helm-etags-file ((,class :foreground ,fg-dim :underline t)))
    `(helm-ff-backup-file ((,class :foreground ,fg-alt)))
-   `(helm-ff-denied ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-ff-denied ((,class ,@(modus-operandi-theme-extra-completions
                                 'modus-theme-subtle-red
                                 'modus-theme-intense-red
                                 'modus-theme-nuanced-red
@@ -2312,18 +2316,18 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-ff-file ((,class :foreground ,fg-main)))
    `(helm-ff-file-extension ((,class :foreground ,fg-special-warm)))
    `(helm-ff-invalid-symlink ((,class :foreground ,red :underline t)))
-   `(helm-ff-pipe ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-ff-pipe ((,class ,@(modus-operandi-theme-extra-completions
                               'modus-theme-refine-magenta
                               'modus-theme-subtle-magenta
                               'modus-theme-nuanced-magenta
                               magenta))))
-   `(helm-ff-prefix ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-ff-prefix ((,class ,@(modus-operandi-theme-extra-completions
                                 'modus-theme-refine-yellow
                                 'modus-theme-subtle-yellow
                                 'modus-theme-nuanced-yellow
                                 yellow-alt-other))))
    `(helm-ff-socket ((,class :foreground ,red-alt-other)))
-   `(helm-ff-suid ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-ff-suid ((,class ,@(modus-operandi-theme-extra-completions
                               'modus-theme-subtle-red
                               'modus-theme-refine-red
                               'modus-theme-nuanced-yellow
@@ -2337,7 +2341,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-grep-match ((,class :inherit modus-theme-special-calm)))
    `(helm-header ((,class :inherit bold :foreground ,fg-special-cold)))
    `(helm-header-line-left-margin ((,class :inherit bold :foreground ,yellow-intense)))
-   `(helm-history-deleted ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-history-deleted ((,class ,@(modus-operandi-theme-extra-completions
                                       'modus-theme-subtle-red
                                       'modus-theme-intense-red
                                       'modus-theme-nuanced-red
@@ -2345,27 +2349,27 @@ Also bind `class' to ((class color) (min-colors 89))."
                                       'bold))))
    `(helm-history-remote ((,class :foreground ,red-alt-other)))
    `(helm-lisp-completion-info ((,class :foreground ,fg-special-warm)))
-   `(helm-lisp-show-completion ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-lisp-show-completion ((,class ,@(modus-operandi-theme-extra-completions
                                            'modus-theme-subtle-yellow
                                            'modus-theme-refine-yellow
                                            'modus-theme-nuanced-yellow
                                            yellow
                                            'bold))))
    `(helm-locate-finish ((,class :foreground ,green-active)))
-   `(helm-match ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-match ((,class ,@(modus-operandi-theme-extra-completions
                             'modus-theme-subtle-cyan
                             'modus-theme-refine-cyan
                             'modus-theme-nuanced-cyan
                             cyan
                             'bold))))
-   `(helm-match-item ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-match-item ((,class ,@(modus-operandi-theme-extra-completions
                                  'modus-theme-subtle-neutral
                                  'modus-theme-subtle-cyan
                                  'modus-theme-nuanced-cyan
                                  cyan-alt-other))))
    `(helm-minibuffer-prompt ((,class :inherit minibuffer-prompt)))
    `(helm-moccur-buffer ((,class :foreground ,cyan-alt-other :underline t)))
-   `(helm-mode-prefix ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-mode-prefix ((,class ,@(modus-operandi-theme-extra-completions
                                   'modus-theme-subtle-magenta
                                   'modus-theme-intense-magenta
                                   'modus-theme-nuanced-magenta
@@ -2373,12 +2377,12 @@ Also bind `class' to ((class color) (min-colors 89))."
                                   'bold))))
    `(helm-non-file-buffer ((,class :foreground ,fg-alt)))
    `(helm-prefarg ((,class :foreground ,red-active)))
-   `(helm-resume-need-update ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-resume-need-update ((,class ,@(modus-operandi-theme-extra-completions
                                          'modus-theme-subtle-magenta
                                          'modus-theme-refine-magenta
                                          'modus-theme-nuanced-magenta
                                          magenta-alt-other))))
-   `(helm-selection ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-selection ((,class ,@(modus-operandi-theme-extra-completions
                                 'modus-theme-subtle-blue
                                 'modus-theme-refine-blue
                                 'modus-theme-special-cold
@@ -2389,7 +2393,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-time-zone-current ((,class :foreground ,green)))
    `(helm-time-zone-home ((,class :foreground ,magenta)))
    `(helm-source-header ((,class :inherit bold :foreground ,red-alt
-                                 ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                 ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(helm-top-columns ((,class :inherit helm-header)))
    `(helm-ucs-char ((,class :foreground ,yellow-alt-other)))
    `(helm-visible-mark ((,class :inherit modus-theme-subtle-cyan)))
@@ -2404,7 +2408,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-ls-git-renamed-modified-face ((,class :foreground ,magenta)))
    `(helm-ls-git-untracked-face ((,class :foreground ,fg-special-cold)))
 ;;;;; helm-switch-shell
-   `(helm-switch-shell-new-shell-face ((,class ,@(modus-vivendi-theme-extra-completions
+   `(helm-switch-shell-new-shell-face ((,class ,@(modus-operandi-theme-extra-completions
                                                   'modus-theme-subtle-magenta
                                                   'modus-theme-refine-magenta
                                                   'modus-theme-nuanced-magenta
@@ -2415,7 +2419,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-xref-file-name ((,class :foreground ,fg-special-warm)))
 ;;;;; helpful
    `(helpful-heading  ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
-                               ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                               ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
 ;;;;; highlight region or ad-hoc regexp
    `(hi-black-b ((,class :background ,fg-main :foreground ,bg-main)))
    `(hi-blue ((,class :background ,bg-alt :foreground ,blue :underline t)))
@@ -2484,20 +2488,20 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(hyperlist-toplevel ((,class :inherit bold :foreground ,fg-main)))
 ;;;;; icomplete
    `(icomplete-first-match ((,class :inherit bold
-                                    ,@(modus-vivendi-theme-standard-completions
+                                    ,@(modus-operandi-theme-standard-completions
                                        magenta magenta-nuanced-bg
                                        magenta-intense-bg fg-main))))
 ;;;;; icomplete-vertical
    `(icomplete-vertical-separator ((,class :foreground ,fg-alt)))
 ;;;;; ido-mode
    `(ido-first-match ((,class :inherit bold
-                              ,@(modus-vivendi-theme-standard-completions
+                              ,@(modus-operandi-theme-standard-completions
                                  magenta magenta-nuanced-bg
                                  magenta-subtle-bg fg-main))))
    `(ido-incomplete-regexp ((,class :inherit error)))
    `(ido-indicator ((,class :inherit modus-theme-subtle-yellow)))
    `(ido-only-match ((,class :inherit bold
-                             ,@(modus-vivendi-theme-standard-completions
+                             ,@(modus-operandi-theme-standard-completions
                                 magenta-intense red-nuanced-bg
                                 magenta-intense-bg fg-main))))
    `(ido-subdir ((,class :foreground ,blue-alt-other)))
@@ -2531,25 +2535,25 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(info-header-xref ((,class :foreground ,blue-active)))
    `(info-index-match ((,class :inherit match)))
    `(info-menu-header ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
-                               ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-2))))
+                               ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2))))
    `(info-menu-star ((,class :foreground ,fg-main)))
    `(info-node ((,class :inherit bold)))
    `(info-title-1 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
-                           ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                           ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(info-title-2 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-warm
-                           ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3))))
+                           ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3))))
    `(info-title-3 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-cold
-                           ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-2))))
+                           ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2))))
    `(info-title-4 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-mild
-                           ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-1))))
+                           ,@(modus-operandi-theme-scale modus-operandi-theme-scale-1))))
 ;;;;; info-colors
    `(info-colors-lisp-code-block ((,class :inherit fixed-pitch)))
    `(info-colors-ref-item-command ((,class :foreground ,magenta)))
    `(info-colors-ref-item-constant ((,class :foreground ,blue-alt-other)))
    `(info-colors-ref-item-function ((,class :foreground ,magenta)))
-   `(info-colors-ref-item-macro ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt-other)))
+   `(info-colors-ref-item-macro ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt-other)))
    `(info-colors-ref-item-other ((,class :foreground ,cyan)))
-   `(info-colors-ref-item-special-form ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt-other)))
+   `(info-colors-ref-item-special-form ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt-other)))
    `(info-colors-ref-item-syntax-class ((,class :foreground ,magenta)))
    `(info-colors-ref-item-type ((,class :foreground ,magenta-alt)))
    `(info-colors-ref-item-user-option ((,class :foreground ,cyan)))
@@ -2572,7 +2576,7 @@ Also bind `class' to ((class color) (min-colors 89))."
                                   :inherit modus-theme-refine-blue)))
    `(ioccur-regexp-face ((,class :inherit (modus-theme-intense-magenta bold))))
    `(ioccur-title-face ((,class :inherit bold :foreground ,red-alt
-                                ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
 ;;;;; isearch, occur, and the like
    `(isearch ((,class :inherit (modus-theme-intense-green bold))))
    `(isearch-fail ((,class :inherit modus-theme-refine-red)))
@@ -2583,7 +2587,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ivy-action ((,class :inherit bold :foreground ,red-alt)))
    `(ivy-completions-annotations ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(ivy-confirm-face ((,class :foreground ,cyan)))
-   `(ivy-current-match ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-current-match ((,class ,@(modus-operandi-theme-extra-completions
                                    'modus-theme-refine-cyan
                                    'modus-theme-intense-cyan
                                    'modus-theme-special-warm
@@ -2594,30 +2598,30 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ivy-grep-line-number ((,class :foreground ,fg-special-warm)))
    `(ivy-highlight-face ((,class :foreground ,magenta)))
    `(ivy-match-required-face ((,class :inherit error)))
-   `(ivy-minibuffer-match-face-1 ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-minibuffer-match-face-1 ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-subtle-neutral
                                              'modus-theme-intense-neutral
                                              'modus-theme-subtle-neutral
                                              fg-alt))))
-   `(ivy-minibuffer-match-face-2 ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-minibuffer-match-face-2 ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-subtle-green
                                              'modus-theme-refine-green
                                              'modus-theme-nuanced-green
                                              green-alt-other
                                              'bold))))
-   `(ivy-minibuffer-match-face-3 ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-minibuffer-match-face-3 ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-subtle-cyan
                                              'modus-theme-refine-cyan
                                              'modus-theme-nuanced-cyan
                                              cyan-alt-other
                                              'bold))))
-   `(ivy-minibuffer-match-face-4 ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-minibuffer-match-face-4 ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-subtle-magenta
                                              'modus-theme-refine-magenta
                                              'modus-theme-nuanced-magenta
                                              magenta-alt-other
                                              'bold))))
-   `(ivy-minibuffer-match-highlight ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-minibuffer-match-highlight ((,class ,@(modus-operandi-theme-extra-completions
                                                 'modus-theme-subtle-blue
                                                 'modus-theme-intense-blue
                                                 'modus-theme-nuanced-blue
@@ -2631,7 +2635,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ivy-separator ((,class :foreground ,fg-alt)))
    `(ivy-subdir ((,class :foreground ,blue-alt-other)))
    `(ivy-virtual ((,class :foreground ,magenta-alt-other)))
-   `(ivy-yanked-word ((,class ,@(modus-vivendi-theme-extra-completions
+   `(ivy-yanked-word ((,class ,@(modus-operandi-theme-extra-completions
                                  'modus-theme-subtle-blue
                                  'modus-theme-refine-blue
                                  'modus-theme-nuanced-blue
@@ -2674,7 +2678,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(js2-private-member ((,class :foreground ,fg-special-mild)))
    `(js2-warning ((,class :foreground ,yellow-alt :underline t)))
 ;;;;; julia
-   `(julia-macro-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta)))
+   `(julia-macro-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta)))
    `(julia-quoted-symbol-face ((,class :foreground ,blue-alt-other)))
 ;;;;; jupyter
    `(jupyter-eval-overlay ((,class :inherit bold :foreground ,blue)))
@@ -2687,8 +2691,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(kaocha-runner-warning-face ((,class :foreground ,yellow)))
 ;;;;; keycast
    `(keycast-command ((,class :inherit bold :foreground ,blue-active)))
-   `(keycast-key ((,class :box ,(modus-vivendi-theme-modeline-box blue-alt blue-active t -3)
-                          ,@(modus-vivendi-theme-modeline-props
+   `(keycast-key ((,class :box ,(modus-operandi-theme-modeline-box blue-alt blue-active t -3)
+                          ,@(modus-operandi-theme-modeline-props
                              blue-active bg-main
                              blue-active bg-active))))
 ;;;;; line numbers (display-line-numbers-mode and global variant)
@@ -2708,7 +2712,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(lsp-face-semhl-field-static ((,class :foreground ,cyan-alt :slant ,modus-theme-slant)))
    `(lsp-face-semhl-function ((,class :foreground ,magenta)))
    `(lsp-face-semhl-method ((,class :foreground ,magenta)))
-   `(lsp-face-semhl-namespace ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt)))
+   `(lsp-face-semhl-namespace ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt)))
    `(lsp-face-semhl-preprocessor ((,class :foreground ,red-alt-other)))
    `(lsp-face-semhl-static-method ((,class :foreground ,magenta :slant ,modus-theme-slant)))
    `(lsp-face-semhl-type-class ((,class :foreground ,magenta-alt)))
@@ -2755,20 +2759,20 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-branch-upstream ((,class :slant italic)))
    `(magit-cherry-equivalent ((,class :background ,bg-main :foreground ,magenta-intense)))
    `(magit-cherry-unmatched ((,class :background ,bg-main :foreground ,cyan-intense)))
-   `(magit-diff-added ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-added ((,class ,@(modus-operandi-theme-diffs
                                   bg-main green
                                   bg-diff-added fg-diff-added))))
-   `(magit-diff-added-highlight ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-added-highlight ((,class ,@(modus-operandi-theme-diffs
                                             bg-dim green
                                             bg-diff-focus-added fg-diff-focus-added))))
-   `(magit-diff-base ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-base ((,class ,@(modus-operandi-theme-diffs
                                  bg-main yellow
                                  bg-diff-changed fg-diff-changed))))
-   `(magit-diff-base-highlight ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-base-highlight ((,class ,@(modus-operandi-theme-diffs
                                            bg-dim yellow
                                            bg-diff-focus-changed fg-diff-focus-changed))))
    `(magit-diff-context ((,class :foreground ,fg-unfocused)))
-   `(magit-diff-context-highlight ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-context-highlight ((,class ,@(modus-operandi-theme-diffs
                                               bg-dim fg-dim
                                               bg-inactive fg-inactive))))
    `(magit-diff-file-heading ((,class :inherit bold :foreground ,fg-special-cold)))
@@ -2780,10 +2784,10 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-diff-hunk-region ((,class :inherit bold)))
    `(magit-diff-lines-boundary ((,class :background ,fg-main)))
    `(magit-diff-lines-heading ((,class :inherit modus-theme-refine-magenta)))
-   `(magit-diff-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-removed ((,class ,@(modus-operandi-theme-diffs
                                     bg-main red
                                     bg-diff-removed fg-diff-removed))))
-   `(magit-diff-removed-highlight ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-removed-highlight ((,class ,@(modus-operandi-theme-diffs
                                               bg-dim red
                                               bg-diff-focus-removed fg-diff-focus-removed))))
    `(magit-diffstat-added ((,class :foreground ,green)))
@@ -2818,7 +2822,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-refname-stash ((,class :foreground ,fg-alt)))
    `(magit-refname-wip ((,class :foreground ,fg-alt)))
    `(magit-section ((,class :background ,bg-dim :foreground ,fg-main)))
-   `(magit-section-heading ((,class :inherit bold :foreground ,fg-special-calm)))
+   `(magit-section-heading ((,class :inherit bold :foreground ,cyan)))
    `(magit-section-heading-selection ((,class :inherit (modus-theme-refine-cyan bold))))
    `(magit-section-highlight ((,class :background ,bg-alt)))
    `(magit-sequence-done ((,class :foreground ,green-alt)))
@@ -2829,14 +2833,14 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-sequence-part ((,class :foreground ,yellow-alt)))
    `(magit-sequence-pick ((,class :foreground ,blue-alt)))
    `(magit-sequence-stop ((,class :foreground ,red)))
-   `(magit-signature-bad ((,class :inherit bold :background ,bg-main :foreground ,red-intense)))
-   `(magit-signature-error ((,class :background ,bg-main :foreground ,red-intense)))
-   `(magit-signature-expired ((,class :background ,bg-main :foreground ,yellow-intense)))
-   `(magit-signature-expired-key ((,class :background ,bg-main :foreground ,yellow-intense)))
-   `(magit-signature-good ((,class :background ,bg-main :foreground ,green-intense)))
-   `(magit-signature-revoked ((,class :background ,bg-main :foreground ,magenta-intense)))
-   `(magit-signature-untrusted ((,class :background ,bg-main :foreground ,cyan-intense)))
-   `(magit-tag ((,class :foreground ,green-alt-other)))
+   `(magit-signature-bad ((,class :inherit bold :foreground ,red)))
+   `(magit-signature-error ((,class :foreground ,red-alt)))
+   `(magit-signature-expired ((,class :foreground ,yellow)))
+   `(magit-signature-expired-key ((,class :foreground ,yellow)))
+   `(magit-signature-good ((,class :foreground ,green)))
+   `(magit-signature-revoked ((,class :foreground ,magenta)))
+   `(magit-signature-untrusted ((,class :foreground ,cyan)))
+   `(magit-tag ((,class :foreground ,yellow-alt-other)))
 ;;;;; magit-imerge
    `(magit-imerge-overriding-value ((,class :inherit bold :foreground ,red-alt)))
 ;;;;; man
@@ -2851,7 +2855,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(markdown-footnote-marker-face ((,class :inherit bold :foreground ,cyan-alt)))
    `(markdown-footnote-text-face ((,class :foreground ,fg-main :slant ,modus-theme-slant)))
    `(markdown-gfm-checkbox-face ((,class :foreground ,cyan-alt-other)))
-   `(markdown-header-delimiter-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,fg-dim)))
+   `(markdown-header-delimiter-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,fg-dim)))
    `(markdown-header-face ((,class :inherit bold)))
    `(markdown-header-rule-face ((,class :inherit bold :foreground ,fg-special-warm)))
    `(markdown-hr-face ((,class :inherit bold :foreground ,fg-special-warm)))
@@ -2948,15 +2952,15 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(minimap-active-region-background ((,class :background ,bg-active)))
    `(minimap-current-line-face ((,class :background ,cyan-intense-bg :foreground ,fg-main)))
 ;;;;; modeline
-   `(mode-line ((,class :box ,(modus-vivendi-theme-modeline-box bg-active fg-alt t)
-                        ,@(modus-vivendi-theme-modeline-props
+   `(mode-line ((,class :box ,(modus-operandi-theme-modeline-box bg-active fg-alt t)
+                        ,@(modus-operandi-theme-modeline-props
                            bg-active fg-dim
                            bg-active fg-active))))
    `(mode-line-buffer-id ((,class :inherit bold)))
    `(mode-line-emphasis ((,class :inherit bold :foreground ,blue-active)))
    `(mode-line-highlight ((,class :inherit modus-theme-active-blue :box (:line-width -1 :style pressed-button))))
-   `(mode-line-inactive ((,class :box ,(modus-vivendi-theme-modeline-box bg-active bg-region)
-                                 ,@(modus-vivendi-theme-modeline-props
+   `(mode-line-inactive ((,class :box ,(modus-operandi-theme-modeline-box bg-active bg-region)
+                                 ,@(modus-operandi-theme-modeline-props
                                     bg-dim fg-inactive
                                     bg-inactive fg-inactive))))
 ;;;;; mood-line
@@ -2984,7 +2988,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(mu4e-flagged-face ((,class :foreground ,red-alt)))
    `(mu4e-footer-face ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(mu4e-forwarded-face ((,class :foreground ,magenta-alt-other)))
-   `(mu4e-header-face ((,class :foreground ,fg-dim)))
+   `(mu4e-header-face ((,class :foreground ,fg-alt)))
    `(mu4e-header-highlight-face ((,class :inherit modus-theme-hl-line)))
    `(mu4e-header-key-face ((,class :foreground ,cyan)))
    `(mu4e-header-marks-face ((,class :inherit bold :foreground ,magenta-alt)))
@@ -2996,7 +3000,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(mu4e-moved-face ((,class :foreground ,yellow :slant ,modus-theme-slant)))
    `(mu4e-ok-face ((,class :inherit bold :foreground ,green)))
    `(mu4e-region-code ((,class :inherit modus-theme-special-calm)))
-   `(mu4e-replied-face ((,class :foreground ,cyan)))
+   `(mu4e-replied-face ((,class :foreground ,cyan-active)))
    `(mu4e-special-header-value-face ((,class :inherit bold :foreground ,blue-alt-other)))
    `(mu4e-system-face ((,class :foreground ,fg-mark-del :slant ,modus-theme-slant)))
    `(mu4e-title-face ((,class :foreground ,fg-main)))
@@ -3077,71 +3081,71 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(num3-face-even ((,class :inherit bold :background ,bg-alt)))
 ;;;;; nxml-mode
    `(nxml-attribute-colon ((,class :foreground ,fg-main)))
-   `(nxml-attribute-local-name ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-attribute-local-name ((,class ,@(modus-operandi-theme-syntax-foreground
                                            cyan-alt cyan-alt-faint))))
-   `(nxml-attribute-prefix ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-attribute-prefix ((,class ,@(modus-operandi-theme-syntax-foreground
                                        cyan-alt-other cyan-alt-other-faint)
-                                    ,@(modus-vivendi-theme-bold-weight))))
-   `(nxml-attribute-value ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                    ,@(modus-operandi-theme-bold-weight))))
+   `(nxml-attribute-value ((,class ,@(modus-operandi-theme-syntax-foreground
                                       blue blue-faint))))
-   `(nxml-cdata-section-CDATA ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-cdata-section-CDATA ((,class ,@(modus-operandi-theme-syntax-foreground
                                           red-alt red-alt-faint)
-                                       ,@(modus-vivendi-theme-bold-weight))))
-   `(nxml-cdata-section-delimiter ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                       ,@(modus-operandi-theme-bold-weight))))
+   `(nxml-cdata-section-delimiter ((,class ,@(modus-operandi-theme-syntax-foreground
                                               red-alt red-alt-faint))))
-   `(nxml-char-ref-delimiter ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-char-ref-delimiter ((,class ,@(modus-operandi-theme-syntax-foreground
                                          green-alt-other green-alt-other-faint))))
-   `(nxml-char-ref-number ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-char-ref-number ((,class ,@(modus-operandi-theme-syntax-foreground
                                       green-alt-other green-alt-other-faint)
-                                   ,@(modus-vivendi-theme-bold-weight))))
+                                   ,@(modus-operandi-theme-bold-weight))))
    `(nxml-delimited-data ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(nxml-delimiter ((,class :foreground ,fg-dim)))
    `(nxml-element-colon ((,class :foreground ,fg-main)))
-   `(nxml-element-local-name ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-element-local-name ((,class ,@(modus-operandi-theme-syntax-foreground
                                          magenta magenta-faint))))
-   `(nxml-element-prefix ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-element-prefix ((,class ,@(modus-operandi-theme-syntax-foreground
                                      magenta-alt magenta-alt-faint)
-                                  ,@(modus-vivendi-theme-bold-weight))))
-   `(nxml-entity-ref-delimiter ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                  ,@(modus-operandi-theme-bold-weight))))
+   `(nxml-entity-ref-delimiter ((,class ,@(modus-operandi-theme-syntax-foreground
                                            green-alt-other green-alt-other-faint))))
-   `(nxml-entity-ref-name ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-entity-ref-name ((,class ,@(modus-operandi-theme-syntax-foreground
                                       green-alt-other green-alt-other-faint)
-                                   ,@(modus-vivendi-theme-bold-weight))))
+                                   ,@(modus-operandi-theme-bold-weight))))
    `(nxml-glyph ((,class :inherit modus-theme-intense-neutral)))
-   `(nxml-hash ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-hash ((,class ,@(modus-operandi-theme-syntax-foreground
                            blue-alt blue-alt-faint)
-                        ,@(modus-vivendi-theme-bold-weight))))
+                        ,@(modus-operandi-theme-bold-weight))))
    `(nxml-heading ((,class :inherit bold)))
-   `(nxml-name ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-name ((,class ,@(modus-operandi-theme-syntax-foreground
                            magenta-alt magenta-alt-faint)
-                        ,@(modus-vivendi-theme-bold-weight))))
+                        ,@(modus-operandi-theme-bold-weight))))
    `(nxml-namespace-attribute-colon ((,class :foreground ,fg-main)))
-   `(nxml-namespace-attribute-prefix ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-namespace-attribute-prefix ((,class ,@(modus-operandi-theme-syntax-foreground
                                                  cyan cyan-faint))))
-   `(nxml-processing-instruction-target ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(nxml-processing-instruction-target ((,class ,@(modus-operandi-theme-syntax-foreground
                                                     magenta-alt-other magenta-alt-other-faint)
-                                                 ,@(modus-vivendi-theme-bold-weight))))
-   `(nxml-prolog-keyword ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                                 ,@(modus-operandi-theme-bold-weight))))
+   `(nxml-prolog-keyword ((,class ,@(modus-operandi-theme-syntax-foreground
                                      magenta-alt-other magenta-alt-other-faint)
-                                  ,@(modus-vivendi-theme-bold-weight))))
-   `(nxml-ref ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                  ,@(modus-operandi-theme-bold-weight))))
+   `(nxml-ref ((,class ,@(modus-operandi-theme-syntax-foreground
                           green-alt-other green-alt-other-faint)
-                       ,@(modus-vivendi-theme-bold-weight))))
+                       ,@(modus-operandi-theme-bold-weight))))
 ;;;;; orderless
    `(orderless-match-face-0 ((,class :inherit bold
-                                     ,@(modus-vivendi-theme-standard-completions
+                                     ,@(modus-operandi-theme-standard-completions
                                         blue-alt blue-nuanced-bg
                                         blue-refine-bg blue-refine-fg))))
    `(orderless-match-face-1 ((,class :inherit bold
-                                     ,@(modus-vivendi-theme-standard-completions
+                                     ,@(modus-operandi-theme-standard-completions
                                         magenta-alt magenta-nuanced-bg
                                         magenta-refine-bg magenta-refine-fg))))
    `(orderless-match-face-2 ((,class :inherit bold
-                                     ,@(modus-vivendi-theme-standard-completions
+                                     ,@(modus-operandi-theme-standard-completions
                                         green-alt-other green-nuanced-bg
                                         green-refine-bg green-refine-fg))))
    `(orderless-match-face-3 ((,class :inherit bold
-                                     ,@(modus-vivendi-theme-standard-completions
+                                     ,@(modus-operandi-theme-standard-completions
                                         yellow-alt-other yellow-nuanced-bg
                                         yellow-refine-bg yellow-refine-fg))))
 ;;;;; org
@@ -3151,17 +3155,17 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-agenda-column-dateline ((,class :background ,bg-alt)))
    `(org-agenda-current-time ((,class :inherit modus-theme-subtle-cyan)))
    `(org-agenda-date ((,class :inherit ,modus-theme-variable-pitch :foreground ,cyan-alt-other
-                              ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4)
-                              ,@(modus-vivendi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
+                              ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4)
+                              ,@(modus-operandi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
    `(org-agenda-date-today ((,class :inherit (bold ,modus-theme-variable-pitch)
                                     :background ,cyan-intense-bg :foreground ,fg-main
-                                    ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                    ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(org-agenda-date-weekend ((,class :inherit ,modus-theme-variable-pitch :foreground ,cyan
-                                      ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4)
-                                      ,@(modus-vivendi-theme-heading-block blue-nuanced-bg cyan-nuanced))))
+                                      ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4)
+                                      ,@(modus-operandi-theme-heading-block blue-nuanced-bg cyan-nuanced))))
    `(org-agenda-diary ((,class :foreground ,fg-main)))
    `(org-agenda-dimmed-todo-face ((,class :inherit modus-theme-subtle-neutral)))
-   `(org-agenda-done ((,class ,@(modus-vivendi-theme-org-todo-block green-nuanced-bg green-nuanced green))))
+   `(org-agenda-done ((,class ,@(modus-operandi-theme-org-todo-block green-nuanced-bg green-nuanced green))))
    `(org-agenda-filter-category ((,class :inherit bold :foreground ,magenta-active)))
    `(org-agenda-filter-effort ((,class :inherit bold :foreground ,magenta-active)))
    `(org-agenda-filter-regexp ((,class :inherit bold :foreground ,magenta-active)))
@@ -3169,11 +3173,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-agenda-restriction-lock ((,class :background ,bg-dim :foreground ,fg-dim)))
    `(org-agenda-structure ((,class :inherit ,modus-theme-variable-pitch
                                    :foreground ,fg-special-mild
-                                   ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3))))
+                                   ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3))))
    `(org-archived ((,class :background ,bg-alt :foreground ,fg-alt)))
-   `(org-block ((,class ,@(modus-vivendi-theme-org-block bg-dim)
+   `(org-block ((,class ,@(modus-operandi-theme-org-block bg-dim)
                         :inherit fixed-pitch :foreground ,fg-main)))
-   `(org-block-begin-line ((,class ,@(modus-vivendi-theme-org-block-delim
+   `(org-block-begin-line ((,class ,@(modus-operandi-theme-org-block-delim
                                       bg-dim fg-special-cold
                                       bg-alt fg-special-mild)
                                    :inherit fixed-pitch)))
@@ -3181,10 +3185,10 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-checkbox ((,class :box (:line-width 1 :color ,bg-active)
                            :background ,bg-inactive :foreground ,fg-active)))
    `(org-checkbox-statistics-done ((,class :foreground ,green
-                                           ,@(modus-vivendi-theme-heading-block
+                                           ,@(modus-operandi-theme-heading-block
                                               green-nuanced-bg green-nuanced))))
-   `(org-checkbox-statistics-todo ((,class ,@(modus-vivendi-theme-heading-foreground red-alt red)
-                                           ,@(modus-vivendi-theme-heading-block
+   `(org-checkbox-statistics-todo ((,class ,@(modus-operandi-theme-heading-foreground red-alt red)
+                                           ,@(modus-operandi-theme-heading-block
                                               red-nuanced-bg red-nuanced))))
    `(org-clock-overlay ((,class :inherit modus-theme-special-cold)))
    `(org-code ((,class :inherit fixed-pitch :foreground ,magenta)))
@@ -3196,12 +3200,12 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-document-info ((,class :foreground ,fg-special-cold)))
    `(org-document-info-keyword ((,class :inherit fixed-pitch :foreground ,fg-alt)))
    `(org-document-title ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-special-cold
-                                 ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-5))))
-   `(org-done ((,class ,@(modus-vivendi-theme-org-todo-block green-nuanced-bg green-nuanced green))))
+                                 ,@(modus-operandi-theme-scale modus-operandi-theme-scale-5))))
+   `(org-done ((,class ,@(modus-operandi-theme-org-todo-block green-nuanced-bg green-nuanced green))))
    `(org-drawer ((,class :foreground ,cyan-alt)))
    `(org-ellipsis ((,class :foreground nil))) ; inherits from the heading's colour
    `(org-footnote ((,class :foreground ,blue-alt :underline t)))
-   `(org-formula ((,class :foreground ,red-alt)))
+   `(org-formula ((,class :inherit fixed-pitch :foreground ,red-alt)))
    `(org-habit-alert-face ((,class :inherit modus-theme-intense-yellow)))
    `(org-habit-alert-future-face ((,class :inherit modus-theme-refine-yellow)))
    `(org-habit-clear-face ((,class :inherit modus-theme-intense-magenta)))
@@ -3211,48 +3215,48 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-habit-ready-face ((,class :inherit modus-theme-intense-blue)))
    `(org-habit-ready-future-face ((,class :inherit modus-theme-refine-blue)))
    `(org-headline-done ((,class :foreground ,green-nuanced
-                                ,@(modus-vivendi-theme-heading-block
+                                ,@(modus-operandi-theme-heading-block
                                    green-nuanced-bg green-nuanced))))
    `(org-hide ((,class :foreground ,bg-main)))
    `(org-indent ((,class :inherit (fixed-pitch org-hide))))
    `(org-latex-and-related ((,class :foreground ,magenta-refine-fg)))
    `(org-level-1 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-main magenta-alt-other)
-                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4)
-                          ,@(modus-vivendi-theme-heading-block magenta-nuanced-bg magenta-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground fg-main magenta-alt-other)
+                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4)
+                          ,@(modus-operandi-theme-heading-block magenta-nuanced-bg magenta-nuanced))))
    `(org-level-2 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-special-warm magenta-alt)
-                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3)
-                          ,@(modus-vivendi-theme-heading-block red-nuanced-bg red-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground fg-special-warm magenta-alt)
+                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3)
+                          ,@(modus-operandi-theme-heading-block red-nuanced-bg red-nuanced))))
    `(org-level-3 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-special-cold blue)
-                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-2)
-                          ,@(modus-vivendi-theme-heading-block blue-nuanced-bg blue-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground fg-special-cold blue)
+                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2)
+                          ,@(modus-operandi-theme-heading-block blue-nuanced-bg blue-nuanced))))
    `(org-level-4 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-special-mild cyan)
-                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-1)
-                          ,@(modus-vivendi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground fg-special-mild cyan)
+                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-1)
+                          ,@(modus-operandi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
    `(org-level-5 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-special-calm green-alt-other)
-                          ,@(modus-vivendi-theme-heading-block green-nuanced-bg green-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground fg-special-calm green-alt-other)
+                          ,@(modus-operandi-theme-heading-block green-nuanced-bg green-nuanced))))
    `(org-level-6 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground yellow-nuanced yellow-alt-other)
-                          ,@(modus-vivendi-theme-heading-block yellow-nuanced-bg yellow-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground yellow-nuanced yellow-alt-other)
+                          ,@(modus-operandi-theme-heading-block yellow-nuanced-bg yellow-nuanced))))
    `(org-level-7 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground red-nuanced red-alt)
-                          ,@(modus-vivendi-theme-heading-block red-nuanced-bg red-nuanced))))
+                          ,@(modus-operandi-theme-heading-foreground red-nuanced red-alt)
+                          ,@(modus-operandi-theme-heading-block red-nuanced-bg red-nuanced))))
    `(org-level-8 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                          ,@(modus-vivendi-theme-heading-foreground fg-dim magenta)
-                          ,@(modus-vivendi-theme-heading-block bg-alt fg-alt))))
+                          ,@(modus-operandi-theme-heading-foreground fg-dim magenta)
+                          ,@(modus-operandi-theme-heading-block bg-alt fg-alt))))
    `(org-link ((,class :inherit link)))
    `(org-list-dt ((,class :inherit bold)))
    `(org-macro ((,class :inherit org-latex-and-related)))
    `(org-meta-line ((,class :inherit fixed-pitch :background ,cyan-nuanced-bg :foreground ,cyan-nuanced)))
    `(org-mode-line-clock ((,class :foreground ,fg-main)))
    `(org-mode-line-clock-overrun ((,class :inherit modus-theme-active-red)))
-   `(org-priority ((,class ,@(modus-vivendi-theme-org-todo-block magenta-nuanced-bg magenta-nuanced magenta)
-                           ,@(modus-vivendi-theme-heading-foreground magenta magenta-alt-other))))
-   `(org-quote ((,class ,@(if modus-vivendi-theme-org-blocks
+   `(org-priority ((,class ,@(modus-operandi-theme-org-todo-block magenta-nuanced-bg magenta-nuanced magenta)
+                           ,@(modus-operandi-theme-heading-foreground magenta magenta-alt-other))))
+   `(org-quote ((,class ,@(if modus-operandi-theme-org-blocks
                               (append
                                (and (>= emacs-major-version 27) '(:extend t))
                                (list :background bg-dim))
@@ -3262,14 +3266,14 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-scheduled-previously ((,class :foreground ,yellow-alt-other)))
    `(org-scheduled-today ((,class :foreground ,magenta-alt-other)))
    `(org-sexp-date ((,class :inherit org-date)))
-   `(org-special-keyword ((,class ,@(modus-vivendi-theme-org-todo-block cyan-nuanced-bg cyan-nuanced cyan-alt))))
+   `(org-special-keyword ((,class ,@(modus-operandi-theme-org-todo-block cyan-nuanced-bg cyan-nuanced cyan-alt))))
    `(org-table ((,class :inherit fixed-pitch :foreground ,fg-special-cold)))
-   `(org-tag ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-nuanced)))
+   `(org-tag ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-nuanced)))
    `(org-tag-group ((,class :inherit bold :foreground ,cyan-nuanced)))
    `(org-target ((,class :underline t)))
    `(org-time-grid ((,class :foreground ,fg-unfocused)))
-   `(org-todo ((,class ,@(modus-vivendi-theme-org-todo-block red-nuanced-bg red-nuanced red-alt)
-                       ,@(modus-vivendi-theme-heading-foreground red-alt red))))
+   `(org-todo ((,class ,@(modus-operandi-theme-org-todo-block red-nuanced-bg red-nuanced red-alt)
+                       ,@(modus-operandi-theme-heading-foreground red-alt red))))
    `(org-upcoming-deadline ((,class :foreground ,red-alt-other)))
    `(org-upcoming-distant-deadline ((,class :foreground ,red-nuanced)))
    `(org-verbatim ((,class :inherit fixed-pitch :background ,bg-alt :foreground ,fg-special-calm)))
@@ -3304,35 +3308,35 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(origami-fold-replacement-face ((,class :background ,bg-alt :foreground ,fg-alt)))
 ;;;;; outline-mode
    `(outline-1 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-main magenta-alt-other)
-                        ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4)
-                        ,@(modus-vivendi-theme-heading-block magenta-nuanced-bg magenta-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground fg-main magenta-alt-other)
+                        ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4)
+                        ,@(modus-operandi-theme-heading-block magenta-nuanced-bg magenta-nuanced))))
    `(outline-2 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-special-warm magenta-alt)
-                        ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3)
-                        ,@(modus-vivendi-theme-heading-block red-nuanced-bg red-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground fg-special-warm magenta-alt)
+                        ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3)
+                        ,@(modus-operandi-theme-heading-block red-nuanced-bg red-nuanced))))
    `(outline-3 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-special-cold blue)
-                        ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-2)
-                        ,@(modus-vivendi-theme-heading-block blue-nuanced-bg blue-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground fg-special-cold blue)
+                        ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2)
+                        ,@(modus-operandi-theme-heading-block blue-nuanced-bg blue-nuanced))))
    `(outline-4 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-special-mild cyan)
-                        ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-1)
-                        ,@(modus-vivendi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground fg-special-mild cyan)
+                        ,@(modus-operandi-theme-scale modus-operandi-theme-scale-1)
+                        ,@(modus-operandi-theme-heading-block cyan-nuanced-bg cyan-nuanced))))
    `(outline-5 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-special-calm green-alt-other)
-                        ,@(modus-vivendi-theme-heading-block green-nuanced-bg green-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground fg-special-calm green-alt-other)
+                        ,@(modus-operandi-theme-heading-block green-nuanced-bg green-nuanced))))
    `(outline-6 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground yellow-nuanced yellow-alt-other)
-                        ,@(modus-vivendi-theme-heading-block yellow-nuanced-bg yellow-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground yellow-nuanced yellow-alt-other)
+                        ,@(modus-operandi-theme-heading-block yellow-nuanced-bg yellow-nuanced))))
    `(outline-7 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground red-nuanced red-alt)
-                        ,@(modus-vivendi-theme-heading-block red-nuanced-bg red-nuanced))))
+                        ,@(modus-operandi-theme-heading-foreground red-nuanced red-alt)
+                        ,@(modus-operandi-theme-heading-block red-nuanced-bg red-nuanced))))
    `(outline-8 ((,class :inherit (bold ,modus-theme-variable-pitch)
-                        ,@(modus-vivendi-theme-heading-foreground fg-dim magenta)
-                        ,@(modus-vivendi-theme-heading-block bg-alt fg-alt))))
+                        ,@(modus-operandi-theme-heading-foreground fg-dim magenta)
+                        ,@(modus-operandi-theme-heading-block bg-alt fg-alt))))
 ;;;;; outline-minor-faces
-   `(outline-minor-0 ((,class ,@(unless modus-vivendi-theme-section-headings
+   `(outline-minor-0 ((,class ,@(unless modus-operandi-theme-section-headings
                                   (list :background cyan-nuanced-bg)))))
 ;;;;; package (M-x list-packages)
    `(package-description ((,class :foreground ,fg-special-cold)))
@@ -3357,8 +3361,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(paradox-commit-tag-face ((,class :inherit modus-theme-refine-magenta :box t)))
    `(paradox-description-face ((,class :foreground ,fg-special-cold)))
    `(paradox-description-face-multiline ((,class :foreground ,fg-special-cold)))
-   `(paradox-download-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,blue-alt-other)))
-   `(paradox-highlight-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,cyan-alt-other)))
+   `(paradox-download-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,blue-alt-other)))
+   `(paradox-highlight-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,cyan-alt-other)))
    `(paradox-homepage-button-face ((,class :foreground ,magenta-alt-other :underline t)))
    `(paradox-mode-line-face ((,class :inherit bold :foreground ,cyan-active)))
    `(paradox-name-face ((,class :foreground ,blue :underline t)))
@@ -3380,7 +3384,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(persp-selected-face ((,class :inherit bold :foreground ,blue-active)))
 ;;;;; phi-grep
    `(phi-grep-heading-face  ((,class :inherit bold :foreground ,red-alt
-                                     ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                     ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(phi-grep-line-number-face ((,class :foreground ,fg-special-warm)))
    `(phi-grep-match-face ((,class :inherit modus-theme-special-calm)))
    `(phi-grep-modified-face ((,class :inherit modus-theme-refine-yellow)))
@@ -3522,39 +3526,39 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(sallet-buffer-read-only ((,class :foreground ,yellow-alt)))
    `(sallet-buffer-size ((,class :foreground ,fg-special-calm)))
    `(sallet-buffer-special ((,class :foreground ,magenta-alt-other)))
-   `(sallet-flx-match ((,class ,@(modus-vivendi-theme-extra-completions
+   `(sallet-flx-match ((,class ,@(modus-operandi-theme-extra-completions
                                   'modus-theme-subtle-cyan
                                   'modus-theme-refine-cyan
                                   'modus-theme-nuanced-cyan
                                   cyan-alt-other))))
    `(sallet-recentf-buffer-name ((,class :foreground ,blue-nuanced)))
    `(sallet-recentf-file-path ((,class :foreground ,fg-special-mild)))
-   `(sallet-regexp-match ((,class ,@(modus-vivendi-theme-extra-completions
+   `(sallet-regexp-match ((,class ,@(modus-operandi-theme-extra-completions
                                      'modus-theme-subtle-magenta
                                      'modus-theme-refine-magenta
                                      'modus-theme-nuanced-magenta
                                      magenta-alt-other))))
    `(sallet-source-header ((,class :inherit bold :foreground ,red-alt
-                                   ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
-   `(sallet-substring-match ((,class ,@(modus-vivendi-theme-extra-completions
+                                   ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
+   `(sallet-substring-match ((,class ,@(modus-operandi-theme-extra-completions
                                         'modus-theme-subtle-blue
                                         'modus-theme-refine-blue
                                         'modus-theme-nuanced-blue
                                         blue-alt-other))))
 ;;;;; selectrum
-   `(selectrum-current-candidate ((,class ,@(modus-vivendi-theme-extra-completions
+   `(selectrum-current-candidate ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-refine-magenta
                                              'modus-theme-intense-magenta
                                              'modus-theme-nuanced-magenta
                                              magenta
                                              'bold))))
-   `(selectrum-primary-highlight ((,class ,@(modus-vivendi-theme-extra-completions
+   `(selectrum-primary-highlight ((,class ,@(modus-operandi-theme-extra-completions
                                              'modus-theme-refine-blue
                                              'modus-theme-intense-blue
                                              'modus-theme-nuanced-blue
                                              blue
                                              'bold))))
-   `(selectrum-secondary-highlight ((,class ,@(modus-vivendi-theme-extra-completions
+   `(selectrum-secondary-highlight ((,class ,@(modus-operandi-theme-extra-completions
                                                'modus-theme-refine-cyan
                                                'modus-theme-intense-cyan
                                                'modus-theme-nuanced-cyan
@@ -3577,10 +3581,10 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(sesman-project-face ((,class :inherit bold :foreground ,magenta-alt-other)))
 ;;;;; shell-script-mode
    `(sh-heredoc ((,class :foreground ,blue-alt)))
-   `(sh-quoted-exec ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt)))
+   `(sh-quoted-exec ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt)))
 ;;;;; show-paren-mode
-   `(show-paren-match ((,class ,@(modus-vivendi-theme-paren bg-paren-match
-                                                            bg-paren-match-intense)
+   `(show-paren-match ((,class ,@(modus-operandi-theme-paren bg-paren-match
+                                                             bg-paren-match-intense)
                                :foreground ,fg-main)))
    `(show-paren-match-expression ((,class :inherit modus-theme-special-calm)))
    `(show-paren-mismatch ((,class :inherit modus-theme-intense-red)))
@@ -3617,8 +3621,8 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; smartparens
    `(sp-pair-overlay-face ((,class :inherit modus-theme-special-warm)))
    `(sp-show-pair-enclosing ((,class :inherit modus-theme-special-mild)))
-   `(sp-show-pair-match-face ((,class ,@(modus-vivendi-theme-paren bg-paren-match
-                                                                   bg-paren-match-intense)
+   `(sp-show-pair-match-face ((,class ,@(modus-operandi-theme-paren bg-paren-match
+                                                                    bg-paren-match-intense)
                                       :foreground ,fg-main)))
    `(sp-show-pair-mismatch-face ((,class :inherit modus-theme-intense-red)))
    `(sp-wrap-overlay-closing-pair ((,class :inherit sp-pair-overlay-face)))
@@ -3626,21 +3630,21 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(sp-wrap-overlay-opening-pair ((,class :inherit sp-pair-overlay-face)))
    `(sp-wrap-tag-overlay-face ((,class :inherit sp-pair-overlay-face)))
 ;;;;; smerge
-   `(smerge-base ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-base ((,class ,@(modus-operandi-theme-diffs
                              bg-main yellow
                              bg-diff-focus-changed fg-diff-focus-changed))))
-   `(smerge-lower ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-lower ((,class ,@(modus-operandi-theme-diffs
                               bg-main green
                               bg-diff-focus-added fg-diff-focus-added))))
    `(smerge-markers ((,class :background ,bg-diff-neutral-2 :foreground ,fg-diff-neutral-2)))
-   `(smerge-refined-added ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-refined-added ((,class ,@(modus-operandi-theme-diffs
                                       bg-diff-added fg-diff-added
                                       bg-diff-refine-added fg-diff-refine-added))))
    `(smerge-refined-changed ((,class)))
-   `(smerge-refined-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-refined-removed ((,class ,@(modus-operandi-theme-diffs
                                         bg-diff-removed fg-diff-removed
                                         bg-diff-refine-removed fg-diff-refine-removed))))
-   `(smerge-upper ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-upper ((,class ,@(modus-operandi-theme-diffs
                               bg-main red
                               bg-diff-focus-removed fg-diff-focus-removed))))
 ;;;;; spaceline
@@ -3691,9 +3695,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(swiper-match-face-4 ((,class :inherit swiper-line-face)))
 ;;;;; swoop
    `(swoop-face-header-format-line ((,class :inherit bold :foreground ,red-alt
-                                            ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-3))))
+                                            ,@(modus-operandi-theme-scale modus-operandi-theme-scale-3))))
    `(swoop-face-line-buffer-name ((,class :inherit bold :foreground ,blue-alt
-                                          ,@(modus-vivendi-theme-scale modus-vivendi-theme-scale-4))))
+                                          ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
    `(swoop-face-line-number ((,class :foreground ,fg-special-warm)))
    `(swoop-face-target-line ((,class :inherit modus-theme-intense-blue
                                      ,@(and (>= emacs-major-version 27) '(:extend t)))))
@@ -3815,7 +3819,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(treemacs-git-renamed-face ((,class :foreground ,cyan-alt-other)))
    `(treemacs-git-unmodified-face ((,class :foreground ,fg-main)))
    `(treemacs-git-untracked-face ((,class :foreground ,red-alt-other)))
-   `(treemacs-help-column-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-alt-other :underline t)))
+   `(treemacs-help-column-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-alt-other :underline t)))
    `(treemacs-help-title-face ((,class :foreground ,blue-alt-other)))
    `(treemacs-on-failure-pulse-face ((,class :inherit modus-theme-intense-red)))
    `(treemacs-on-success-pulse-face ((,class :inherit modus-theme-intense-green)))
@@ -3836,36 +3840,36 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(caml-types-occ-face ((,class :inherit modus-theme-subtle-green)))
    `(caml-types-scope-face ((,class :inherit modus-theme-subtle-blue)))
    `(caml-types-typed-face ((,class :inherit modus-theme-subtle-magenta)))
-   `(tuareg-font-double-semicolon-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-double-semicolon-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                    red-alt red-alt-faint))))
-   `(tuareg-font-lock-attribute-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-attribute-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                  magenta magenta-faint))))
    `(tuareg-font-lock-constructor-face ((,class :foreground ,fg-main)))
    `(tuareg-font-lock-error-face ((,class :inherit (modus-theme-intense-red bold))))
    `(tuareg-font-lock-extension-node-face ((,class :background ,bg-alt :foreground ,magenta)))
    `(tuareg-font-lock-governing-face ((,class :inherit bold :foreground ,fg-main)))
-   `(tuareg-font-lock-infix-extension-node-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-infix-extension-node-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                             magenta magenta-faint))))
    `(tuareg-font-lock-interactive-directive-face ((,class :foreground ,fg-special-cold)))
    `(tuareg-font-lock-interactive-error-face ((,class :inherit bold
-                                                      ,@(modus-vivendi-theme-syntax-foreground
+                                                      ,@(modus-operandi-theme-syntax-foreground
                                                          red red-faint))))
-   `(tuareg-font-lock-interactive-output-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-interactive-output-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                           blue-alt-other blue-alt-other-faint))))
-   `(tuareg-font-lock-label-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-label-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              cyan-alt-other cyan-alt-other-faint))))
    `(tuareg-font-lock-line-number-face ((,class :foreground ,fg-special-warm)))
-   `(tuareg-font-lock-module-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-module-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                               magenta-alt magenta-alt-faint))))
    `(tuareg-font-lock-multistage-face ((,class :inherit bold :background ,bg-alt
-                                               ,@(modus-vivendi-theme-syntax-foreground
+                                               ,@(modus-operandi-theme-syntax-foreground
                                                   blue blue-faint))))
-   `(tuareg-font-lock-operator-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-font-lock-operator-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                 red-alt red-alt-faint))))
    `(tuareg-opam-error-face ((,class :inherit bold
-                                     ,@(modus-vivendi-theme-syntax-foreground
+                                     ,@(modus-operandi-theme-syntax-foreground
                                         red red-faint))))
-   `(tuareg-opam-pkg-variable-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(tuareg-opam-pkg-variable-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                     cyan cyan-faint)
                                                  :slant ,modus-theme-slant)))
 ;;;;; undo-tree
@@ -3875,30 +3879,30 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(undo-tree-visualizer-register-face ((,class :foreground ,magenta-intense)))
    `(undo-tree-visualizer-unmodified-face ((,class :foreground ,green-intense)))
 ;;;;; vc
-   `(vc-conflict-state ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,red-active)))
+   `(vc-conflict-state ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,red-active)))
    `(vc-edited-state ((,class :foreground ,fg-special-warm)))
    `(vc-locally-added-state ((,class :foreground ,cyan-active)))
-   `(vc-locked-state ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,magenta-active)))
-   `(vc-missing-state ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,yellow-active)))
-   `(vc-needs-update-state ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,fg-special-mild)))
+   `(vc-locked-state ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,magenta-active)))
+   `(vc-missing-state ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,yellow-active)))
+   `(vc-needs-update-state ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,fg-special-mild)))
    `(vc-removed-state ((,class :foreground ,red-active)))
    `(vc-state-base ((,class :foreground ,fg-active)))
    `(vc-up-to-date-state ((,class :foreground ,fg-special-cold)))
 ;;;;; vdiff
-   `(vdiff-addition-face ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-addition-face ((,class ,@(modus-operandi-theme-diffs
                                      bg-main green
                                      bg-diff-focus-added fg-diff-focus-added))))
-   `(vdiff-change-face ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-change-face ((,class ,@(modus-operandi-theme-diffs
                                    bg-main yellow
                                    bg-diff-focus-changed fg-diff-focus-changed))))
    `(vdiff-closed-fold-face ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
-   `(vdiff-refine-added ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-refine-added ((,class ,@(modus-operandi-theme-diffs
                                     bg-diff-added fg-diff-added
                                     bg-diff-refine-added fg-diff-refine-added))))
-   `(vdiff-refine-changed ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-refine-changed ((,class ,@(modus-operandi-theme-diffs
                                       bg-diff-changed fg-diff-changed
                                       bg-diff-refine-changed fg-diff-refine-changed))))
-   `(vdiff-subtraction-face ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-subtraction-face ((,class ,@(modus-operandi-theme-diffs
                                         bg-main red
                                         bg-diff-focus-removed fg-diff-focus-removed))))
    `(vdiff-target-face ((,class :inherit modus-theme-intense-blue)))
@@ -3940,79 +3944,79 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(web-mode-annotation-face ((,class :inherit web-mode-comment-face)))
    `(web-mode-annotation-html-face ((,class :inherit web-mode-comment-face)))
    `(web-mode-annotation-tag-face ((,class :inherit web-mode-comment-face :underline t)))
-   `(web-mode-block-attr-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-block-attr-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                blue blue-faint))))
-   `(web-mode-block-attr-value-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-block-attr-value-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                 cyan-alt-other cyan-alt-other-faint))))
    `(web-mode-block-comment-face ((,class :inherit web-mode-comment-face)))
-   `(web-mode-block-control-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-block-control-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              magenta-alt magenta-alt-faint)
-                                          ,@(modus-vivendi-theme-bold-weight))))
+                                          ,@(modus-operandi-theme-bold-weight))))
    `(web-mode-block-delimiter-face ((,class :foreground ,fg-main)))
    `(web-mode-block-face ((,class :background ,bg-dim)))
    `(web-mode-block-string-face ((,class :inherit web-mode-string-face)))
    `(web-mode-bold-face ((,class :inherit bold)))
-   `(web-mode-builtin-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-builtin-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                        magenta-alt magenta-alt-faint)
-                                    ,@(modus-vivendi-theme-bold-weight))))
+                                    ,@(modus-operandi-theme-bold-weight))))
    `(web-mode-comment-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
    `(web-mode-comment-keyword-face ((,class :inherit bold :background ,bg-dim
-                                            ,@(modus-vivendi-theme-syntax-foreground
+                                            ,@(modus-operandi-theme-syntax-foreground
                                                yellow yellow-faint))))
-   `(web-mode-constant-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-constant-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         blue-alt-other blue-alt-other-faint))))
-   `(web-mode-css-at-rule-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-css-at-rule-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                            blue-alt-other blue-alt-other-faint))))
-   `(web-mode-css-color-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-css-color-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                          magenta-alt magenta-alt-faint)
-                                      ,@(modus-vivendi-theme-bold-weight))))
+                                      ,@(modus-operandi-theme-bold-weight))))
    `(web-mode-css-comment-face ((,class :inherit web-mode-comment-face)))
-   `(web-mode-css-function-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-css-function-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                             magenta-alt magenta-alt-faint)
-                                         ,@(modus-vivendi-theme-bold-weight))))
-   `(web-mode-css-priority-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                         ,@(modus-operandi-theme-bold-weight))))
+   `(web-mode-css-priority-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                             yellow-alt yellow-alt-faint)
-                                         ,@(modus-vivendi-theme-bold-weight))))
-   `(web-mode-css-property-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                         ,@(modus-operandi-theme-bold-weight))))
+   `(web-mode-css-property-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                  cyan cyan-faint))))
-   `(web-mode-css-pseudo-class-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-css-pseudo-class-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                 cyan-alt-other cyan-alt-other-faint))))
-   `(web-mode-css-selector-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-css-selector-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                             magenta-alt-other magenta-alt-other-faint)
-                                         ,@(modus-vivendi-theme-bold-weight))))
+                                         ,@(modus-operandi-theme-bold-weight))))
    `(web-mode-css-string-face ((,class :inherit web-mode-string-face)))
    `(web-mode-css-variable-face ((,class :foreground ,fg-special-warm)))
    `(web-mode-current-column-highlight-face ((,class :background ,bg-alt)))
    `(web-mode-current-element-highlight-face ((,class :inherit modus-theme-special-mild)))
    `(web-mode-doctype-face ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(web-mode-error-face ((,class :inherit modus-theme-intense-red)))
-   `(web-mode-filter-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-filter-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                       magenta magenta-faint))))
    `(web-mode-folded-face ((,class :underline t)))
-   `(web-mode-function-call-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-function-call-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              magenta magenta-faint))))
-   `(web-mode-function-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-function-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              magenta magenta-faint))))
-   `(web-mode-html-attr-custom-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-attr-custom-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                 cyan cyan-faint))))
    `(web-mode-html-attr-engine-face ((,class :foreground ,fg-main)))
    `(web-mode-html-attr-equal-face ((,class :foreground ,fg-main)))
-   `(web-mode-html-attr-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-attr-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                               cyan cyan-faint))))
-   `(web-mode-html-attr-value-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-attr-value-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                blue-alt-other blue-alt-other-faint))))
-   `(web-mode-html-entity-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-entity-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                            yellow-alt-other yellow-alt-other-faint)
                                         :slant ,modus-theme-slant)))
    `(web-mode-html-tag-bracket-face ((,class :foreground ,fg-dim)))
-   `(web-mode-html-tag-custom-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-tag-custom-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                magenta magenta-faint))))
-   `(web-mode-html-tag-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-tag-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         magenta magenta-faint))))
-   `(web-mode-html-tag-namespaced-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-html-tag-namespaced-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                    magenta-alt magenta-alt-faint)
-                                                ,@(modus-vivendi-theme-bold-weight))))
-   `(web-mode-html-tag-unclosed-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                                ,@(modus-operandi-theme-bold-weight))))
+   `(web-mode-html-tag-unclosed-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                                  red red-faint)
                                               :underline t)))
    `(web-mode-inlay-face ((,class :background ,bg-alt)))
@@ -4020,7 +4024,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(web-mode-javascript-comment-face ((,class :inherit web-mode-comment-face)))
    `(web-mode-javascript-string-face ((,class :inherit web-mode-string-face)))
    `(web-mode-json-comment-face ((,class :inherit web-mode-comment-face)))
-   `(web-mode-json-context-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-json-context-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                             magenta-alt magenta-alt-faint))))
    `(web-mode-json-key-face ((,class :foreground ,blue-nuanced)))
    `(web-mode-json-string-face ((,class :inherit web-mode-string-face)))
@@ -4029,32 +4033,32 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(web-mode-jsx-depth-3-face ((,class :background ,bg-special-cold :foreground ,fg-special-cold)))
    `(web-mode-jsx-depth-4-face ((,class :background ,bg-alt :foreground ,blue-refine-fg)))
    `(web-mode-jsx-depth-5-face ((,class :background ,bg-alt :foreground ,blue-nuanced)))
-   `(web-mode-keyword-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-keyword-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                        magenta-alt-other magenta-alt-other-faint)
-                                    ,@(modus-vivendi-theme-bold-weight))))
-   `(web-mode-param-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+                                    ,@(modus-operandi-theme-bold-weight))))
+   `(web-mode-param-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                           magenta magenta-faint))))
    `(web-mode-part-comment-face ((,class :inherit web-mode-comment-face)))
    `(web-mode-part-face ((,class :inherit web-mode-block-face)))
    `(web-mode-part-string-face ((,class :inherit web-mode-string-face)))
-   `(web-mode-preprocessor-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-preprocessor-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                             red-alt-other red-alt-other-faint))))
    `(web-mode-script-face ((,class :inherit web-mode-part-face)))
    `(web-mode-sql-keyword-face ((,class :inherit bold
-                                        ,@(modus-vivendi-theme-syntax-foreground
+                                        ,@(modus-operandi-theme-syntax-foreground
                                            yellow yellow-faint))))
-   `(web-mode-string-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-string-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                       blue-alt blue-alt-faint))))
    `(web-mode-style-face ((,class :inherit web-mode-part-face)))
-   `(web-mode-symbol-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-symbol-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                       blue-alt-other blue-alt-other-faint))))
-   `(web-mode-type-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-type-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                     magenta-alt magenta-alt-faint))))
    `(web-mode-underline-face ((,class :underline t)))
-   `(web-mode-variable-name-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(web-mode-variable-name-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                              cyan cyan-faint))))
    `(web-mode-warning-face ((,class :inherit bold :background ,bg-alt
-                                    ,@(modus-vivendi-theme-syntax-foreground
+                                    ,@(modus-operandi-theme-syntax-foreground
                                        yellow-alt-other yellow-alt-other-faint))))
    `(web-mode-whitespace-face ((,class :background ,bg-whitespace :foreground ,fg-whitespace)))
 ;;;;; wgrep
@@ -4091,7 +4095,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(window-divider-first-pixel ((,class :foreground ,fg-window-divider-outer)))
    `(window-divider-last-pixel ((,class :foreground ,fg-window-divider-outer)))
 ;;;;; winum
-   `(winum-face ((,class ,@(modus-vivendi-theme-bold-weight) :foreground ,cyan-active)))
+   `(winum-face ((,class ,@(modus-operandi-theme-bold-weight) :foreground ,cyan-active)))
 ;;;;; writegood-mode
    `(writegood-duplicates-face ((,class :background ,bg-alt :foreground ,red-alt :underline t)))
    `(writegood-passive-voice-face ((,class :foreground ,yellow-nuanced :underline ,fg-lang-warning)))
@@ -4103,13 +4107,13 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(woman-unknown ((,class :foreground ,yellow :slant italic)))
 ;;;;; xah-elisp-mode
    `(xah-elisp-at-symbol ((,class :inherit bold
-                                  ,@(modus-vivendi-theme-syntax-foreground
+                                  ,@(modus-operandi-theme-syntax-foreground
                                      red-alt red-alt-faint))))
-   `(xah-elisp-cap-variable ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(xah-elisp-cap-variable ((,class ,@(modus-operandi-theme-syntax-foreground
                                         red-alt-other red-alt-other-faint))))
-   `(xah-elisp-command-face ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(xah-elisp-command-face ((,class ,@(modus-operandi-theme-syntax-foreground
                                         cyan-alt-other cyan-alt-other-faint))))
-   `(xah-elisp-dollar-symbol ((,class ,@(modus-vivendi-theme-syntax-foreground
+   `(xah-elisp-dollar-symbol ((,class ,@(modus-operandi-theme-syntax-foreground
                                          green green-faint))))
 ;;;;; xref
    `(xref-file-header ((,class :inherit bold :foreground ,fg-special-cold)))
@@ -4136,7 +4140,7 @@ Also bind `class' to ((class color) (min-colors 89))."
   ;; EXPERIMENTAL this form is subject to review
   (when (>= emacs-major-version 27)
     (custom-theme-set-faces
-     'modus-vivendi
+     'modus-operandi
 ;;;;; line numbers (`display-line-numbers-mode' and global variant)
      ;; NOTE that this is specifically for the faces that were
      ;; introduced in Emacs 27, as the other faces are already
@@ -4160,10 +4164,10 @@ Also bind `class' to ((class color) (min-colors 89))."
                                       :background ,bg-tab-inactive :foreground ,fg-dim)))))
 ;;; variables
   (custom-theme-set-variables
-   'modus-vivendi
+   'modus-operandi
 ;;;; ansi-colors
    `(ansi-color-faces-vector [default bold shadow italic underline success warning error])
-   `(ansi-color-names-vector [,bg-main ,red ,green ,yellow ,blue ,magenta ,cyan ,fg-main])
+   `(ansi-color-names-vector [,fg-main ,red ,green ,yellow ,blue ,magenta ,cyan ,bg-main])
 ;;;; flymake fringe indicators
    `(flymake-error-bitmap '(flymake-double-exclamation-mark modus-theme-fringe-red))
    `(flymake-warning-bitmap '(exclamation-mark modus-theme-fringe-yellow))
@@ -4221,15 +4225,15 @@ Also bind `class' to ((class color) (min-colors 89))."
        (360 . ,magenta-alt-other)))
    `(vc-annotate-very-old-color nil)
 ;;;; xterm-color
-   `(xterm-color-names [,bg-main ,red ,green ,yellow ,blue ,magenta ,cyan ,fg-alt])
-   `(xterm-color-names-bright [,bg-alt ,red-alt ,green-alt ,yellow-alt ,blue-alt ,magenta-alt ,cyan-alt ,fg-main]))
+   `(xterm-color-names [,fg-main ,red ,green ,yellow ,blue ,magenta ,cyan ,bg-alt])
+   `(xterm-color-names-bright [,fg-alt ,red-alt ,green-alt ,yellow-alt ,blue-alt ,magenta-alt ,cyan-alt ,bg-main]))
 ;;; Conditional theme variables
 ;;;; org-src-block-faces
   ;; this is a user option to add a colour-coded background to source
   ;; blocks for various programming languages
-  (when (eq modus-vivendi-theme-org-blocks 'rainbow)
+  (when (eq modus-operandi-theme-org-blocks 'rainbow)
     (custom-theme-set-variables
-     'modus-vivendi
+     'modus-operandi
      `(org-src-block-faces              ; TODO this list should be expanded
        `(("emacs-lisp" modus-theme-nuanced-magenta)
          ("elisp" modus-theme-nuanced-magenta)
@@ -4257,8 +4261,8 @@ Also bind `class' to ((class color) (min-colors 89))."
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name))))
 
-(provide-theme 'modus-vivendi)
+(provide-theme 'modus-operandi)
 
-(provide 'modus-vivendi-theme)
+(provide 'modus-operandi-theme)
 
-;;; modus-vivendi-theme.el ends here
+;;; modus-operandi-theme.el ends here
