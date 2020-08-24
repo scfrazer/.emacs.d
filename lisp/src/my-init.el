@@ -50,10 +50,10 @@
 
 (require 'compile)
 (defface my-compilation-current-item-arrow-face
-  '((t :background "black" :foreground "white" :underline nil :italic nil :bold nil))
+  '((t :background "black" :foreground "yellow1" :underline nil :italic nil :bold t))
   "Face for compilation current item arrow."
   :group 'compilation)
-(setq compilation--margin-string (propertize "=>" 'face 'my-compilation-current-item-arrow-face)
+(setq compilation--margin-string (propertize "->" 'face 'my-compilation-current-item-arrow-face)
       compilation--dummy-string (propertize ">" 'display `((margin left-margin) ,compilation--margin-string)))
 
 (require 'my-edit)
@@ -1770,7 +1770,8 @@ Prefix with C-u to resize the `next-window'."
 ;; (add-hook 'next-error-hook 'my-next-error-hook)
 
 (defun my-prog-mode-hook ()
-  (highlight-indent-guides-mode 1))
+  ;; (highlight-indent-guides-mode 1)
+  )
 
 (defun my-sh-mode-hook ()
   (when (and buffer-file-name (string-match "\\.zsh.*\\'" buffer-file-name))
@@ -1783,7 +1784,7 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'after-save-hook 'my-after-save-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'find-file-hook 'my-find-file-hook)
-(add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook 'append)
+(add-hook 'find-file-not-found-functions 'file-template-find-file-not-found-hook 'append)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
