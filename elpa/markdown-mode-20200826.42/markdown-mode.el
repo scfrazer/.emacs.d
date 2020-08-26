@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20200824.339
-;; Package-Commit: cd10c7a524a0e60c39b6bdbd3d0956c85cb6c862
+;; Package-Version: 20200826.42
+;; Package-Commit: b7b4eb3e391455545f12d6fe52011127dc0c2541
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -2773,7 +2773,7 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
 (defun markdown-match-bold (last)
   "Match inline bold from the point to LAST."
   (when (markdown-match-inline-generic markdown-regex-bold last)
-    (let ((is-gfm (memq major-mode '(gfm-mode gfm-view-mode)))
+    (let ((is-gfm (derived-mode-p 'gfm-mode))
           (begin (match-beginning 2))
           (end (match-end 2)))
       (if (or (markdown-inline-code-at-pos-p begin)
@@ -2797,7 +2797,7 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
 
 (defun markdown-match-italic (last)
   "Match inline italics from the point to LAST."
-  (let* ((is-gfm (memq major-mode '(gfm-mode gfm-view-mode)))
+  (let* ((is-gfm (derived-mode-p 'gfm-mode))
          (regex (if is-gfm
                     markdown-regex-gfm-italic
                   markdown-regex-italic)))
@@ -5851,7 +5851,7 @@ CHECKER-FUNCTION."
        "\n\nIf SILENT is non-nil, do not message anything when no
 such references found.")
      (interactive "P")
-     (when (not (memq major-mode '(markdown-mode gfm-mode)))
+     (unless (derived-mode-p 'markdown-mode)
        (user-error "Not available in current mode"))
      (let ((oldbuf (current-buffer))
            (refs (,checker-function))
@@ -6687,7 +6687,7 @@ setext header, but should not be folded."
   "Visibility cycling for Markdown mode.
 This function is called with a `\\[universal-argument]' or if ARG is t, perform
 global visibility cycling.  If the point is at an atx-style header, cycle
-visibility of thecorresponding subtree.  Otherwise, indent the current line
+visibility of the corresponding subtree.  Otherwise, indent the current line
  or insert a tab, as appropriate, by calling `indent-for-tab-command'."
   (interactive "P")
   (cond
@@ -7767,7 +7767,7 @@ in parent directories if
 `markdown-wiki-link-search-parent-directories' is non-nil."
   (let* ((basename (replace-regexp-in-string
                     "[[:space:]\n]" markdown-link-space-sub-char name))
-         (basename (if (memq major-mode '(gfm-mode gfm-view-mode))
+         (basename (if (derived-mode-p 'gfm-mode)
                        (concat (upcase (substring basename 0 1))
                                (downcase (substring basename 1 nil)))
                      basename))
@@ -7808,7 +7808,7 @@ window when OTHER is non-nil."
       (when other (other-window 1))
       (let ((default-directory wp))
         (find-file filename)))
-    (unless (memq major-mode '(markdown-mode gfm-mode))
+    (unless (derived-mode-p 'markdown-mode)
       (markdown-mode))))
 
 (defun markdown-follow-wiki-link-at-point (&optional arg)
@@ -8133,8 +8133,7 @@ or span."
 (defun markdown-reload-extensions ()
   "Check settings, update font-lock keywords and hooks, and re-fontify buffer."
   (interactive)
-  (when (member major-mode
-                '(markdown-mode markdown-view-mode gfm-mode gfm-view-mode))
+  (when (derived-mode-p 'markdown-mode)
     ;; Refontify buffer
     (font-lock-flush)
     ;; Add or remove hooks related to extensions

@@ -3,9 +3,9 @@
 
 ;; Copyright 2011-2020 François-Xavier Bois
 
-;; Version: 17.0.1
-;; Package-Version: 20200820.1325
-;; Package-Commit: 3ecfe6b7f508556e935788e40784f254f8334837
+;; Version: 17.0.2
+;; Package-Version: 20200825.730
+;; Package-Commit: c55244faf631327344623c8b526d3793aca48c24
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -10693,6 +10693,10 @@ Prompt user if TAG-NAME isn't provided."
         (web-mode-block-skip-blank-forward (point) '(delimiter-beg))
       (skip-chars-forward "[:space:]" (line-end-position)))
     (cond
+     ;; #1147
+     ((and (get-text-property (point) 'jsx-beg)
+           (eq (get-text-property (1+ (point)) 'part-token) 'comment))
+      (web-mode-uncomment (1+ (point))))
      ((or (eq (get-text-property (point) 'tag-type) 'comment)
           (eq (get-text-property (point) 'block-token) 'comment)
           (eq (get-text-property (point) 'part-token) 'comment))
@@ -11042,7 +11046,11 @@ Prompt user if TAG-NAME isn't provided."
              (setq beg (car boundaries))
              (setq end (1+ (cdr boundaries)))
              (> (- end beg) 4))
-        (message "%S" boundaries)
+        (when (and (get-text-property beg 'jsx-depth)
+                   (eq (char-after (1- beg)) ?\{))
+          (setq beg (1- beg)
+                end (1+ end)))
+        ;;(message "%S" boundaries)
         ;;(message "beg(%S) end(%S)" beg end)
         (setq comment (buffer-substring-no-properties beg end))
         (setq sub2 (substring comment 0 2))

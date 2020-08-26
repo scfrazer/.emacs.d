@@ -4,9 +4,9 @@
 
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://gitlab.com/protesilaos/modus-themes
-;; Package-Version: 20200824.752
-;; Package-Commit: 5400cd92e15a713db44b4d7b77db78cb5d02fed7
-;; Version: 0.11.0
+;; Package-Version: 20200826.335
+;; Package-Commit: 67554a6291aa4ad39b9351e8ee3025d4a2aaba6e
+;; Version: 0.12.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: faces, theme, accessibility
 
