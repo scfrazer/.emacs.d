@@ -50,12 +50,11 @@
 
 (require 'compile)
 (defface my-compilation-current-item-arrow-face
-  '((t :background "black" :foreground "yellow1" :underline nil :italic nil :bold t))
+  '((t :background "black" :foreground "yellow1" :underline nil :italic nil :bold nil))
   "Face for compilation current item arrow."
   :group 'compilation)
-(setq compilation--margin-string (propertize "->" 'face 'my-compilation-current-item-arrow-face)
+(setq compilation--margin-string (propertize "🞂🞂" 'face 'my-compilation-current-item-arrow-face)
       compilation--dummy-string (propertize ">" 'display `((margin left-margin) ,compilation--margin-string)))
-
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
             ("C-M-p" . my-edit-scroll-up)
@@ -194,6 +193,11 @@
                   (memq major-mode (list 'dired-mode 'ibuffer-mode)))
         (auto-highlight-symbol-mode t)))
     (advice-add #'ahs-mode-maybe :around #'my-ahs-mode-maybe)
+    (defun my-ahs-idle-function (orig-fun)
+      "Get rid of annoying error message"
+      (ignore-errors
+        (apply orig-fun '())))
+    (advice-add #'ahs-idle-function :around #'my-ahs-idle-function)
     (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
@@ -1979,7 +1983,7 @@ Prefix with C-u to resize the `next-window'."
         (wrap-glyph (make-glyph-code ?⤸ 'my-display-table-face))
         (escape-glyph (make-glyph-code ?\\ 'my-display-table-face))
         (control-glyph (make-glyph-code ?^ 'my-display-table-face))
-        (vertical-border-glyph (make-glyph-code ?│ 'my-display-table-face)))
+        (vertical-border-glyph (make-glyph-code ?┃ 'my-display-table-face)))
     (set-display-table-slot standard-display-table 'truncation truncation-glyph)
     (set-display-table-slot standard-display-table 'wrap wrap-glyph)
     (set-display-table-slot standard-display-table 'escape escape-glyph)
