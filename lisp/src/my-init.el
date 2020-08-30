@@ -138,6 +138,7 @@
 (setq minor-mode-alist (remove (assq 'show-mark-mode minor-mode-alist) minor-mode-alist))
 
 (require 'my-task)
+(require 'my-tags)
 (require 'my-undo)
 
 (require 'uniquify)
@@ -668,6 +669,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
               compare-ignore-whitespace t
               compilation-context-lines t
               compilation-scroll-output 'first-error
+              completion-ignore-case nil
               completions-format 'vertical
               confirm-kill-emacs 'y-or-n-p
               cursor-in-non-selected-windows nil
@@ -926,13 +928,6 @@ undoable all at once."
          (call-interactively 'asic-compile))
         (t
          (call-interactively 'compile))))
-
-(defun my-complete-tag ()
-  (interactive)
-  (or tags-table-list
-      tags-file-name
-      (visit-tags-table-buffer))
-  (call-interactively 'complete-tag))
 
 (defun my-comment-or-uncomment-region ()
   "Like `comment-or-uncomment-region', but always uses lines."

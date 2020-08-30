@@ -4,8 +4,7 @@
 (require 'orderless)
 (require 'icomplete-vertical)
 
-(setq-default completion-ignore-case t
-              completion-styles '(orderless)
+(setq-default completion-styles '(orderless)
               icomplete-compute-delay 0.2
               icomplete-delay-completions-threshold 100
               icomplete-max-delay-chars 2
