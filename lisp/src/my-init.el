@@ -16,7 +16,7 @@
       (set-face-foreground 'highlight-indent-guides-character-face
                            (color-lighten-name (face-foreground 'font-lock-comment-face) 25))
     (set-face-foreground 'highlight-indent-guides-character-face
-                           (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
+                         (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
 (advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
 (setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
 (defun my-buffer-substring--filter (beg end &optional delete)
@@ -831,8 +831,8 @@ undoable all at once."
          (backups
           (directory-files
            (file-name-directory filename) t
-          (concat (file-name-nondirectory filename) ".keep.[0-9]+")))
-        (extension ".keep"))
+           (concat (file-name-nondirectory filename) ".keep.[0-9]+")))
+         (extension ".keep"))
     (when backups
       (setq extension (format ".keep.%d" (1+ (length backups)))))
     (copy-file filename (concat filename extension) t)
@@ -1513,9 +1513,11 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 (defun my-tab ()
   "Special TAB key behavior"
   (interactive)
-  (if (looking-at "[])}>'\"]")
-      (forward-char)
-    (call-interactively 'indent-according-to-mode)))
+  (let ((old-indent (current-indentation)))
+    (call-interactively 'indent-according-to-mode)
+    (when (and (= old-indent (current-indentation))
+               (looking-at "[])}>'\"]"))
+      (forward-char))))
 
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)
@@ -1622,25 +1624,27 @@ Only works if there are exactly two windows."
   "If point is after certain chars transpose chunks around that.
 Otherwise transpose sexps."
   (interactive "*")
-  (if (not (looking-back "[,]\\s-*" (point-at-bol)))
-      (progn (transpose-sexps 1) (forward-sexp -1))
-    (let ((beg (point)) end rhs lhs)
-      (while (and (not (eobp))
-                  (not (looking-at "\\s-*\\([,]\\|\\s)\\)")))
-        (forward-sexp 1))
-      (setq rhs (buffer-substring beg (point)))
-      (delete-region beg (point))
-      (re-search-backward "[,]\\s-*" nil t)
-      (setq beg (point))
-      (while (and (not (bobp))
-                  (not (looking-back "\\([,]\\|\\s(\\)\\s-*" (point-at-bol))))
-        (forward-sexp -1))
-      (setq lhs (buffer-substring beg (point)))
-      (delete-region beg (point))
-      (insert rhs)
-      (re-search-forward "[,]\\s-*" nil t)
-      (save-excursion
-        (insert lhs)))))
+  (let ((limit (save-excursion (backward-up-list) (point))))
+    (if (not (looking-back "[,;][[:space:]\n]*" limit))
+        (progn (transpose-sexps 1) (forward-sexp -1))
+      (let ((beg (point)) end rhs lhs forward-sexp-function)
+        (while (and (not (eobp))
+                    (not (looking-at "[[:space:]\n]*[])},;]")))
+          (forward-sexp))
+        (setq rhs (buffer-substring beg (point)))
+        (delete-region beg (point))
+        (re-search-backward "[,;]" nil t)
+        (setq beg (point))
+        (setq limit (save-excursion (backward-up-list) (point)))
+        (while (and (not (bobp))
+                    (not (looking-back "[,;{([][[:space:]\n]*" limit)))
+          (forward-sexp -1))
+        (setq lhs (buffer-substring beg (point)))
+        (delete-region beg (point))
+        (insert rhs)
+        (re-search-forward "[,;][[:space:]\n]*" nil t)
+        (save-excursion
+          (insert lhs))))))
 
 (defun my-unfill (&optional arg)
   "Unfill paragraph, or region with prefix arg."

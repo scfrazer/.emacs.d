@@ -330,9 +330,12 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text unit
 
+(defvar qe-unit-doing-kill nil)
+
 (defun qe-unit-kill ()
   "Kill by text unit."
   (interactive)
+  (setq qe-unit-doing-kill t)
   (if (region-active-p)
       (if current-prefix-arg
           (delete-region (region-beginning) (region-end))
@@ -364,17 +367,18 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 (defun qe-unit-copy ()
   "Copy by text unit."
   (interactive)
-    (if (region-active-p)
-        (progn
-          (when current-prefix-arg (append-next-kill))
-          (kill-ring-save (region-beginning) (region-end)))
-      (let ((key-seq (read-key-sequence (if current-prefix-arg "(Append) Copy:" "Copy:"))))
-        (setq qe-highlight-num 1)
-        (setq qe-highlight-count 0)
-        (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode (fboundp 'mc/num-cursors))
-          (setq qe-highlight-num (mc/num-cursors))
-          (setq mc--this-command `(lambda () (interactive) (qe-unit-copy-1 ',key-seq))))
-        (qe-unit-copy-1 key-seq))))
+  (setq qe-unit-doing-kill nil)
+  (if (region-active-p)
+      (progn
+        (when current-prefix-arg (append-next-kill))
+        (kill-ring-save (region-beginning) (region-end)))
+    (let ((key-seq (read-key-sequence (if current-prefix-arg "(Append) Copy:" "Copy:"))))
+      (setq qe-highlight-num 1)
+      (setq qe-highlight-count 0)
+      (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode (fboundp 'mc/num-cursors))
+        (setq qe-highlight-num (mc/num-cursors))
+        (setq mc--this-command `(lambda () (interactive) (qe-unit-copy-1 ',key-seq))))
+      (qe-unit-copy-1 key-seq))))
 
 (defun qe-unit-copy-1 (key-seq)
   "Real work for qe-unit-copy."
@@ -419,8 +423,11 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?\) (qe-region-inside-pair ?\) dir))
           (?\] (qe-region-inside-pair ?\] dir))
           (?\> (qe-region-inside-pair ?\> dir))
-          (?A (qe-unit-ends-point-to-fcn 'back-to-indentation))
-          (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
+          (?\, (qe-unit-to-delimiter ?\,))
+          (?\; (qe-unit-to-delimiter ?\;))
+          ;; (?A (qe-unit-ends-point-to-fcn 'back-to-indentation))
+          ;; (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
+          (?a (qe-unit-arg))
           (?b (qe-unit-ends-point-to-fcn 'qe-forward-block))
           (?c (qe-unit-ends-forward-to-char))
           (?e (qe-unit-ends-point-to-fcn 'end-of-line))
@@ -437,8 +444,10 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                       (qe-region-inside-pair first-key dir)
                     (when (member first-key '(?\" ?\' ?\`))
                       (qe-region-inside-quotes first-key dir))))
-                 ((or (< 31 first-key 48)    ;; space through slash
-                      (< 57 first-key 65)    ;; colon through at-symbol
+                 ((or (< 31 first-key 44)    ;; space through plus
+                      (< 45 first-key 48)    ;; dash through slash
+                      (= 58)                 ;; colon
+                      (< 59 first-key 65)    ;; semicolon through at-symbol
                       (< 90 first-key 97)    ;; left-bracket through backtick
                       (< 122 first-key 127)) ;; left-brace through tilde
                   (qe-unit-ends-forward-to-char first-key))
@@ -602,6 +611,42 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                         (error nil))
                       (point-max))))))
     (cons beg end)))
+
+(defun qe-unit-to-delimiter (char)
+  "Up to CHAR, taking into account paired chars."
+  (let ((start (point)) done forward-sexp-function)
+    (while (not (or done (eobp)))
+      (if (looking-at (char-to-string char))
+          (setq done t)
+        (forward-sexp)))
+    (cons start (point))))
+
+(defun qe-unit-arg ()
+  "Current argument. If a kill is happening, deletes
+comma/semicolon/spaces also."
+  (let (start end forward-sexp-function)
+    (save-excursion
+      (setq start (point))
+      (while (and (not (eobp))
+                  (not (looking-at "[[:space:]\n]*[])},;]")))
+        (forward-sexp))
+      (setq end (point))
+      (when qe-unit-doing-kill
+        (if (looking-at "[,;]")
+            (delete-region (point) (save-excursion (skip-chars-forward ",;[:space:]\n") (point)))
+          (goto-char start)
+          (let (limit)
+            (save-excursion
+              (backward-up-list)
+              (setq limit (point)))
+            (when (looking-back "[,;{([][[:space:]\n]*" limit)
+              (delete-region (match-beginning 0) (point)))
+            (setq start (point))
+            (while (and (not (eobp))
+                        (not (looking-at "[[:space:]\n]*[])},;]")))
+              (forward-sexp))
+            (setq end (point))))))
+    (cons start end)))
 
 (defun qe-region-inside-quotes (char dir)
   "Find the region inside quote chars."
