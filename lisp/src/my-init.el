@@ -519,6 +519,9 @@
   :config
   (require 'my-sgml-mode))
 
+(use-package sim-log-mode
+  :mode (("sim\\.log\\'" . sim-log-mode)))
+
 (use-package smerge-mode
   :commands (smerge-mode
              smerge-ediff)
@@ -1720,8 +1723,7 @@ Prefix with C-u to resize the `next-window'."
                  "^(use-package +\\(\\_<.+\\_>\\)" 1)))
 
 (defun my-find-file-hook ()
-  (when (or (equal (buffer-name) "sim.log")
-            (equal (buffer-name) "topology.txt"))
+  (when (equal (buffer-name) "sim.log")
     (my-word-wrap-on-hook))
   (my-backup-set-mode))
 
