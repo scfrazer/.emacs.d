@@ -640,7 +640,7 @@ comma/semicolon/spaces also."
               (backward-up-list)
               (setq limit (point)))
             (when (looking-back "[,;{([][[:space:]\n]*" limit)
-              (delete-region (match-beginning 0) (point)))
+              (delete-region (1+ (match-beginning 0)) (point)))
             (setq start (point))
             (while (and (not (eobp))
                         (not (looking-at "[[:space:]\n]*[])},;]")))
