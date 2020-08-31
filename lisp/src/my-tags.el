@@ -1,38 +1,35 @@
 ;;; my-tags.el  -*- lexical-binding: t; -*-
 
-(defun my-complete-tag ()
+(defun my-tags-complete ()
+  "Completing read for a tag."
   (interactive)
-  (or tags-table-list
-      tags-file-name
-      (visit-tags-table-buffer))
-  (let ((case-fold-search nil))
-    (call-interactively 'complete-tag)))
+  (let ((start (save-excursion (skip-syntax-backward "w_") (point)))
+        (end (point)))
+    (or tags-table-list
+        tags-file-name
+        (visit-tags-table-buffer))
+    (when-let (result
+               (completing-read "Tag: "
+                                (my-tags-completion-table (buffer-substring-no-properties start end))
+                                nil t))
+      (delete-region start end)
+      (insert result))))
 
-;; (defun etags-tags-completion-table () ; Doc string?
-;;   (let (table
-;;         (progress-reporter
-;;          (make-progress-reporter
-;;           (format "Making tags completion table for %s..." buffer-file-name)
-;;           (point-min) (point-max))))
-;;     (save-excursion
-;;       (goto-char (point-min))
-;;       ;; This regexp matches an explicit tag name or the place where
-;;       ;; it would start.
-;;       (while (re-search-forward
-;;               "[\f\t\n\r()=,; ]?\177\\(?:\\([^\n\001]+\\)\001\\)?"
-;;               nil t)
-;;         (push   (prog1 (if (match-beginning 1)
-;;                            ;; There is an explicit tag name.
-;;                            (buffer-substring (match-beginning 1) (match-end 1))
-;;                          ;; No explicit tag name.  Backtrack a little,
-;;                          ;; and look for the implicit one.
-;;                          (goto-char (match-beginning 0))
-;;                          (skip-chars-backward "^\f\t\n\r()=,; ")
-;;                          (prog1
-;;                              (buffer-substring (point) (match-beginning 0))
-;;                            (goto-char (match-end 0))))
-;;                   (progress-reporter-update progress-reporter (point)))
-;;                 table)))
-;;     table))
+(defun my-tags-completion-table (input)
+  "Create a tags completion table starting with INPUT."
+  (with-current-buffer (get-file-buffer tags-file-name)
+    (let (table
+          (progress-reporter
+           (make-progress-reporter
+            (format "Making tags completion table for %s..." buffer-file-name)
+            (point-min) (point-max)))
+          (case-fold-search nil)
+          (re (concat "\177\\(" (regexp-quote input) "[^\001]+\\)\001")))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward re nil t)
+          (progress-reporter-update progress-reporter (point))
+          (push (buffer-substring (match-beginning 1) (match-end 1)) table)))
+      table)))
 
 (provide 'my-tags)
