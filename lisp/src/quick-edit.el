@@ -187,6 +187,30 @@ depending on the major mode (see `qe-block-indented-modes')."
         (setq done t)
         (beginning-of-line)))))
 
+(defun qe-forward-to-char-same-level (&optional char)
+  "Go forward to CHAR, taking into account paired chars."
+  (interactive)
+  (unless char
+    (message "To char:")
+    (setq char (read-char)))
+  (let ((start (point)) regexp found forward-sexp-function)
+    (setq regexp (concat (regexp-quote (char-to-string char)) "\\|[])}\""))
+    (when (eq (char-syntax ?\') ?\")
+      (setq regexp (concat regexp "'")))
+    (when (eq (char-syntax ?\`) ?\")
+      (setq regexp (concat regexp "`'")))
+    (setq regexp (concat regexp "{([]"))
+    (when (equal (char-after) char)
+      (forward-char))
+    (while (and (not found) (re-search-forward regexp nil 'go))
+      (backward-char)
+      (if (equal (char-after) char)
+          (setq found t)
+        (forward-sexp)))
+    (unless found
+      (goto-char start)
+      (error "Could not find char at same level"))))
+
 (defun qe-yank ()
   "Like yank, but with prefix number yank that many times."
   (interactive "*")
@@ -423,8 +447,6 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
           (?\) (qe-region-inside-pair ?\) dir))
           (?\] (qe-region-inside-pair ?\] dir))
           (?\> (qe-region-inside-pair ?\> dir))
-          (?\, (qe-unit-to-delimiter ?\,))
-          (?\; (qe-unit-to-delimiter ?\;))
           ;; (?A (qe-unit-ends-point-to-fcn 'back-to-indentation))
           ;; (?a (qe-unit-ends-point-to-fcn 'beginning-of-line))
           (?a (qe-unit-arg))
@@ -444,13 +466,11 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                       (qe-region-inside-pair first-key dir)
                     (when (member first-key '(?\" ?\' ?\`))
                       (qe-region-inside-quotes first-key dir))))
-                 ((or (< 31 first-key 44)    ;; space through plus
-                      (< 45 first-key 48)    ;; dash through slash
-                      (= 58)                 ;; colon
-                      (< 59 first-key 65)    ;; semicolon through at-symbol
+                 ((or (< 31 first-key 48)    ;; space through slash
+                      (< 57 first-key 65)    ;; colon through at-symbol
                       (< 90 first-key 97)    ;; left-bracket through backtick
                       (< 122 first-key 127)) ;; left-brace through tilde
-                  (qe-unit-ends-forward-to-char first-key))
+                  (cons (point) (progn (qe-forward-to-char-same-level first-key) (point))))
                  (t
                   (error "Unknown key entered for text unit")))))))))
 
@@ -611,15 +631,6 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
                         (error nil))
                       (point-max))))))
     (cons beg end)))
-
-(defun qe-unit-to-delimiter (char)
-  "Up to CHAR, taking into account paired chars."
-  (let ((start (point)) done forward-sexp-function)
-    (while (not (or done (eobp)))
-      (if (looking-at (char-to-string char))
-          (setq done t)
-        (forward-sexp)))
-    (cons start (point))))
 
 (defun qe-unit-arg ()
   "Current argument. If a kill is happening, deletes

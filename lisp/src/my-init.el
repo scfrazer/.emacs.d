@@ -107,7 +107,6 @@
 
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override
-(global-set-key (kbd "C-f") 'my-isearch-search-forward-line)
 (global-set-key (kbd "C-r") 'my-isearch-backward)
 (global-set-key (kbd "C-s") 'my-isearch-forward)
 (put 'my-recenter 'isearch-scroll t)
@@ -500,6 +499,8 @@
                   (point)))
         (apply orig-fun (list key-seq))))
     (advice-add 'qe-unit-bounds :around #'my-qe-unit-bounds)))
+;; Use global-set-key so minor modes can override
+(global-set-key (kbd "C-f") 'qe-forward-to-char-same-level)
 
 (use-package my-rect
   :commands (my-mc/edit-lines)
