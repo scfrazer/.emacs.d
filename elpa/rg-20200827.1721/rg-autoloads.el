@@ -31,9 +31,7 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 \(fn &optional PREFIX)" t nil)
 
 (autoload 'rg-use-old-defaults "rg" "\
-Restore default settings pre version 2.0.0.
-
-\(fn)" nil nil)
+Restore default settings pre version 2.0.0." nil nil)
 
 (autoload 'rg-define-search "rg" "\
 Define an rg search functions named NAME.
@@ -110,7 +108,7 @@ files with the same name pattern still will be searched.
  (autoload 'rg-literal "rg.el" "" t)
  (autoload 'rg "rg.el" "" t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("rg-" "kill-rg")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("kill-rg" "rg-")))
 
 ;;;***
 
@@ -132,9 +130,7 @@ files with the same name pattern still will be searched.
 ;;; Generated autoloads from rg-ibuffer.el
 
 (autoload 'rg-list-searches "rg-ibuffer" "\
-List all `rg-mode' buffers in `ibuffer'.
-
-\(fn)" t nil)
+List all `rg-mode' buffers in `ibuffer'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-ibuffer" '("rg-")))
 
@@ -164,9 +160,7 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 ;;; Generated autoloads from wgrep-rg.el
 
 (autoload 'wgrep-rg-setup "wgrep-rg" "\
-Setup wgrep rg support.
-
-\(fn)" nil nil)
+Setup wgrep rg support." nil nil)
 
 (add-hook 'rg-mode-hook 'wgrep-rg-setup)
 

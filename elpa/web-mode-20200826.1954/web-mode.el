@@ -4,8 +4,8 @@
 ;; Copyright 2011-2020 François-Xavier Bois
 
 ;; Version: 17.0.2
-;; Package-Version: 20200825.730
-;; Package-Commit: c55244faf631327344623c8b526d3793aca48c24
+;; Package-Version: 20200826.1954
+;; Package-Commit: da53553fd4e876ac121994cc48e54ab54fa3ace7
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -11046,12 +11046,10 @@ Prompt user if TAG-NAME isn't provided."
              (setq beg (car boundaries))
              (setq end (1+ (cdr boundaries)))
              (> (- end beg) 4))
-        (when (and (get-text-property beg 'jsx-depth)
-                   (eq (char-after (1- beg)) ?\{))
+        (when (and (eq (get-text-property beg 'part-token) 'comment)
+                   (get-text-property (1- beg) 'jsx-beg))
           (setq beg (1- beg)
                 end (1+ end)))
-        ;;(message "%S" boundaries)
-        ;;(message "beg(%S) end(%S)" beg end)
         (setq comment (buffer-substring-no-properties beg end))
         (setq sub2 (substring comment 0 2))
         (cond
