@@ -1,16 +1,14 @@
 ;;; modus-vivendi-theme.el --- Accessible dark theme (WCAG AAA) -*- lexical-binding:t -*-
 
-;; Copyright (c) 2019-2020 Free Software Foundation, Inc.
+;; Copyright (C) 2019-2020 Free Software Foundation, Inc.
 
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://gitlab.com/protesilaos/modus-themes
-;; Package-Version: 20200826.335
-;; Package-Commit: 67554a6291aa4ad39b9351e8ee3025d4a2aaba6e
 ;; Version: 0.12.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: faces, theme, accessibility
 
-;; This file is NOT part of GNU Emacs.
+;; This file is part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or
 ;; it under the terms of the GNU General Public License as published by
@@ -50,8 +48,8 @@
 ;;     modus-vivendi-theme-fringes                        (choice)
 ;;     modus-vivendi-theme-org-blocks                     (choice)
 ;;     modus-vivendi-theme-prompts                        (choice)
-;;     modus-vivendi-theme-3d-modeline                    (boolean)
-;;     modus-vivendi-theme-subtle-diffs                   (boolean)
+;;     modus-vivendi-theme-mode-line                      (choice)
+;;     modus-vivendi-theme-diffs                          (choice)
 ;;     modus-vivendi-theme-faint-syntax                   (boolean)
 ;;     modus-vivendi-theme-intense-hl-line                (boolean)
 ;;     modus-vivendi-theme-intense-paren-match            (boolean)
@@ -83,6 +81,8 @@
 ;;     auctex and TeX
 ;;     auto-dim-other-buffers
 ;;     avy
+;;     awesome-tray
+;;     binder
 ;;     bm
 ;;     bongo
 ;;     boon
@@ -134,6 +134,7 @@
 ;;     ediff
 ;;     eglot
 ;;     el-search
+;;     eldoc
 ;;     eldoc-box
 ;;     elfeed
 ;;     elfeed-score
@@ -148,6 +149,7 @@
 ;;     eshell-fringe-status
 ;;     eshell-git-prompt
 ;;     eshell-prompt-extras (epe)
+;;     eshell-syntax-highlighting
 ;;     evil (evil-mode)
 ;;     evil-goggles
 ;;     evil-visual-mark-mode
@@ -239,6 +241,7 @@
 ;;     notmuch
 ;;     num3-mode
 ;;     nxml-mode
+;;     objed
 ;;     orderless
 ;;     org
 ;;     org-journal
@@ -567,13 +570,63 @@ association list)."
           (const :tag "Subtle grey block background" greyscale)
           (const :tag "Colour-coded background per programming language" rainbow)))
 
+(define-obsolete-variable-alias 'modus-vivendi-theme-3d-modeline
+  'modus-vivendi-theme-mode-line "`modus-vivendi-theme' 0.13.0")
+
 (defcustom modus-vivendi-theme-3d-modeline nil
   "Use a three-dimensional style for the active mode line."
   :type 'boolean)
 
+(defcustom modus-vivendi-theme-mode-line nil
+  "Adjust the overall style of the mode line.
+
+Nil is a two-dimensional rectangle with a border around it.  The
+active and the inactive modelines use different shades of
+greyscale values for the background and foreground.
+
+A `3d' value will apply a three-dimensional effect to the active
+modeline.  The inactive modelines remain two-dimensional and are
+toned down a bit, relative to the nil value.
+
+The `moody' option is meant to optimise the modeline for use with
+the library of the same name.  This practically means to remove
+the box effect and rely on underline and overline properties
+instead.  It also tones down the inactive modelines.  Despite its
+intended purpose, this option can also be used without the
+`moody' library."
+  :type '(choice
+          (const :tag "Two-dimensional box (default)" nil)
+          (const :tag "Three-dimensional style for the active mode line" 3d)
+          (const :tag "No box effects, which are optimal for use with the `moody' library" moody)))
+
+(define-obsolete-variable-alias 'modus-vivendi-theme-subtle-diffs
+  'modus-vivendi-theme-diffs "`modus-vivendi-theme' 0.13.0")
+
 (defcustom modus-vivendi-theme-subtle-diffs nil
   "Use fewer/dim backgrounds in `diff-mode', `ediff',`magit'."
   :type 'boolean)
+
+(defcustom modus-vivendi-theme-diffs nil
+  "Adjust the overall styles of diffs.
+
+Nil means to use fairly intense colour combinations for diffs.
+For example, you get a rich green background with a green
+foreground for added lines.  Word-wise or 'refined' diffs follow
+the same pattern but use different shades of those colours to
+remain distinct.
+
+A `desaturated' value follows the same principles as with the nil
+option, while it tones down all relevant colours.
+
+Option `fg-only' will remove all accented backgrounds, except
+from word-wise changes.  It instead uses colour-coded foreground
+values to differentiate between added/removed/changed lines.  If
+a background is necessary, such as with `ediff', then a subtle
+greyscale value is used."
+  :type '(choice
+          (const :tag "Intensely coloured backgrounds (default)" nil)
+          (const :tag "Slightly accented backgrounds with tinted text" desaturated)
+          (const :tag "No backgrounds, except for refined diffs" fg-only)))
 
 (define-obsolete-variable-alias 'modus-vivendi-theme-intense-standard-completions
   'modus-vivendi-theme-completions "`modus-vivendi-theme' 0.12.0")
@@ -623,7 +676,7 @@ effect than the former."
           (const :tag "Intense background and foreground for the prompt" intense)))
 
 (defcustom modus-vivendi-theme-intense-hl-line nil
-  "Use more prominent background for `hl-line-mode'."
+  "Use more prominent background for command `hl-line-mode'."
   :type 'boolean)
 
 (defcustom modus-vivendi-theme-intense-paren-match nil
@@ -739,37 +792,49 @@ set to `rainbow'."
     ('rainbow (list :background bgaccent :foreground fgaccent))
     (_ (list :background bg :foreground fg))))
 
-(defun modus-vivendi-theme-modeline-box (col3d col &optional btn int)
-  "Control the box properties of the mode line.
-COL3D is the border that is intended for the three-dimensional
-modeline.  COL applies to the two-dimensional modeline.  Optional
-BTN provides the 3d button style.  Optional INT defines a border
-width."
-  (let* ((style (if btn 'released-button nil))
-         (int (if int int 1)))
-    (if modus-vivendi-theme-3d-modeline
-        (list :line-width int :color col3d :style style)
-      (list :line-width 1 :color col :style nil))))
+(defun modus-vivendi-theme-mode-line-attrs
+    (fg bg fg-alt bg-alt border border-3d &optional alt-style border-width)
+  "Colour combinations for `modus-vivendi-theme-mode-line'.
 
-(defun modus-vivendi-theme-modeline-props (bg3d fg3d &optional bg fg)
-  "Control the background and foreground of the mode line.
-BG is the modeline's background.  FG is the modeline's
-foreground.  BG3D and FG3D apply to the three-dimensional
-modeline style."
-  (if modus-vivendi-theme-3d-modeline
-      (list :background bg3d :foreground fg3d)
-    (list :background bg :foreground fg)))
+FG and BG are the default colours.  FG-ALT and BG-ALT are meant
+to accommodate the options for a 3D modeline or a `moody'
+compliant one.  BORDER applies to all permutations of the
+modeline, except the three-dimensional effect, where BORDER-3D is
+used instead.
 
-(defun modus-vivendi-theme-diffs (subtle-bg subtle-fg intense-bg intense-fg)
-  "Colour combinations for `modus-vivendi-theme-subtle-diffs'.
+Optional ALT-STYLE applies an appropriate style to the mode
+line's box property.
 
-SUBTLE-BG should be similar or the same as the main background.
-SUBTLE-FG should be an appropriate accent value.  INTENSE-BG
-should be one of the dedicated backgrounds for diffs.  INTENSE-FG
-should be one of the dedicated foregrounds for diffs"
-  (if modus-vivendi-theme-subtle-diffs
-      (list :background subtle-bg :foreground subtle-fg)
-    (list :background intense-bg :foreground intense-fg)))
+Optional BORDER-WIDTH specifies an integer for the width of the
+rectangle that produces the box effect."
+  (pcase modus-vivendi-theme-mode-line
+    ('3d
+     `(:foreground ,fg-alt :background ,bg-alt
+                   :box (:line-width ,(or border-width 1)
+                                     :color ,border-3d
+                                     :style ,(and alt-style 'released-button))))
+    ('moody
+     `(:foreground ,fg-alt :background ,bg-alt :underline ,border :overline ,border))
+    (_
+     `(:foreground ,fg :background ,bg :box ,border))))
+
+(defun modus-vivendi-theme-diff (fg-only-bg fg-only-fg mainbg mainfg altbg altfg)
+  "Colour combinations for `modus-vivendi-theme-diffs'.
+
+FG-ONLY-BG should be similar or the same as the main background.
+FG-ONLY-FG should be a saturated accent value that can be
+combined with the former.
+
+MAINBG must be one of the dedicated backgrounds for diffs while
+MAINFG must be the same for the foreground.
+
+ALTBG needs to be a slightly accented background that is meant to
+be combined with ALTFG.  Both must be less intense than MAINBG
+and MAINFG respectively."
+  (pcase modus-vivendi-theme-diffs
+    ('fg-only (list :background fg-only-bg :foreground fg-only-fg))
+    ('desaturated (list :background altbg :foreground altfg))
+    (_ (list :background mainbg :foreground mainfg))))
 
 (defun modus-vivendi-theme-standard-completions (mainfg subtlebg intensebg intensefg)
   "Combinations for `modus-vivendi-theme-completions'.
@@ -932,6 +997,10 @@ AMOUNT is a customisation option."
       ;; `bg-hl-line' is between `bg-dim' and `bg-alt', so it should
       ;; work with all accents that cover those two, plus `bg-main'
       ;;
+      ;; `bg-hl-alt' and `bg-hl-alt-intense' should only be used when no
+      ;; other greyscale or fairly neutral background is available to
+      ;; properly draw attention to a given construct
+      ;;
       ;; `bg-header' is between `bg-active' and `bg-inactive', so it
       ;; can be combined with any of the "active" values, plus the
       ;; "special" and base foreground colours
@@ -962,6 +1031,8 @@ AMOUNT is a customisation option."
       ;;
       ;; all pairs are combinable with themselves
       ("bg-hl-line" . "#151823")
+      ("bg-hl-alt" . "#181732")
+      ("bg-hl-alt-intense" . "#282e46")
       ("bg-paren-match" . "#5f362f")
       ("bg-paren-match-intense" . "#255650")
       ("bg-region" . "#3c3c3c")
@@ -1312,6 +1383,24 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(aw-leading-char-face ((,class :inherit bold :height 1.5 :background ,bg-main :foreground ,red-intense)))
    `(aw-minibuffer-leading-char-face ((,class :foreground ,magenta-active)))
    `(aw-mode-line-face ((,class :inherit bold)))
+;;;;; awesome-tray
+   `(awesome-tray-module-awesome-tab-face ((,class :inherit bold :foreground ,red-alt-other)))
+   `(awesome-tray-module-battery-face ((,class :inherit bold :foreground ,cyan-alt-other)))
+   `(awesome-tray-module-buffer-name-face ((,class :inherit bold :foreground ,yellow-alt-other)))
+   `(awesome-tray-module-circe-face ((,class :inherit bold :foreground ,blue-alt)))
+   `(awesome-tray-module-date-face ((,class :inherit bold :foreground ,fg-dim)))
+   `(awesome-tray-module-evil-face ((,class :inherit bold :foreground ,green-alt)))
+   `(awesome-tray-module-git-face ((,class :inherit bold :foreground ,magenta)))
+   `(awesome-tray-module-last-command-face ((,class :inherit bold :foreground ,blue-alt-other)))
+   `(awesome-tray-module-location-face ((,class :inherit bold :foreground ,yellow)))
+   `(awesome-tray-module-mode-name-face ((,class :inherit bold :foreground ,green)))
+   `(awesome-tray-module-parent-dir-face ((,class :inherit bold :foreground ,cyan)))
+   `(awesome-tray-module-rvm-face ((,class :inherit bold :foreground ,magenta-alt-other)))
+;;;;; binder
+   `(binder-sidebar-highlight ((,class :inherit modus-theme-subtle-cyan)))
+   `(binder-sidebar-marked ((,class :inherit modus-theme-mark-sel)))
+   `(binder-sidebar-missing ((,class :inherit modus-theme-subtle-red)))
+   `(binder-sidebar-tags ((,class :foreground ,cyan)))
 ;;;;; bm
    `(bm-face ((,class :inherit modus-theme-subtle-yellow
                       ,@(and (>= emacs-major-version 27) '(:extend t)))))
@@ -1625,36 +1714,43 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(diff-hl-insert ((,class :inherit modus-theme-fringe-green)))
    `(diff-hl-reverted-hunk-highlight ((,class :inherit (modus-theme-active-magenta bold))))
 ;;;;; diff-mode
-   `(diff-added ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-added ((,class ,@(modus-vivendi-theme-diff
                             bg-main green
-                            bg-diff-focus-added fg-diff-focus-added))))
-   `(diff-changed ((,class ,@(modus-vivendi-theme-diffs
+                            bg-diff-focus-added fg-diff-focus-added
+                            green-nuanced-bg fg-diff-added))))
+   `(diff-changed ((,class ,@(modus-vivendi-theme-diff
                               bg-main yellow
-                              bg-diff-focus-changed fg-diff-focus-changed))))
+                              bg-diff-focus-changed fg-diff-focus-changed
+                              yellow-nuanced-bg fg-diff-changed))))
    `(diff-context ((,class :foreground ,fg-unfocused)))
    `(diff-file-header ((,class :inherit bold :foreground ,blue)))
    `(diff-function ((,class :foreground ,fg-special-cold)))
    `(diff-header ((,class :foreground ,blue-nuanced)))
-   `(diff-hunk-header ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-hunk-header ((,class ,@(modus-vivendi-theme-diff
                                   bg-alt blue-alt
-                                  bg-diff-heading fg-diff-heading))))
+                                  bg-diff-heading fg-diff-heading
+                                  blue-nuanced-bg blue))))
    `(diff-index ((,class :inherit bold :foreground ,blue-alt)))
    `(diff-indicator-added ((,class :inherit diff-added)))
    `(diff-indicator-changed ((,class :inherit diff-changed)))
    `(diff-indicator-removed ((,class :inherit diff-removed)))
    `(diff-nonexistent ((,class :inherit (modus-theme-neutral bold))))
-   `(diff-refine-added ((,class ,@(modus-vivendi-theme-diffs
+   `(diff-refine-added ((,class ,@(modus-vivendi-theme-diff
                                    bg-diff-added fg-diff-added
-                                   bg-diff-refine-added fg-diff-refine-added))))
-   `(diff-refine-changed ((,class ,@(modus-vivendi-theme-diffs
+                                   bg-diff-refine-added fg-diff-refine-added
+                                   bg-diff-focus-added fg-diff-focus-added))))
+   `(diff-refine-changed ((,class ,@(modus-vivendi-theme-diff
                                      bg-diff-changed fg-diff-changed
-                                     bg-diff-refine-changed fg-diff-refine-changed))))
-   `(diff-refine-removed ((,class ,@(modus-vivendi-theme-diffs
+                                     bg-diff-refine-changed fg-diff-refine-changed
+                                     bg-diff-focus-changed fg-diff-focus-changed))))
+   `(diff-refine-removed ((,class ,@(modus-vivendi-theme-diff
                                      bg-diff-removed fg-diff-removed
-                                     bg-diff-refine-removed fg-diff-refine-removed))))
-   `(diff-removed ((,class ,@(modus-vivendi-theme-diffs
+                                     bg-diff-refine-removed fg-diff-refine-removed
+                                     bg-diff-focus-removed fg-diff-focus-removed))))
+   `(diff-removed ((,class ,@(modus-vivendi-theme-diff
                               bg-main red
-                              bg-diff-focus-removed fg-diff-focus-removed))))
+                              bg-diff-focus-removed fg-diff-focus-removed
+                              red-nuanced-bg fg-diff-removed))))
 ;;;;; dim-autoload
    `(dim-autoload-cookie-line ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
 ;;;;; dired
@@ -1783,18 +1879,22 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ebdb-role-defunct ((,class :foreground ,fg-alt)))
    `(eieio-custom-slot-tag-face ((,class :foreground ,red-alt)))
 ;;;;; ediff
-   `(ediff-current-diff-A ((,class ,@(modus-vivendi-theme-diffs
-                                      bg-alt red
-                                      bg-diff-removed fg-diff-removed))))
-   `(ediff-current-diff-Ancestor ((,class ,@(modus-vivendi-theme-diffs
-                                             bg-alt fg-special-cold
-                                             bg-special-cold fg-special-cold))))
-   `(ediff-current-diff-B ((,class ,@(modus-vivendi-theme-diffs
-                                      bg-alt green
-                                      bg-diff-added fg-diff-added))))
-   `(ediff-current-diff-C ((,class ,@(modus-vivendi-theme-diffs
-                                      bg-alt yellow
-                                      bg-diff-changed fg-diff-changed))))
+   `(ediff-current-diff-A ((,class ,@(modus-vivendi-theme-diff
+                                      bg-dim red
+                                      bg-diff-removed fg-diff-removed
+                                      red-nuanced-bg red-faint))))
+   `(ediff-current-diff-Ancestor ((,class ,@(modus-vivendi-theme-diff
+                                             bg-dim fg-special-cold
+                                             bg-special-cold fg-special-cold
+                                             blue-nuanced-bg blue))))
+   `(ediff-current-diff-B ((,class ,@(modus-vivendi-theme-diff
+                                      bg-dim green
+                                      bg-diff-added fg-diff-added
+                                      green-nuanced-bg green-faint))))
+   `(ediff-current-diff-C ((,class ,@(modus-vivendi-theme-diff
+                                      bg-dim yellow
+                                      bg-diff-changed fg-diff-changed
+                                      yellow-nuanced-bg yellow-faint))))
    `(ediff-even-diff-A ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
    `(ediff-even-diff-Ancestor ((,class :background ,bg-diff-neutral-2 :foreground ,fg-diff-neutral-1)))
    `(ediff-even-diff-B ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
@@ -1814,6 +1914,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(el-search-match ((,class :inherit modus-theme-intense-green)))
    `(el-search-other-match ((,class :inherit modus-theme-special-mild)))
    `(el-search-occur-match ((,class :inherit modus-theme-special-calm)))
+;;;;; eldoc
+   `(eldoc-highlight-function-argument ((,class :inherit bold :foreground ,blue-alt-other)))
 ;;;;; eldoc-box
    `(eldoc-box-body ((,class :background ,bg-alt :foreground ,fg-main)))
    `(eldoc-box-border ((,class :background ,fg-alt)))
@@ -1941,6 +2043,15 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(epe-remote-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
    `(epe-status-face ((,class :foreground ,magenta-alt-other)))
    `(epe-venv-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
+;;;;; eshell-syntax-highlighting
+   `(eshell-syntax-highlighting-alias-face ((,class :foreground ,cyan)))
+   `(eshell-syntax-highlighting-comment-face ((,class :foreground ,fg-alt)))
+   `(eshell-syntax-highlighting-directory-face ((,class :foreground ,blue)))
+   `(eshell-syntax-highlighting-envvar-face ((,class :foreground ,magenta-alt)))
+   `(eshell-syntax-highlighting-invalid-face ((,class :foreground ,red)))
+   `(eshell-syntax-highlighting-lisp-function-face ((,class :foreground ,magenta)))
+   `(eshell-syntax-highlighting-shell-command-face ((,class :foreground ,cyan-alt-other)))
+   `(eshell-syntax-highlighting-string-face ((,class :foreground ,blue-alt)))
 ;;;;; evil-mode
    `(evil-ex-commands ((,class :foreground ,magenta-alt-other)))
    `(evil-ex-info ((,class :foreground ,cyan-alt-other)))
@@ -2691,10 +2802,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(kaocha-runner-warning-face ((,class :foreground ,yellow)))
 ;;;;; keycast
    `(keycast-command ((,class :inherit bold :foreground ,blue-active)))
-   `(keycast-key ((,class :box ,(modus-vivendi-theme-modeline-box blue-alt blue-active t -3)
-                          ,@(modus-vivendi-theme-modeline-props
-                             blue-active bg-main
-                             blue-active bg-active))))
+   `(keycast-key ((,class ,@(modus-vivendi-theme-mode-line-attrs
+                             bg-main blue-active
+                             bg-main blue-active
+                             blue-active blue-intense
+                             'alt-style -3))))
 ;;;;; line numbers (display-line-numbers-mode and global variant)
    `(line-number ((,class :background ,bg-dim :foreground ,fg-alt)))
    `(line-number-current-line ((,class :inherit bold :background ,bg-active :foreground ,fg-active)))
@@ -2759,22 +2871,27 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-branch-upstream ((,class :slant italic)))
    `(magit-cherry-equivalent ((,class :background ,bg-main :foreground ,magenta-intense)))
    `(magit-cherry-unmatched ((,class :background ,bg-main :foreground ,cyan-intense)))
-   `(magit-diff-added ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-added ((,class ,@(modus-vivendi-theme-diff
                                   bg-main green
-                                  bg-diff-added fg-diff-added))))
-   `(magit-diff-added-highlight ((,class ,@(modus-vivendi-theme-diffs
+                                  bg-diff-added fg-diff-added
+                                  green-nuanced-bg fg-diff-added))))
+   `(magit-diff-added-highlight ((,class ,@(modus-vivendi-theme-diff
                                             bg-dim green
-                                            bg-diff-focus-added fg-diff-focus-added))))
-   `(magit-diff-base ((,class ,@(modus-vivendi-theme-diffs
+                                            bg-diff-focus-added fg-diff-focus-added
+                                            bg-diff-added fg-diff-added))))
+   `(magit-diff-base ((,class ,@(modus-vivendi-theme-diff
                                  bg-main yellow
-                                 bg-diff-changed fg-diff-changed))))
-   `(magit-diff-base-highlight ((,class ,@(modus-vivendi-theme-diffs
+                                 bg-diff-changed fg-diff-changed
+                                 yellow-nuanced-bg fg-diff-changed))))
+   `(magit-diff-base-highlight ((,class ,@(modus-vivendi-theme-diff
                                            bg-dim yellow
-                                           bg-diff-focus-changed fg-diff-focus-changed))))
+                                           bg-diff-focus-changed fg-diff-focus-changed
+                                           bg-diff-changed fg-diff-changed))))
    `(magit-diff-context ((,class :foreground ,fg-unfocused)))
-   `(magit-diff-context-highlight ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-context-highlight ((,class ,@(modus-vivendi-theme-diff
                                               bg-dim fg-dim
-                                              bg-inactive fg-inactive))))
+                                              bg-inactive fg-inactive
+                                              bg-dim fg-alt))))
    `(magit-diff-file-heading ((,class :inherit bold :foreground ,fg-special-cold)))
    `(magit-diff-file-heading-highlight ((,class :inherit (modus-theme-special-cold bold))))
    `(magit-diff-file-heading-selection ((,class :background ,bg-alt :foreground ,cyan)))
@@ -2784,12 +2901,14 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-diff-hunk-region ((,class :inherit bold)))
    `(magit-diff-lines-boundary ((,class :background ,fg-main)))
    `(magit-diff-lines-heading ((,class :inherit modus-theme-refine-magenta)))
-   `(magit-diff-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(magit-diff-removed ((,class ,@(modus-vivendi-theme-diff
                                     bg-main red
-                                    bg-diff-removed fg-diff-removed))))
-   `(magit-diff-removed-highlight ((,class ,@(modus-vivendi-theme-diffs
+                                    bg-diff-removed fg-diff-removed
+                                    red-nuanced-bg fg-diff-removed))))
+   `(magit-diff-removed-highlight ((,class ,@(modus-vivendi-theme-diff
                                               bg-dim red
-                                              bg-diff-focus-removed fg-diff-focus-removed))))
+                                              bg-diff-focus-removed fg-diff-focus-removed
+                                              bg-diff-removed fg-diff-removed))))
    `(magit-diffstat-added ((,class :foreground ,green)))
    `(magit-diffstat-removed ((,class :foreground ,red)))
    `(magit-dimmed ((,class :foreground ,fg-unfocused)))
@@ -2952,17 +3071,17 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(minimap-active-region-background ((,class :background ,bg-active)))
    `(minimap-current-line-face ((,class :background ,cyan-intense-bg :foreground ,fg-main)))
 ;;;;; modeline
-   `(mode-line ((,class :box ,(modus-vivendi-theme-modeline-box bg-active fg-alt t)
-                        ,@(modus-vivendi-theme-modeline-props
-                           bg-active fg-dim
-                           bg-active fg-active))))
+   `(mode-line ((,class ,@(modus-vivendi-theme-mode-line-attrs
+                           fg-active bg-active fg-dim bg-active
+                           fg-alt bg-active 'alt-style)
+                        :distant-foreground ,bg-main)))
    `(mode-line-buffer-id ((,class :inherit bold)))
    `(mode-line-emphasis ((,class :inherit bold :foreground ,blue-active)))
    `(mode-line-highlight ((,class :inherit modus-theme-active-blue :box (:line-width -1 :style pressed-button))))
-   `(mode-line-inactive ((,class :box ,(modus-vivendi-theme-modeline-box bg-active bg-region)
-                                 ,@(modus-vivendi-theme-modeline-props
-                                    bg-dim fg-inactive
-                                    bg-inactive fg-inactive))))
+   `(mode-line-inactive ((,class ,@(modus-vivendi-theme-mode-line-attrs
+                                    fg-inactive bg-inactive fg-alt bg-dim
+                                    bg-region bg-active)
+                                 :distant-foreground ,bg-alt)))
 ;;;;; mood-line
    `(mood-line-modified ((,class :foreground ,magenta-active)))
    `(mood-line-status-error ((,class :inherit bold :foreground ,red-active)))
@@ -3000,7 +3119,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(mu4e-moved-face ((,class :foreground ,yellow :slant ,modus-theme-slant)))
    `(mu4e-ok-face ((,class :inherit bold :foreground ,green)))
    `(mu4e-region-code ((,class :inherit modus-theme-special-calm)))
-   `(mu4e-replied-face ((,class :foreground ,cyan-active)))
+   `(mu4e-replied-face ((,class :foreground ,blue-faint)))
    `(mu4e-special-header-value-face ((,class :inherit bold :foreground ,blue-alt-other)))
    `(mu4e-system-face ((,class :foreground ,fg-mark-del :slant ,modus-theme-slant)))
    `(mu4e-title-face ((,class :foreground ,fg-main)))
@@ -3131,6 +3250,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(nxml-ref ((,class ,@(modus-vivendi-theme-syntax-foreground
                           green-alt-other green-alt-other-faint)
                        ,@(modus-vivendi-theme-bold-weight))))
+;;;;; objed
+   `(objed-hl ((,class :background ,(if modus-vivendi-theme-intense-hl-line
+                                        bg-hl-alt-intense bg-hl-alt))))
+   `(objed-mark ((,class :background ,bg-active)))
+   `(objed-mode-line ((,class :foreground ,cyan-active)))
 ;;;;; orderless
    `(orderless-match-face-0 ((,class :inherit bold
                                      ,@(modus-vivendi-theme-standard-completions
@@ -3204,7 +3328,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-done ((,class ,@(modus-vivendi-theme-org-todo-block green-nuanced-bg green-nuanced green))))
    `(org-drawer ((,class :foreground ,cyan-alt)))
    `(org-ellipsis ((,class :foreground nil))) ; inherits from the heading's colour
-   `(org-footnote ((,class :foreground ,blue-alt :underline t)))
+   `(org-footnote ((,class :foreground ,blue-alt :underline ,blue-alt)))
    `(org-formula ((,class :inherit fixed-pitch :foreground ,red-alt)))
    `(org-habit-alert-face ((,class :inherit modus-theme-intense-yellow)))
    `(org-habit-alert-future-face ((,class :inherit modus-theme-refine-yellow)))
@@ -3630,23 +3754,28 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(sp-wrap-overlay-opening-pair ((,class :inherit sp-pair-overlay-face)))
    `(sp-wrap-tag-overlay-face ((,class :inherit sp-pair-overlay-face)))
 ;;;;; smerge
-   `(smerge-base ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-base ((,class ,@(modus-vivendi-theme-diff
                              bg-main yellow
-                             bg-diff-focus-changed fg-diff-focus-changed))))
-   `(smerge-lower ((,class ,@(modus-vivendi-theme-diffs
+                             bg-diff-focus-changed fg-diff-focus-changed
+                             yellow-nuanced-bg fg-diff-changed))))
+   `(smerge-lower ((,class ,@(modus-vivendi-theme-diff
                               bg-main green
-                              bg-diff-focus-added fg-diff-focus-added))))
+                              bg-diff-focus-added fg-diff-focus-added
+                              green-nuanced-bg fg-diff-added))))
    `(smerge-markers ((,class :background ,bg-diff-neutral-2 :foreground ,fg-diff-neutral-2)))
-   `(smerge-refined-added ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-refined-added ((,class ,@(modus-vivendi-theme-diff
                                       bg-diff-added fg-diff-added
-                                      bg-diff-refine-added fg-diff-refine-added))))
+                                      bg-diff-refine-added fg-diff-refine-added
+                                      green-refine-bg green-refine-fg))))
    `(smerge-refined-changed ((,class)))
-   `(smerge-refined-removed ((,class ,@(modus-vivendi-theme-diffs
+   `(smerge-refined-removed ((,class ,@(modus-vivendi-theme-diff
                                         bg-diff-removed fg-diff-removed
-                                        bg-diff-refine-removed fg-diff-refine-removed))))
-   `(smerge-upper ((,class ,@(modus-vivendi-theme-diffs
+                                        bg-diff-refine-removed fg-diff-refine-removed
+                                        red-refine-bg red-refine-fg))))
+   `(smerge-upper ((,class ,@(modus-vivendi-theme-diff
                               bg-main red
-                              bg-diff-focus-removed fg-diff-focus-removed))))
+                              bg-diff-focus-removed fg-diff-focus-removed
+                              red-nuanced-bg fg-diff-removed))))
 ;;;;; spaceline
    `(spaceline-evil-emacs ((,class :inherit modus-theme-active-magenta)))
    `(spaceline-evil-insert ((,class :inherit modus-theme-active-green)))
@@ -3889,22 +4018,27 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(vc-state-base ((,class :foreground ,fg-active)))
    `(vc-up-to-date-state ((,class :foreground ,fg-special-cold)))
 ;;;;; vdiff
-   `(vdiff-addition-face ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-addition-face ((,class ,@(modus-vivendi-theme-diff
                                      bg-main green
-                                     bg-diff-focus-added fg-diff-focus-added))))
-   `(vdiff-change-face ((,class ,@(modus-vivendi-theme-diffs
+                                     bg-diff-focus-added fg-diff-focus-added
+                                     green-nuanced-bg fg-diff-added))))
+   `(vdiff-change-face ((,class ,@(modus-vivendi-theme-diff
                                    bg-main yellow
-                                   bg-diff-focus-changed fg-diff-focus-changed))))
+                                   bg-diff-focus-changed fg-diff-focus-changed
+                                   yellow-nuanced-bg fg-diff-changed))))
    `(vdiff-closed-fold-face ((,class :background ,bg-diff-neutral-1 :foreground ,fg-diff-neutral-1)))
-   `(vdiff-refine-added ((,class ,@(modus-vivendi-theme-diffs
+   `(vdiff-refine-added ((,class ,@(modus-vivendi-theme-diff
                                     bg-diff-added fg-diff-added
-                                    bg-diff-refine-added fg-diff-refine-added))))
-   `(vdiff-refine-changed ((,class ,@(modus-vivendi-theme-diffs
+                                    bg-diff-refine-added fg-diff-refine-added
+                                    green-refine-bg green-refine-fg))))
+   `(vdiff-refine-changed ((,class ,@(modus-vivendi-theme-diff
                                       bg-diff-changed fg-diff-changed
-                                      bg-diff-refine-changed fg-diff-refine-changed))))
-   `(vdiff-subtraction-face ((,class ,@(modus-vivendi-theme-diffs
+                                      bg-diff-refine-changed fg-diff-refine-changed
+                                      yellow-refine-bg yellow-refine-fg))))
+   `(vdiff-subtraction-face ((,class ,@(modus-vivendi-theme-diff
                                         bg-main red
-                                        bg-diff-focus-removed fg-diff-focus-removed))))
+                                        bg-diff-focus-removed fg-diff-focus-removed
+                                        red-nuanced-bg fg-diff-removed))))
    `(vdiff-target-face ((,class :inherit modus-theme-intense-blue)))
 ;;;;; vimish-fold
    `(vimish-fold-fringe ((,class :foreground ,cyan-active)))
@@ -4168,6 +4302,9 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;; ansi-colors
    `(ansi-color-faces-vector [default bold shadow italic underline success warning error])
    `(ansi-color-names-vector [,bg-main ,red ,green ,yellow ,blue ,magenta ,cyan ,fg-main])
+;;;; awesome-tray
+   `(awesome-tray-mode-line-active-color ,blue)
+   `(awesome-tray-mode-line-inactive-color ,bg-active)
 ;;;; flymake fringe indicators
    `(flymake-error-bitmap '(flymake-double-exclamation-mark modus-theme-fringe-red))
    `(flymake-warning-bitmap '(exclamation-mark modus-theme-fringe-yellow))

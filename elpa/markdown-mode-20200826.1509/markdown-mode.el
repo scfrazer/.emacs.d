@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20200826.42
-;; Package-Commit: b7b4eb3e391455545f12d6fe52011127dc0c2541
+;; Package-Version: 20200826.1509
+;; Package-Commit: bdaf248f96014400a581028965e04f5d81f9be66
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -2820,7 +2820,9 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
                                    markdown-list-face
                                    markdown-hr-face
                                    markdown-math-face))
-                (and is-gfm (not (markdown--gfm-markup-underscore-p begin close-end))))
+                (and is-gfm
+                     (or (char-equal (char-after begin) (char-after (1+ begin))) ;; check bold case
+                         (not (markdown--gfm-markup-underscore-p begin close-end)))))
             (progn (goto-char (min (1+ begin) last))
                    (when (< (point) last)
                      (markdown-match-italic last)))

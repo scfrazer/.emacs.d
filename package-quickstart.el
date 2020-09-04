@@ -362,10 +362,10 @@ Setup wgrep preparation.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20200825.730/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20200826.1954/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20200825.730/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20200826.1954/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -907,10 +907,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200703.1250/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200703.1250/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721/rg-autoloads.el") (car load-path))))
 
 
 
@@ -936,9 +936,7 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 \(fn &optional PREFIX)" t nil)
 
 (autoload 'rg-use-old-defaults "rg" "\
-Restore default settings pre version 2.0.0.
-
-\(fn)" nil nil)
+Restore default settings pre version 2.0.0." nil nil)
 
 (autoload 'rg-define-search "rg" "\
 Define an rg search functions named NAME.
@@ -1015,7 +1013,7 @@ files with the same name pattern still will be searched.
  (autoload 'rg-literal "rg.el" "" t)
  (autoload 'rg "rg.el" "" t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("rg-" "kill-rg")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("kill-rg" "rg-")))
 
 
 
@@ -1028,9 +1026,7 @@ files with the same name pattern still will be searched.
 
 
 (autoload 'rg-list-searches "rg-ibuffer" "\
-List all `rg-mode' buffers in `ibuffer'.
-
-\(fn)" t nil)
+List all `rg-mode' buffers in `ibuffer'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-ibuffer" '("rg-")))
 
@@ -1051,9 +1047,7 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 
 
 (autoload 'wgrep-rg-setup "wgrep-rg" "\
-Setup wgrep rg support.
-
-\(fn)" nil nil)
+Setup wgrep rg support." nil nil)
 
 (add-hook 'rg-mode-hook 'wgrep-rg-setup)
 
@@ -1601,10 +1595,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200826.335/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200826.335/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1613,17 +1607,21 @@ A mode for creating a rectangular region to edit
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-vivendi-theme" '("modus-vivendi")))
 
 
+
+
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200826.335/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200826.335/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-operandi-theme" '("modus-operandi")))
+
+
 
 
 )
@@ -1638,10 +1636,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.42/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.1509/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.42/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.1509/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3325,7 +3323,7 @@ Toggle Auto Highlight Symbol Mode
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/rg-20200703.1250" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540" "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:
