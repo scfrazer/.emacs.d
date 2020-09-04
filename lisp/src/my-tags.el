@@ -5,9 +5,8 @@
   (interactive)
   (let ((start (save-excursion (skip-syntax-backward "w_") (point)))
         (end (point)))
-    (or tags-table-list
-        tags-file-name
-        (visit-tags-table-buffer))
+    (unless tags-file-name
+      (visit-tags-table (funcall default-tags-table-function)))
     (when-let (result
                (completing-read "Tag: "
                                 (my-tags-completion-table (buffer-substring-no-properties start end))
@@ -24,7 +23,7 @@
             (format "Making tags completion table for %s..." buffer-file-name)
             (point-min) (point-max)))
           (case-fold-search nil)
-          (re (concat "\177\\(" (regexp-quote input) "[^\001]+\\)\001")))
+          (re (concat "\177\\(" (regexp-quote input) "[^\001]*\\)\001")))
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward re nil t)

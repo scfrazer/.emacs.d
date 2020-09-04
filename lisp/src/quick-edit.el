@@ -206,8 +206,10 @@ depending on the major mode (see `qe-block-indented-modes')."
       (backward-char)
       (if (equal (char-after) char)
           (setq found t)
-        (forward-sexp)))
-    (unless found
+        (if (eq (char-syntax (char-after)) ?\))
+            (setq found 'error)
+          (forward-sexp))))
+    (unless (eq found t)
       (goto-char start)
       (error "Could not find char at same level"))))
 
@@ -651,7 +653,7 @@ comma/semicolon/spaces also."
               (backward-up-list)
               (setq limit (point)))
             (when (looking-back "[,;{([][[:space:]\n]*" limit)
-              (delete-region (1+ (match-beginning 0)) (point)))
+              (delete-region (match-beginning 0) (point)))
             (setq start (point))
             (while (and (not (eobp))
                         (not (looking-at "[[:space:]\n]*[])},;]")))
