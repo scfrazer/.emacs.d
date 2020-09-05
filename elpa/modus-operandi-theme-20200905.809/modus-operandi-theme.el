@@ -271,6 +271,7 @@
 ;;     powerline-evil
 ;;     proced
 ;;     prodigy
+;;     racket-mode
 ;;     rainbow-blocks
 ;;     rainbow-identifiers
 ;;     rainbow-delimiters
@@ -793,7 +794,7 @@ set to `rainbow'."
     (_ (list :background bg :foreground fg))))
 
 (defun modus-operandi-theme-mode-line-attrs
-    (fg bg fg-alt bg-alt border border-3d &optional alt-style border-width)
+    (fg bg fg-alt bg-alt border border-3d &optional alt-style border-width fg-distant)
   "Colour combinations for `modus-operandi-theme-mode-line'.
 
 FG and BG are the default colours.  FG-ALT and BG-ALT are meant
@@ -806,7 +807,11 @@ Optional ALT-STYLE applies an appropriate style to the mode
 line's box property.
 
 Optional BORDER-WIDTH specifies an integer for the width of the
-rectangle that produces the box effect."
+rectangle that produces the box effect.
+
+Optional FG-DISTANT should be close to the main background
+values.  It is intended to be used as a distant-foreground
+property."
   (pcase modus-operandi-theme-mode-line
     ('3d
      `(:foreground ,fg-alt :background ,bg-alt
@@ -814,7 +819,8 @@ rectangle that produces the box effect."
                                      :color ,border-3d
                                      :style ,(and alt-style 'released-button))))
     ('moody
-     `(:foreground ,fg-alt :background ,bg-alt :underline ,border :overline ,border))
+     `(:foreground ,fg-alt :background ,bg-alt :underline ,border :overline ,border
+                   :distant-foreground ,fg-distant))
     (_
      `(:foreground ,fg :background ,bg :box ,border))))
 
@@ -2647,7 +2653,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(info-index-match ((,class :inherit match)))
    `(info-menu-header ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
                                ,@(modus-operandi-theme-scale modus-operandi-theme-scale-2))))
-   `(info-menu-star ((,class :foreground ,fg-main)))
+   `(info-menu-star ((,class :foreground ,red)))
    `(info-node ((,class :inherit bold)))
    `(info-title-1 ((,class :inherit (bold ,modus-theme-variable-pitch) :foreground ,fg-main
                            ,@(modus-operandi-theme-scale modus-operandi-theme-scale-4))))
@@ -3003,7 +3009,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(markdown-reference-face ((,class :inherit markdown-markup-face)))
    `(markdown-strike-through-face ((,class :strike-through t)))
    `(markdown-table-face ((,class :inherit fixed-pitch :foreground ,fg-special-cold)))
-   `(markdown-url-face ((,class :foreground ,blue)))
+   `(markdown-url-face ((,class :foreground ,blue-alt)))
 ;;;;; markup-faces (`adoc-mode')
    `(markup-anchor-face ((,class :foreground ,fg-inactive)))
    `(markup-attribute-face ((,class :foreground ,fg-inactive :slant italic)))
@@ -3073,15 +3079,13 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; modeline
    `(mode-line ((,class ,@(modus-operandi-theme-mode-line-attrs
                            fg-active bg-active fg-dim bg-active
-                           fg-alt bg-active 'alt-style)
-                        :distant-foreground ,bg-main)))
+                           fg-alt bg-active 'alt-style nil bg-main))))
    `(mode-line-buffer-id ((,class :inherit bold)))
    `(mode-line-emphasis ((,class :inherit bold :foreground ,blue-active)))
    `(mode-line-highlight ((,class :inherit modus-theme-active-blue :box (:line-width -1 :style pressed-button))))
    `(mode-line-inactive ((,class ,@(modus-operandi-theme-mode-line-attrs
                                     fg-inactive bg-inactive fg-alt bg-dim
-                                    bg-region bg-active)
-                                 :distant-foreground ,bg-alt)))
+                                    bg-region bg-active))))
 ;;;;; mood-line
    `(mood-line-modified ((,class :foreground ,magenta-active)))
    `(mood-line-status-error ((,class :inherit bold :foreground ,red-active)))
@@ -3549,6 +3553,23 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(prodigy-green-face ((,class :foreground ,green)))
    `(prodigy-red-face ((,class :foreground ,red)))
    `(prodigy-yellow-face ((,class :foreground ,yellow)))
+;;;;; racket-mode
+   `(racket-debug-break-face ((,class :inherit modus-theme-intense-red)))
+   `(racket-debug-locals-face ((,class :box (:line-width -1 :color nil)
+                                       :foreground ,green-alt-other)))
+   `(racket-debug-result-face ((,class :inherit bold :box (:line-width -1 :color nil)
+                                       :foreground ,green)))
+   `(racket-here-string-face ((,class :foreground ,blue-alt)))
+   `(racket-keyword-argument-face ((,class :foreground ,red-alt)))
+   `(racket-logger-config-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
+   `(racket-logger-debug-face ((,class :foreground ,blue-alt-other)))
+   `(racket-logger-info-face ((,class :foreground ,fg-lang-note)))
+   `(racket-logger-topic-face ((,class :foreground ,magenta :slant ,modus-theme-slant)))
+   `(racket-selfeval-face ((,class :foreground ,green-alt)))
+   `(racket-xp-error-face
+     ((,(append '((supports :underline (:style wave))) class)
+       :underline (:color ,fg-lang-error :style wave))
+      (,class :foreground ,fg-lang-error :underline t)))
 ;;;;; rainbow-blocks
    `(rainbow-blocks-depth-1-face ((,class :foreground ,magenta-alt-other)))
    `(rainbow-blocks-depth-2-face ((,class :foreground ,blue)))

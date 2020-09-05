@@ -1595,10 +1595,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1610,10 +1610,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1636,10 +1636,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.1509/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200905.337/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200826.1509/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200905.337/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3323,7 +3323,7 @@ Toggle Auto Highlight Symbol Mode
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200904.540" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200904.540" "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809" "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -879,10 +879,15 @@ In addition to toggles for enabling scaled headings, users can also
 specify a number of their own.
 
    • If it is a floating point, say, ‘1.5’, it is interpreted as a
-     multiple of the base font size.
+     multiple of the base font size.  This is the recommended method.
+
    • If it is an integer, it is read as an absolute font height.  The
      number is basically the point size multiplied by a hundred.  So if
-     you want it to be ‘18pt’ you must pass ‘180’.
+     you want it to be ‘18pt’ you must pass ‘180’.  Please understand
+     that setting an absolute value is discouraged, as it will break the
+     layout when you try to change font sizes with the built-in
+     ‘text-scale-adjust’ command (see *note Font configurations: Font
+     configs (DIY).).
 
    Below are the variables in their default values, using the floating
 point paradigm.  The numbers are very conservative, but you are free to
@@ -1050,7 +1055,7 @@ Currently this applies to ‘org-mode’ and ‘markdown-mode’.
 
    In practice it means that the user can safely opt for a more
 prose-friendly proportionately spaced typeface as their default, while
-letting spacing-sensitive elements like tables and inline code to always
+letting spacing-sensitive elements like tables and inline code always
 use a monospaced font, by inheriting from the ‘fixed-pitch’ face.
 
    Users can try the built-in ‘M-x variable-pitch-mode’ to see the
@@ -1059,7 +1064,7 @@ effect in action.
    To make everything use your desired font families, you need to
 configure the ‘variable-pitch’ (proportional spacing) and ‘fixed-pitch’
 (monospaced) faces respectively.  It may also be convenient to set your
-main typeface by configuring the ‘default’ face in the same way.
+main typeface by configuring the ‘default’ face the same way.
 
    Put something like this in your initialisation file (make sure to
 read the documentation of ‘set-face-attribute’, with ‘M-x
@@ -1067,33 +1072,39 @@ describe-function’):
 
      ;; Main typeface
      (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 110)
+
      ;; Proportionately spaced typeface
-     (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 110)
+     (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 1.0)
+
      ;; Monospaced typeface
-     (set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :height 110)
+     (set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :height 1.0)
 
-   The value of the ‘:height’ attribute essentially is the point size ×
-100.  So if you want to use a font at point size ‘11’, you set the
-height at ‘110’.  Values do not need to be rounded to multiples of ten:
-the likes of ‘115’ are perfectly valid.
+   Note the differences in the ‘:height’ property.  The ‘default’ face
+must specify an absolute value, which is the point size × 10.  So if you
+want to use a font at point size ‘11’, you set the height at ‘110’.(1)
+Whereas every other face must have a value that is relative to the
+default, represented as a floating point (if you use an integer, say,
+‘15’ then that means an absolute height).  This is of paramount
+importantance: it ensures that all fonts can scale gracefully when using
+something like the ‘text-scale-adjust’ command which only operates on
+the base font size (i.e.  the ‘default’ face’s absolute height).
 
-   An alternative syntax, which the author of this documents prefers, is
-to pass all typeface parameters directly to a ‘font’ property.(1)  Note
-that here we use a standard point size:
+   An alternative syntax for the ‘default’ face, which the author of
+this documents prefers, is to pass all typeface parameters directly to a
+‘font’ property.(2)  Note that here we use a standard point size:
 
      (set-face-attribute 'default nil :font "DejaVu Sans Mono-11")
-     (set-face-attribute 'variable-pitch nil :font "DejaVu Serif-11")
-     (set-face-attribute 'fixed-pitch nil :font "DejaVu Sans Mono-11")
 
-   For a more succinct setup, you can configure the same value for
-multiple faces like this:
-
-     (dolist (face '(default fixed-pitch))
-       (set-face-attribute face nil :font "DejaVu Sans Mono-11"))
+   Again, remember to only ever specify an absolute height for the
+‘default’.
 
    ---------- Footnotes ----------
 
-   (1) Has the benefit of accepting ‘fontconfig’ parameters (GNU/Linux),
+   (1) ‘:height’ values do not need to be rounded to multiples of ten:
+the likes of ‘115’ are perfectly valid—some typefaces will change to
+account for those finer increments.
+
+   (2) Has the benefit of accepting ‘fontconfig’ parameters (GNU/Linux),
 such as ‘"DejaVu Sans Mono-11:hintstyle=hintslight:autohint=false"’.
 <https://www.freedesktop.org/software/fontconfig/fontconfig-user.html>
 
@@ -1136,19 +1147,26 @@ applied by the ‘org-todo’ face:
              ("STUDY" . '(font-lock-variable-name-face org-todo))
              ("WRITE" . '(font-lock-type-face org-todo))))
 
-   This will refashion the keywords you specify, while letting the
-others use their original styles (which are defined in the ‘org-todo’
-face).
+   This will refashion the keywords you specify, while letting the other
+items in ‘org-todo-keywords’ use their original styles (which are
+defined in the ‘org-todo’ and ‘org-done’ faces).
+
+   If you want back the defaults, try specifying just the ‘org-todo’
+face (or use ‘org-done’ if the meaning of the keywords you use demands
+as much):
+
+     (setq org-todo-keyword-faces
+           '(("MEET" . org-todo)
+             ("STUDY" . org-todo)
+             ("WRITE" . org-todo)))
 
    When you inherit from multiple faces, you need to quote the list as
-shown above.  The order is important: the last item is applied over the
-previous ones.
+shown further above.  The order is important: the last item is applied
+over the previous ones.  If you do not want to blend multiple faces, you
+do not need a quoted list.  A pattern of ‘keyword . face’ would suffice.
 
-   If you do not want to blend multiple faces, you do not need a quoted
-list.  A pattern of ‘keyword . face’ would suffice.
-
-   Consider both approaches in the configuration of the priority
-cookies:
+   Both approaches can be used simultaneously, as illustrated in this
+configuration of the priority cookies:
 
      (setq org-priority-faces
            '((?A . '(org-scheduled-today org-priority))
@@ -1395,6 +1413,7 @@ have lots of extensions, so the “full support” may not be 100% true…
    • powerline-evil
    • proced
    • prodigy
+   • racket-mode
    • rainbow-blocks
    • rainbow-identifiers
    • rainbow-delimiters
@@ -2271,29 +2290,30 @@ Node: Accented headings28666
 Node: Section headings29521
 Node: Scaled headings30706
 Node: Scaled heading sizes31325
-Node: Headings' font32998
-Node: Advanced customisation (do-it-yourself)33622
-Node: Tweak colours (DIY)34626
-Node: Font configs (DIY)38260
-Ref: Font configs (DIY)-Footnote-140692
-Node: Org user faces (DIY)40914
-Node: Face coverage43746
-Node: Supported packages44248
-Node: Covered indirectly50170
-Node: Will NOT be supported50522
-Node: Notes for individual packages51240
-Node: Note for powerline or spaceline51646
-Node: Note on shr colours52018
-Node: Note for Helm grep52431
-Node: Note on vc-annotate-background-mode53878
-Node: Contributing54732
-Node: Sources of the themes55151
-Node: Issues you can help with55913
-Node: Merge requests57100
-Node: Acknowledgements58182
-Node: Meta59639
-Node: External projects (ports)60692
-Node: GNU Free Documentation License61515
+Node: Headings' font33284
+Node: Advanced customisation (do-it-yourself)33908
+Node: Tweak colours (DIY)34912
+Node: Font configs (DIY)38546
+Ref: Font configs (DIY)-Footnote-141126
+Ref: Font configs (DIY)-Footnote-241313
+Node: Org user faces (DIY)41535
+Node: Face coverage44756
+Node: Supported packages45258
+Node: Covered indirectly51199
+Node: Will NOT be supported51551
+Node: Notes for individual packages52269
+Node: Note for powerline or spaceline52675
+Node: Note on shr colours53047
+Node: Note for Helm grep53460
+Node: Note on vc-annotate-background-mode54907
+Node: Contributing55761
+Node: Sources of the themes56180
+Node: Issues you can help with56942
+Node: Merge requests58129
+Node: Acknowledgements59211
+Node: Meta60668
+Node: External projects (ports)61721
+Node: GNU Free Documentation License62544
 
 End Tag Table
 

@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20200826.1509
-;; Package-Commit: bdaf248f96014400a581028965e04f5d81f9be66
+;; Package-Version: 20200905.337
+;; Package-Commit: 32d07fe9bee128555f3ecdb1330e787d41e3a4c9
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3717,6 +3717,28 @@ be used to populate the title attribute when converted to XHTML."
         "Reference [%s] was defined, press \\[markdown-do] to jump there")
        label))))
 
+(defcustom markdown-link-make-text-function nil
+  "Function that automatically generates a link text for a URL.
+
+If non-nil, this function will be called by
+`markdown--insert-link-or-image' and the result will be the
+default link text. The function should receive exactly one
+argument that corresponds to the link URL."
+  :group 'markdown
+  :type 'function
+  :package-version '(markdown-mode . "2.5"))
+
+(defcustom markdown-disable-tooltip-prompt nil
+  "Disable prompt for tooltip when inserting a link or image.
+
+If non-nil, `markdown-insert-link' and `markdown-insert-link'
+will not prompt the user to insert a tooltip text for the given
+link or image."
+  :group 'markdown
+  :type 'boolean
+  :safe 'booleanp
+  :package-version '(markdown-mode . "2.5"))
+
 (defun markdown--insert-link-or-image (image)
   "Interactively insert new or update an existing link or image.
 When IMAGE is non-nil, insert an image.  Otherwise, insert a link.
@@ -3754,6 +3776,8 @@ This is an internal function called by
                           (if ref
                               "Link text: "
                             "Link text (blank for plain URL): ")))
+           (text (or text (and markdown-link-make-text-function uri
+                               (funcall markdown-link-make-text-function uri))))
            (text (completing-read text-prompt defined-refs nil nil text))
            (text (if (= (length text) 0) nil text))
            (plainp (and uri (not text)))
@@ -3762,7 +3786,7 @@ This is an internal function called by
            (definedp (and ref (markdown-reference-definition ref)))
            (ref-url (unless (or uri definedp)
                       (completing-read "Reference URL: " used-uris)))
-           (title (unless (or plainp definedp)
+           (title (unless (or plainp definedp markdown-disable-tooltip-prompt)
                     (read-string "Title (tooltip text, optional): " title)))
            (title (if (= (length title) 0) nil title)))
       (when (and image implicitp)
@@ -3805,7 +3829,12 @@ it seems to be a URL, or link text value otherwise.
 If a given reference is not defined, this function will
 additionally prompt for the URL and optional title.  In this case,
 the reference definition is placed at the location determined by
-`markdown-reference-location'.
+`markdown-reference-location'.  In addition, it is possible to
+have the `markdown-link-make-text-function' function, if non-nil,
+define the default link text before prompting the user for it.
+
+If `markdown-disable-tooltip-prompt' is non-nil, the user will
+not be prompted to add or modify a tooltip text.
 
 Through updating the link, this function can be used to convert a
 link of one type (inline, reference, or plain) to another type by
