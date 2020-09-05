@@ -39,8 +39,8 @@
 (setq save-abbrevs nil)
 
 (require 'my-avy)
-(bind-keys* ("C-j"   . my-avy-goto)
-            ("C-M-j" . avy-goto-char-timer))
+(bind-keys* ("C-j"   . avy-goto-char-timer)
+            ("C-M-j" . avy-goto-line))
 
 (require 'my-bookmark)
 (my-bookmark-reload)

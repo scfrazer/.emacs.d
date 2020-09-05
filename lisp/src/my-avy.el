@@ -6,7 +6,7 @@
       avy-all-windows nil
       avy-case-fold-search nil
       avy-style 'at
-      avy-timeout-seconds 0.5)
+      avy-timeout-seconds 60)
 
 (defun my-avy-goto-line (&optional arg)
   "Jump to start of a line, or with prefix arg end of a line."

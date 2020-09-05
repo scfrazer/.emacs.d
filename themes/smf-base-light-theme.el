@@ -62,7 +62,7 @@
  `(outline-3                           ((t :foreground "cyan4" :bold t)))
  `(outline-4                           ((t :foreground ,(smf-color 130) :bold t)))
  `(p4o-merge-face                      ((t :background "lightyellow")))
- `(popup-tip-face                      ((t :background "lightsteelblue1" :foreground "black" :italic t)))
+ ;; `(popup-tip-face                      ((t :background "lightsteelblue1" :foreground "black" :italic t)))
  `(rg-literal-face                     ((t :foreground "lightblue")))
  `(rg-regexp-face                      ((t :foreground "yellow")))
  `(show-mark-face                      ((t :foreground "black" :background ,(smf-color 195))))
