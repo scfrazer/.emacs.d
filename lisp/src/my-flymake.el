@@ -7,6 +7,8 @@
               flymake-start-on-flymake-mode nil
               flymake-wrap-around nil)
 
+(setq-default popup-tip-max-width 160)
+
 (setq-default flymake-diagnostic-types-alist
   `((:error
      . ((flymake-category . flymake-error)
