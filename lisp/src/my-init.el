@@ -19,6 +19,7 @@
                          (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
 (advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
 (setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
+
 (defun my-buffer-substring--filter (beg end &optional delete)
   (let ((string (subst-char-in-string highlight-indent-guides-character ?  (buffer-substring beg end))))
     (when delete
@@ -75,12 +76,12 @@
 (setq-default filladapt-mode t)
 
 (require 'my-fzf)
-(bind-keys* ("C-x f" . my-fzf-project-file)
-            ;; ("C-x W" . my-fzf-any-project-file)
-            ("C-x F" . my-fzf-local-file)
-            ;; ("C-x F" . my-fzf-any-local-file)
-            ("C-x d" . my-fzf-any-project-directory)
-            ("C-x D" . my-fzf-any-local-directory))
+;; (bind-keys* ("C-x f" . my-fzf-project-file)
+;;             ;; ("C-x W" . my-fzf-any-project-file)
+;;             ("C-x F" . my-fzf-local-file)
+;;             ;; ("C-x F" . my-fzf-any-local-file)
+;;             ("C-x d" . my-fzf-any-project-directory)
+;;             ("C-x D" . my-fzf-any-local-directory))
 
 (require 'goto-chg)
 (bind-keys* ("C-M-@" . goto-last-change))
@@ -126,6 +127,8 @@
 (require 'my-occur)
 (bind-keys* ("M-s O" . my-multi-occur)
             ("M-s o" . my-occur))
+
+(require 'my-project)
 
 (require 'my-recentf)
 
@@ -1891,6 +1894,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x SPC"     . fixup-whitespace)
  ("C-x _"       . my-win-split-vertically-small)
  ("C-x e"       . my-call-last-kbd-macro)
+ ("C-x f"       . project-find-file)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
  ("C-x |"       . my-win-split-horizontally)
@@ -1920,15 +1924,6 @@ Prefix with C-u to resize the `next-window'."
 (bind-key* "C-c h" 'help-command)
 (bind-key* "C-c h a" 'apropos)
 (bind-key* "C-c h I" 'info-apropos)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Work setup
-
-(require 'project)
-(defun my-project-find (dir)
-  (when-let ((ws (getenv "WORKSPACE")))
-    (cons 'transient ws)))
-(add-to-list 'project-find-functions #'my-project-find)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom
