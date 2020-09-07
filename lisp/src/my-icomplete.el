@@ -24,6 +24,20 @@
 
 (advice-add #'icomplete--fido-mode-setup :after #'my-icomplete--fido-mode-setup)
 
+(defun my-icomplete-vertical-format-completions (reformatted)
+  "Customize completions format."
+  (save-match-data
+    (if (string-match "[[]Matched[]]" reformatted)
+        (progn
+          (add-face-text-property (match-beginning 0) (match-end 0) 'success nil reformatted)
+          (setq reformatted (concat " " reformatted)))
+      (when (string-match "[(]No matches[)]" reformatted)
+        (add-face-text-property (match-beginning 0) (match-end 0) 'error nil reformatted)
+        (setq reformatted (concat " " reformatted)))))
+  reformatted)
+
+(advice-add #'icomplete-vertical-format-completions :filter-return #'my-icomplete-vertical-format-completions)
+
 (icomplete-vertical-mode 1)
 (fido-mode 1)
 

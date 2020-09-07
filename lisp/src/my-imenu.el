@@ -52,15 +52,15 @@
   (imenu--cleanup)
   (setq imenu--index-alist nil)
   (imenu--make-index-alist)
-  (let ((items nil)
-        (guess (concat "\\(.+::\\)?"
-                       (buffer-substring-no-properties
-                        (save-excursion (skip-syntax-backward "w_") (point))
-                        (save-excursion (skip-syntax-forward "w_") (point))))))
+  (let* ((items nil)
+         (guess (buffer-substring-no-properties
+                 (save-excursion (skip-syntax-backward "w_") (point))
+                 (save-excursion (skip-syntax-forward "w_") (point))))
+         (guess-re (concat "\\(.+::\\)?" guess)))
     (setq items (nreverse (my-imenu-add-symbols nil imenu--index-alist items)))
     (catch 'done
       (dotimes (idx (length items))
-        (if (string-match guess (caar items))
+        (if (string-match guess-re (caar items))
             (throw 'done t)
           (when (cdr items)
             (setq items (nconc (cdr items) (list (car items))))))))
@@ -74,7 +74,7 @@
                     (puthash name (1+ num) names))
                 (puthash name 1 names)))
             items))
-    (let* ((item (assoc (completing-read "Goto symbol: " (mapcar 'car items) nil t) items))
+    (let* ((item (assoc (completing-read "Goto symbol: " (mapcar 'car items) nil t nil nil guess) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))
