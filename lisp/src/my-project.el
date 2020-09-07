@@ -2,6 +2,8 @@
 
 (require 'project)
 
+(setq-default project-vc-ignores (list "*.elc"))
+
 (defun my-project-find (dir)
   (when-let ((ws (getenv "WORKSPACE")))
     (cons 'transient ws)))
