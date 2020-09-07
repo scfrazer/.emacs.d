@@ -1,6 +1,7 @@
 ;;; my-flymake.el
 
 (require 'flymake)
+(require 'popup)
 
 (setq-default flymake-no-changes-timeout nil
               flymake-start-on-flymake-mode nil
@@ -12,25 +13,50 @@
         (priority . -1)))
     (:warning
      . ((flymake-category . flymake-warning)
-        (priority . -1)))
+        (priority . -2)))
     (:note
      . ((flymake-category . flymake-note)
-        (priority . -1)))))
+        (priority . -3)))))
 
 (put 'flymake-note 'mode-line-face 'caution)
+
+(defface my-flymake-error-face
+  '((t (:inherit popup-tip-face :foreground "red3" :italic nil)))
+  "Error dot face."
+  :group 'faces)
+
+(defface my-flymake-warning-face
+  '((t (:inherit popup-tip-face :foreground "yellow1" :italic nil)))
+  "Warning dot face."
+  :group 'faces)
+
+(defface my-flymake-note-face
+  '((t (:inherit popup-tip-face :foreground "dodgerblue3" :italic nil)))
+  "Note dot face."
+  :group 'faces)
 
 (defun my-flymake-show-current-error ()
   "Show the current error point is on."
   (interactive)
   (when (and (boundp 'flymake-mode) flymake-mode)
     (let ((diags (flymake-diagnostics (point)))
-          (msg ""))
+          (msg "") text)
       (dolist (diag diags)
-        (setq msg (concat msg (flymake-diagnostic-text diag) "\n")))
+        (unless (string= msg "")
+          (setq msg (concat msg "\n")))
+        (setq text (concat (propertize " ● " 'face
+                                       (cl-case (flymake-diagnostic-type diag)
+                                         (:error 'my-flymake-error-face)
+                                         (:warning 'my-flymake-warning-face)
+                                         (:note 'my-flymake-note-face)))
+                           (flymake-diagnostic-text diag) " "))
+        (setq msg (concat msg text)))
       (when diags
-        (message "%s" (string-trim-right msg))))))
+        (popup-tip msg :nostrip t)))))
 
-(run-with-idle-timer 1.0 t 'my-flymake-show-current-error)
+(defvar my-flymake-timer nil)
+(unless my-flymake-timer
+  (setq my-flymake-timer (run-with-idle-timer 1.0 t 'my-flymake-show-current-error)))
 
 ;; Don't show a count of zero in a non-default face
 (defun flymake--mode-line-format ()

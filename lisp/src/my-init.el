@@ -55,6 +55,7 @@
   :group 'compilation)
 (setq compilation--margin-string (propertize "🞂🞂" 'face 'my-compilation-current-item-arrow-face)
       compilation--dummy-string (propertize ">" 'display `((margin left-margin) ,compilation--margin-string)))
+
 (require 'my-edit)
 (bind-keys* ("C-M-n" . my-edit-scroll-down)
             ("C-M-p" . my-edit-scroll-up)
@@ -1836,8 +1837,8 @@ Prefix with C-u to resize the `next-window'."
 
 (bind-keys*
  ("<delete>"    . delete-char)
- ("<f1>"        . flymake-goto-prev-error)
- ("<f2>"        . flymake-goto-next-error)
+ ("<f1>"        . (lambda () (interactive) (flymake-goto-prev-error)))
+ ("<f2>"        . (lambda () (interactive) (flymake-goto-next-error)))
  ("<f3>"        . my-fixme-prev)
  ("<f4>"        . my-fixme-next)
  ("C-/"         . dabbrev-expand)
@@ -1926,7 +1927,7 @@ Prefix with C-u to resize the `next-window'."
 (require 'project)
 (defun my-project-find (dir)
   (when-let ((ws (getenv "WORKSPACE")))
-    (cons 'vc ws)))
+    (cons 'transient ws)))
 (add-to-list 'project-find-functions #'my-project-find)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
