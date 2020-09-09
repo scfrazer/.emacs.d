@@ -83,7 +83,7 @@
 ;;             ("C-x d" . my-fzf-any-project-directory)
 ;;             ("C-x D" . my-fzf-any-local-directory))
 
-(require 'goto-chg)
+(require 'goto-last-change)
 (bind-keys* ("C-M-@" . goto-last-change))
 
 (require 'my-ido)

@@ -717,66 +717,6 @@ with the specified `:load-path' the module cannot be found.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.5/undo-tree-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/undo-tree-0.7.5/undo-tree-autoloads.el") (car load-path))))
-
-
-
-(autoload 'undo-tree-mode "undo-tree" "\
-Toggle undo-tree mode.
-With no argument, this command toggles the mode.
-A positive prefix argument turns the mode on.
-A negative prefix argument turns it off.
-
-If called interactively, enable Undo-Tree mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-Undo-tree-mode replaces Emacs' standard undo feature with a more
-powerful yet easier to use version, that treats the undo history
-as what it is: a tree.
-
-The following keys are available in `undo-tree-mode':
-
-  \\{undo-tree-map}
-
-Within the undo-tree visualizer, the following keys are available:
-
-  \\{undo-tree-visualizer-mode-map}
-
-\(fn &optional ARG)" t nil)
-
-(put 'global-undo-tree-mode 'globalized-minor-mode t)
-
-(defvar global-undo-tree-mode nil "\
-Non-nil if Global Undo-Tree mode is enabled.
-See the `global-undo-tree-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `global-undo-tree-mode'.")
-
-(custom-autoload 'global-undo-tree-mode "undo-tree" nil)
-
-(autoload 'global-undo-tree-mode "undo-tree" "\
-Toggle Undo-Tree mode in all buffers.
-With prefix ARG, enable Global Undo-Tree mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
-
-Undo-Tree mode is enabled in all buffers where
-`turn-on-undo-tree-mode' would do it.
-See `undo-tree-mode' for more information on Undo-Tree mode.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "undo-tree" '("*undo-tree-id-counter*" "buffer-undo-tree" "turn-on-undo-tree-mode" "undo-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -844,19 +784,6 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tommyh-theme-20131004.2330/tommyh-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tommyh-theme-20131004.2330/tommyh-theme-autoloads.el") (car load-path))))
-
-
-
-(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tommyh-theme" '("tommyh")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20200423.804/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -907,10 +834,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1226,10 +1153,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20200614.1920/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20200905.2113/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20200614.1920/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20200905.2113/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1595,10 +1522,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1610,10 +1537,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1622,17 +1549,6 @@ A mode for creating a rectangular region to edit
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-operandi-theme" '("modus-operandi")))
 
 
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/memoize-20200103.2036/memoize-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/memoize-20200103.2036/memoize-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "memoize" '("defmemoize" "memoize")))
 
 
 )
@@ -1837,120 +1753,6 @@ Makes ido-mode display vertically.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-vertical-mode" '("ido-vertical-" "turn-o")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-completing-read+-20200520.1535/ido-completing-read+-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-completing-read+-20200520.1535/ido-completing-read+-autoloads.el") (car load-path))))
-
-
-
-(defvar ido-cr+-minibuffer-depth -1 "\
-Minibuffer depth of the most recent ido-cr+ activation.
-
-If this equals the current minibuffer depth, then the minibuffer
-is currently being used by ido-cr+, and ido-cr+ features will be
-active. Otherwise, something else is using the minibuffer and
-ido-cr+ features will be deactivated to avoid interfering with
-the other command.
-
-This is set to -1 by default, since `(minibuffer-depth)' should
-never return this value.")
-
-(defvar ido-cr+-replace-completely nil "\
-If non-nil, replace `ido-completeing-read' completely with ido-cr+.
-
-Enabling this may interfere with or cause errors in other
-packages that use `ido-completing-read'. If you discover any such
-incompatibilities, please file a bug report at
-https://github.com/DarwinAwardWinner/ido-completing-read-plus/issues")
-
-(custom-autoload 'ido-cr+-replace-completely "ido-completing-read+" t)
-
-(defsubst ido-cr+-active nil "\
-Return non-nil if ido-cr+ is currently using the minibuffer." (>= ido-cr+-minibuffer-depth (minibuffer-depth)))
-
-(autoload 'ido-completing-read+ "ido-completing-read+" "\
-Ido-based method for reading from the minibuffer with completion.
-
-See `completing-read' for the meaning of the arguments.
-
-This function is a wrapper for `ido-completing-read' designed to
-be used as the value of `completing-read-function'. Importantly,
-it detects edge cases that ido cannot handle and uses normal
-completion for them.
-
-See `completing-read' for the meaning of the arguments.
-
-\(fn PROMPT COLLECTION &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)" nil nil)
-
-(autoload 'ido-completing-read@ido-cr+-replace "ido-completing-read+" "\
-This advice allows ido-cr+ to completely replace `ido-completing-read'.
-
-See the varaible `ido-cr+-replace-completely' for more information.
-
-\(fn ORIG-FUN &rest ARGS)" nil nil)
-
-(advice-add 'ido-completing-read :around #'ido-completing-read@ido-cr+-replace)
-
-(autoload 'call-interactively@ido-cr+-record-current-command "ido-completing-read+" "\
-Let-bind the command being interactively called.
-
-See `ido-cr+-current-command' for more information.
-
-\(fn ORIG-FUN COMMAND &rest ARGS)" nil nil)
-
-(advice-add 'call-interactively :around #'call-interactively@ido-cr+-record-current-command)
-
-(defvar ido-ubiquitous-mode nil "\
-Non-nil if Ido-Ubiquitous mode is enabled.
-See the `ido-ubiquitous-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `ido-ubiquitous-mode'.")
-
-(custom-autoload 'ido-ubiquitous-mode "ido-completing-read+" nil)
-
-(autoload 'ido-ubiquitous-mode "ido-completing-read+" "\
-Use ido completion instead of standard completion almost everywhere.
-
-If this mode causes problems for a function, you can customize
-when ido completion is or is not used by customizing
-`ido-cr+-function-blacklist'.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-completing-read+" '("ido-" "minibuf-eldef-update-minibuffer@ido-cr+-compat" "define-ido-internal-var")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-at-point-20151021.757/ido-at-point-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-at-point-20151021.757/ido-at-point-autoloads.el") (car load-path))))
-
-
-
-(autoload 'ido-at-point-mode "ido-at-point" "\
-Global minor mode to use ido for `completion-at-point'.
-
-When called interactively, toggle `ido-at-point-mode'.  With
-prefix ARG, enable `ido-at-point-mode' if ARG is positive,
-otherwise disable it.
-
-When called from Lisp, enable `ido-at-point-mode' if ARG is
-omitted, nil or positive.  If ARG is `toggle', toggle
-`ido-at-point-mode'.  Otherwise behave as if called
-interactively.
-
-With `ido-at-point-mode' use ido for `completion-at-point'.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-at-point" '("ido-at-point-")))
 
 
 )
@@ -2162,145 +1964,22 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/hc-zenburn-theme-20150928.1633/hc-zenburn-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/goto-last-change-20150109.1823/goto-last-change-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hc-zenburn-theme-20150928.1633/hc-zenburn-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/goto-last-change-20150109.1823/goto-last-change-autoloads.el") (car load-path))))
 
 
 
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+(autoload 'goto-last-change "goto-last-change" "\
+Set point to the position of the last change.
+Consecutive calls set point to the position of the previous change.
+With a prefix arg (optional arg MARK-POINT non-nil), set mark so \\[exchange-point-and-mark]
+will return point to the current position.
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hc-zenburn-theme" '("hc-zenburn")))
+\(fn &optional MARK-POINT MINIMAL-LINE-DISTANCE)" t nil)
 
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("dash-" "-keep" "-butlast" "-non" "-only-some" "-zip" "-e" "->" "-a" "-gr" "-when-let" "-d" "-l" "-s" "-p" "-r" "-m" "-i" "-f" "-u" "-value-to-list" "-t" "--" "-c" "!cons" "!cdr")))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el") (car load-path))))
-
-
-
-(autoload 'autothemer-deftheme "autothemer" "\
-Define a theme NAME with description DESCRIPTION.
-A color PALETTE can be used to define let*-like
-bindings within both the REDUCED-SPECS and the BODY.
-
-\(fn NAME DESCRIPTION PALETTE REDUCED-SPECS &rest BODY)" nil t)
-
-(autoload 'autothemer-generate-templates "autothemer" "\
-Autogenerate customizations for all unthemed faces.
-Iterate through all currently defined faces, select those that
-have been left uncustomized by the most recent call to
-`autothemer-deftheme' and generate customizations that best
-approximate the faces' current definitions using the color
-palette used in the most recent invocation of
-`autothemer-deftheme'.
-
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "autothemer" '("autothemer--")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/gruvbox-theme-20200807.855/gruvbox-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/gruvbox-theme-20200807.855/gruvbox-theme-autoloads.el") (car load-path))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "gruvbox" '("gruvbox-")))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/goto-chg-20200603.1911/goto-chg-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/goto-chg-20200603.1911/goto-chg-autoloads.el") (car load-path))))
-
-
-
-(autoload 'goto-last-change "goto-chg" "\
-Go to the point where the last edit was made in the current buffer.
-Repeat the command to go to the second last edit, etc.
-
-To go back to more recent edit, the reverse of this command, use \\[goto-last-change-reverse]
-or precede this command with \\[universal-argument] - (minus).
-
-It does not go to the same point twice even if there has been many edits
-there. I call the minimal distance between distinguishable edits \"span\".
-Set variable `glc-default-span' to control how close is \"the same point\".
-Default span is 8.
-The span can be changed temporarily with \\[universal-argument] right before \\[goto-last-change]:
-\\[universal-argument] <NUMBER> set current span to that number,
-\\[universal-argument] (no number) multiplies span by 4, starting with default.
-The so set span remains until it is changed again with \\[universal-argument], or the consecutive
-repetition of this command is ended by any other command.
-
-When span is zero (i.e. \\[universal-argument] 0) subsequent \\[goto-last-change] visits each and
-every point of edit and a message shows what change was made there.
-In this case it may go to the same point twice.
-
-This command uses undo information. If undo is disabled, so is this command.
-At times, when undo information becomes too large, the oldest information is
-discarded. See variable `undo-limit'.
-
-\(fn ARG)" t nil)
-
-(autoload 'goto-last-change-reverse "goto-chg" "\
-Go back to more recent changes after \\[goto-last-change] have been used.
-See `goto-last-change' for use of prefix argument.
-
-\(fn ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "goto-chg" '("glc-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "goto-last-change" '("goto-last-change-")))
 
 
 )
@@ -2676,6 +2355,19 @@ Whether expand-region should use subword expansions.")
 
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-mode-expansions" '("er/add-web-mode-expansions")))
+
+
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("dash-" "-keep" "-butlast" "-non" "-only-some" "-zip" "-e" "->" "-a" "-gr" "-when-let" "-d" "-l" "-s" "-p" "-r" "-m" "-i" "-f" "-u" "-value-to-list" "-t" "--" "-c" "!cons" "!cdr")))
 
 
 
@@ -3316,14 +3008,14 @@ Toggle Auto Highlight Symbol Mode
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package undo-tree transient tommyh-theme tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme memoize markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode ido-completing-read+ ido-at-point icomplete-vertical hydra htmlize highlight-indent-guides hc-zenburn-theme dash autothemer gruvbox-theme goto-chg git-timemachine fzf flymake-perlcritic flymake-eslint flymake-easy filladapt fill-function-arguments fd-dired expand-region dired-hacks-utils dired-subtree dired-narrow deft dash-functional crontab-mode browse-kill-ring bm avy auto-highlight-symbol)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-perlcritic flymake-eslint flymake-easy filladapt fill-function-arguments fd-dired expand-region dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional crontab-mode browse-kill-ring bm avy auto-highlight-symbol)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200905.809" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200905.809" "/home/scfrazer/.emacs.d/elpa/rg-20200827.1721" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544" "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:
