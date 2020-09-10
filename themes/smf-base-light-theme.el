@@ -9,7 +9,7 @@
 
  `(ahs-definition-face                 ((t :background "honeydew2")))
  `(ahs-face                            ((t :background "gray92")))
- `(ahs-plugin-defalt-face              ((t :background "linen")))
+ `(ahs-plugin-defalt-face              ((t :inherit ahs-face)))
  `(bm-face                             ((t :foreground "black" :background ,(smf-color 221) :extend t)))
  `(caution                             ((t :foreground "black" :background ,(smf-color 215))))
  `(cursor                              ((t :background "deeppink2")))

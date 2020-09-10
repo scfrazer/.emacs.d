@@ -51,10 +51,10 @@
 
 (require 'compile)
 (defface my-compilation-current-item-arrow-face
-  '((t :background "black" :foreground "yellow1" :underline nil :italic nil :bold nil))
+  '((t :background "black" :foreground "yellow1" :underline nil :italic nil :bold t))
   "Face for compilation current item arrow."
   :group 'compilation)
-(setq compilation--margin-string (propertize "🞂🞂" 'face 'my-compilation-current-item-arrow-face)
+(setq compilation--margin-string (propertize "->" 'face 'my-compilation-current-item-arrow-face)
       compilation--dummy-string (propertize ">" 'display `((margin left-margin) ,compilation--margin-string)))
 
 (require 'my-edit)
@@ -83,8 +83,8 @@
 ;;             ("C-x d" . my-fzf-any-project-directory)
 ;;             ("C-x D" . my-fzf-any-local-directory))
 
-(require 'goto-last-change)
-(bind-keys* ("C-M-@" . goto-last-change))
+;; (require 'goto-last-change)
+;; (bind-keys* ("C-M-@" . goto-last-change))
 
 (require 'my-ido)
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)

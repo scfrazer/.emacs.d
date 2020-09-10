@@ -111,45 +111,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (when (boundp align-verilog-rules-list)
-;;   (dolist (rule (reverse align-verilog-rules-list))
-;;     (add-to-list 'sv-mode-align-rules-list rule)))
-;; (when (boundp align-exclude-verilog-rules-list)
-;;   (dolist (rule (reverse align-exclude-verilog-rules-list))
-;;     (add-to-list 'sv-mode-align-exclude-rules-list rule)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun my-sv-mode-prettify ()
-  (let ((spec '(("<=" default "<═"))))
-    (dolist (s spec)
-      (let ((regexp (nth 0 s))
-            (face (nth 1 s))
-            (repl (nth 2 s)))
-        (font-lock-add-keywords nil
-                                `((,regexp 0
-                                           (prog1 ',face
-                                             (add-text-properties (match-beginning 0) (match-end 0)
-                                                                  '(display ,repl)))))))))
-  (push 'display font-lock-extra-managed-props)
-  (push 'composition font-lock-extra-managed-props))
+;; (defun my-sv-mode-prettify ()
+;;   (let ((spec '(("<=" default "<═"))))
+;;     (dolist (s spec)
+;;       (let ((regexp (nth 0 s))
+;;             (face (nth 1 s))
+;;             (repl (nth 2 s)))
+;;         (font-lock-add-keywords nil
+;;                                 `((,regexp 0
+;;                                            (prog1 ',face
+;;                                              (add-text-properties (match-beginning 0) (match-end 0)
+;;                                                                   '(display ,repl)))))))))
+;;   (push 'display font-lock-extra-managed-props)
+;;   (push 'composition font-lock-extra-managed-props))
 
 (defun my-sv-mode-hook ()
-  (font-lock-add-keywords nil '(("\\_<\\(bool\\|uint\\)\\_>" (0 'font-lock-type-face))) 'add-to-end)
-  ;; (when (and (buffer-file-name)
-  ;;            (string-match "/rtl/\\|driver.sv\\|monitor.sv" (buffer-file-name)))
-  ;;   (my-sv-mode-prettify))
-  ;; (highlight-indent-guides-mode 1)
   (doxymacs-mode 1)
-  (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
+  ;; (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
-                              ("\\.svh$" (".sv"))
-                              ("\\.s$" (".v"))
-                              ("\\.v$" (".s" ".vh")))))
+                              ("\\.svh$" (".sv")))))
 
 (add-hook 'sv-mode-hook 'my-sv-mode-hook)
-
-(add-to-list 'sv-mode-macros-without-semi "`csco_[a-z_]+")
 
 (defadvice qe-forward-block (around sv-forward-block activate)
   (if (equal major-mode 'sv-mode)
@@ -247,21 +229,52 @@
   (lambda () (back-to-indentation) (search-forward "\"")))
 
 (define-abbrev sv-mode-abbrev-table
-  "phr"
-  ""
-  (lambda()
-    (insert "phase.raise_objection(this);")
-    (sv-mode-indent-line)))
-
-(define-abbrev sv-mode-abbrev-table
-  "phd"
-  ""
-  (lambda()
-    (insert "phase.drop_objection(this);")
-    (sv-mode-indent-line)))
-
-(define-abbrev sv-mode-abbrev-table
   "lint"
-  "//@DVT_LINTER_WAIVER \"\" DISABLE ")
+  "// @DVT_LINTER_WAIVER \"\" DISABLE ")
+
+(define-abbrev sv-mode-abbrev-table
+  "uc"
+  ""
+  'my-sv-uvm-component)
+
+(define-skeleton my-sv-uvm-component
+  "Insert UVM component"
+  nil
+  > _ "class "
+  (setq v1 (skeleton-read "Name: " (file-name-nondirectory (file-name-sans-extension (buffer-file-name)))))
+  (when (setq v2 (y-or-n-p "Parameterized?")) "#(TODO PARAMS = TODO)")
+  " extends "
+  (skeleton-read "Extends: " "uvm_component") ";\n"
+  \n
+  (if v2 "`uvm_component_param_utils_begin(" "`uvm_component_utils_begin(") v1 (when v2 "#(PARAMS)") ")" \n
+  "`uvm_component_utils_end" > "\n"
+  \n
+  "//! Constructor" \n
+  "//! @param name - Name" \n
+  "//! @param parent - Parent" \n
+  "extern function new(string name=\"" v1 "\", uvm_component parent);\n"
+  \n
+  "//! Build phase" \n
+  "//! @param phase - Phase" \n
+  "extern virtual function void build_phase(uvm_phase phase);\n"
+  \n
+  "//! Connect phase" \n
+  "//! @param phase - Phase" \n
+  "extern virtual function void connect_phase(uvm_phase phase);\n"
+  \n
+  "endclass : " v1 > "\n"
+  \n
+  "function " v1 "::new(string name=\"" v1 "\", uvm_component parent);" \n
+  "super.new(name, parent);" \n
+  "endfunction : new" > "\n"
+  \n
+  "function void " v1 "::build_phase(uvm_phase phase);" \n
+  "super.build_phase(phase);" \n
+  "endfunction : build_phase" > "\n"
+  \n
+  "function void " v1 "::connect_phase(uvm_phase phase);" \n
+  "super.connect_phase(phase);" \n
+  "endfunction : connect_phase" > "\n"
+  )
 
 (provide 'my-sv-mode)

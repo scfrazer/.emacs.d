@@ -30,6 +30,10 @@
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+ '(modus-operandi-theme-bold-constructs t)
+ '(modus-operandi-theme-intense-paren-match t)
+ '(modus-operandi-theme-intense-standard-completions t)
+ '(modus-operandi-theme-slanted-constructs t)
  '(package-selected-packages
    '(goto-last-change reformatter dired-narrow tango-plus-theme auto-highlight-symbol avy bm browse-kill-ring crontab-mode dash dash-functional deft dired-subtree expand-region fd-dired fill-function-arguments filladapt flymake-easy flymake-eslint flymake-perlcritic fzf git-timemachine highlight-indent-guides htmlize hydra icomplete-vertical ido-vertical-mode iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
