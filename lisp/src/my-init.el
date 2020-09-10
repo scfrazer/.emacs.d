@@ -83,8 +83,8 @@
 ;;             ("C-x d" . my-fzf-any-project-directory)
 ;;             ("C-x D" . my-fzf-any-local-directory))
 
-;; (require 'goto-last-change)
-;; (bind-keys* ("C-M-@" . goto-last-change))
+(require 'goto-last-change)
+(bind-keys* ("C-M-@" . goto-last-change))
 
 (require 'my-ido)
 (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
