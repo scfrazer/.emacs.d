@@ -1522,10 +1522,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1537,10 +1537,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1552,10 +1552,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200905.337/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200909.2355/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200905.337/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20200909.2355/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2056,35 +2056,6 @@ Starts a fzf session based on git grep result. The input comes
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-perlcritic-20120328.814/flymake-perlcritic-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-perlcritic-20120328.814/flymake-perlcritic-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake-perlcritic" '("flymake-perlcritic-")))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-eslint-20191129.1558/flymake-eslint-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-eslint-20191129.1558/flymake-eslint-autoloads.el") (car load-path))))
-
-
-
-(autoload 'flymake-eslint-enable "flymake-eslint" "\
-Enable Flymake and add flymake-eslint as a buffer-local Flymake backend.
-
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake-eslint" '("flymake-eslint-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-easy-20140818.755/flymake-easy-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2171,192 +2142,6 @@ use in place of \"-ls\" as the final argument.
 \(fn DIR ARGS)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fd-dired" '("fd-dired-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/expand-region-20200304.1839/expand-region-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/expand-region-20200304.1839/expand-region-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cc-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "clojure-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cperl-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "css-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "enh-ruby-mode-expansions" '("er/add-enh-ruby-mode-expansions")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "er-basic-expansions" '("er--" "er/mark-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "erlang-mode-expansions" '("er/add-erlang-mode-expansions")))
-
-
-
-(autoload 'er/expand-region "expand-region" "\
-Increase selected region by semantic units.
-
-With prefix argument expands the region that many times.
-If prefix argument is negative calls `er/contract-region'.
-If prefix argument is 0 it resets point and mark to their state
-before calling `er/expand-region' for the first time.
-
-\(fn ARG)" t nil)
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region-core" '("er--" "er/")))
-
-
-
-(let ((loads (get 'expand-region 'custom-loads))) (if (member '"expand-region-custom" loads) nil (put 'expand-region 'custom-loads (cons '"expand-region-custom" loads))))
-
-(defvar expand-region-preferred-python-mode 'python "\
-The name of your preferred python mode")
-
-(custom-autoload 'expand-region-preferred-python-mode "expand-region-custom" t)
-
-(defvar expand-region-guess-python-mode t "\
-If expand-region should attempt to guess your preferred python mode")
-
-(custom-autoload 'expand-region-guess-python-mode "expand-region-custom" t)
-
-(defvar expand-region-autocopy-register "" "\
-If set to a string of a single character (try \"e\"), then the
-contents of the most recent expand or contract command will
-always be copied to the register named after that character.")
-
-(custom-autoload 'expand-region-autocopy-register "expand-region-custom" t)
-
-(defvar expand-region-skip-whitespace t "\
-If expand-region should skip past whitespace on initial expansion")
-
-(custom-autoload 'expand-region-skip-whitespace "expand-region-custom" t)
-
-(defvar expand-region-fast-keys-enabled t "\
-If expand-region should bind fast keys after initial expand/contract")
-
-(custom-autoload 'expand-region-fast-keys-enabled "expand-region-custom" t)
-
-(defvar expand-region-contract-fast-key "-" "\
-Key to use after an initial expand/contract to contract once more.")
-
-(custom-autoload 'expand-region-contract-fast-key "expand-region-custom" t)
-
-(defvar expand-region-reset-fast-key "0" "\
-Key to use after an initial expand/contract to undo.")
-
-(custom-autoload 'expand-region-reset-fast-key "expand-region-custom" t)
-
-(defvar expand-region-exclude-text-mode-expansions '(html-mode nxml-mode) "\
-List of modes which derive from `text-mode' for which text mode expansions are not appropriate.")
-
-(custom-autoload 'expand-region-exclude-text-mode-expansions "expand-region-custom" t)
-
-(defvar expand-region-smart-cursor nil "\
-Defines whether the cursor should be placed intelligently after expansion.
-
-If set to t, and the cursor is already at the beginning of the new region,
-keep it there; otherwise, put it at the end of the region.
-
-If set to nil, always place the cursor at the beginning of the region.")
-
-(custom-autoload 'expand-region-smart-cursor "expand-region-custom" t)
-
-(define-obsolete-variable-alias 'er/enable-subword-mode\? 'expand-region-subword-enabled "2019-03-23")
-
-(defvar expand-region-subword-enabled nil "\
-Whether expand-region should use subword expansions.")
-
-(custom-autoload 'expand-region-subword-enabled "expand-region-custom" t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region-custom" '("expand-region-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "feature-mode-expansions" '("er--block-between-keywords" "er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "html-mode-expansions" '("er--" "er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "js-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "js2-mode-expansions" '("er/add-js2-mode-expansions" "js2-mark-parent-statement")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "jsp-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "latex-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "nxml-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "octave-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python-el-expansions" '("er--python-string-delimiter" "er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python-el-fgallina-expansions" '("er--python-" "er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python-mode-expansions" '("er--" "er/" "py-goto-beyond-clause")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ruby-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "sml-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "subword-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "text-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "the-org-mode-expansions" '("er/")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-mode-expansions" '("er/add-web-mode-expansions")))
-
-
 
 
 )
@@ -2580,26 +2365,6 @@ Switch to *Deft* buffer and load files.
 
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash-functional" '("-rpartial" "-juxt" "-not" "-o" "-a" "-iteratefn" "-c" "-f" "-prodfn")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/crontab-mode-20200330.920/crontab-mode-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/crontab-mode-20200330.920/crontab-mode-autoloads.el") (car load-path))))
-
-
-
-(autoload 'crontab-mode "crontab-mode" "\
-Major mode for editing crontab file.
-
-\\{crontab-mode-map}
-
-\(fn)" t nil)
-
-(add-to-list 'auto-mode-alist '("/crontab\\(\\.X*[[:alnum:]]+\\)?\\'" . crontab-mode))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "crontab-mode" '("crontab-")))
 
 
 )
@@ -3008,14 +2773,14 @@ Toggle Auto Highlight Symbol Mode
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-perlcritic flymake-eslint flymake-easy filladapt fill-function-arguments fd-dired expand-region dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional crontab-mode browse-kill-ring bm avy auto-highlight-symbol)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200909.544" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200909.544" "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909" "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:
