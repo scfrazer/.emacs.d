@@ -132,7 +132,7 @@
 
 (require 'my-recentf)
 
-(require 'redo+)
+;;(require 'redo+)
 
 (require 'sh-script)
 
@@ -1898,7 +1898,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x s"       . shrink-window-if-larger-than-buffer)
  ("C-x t"       . task-map)
  ("C-x |"       . my-win-split-horizontally)
- ("C-z"         . undo)
+ ("C-z"         . undo-only)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
  ("ESC <right>" . (lambda () "Select next frame." (interactive) (other-frame -1)))
  ("M-!"         . my-shell-command-on-current-file)
@@ -1915,7 +1915,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-g"         . my-goto-line-column)
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
- ("M-z"         . redo)
+ ("M-z"         . undo-redo)
  ("M-|"         . highlight-indent-guides-mode)
  ("M-~"         . previous-error))
 
