@@ -200,6 +200,8 @@
   (setq font-lock-defaults '(sim-log-mode-font-lock-keywords t))
   (turn-on-font-lock)
 
+  (setq isearch-lazy-count nil)
+  (auto-highlight-symbol-mode -1)
   (setq truncate-lines nil)
   (setq word-wrap t)
   (setq imenu-generic-expression (list '(nil "Phase started: \\(.+\\)" 1)))
