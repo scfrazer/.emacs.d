@@ -717,6 +717,19 @@ with the specified `:load-path' the module cannot be found.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el") (car load-path))))
+
+
+
+(when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tron-legacy-theme" '("tron-legacy-theme-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -1693,6 +1706,19 @@ Beautify / pretty-print the active region (or the entire buffer if no active reg
 \(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json-")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iodine-theme-20151031.1639/iodine-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iodine-theme-20151031.1639/iodine-theme-autoloads.el") (car load-path))))
+
+
+
+(when (and load-file-name (boundp 'custom-theme-load-path)) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "iodine-theme" '("iodine")))
 
 
 )
@@ -2773,7 +2799,7 @@ Toggle Auto Highlight Symbol Mode
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iodine-theme iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol)
        package-activated-list))
 (progn
   (require 'info)
