@@ -75,7 +75,7 @@
 (setq filladapt-mode-line-string nil)
 (setq-default filladapt-mode t)
 
-(require 'my-fzf)
+;; (require 'my-fzf)
 ;; (bind-keys* ("C-x f" . my-fzf-project-file)
 ;;             ;; ("C-x W" . my-fzf-any-project-file)
 ;;             ("C-x F" . my-fzf-local-file)
@@ -86,26 +86,14 @@
 (require 'goto-last-change)
 (bind-keys* ("C-M-@" . goto-last-change))
 
-(require 'my-ido)
-(bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
-            ("C-x C-r" . my-ido-recentf-file)
-            ("M-i"     . ido-switch-buffer))
-(progn
-  (defun my-ido-fzf ()
-    "Fuzzy find file under directory being input"
-    (interactive)
-    (setq ido-exit 'fallback)
-    (setq ido-fallback 'my-ido-fzf-start)
-    (exit-minibuffer))
-  (defun my-ido-fzf-start ()
-    "Start fzf from ido"
-    (interactive)
-    (let ((process-environment
-           (cons "FZF_DEFAULT_COMMAND=fd --type f --hidden --exclude .git --no-ignore" process-environment)))
-      (fzf/start ido-current-directory)))
-  (define-key ido-file-completion-map (kbd "C-s") 'my-ido-fzf))
+;; (require 'my-ido)
+;; (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
+;;             ("C-x C-r" . my-ido-recentf-file))
+;; (ido-mode -1)
 
 (require 'my-icomplete)
+(bind-keys* ("C-x b"   . my-icomplete-find-file-from-bookmark)
+            ("C-x C-r" . my-icomplete-recentf-file))
 
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override
@@ -1913,6 +1901,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-`"         . next-error)
  ("M-e"         . my-mc/edit-lines)
  ("M-g"         . my-goto-line-column)
+ ("M-i"         . switch-to-buffer)
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
  ("M-z"         . undo-redo)

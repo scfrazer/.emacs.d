@@ -3,6 +3,8 @@
 (require 'icomplete)
 (require 'orderless)
 (require 'icomplete-vertical)
+(require 'bookmark)
+(require 'recentf)
 
 (setq-default completion-styles '(orderless)
               icomplete-compute-delay 0.2
@@ -37,6 +39,50 @@
   reformatted)
 
 (advice-add #'icomplete-vertical-format-completions :filter-return #'my-icomplete-vertical-format-completions)
+
+(defun my-icomplete-presorted-completion-table (completions)
+  "Keep completion table order."
+  (lambda (string pred action)
+    (if (eq action 'metadata)
+        `(metadata (display-sort-function . ,#'identity)
+                   (cycle-sort-function . ,#'identity))
+      (complete-with-action action completions string pred))))
+
+(defun my-icomplete-find-file-from-bookmark ()
+  "Find file starting from bookmark."
+  (interactive)
+  (let* ((bmk-list (bookmark-all-names))
+         (name (completing-read "Use dir of bookmark: " (my-icomplete-presorted-completion-table (append bmk-list (list "/"))) nil t))
+         dir bmk)
+    (if (string= name "/")
+        (setq dir "~")
+      (setq bmk (bookmark-get-bookmark name))
+      (when bmk
+        (setq bookmark-alist (delete bmk bookmark-alist))
+        (push bmk bookmark-alist)
+        (let ((filename (bookmark-get-filename bmk)))
+          (if (file-directory-p filename)
+              (setq dir filename)
+            (setq dir (file-name-directory filename))))))
+    (when dir
+      (let ((default-directory dir))
+        (call-interactively 'find-file)))))
+
+(defun my-icomplete-recentf-file ()
+  "Find a file in the recently opened file list using completing-read."
+  (interactive)
+  (let* ((file-alist (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) recentf-list))
+         (choice-list (delete-dups (mapcar 'car file-alist)))
+         (filename (completing-read "Find recent file: " (my-icomplete-presorted-completion-table choice-list) nil t))
+         (result-list (delq nil (mapcar (lambda (x) (when (string= (car x) filename) (cdr x))) file-alist)))
+         (result-length (length result-list)))
+    (if (and filename (not (string= filename "")))
+        (find-file
+         (cond
+          ((= result-length 0) filename)
+          ((= result-length 1) (car result-list))
+          (t (completing-read "Multiple matches: " result-list nil t))))
+      (call-interactively 'find-file))))
 
 (icomplete-vertical-mode 1)
 (fido-mode 1)

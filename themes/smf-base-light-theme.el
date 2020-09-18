@@ -14,6 +14,7 @@
  `(caution                             ((t :foreground "black" :background ,(smf-color 215))))
  `(cursor                              ((t :background "deeppink2")))
  `(diff-changed                        ((t :background "#dfefff")))
+ `(diff-file-header                    ((t :background "slategray2" :bold t)))
  `(diff-refine-added                   ((t :foreground "black" :background ,(smf-color 157))))
  `(diff-refine-removed                 ((t :foreground "black" :background ,(smf-color 217))))
  `(dired-marked                        ((t :background "lightgoldenrodyellow")))
