@@ -1720,13 +1720,13 @@ Prefix with C-u to resize the `next-window'."
     (my-word-wrap-on-hook))
   (my-backup-set-mode))
 
-(defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
-  "Insert a bookmarked dir using ido."
-  (interactive "P")
-  (let* ((enable-recursive-minibuffers t)
-         (dir (my-ido-get-bookmark-dir)))
-    (when dir
-      (insert dir))))
+;; (defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
+;;   "Insert a bookmarked dir using ido."
+;;   (interactive "P")
+;;   (let* ((enable-recursive-minibuffers t)
+;;          (dir (my-ido-get-bookmark-dir)))
+;;     (when dir
+;;       (insert dir))))
 
 (defun my-minibuffer-setup-hook ()
   (override-global-mode -1)
@@ -1742,7 +1742,6 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-x f") 'my-fzf-local-file)
   (local-set-key (kbd "C-x w") 'my-fzf-project-file)
   (local-set-key (kbd "C-z") 'undo)
-  (local-set-key (kbd "M-$") 'my-minibuffer-ido-insert-bookmark-dir)
   (local-set-key (kbd "M-\\") 'completion-at-point)
   (local-set-key (kbd "M-h") 'my-minibuffer-backward)
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
@@ -1750,8 +1749,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
   (local-set-key (kbd "M-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
-  (local-set-key (kbd "M-z") (lambda () (interactive) nil))
-  (local-set-key (kbd "M-~") 'my-minibuffer-ido-insert-bookmark-dir))
+  (local-set-key (kbd "M-z") (lambda () (interactive) nil)))
 
 ;; (defface my-next-error-face
 ;;   '((t (:inherit hl-line)))

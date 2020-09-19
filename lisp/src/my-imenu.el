@@ -47,7 +47,7 @@
   result)
 
 (defun my-imenu-goto-symbol ()
-  "Goto to an imenu symbol using ido"
+  "Goto to an imenu symbol using completion."
   (interactive)
   (imenu--cleanup)
   (setq imenu--index-alist nil)

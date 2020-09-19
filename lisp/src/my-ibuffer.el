@@ -283,7 +283,6 @@
   (define-key ibuffer-mode-map (kbd "V") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "^") 'ibuffer-backward-filter-group)
   (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
-  (define-key ibuffer-mode-map (kbd "i") (lambda() (interactive) (ido-switch-buffer) (delete-other-windows)))
   (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency))
 
 (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)

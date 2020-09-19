@@ -20,6 +20,8 @@
 (define-key icomplete-minibuffer-map (kbd "C-n")    'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p")    'icomplete-backward-completions)
 
+(define-key icomplete-fido-mode-map (kbd "/") 'icomplete-fido-ret)
+
 (defun my-icomplete--fido-mode-setup ()
   "Customize icomplete fido mode."
   (setq-local completion-styles '(orderless)))
@@ -52,9 +54,9 @@
   "Find file starting from bookmark."
   (interactive)
   (let* ((bmk-list (bookmark-all-names))
-         (name (completing-read "Use dir of bookmark: " (my-icomplete-presorted-completion-table (append bmk-list (list "/"))) nil t))
+         (name (completing-read "Use dir of bookmark: " (my-icomplete-presorted-completion-table (append bmk-list (list "~"))) nil t))
          dir bmk)
-    (if (string= name "/")
+    (if (string= name "~")
         (setq dir "~")
       (setq bmk (bookmark-get-bookmark name))
       (when bmk

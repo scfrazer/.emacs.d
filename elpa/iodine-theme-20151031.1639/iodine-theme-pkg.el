@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/iodine-theme-20151031.1639/iodine-theme.el  -*- no-byte-compile: t -*-
-(define-package "iodine-theme" "20151031.1639" "A light emacs color theme" '((emacs "24")) :commit "02fb780e1d8d8a6b9c709bfac399abe1665c6999" :keywords '("themes") :authors '(("Srđan Panić" . "srdja.panic@gmail.com")) :maintainer '("Srđan Panić" . "srdja.panic@gmail.com") :url "https://github.com/srdja/iodine-theme")

@@ -836,21 +836,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/s-20180406.808/s-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/s-20180406.808/s-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "s" '("s-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605/rg-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1535,10 +1524,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1550,10 +1539,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1619,17 +1608,15 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-snatcher-20150512.347/json-snatcher-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-snatcher-20200916.1717/json-snatcher-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-snatcher-20150512.347/json-snatcher-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-snatcher-20200916.1717/json-snatcher-autoloads.el") (car load-path))))
 
 
 
 (autoload 'jsons-print-path "json-snatcher" "\
-Print the path to the JSON value under point, and save it in the kill ring.
-
-\(fn)" t nil)
+Print the path to the JSON value under point, and save it in the kill ring." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-snatcher" '("jsons-")))
 
@@ -1706,19 +1693,6 @@ Beautify / pretty-print the active region (or the entire buffer if no active reg
 \(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iodine-theme-20151031.1639/iodine-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iodine-theme-20151031.1639/iodine-theme-autoloads.el") (car load-path))))
-
-
-
-(when (and load-file-name (boundp 'custom-theme-load-path)) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "iodine-theme" '("iodine")))
 
 
 )
@@ -2759,12 +2733,14 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20130313.943/auto-highlight-symbol-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200919.930/auto-highlight-symbol-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20130313.943/auto-highlight-symbol-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200919.930/auto-highlight-symbol-autoloads.el") (car load-path))))
 
 
+
+(put 'global-auto-highlight-symbol-mode 'globalized-minor-mode t)
 
 (defvar global-auto-highlight-symbol-mode nil "\
 Non-nil if Global Auto-Highlight-Symbol mode is enabled.
@@ -2791,22 +2767,70 @@ See `auto-highlight-symbol-mode' for more information on Auto-Highlight-Symbol m
 (autoload 'auto-highlight-symbol-mode "auto-highlight-symbol" "\
 Toggle Auto Highlight Symbol Mode
 
+If called interactively, enable Auto-Highlight-Symbol mode if ARG
+is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "auto-highlight-symbol" '("auto-highlight-symbol-mode" "ahs-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "auto-highlight-symbol" '("ahs-" "auto-highlight-symbol-mode")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-dim-other-buffers-20200801.2029/auto-dim-other-buffers-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-dim-other-buffers-20200801.2029/auto-dim-other-buffers-autoloads.el") (car load-path))))
+
+
+
+(defvar auto-dim-other-buffers-mode nil "\
+Non-nil if Auto-Dim-Other-Buffers mode is enabled.
+See the `auto-dim-other-buffers-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `auto-dim-other-buffers-mode'.")
+
+(custom-autoload 'auto-dim-other-buffers-mode "auto-dim-other-buffers" nil)
+
+(autoload 'auto-dim-other-buffers-mode "auto-dim-other-buffers" "\
+Visually makes windows without focus less prominent.
+
+If called interactively, enable Auto-Dim-Other-Buffers mode if
+ARG is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
+
+Windows without input focus are made to look less prominent by
+applying ‘auto-dim-other-buffers-face’ to them.  With many
+windows in a frame, the idea is that this mode helps recognise
+which is the selected window by providing a non-intrusive but
+still noticeable visual indicator.
+
+Note that despite it’s name, since Emacs 27 this mode operates
+on *windows* rather than buffers.  In older versions of Emacs, if
+a buffer was displayed in multiple windows, none of them would be
+dimmed even though at most one could have focus.  This historic
+behaviour is where the mode gets its name from.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "auto-dim-other-buffers" '("adob--" "auto-dim-other-buffers-dim-on-")))
 
 
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar s rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iodine-theme iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol auto-dim-other-buffers)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200910.909" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200910.909" "/home/scfrazer/.emacs.d/elpa/rg-20200905.1605" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732" "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:
