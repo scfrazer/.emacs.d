@@ -10,23 +10,6 @@
 (setq-default my-font-lock-auto-whitespace t)
 (setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
 
-(require 'highlight-indent-guides)
-(defun my-highlight-indent-guides-auto-set-faces (orig-fun)
-  (if (equal frame-background-mode 'light)
-      (set-face-foreground 'highlight-indent-guides-character-face
-                           (color-lighten-name (face-foreground 'font-lock-comment-face) 25))
-    (set-face-foreground 'highlight-indent-guides-character-face
-                         (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
-(advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
-(setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
-
-(defun my-buffer-substring--filter (beg end &optional delete)
-  (let ((string (subst-char-in-string highlight-indent-guides-character ?  (buffer-substring beg end))))
-    (when delete
-      (delete-region beg end))
-    string))
-(setq filter-buffer-substring-function #'my-buffer-substring--filter)
-
 (require 'bind-key)
 (require 'bind-remind)
 
@@ -75,21 +58,8 @@
 (setq filladapt-mode-line-string nil)
 (setq-default filladapt-mode t)
 
-;; (require 'my-fzf)
-;; (bind-keys* ("C-x f" . my-fzf-project-file)
-;;             ;; ("C-x W" . my-fzf-any-project-file)
-;;             ("C-x F" . my-fzf-local-file)
-;;             ;; ("C-x F" . my-fzf-any-local-file)
-;;             ("C-x d" . my-fzf-any-project-directory)
-;;             ("C-x D" . my-fzf-any-local-directory))
-
 (require 'goto-last-change)
 (bind-keys* ("C-M-@" . goto-last-change))
-
-;; (require 'my-ido)
-;; (bind-keys* ("C-c b"   . my-ido-insert-bookmark-dir)
-;;             ("C-x C-r" . my-ido-recentf-file))
-;; (ido-mode -1)
 
 (require 'my-icomplete)
 (bind-keys* ("C-x b"   . my-icomplete-find-file-from-bookmark)
@@ -119,8 +89,6 @@
 (require 'my-project)
 
 (require 'my-recentf)
-
-;;(require 'redo+)
 
 (require 'sh-script)
 
@@ -172,7 +140,7 @@
   :commands (asic-compile))
 
 (use-package auto-highlight-symbol
-  :demand t
+  :bind* (("M-\\" . auto-highlight-symbol-mode))
   :custom
   (ahs-suppress-log t)
   (ahs-select-invisible 'skip)
@@ -197,10 +165,7 @@
     (define-key auto-highlight-symbol-mode-map (kbd "M--") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "C-x C-'") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "C-x C-a") nil)
-    (setq minor-mode-alist (remove (assq 'auto-highlight-symbol-mode minor-mode-alist) minor-mode-alist))
-    (global-auto-highlight-symbol-mode t))
-  :bind* (("<f5>" . ahs-backward)
-          ("<f6>" . ahs-forward)))
+    (setq minor-mode-alist (remove (assq 'auto-highlight-symbol-mode minor-mode-alist) minor-mode-alist))))
 
 (use-package bm
   :bind* (("M-^" . my-bm-toggle-or-show)
@@ -343,6 +308,25 @@
     (require 'my-grep)
     (require 'my-grep-ed)
     (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
+
+(use-package highlight-indent-guides
+  :bind*  (("M-|" . highlight-indent-guides-mode))
+  :config
+  (progn
+    (defun my-highlight-indent-guides-auto-set-faces (orig-fun)
+      (if (equal frame-background-mode 'light)
+          (set-face-foreground 'highlight-indent-guides-character-face
+                               (color-lighten-name (face-foreground 'font-lock-comment-face) 25))
+        (set-face-foreground 'highlight-indent-guides-character-face
+                             (color-darken-name (face-foreground 'font-lock-comment-face) 10))))
+    (advice-add #'highlight-indent-guides-auto-set-faces :around #'my-highlight-indent-guides-auto-set-faces)
+    (setq minor-mode-alist (remove (assq 'highlight-indent-guides-mode minor-mode-alist) minor-mode-alist))
+    (defun my-buffer-substring--filter (beg end &optional delete)
+      (let ((string (subst-char-in-string highlight-indent-guides-character ?  (buffer-substring beg end))))
+        (when delete
+          (delete-region beg end))
+        string))
+    (setq filter-buffer-substring-function #'my-buffer-substring--filter)))
 
 (use-package hl-line
   :bind* ("C-c #" . hl-line-mode))
@@ -1032,24 +1016,6 @@ or the region with prefix arg."
     (replace-match ""))
   (goto-char (point-min)))
 
-;; (defun my-edebug-remove-instrumentation ()
-;;   "Remove Edebug instrumentation from all functions."
-;;   (interactive)
-;;   (let ((functions nil))
-;;     (mapatoms
-;;      (lambda (symbol)
-;;        (when (and (functionp symbol)
-;;                   (get symbol 'edebug))
-;;          (let ((unwrapped (edebug-unwrap* (symbol-function symbol))))
-;;            (unless (equal unwrapped (symbol-function symbol))
-;;              (push symbol functions)
-;;              (setf (symbol-function symbol) unwrapped)))))
-;;      obarray)
-;;     (if (not functions)
-;;         (message "Found no functions to remove instrumentation from")
-;;       (message "Remove edebug instrumentation from %s"
-;;                (mapconcat #'symbol-name functions ", ")))))
-
 (defun my-editor-mode ()
   "For use when invoked as $EDITOR."
   (setq-local mode-name "EDITOR")
@@ -1478,23 +1444,6 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
                     (buffer-substring (region-beginning) (region-end)))
     (set-register (register-read-with-preview "(Last kill) Set register:") (current-kill 0 t))))
 
-;; (defun my-style-symbol-toggle ()
-;;   "Toggle style of symbol between camelCase and snake_case."
-;;   (interactive "*")
-;;   (save-excursion
-;;     (let* ((bounds (my-bounds-of-current-symbol))
-;;            (beg (car bounds))
-;;            (end (cdr bounds)))
-;;       (with-no-undo-boundaries
-;;         (if (progn (goto-char beg) (search-forward "_" end t))
-;;             (progn
-;;               (upcase-initials-region beg end)
-;;               (replace-string "_" "" nil beg end)
-;;               (downcase-region beg (1+ beg)))
-;;           (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ beg) end)
-;;           (setq bounds (my-bounds-of-current-symbol))
-;;           (downcase-region (car bounds) (cdr bounds)))))))
-
 (defun my-suspend-emacs (&optional arg)
   "Suspend emacs.  With prefix arg, cd to current-directory."
   (interactive "P")
@@ -1720,14 +1669,6 @@ Prefix with C-u to resize the `next-window'."
     (my-word-wrap-on-hook))
   (my-backup-set-mode))
 
-;; (defun my-minibuffer-ido-insert-bookmark-dir (&optional arg)
-;;   "Insert a bookmarked dir using ido."
-;;   (interactive "P")
-;;   (let* ((enable-recursive-minibuffers t)
-;;          (dir (my-ido-get-bookmark-dir)))
-;;     (when dir
-;;       (insert dir))))
-
 (defun my-minibuffer-setup-hook ()
   (override-global-mode -1)
   (show-mark-mode 0)
@@ -1750,24 +1691,6 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-r") 'my-minibuffer-regexp-quote)
   (local-set-key (kbd "M-w") 'my-minibuffer-insert-region)
   (local-set-key (kbd "M-z") (lambda () (interactive) nil)))
-
-;; (defface my-next-error-face
-;;   '((t (:inherit hl-line)))
-;;   "Face to highlight current 'error'."
-;;   :group 'faces)
-;; (defvar my-next-error-overlay nil)
-;; (defun my-next-error-hook ()
-;;   (when next-error-last-buffer
-;;     (with-current-buffer next-error-last-buffer
-;;       (when my-next-error-overlay
-;;         (delete-overlay my-next-error-overlay))
-;;       (setq my-next-error-overlay (make-overlay (point-at-bol) (point-at-eol)))
-;;       (overlay-put my-next-error-overlay 'face 'my-next-error-face))))
-;; (add-hook 'next-error-hook 'my-next-error-hook)
-
-(defun my-prog-mode-hook ()
-  ;; (highlight-indent-guides-mode 1)
-  )
 
 (defun my-sh-mode-hook ()
   (when (and buffer-file-name (string-match "\\.zsh.*\\'" buffer-file-name))
@@ -1903,7 +1826,6 @@ Prefix with C-u to resize the `next-window'."
  ("M-q"         . my-fill)
  ("M-u"         . my-recenter)
  ("M-z"         . undo-redo)
- ("M-|"         . highlight-indent-guides-mode)
  ("M-~"         . previous-error))
 
 ;; These have to be in this order
