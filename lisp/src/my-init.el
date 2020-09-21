@@ -26,6 +26,10 @@
 (bind-keys* ("C-j"   . avy-goto-char-timer)
             ("C-M-j" . avy-goto-line))
 
+(require 'beacon)
+(beacon-mode 1)
+(bind-keys* ("C-M-b" . beacon-blink))
+
 (require 'my-bookmark)
 (my-bookmark-reload)
 

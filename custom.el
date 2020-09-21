@@ -11,9 +11,10 @@
  '(ahs-inhibit-face-list nil t)
  '(ahs-select-invisible 'skip t)
  '(ahs-suppress-log t t)
- '(beacon-blink-delay 0.1)
+ '(beacon-blink-delay 0.25)
  '(beacon-blink-duration 0.1)
  '(beacon-blink-when-window-scrolls nil)
+ '(beacon-mode t)
  '(beacon-push-mark nil)
  '(beacon-size 40)
  '(clean-buffer-list-kill-buffer-names
