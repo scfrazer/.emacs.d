@@ -44,8 +44,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; imenu
 
-(require 'my-ido)
-
 (defvar my-pop-back-imenu-stack nil)
 (make-variable-buffer-local 'my-pop-back-imenu-stack)
 
@@ -53,9 +51,6 @@
   (push (point) my-pop-back-imenu-stack))
 
 (defadvice imenu-default-goto-function (before my-imenu-default-goto-function activate)
-  (my-pop-back-imenu-save-pos))
-
-(defadvice my-ido-imenu-goto-symbol (before my-pop-back-ido-imenu-goto-symbol activate)
   (my-pop-back-imenu-save-pos))
 
 (defun my-pop-back-imenu ()

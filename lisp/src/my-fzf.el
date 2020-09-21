@@ -1,13 +1,12 @@
 ;;; my-fzf.el
 
 (require 'fzf)
-(require 'my-ido)
 (require 'my-dired)
 
 (defun my-fzf-start (type &optional workspace all)
   (let ((dir (if workspace
                  (or (car (project-roots (project-current))) default-directory)
-               (ido-read-directory-name "Starting dir? " nil default-directory t))))
+               (read-directory-name "Starting dir? " default-directory nil t))))
     (let ((process-environment
            (cons (concat "FZF_DEFAULT_COMMAND=fd --type " type " --hidden --exclude .git" (when all " --no-ignore")) process-environment)))
       (fzf/start dir))))

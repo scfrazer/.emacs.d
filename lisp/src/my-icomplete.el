@@ -20,7 +20,22 @@
 (define-key icomplete-minibuffer-map (kbd "C-n")    'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p")    'icomplete-backward-completions)
 
-(define-key icomplete-fido-mode-map (kbd "/") 'icomplete-fido-ret)
+(defun my-icomplete-fido-slash ()
+  "Insert slash, or exit minibuffer, or enter directory."
+  (interactive)
+  (let* ((dir (and (eq (icomplete--category) 'file)
+                   (file-name-directory (icomplete--field-string))))
+         (current (car completion-all-sorted-completions))
+         (probe (and dir current
+                     (expand-file-name (directory-file-name current) dir))))
+    (cond ((and (eq (icomplete--category) 'file)
+                (string= (file-name-nondirectory (icomplete--field-string)) "~"))
+           (insert "/"))
+          ((and probe (file-directory-p probe) (not (string= current "./")))
+           (icomplete-force-complete))
+          (t
+           (icomplete-force-complete-and-exit)))))
+(define-key icomplete-fido-mode-map (kbd "/") 'my-icomplete-fido-slash)
 
 (defun my-icomplete--fido-mode-setup ()
   "Customize icomplete fido mode."
@@ -54,21 +69,18 @@
   "Find file starting from bookmark."
   (interactive)
   (let* ((bmk-list (bookmark-all-names))
-         (name (completing-read "Use dir of bookmark: " (my-icomplete-presorted-completion-table (append bmk-list (list "~"))) nil t))
-         dir bmk)
-    (if (string= name "~")
-        (setq dir "~")
-      (setq bmk (bookmark-get-bookmark name))
-      (when bmk
-        (setq bookmark-alist (delete bmk bookmark-alist))
-        (push bmk bookmark-alist)
-        (let ((filename (bookmark-get-filename bmk)))
-          (if (file-directory-p filename)
-              (setq dir filename)
-            (setq dir (file-name-directory filename))))))
-    (when dir
-      (let ((default-directory dir))
-        (call-interactively 'find-file)))))
+         (name (completing-read "Use dir of bookmark: " (my-icomplete-presorted-completion-table bmk-list) nil t))
+         bmk)
+    (setq bmk (bookmark-get-bookmark name))
+    (when bmk
+      (setq bookmark-alist (delete bmk bookmark-alist))
+      (push bmk bookmark-alist)
+      (let ((filename (bookmark-get-filename bmk)) dir)
+        (if (file-directory-p filename)
+            (setq dir filename)
+          (setq dir (file-name-directory filename)))
+        (let ((default-directory dir))
+          (call-interactively 'find-file))))))
 
 (defun my-icomplete-recentf-file ()
   "Find a file in the recently opened file list using completing-read."

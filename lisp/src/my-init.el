@@ -672,6 +672,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
               flyspell-mode-map nil
               font-lock-maximum-decoration '((c++-mode . 2) (t . t))
               hi-lock-auto-select-face t
+              hi-lock-face-defaults '("hi-blue" "hi-salmon" "hi-green" "hi-yellow" "hi-pink" "hi-aquamarine")
               highlight-changes-active-string " Chg+"
               highlight-changes-global-modes nil
               highlight-changes-passive-string " Chg-"
@@ -1705,7 +1706,6 @@ Prefix with C-u to resize the `next-window'."
 (add-hook 'find-file-hook 'my-find-file-hook)
 (add-hook 'find-file-not-found-functions 'file-template-find-file-not-found-hook 'append)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
-(add-hook 'prog-mode-hook 'my-prog-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
