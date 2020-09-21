@@ -136,6 +136,16 @@ List all `rg-mode' buffers in `ibuffer'." t nil)
 
 ;;;***
 
+;;;### (autoloads nil "rg-isearch" "rg-isearch.el" (0 0 0 0))
+;;; Generated autoloads from rg-isearch.el
+ (autoload 'rg-isearch-current-file "rg-isearch.el" "" t)
+ (autoload 'rg-isearch-current-dir "rg-isearch.el" "" t)
+ (autoload 'rg-isearch-project "rg-isearch.el" "" t)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-")))
+
+;;;***
+
 ;;;### (autoloads nil "rg-menu" "rg-menu.el" (0 0 0 0))
 ;;; Generated autoloads from rg-menu.el
 

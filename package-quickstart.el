@@ -836,10 +836,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20200919.1557/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20200919.1557/rg-autoloads.el") (car load-path))))
 
 
 
@@ -958,6 +958,13 @@ files with the same name pattern still will be searched.
 List all `rg-mode' buffers in `ibuffer'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-ibuffer" '("rg-")))
+
+
+ (autoload 'rg-isearch-current-file "rg-isearch.el" "" t)
+ (autoload 'rg-isearch-current-dir "rg-isearch.el" "" t)
+ (autoload 'rg-isearch-project "rg-isearch.el" "" t)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-")))
 
 
 
@@ -1524,10 +1531,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200921.626/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200921.626/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1539,10 +1546,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200921.626/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200921.626/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -2290,42 +2297,6 @@ the subtree.  The filter action is read from `dired-filter-map'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-narrow-20181114.1723/dired-narrow-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-narrow-20181114.1723/dired-narrow-autoloads.el") (car load-path))))
-
-
-
-(autoload 'dired-narrow-regexp "dired-narrow" "\
-Narrow a dired buffer to the files matching a regular expression.
-
-\(fn)" t nil)
-
-(autoload 'dired-narrow "dired-narrow" "\
-Narrow a dired buffer to the files matching a string.
-
-If the string contains spaces, then each word is matched against
-the file name separately.  To succeed, all of them have to match
-but the order does not matter.
-
-For example \"foo bar\" matches filename \"bar-and-foo.el\".
-
-\(fn)" t nil)
-
-(autoload 'dired-narrow-fuzzy "dired-narrow" "\
-Narrow a dired buffer to the files matching a fuzzy string.
-
-A fuzzy string is constructed from the filter string by inserting
-\".*\" between each letter.  This is then matched as regular
-expression against the file name.
-
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-narrow" '("dired-narrow-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20200515.1513/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2461,6 +2432,45 @@ EV is the mouse event.
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bm-sync" '("bm-bookmark-")))
 
 
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20190104.1931/beacon-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/beacon-20190104.1931/beacon-autoloads.el") (car load-path))))
+
+
+
+(autoload 'beacon-blink "beacon" "\
+Blink the beacon at the position of the cursor.
+Unlike `beacon-blink-automated', the beacon will blink
+unconditionally (even if `beacon-mode' is disabled), and this can
+be invoked as a user command or called from lisp code." t nil)
+
+(defvar beacon-mode nil "\
+Non-nil if Beacon mode is enabled.
+See the `beacon-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `beacon-mode'.")
+
+(custom-autoload 'beacon-mode "beacon" nil)
+
+(autoload 'beacon-mode "beacon" "\
+Toggle Beacon mode on or off.
+
+If called interactively, enable Beacon mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
+
+\\{beacon-mode-map}
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "beacon" '("beacon-")))
 
 
 )
@@ -2733,10 +2743,10 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200919.930/auto-highlight-symbol-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200921.338/auto-highlight-symbol-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200919.930/auto-highlight-symbol-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200921.338/auto-highlight-symbol-autoloads.el") (car load-path))))
 
 
 
@@ -2778,59 +2788,16 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-dim-other-buffers-20200801.2029/auto-dim-other-buffers-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-dim-other-buffers-20200801.2029/auto-dim-other-buffers-autoloads.el") (car load-path))))
-
-
-
-(defvar auto-dim-other-buffers-mode nil "\
-Non-nil if Auto-Dim-Other-Buffers mode is enabled.
-See the `auto-dim-other-buffers-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `auto-dim-other-buffers-mode'.")
-
-(custom-autoload 'auto-dim-other-buffers-mode "auto-dim-other-buffers" nil)
-
-(autoload 'auto-dim-other-buffers-mode "auto-dim-other-buffers" "\
-Visually makes windows without focus less prominent.
-
-If called interactively, enable Auto-Dim-Other-Buffers mode if
-ARG is positive, and disable it if ARG is zero or negative.  If
-called from Lisp, also enable the mode if ARG is omitted or nil,
-and toggle it if ARG is `toggle'; disable the mode otherwise.
-
-Windows without input focus are made to look less prominent by
-applying ‘auto-dim-other-buffers-face’ to them.  With many
-windows in a frame, the idea is that this mode helps recognise
-which is the selected window by providing a non-intrusive but
-still noticeable visual indicator.
-
-Note that despite it’s name, since Emacs 27 this mode operates
-on *windows* rather than buffers.  In older versions of Emacs, if
-a buffer was displayed in multiple windows, none of them would be
-dimmed even though at most one could have focus.  This historic
-behaviour is where the mode gets its name from.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "auto-dim-other-buffers" '("adob--" "auto-dim-other-buffers-dim-on-")))
-
-
-)
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree dired-narrow deft dash-functional browse-kill-ring bm avy auto-highlight-symbol auto-dim-other-buffers)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional browse-kill-ring bm beacon avy auto-highlight-symbol)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200919.732" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200919.732" "/home/scfrazer/.emacs.d/elpa/rg-20200913.1334" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20200921.626" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20200921.626" "/home/scfrazer/.emacs.d/elpa/rg-20200919.1557" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200720.2014")
          Info-directory-list)))
 
 ;; Local Variables:

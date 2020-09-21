@@ -1,0 +1,2 @@
+;;; Generated package description from /home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200921.338/auto-highlight-symbol.el  -*- no-byte-compile: t -*-
+(define-package "auto-highlight-symbol" "20200921.338" "Automatic highlighting current symbol minor mode" 'nil :commit "8af0787622a2c437437a6564f6951719a5c4f697" :keywords '("highlight" "face" "match" "convenience") :authors '(("Mitsuo Saito" . "arch320@NOSPAM.gmail.com")) :maintainer '("Mitsuo Saito" . "arch320@NOSPAM.gmail.com") :url "http://github.com/jcs-elpa/auto-highlight-symbol")

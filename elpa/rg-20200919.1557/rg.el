@@ -421,6 +421,13 @@ detailed info."
     (or buffer
         (error "Current buffer is not an rg-mode buffer and no buffer with name '%s'" buffer-name))))
 
+(defun rg-get-buffer-file-name ()
+  "Wrapper for function `buffer-file-name'.
+Return the result of function `buffer-file-name' if buffer has an
+associated file, otherwise raise a user error."
+  (if (buffer-file-name)
+      (file-name-nondirectory (buffer-file-name))
+    (user-error "Buffer does not have an associated file")))
 
 (defalias 'kill-rg 'kill-compilation)
 (defalias 'rg-kill-current 'kill-compilation "Kill the ongoing ripgrep search.")
@@ -663,8 +670,7 @@ Returns forms for binding function with NAME into rg-menu."
       (unless (and (consp menu-opt)
                    (= (length menu-opt) 3))
         (user-error "'%S' should be a list of length 3" menu-opt))
-      `((rg-menu-wrap-transient-search ,name)
-        (rg-menu-transient-insert
+      `((rg-menu-transient-insert
          ,@menu-opt
          ',(intern (concat (symbol-name name) "--transient")))))))
 
@@ -739,6 +745,7 @@ Example:
           (list ,@(mapcar 'cdr iargs)))
          (let ,local-bindings
            (rg-run query files dir literal confirm flags)))
+       (rg-menu-wrap-transient-search ,name)
        ,@menu-forms)))
 
 ;;;###autoload (autoload 'rg-project "rg.el" "" t)
@@ -773,7 +780,7 @@ under the current directory."
 name (as a pattern) under the current directory."
   :query point
   :format literal
-  :files (file-name-nondirectory (buffer-file-name))
+  :files (rg-get-buffer-file-name)
   :dir current)
 
 ;;;###autoload

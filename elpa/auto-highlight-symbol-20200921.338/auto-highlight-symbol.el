@@ -7,8 +7,8 @@
 ;; Adapted-By: Gennadiy Zlobin <gennad.zlobin@NOSPAM.gmail.com>
 ;;             Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; Version: 1.57
-;; Package-Version: 20200919.930
-;; Package-Commit: f080754ac84fc43318ceda901f67247fdf373aad
+;; Package-Version: 20200921.338
+;; Package-Commit: 8af0787622a2c437437a6564f6951719a5c4f697
 ;; Keywords: highlight face match convenience
 ;; URL: http://github.com/jcs-elpa/auto-highlight-symbol
 ;; Compatibility: GNU Emacs 22.3 23.x 24.x later
@@ -186,6 +186,9 @@
 
 ;;; (@* "Changelog" )
 ;;
+;; v1.58
+;;   fix sharp quotes for function names
+;;
 ;; v1.57
 ;;   remove annoying `underline' property from `ahs-definition-face'
 ;;   minor docstring changes
@@ -262,7 +265,7 @@
   (if (or (>= emacs-major-version 24)
           (and (= emacs-major-version 23)
                (>= emacs-minor-version 2)))
-      (defalias 'ahs-called-interactively-p 'called-interactively-p)
+      (defalias #'ahs-called-interactively-p 'called-interactively-p)
     (defmacro ahs-called-interactively-p (&optional arg)
       '(called-interactively-p))))
 
@@ -682,10 +685,11 @@ You can do these operations at One Key!
   "Display log."
   (unless ahs-suppress-log
     (let* ((data (ahs-log-format key))
-           (msg (apply 'format data args))
+           (msg (apply #'format data args))
            (message-log-max
             (not ahs-log-echo-area-only)))
-      (message "%s" msg))) nil)
+      (message "%s" msg)))
+  nil)
 
 ;;
 ;; (@* "Range plugin" )
@@ -848,7 +852,7 @@ You can do these operations at One Key!
 
 (defmacro ahs-plugin-bod-error (err)
   `(if (= 4 (length ,err))
-       (apply 'ahs-log 'error-scan-sexp ,err)
+       (apply #'ahs-log 'error-scan-sexp ,err)
      (ahs-log 'self ,err)))
 
 (defun ahs-plugin-orignal-n2d ()
@@ -916,7 +920,7 @@ You can do these operations at One Key!
   "Start idle timer."
   (unless ahs-idle-timer
     (setq ahs-idle-timer
-          (run-with-idle-timer ahs-idle-interval t 'ahs-idle-function))))
+          (run-with-idle-timer ahs-idle-interval t #'ahs-idle-function))))
 
 (defun ahs-restart-timer ()
   "Restart idle timer."
@@ -1125,7 +1129,7 @@ You can do these operations at One Key!
               ahs-start-point  beg
               ahs-search-work  nil
               ahs-need-fontify nil)
-        (add-hook 'pre-command-hook 'ahs-unhighlight nil t) t))))
+        (add-hook 'pre-command-hook #'ahs-unhighlight nil t) t))))
 
 (defun ahs-unhighlight (&optional force)
   "Unhighlight"
@@ -1133,7 +1137,7 @@ You can do these operations at One Key!
             (not (memq this-command
                        ahs-unhighlight-allowed-commands)))
     (ahs-remove-all-overlay)
-    (remove-hook 'pre-command-hook 'ahs-unhighlight t)))
+    (remove-hook 'pre-command-hook #'ahs-unhighlight t)))
 
 (defun ahs-highlight-current-symbol (beg end)
   "Highlight current symbol."
@@ -1212,8 +1216,8 @@ You can do these operations at One Key!
         ahs-start-modification   nil
         ahs-inhibit-modification nil)
   (overlay-put ahs-current-overlay 'face ahs-edit-mode-face)
-  (remove-hook 'pre-command-hook 'ahs-unhighlight t)
-  (add-hook 'post-command-hook 'ahs-edit-post-command-hook-function nil t)
+  (remove-hook 'pre-command-hook #'ahs-unhighlight t)
+  (add-hook 'post-command-hook #'ahs-edit-post-command-hook-function nil t)
   (run-hooks 'ahs-edit-mode-on-hook)
 
   ;; Exit edit mode when undo over edit mode.
@@ -1244,9 +1248,9 @@ You can do these operations at One Key!
            (ahs-inside-overlay-p ahs-current-overlay))
       (progn
         (overlay-put ahs-current-overlay 'face (ahs-current-plugin-prop 'face))
-        (add-hook 'pre-command-hook 'ahs-unhighlight nil t))
+        (add-hook 'pre-command-hook #'ahs-unhighlight nil t))
     (ahs-remove-all-overlay))
-  (remove-hook 'post-command-hook 'ahs-edit-post-command-hook-function t)
+  (remove-hook 'post-command-hook #'ahs-edit-post-command-hook-function t)
   (run-hooks 'ahs-edit-mode-off-hook)
 
   ;; Display log
@@ -1433,12 +1437,12 @@ You can do these operations at One Key!
 
                 for x in ahs-overlay-list
 
-                count (funcall 'ahs-backward-p x) into before
-                count (funcall 'ahs-forward-p x)  into after
+                count (funcall #'ahs-backward-p x) into before
+                count (funcall #'ahs-forward-p x)  into after
 
-                count (and (funcall 'ahs-inside-display-p x)
+                count (and (funcall #'ahs-inside-display-p x)
                            (incf hidden?)
-                           (not (funcall 'ahs-hidden-p x)))
+                           (not (funcall #'ahs-hidden-p x)))
                 into displayed
 
                 finally
@@ -1640,7 +1644,7 @@ That's all."
 ;;
 
 ;; Remove all overlays and exit edit mode before revert-buffer
-(add-hook 'before-revert-hook 'ahs-clear)
+(add-hook 'before-revert-hook #'ahs-clear)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 

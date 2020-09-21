@@ -7,10 +7,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil)
- '(ahs-inhibit-face-list nil)
- '(ahs-select-invisible 'skip)
- '(ahs-suppress-log t)
+ '(ahs-case-fold-search nil t)
+ '(ahs-inhibit-face-list nil t)
+ '(ahs-select-invisible 'skip t)
+ '(ahs-suppress-log t t)
+ '(beacon-blink-delay 0.1)
+ '(beacon-blink-duration 0.1)
+ '(beacon-blink-when-window-scrolls nil)
+ '(beacon-push-mark nil)
+ '(beacon-size 40)
  '(clean-buffer-list-kill-buffer-names
    '("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*"))
  '(completion-category-overrides '((file (styles basic substring))))
@@ -35,7 +40,7 @@
  '(modus-operandi-theme-intense-standard-completions t)
  '(modus-operandi-theme-slanted-constructs t)
  '(package-selected-packages
-   '(auto-dim-other-buffers tron-legacy-theme goto-last-change reformatter dired-narrow tango-plus-theme auto-highlight-symbol avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt flymake-easy fzf git-timemachine highlight-indent-guides htmlize hydra icomplete-vertical ido-vertical-mode iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(beacon tron-legacy-theme goto-last-change reformatter tango-plus-theme auto-highlight-symbol avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt flymake-easy fzf git-timemachine highlight-indent-guides htmlize hydra icomplete-vertical ido-vertical-mode iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
@@ -55,4 +60,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(beacon-fallback-background ((t (:background "#ffffff")))))
