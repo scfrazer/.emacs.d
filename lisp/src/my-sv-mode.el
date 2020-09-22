@@ -3,6 +3,7 @@
 (require 'sv-mode)
 (require 'doxymacs)
 (require 'quick-edit)
+(require 'my-icomplete)
 
 (defun my-sv-mode-bit-vector ()
   "Expand bit vector."
@@ -77,7 +78,7 @@
                        (cons "phase_started" 'function)
                        (cons "phase_ready_to_end" 'function)
                        (cons "phase_ended" 'function)))
-         (phase (completing-read "Insert phase: " (mapcar #'car phases) nil t))
+         (phase (my-completing-read "Insert phase: " (mapcar #'car phases) nil t))
          (kind (cdr (assoc phase phases))))
     (when (and phase kind)
       (unless current-prefix-arg

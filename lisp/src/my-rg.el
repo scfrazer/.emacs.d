@@ -103,27 +103,27 @@ If FULL-COMMAND specifies if the full command line search was done."
              itemspace
              (rg-header-render-label "case")
              (my-rg-header-render-toggle
-              `(not (member "-i" (rg-search-toggle-flags ,search))))
+              `(not (member "-i" (rg-search-flags ,search))))
              itemspace
              (rg-header-render-label "word")
              (my-rg-header-render-toggle
-              `(member "--word-regexp" (rg-search-toggle-flags ,search)))
+              `(member "--word-regexp" (rg-search-flags ,search)))
              itemspace
              (rg-header-render-label ".ignore")
              (my-rg-header-render-toggle
-              `(not (member "--no-ignore" (rg-search-toggle-flags ,search))))
+              `(not (member "--no-ignore" (rg-search-flags ,search))))
              itemspace
              (rg-header-render-label "unrestricted")
              (my-rg-header-render-toggle
-              `(member "-uu" (rg-search-toggle-flags ,search)))
+              `(member "-uu" (rg-search-flags ,search)))
              itemspace
              (rg-header-render-label "max-depth")
              (my-rg-header-render-toggle
-              `(member "--max-depth 1" (rg-search-toggle-flags ,search)))
+              `(member "--max-depth 1" (rg-search-flags ,search)))
              itemspace
              (rg-header-render-label "zip")
              (my-rg-header-render-toggle
-              `(member "-z" (rg-search-toggle-flags ,search)))
+              `(member "-z" (rg-search-flags ,search)))
              itemspace
              (rg-header-render-label "hits")
              '(:eval (format "%d" rg-hit-count)))))))

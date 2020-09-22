@@ -65,6 +65,10 @@
                    (cycle-sort-function . ,#'identity))
       (complete-with-action action completions string pred))))
 
+(defun my-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+  "Like `completing-read', but don't sort COLLECTION"
+  (completing-read prompt (my-icomplete-presorted-completion-table collection) predicate require-match initial-input hist def inherit-input-method))
+
 (defun my-icomplete-find-file-from-bookmark ()
   "Find file starting from bookmark."
   (interactive)

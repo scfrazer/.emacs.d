@@ -1,6 +1,7 @@
 ;;; my-imenu-extras.el
 
 (require 'imenu)
+(require 'my-icomplete)
 
 (setq imenu-max-items 25)
 (setq imenu-max-item-length 115)
@@ -74,7 +75,7 @@
                     (puthash name (1+ num) names))
                 (puthash name 1 names)))
             items))
-    (let* ((item (assoc (completing-read "Goto symbol: " (mapcar 'car items) nil t nil nil guess) items))
+    (let* ((item (assoc (my-completing-read "Goto symbol: " (mapcar 'car items) nil t nil nil guess) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))

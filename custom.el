@@ -7,13 +7,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil t)
- '(ahs-inhibit-face-list nil t)
- '(ahs-select-invisible 'skip t)
- '(ahs-suppress-log t t)
+ '(ahs-case-fold-search nil)
+ '(ahs-inhibit-face-list nil)
+ '(ahs-select-invisible 'skip)
+ '(ahs-suppress-log t)
  '(beacon-blink-delay 0.25)
  '(beacon-blink-duration 0.1)
  '(beacon-blink-when-window-scrolls nil)
+ '(beacon-lighter "")
  '(beacon-mode t)
  '(beacon-push-mark nil)
  '(beacon-size 40)
