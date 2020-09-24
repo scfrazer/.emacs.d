@@ -53,7 +53,7 @@
   :group 'sim-log-mode)
 
 (defface sim-log-mode-debug-face
-  '((t (:foreground "black" :background "#FF8700")))
+  '((t (:foreground "black" :background "orange")))
   "Font Lock mode face used to highlight debug markers."
   :group 'sim-log-mode)
 
@@ -205,9 +205,10 @@
   (setq font-lock-defaults '(sim-log-mode-font-lock-keywords t))
   (turn-on-font-lock)
 
-  (setq isearch-lazy-count nil)
-  (when (fboundp 'auto-highlight-symbol-mode)
-    (auto-highlight-symbol-mode -1))
+  (when (boundp 'isearch-lazy-count)
+    (make-local-variable 'isearch-lazy-count)
+    (setq isearch-lazy-count nil))
+
   (setq truncate-lines nil)
   (setq word-wrap t)
   (setq imenu-generic-expression (list '(nil "Phase started: \\(.+\\)" 1)))

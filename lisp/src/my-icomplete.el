@@ -11,6 +11,7 @@
               icomplete-delay-completions-threshold 100
               icomplete-max-delay-chars 2
               icomplete-tidy-shadowed-file-names t
+              orderless-matching-styles '(orderless-prefixes)
               read-buffer-completion-ignore-case t
               read-file-name-completion-ignore-case t)
 
