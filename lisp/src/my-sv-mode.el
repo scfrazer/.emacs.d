@@ -98,17 +98,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'my-xclip)
-;;
-;; (defun my-sv-breakpoint (&optional arg)
-;;   "Create a VCS breakpoint string and copy to the clipboard.
-;; With prefix argument, add a condition."
-;;   (interactive "P")
-;;   (let* ((condition (and arg (read-string "Breakpoint condition? ")))
-;;          (breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"
-;;                              (if arg (concat " -condition {" condition "}") ""))))
-;;     (my-xclip-copy-text breakpoint)
-;;     (message breakpoint)))
+(defun my-sv-breakpoint (&optional arg)
+  "Create a VCS breakpoint string.
+With prefix argument, add a condition."
+  (interactive "P")
+  (let* ((condition (and arg (read-string "Breakpoint condition? ")))
+         (breakpoint (concat "stop -file {" (buffer-file-name) "} -line {" (number-to-string (line-number-at-pos)) "}"
+                             (if arg (concat " -condition {" condition "}") ""))))
+    (message breakpoint)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -128,7 +125,7 @@
 
 (defun my-sv-mode-hook ()
   (doxymacs-mode 1)
-  ;; (define-key sv-mode-map (kbd "<f10>") 'my-sv-breakpoint)
+  (define-key sv-mode-map (kbd "<f9>") 'my-sv-breakpoint)
   (setq ff-other-file-alist '(("\\.sv$" (".svh"))
                               ("\\.svh$" (".sv")))))
 
