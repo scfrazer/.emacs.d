@@ -51,9 +51,9 @@
    "  " mode-line-buffer-identification
    "  " mode-line-modes
    (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◓"))
-   (:eval (let ((workspace-path (getenv "WORKSPACE")))
-            (when workspace-path
-              (concat " " (propertize (concat " " (file-name-nondirectory workspace-path) " ") 'face 'my-workspace-face)))))
+   ;; (:eval (let ((workspace-path (getenv "WORKSPACE")))
+   ;;          (when workspace-path
+   ;;            (concat " " (propertize (concat " " (file-name-nondirectory workspace-path) " ") 'face 'my-workspace-face)))))
    (:eval (if (and (featurep 'task) task-current-name)
               (concat "  [Task: " (or task-current-name "NONE") "]")
             ""))))
