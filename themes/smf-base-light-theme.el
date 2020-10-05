@@ -53,7 +53,7 @@
  `(link-visited                        ((t :foreground ,(smf-color 93) :italic t :underline t)))
  `(markdown-code-face                  ((t :background "gray97")))
  `(markdown-table-face                 ((t :foreground "steelblue4")))
- `(match                               ((t :inherit ediff-fine-diff-A)))
+ `(match                               ((t :background "lavenderblush1")))
  `(mc/cursor-face                      ((t :foreground "white" :background ,(smf-color 162))))
  `(my-display-table-face               ((t :foreground ,(smf-color 17) :background ,(smf-color 253) :bold t)))
  `(org-block-background                ((t :background "ivory")))

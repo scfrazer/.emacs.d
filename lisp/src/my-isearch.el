@@ -7,10 +7,10 @@
 
 (defvar my-isearch-region-str nil)
 
-(defun my-isearch-forward (&optional arg)
-  "Same as `isearch-forward', but C-u means take from-string from region,"
-  (interactive "P")
-  (when (and arg (mark t))
+(defun my-isearch-forward ()
+  "Same as `isearch-forward', but take from-string from region if active."
+  (interactive)
+  (when (region-active-p)
     (let ((start (region-beginning)))
       (setq my-isearch-region-str (buffer-substring-no-properties start (region-end)))
       (deactivate-mark)

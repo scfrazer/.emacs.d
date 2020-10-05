@@ -1112,6 +1112,21 @@ With a numeric prefix, goto that window line."
         (when col
           (move-to-column (string-to-number col)))))))
 
+(defun my-highlight-regexp()
+  "Like `highlight-regexp' except take string from region if active."
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (highlight-regexp
+         (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))
+         (hi-lock-read-face-name))
+        (deactivate-mark))
+    (let* ((guess (buffer-substring-no-properties
+                   (save-excursion (skip-syntax-backward "w_") (point))
+                   (save-excursion (skip-syntax-forward "w_") (point))))
+           (regexp (read-regexp "Regexp to highlight" guess 'regexp-history-last)))
+      (highlight-regexp regexp (hi-lock-read-face-name)))))
+
 (defun my-hash-to-string (hash)
   "Make a hash into a printable string"
   (let (str)
@@ -1377,27 +1392,20 @@ and copied through iTerm2 to clipboard."
         (set-visited-file-name new-name t t)))))
 
 (defun my-query-replace (&optional arg)
-  "Same as `query-replace', but C-u means take from-string from region,
-and a number prefix means replace in region."
+  "Same as `query-replace', but take from-string from region if active.
+C-u means means replace in region."
   (interactive "*P")
-  (if (not arg)
+  (if (or arg (not (region-active-p)))
       (call-interactively 'query-replace)
-    (if (numberp arg)
-        (let ((common (query-replace-read-args "Query replace in region" nil))
-              (start (region-beginning))
-              (end (region-end)))
-          (goto-char start)
-          (deactivate-mark)
-          (query-replace (nth 0 common) (nth 1 common) nil start end))
-      (let (from to)
-        (setq from (buffer-substring-no-properties (region-beginning) (region-end))
-              to (read-from-minibuffer
-                  (format "Query replace %s with: " from) nil nil nil
-                  'query-replace-history))
-        (goto-char (region-beginning))
-        (deactivate-mark)
-        (query-replace from to)
-        (push (cons from to) query-replace-defaults)))))
+    (let (from to)
+      (setq from (buffer-substring-no-properties (region-beginning) (region-end))
+            to (read-from-minibuffer
+                (format "Query replace %s with: " from) nil nil nil
+                'query-replace-history))
+      (goto-char (region-beginning))
+      (deactivate-mark)
+      (query-replace from to)
+      (push (cons from to) query-replace-defaults))))
 
 (defun my-rotate-window-buffers()
   "Rotate the window buffers"
@@ -1828,7 +1836,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-g"         . my-goto-line-column)
  ("M-i"         . switch-to-buffer)
  ("M-q"         . my-fill)
- ("M-s h"       . highlight-regexp)
+ ("M-s h"       . my-highlight-regexp)
  ("M-s u"       . unhighlight-regexp)
  ("M-s U"       . (lambda() (interactive) (unhighlight-regexp t)))
  ("M-u"         . my-recenter)
