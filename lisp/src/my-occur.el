@@ -2,10 +2,10 @@
 
 (require 'my-buf)
 
-(defun my-occur (&optional arg)
-  "Like `occur', but with prefix arg take the string from the region."
-  (interactive "P")
-  (if arg
+(defun my-occur ()
+  "Like `occur', but if region is active take the string from there."
+  (interactive)
+  (if (region-active-p)
       (let ((regexp (read-from-minibuffer
                      "List lines matching regexp: "
                      (regexp-quote (buffer-substring (region-beginning) (region-end))) nil nil
