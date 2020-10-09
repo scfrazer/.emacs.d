@@ -35,19 +35,15 @@
           (when (and (stringp env-var) (getenv env-var))
             (insert (getenv env-var)))))
       (goto-char (point-min))
-      (while (re-search-forward "[$(){}]" nil t)
-        (replace-match ""))
-      ;; Perforce paths
-      (goto-char (point-min))
-      (when (and (looking-at "//") (getenv "WORKSPACE"))
-        (replace-match (concat (getenv "WORKSPACE") "/")))
+      ;; (while (re-search-forward "[$(){}]" nil t)
+      ;;   (replace-match ""))
       ;; Map DOS drives into WSL paths
       (goto-char (point-min))
       (while (re-search-forward "^\\([a-zA-Z]\\):" nil t)
         (replace-match (concat "/mnt/" (downcase (match-string-no-properties 1))) t))
       ;; Strip off line-number
       (goto-char (point-min))
-      (when (re-search-forward "[@:][0-9]+$" nil t)
+      (when (re-search-forward "[@:(][0-9]+.*$" nil t)
         (delete-region (match-beginning 0) (match-end 0))
         (let ((end (cadr ffap-string-at-point-region)))
           (setcar (cdr ffap-string-at-point-region) (- end (- (match-end 0) (match-beginning 0))))))
@@ -56,7 +52,7 @@
     ;; Try to find a line number
     (save-excursion
       (goto-char (cadr ffap-string-at-point-region))
-      (when (looking-at "[@:,]\\s-*\\([Ll]ine\\s-*\\)?\\([0-9]+\\)")
+      (when (looking-at "[@:,(]\\s-*\\([Ll]ine\\s-*\\)?\\([0-9]+\\)")
         (setq my-ffap-line-number (string-to-number (match-string 2)))
         (setcar (cdr ffap-string-at-point-region) (match-end 0))))))
 
