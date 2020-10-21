@@ -143,34 +143,6 @@
 (use-package asic-compile
   :commands (asic-compile))
 
-(use-package auto-highlight-symbol
-  :bind* (("M-\\" . auto-highlight-symbol-mode))
-  :custom
-  (ahs-suppress-log t)
-  (ahs-select-invisible 'skip)
-  (ahs-case-fold-search nil)
-  (ahs-inhibit-face-list nil)
-  :config
-  (progn
-    (defun my-ahs-mode-maybe (orig-fun)
-      (unless (or (minibufferp (current-buffer))
-                  (memq major-mode (list 'dired-mode 'ibuffer-mode)))
-        (auto-highlight-symbol-mode t)))
-    (advice-add #'ahs-mode-maybe :around #'my-ahs-mode-maybe)
-    (defun my-ahs-idle-function (orig-fun)
-      "Get rid of annoying error message"
-      (ignore-errors
-        (apply orig-fun '())))
-    (advice-add #'ahs-idle-function :around #'my-ahs-idle-function)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M--") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "C-x C-'") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "C-x C-a") nil)
-    (setq minor-mode-alist (remove (assq 'auto-highlight-symbol-mode minor-mode-alist) minor-mode-alist))))
-
 (use-package bm
   :bind* (("M-^" . my-bm-toggle-or-show)
           ("M-(" . bm-previous)
@@ -1689,12 +1661,6 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-\\") 'expand-abbrev)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
-  (local-set-key (kbd "C-x D") 'my-fzf-any-local-directory)
-  (local-set-key (kbd "C-x F") 'my-fzf-any-local-file)
-  (local-set-key (kbd "C-x W") 'my-fzf-any-project-file)
-  (local-set-key (kbd "C-x d") 'my-fzf-any-project-directory)
-  (local-set-key (kbd "C-x f") 'my-fzf-local-file)
-  (local-set-key (kbd "C-x w") 'my-fzf-project-file)
   (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-\\") 'completion-at-point)
   (local-set-key (kbd "M-h") 'my-minibuffer-backward)
