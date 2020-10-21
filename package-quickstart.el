@@ -363,10 +363,10 @@ Setup wgrep preparation.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20200826.1954/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20201009.1633/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20200826.1954/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20201009.1633/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -731,10 +731,10 @@ with the specified `:load-path' the module cannot be found.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201020.1707/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201020.1707/transient-autoloads.el") (car load-path))))
 
 
 
@@ -837,10 +837,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201003.1556/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201003.1556/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1210,10 +1210,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20191210.1759/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20201018.538/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20191210.1759/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20201018.538/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -1236,14 +1236,10 @@ other non-nil value will cause short lines to be padded.
 \(fn &optional ARG)" t nil)
 
 (autoload 'mc/edit-ends-of-lines "mc-edit-lines" "\
-Add one cursor to the end of each line in the active region.
-
-\(fn)" t nil)
+Add one cursor to the end of each line in the active region." t nil)
 
 (autoload 'mc/edit-beginnings-of-lines "mc-edit-lines" "\
-Add one cursor to the beginning of each line in the active region.
-
-\(fn)" t nil)
+Add one cursor to the beginning of each line in the active region." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-edit-lines" '("mc/edit-lines-empty-lines")))
 
@@ -1255,6 +1251,11 @@ also hum/lines-to-expand below and above) To make use of this
 mode press \"C-'\" while multiple-cursor-mode is active. You can
 still edit lines while you are in mc-hide-unmatched-lines
 mode. To leave this mode press <return> or \"C-g\"
+
+If called interactively, enable Mc-Hide-Unmatched-Lines mode if
+ARG is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -1281,7 +1282,7 @@ With zero ARG, skip the last one and mark next.
 (autoload 'mc/mark-next-word-like-this "mc-mark-more" "\
 Find and mark the next word of the buffer matching the currently active region
 The matching region must be a whole word to be a match
-If no region is active, mark the symbol at the point and find the next match
+If no region is active add a cursor on the next line
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
@@ -1290,7 +1291,7 @@ With zero ARG, skip the last one and mark next.
 (autoload 'mc/mark-next-symbol-like-this "mc-mark-more" "\
 Find and mark the next symbol of the buffer matching the currently active region
 The matching region must be a whole symbol to be a match
-If no region is active, mark the symbol at the point and find the next match
+If no region is active add a cursor on the next line
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
@@ -1341,39 +1342,23 @@ With zero ARG, skip the last one and mark next.
 \(fn ARG)" t nil)
 
 (autoload 'mc/unmark-next-like-this "mc-mark-more" "\
-Deselect next part of the buffer matching the currently active region.
-
-\(fn)" t nil)
+Deselect next part of the buffer matching the currently active region." t nil)
 
 (autoload 'mc/unmark-previous-like-this "mc-mark-more" "\
-Deselect prev part of the buffer matching the currently active region.
-
-\(fn)" t nil)
+Deselect prev part of the buffer matching the currently active region." t nil)
 
 (autoload 'mc/skip-to-next-like-this "mc-mark-more" "\
-Skip the current one and select the next part of the buffer matching the currently active region.
-
-\(fn)" t nil)
+Skip the current one and select the next part of the buffer matching the currently active region." t nil)
 
 (autoload 'mc/skip-to-previous-like-this "mc-mark-more" "\
-Skip the current one and select the prev part of the buffer matching the currently active region.
-
-\(fn)" t nil)
+Skip the current one and select the prev part of the buffer matching the currently active region." t nil)
 
 (autoload 'mc/mark-all-like-this "mc-mark-more" "\
-Find and mark all the parts of the buffer matching the currently active region
+Find and mark all the parts of the buffer matching the currently active region" t nil)
 
-\(fn)" t nil)
+(autoload 'mc/mark-all-words-like-this "mc-mark-more" nil t nil)
 
-(autoload 'mc/mark-all-words-like-this "mc-mark-more" "\
-
-
-\(fn)" t nil)
-
-(autoload 'mc/mark-all-symbols-like-this "mc-mark-more" "\
-
-
-\(fn)" t nil)
+(autoload 'mc/mark-all-symbols-like-this "mc-mark-more" nil t nil)
 
 (autoload 'mc/mark-all-in-region "mc-mark-more" "\
 Find and mark all the parts in the region matching the given search
@@ -1402,9 +1387,7 @@ If direction is 'down:
    <left>  Remove the cursor furthest down
    <right> Skip past the cursor furthest down
 
-The bindings for these commands can be changed. See `mc/mark-more-like-this-extended-keymap'.
-
-\(fn)" t nil)
+The bindings for these commands can be changed. See `mc/mark-more-like-this-extended-keymap'." t nil)
 
 (autoload 'mc/mark-all-like-this-dwim "mc-mark-more" "\
 Tries to guess what you want to mark all of.
@@ -1427,19 +1410,13 @@ If the region is inactive or on a single line, it will behave like
 \(fn ARG)" t nil)
 
 (autoload 'mc/mark-all-like-this-in-defun "mc-mark-more" "\
-Mark all like this in defun.
-
-\(fn)" t nil)
+Mark all like this in defun." t nil)
 
 (autoload 'mc/mark-all-words-like-this-in-defun "mc-mark-more" "\
-Mark all words like this in defun.
-
-\(fn)" t nil)
+Mark all words like this in defun." t nil)
 
 (autoload 'mc/mark-all-symbols-like-this-in-defun "mc-mark-more" "\
-Mark all symbols like this in defun.
-
-\(fn)" t nil)
+Mark all symbols like this in defun." t nil)
 
 (autoload 'mc/toggle-cursor-on-click "mc-mark-more" "\
 Add a cursor where you click, or remove a fake cursor that is
@@ -1450,19 +1427,15 @@ already there.
 (defalias 'mc/add-cursor-on-click 'mc/toggle-cursor-on-click)
 
 (autoload 'mc/mark-sgml-tag-pair "mc-mark-more" "\
-Mark the tag we're in and its pair for renaming.
+Mark the tag we're in and its pair for renaming." t nil)
 
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-mark-more" '("mc/" "mc--")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-mark-more" '("mc--" "mc/")))
 
 
 
 (autoload 'mc/mark-pop "mc-mark-pop" "\
 Add a cursor at the current point, pop off mark ring and jump
-to the popped mark.
-
-\(fn)" t nil)
+to the popped mark." t nil)
 
 
 
@@ -1478,15 +1451,9 @@ Insert increasing letters for each cursor, starting at 0 or ARG.
 
 \(fn ARG)" t nil)
 
-(autoload 'mc/reverse-regions "mc-separate-operations" "\
+(autoload 'mc/reverse-regions "mc-separate-operations" nil t nil)
 
-
-\(fn)" t nil)
-
-(autoload 'mc/sort-regions "mc-separate-operations" "\
-
-
-\(fn)" t nil)
+(autoload 'mc/sort-regions "mc-separate-operations" nil t nil)
 
 (autoload 'mc/vertical-align "mc-separate-operations" "\
 Aligns all cursors vertically with a given CHARACTER to the one with the
@@ -1496,20 +1463,23 @@ Might not behave as intended if more than one cursors are on the same line.
 \(fn CHARACTER)" t nil)
 
 (autoload 'mc/vertical-align-with-space "mc-separate-operations" "\
-Aligns all cursors with whitespace like `mc/vertical-align' does
+Aligns all cursors with whitespace like `mc/vertical-align' does" t nil)
 
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-separate-operations" '("mc/insert-numbers-default" "mc--")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-separate-operations" '("mc--" "mc/insert-numbers-default")))
 
 
 
 (autoload 'multiple-cursors-mode "multiple-cursors-core" "\
 Mode while multiple cursors are active.
 
+If called interactively, enable Multiple-Cursors mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("multiple-cursors-mode" "unsupported-cmd" "deactivate-cursor-after-undo" "activate-cursor-for-undo")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("activate-cursor-for-undo" "deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd")))
 
 
 
@@ -1517,12 +1487,15 @@ Mode while multiple cursors are active.
 Anchors the rectangular region at point.
 
 Think of this one as `set-mark' except you're marking a rectangular region. It is
-an exceedingly quick way of adding multiple cursors to multiple lines.
-
-\(fn)" t nil)
+an exceedingly quick way of adding multiple cursors to multiple lines." t nil)
 
 (autoload 'rectangular-region-mode "rectangular-region-mode" "\
 A mode for creating a rectangular region to edit
+
+If called interactively, enable Rectangular-Region mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -1532,10 +1505,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201008.1959/modus-vivendi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201019.1448/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201008.1959/modus-vivendi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201019.1448/modus-vivendi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1547,10 +1520,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201008.1959/modus-operandi-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201019.1448/modus-operandi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201008.1959/modus-operandi-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201019.1448/modus-operandi-theme-autoloads.el") (car load-path))))
 
 
 
@@ -1562,10 +1535,10 @@ A mode for creating a rectangular region to edit
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201007.507/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201015.1327/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201007.507/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201015.1327/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1738,10 +1711,10 @@ Same as `kill-buffer' but keep the iflipb buffer list state.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20180618.2101/ido-vertical-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20180618.2101/ido-vertical-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1757,6 +1730,11 @@ or call the function `ido-vertical-mode'.")
 
 (autoload 'ido-vertical-mode "ido-vertical-mode" "\
 Makes ido-mode display vertically.
+
+If called interactively, enable Ido-Vertical mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -2014,53 +1992,6 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 \(fn GIT-BRANCH)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fzf-20180619.145/fzf-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fzf-20180619.145/fzf-autoloads.el") (car load-path))))
-
-
-
-(autoload 'fzf "fzf" "\
-Starts a fzf session.
-
-\(fn)" t nil)
-
-(autoload 'fzf-directory "fzf" "\
-Starts a fzf session at the specified directory.
-
-\(fn)" t nil)
-
-(autoload 'fzf-git "fzf" "\
-Starts a fzf session at the root of the current git.
-
-\(fn)" t nil)
-
-(autoload 'fzf-git-files "fzf" "\
-Starts a fzf session only searching for git tracked files.
-
-\(fn)" t nil)
-
-(autoload 'fzf-hg "fzf" "\
-Starts a fzf session at the root of the curreng hg.
-
-\(fn)" t nil)
-
-(autoload 'fzf-projectile "fzf" "\
-Starts a fzf session at the root of the projectile project.
-
-\(fn)" t nil)
-
-(autoload 'fzf-git-grep "fzf" "\
-Starts a fzf session based on git grep result. The input comes
-   from the prompt or the selected region
-
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fzf" '("fzf/")))
 
 
 )
@@ -2744,61 +2675,16 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200923.448/auto-highlight-symbol-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/auto-highlight-symbol-20200923.448/auto-highlight-symbol-autoloads.el") (car load-path))))
-
-
-
-(put 'global-auto-highlight-symbol-mode 'globalized-minor-mode t)
-
-(defvar global-auto-highlight-symbol-mode nil "\
-Non-nil if Global Auto-Highlight-Symbol mode is enabled.
-See the `global-auto-highlight-symbol-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `global-auto-highlight-symbol-mode'.")
-
-(custom-autoload 'global-auto-highlight-symbol-mode "auto-highlight-symbol" nil)
-
-(autoload 'global-auto-highlight-symbol-mode "auto-highlight-symbol" "\
-Toggle Auto-Highlight-Symbol mode in all buffers.
-With prefix ARG, enable Global Auto-Highlight-Symbol mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
-
-Auto-Highlight-Symbol mode is enabled in all buffers where
-`ahs-mode-maybe' would do it.
-See `auto-highlight-symbol-mode' for more information on Auto-Highlight-Symbol mode.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'auto-highlight-symbol-mode "auto-highlight-symbol" "\
-Toggle Auto Highlight Symbol Mode
-
-If called interactively, enable Auto-Highlight-Symbol mode if ARG
-is positive, and disable it if ARG is zero or negative.  If
-called from Lisp, also enable the mode if ARG is omitted or nil,
-and toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "auto-highlight-symbol" '("ahs-" "auto-highlight-symbol-mode")))
-
-
-)
 (setq package-activated-list
       (append
-       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine fzf flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional browse-kill-ring bm beacon avy auto-highlight-symbol)
+       '(yaml-mode xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201008.1959" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201008.1959" "/home/scfrazer/.emacs.d/elpa/rg-20201003.1556" "/home/scfrazer/.emacs.d/elpa/transient-20200819.1133" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200930.1912")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201019.1448" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201019.1448" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201020.1707" "/home/scfrazer/.emacs.d/elpa/use-package-20200721.2156" "/home/scfrazer/.emacs.d/elpa/with-editor-20200930.1912")
          Info-directory-list)))
 
 ;; Local Variables:

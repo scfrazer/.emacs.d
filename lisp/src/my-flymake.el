@@ -51,10 +51,12 @@
                                          (:error 'my-flymake-error-face)
                                          (:warning 'my-flymake-warning-face)
                                          (:note 'my-flymake-note-face)))
-                           (flymake-diagnostic-text diag) " "))
+                           (propertize (flymake-diagnostic-text diag) 'face 'popup-tip-face)
+                           " "))
         (setq msg (concat msg text)))
       (when diags
-        (popup-tip msg :nostrip t)))))
+        ;; (popup-tip msg :nostrip t)
+        (message msg)))))
 
 (defvar my-flymake-timer nil)
 (unless my-flymake-timer
