@@ -1115,6 +1115,7 @@ With a numeric prefix, goto that window line."
 (defun my-highlight-regexp()
   "Like `highlight-regexp' except take string from region if active."
   (interactive)
+  (require 'hi-lock)
   (if (region-active-p)
       (progn
         (highlight-regexp
