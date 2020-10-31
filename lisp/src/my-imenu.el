@@ -8,8 +8,6 @@
 (setq imenu-sort-function nil)
 (add-hook 'imenu-after-jump-hook 'recenter)
 
-;; completing-read + imenu
-
 (defface my-imenu-highlight-tag-face
   '((t (:inherit region)))
   "Font Lock mode face used to highlight tags."
@@ -47,6 +45,17 @@
                  (push (cons (concat (when my-imenu-prefix-symbols prefix) symbol) pos) result)))))))
   result)
 
+(defvar my-imenu-pop-back-stack nil)
+(make-variable-buffer-local 'my-imenu-pop-back-stack)
+
+(defun my-imenu-pop-back ()
+  "Pop back from last imenu jump"
+  (interactive)
+  (when my-imenu-pop-back-stack
+    (goto-char (car my-imenu-pop-back-stack))
+    (recenter)
+    (setq my-imenu-pop-back-stack (cdr my-imenu-pop-back-stack))))
+
 (defun my-imenu-goto-symbol ()
   "Goto to an imenu symbol using completion."
   (interactive)
@@ -57,14 +66,17 @@
          (guess (buffer-substring-no-properties
                  (save-excursion (skip-syntax-backward "w_") (point))
                  (save-excursion (skip-syntax-forward "w_") (point))))
-         (guess-re (concat "\\(.+::\\)?" guess)))
+         (guess-re (concat "\\(.+::\\)?" guess))
+         (initial-input nil))
     (setq items (nreverse (my-imenu-add-symbols nil imenu--index-alist items)))
-    (catch 'done
-      (dotimes (idx (length items))
-        (if (string-match guess-re (caar items))
-            (throw 'done t)
-          (when (cdr items)
-            (setq items (nconc (cdr items) (list (car items))))))))
+    (if (catch 'done
+          (dotimes (idx (length items))
+            (if (string-match guess-re (caar items))
+                (throw 'done t)
+              (when (cdr items)
+                (setq items (nconc (cdr items) (list (car items))))))))
+        (setq initial-input (cons guess 0))
+      (setq guess nil))
     (let ((names (make-hash-table :test 'equal)) name num)
       (mapc (lambda (item)
               (setq name (car item))
@@ -75,7 +87,7 @@
                     (puthash name (1+ num) names))
                 (puthash name 1 names)))
             items))
-    (let* ((item (assoc (my-completing-read "Goto symbol: " (mapcar 'car items) nil t nil nil guess) items))
+    (let* ((item (assoc (my-completing-read "Goto symbol: " (mapcar 'car items) nil t initial-input nil guess) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))
@@ -84,6 +96,7 @@
           (setq name (match-string 1 name))
           (setq len (length name)))
         (let ((recenter (not (pos-visible-in-window-p pos))))
+          (push (point) my-imenu-pop-back-stack)
           (goto-char pos)
           (when recenter
             (recenter))
@@ -95,6 +108,10 @@
                   (my-imenu-highlight (point) (+ (point) len)))
               (goto-char (point-at-bol))
               (my-imenu-highlight (point) (point-at-eol)))))))))
+
+(defun my-imenu-nav (&optional arg)
+  (interactive "P")
+  (if arg (my-imenu-pop-back) (my-imenu-goto-symbol)))
 
 ;; Better imenu entry point
 

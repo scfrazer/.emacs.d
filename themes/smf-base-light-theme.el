@@ -38,7 +38,7 @@
  `(flyspell-incorrect                  ((t :background "thistle1")))
  `(font-lock-regexp-grouping-construct ((t :background "whitesmoke" :bold t)))
  `(header-line                         ((t :foreground ,(smf-color 252) :background ,(smf-color 238))))
- `(hl-line                             ((t :inherit nil :background "seashell")))
+ `(hl-line                             ((t :inherit nil :background "seashell2")))
  `(ido-first-match                     ((t :inherit font-lock-string-face :bold t)))
  `(ido-only-match                      ((t :foreground "darkgreen" :bold t)))
  `(ido-vertical-first-match-face       ((t :inherit font-lock-string-face :bold t)))

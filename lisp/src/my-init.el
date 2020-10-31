@@ -229,7 +229,6 @@
        ('c++-mode 'my-cc-other-file)
        (t 'ff-get-other-file))))
   :config
-  (require 'my-pop-back)
   (require 'my-ffap))
 
 (use-package fill-function-arguments
@@ -322,13 +321,7 @@
 
 (use-package my-imenu
   :bind* ("M-G" . my-imenu-nav)
-  :commands (my-imenu-goto-symbol)
-  :init
-  (defun my-imenu-nav (&optional arg)
-    (interactive "P")
-    (if arg (my-pop-back-imenu) (my-imenu-goto-symbol)))
-  :config
-  (require 'my-pop-back))
+  :commands (my-imenu-goto-symbol))
 
 (use-package my-increment-number
   :commands (my-dec-to-hex my-hex-to-dec))

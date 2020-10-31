@@ -855,12 +855,13 @@ own function.  This function can be called through abbrevs."
     (forward-comment (buffer-size))))
 
 (defun sv-mode-jump-other-end ()
-  "Jumps to the opposite begin/end expression from the one point is at."
+  "Jumps between definition/implementation or begin/end expression from the one point is at."
   (interactive)
   (let ((pos (point)))
     (skip-syntax-backward "w_")
-    (if (re-search-forward sv-mode-begin-end-regexp nil t)
+    (if (looking-at sv-mode-begin-end-regexp)
         (progn
+          (re-search-forward sv-mode-begin-end-regexp nil t)
           (skip-syntax-backward "w_")
           (if (looking-at sv-mode-end-regexp)
               (progn
@@ -869,7 +870,26 @@ own function.  This function can be called through abbrevs."
             (when (looking-at sv-mode-begin-regexp)
               (sv-mode-forward-sexp)
               (skip-syntax-backward "w_"))))
-      (goto-char pos))))
+      (let* ((proto (sv-mode-parse-prototype))
+             (name (cdr (assoc 'name proto)))
+             (in-impl (string-match "::" name))
+             (namespaces nil)
+             (this-func-re "\\(task\\|function\\)\\s-+.*?"))
+        (if (not in-impl)
+            (setq namespaces (sv-mode-get-namespaces))
+          (setq namespaces (split-string name "::" t))
+          (setq name (car (last namespaces)))
+          (setq namespaces (nbutlast namespaces)))
+        (goto-char (point-min))
+        (dolist (ns namespaces)
+          (if in-impl
+              (unless (re-search-forward (concat "\\_<class\\s-+" ns "\\_>"))
+                (goto-char pos))
+            (setq this-func-re (concat this-func-re ns "::"))))
+        (setq this-func-re (concat this-func-re name "\\s-*[(;]"))
+        (if (sv-mode-re-search-forward this-func-re nil t)
+            (beginning-of-line)
+          (goto-char pos))))))
 
 (defun sv-mode-beginning-of-block ()
   "Go to the beginning of the previous block."
