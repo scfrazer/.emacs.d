@@ -1362,7 +1362,8 @@ and copied through iTerm2 to clipboard."
 C-u means means replace in region."
   (interactive "*P")
   (if (or arg (not (region-active-p)))
-      (call-interactively 'query-replace)
+      (let (current-prefix-arg)
+        (call-interactively 'query-replace))
     (let (from to)
       (setq from (buffer-substring-no-properties (region-beginning) (region-end))
             to (read-from-minibuffer
