@@ -4,12 +4,12 @@
 ;; Copyright 2011-2020 François-Xavier Bois
 
 ;; Version: 17.0.2
-;; Package-Version: 20201031.1125
-;; Package-Commit: dc422e14907d592aa1a6bc3af453238ef4e41c11
+;; Package-Version: 20201107.1152
+;; Package-Commit: 890e837f7ea49f54c02b107377036431cbe7adb6
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
-;; URL: http://web-mode.org
+;; URL: https://web-mode.org
 ;; Repository: http://github.com/fxbois/web-mode
 ;; Created: July 2011
 ;; Keywords: languages
@@ -35,7 +35,7 @@
   "Major mode for editing web templates"
   :group 'languages
   :prefix "web-"
-  :link '(url-link :tag "Site" "http://web-mode.org")
+  :link '(url-link :tag "Site" "https://web-mode.org")
   :link '(url-link :tag "Repository" "https://github.com/fxbois/web-mode"))
 
 (defgroup web-mode-faces nil
@@ -868,7 +868,7 @@ Must be used in conjunction with web-mode-enable-block-face."
 (defvar web-mode-imenu-regexp-list
   '(("<\\(h[1-9]\\)\\([^>]*\\)>\\([^<]*\\)" 1 3 ">")
     ("^[ \t]*<\\([@a-z]+\\)[^>]*>? *$" 1 "id=\"\\([a-zA-Z0-9_]+\\)\"" "#" ">"))
-  "Regexps to match imenu items (see http://web-mode.org/doc/imenu.txt)")
+  "Regexps to match imenu items (see https://web-mode.org/doc/imenu.txt)")
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/ccmode/Syntactic-Symbols.html
 (defvar web-mode-indentation-params

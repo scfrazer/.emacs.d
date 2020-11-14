@@ -3,8 +3,8 @@
 ;; Copyright © 2018, Free Software Foundation, Inc.
 
 ;; Version: 0.1.0
-;; Package-Version: 20200713.243
-;; Package-Commit: 5622041068d5fa2f299dbc8aa91fece0ba260086
+;; Package-Version: 20201110.1001
+;; Package-Commit: 2fe83108867ca422450dd7d38cecd0f6e7fdbfe3
 ;; URL: https://github.com/yqrashawn/fd-dired
 ;; Package-Requires: ((emacs "25"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
@@ -60,10 +60,14 @@ The command run (after changing into DIR) is essentially
 
 except that the car of the variable `fd-dired-ls-option' specifies what to
 use in place of \"-ls\" as the final argument."
-  (interactive (list (and current-prefix-arg (read-directory-name "Run fd in directory: " nil "" t))
-                     (read-string "Run fd (with args and search): " fd-dired-input-fd-args
-                                  '(fd-dired-args-history . 1))))
-  (let ((dired-buffers dired-buffers))
+  (interactive (list (read-directory-name "Run fd in directory: " nil "" t)
+                     (let ((input (read-string "Run fd (with args and search): " fd-dired-input-fd-args
+                                               '(fd-dired-args-history . 1))))
+                       (if (and (string-prefix-p "\"" input) (string-suffix-p "\"" input))
+                           input
+                         (setq input (format "\"%s\"" input))))))
+  (let ((dired-buffers dired-buffers)
+        (fd-dired-buffer-name (format " *%s*" (make-temp-name "Fd "))))
     ;; Expand DIR ("" means default-directory), and make sure it has a
     ;; trailing slash.
     (setq dir (file-name-as-directory (expand-file-name (or dir default-directory))))
@@ -71,31 +75,13 @@ use in place of \"-ls\" as the final argument."
     (or (file-directory-p dir)
         (error "Fd-dired needs a directory: %s" dir))
 
-    ;; See if there's still a `fd' running, and offer to kill
-    ;; it first, if it is.
-    (let ((fd (get-buffer-process (get-buffer "*Fd*"))))
-      (when fd
-        (if (or (not (eq (process-status fd) 'run))
-                (yes-or-no-p
-                 (format-message "A `fd' process is running; kill it? ")))
-            (condition-case nil
-                (progn
-                  (interrupt-process fd)
-                  (sit-for 1)
-                  (delete-process fd))
-              (error nil))
-          (error "Cannot have two processes in `%s' at once" (buffer-name)))))
-
-    ;; create a new buffer and display it below
-    (when (get-buffer "*Fd*")
-      (kill-buffer "*Fd*"))
-    (get-buffer-create "*Fd*")
+    (get-buffer-create fd-dired-buffer-name)
     (if fd-dired-display-in-current-window
-        (display-buffer-same-window (get-buffer "*Fd*") nil)
-      (display-buffer-below-selected (get-buffer "*Fd*") nil)
-      (select-window (get-buffer-window "*Fd*")))
+        (display-buffer (get-buffer fd-dired-buffer-name) nil)
+      (display-buffer-below-selected (get-buffer fd-dired-buffer-name) nil)
+      (select-window (get-buffer-window fd-dired-buffer-name)))
 
-    (with-current-buffer (get-buffer "*Fd*")
+    (with-current-buffer (get-buffer fd-dired-buffer-name)
       ;; prepare buffer
       (widen)
       (kill-all-local-variables)
@@ -119,7 +105,7 @@ use in place of \"-ls\" as the final argument."
                                      (shell-quote-argument "{}")
                                      find-exec-terminator)
                            (car fd-dired-ls-option))))
-      (shell-command (concat args " &") (get-buffer-create "*Fd*"))
+      (shell-command (concat args " &") (get-buffer-create fd-dired-buffer-name))
 
       ;; enable Dired mode
       ;; The next statement will bomb in classic dired (no optional arg allowed)
@@ -157,12 +143,22 @@ use in place of \"-ls\" as the final argument."
         (dired-insert-set-properties point (point)))
       (setq buffer-read-only t)
       
-      (let ((proc (get-buffer-process (get-buffer "*Fd*"))))
+      (let ((proc (get-buffer-process (get-buffer fd-dired-buffer-name))))
         (set-process-filter proc (function find-dired-filter))
         (set-process-sentinel proc (function find-dired-sentinel))
         ;; Initialize the process marker; it is used by the filter.
-        (move-marker (process-mark proc) (point) (get-buffer "*Fd*")))
+        (move-marker (process-mark proc) (point) (get-buffer fd-dired-buffer-name)))
       (setq mode-line-process '(":%s")))))
+
+(defun fd-dired-cleanup ()
+  "Clean up fd-dired created temp buffers for multiple searching processes."
+  (mapcar 'kill-buffer
+          (seq-filter
+           (lambda (buffer-name)
+             (string-match-p (rx (seq "*Fd " (zero-or-more nonl) "*")) buffer-name))
+           (mapcar 'buffer-name (buffer-list)))))
+
+(add-hook 'kill-emacs-hook #'fd-dired-cleanup)
 
 (provide 'fd-dired)
 
