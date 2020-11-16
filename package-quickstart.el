@@ -1556,10 +1556,10 @@ contrast ratio between new and existing colors.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201015.1327/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201115.635/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201015.1327/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201115.635/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1794,10 +1794,10 @@ Toggle Icomplete Vertical mode without echo area message.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20200711.1210/hydra-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20201115.1055/hydra-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hydra-20200711.1210/hydra-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hydra-20201115.1055/hydra-autoloads.el") (car load-path))))
 
 
 
@@ -1859,7 +1859,7 @@ result of `defhydra'.
 
 (function-put 'defhydra 'doc-string-elt '3)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra" '("hydra-" "defhydra")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra" '("defhydra" "hydra-")))
 
 
 
