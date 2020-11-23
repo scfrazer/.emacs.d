@@ -4,6 +4,7 @@ bookmarks
 elpa/gnupg
 lisp/confidential.elc
 lisp/src/confidential.el
+projects
 tasks
 tramp
 transient

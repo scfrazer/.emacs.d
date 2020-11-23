@@ -11,7 +11,7 @@
               icomplete-delay-completions-threshold 100
               icomplete-max-delay-chars 2
               icomplete-tidy-shadowed-file-names t
-              orderless-matching-styles '(orderless-prefixes)
+              orderless-matching-styles '(orderless-prefixes orderless-regexp)
               read-buffer-completion-ignore-case t
               read-file-name-completion-ignore-case t)
 
@@ -21,22 +21,22 @@
 (define-key icomplete-minibuffer-map (kbd "C-n")    'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p")    'icomplete-backward-completions)
 
-(defun my-icomplete-fido-slash ()
-  "Insert slash, or exit minibuffer, or enter directory."
-  (interactive)
-  (let* ((dir (and (eq (icomplete--category) 'file)
-                   (file-name-directory (icomplete--field-string))))
-         (current (car completion-all-sorted-completions))
-         (probe (and dir current
-                     (expand-file-name (directory-file-name current) dir))))
-    (cond ((and (eq (icomplete--category) 'file)
-                (string= (file-name-nondirectory (icomplete--field-string)) "~"))
-           (insert "/"))
-          ((and probe (file-directory-p probe) (not (string= current "./")))
-           (icomplete-force-complete))
-          (t
-           (icomplete-force-complete-and-exit)))))
-(define-key icomplete-fido-mode-map (kbd "/") 'my-icomplete-fido-slash)
+;; (defun my-icomplete-fido-slash ()
+;;   "Insert slash, or exit minibuffer, or enter directory."
+;;   (interactive)
+;;   (let* ((dir (and (eq (icomplete--category) 'file)
+;;                    (file-name-directory (icomplete--field-string))))
+;;          (current (car completion-all-sorted-completions))
+;;          (probe (and dir current
+;;                      (expand-file-name (directory-file-name current) dir))))
+;;     (cond ((and (eq (icomplete--category) 'file)
+;;                 (string= (file-name-nondirectory (icomplete--field-string)) "~"))
+;;            (insert "/"))
+;;           ((and probe (file-directory-p probe) (not (string= current "./")))
+;;            (icomplete-force-complete))
+;;           (t
+;;            (icomplete-force-complete-and-exit)))))
+;; (define-key icomplete-fido-mode-map (kbd "/") 'my-icomplete-fido-slash)
 
 (defun my-icomplete--fido-mode-setup ()
   "Customize icomplete fido mode."
