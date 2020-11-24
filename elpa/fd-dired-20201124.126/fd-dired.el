@@ -3,8 +3,8 @@
 ;; Copyright © 2018, Free Software Foundation, Inc.
 
 ;; Version: 0.1.0
-;; Package-Version: 20201110.1001
-;; Package-Commit: 2fe83108867ca422450dd7d38cecd0f6e7fdbfe3
+;; Package-Version: 20201124.126
+;; Package-Commit: 313def22c88519e61279e858b4f53bb84a93da36
 ;; URL: https://github.com/yqrashawn/fd-dired
 ;; Package-Requires: ((emacs "25"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
@@ -61,11 +61,8 @@ The command run (after changing into DIR) is essentially
 except that the car of the variable `fd-dired-ls-option' specifies what to
 use in place of \"-ls\" as the final argument."
   (interactive (list (read-directory-name "Run fd in directory: " nil "" t)
-                     (let ((input (read-string "Run fd (with args and search): " fd-dired-input-fd-args
-                                               '(fd-dired-args-history . 1))))
-                       (if (and (string-prefix-p "\"" input) (string-suffix-p "\"" input))
-                           input
-                         (setq input (format "\"%s\"" input))))))
+                     (read-string "Run fd (with args and search): " fd-dired-input-fd-args
+                                  '(fd-dired-args-history . 1))))
   (let ((dired-buffers dired-buffers)
         (fd-dired-buffer-name (format " *%s*" (make-temp-name "Fd "))))
     ;; Expand DIR ("" means default-directory), and make sure it has a
