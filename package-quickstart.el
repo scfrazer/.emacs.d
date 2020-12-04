@@ -118,10 +118,10 @@ FILES must be a list of absolute file names.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.19/xr-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.20/xr-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.19/xr-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.20/xr-autoloads.el") (car load-path))))
 
 
 
@@ -825,10 +825,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201114.1825/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201114.1825/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1122,10 +1122,10 @@ Setup wgrep rg support." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-1.18/relint-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-1.19/relint-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-1.18/relint-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-1.19/relint-autoloads.el") (car load-path))))
 
 
 
@@ -1141,9 +1141,7 @@ Scan all *.el files in DIR for regexp-related errors.
 
 (autoload 'relint-current-buffer "relint" "\
 Scan the current buffer for regexp errors.
-The buffer must be in emacs-lisp-mode.
-
-\(fn)" t nil)
+The buffer must be in emacs-lisp-mode." t nil)
 
 (autoload 'relint-buffer "relint" "\
 Scan BUFFER for regexp errors. Return list of diagnostics.
@@ -1280,10 +1278,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/load-relative-20200722.1109/load-relative-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/load-relative-20200722.1109/load-relative-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el") (car load-path))))
 
 
 
@@ -2163,10 +2161,10 @@ Beautify / pretty-print the active region (or the entire buffer if no active reg
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iflipb-20200731.1655/iflipb-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iflipb-20201128.833/iflipb-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iflipb-20200731.1655/iflipb-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iflipb-20201128.833/iflipb-autoloads.el") (car load-path))))
 
 
 
@@ -2184,14 +2182,10 @@ always ignored. Without a prefix argument, buffers matching
 Flip to the previous buffer in the buffer list.
 
 Consecutive invocations switch to more recent buffers in the
-buffer list.
-
-\(fn)" t nil)
+buffer list." t nil)
 
 (autoload 'iflipb-kill-buffer "iflipb" "\
-Same as `kill-buffer' but keep the iflipb buffer list state.
-
-\(fn)" t nil)
+Same as `kill-buffer' but keep the iflipb buffer list state." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "iflipb" '("iflipb-")))
 
@@ -2228,10 +2222,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20200616.2322/icomplete-vertical-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201203.2345/icomplete-vertical-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20200616.2322/icomplete-vertical-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201203.2345/icomplete-vertical-autoloads.el") (car load-path))))
 
 
 
@@ -2248,12 +2242,15 @@ or call the function `icomplete-vertical-mode'.")
 (autoload 'icomplete-vertical-mode "icomplete-vertical" "\
 Display icomplete candidates vertically.
 
+If called interactively, enable Icomplete-Vertical mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
 \(fn &optional ARG)" t nil)
 
 (autoload 'icomplete-vertical-toggle "icomplete-vertical" "\
-Toggle Icomplete Vertical mode without echo area message.
-
-\(fn)" t nil)
+Toggle Icomplete Vertical mode without echo area message." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "icomplete-vertical" '("icomplete-vertical-")))
 
@@ -3324,7 +3321,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201114.1825" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:
