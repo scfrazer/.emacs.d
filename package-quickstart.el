@@ -825,10 +825,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2222,10 +2222,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201203.2345/icomplete-vertical-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201203.2345/icomplete-vertical-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el") (car load-path))))
 
 
 
@@ -3321,7 +3321,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201128.1234" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:

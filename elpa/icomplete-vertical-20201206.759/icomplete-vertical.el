@@ -4,8 +4,8 @@
 
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Keywords: convenience, completion
-;; Package-Version: 20201203.2345
-;; Package-Commit: 94684ccde3975ef63f1e8abf3971d9f1a5f8aff6
+;; Package-Version: 20201206.759
+;; Package-Commit: ef12199fdf53c4a0fe7691850e133dabba58b147
 ;; Version: 0.2
 ;; Homepage: https://github.com/oantolin/icomplete-vertical
 ;; Package-Requires: ((emacs "24.4"))
@@ -215,7 +215,8 @@ To be used as filter return advice for `icomplete--sorted-completions'."
                        annotation))
                     (concat candidate annotation)))
                 completions)))
-          (setcdr (last annotated) save)
+          (setcdr last save)             ; restore
+          (setcdr (last annotated) save) ; imitate
           annotated)))))
 
 (defun icomplete-vertical-minibuffer-setup ()
