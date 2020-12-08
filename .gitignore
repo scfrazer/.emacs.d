@@ -2,6 +2,7 @@
 auto-save-list
 bookmarks
 elpa/gnupg
+external
 lisp/confidential.elc
 lisp/src/confidential.el
 projects
