@@ -5,6 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
+;; Package-Version: 20201209.824
+;; Package-Commit: dadc87fe73a93d2ecc34a0f82636729e8fe2dcd7
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/consult
 
@@ -58,52 +60,42 @@
 
 (defface consult-preview-cursor
   '((t :inherit match))
-  "Face used to for cursor previews and marks in `cursor-mark'."
+  "Face used to for cursor previews and marks in `consult-mark'."
+  :group 'consult)
+
+(defface consult-preview-yank
+  '((t :inherit consult-preview-line))
+  "Face used to for yank previews in `consult-yank'."
   :group 'consult)
 
 (defface consult-key
-  '((t :inherit font-lock-keyword-face :weight normal))
+  '((t :inherit font-lock-keyword-face))
   "Face used to highlight keys, e.g., in `consult-register'."
   :group 'consult)
 
-(defface consult-lighter
-  '((t :inherit consult-key))
-  "Face used to highlight lighters in `consult-minor-mode'."
-  :group 'consult)
-
 (defface consult-annotation
-  '((t :inherit completions-annotations :weight normal))
+  '((t :inherit completions-annotations))
   "Face used to highlight annotation in `consult-buffer'."
   :group 'consult)
 
 (defface consult-file
-  '((t :inherit font-lock-function-name-face :weight normal))
+  '((t :inherit font-lock-function-name-face))
   "Face used to highlight files in `consult-buffer'."
   :group 'consult)
 
 (defface consult-bookmark
-  '((t :inherit font-lock-constant-face :weight normal))
+  '((t :inherit font-lock-constant-face))
   "Face used to highlight bookmarks in `consult-buffer'."
   :group 'consult)
 
 (defface consult-view
-  '((t :inherit font-lock-keyword-face :weight normal))
+  '((t :inherit font-lock-keyword-face))
   "Face used to highlight views in `consult-buffer'."
   :group 'consult)
 
 (defface consult-line-number
-  '((t :inherit line-number :weight normal))
+  '((t :inherit line-number))
   "Face used to highlight line numbers in selections."
-  :group 'consult)
-
-(defface consult-on
-  '((t :inherit success :weight bold))
-  "Face used to signal enabled modes."
-  :group 'consult)
-
-(defface consult-off
-  '((t :inherit error :weight bold))
-  "Face used to signal disabled modes."
   :group 'consult)
 
 ;;;; Customization
@@ -115,6 +107,11 @@
 
 (defcustom consult-preview-theme t
   "Enable theme preview during selection."
+  :type 'boolean
+  :group 'consult)
+
+(defcustom consult-preview-yank t
+  "Enable yank preview during selection."
   :type 'boolean
   :group 'consult)
 
@@ -178,8 +175,8 @@ nil shows all `custom-available-themes'."
 (defvar consult-theme-history nil
   "History for the command `consult-theme'.")
 
-(defvar consult-minor-mode-history nil
-  "History for the command `consult-minor-mode'.")
+(defvar consult-minor-mode-menu-history nil
+  "History for the command `consult-minor-mode-menu'.")
 
 (defvar consult-kmacro-history nil
   "History for the command `consult-kmacro'.")
@@ -214,13 +211,6 @@ nil shows all `custom-available-themes'."
   ;; against `consult-fontify-limit'.
   (when (and font-lock-mode (< (buffer-size) consult-fontify-limit))
     (font-lock-ensure)))
-
-(defun consult--status-prefix (enabled)
-  "Status prefix for given boolean ENABLED."
-  (propertize " " 'display
-              (if enabled
-                  (propertize "+ " 'face 'consult-on)
-                (propertize "- " 'face 'consult-off))))
 
 (defmacro consult--with-preview (enabled args save restore preview &rest body)
   "Add preview support to minibuffer completion.
@@ -483,7 +473,7 @@ The alist contains (string . position) pairs."
   (consult--goto
    (save-excursion
      (consult--read "Go to mark: " (consult--with-increased-gc (consult--mark-candidates))
-                    :category 'mark
+                    :category 'line
                     :sort nil
                     :require-match t
                     :lookup (lambda (candidates x) (cdr (assoc x candidates)))
@@ -597,9 +587,9 @@ This command obeys narrowing. Optionally INITIAL input can be provided."
   (find-file-other-window (consult--recent-file-read)))
 
 ;;;###autoload
-(defun consult-open-externally (file)
+(defun consult-file-externally (file)
   "Open FILE using system's default application."
-  (interactive "fOpen: ")
+  (interactive "fOpen externally: ")
   (if (and (eq system-type 'windows-nt)
            (fboundp 'w32-shell-execute))
       (w32-shell-execute "open" file)
@@ -648,13 +638,21 @@ The arguments and expected return value are as specified for
         (funcall exit completion exit-status))
       t)))
 
-;; TODO consult--yank-read should support preview
-;; see https://github.com/minad/consult/issues/8
 (defun consult--yank-read ()
   "Open kill ring menu and return selected text."
-  (consult--read "Ring: "
-                 (delete-dups (seq-copy kill-ring))
-                 :require-match t))
+  (consult--read
+   "Ring: "
+   (delete-dups (seq-copy kill-ring))
+   :sort nil
+   :category 'kill-ring
+   :require-match t
+   :preview (and consult-preview-yank
+                 (let ((ov (make-overlay (min (point) (mark t)) (max (point) (mark t)))))
+                   (overlay-put ov 'face 'consult-preview-yank)
+                   (lambda (cmd &optional cand _state)
+                     (pcase cmd
+                       ('restore (delete-overlay ov))
+                       ('preview (overlay-put ov 'display cand))))))))
 
 ;; Insert selected text.
 ;; Adapted from the Emacs yank function.
@@ -691,16 +689,15 @@ Otherwise replace the just-yanked text with the selected text."
       (consult-yank)
     (let ((text (consult--yank-read))
           (inhibit-read-only t)
-          (before (< (point) (mark t))))
+          (pt (point))
+          (mk (mark t)))
       (setq this-command 'yank)
-      (if before
-          (funcall (or yank-undo-function 'delete-region) (point) (mark t))
-        (funcall (or yank-undo-function 'delete-region) (mark t) (point)))
+      (funcall (or yank-undo-function 'delete-region) (min pt mk) (max pt mk))
       (setq yank-undo-function nil)
-      (set-marker (mark-marker) (point) (current-buffer))
+      (set-marker (mark-marker) pt (current-buffer))
       (insert-for-yank text)
       (set-window-start (selected-window) yank-window-start t)
-      (if before
+      (if (< pt mk)
           (goto-char (prog1 (mark t)
                        (set-marker (mark-marker) (point) (current-buffer)))))))
   nil)
@@ -781,43 +778,20 @@ Otherwise replace the just-yanked text with the selected text."
                    (delete-dups (seq-copy minibuffer-history))
                    :history 'consult-minibuffer-history))))
 
-(defun consult--minor-mode-candidates ()
-  "Return alist of minor-mode names and symbols."
-  (let ((candidates-alist))
-    (dolist (mode minor-mode-list)
-      (when (and (boundp mode) (commandp mode))
-        (push (cons (concat
-                     (consult--status-prefix (symbol-value mode))
-                     (symbol-name mode)
-                     (let* ((lighter (cdr (assq mode minor-mode-alist)))
-                            (str (and lighter (propertize (string-trim (format-mode-line (cons t lighter)))
-                                                          'face 'consult-lighter))))
-                       (and str (not (string-blank-p str)) (format " [%s]" str)))
-                     ;; TODO it would be a bit nicer if marginalia could do this automatically based on the command
-                     ;; category. but since the candidate is already prefixed with a string this is not possible.
-                     ;; See https://github.com/minad/marginalia/issues/13.
-                     (when (and (bound-and-true-p marginalia-mode)
-                                (fboundp 'marginalia--documentation))
-                       (marginalia--documentation (documentation mode))))
-                    mode)
-              candidates-alist)))
-    (sort
-     (sort candidates-alist (lambda (x y) (string< (car x) (car y))))
-     (lambda (x y)
-       (> (if (symbol-value (cdr x)) 1 0)
-          (if (symbol-value (cdr y)) 1 0))))))
-
 ;;;###autoload
-(defun consult-minor-mode ()
-  "Enable or disable minor mode."
+(defun consult-minor-mode-menu ()
+  "Enable or disable minor mode.
+This is an alternative to `minor-mode-menu-from-indicator'."
   (interactive)
-  (call-interactively
-   (consult--read "Minor modes: " (consult--minor-mode-candidates)
-                  :category 'command
-                  :sort nil
-                  :require-match t
-                  :lookup (lambda (candidates x) (cdr (assoc x candidates)))
-                  :history 'consult-minor-mode-history)))
+  (let ((mode (consult--read "Minor mode: "
+                             ;; Taken from describe-minor-mode
+		             (nconc
+		              (describe-minor-mode-completion-table-for-symbol)
+		              (describe-minor-mode-completion-table-for-indicator))
+                             :require-match t
+                             :history 'consult-minor-mode-menu-history)))
+    (call-interactively (or (lookup-minor-mode-from-indicator mode)
+                            (intern mode)))))
 
 ;;;###autoload
 (defun consult-theme (theme)
@@ -1060,7 +1034,7 @@ Macros containing mouse clicks aren't displayed."
   (unless (or (bound-and-true-p selectrum-mode)
               (bound-and-true-p icomplete-mode))
     (when-let (fun (car consult--preview-stack))
-      (let ((cand (minibuffer-contents)))
+      (let ((cand (minibuffer-contents-no-properties)))
         (when (test-completion cand
                                minibuffer-completion-table
                                minibuffer-completion-predicate)

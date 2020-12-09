@@ -5,6 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
+;; Package-Version: 20201209.619
+;; Package-Commit: 31ba78b6c65be172aae2dde9bc0e6e91e229b082
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -40,12 +42,27 @@
   :prefix "marginalia-")
 
 (defface marginalia-key
-  '((t :inherit font-lock-keyword-face :weight normal))
+  '((t :inherit font-lock-keyword-face))
   "Face used to highlight keys in `marginalia-mode'."
   :group 'marginalia)
 
+(defface marginalia-lighter
+  '((t :inherit marginalia-size))
+  "Face used to highlight lighters in `marginalia-mode'."
+  :group 'marginalia)
+
+(defface marginalia-on
+  '((t :inherit success))
+  "Face used to signal enabled modes."
+  :group 'marginalia)
+
+(defface marginalia-off
+  '((t :inherit error))
+  "Face used to signal disabled modes."
+  :group 'marginalia)
+
 (defface marginalia-documentation
-  '((t :inherit completions-annotations :weight normal))
+  '((t :inherit completions-annotations))
   "Face used to highlight documentation string in `marginalia-mode'."
   :group 'marginalia)
 
@@ -70,27 +87,32 @@
   :group 'marginalia)
 
 (defface marginalia-archive
-  '((t :inherit marginalia-key))
+  '((t :inherit warning))
   "Face used to highlight package archives in `marginalia-mode'."
   :group 'marginalia)
 
+(defface marginalia-installed
+  '((t :inherit success))
+  "Face used to highlight package status in `marginalia-mode'."
+  :group 'marginalia)
+
 (defface marginalia-size
-  '((t :inherit font-lock-constant-face :weight normal))
+  '((t :inherit font-lock-constant-face))
   "Face used to highlight sizes in `marginalia-mode'."
   :group 'marginalia)
 
 (defface marginalia-file-name
-  '((t :inherit marginalia-documentation :slant normal))
+  '((t :inherit marginalia-documentation))
   "Face used to highlight file names in `marginalia-mode'."
   :group 'marginalia)
 
 (defface marginalia-file-modes
-  '((t :inherit font-lock-string-face :weight normal))
+  '((t :inherit font-lock-string-face))
   "Face used to highlight file modes in `marginalia-mode'."
   :group 'marginalia)
 
 (defface marginalia-file-owner
-  '((t :inherit font-lock-preprocessor-face :weight normal))
+  '((t :inherit font-lock-preprocessor-face))
   "Face used to highlight file owners in `marginalia-mode'."
   :group 'marginalia)
 
@@ -122,8 +144,12 @@ only with the annotations that come with Emacs) without disabling
     (customize-group . marginalia-annotate-customize-group)
     (variable . marginalia-annotate-variable)
     (face . marginalia-annotate-face)
+    (minor-mode . marginalia-annotate-minor-mode)
     (symbol . marginalia-annotate-symbol)
     (variable . marginalia-annotate-variable)
+    (input-method . marginalia-annotate-input-method)
+    (coding-system . marginalia-annotate-coding-system)
+    (charset . marginalia-annotate-charset)
     (package . marginalia-annotate-package))
   "Lightweight annotator functions.
 Associates completion categories with annotation functions.
@@ -165,7 +191,11 @@ determine it."
     ("\\<M-x\\>" . command)
     ("\\<package\\>" . package)
     ("\\<face\\>" . face)
-    ("\\<variable\\>" . variable))
+    ("\\<variable\\>" . variable)
+    ("\\<input method\\>" . input-method)
+    ("\\<charset\\>" . charset)
+    ("\\<coding system\\>" . coding-system)
+    ("\\<minor mode\\>" . minor-mode))
   "Associates regexps to match against minibuffer prompts with categories."
   :type '(alist :key-type regexp :value-type symbol)
   :group 'marginalia)
@@ -180,12 +210,13 @@ determine it."
 (defvar package--builtins)
 (defvar package-alist)
 (defvar package-archive-contents)
+(declare-function package--from-builtin "package")
+(declare-function package-desc-archive "package")
+(declare-function package-desc-dir "package")
 (declare-function package-desc-summary "package")
 (declare-function package-desc-version "package")
-(declare-function package-desc-archive "package")
 (declare-function package-installed-p "package")
 (declare-function package-version-join "package")
-(declare-function package--from-builtin "package")
 
 ;;;; Marginalia mode
 
@@ -288,6 +319,26 @@ This hash table is needed to speed up `marginalia-annotate-command-binding'.")
        ("abcdefghijklmNOPQRSTUVWXYZ" :face sym)
        (doc :truncate marginalia-truncate-width :face 'marginalia-documentation)))))
 
+(defun marginalia-annotate-minor-mode (cand)
+  "Annotate minor-mode CAND with status and documentation string."
+  (let* ((sym (intern-soft cand))
+         (mode (if (and sym (boundp sym))
+                   sym
+                 (with-selected-window
+                     (or (minibuffer-selected-window) (selected-window))
+                   (lookup-minor-mode-from-indicator cand))))
+         (lighter (cdr (assq mode minor-mode-alist)))
+         (lighter-str (and lighter (string-trim (format-mode-line (cons t lighter))))))
+    (concat
+     (marginalia--fields
+      ((if (and (boundp mode) (symbol-value mode))
+           (propertize "On" 'face 'marginalia-on)
+         (propertize "Off" 'face 'marginalia-off)) :width 3)
+      ((or lighter-str "") :width 14 :face 'marginalia-lighter)
+      ((or (ignore-errors (documentation mode)) "")
+       :truncate marginalia-truncate-width
+       :face 'marginalia-documentation)))))
+
 (defun marginalia-annotate-package (cand)
   "Annotate package CAND with its description summary."
   (when-let* ((pkg (intern (replace-regexp-in-string "-[[:digit:]\\.-]+$" "" cand)))
@@ -298,14 +349,27 @@ This hash table is needed to speed up `marginalia-annotate-command-binding'.")
                           (car (alist-get pkg package-archive-contents))))))
     (marginalia--fields
      ((package-version-join (package-desc-version desc)) :width 16 :face 'marginalia-version)
-     ((if (package-installed-p desc)
-          "installed"
-        (package-desc-archive desc)) :width 9 :face 'marginalia-archive)
+     ((cond
+       ((eq (package-desc-dir desc) 'builtin) (propertize "builtin" 'face 'marginalia-installed))
+       ((package-installed-p desc) (propertize "installed" 'face 'marginalia-installed))
+       (t (propertize (package-desc-archive desc) 'face 'marginalia-archive))) :width 9)
      ((package-desc-summary desc) :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
 (defun marginalia-annotate-customize-group (cand)
   "Annotate customization group CAND with its documentation string."
   (marginalia--documentation (documentation-property (intern cand) 'group-documentation)))
+
+(defun marginalia-annotate-input-method (cand)
+  "Annotate input method CAND with its description."
+  (marginalia--documentation (nth 4 (assoc cand input-method-alist))))
+
+(defun marginalia-annotate-charset (cand)
+  "Annotate charset CAND with its description."
+  (marginalia--documentation (charset-description (intern cand))))
+
+(defun marginalia-annotate-coding-system (cand)
+  "Annotate coding system CAND with its description."
+  (marginalia--documentation (coding-system-doc-string (intern cand))))
 
 (defun marginalia-annotate-buffer (cand)
   "Annotate buffer CAND with modification status, file name and major mode."

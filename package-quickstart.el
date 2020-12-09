@@ -2234,6 +2234,43 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el") (car load-path))))
+
+
+
+(defvar marginalia-mode nil "\
+Non-nil if Marginalia mode is enabled.
+See the `marginalia-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `marginalia-mode'.")
+
+(custom-autoload 'marginalia-mode "marginalia" nil)
+
+(autoload 'marginalia-mode "marginalia" "\
+Annotate completion candidates with richer information.
+
+If called interactively, enable Marginalia mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'marginalia-cycle-annotators "marginalia" "\
+Cycle between annotators in `marginalia-annotators'.
+If called from the minibuffer the annotator cycling is local,
+that it is, it does not affect subsequent minibuffers.  When called
+from a regular buffer the effect is global." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/lv-20200507.1518/lv-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3096,6 +3133,147 @@ Switch to *Deft* buffer and load files.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201209.824/consult-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201209.824/consult-autoloads.el") (car load-path))))
+
+
+
+(autoload 'consult-multi-occur "consult" "\
+Improved version of `multi-occur' based on `completing-read-multiple'.
+See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
+
+\(fn BUFS REGEXP &optional NLINES)" t nil)
+
+(autoload 'consult-outline "consult" "\
+Jump to an outline heading." t nil)
+
+(autoload 'consult-mark "consult" "\
+Jump to a marker in `mark-ring'." t nil)
+
+(autoload 'consult-line "consult" "\
+Search for a matching line and jump to the line beginning.
+The default candidate is a non-empty line closest to point.
+This command obeys narrowing. Optionally INITIAL input can be provided.
+
+\(fn &optional INITIAL)" t nil)
+
+(autoload 'consult-line-symbol-at-point "consult" "\
+Search for a symbol at point." t nil)
+
+(autoload 'consult-line-from-isearch "consult" "\
+Search by lines from isearch string." t nil)
+
+(autoload 'consult-recent-file "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-recent-file-other-frame "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-recent-file-other-window "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-file-externally "consult" "\
+Open FILE using system's default application.
+
+\(fn FILE)" t nil)
+
+(autoload 'consult-completion-in-region "consult" "\
+Prompt for completion of region in the minibuffer if non-unique.
+
+The function is called with 4 arguments: START END COLLECTION PREDICATE.
+The arguments and expected return value are as specified for
+`completion-in-region'. Use as a value for `completion-in-region-function'.
+
+\(fn START END COLLECTION &optional PREDICATE)" nil nil)
+
+(autoload 'consult-yank "consult" "\
+Select text from the kill ring and insert it." t nil)
+
+(autoload 'consult-yank-pop "consult" "\
+If there is a recent yank act like `yank-pop'.
+Otherwise select text from the kill ring and insert it.
+See `yank-pop' for the meaning of ARG.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'consult-yank-replace "consult" "\
+Select text from the kill ring.
+If there was no recent yank, insert the text.
+Otherwise replace the just-yanked text with the selected text." t nil)
+
+(autoload 'consult-register "consult" "\
+Use register REG. Either jump to location or insert the stored text.
+
+\(fn REG)" t nil)
+
+(autoload 'consult-bookmark "consult" "\
+If bookmark NAME exists, open it, otherwise set bookmark under the given NAME.
+
+\(fn NAME)" t nil)
+
+(autoload 'consult-apropos "consult" "\
+Select pattern and call `apropos'." t nil)
+
+(autoload 'consult-command-history "consult" "\
+Select and evaluate command from the command history." t nil)
+
+(autoload 'consult-minibuffer-history "consult" "\
+Insert string from minibuffer history." t nil)
+
+(autoload 'consult-minor-mode-menu "consult" "\
+Enable or disable minor mode.
+This is an alternative to `minor-mode-menu-from-indicator'." t nil)
+
+(autoload 'consult-theme "consult" "\
+Disable current themes and enable THEME from `consult-themes'.
+
+During theme selection the theme is shown as
+preview if `consult-preview-mode' is enabled.
+
+\(fn THEME)" t nil)
+
+(autoload 'consult-buffer-other-frame "consult" "\
+Enhanced `switch-to-buffer-other-frame' command with support for virtual buffers." t nil)
+
+(autoload 'consult-buffer-other-window "consult" "\
+Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
+
+(autoload 'consult-buffer "consult" "\
+Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
+
+(autoload 'consult-kmacro "consult" "\
+Run a chosen keyboard macro.  With prefix ARG, run the macro that many times.
+
+Macros containing mouse clicks aren't displayed.
+
+\(fn ARG)" t nil)
+
+(defvar consult-preview-mode nil "\
+Non-nil if Consult-Preview mode is enabled.
+See the `consult-preview-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `consult-preview-mode'.")
+
+(custom-autoload 'consult-preview-mode "consult" nil)
+
+(autoload 'consult-preview-mode "consult" "\
+Enable preview for consult commands.
+
+If called interactively, enable Consult-Preview mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "consult" '("consult-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20200210.921/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3486,7 +3664,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme consult browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

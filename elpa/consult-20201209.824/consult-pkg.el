@@ -1,0 +1,2 @@
+;;; Generated package description from /home/scfrazer/.emacs.d/elpa/consult-20201209.824/consult.el  -*- no-byte-compile: t -*-
+(define-package "consult" "20201209.824" "Consulting completing-read" '((emacs "26.1")) :commit "dadc87fe73a93d2ecc34a0f82636729e8fe2dcd7" :authors '(("Daniel Mendler, Consult and Selectrum contributors")) :maintainer '("Daniel Mendler") :url "https://github.com/minad/consult")
