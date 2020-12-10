@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201209.824
-;; Package-Commit: dadc87fe73a93d2ecc34a0f82636729e8fe2dcd7
+;; Package-Version: 20201210.1844
+;; Package-Commit: 649eb5f3110b8d045d585f216d282eba5c51d2f3
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/consult
 
@@ -28,13 +28,19 @@
 ;;; Commentary:
 
 ;; Consult implements a set of commands which use `completing-read' to select
-;; from a list of candidates. Most provided commands follow the naming scheme `consult-thing`.
-;; Some commands are drop-in replacements for existing functions, e.g., consult-apropos.
-;; Other commands provide additional non-existing functionality, e.g., consult-line.
+;; from a list of candidates. Most provided commands follow the naming scheme
+;; `consult-<thing>'. Some commands are drop-in replacements for existing
+;; functions, e.g., `consult-apropos' or the enhanced buffer switcher
+;; `consult-buffer.' Other commands provide additional functionality, e.g.,
+;; `consult-line', to search for a line. Many commands support candidate
+;; preview. If a candidate is selected in the completion view, the buffer shows
+;; the candidate immediately.
 
-;;; This package is inspired by and partially derived from counsel by Oleh Krehel,
-;;; Copyright Free Software Foundation, Inc.
-;;; Furthermore some of the commands found in this package were taken from the Selectrum wiki.
+;;; Acknowledgements:
+
+;; This package took inspiration from Counsel by Oleh Krehel. Some of the
+;; commands found in this package originated in the Selectrum wiki. See the
+;; README for a full list of contributors.
 
 ;;; Code:
 
@@ -43,6 +49,7 @@
 (require 'kmacro)
 (require 'outline)
 (require 'recentf)
+(require 'ring)
 (require 'seq)
 (require 'subr-x)
 
@@ -100,8 +107,22 @@
 
 ;;;; Customization
 
+(defcustom consult-mode-histories
+  '((eshell-mode . eshell-history-ring)
+    (comint-mode . comint-input-ring)
+    (term-mode   . term-input-ring))
+  "Alist of (mode . history) pairs of mode histories.
+The histories can be rings or lists."
+  :type '(list (cons symbol symbol))
+  :group 'completing-history)
+
 (defcustom consult-preview-buffer t
   "Enable buffer preview during selection."
+  :type 'boolean
+  :group 'consult)
+
+(defcustom consult-preview-flycheck t
+  "Enable flycheck preview during selection."
   :type 'boolean
   :group 'consult)
 
@@ -136,6 +157,11 @@ nil shows all `custom-available-themes'."
   :type '(repeat symbol)
   :group 'consult)
 
+(defcustom consult-recenter t
+  "Recenter after jumping."
+  :type 'boolean
+  :group 'consult)
+
 (defcustom consult-line-numbers-widen t
   "Show absolute line numbers when narrowing is active."
   :type 'boolean
@@ -162,12 +188,6 @@ nil shows all `custom-available-themes'."
 
 (defvar consult-apropos-history nil
   "History for the command `consult-apropos'.")
-
-(defvar consult-minibuffer-history nil
-  "History for the command `consult-minibuffer-history'.")
-
-(defvar consult-command-history nil
-  "History for the command `consult-command-history'.")
 
 (defvar consult-register-history nil
   "History for the command `consult-register'.")
@@ -201,7 +221,27 @@ nil shows all `custom-available-themes'."
 (declare-function selectrum-read "selectrum")
 (declare-function selectrum-get-current-candidate "selectrum")
 
+(defvar flycheck-current-errors)
+(declare-function flycheck-error-buffer "flycheck")
+(declare-function flycheck-error-checker "flycheck")
+(declare-function flycheck-error-filename "flycheck")
+(declare-function flycheck-error-level "flycheck")
+(declare-function flycheck-error-level-< "flycheck")
+(declare-function flycheck-error-level-error-list-face "flycheck")
+(declare-function flycheck-error-line "flycheck")
+(declare-function flycheck-error-message "flycheck")
+(declare-function flycheck-jump-to-error "flycheck")
+
 ;;;; Helper functions
+
+(defun consult--lookup-list (alist key)
+  "Lookup KEY in ALIST."
+  (cdr (assoc key alist)))
+
+(defun consult--forbid-minibuffer ()
+  "Raise an error if executed from the minibuffer."
+  (when (minibufferp)
+    (user-error "Consult called inside the minibuffer")))
 
 (defsubst consult--fontify ()
   "Ensure that the whole buffer is fontified."
@@ -262,7 +302,7 @@ BODY are the body expressions."
 ;; TODO Matched strings are not highlighted as of now
 ;; see https://github.com/minad/consult/issues/7
 (defun consult--preview-line (cmd &optional cand _state)
-  "The preview function used if selected from a list of candidate lines.
+  "The preview function used if selecting from a list of candidate lines.
 
 The function can be used as the `:preview' argument of `consult--read'.
 CMD is the preview command.
@@ -273,8 +313,7 @@ _STATE is the saved state."
      (consult--overlay-cleanup))
     ('preview
      (consult--with-window
-      (goto-char cand)
-      (recenter)
+      (consult--preview-position cand)
       (consult--overlay-cleanup)
       (consult--overlay-add (line-beginning-position) (line-end-position) 'consult-preview-line)
       (let ((pos (point)))
@@ -368,12 +407,23 @@ Since the line number is part of the candidate it will be matched-on during comp
                (cdar cand))))
     candidates))
 
-(defun consult--goto (pos)
+(defun consult--preview-position (pos)
+  "Go to POS and recenter."
+  (when pos
+    (when (and (markerp pos) (not (eq (current-buffer) (marker-buffer pos))))
+      (switch-to-buffer (marker-buffer pos)))
+    (goto-char pos)
+    (when consult-recenter
+      (recenter))))
+
+(defun consult--goto-position (pos)
   "Push current position to mark ring, go to POS and recenter."
   (when pos
-    (push-mark (point) t)
-    (goto-char pos)
-    (recenter)))
+    ;; When the marker is in the same buffer,
+    ;; record previous location such that the user can jump back quickly.
+    (unless (and (markerp pos) (not (eq (current-buffer) (marker-buffer pos))))
+      (push-mark (point) t))
+    (consult--preview-position pos)))
 
 ;;;; Commands
 
@@ -391,8 +441,7 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
 
 (defun consult--outline-candidates ()
   "Return alist of outline headings and positions."
-  (when (minibufferp)
-    (user-error "Consult called inside the minibuffer"))
+  (consult--forbid-minibuffer)
   (consult--fontify)
   (let* ((max-line 0)
          (line (line-number-at-pos (point-min) consult-line-numbers-widen))
@@ -421,21 +470,86 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
 (defun consult-outline ()
   "Jump to an outline heading."
   (interactive)
-  (consult--goto
+  (consult--goto-position
    (save-excursion
      (consult--read "Go to heading: " (consult--with-increased-gc (consult--outline-candidates))
                     :category 'line
                     :sort nil
                     :require-match t
-                    :lookup (lambda (candidates x) (cdr (assoc x candidates)))
+                    :lookup #'consult--lookup-list
                     :history 'consult-outline-history
                     :preview (and consult-preview-outline #'consult--preview-line)))))
+
+(defun consult--flycheck-candidates ()
+  "Return flycheck errors as alist."
+  (consult--forbid-minibuffer)
+  (unless (bound-and-true-p flycheck-current-errors)
+    (user-error "No flycheck errors (Status: %s)"
+                (if (boundp 'flycheck-last-status-change)
+                    flycheck-last-status-change
+                  'not-installed)))
+  (let* ((errors (mapcar
+                  (lambda (err)
+                    (list (file-name-nondirectory (flycheck-error-filename err))
+                          (number-to-string (flycheck-error-line err))
+                          err))
+                  (seq-sort #'flycheck-error-level-< flycheck-current-errors)))
+         (file-width (apply #'max (mapcar (lambda (x) (length (car x))) errors)))
+         (line-width (apply #'max (mapcar (lambda (x) (length (cadr x))) errors)))
+         (fmt (format "%%-%ds %%-%ds %%-7s %%s (%%s)" file-width line-width)))
+    (mapcar
+     (pcase-lambda (`(,file ,line ,err))
+       (flycheck-jump-to-error err)
+       (cons
+        (format fmt
+                (propertize file 'face 'flycheck-error-list-filename)
+                (propertize line 'face 'flycheck-error-list-line-number)
+                (let ((level (flycheck-error-level err)))
+                  (propertize (symbol-name level) 'face (flycheck-error-level-error-list-face level)))
+                (propertize (flycheck-error-message err)
+                            'face 'flycheck-error-list-error-message)
+                (propertize (symbol-name (flycheck-error-checker err))
+                            'face 'flycheck-error-list-checker-name))
+        (point-marker)))
+     errors)))
+
+(defun consult--preview-flycheck (cmd &optional err state)
+  "The preview function used if selecting from a list of flycheck errors.
+CMD is the preview command.
+ERR is the selected error.
+STATE is the saved state."
+  (pcase cmd
+    ('save (current-buffer))
+    ('restore
+     (consult--overlay-cleanup)
+     (when (buffer-live-p state)
+       (set-buffer state)))
+    ('preview
+     (consult--with-window
+      (consult--overlay-cleanup)
+      (consult--preview-position err)
+      (consult--overlay-add (line-beginning-position) (line-end-position) 'consult-preview-line)
+      (let ((pos (point)))
+        (consult--overlay-add pos (1+ pos) 'consult-preview-cursor))))))
+
+;;;###autoload
+(defun consult-flycheck ()
+  "Jump to flycheck error."
+  (interactive)
+  (consult--goto-position
+   (save-excursion
+     (consult--read "Flycheck error: "
+                    (consult--with-increased-gc (consult--flycheck-candidates))
+                    :category 'flycheck-error
+                    :require-match t
+                    :sort nil
+                    :lookup #'consult--lookup-list
+                    :preview (and consult-preview-flycheck #'consult--preview-flycheck)))))
 
 (defun consult--mark-candidates ()
   "Return alist of lines containing markers.
 The alist contains (string . position) pairs."
-  (when (minibufferp)
-    (user-error "Consult called inside the minibuffer"))
+  (consult--forbid-minibuffer)
   (unless (marker-position (mark-marker))
     (user-error "No marks"))
   (consult--fontify)
@@ -470,13 +584,13 @@ The alist contains (string . position) pairs."
 (defun consult-mark ()
   "Jump to a marker in `mark-ring'."
   (interactive)
-  (consult--goto
+  (consult--goto-position
    (save-excursion
      (consult--read "Go to mark: " (consult--with-increased-gc (consult--mark-candidates))
                     :category 'line
                     :sort nil
                     :require-match t
-                    :lookup (lambda (candidates x) (cdr (assoc x candidates)))
+                    :lookup #'consult--lookup-list
                     :history 'consult-mark-history
                     :preview (and consult-preview-mark #'consult--preview-line)))))
 
@@ -494,8 +608,7 @@ WIDTH is the line number width."
 
 (defun consult--line-candidates ()
   "Return alist of lines and positions."
-  (when (minibufferp)
-    (user-error "Consult called inside the minibuffer"))
+  (consult--forbid-minibuffer)
   (consult--fontify)
   (let* ((default-cand)
          (candidates)
@@ -530,7 +643,7 @@ WIDTH is the line number width."
 The default candidate is a non-empty line closest to point.
 This command obeys narrowing. Optionally INITIAL input can be provided."
   (interactive)
-  (consult--goto
+  (consult--goto-position
    (let ((candidates (consult--with-increased-gc (consult--line-candidates))))
      (save-excursion
        (consult--read "Go to line: " (cdr candidates)
@@ -539,7 +652,7 @@ This command obeys narrowing. Optionally INITIAL input can be provided."
                       :default-top nil
                       :require-match t
                       :history 'consult-line-history
-                      :lookup (lambda (candidates x) (cdr (assoc x candidates)))
+                      :lookup #'consult--lookup-list
                       :default (car candidates)
                       :initial initial
                       :preview (and consult-preview-line #'consult--preview-line))))))
@@ -647,12 +760,20 @@ The arguments and expected return value are as specified for
    :category 'kill-ring
    :require-match t
    :preview (and consult-preview-yank
-                 (let ((ov (make-overlay (min (point) (mark t)) (max (point) (mark t)))))
-                   (overlay-put ov 'face 'consult-preview-yank)
+                 (let* ((pt (point))
+                        ;; If previous command is yank, hide previously yanked text
+                        (mk (or (and (eq last-command 'yank) (mark t)) pt))
+                        (ov (make-overlay (min pt mk) (max pt mk))))
+                   (overlay-put ov 'invisible t)
                    (lambda (cmd &optional cand _state)
                      (pcase cmd
                        ('restore (delete-overlay ov))
-                       ('preview (overlay-put ov 'display cand))))))))
+                       ('preview
+                        ;; Use `add-face-text-property' on a copy of "cand in order to merge face properties
+                        (setq cand (copy-sequence cand))
+                        (add-face-text-property 0 (length cand) 'consult-preview-yank t cand)
+                        ;; Use the `before-string' property since the overlay might be empty.
+                        (overlay-put ov 'before-string cand))))))))
 
 ;; Insert selected text.
 ;; Adapted from the Emacs yank function.
@@ -726,7 +847,7 @@ Otherwise replace the just-yanked text with the selected text."
                    :category 'register
                    :sort nil
                    :require-match t
-                   :lookup (lambda (candidates x) (cdr (assoc x candidates)))
+                   :lookup #'consult--lookup-list
                    :history 'consult-register-history)))
   (condition-case nil
       (jump-to-register reg)
@@ -761,22 +882,63 @@ Otherwise replace the just-yanked text with the selected text."
 (defun consult-command-history ()
   "Select and evaluate command from the command history."
   (interactive)
-  (eval
-   (read
-    (consult--read "Command: "
-                   (delete-dups (mapcar #'prin1-to-string command-history))
-                   :category 'expression
-                   :history 'consult-command-history))))
+  (eval (read (consult--read
+               "Command: "
+               (or (delete-dups (mapcar #'prin1-to-string command-history))
+                   (user-error "History is empty"))
+               :sort nil
+               :category 'expression))))
 
+(defun consult--current-history ()
+  "Return the history relevant to the current buffer.
+
+If the minibuffer is active, returns the minibuffer history,
+otherwise the history corresponding to the mode is returned.
+There is a special case for `repeat-complex-command',
+for which the command history is used."
+  (cond
+   ;; If pressing "C-x M-:", i.e., `repeat-complex-command',
+   ;; we are instead querying the `command-history' and get a full s-expression.
+   ((eq last-command 'repeat-complex-command)
+    (delete-dups (mapcar #'prin1-to-string command-history)))
+   ;; In the minibuffer we use the current minibuffer history,
+   ;; which can be configured by setting `minibuffer-history-variable'.
+   ((minibufferp)
+    (if (fboundp 'minibuffer-history-value)
+        (minibuffer-history-value) ;; Emacs 27 only
+      (symbol-value minibuffer-history-variable)))
+   ;; Otherwise we use a mode-specific history, see `consult-mode-histories'.
+   (t (when-let (history
+                 (or (seq-find (lambda (ring)
+                                 (and (derived-mode-p (car ring))
+                                      (boundp (cdr ring))))
+                               consult-mode-histories)
+                     (user-error
+                      "No history configured for `%s', see `consult-mode-histories'"
+                      major-mode)))
+        (symbol-value (cdr history))))))
+
+(defun consult--history-elements (history)
+  "Return elements from HISTORY.
+Can handle lists and rings."
+  (delete-dups (seq-copy (if (ring-p history)
+                             (ring-elements history)
+                           history))))
+
+;; This command has been adopted from https://github.com/oantolin/completing-history/.
 ;;;###autoload
-(defun consult-minibuffer-history ()
-  "Insert string from minibuffer history."
+(defun consult-history (&optional history)
+  "Insert string from buffer HISTORY."
   (interactive)
-  (insert
-   (substring-no-properties
-    (consult--read "Minibuffer: "
-                   (delete-dups (seq-copy minibuffer-history))
-                   :history 'consult-minibuffer-history))))
+  (let* ((enable-recursive-minibuffers t)
+         (str (consult--read "History: "
+                             (or (consult--history-elements
+                                  (or history (consult--current-history)))
+                                 (user-error "History is empty"))
+                             :sort nil)))
+      (when (minibufferp)
+        (delete-minibuffer-contents))
+      (insert (substring-no-properties str))))
 
 ;;;###autoload
 (defun consult-minor-mode-menu ()
@@ -867,8 +1029,9 @@ OPEN-BUFFER is used for preview."
     ;; see https://github.com/minad/consult/issues/9
     (consult--with-preview consult-preview-buffer
         (buf state)
-        (current-window-configuration)
-        (set-window-configuration state)
+        (current-buffer)
+        (when (buffer-live-p state)
+          (set-buffer state))
         (when (get-buffer buf)
           (consult--with-window
            (funcall open-buffer buf)))
@@ -886,8 +1049,11 @@ OPEN-BUFFER is used for preview."
   (consult--read "Switch to: " candidates
                  :history 'consult-buffer-history
                  :sort nil
-                 :preview (lambda (cmd &optional cand _state)
+                 :preview (lambda (cmd &optional cand state)
                             (pcase cmd
+                              ('save (current-buffer))
+                              ('restore (when (buffer-live-p state)
+                                          (set-buffer state)))
                               ('preview
                                (when (get-buffer cand)
                                  (consult--with-window
@@ -995,7 +1161,7 @@ Macros containing mouse clicks aren't displayed."
                    :require-match t
                    :sort nil
                    :history 'consult-kmacro-history
-                   :lookup (lambda (candidates x) (cdr (assoc x candidates))))))
+                   :lookup #'consult--lookup-list)))
     (if (zerop selected)
         ;; If the first element has been selected, just run the last macro.
         (kmacro-call-macro (or arg 1) t nil)

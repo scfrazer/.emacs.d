@@ -23,10 +23,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.0.3/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.0.3/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el") (car load-path))))
 
 
 
@@ -976,12 +976,18 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201207.1851/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201207.1851/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el") (car load-path))))
 
 
+
+(defvar selectrum-complete-in-buffer t "\
+If non-nil, use Selectrum for `completion-in-region'.
+This option needs to be set before activating `selectrum-mode'.")
+
+(custom-autoload 'selectrum-complete-in-buffer "selectrum" t)
 
 (autoload 'selectrum-completing-read "selectrum" "\
 Read choice using Selectrum. Can be used as `completing-read-function'.
@@ -1074,7 +1080,7 @@ ARGS are standard as in all `:around' advice.
 \(fn FUNC &rest ARGS)" nil nil)
 
 (define-minor-mode selectrum-mode "\
-Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode (progn (selectrum-mode -1) (setq selectrum-mode t) (setq selectrum--old-completing-read-function (default-value 'completing-read-function)) (setq-default completing-read-function #'selectrum-completing-read) (setq selectrum--old-read-buffer-function (default-value 'read-buffer-function)) (setq-default read-buffer-function #'selectrum-read-buffer) (setq selectrum--old-read-file-name-function (default-value 'read-file-name-function)) (setq-default read-file-name-function #'selectrum-read-file-name) (setq selectrum--old-completion-in-region-function (default-value 'completion-in-region-function)) (setq-default completion-in-region-function #'selectrum-completion-in-region) (advice-add #'completing-read-multiple :override #'selectrum-completing-read-multiple) (advice-add 'dired-read-dir-and-switches :around #'selectrum--fix-dired-read-dir-and-switches) (advice-add 'read-library-name :override #'selectrum-read-library-name) (advice-add #'minibuffer-message :around #'selectrum--fix-minibuffer-message) (define-key minibuffer-local-map [remap previous-matching-history-element] 'selectrum-select-from-history)) (when (equal (default-value 'completing-read-function) #'selectrum-completing-read) (setq-default completing-read-function selectrum--old-completing-read-function)) (when (equal (default-value 'read-buffer-function) #'selectrum-read-buffer) (setq-default read-buffer-function selectrum--old-read-buffer-function)) (when (equal (default-value 'read-file-name-function) #'selectrum-read-file-name) (setq-default read-file-name-function selectrum--old-read-file-name-function)) (when (equal (default-value 'completion-in-region-function) #'selectrum-completion-in-region) (setq-default completion-in-region-function selectrum--old-completion-in-region-function)) (advice-remove #'completing-read-multiple #'selectrum-completing-read-multiple) (advice-remove 'dired-read-dir-and-switches #'selectrum--fix-dired-read-dir-and-switches) (advice-remove 'read-library-name #'selectrum-read-library-name) (advice-remove #'minibuffer-message #'selectrum--fix-minibuffer-message) (when (eq (lookup-key minibuffer-local-map [remap previous-matching-history-element]) #'selectrum-select-from-history) (define-key minibuffer-local-map [remap previous-matching-history-element] nil))))
+Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode (progn (selectrum-mode -1) (setq selectrum-mode t) (setq selectrum--old-completing-read-function (default-value 'completing-read-function)) (setq-default completing-read-function #'selectrum-completing-read) (setq selectrum--old-read-buffer-function (default-value 'read-buffer-function)) (setq-default read-buffer-function #'selectrum-read-buffer) (setq selectrum--old-read-file-name-function (default-value 'read-file-name-function)) (setq-default read-file-name-function #'selectrum-read-file-name) (setq selectrum--old-completion-in-region-function (default-value 'completion-in-region-function)) (when selectrum-complete-in-buffer (setq-default completion-in-region-function #'selectrum-completion-in-region)) (advice-add #'completing-read-multiple :override #'selectrum-completing-read-multiple) (advice-add 'dired-read-dir-and-switches :around #'selectrum--fix-dired-read-dir-and-switches) (advice-add 'read-library-name :override #'selectrum-read-library-name) (advice-add #'minibuffer-message :around #'selectrum--fix-minibuffer-message) (define-key minibuffer-local-map [remap previous-matching-history-element] 'selectrum-select-from-history)) (when (equal (default-value 'completing-read-function) #'selectrum-completing-read) (setq-default completing-read-function selectrum--old-completing-read-function)) (when (equal (default-value 'read-buffer-function) #'selectrum-read-buffer) (setq-default read-buffer-function selectrum--old-read-buffer-function)) (when (equal (default-value 'read-file-name-function) #'selectrum-read-file-name) (setq-default read-file-name-function selectrum--old-read-file-name-function)) (when (equal (default-value 'completion-in-region-function) #'selectrum-completion-in-region) (setq-default completion-in-region-function selectrum--old-completion-in-region-function)) (advice-remove #'completing-read-multiple #'selectrum-completing-read-multiple) (advice-remove 'dired-read-dir-and-switches #'selectrum--fix-dired-read-dir-and-switches) (advice-remove 'read-library-name #'selectrum-read-library-name) (advice-remove #'minibuffer-message #'selectrum--fix-minibuffer-message) (when (eq (lookup-key minibuffer-local-map [remap previous-matching-history-element]) #'selectrum-select-from-history) (define-key minibuffer-local-map [remap previous-matching-history-element] nil))))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum" '("selectrum-")))
 
@@ -3133,10 +3139,10 @@ Switch to *Deft* buffer and load files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201209.824/consult-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201209.824/consult-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el") (car load-path))))
 
 
 
@@ -3148,6 +3154,9 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
 
 (autoload 'consult-outline "consult" "\
 Jump to an outline heading." t nil)
+
+(autoload 'consult-flycheck "consult" "\
+Jump to flycheck error." t nil)
 
 (autoload 'consult-mark "consult" "\
 Jump to a marker in `mark-ring'." t nil)
@@ -3219,8 +3228,10 @@ Select pattern and call `apropos'." t nil)
 (autoload 'consult-command-history "consult" "\
 Select and evaluate command from the command history." t nil)
 
-(autoload 'consult-minibuffer-history "consult" "\
-Insert string from minibuffer history." t nil)
+(autoload 'consult-history "consult" "\
+Insert string from buffer HISTORY.
+
+\(fn &optional HISTORY)" t nil)
 
 (autoload 'consult-minor-mode-menu "consult" "\
 Enable or disable minor mode.

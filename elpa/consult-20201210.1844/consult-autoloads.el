@@ -18,6 +18,9 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
 (autoload 'consult-outline "consult" "\
 Jump to an outline heading." t nil)
 
+(autoload 'consult-flycheck "consult" "\
+Jump to flycheck error." t nil)
+
 (autoload 'consult-mark "consult" "\
 Jump to a marker in `mark-ring'." t nil)
 
@@ -88,8 +91,10 @@ Select pattern and call `apropos'." t nil)
 (autoload 'consult-command-history "consult" "\
 Select and evaluate command from the command history." t nil)
 
-(autoload 'consult-minibuffer-history "consult" "\
-Insert string from minibuffer history." t nil)
+(autoload 'consult-history "consult" "\
+Insert string from buffer HISTORY.
+
+\(fn &optional HISTORY)" t nil)
 
 (autoload 'consult-minor-mode-menu "consult" "\
 Enable or disable minor mode.
