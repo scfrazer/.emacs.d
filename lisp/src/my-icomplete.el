@@ -103,7 +103,17 @@
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
 
-(icomplete-vertical-mode 1)
-(fido-mode 1)
+;; (icomplete-vertical-mode 1)
+;; (fido-mode 1)
+
+(require 'selectrum)
+(require 'selectrum-prescient)
+(require 'marginalia)
+(selectrum-mode 1)
+(selectrum-prescient-mode 1)
+(marginalia-mode)
+(setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
+      selectrum-refine-candidates-function #'orderless-filter
+      selectrum-highlight-candidates-function #'orderless-highlight-matches)
 
 (provide 'my-icomplete)
