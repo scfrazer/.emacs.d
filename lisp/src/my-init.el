@@ -16,6 +16,10 @@
 (require 'my-dired)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
 
+(require 'my-complete)
+(bind-keys* ("C-x b"   . my-complete-find-file-from-bookmark)
+            ("C-x C-r" . my-complete-recentf-file))
+
 ;; Required packages
 
 (require 'my-abbrev)
@@ -64,10 +68,6 @@
 
 (require 'goto-last-change)
 (bind-keys* ("C-M-@" . goto-last-change))
-
-(require 'my-complete)
-(bind-keys* ("C-x b"   . my-complete-find-file-from-bookmark)
-            ("C-x C-r" . my-complete-recentf-file))
 
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override

@@ -1,7 +1,7 @@
 ;;; my-imenu-extras.el
 
 (require 'imenu)
-(require 'my-icomplete)
+(require 'my-complete)
 
 (setq imenu-max-items 25)
 (setq imenu-max-item-length 115)

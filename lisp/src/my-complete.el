@@ -7,15 +7,19 @@
 (require 'bookmark)
 (require 'recentf)
 
-(setq-default completion-styles '(orderless)
-              orderless-matching-styles '(orderless-prefixes orderless-regexp)
-              read-buffer-completion-ignore-case t
-              read-file-name-completion-ignore-case t
-              marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
-              marginalia-truncate-width 1000
-              selectrum-count-style 'current/matches
-              selectrum-refine-candidates-function #'orderless-filter
-              selectrum-highlight-candidates-function #'orderless-highlight-matches)
+(selectrum-mode 1)
+(selectrum-prescient-mode 1)
+(marginalia-mode)
+
+(setq completion-styles '(orderless)
+      orderless-matching-styles '(orderless-prefixes orderless-regexp)
+      read-buffer-completion-ignore-case t
+      read-file-name-completion-ignore-case t
+      marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
+      marginalia-truncate-width 1000
+      selectrum-count-style 'current/matches
+      selectrum-refine-candidates-function #'orderless-filter
+      selectrum-highlight-candidates-function #'orderless-highlight-matches)
 
 (defun my-complete-presorted-completion-table (completions)
   "Keep completion table order."
@@ -57,10 +61,6 @@
           ((= result-length 1) (car result-list))
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
-
-(selectrum-mode 1)
-(selectrum-prescient-mode 1)
-(marginalia-mode)
 
 (define-key selectrum-minibuffer-map (kbd "M-N") 'selectrum-next-page)
 (define-key selectrum-minibuffer-map (kbd "M-P") 'selectrum-previous-page)

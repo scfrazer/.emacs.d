@@ -3,7 +3,7 @@
 (require 'sv-mode)
 (require 'doxymacs)
 (require 'quick-edit)
-(require 'my-icomplete)
+(require 'my-complete)
 
 (defun my-sv-mode-bit-vector ()
   "Expand bit vector."
