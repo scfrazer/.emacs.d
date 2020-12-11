@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical.el  -*- no-byte-compile: t -*-
-(define-package "icomplete-vertical" "20201206.759" "Display icomplete candidates vertically" '((emacs "24.4")) :commit "ef12199fdf53c4a0fe7691850e133dabba58b147" :keywords '("convenience" "completion") :authors '(("Omar Antolín Camarena" . "omar@matem.unam.mx")) :maintainer '("Omar Antolín Camarena" . "omar@matem.unam.mx") :url "https://github.com/oantolin/icomplete-vertical")

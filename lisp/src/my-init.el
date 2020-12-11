@@ -65,9 +65,9 @@
 (require 'goto-last-change)
 (bind-keys* ("C-M-@" . goto-last-change))
 
-(require 'my-icomplete)
-(bind-keys* ("C-x b"   . my-icomplete-find-file-from-bookmark)
-            ("C-x C-r" . my-icomplete-recentf-file))
+(require 'my-complete)
+(bind-keys* ("C-x b"   . my-complete-find-file-from-bookmark)
+            ("C-x C-r" . my-complete-recentf-file))
 
 (require 'my-isearch)
 ;; Use global-set-key so minor modes can override

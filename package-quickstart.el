@@ -2406,71 +2406,6 @@ Same as `kill-buffer' but keep the iflipb buffer list state." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el") (car load-path))))
-
-
-
-(defvar ido-vertical-mode nil "\
-Non-nil if Ido-Vertical mode is enabled.
-See the `ido-vertical-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `ido-vertical-mode'.")
-
-(custom-autoload 'ido-vertical-mode "ido-vertical-mode" nil)
-
-(autoload 'ido-vertical-mode "ido-vertical-mode" "\
-Makes ido-mode display vertically.
-
-If called interactively, enable Ido-Vertical mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-vertical-mode" '("ido-vertical-" "turn-o")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el") (car load-path))))
-
-
-
-(defvar icomplete-vertical-mode nil "\
-Non-nil if Icomplete-Vertical mode is enabled.
-See the `icomplete-vertical-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `icomplete-vertical-mode'.")
-
-(custom-autoload 'icomplete-vertical-mode "icomplete-vertical" nil)
-
-(autoload 'icomplete-vertical-mode "icomplete-vertical" "\
-Display icomplete candidates vertically.
-
-If called interactively, enable Icomplete-Vertical mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'icomplete-vertical-toggle "icomplete-vertical" "\
-Toggle Icomplete Vertical mode without echo area message." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "icomplete-vertical" '("icomplete-vertical-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20201115.1055/hydra-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3675,7 +3610,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme consult browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme consult browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
