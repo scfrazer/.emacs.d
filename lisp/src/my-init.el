@@ -6,6 +6,9 @@
 
 (require 'cl-lib)
 
+(require 'use-package)
+(setq use-package-verbose t)
+
 (require 'my-font-lock)
 (setq-default my-font-lock-auto-whitespace t)
 (setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
@@ -106,9 +109,6 @@
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-
-(require 'use-package)
-(setq use-package-verbose t)
 
 (require 'my-win)
 (bind-keys* ("C-x 2" . my-win-split-vertically)
