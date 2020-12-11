@@ -42,7 +42,7 @@
  '(modus-operandi-theme-intense-standard-completions t)
  '(modus-operandi-theme-slanted-constructs t)
  '(package-selected-packages
-   '(consult marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon tron-legacy-theme goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt flymake-easy git-timemachine highlight-indent-guides htmlize hydra iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon tron-legacy-theme goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode modus-operandi-theme modus-vivendi-theme multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values

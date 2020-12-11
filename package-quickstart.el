@@ -2485,77 +2485,6 @@ result of `defhydra'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/htmlize-20200816.746/htmlize-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/htmlize-20200816.746/htmlize-autoloads.el") (car load-path))))
-
-
-
-(autoload 'htmlize-buffer "htmlize" "\
-Convert BUFFER to HTML, preserving colors and decorations.
-
-The generated HTML is available in a new buffer, which is returned.
-When invoked interactively, the new buffer is selected in the current
-window.  The title of the generated document will be set to the buffer's
-file name or, if that's not available, to the buffer's name.
-
-Note that htmlize doesn't fontify your buffers, it only uses the
-decorations that are already present.  If you don't set up font-lock or
-something else to fontify your buffers, the resulting HTML will be
-plain.  Likewise, if you don't like the choice of colors, fix the mode
-that created them, or simply alter the faces it uses.
-
-\(fn &optional BUFFER)" t nil)
-
-(autoload 'htmlize-region "htmlize" "\
-Convert the region to HTML, preserving colors and decorations.
-See `htmlize-buffer' for details.
-
-\(fn BEG END)" t nil)
-
-(autoload 'htmlize-file "htmlize" "\
-Load FILE, fontify it, convert it to HTML, and save the result.
-
-Contents of FILE are inserted into a temporary buffer, whose major mode
-is set with `normal-mode' as appropriate for the file type.  The buffer
-is subsequently fontified with `font-lock' and converted to HTML.  Note
-that, unlike `htmlize-buffer', this function explicitly turns on
-font-lock.  If a form of highlighting other than font-lock is desired,
-please use `htmlize-buffer' directly on buffers so highlighted.
-
-Buffers currently visiting FILE are unaffected by this function.  The
-function does not change current buffer or move the point.
-
-If TARGET is specified and names a directory, the resulting file will be
-saved there instead of to FILE's directory.  If TARGET is specified and
-does not name a directory, it will be used as output file name.
-
-\(fn FILE &optional TARGET)" t nil)
-
-(autoload 'htmlize-many-files "htmlize" "\
-Convert FILES to HTML and save the corresponding HTML versions.
-
-FILES should be a list of file names to convert.  This function calls
-`htmlize-file' on each file; see that function for details.  When
-invoked interactively, you are prompted for a list of files to convert,
-terminated with RET.
-
-If TARGET-DIRECTORY is specified, the HTML files will be saved to that
-directory.  Normally, each HTML file is saved to the directory of the
-corresponding source file.
-
-\(fn FILES &optional TARGET-DIRECTORY)" t nil)
-
-(autoload 'htmlize-many-files-dired "htmlize" "\
-HTMLize dired-marked files.
-
-\(fn ARG &optional TARGET-DIRECTORY)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "htmlize" '("htmlize-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2625,17 +2554,6 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 \(fn GIT-BRANCH)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-easy-20140818.755/flymake-easy-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-easy-20140818.755/flymake-easy-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake-easy" '("flymake-easy-")))
 
 
 )
@@ -3074,155 +2992,6 @@ Switch to *Deft* buffer and load files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201211.111/consult-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201211.111/consult-autoloads.el") (car load-path))))
-
-
-
-(autoload 'consult-multi-occur "consult" "\
-Improved version of `multi-occur' based on `completing-read-multiple'.
-See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
-
-\(fn BUFS REGEXP &optional NLINES)" t nil)
-
-(autoload 'consult-outline "consult" "\
-Jump to an outline heading." t nil)
-
-(autoload 'consult-flycheck "consult" "\
-Jump to flycheck error." t nil)
-
-(autoload 'consult-mark "consult" "\
-Jump to a marker in `mark-ring'." t nil)
-
-(autoload 'consult-line "consult" "\
-Search for a matching line and jump to the line beginning.
-The default candidate is a non-empty line closest to point.
-This command obeys narrowing. Optionally INITIAL input can be provided.
-
-\(fn &optional INITIAL)" t nil)
-
-(autoload 'consult-line-symbol-at-point "consult" "\
-Search for a symbol at point." t nil)
-
-(autoload 'consult-line-from-isearch "consult" "\
-Search by lines from isearch string." t nil)
-
-(autoload 'consult-recent-file "consult" "\
-Find recent using `completing-read'." t nil)
-
-(autoload 'consult-recent-file-other-frame "consult" "\
-Find recent using `completing-read'." t nil)
-
-(autoload 'consult-recent-file-other-window "consult" "\
-Find recent using `completing-read'." t nil)
-
-(autoload 'consult-file-externally "consult" "\
-Open FILE using system's default application.
-
-\(fn FILE)" t nil)
-
-(autoload 'consult-completion-in-region "consult" "\
-Prompt for completion of region in the minibuffer if non-unique.
-
-The function is called with 4 arguments: START END COLLECTION PREDICATE.
-The arguments and expected return value are as specified for
-`completion-in-region'. Use as a value for `completion-in-region-function'.
-
-\(fn START END COLLECTION &optional PREDICATE)" nil nil)
-
-(autoload 'consult-yank "consult" "\
-Select text from the kill ring and insert it." t nil)
-
-(autoload 'consult-yank-pop "consult" "\
-If there is a recent yank act like `yank-pop'.
-Otherwise select text from the kill ring and insert it.
-See `yank-pop' for the meaning of ARG.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'consult-yank-replace "consult" "\
-Select text from the kill ring.
-If there was no recent yank, insert the text.
-Otherwise replace the just-yanked text with the selected text." t nil)
-
-(autoload 'consult-register "consult" "\
-Use register REG. Either jump to location or insert the stored text.
-
-\(fn REG)" t nil)
-
-(autoload 'consult-bookmark "consult" "\
-If bookmark NAME exists, open it, otherwise set bookmark under the given NAME.
-
-\(fn NAME)" t nil)
-
-(autoload 'consult-apropos "consult" "\
-Select pattern and call `apropos'." t nil)
-
-(autoload 'consult-command-history "consult" "\
-Select and evaluate command from the command history." t nil)
-
-(autoload 'consult-history "consult" "\
-Insert string from buffer HISTORY.
-
-\(fn &optional HISTORY)" t nil)
-
-(autoload 'consult-minor-mode-menu "consult" "\
-Enable or disable minor mode.
-This is an alternative to `minor-mode-menu-from-indicator'." t nil)
-
-(autoload 'consult-theme "consult" "\
-Disable current themes and enable THEME from `consult-themes'.
-
-During theme selection the theme is shown as
-preview if `consult-preview-mode' is enabled.
-
-\(fn THEME)" t nil)
-
-(autoload 'consult-buffer-other-frame "consult" "\
-Enhanced `switch-to-buffer-other-frame' command with support for virtual buffers." t nil)
-
-(autoload 'consult-buffer-other-window "consult" "\
-Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
-
-(autoload 'consult-buffer "consult" "\
-Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
-
-(autoload 'consult-kmacro "consult" "\
-Run a chosen keyboard macro.  With prefix ARG, run the macro that many times.
-
-Macros containing mouse clicks aren't displayed.
-
-\(fn ARG)" t nil)
-
-(autoload 'consult-imenu "consult" "\
-Choose from flattened `imenu' using `completing-read'." t nil)
-
-(defvar consult-preview-mode nil "\
-Non-nil if Consult-Preview mode is enabled.
-See the `consult-preview-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `consult-preview-mode'.")
-
-(custom-autoload 'consult-preview-mode "consult" nil)
-
-(autoload 'consult-preview-mode "consult" "\
-Enable preview for consult commands.
-
-If called interactively, enable Consult-Preview mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "consult" '("consult-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20200210.921/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3613,7 +3382,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme consult browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

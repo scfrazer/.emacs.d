@@ -1,8 +1,6 @@
 ;;; my-web-mode.el
 
 (require 'web-beautify)
-(require 'flymake-easy)
-(require 'flymake-eslint)
 
 (setq web-mode-auto-close-style 1
       web-mode-enable-auto-closing t
@@ -104,8 +102,7 @@
           comment-end ""
           imenu-create-index-function 'my-web-mode-js-imenu-index)
     (my-web-mode-js-mode 1)
-    (local-set-key (kbd "C-c C-f") 'my-web-mode-flow-status)
-    (flymake-eslint-load)))
+    (local-set-key (kbd "C-c C-f") 'my-web-mode-flow-status)))
 
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 
