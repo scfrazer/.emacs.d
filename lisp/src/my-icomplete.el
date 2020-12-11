@@ -113,7 +113,14 @@
 (selectrum-prescient-mode 1)
 (marginalia-mode)
 (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
+      marginalia-truncate-width 1000
+      selectrum-count-style 'current/matches
       selectrum-refine-candidates-function #'orderless-filter
       selectrum-highlight-candidates-function #'orderless-highlight-matches)
+
+(define-key selectrum-minibuffer-map (kbd "M-N") 'selectrum-next-page)
+(define-key selectrum-minibuffer-map (kbd "M-P") 'selectrum-previous-page)
+(define-key selectrum-minibuffer-map (kbd "M-j") 'my-minibuffer-backward-kill)
+(define-key selectrum-minibuffer-map (kbd "M-k") 'my-minibuffer-forward-kill)
 
 (provide 'my-icomplete)
