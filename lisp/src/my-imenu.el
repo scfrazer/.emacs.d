@@ -87,7 +87,7 @@
                     (puthash name (1+ num) names))
                 (puthash name 1 names)))
             items))
-    (let* ((item (assoc (my-completing-read "Goto symbol: " (mapcar 'car items) nil t initial-input nil guess) items))
+    (let* ((item (assoc (completing-read "Goto symbol: " (mapcar 'car items) nil t initial-input nil guess) items))
            (name (car item))
            (len (length name))
            (pos (cdr item)))

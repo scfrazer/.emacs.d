@@ -23,10 +23,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.0.3/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.0.3/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el") (car load-path))))
 
 
 
@@ -962,6 +962,184 @@ Create `sr-speedbar' window.
 \(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "sr-speedbar" '("sr-speedbar-")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20201125.1428/prescient-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20201125.1428/prescient-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "prescient" '("prescient-")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el") (car load-path))))
+
+
+
+(defvar selectrum-complete-in-buffer t "\
+If non-nil, use Selectrum for `completion-in-region'.
+This option needs to be set before activating `selectrum-mode'.")
+
+(custom-autoload 'selectrum-complete-in-buffer "selectrum" t)
+
+(autoload 'selectrum-completing-read "selectrum" "\
+Read choice using Selectrum. Can be used as `completing-read-function'.
+For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
+HIST, DEF, and INHERIT-INPUT-METHOD, see `completing-read'.
+
+\(fn PROMPT COLLECTION &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)" nil nil)
+
+(autoload 'selectrum-completing-read-multiple "selectrum" "\
+Read one or more choices using Selectrum.
+Replaces `completing-read-multiple'. For PROMPT, TABLE,
+PREDICATE, REQUIRE-MATCH, INITIAL-INPUT, HIST, DEF, and
+INHERIT-INPUT-METHOD, see `completing-read-multiple'.
+
+The option `selectrum-completing-read-multiple-show-help' can be
+used to control insertion of additional usage information into
+the prompt.
+
+\(fn PROMPT TABLE &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)" nil nil)
+
+(autoload 'selectrum-completion-in-region "selectrum" "\
+Complete in-buffer text using a list of candidates.
+Can be used as `completion-in-region-function'. For START, END,
+COLLECTION, and PREDICATE, see `completion-in-region'.
+
+\(fn START END COLLECTION PREDICATE)" nil nil)
+
+(autoload 'selectrum-read-buffer "selectrum" "\
+Read buffer using Selectrum. Can be used as `read-buffer-function'.
+Actually, as long as `selectrum-completing-read' is installed in
+`completing-read-function', `read-buffer' already uses Selectrum.
+Installing this function in `read-buffer-function' makes sure the
+buffers are sorted in the default order (most to least recently
+used) rather than in whatever order is defined by
+`selectrum-preprocess-candidates-function', which is likely to be
+less appropriate. It also allows you to view hidden buffers,
+which is otherwise impossible due to tricky behavior of Emacs'
+completion machinery. For PROMPT, DEF, REQUIRE-MATCH, and
+PREDICATE, see `read-buffer'.
+
+\(fn PROMPT &optional DEF REQUIRE-MATCH PREDICATE)" nil nil)
+
+(autoload 'selectrum-read-file-name "selectrum" "\
+Read file name using Selectrum. Can be used as `read-file-name-function'.
+For PROMPT, DIR, DEFAULT-FILENAME, MUSTMATCH, INITIAL, and
+PREDICATE, see `read-file-name'.
+
+\(fn PROMPT &optional DIR DEFAULT-FILENAME MUSTMATCH INITIAL PREDICATE)" nil nil)
+
+(autoload 'selectrum--fix-dired-read-dir-and-switches "selectrum" "\
+Make \\[dired] do the \"right thing\" with its default candidate.
+By default \\[dired] uses `read-file-name' internally, which
+causes Selectrum to provide you with the first file inside the
+working directory as the default candidate. However, it would
+arguably be more semantically appropriate to use
+`read-directory-name', and this is especially important for
+Selectrum since this causes it to select the working directory
+initially.
+
+To test that this advice is working correctly, type \\[dired] and
+accept the default candidate. You should have opened the working
+directory in Dired, and not a filtered listing for the current
+file.
+
+This is an `:around' advice for `dired-read-dir-and-switches'.
+FUNC and ARGS are standard as in any `:around' advice.
+
+\(fn FUNC &rest ARGS)" nil nil)
+
+(autoload 'selectrum-read-library-name "selectrum" "\
+Read and return a library name.
+Similar to `read-library-name' except it handles `load-path'
+shadows correctly." nil nil)
+
+(autoload 'selectrum--fix-minibuffer-message "selectrum" "\
+Ensure the cursor stays at the front of the minibuffer message.
+This advice adjusts where the cursor gets placed for the overlay
+of `minibuffer-message' and ensures the overlay gets displayed at
+the right place without blocking the display of candidates.
+
+To test that this advice is working correctly, type \\[find-file]
+twice in a row with `enable-recursive-minibuffers' set to nil.
+The overlay indicating that recursive minibuffers are not allowed
+should appear right after the user input area, not at the end of
+the candidate list and the cursor should stay at the front.
+
+This is an `:around' advice for `minibuffer-message'. FUNC and
+ARGS are standard as in all `:around' advice.
+
+\(fn FUNC &rest ARGS)" nil nil)
+
+(define-minor-mode selectrum-mode "\
+Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode (progn (selectrum-mode -1) (setq selectrum-mode t) (setq selectrum--old-completing-read-function (default-value 'completing-read-function)) (setq-default completing-read-function #'selectrum-completing-read) (setq selectrum--old-read-buffer-function (default-value 'read-buffer-function)) (setq-default read-buffer-function #'selectrum-read-buffer) (setq selectrum--old-read-file-name-function (default-value 'read-file-name-function)) (setq-default read-file-name-function #'selectrum-read-file-name) (setq selectrum--old-completion-in-region-function (default-value 'completion-in-region-function)) (when selectrum-complete-in-buffer (setq-default completion-in-region-function #'selectrum-completion-in-region)) (advice-add #'completing-read-multiple :override #'selectrum-completing-read-multiple) (advice-add 'dired-read-dir-and-switches :around #'selectrum--fix-dired-read-dir-and-switches) (advice-add 'read-library-name :override #'selectrum-read-library-name) (advice-add #'minibuffer-message :around #'selectrum--fix-minibuffer-message) (define-key minibuffer-local-map [remap previous-matching-history-element] 'selectrum-select-from-history)) (when (equal (default-value 'completing-read-function) #'selectrum-completing-read) (setq-default completing-read-function selectrum--old-completing-read-function)) (when (equal (default-value 'read-buffer-function) #'selectrum-read-buffer) (setq-default read-buffer-function selectrum--old-read-buffer-function)) (when (equal (default-value 'read-file-name-function) #'selectrum-read-file-name) (setq-default read-file-name-function selectrum--old-read-file-name-function)) (when (equal (default-value 'completion-in-region-function) #'selectrum-completion-in-region) (setq-default completion-in-region-function selectrum--old-completion-in-region-function)) (advice-remove #'completing-read-multiple #'selectrum-completing-read-multiple) (advice-remove 'dired-read-dir-and-switches #'selectrum--fix-dired-read-dir-and-switches) (advice-remove 'read-library-name #'selectrum-read-library-name) (advice-remove #'minibuffer-message #'selectrum--fix-minibuffer-message) (when (eq (lookup-key minibuffer-local-map [remap previous-matching-history-element]) #'selectrum-select-from-history) (define-key minibuffer-local-map [remap previous-matching-history-element] nil))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum" '("selectrum-")))
+
+
+
+(defvar selectrum-helm-mode nil "\
+Non-nil if Selectrum-Helm mode is enabled.
+See the `selectrum-helm-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `selectrum-helm-mode'.")
+
+(custom-autoload 'selectrum-helm-mode "selectrum-helm" nil)
+
+(autoload 'selectrum-helm-mode "selectrum-helm" "\
+Minor mode to use Selectrum to implement Helm commands.
+
+If called interactively, enable Selectrum-Helm mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-helm" '("selectrum-helm--adapter")))
+
+
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201026.1413/selectrum-prescient-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201026.1413/selectrum-prescient-autoloads.el") (car load-path))))
+
+
+
+(defvar selectrum-prescient-mode nil "\
+Non-nil if Selectrum-Prescient mode is enabled.
+See the `selectrum-prescient-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `selectrum-prescient-mode'.")
+
+(custom-autoload 'selectrum-prescient-mode "selectrum-prescient" nil)
+
+(autoload 'selectrum-prescient-mode "selectrum-prescient" "\
+Minor mode to use prescient.el in Selectrum menus.
+
+If called interactively, enable Selectrum-Prescient mode if ARG
+is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-prescient" '("selectrum-")))
 
 
 )
@@ -2062,6 +2240,43 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el") (car load-path))))
+
+
+
+(defvar marginalia-mode nil "\
+Non-nil if Marginalia mode is enabled.
+See the `marginalia-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `marginalia-mode'.")
+
+(custom-autoload 'marginalia-mode "marginalia" nil)
+
+(autoload 'marginalia-mode "marginalia" "\
+Annotate completion candidates with richer information.
+
+If called interactively, enable Marginalia mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'marginalia-cycle-annotators "marginalia" "\
+Cycle between annotators in `marginalia-annotators'.
+If called from the minibuffer the annotator cycling is local,
+that it is, it does not affect subsequent minibuffers.  When called
+from a regular buffer the effect is global." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/lv-20200507.1518/lv-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2188,71 +2403,6 @@ buffer list." t nil)
 Same as `kill-buffer' but keep the iflipb buffer list state." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "iflipb" '("iflipb-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/ido-vertical-mode-20201012.1514/ido-vertical-mode-autoloads.el") (car load-path))))
-
-
-
-(defvar ido-vertical-mode nil "\
-Non-nil if Ido-Vertical mode is enabled.
-See the `ido-vertical-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `ido-vertical-mode'.")
-
-(custom-autoload 'ido-vertical-mode "ido-vertical-mode" nil)
-
-(autoload 'ido-vertical-mode "ido-vertical-mode" "\
-Makes ido-mode display vertically.
-
-If called interactively, enable Ido-Vertical mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-vertical-mode" '("ido-vertical-" "turn-o")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/icomplete-vertical-20201206.759/icomplete-vertical-autoloads.el") (car load-path))))
-
-
-
-(defvar icomplete-vertical-mode nil "\
-Non-nil if Icomplete-Vertical mode is enabled.
-See the `icomplete-vertical-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `icomplete-vertical-mode'.")
-
-(custom-autoload 'icomplete-vertical-mode "icomplete-vertical" nil)
-
-(autoload 'icomplete-vertical-mode "icomplete-vertical" "\
-Display icomplete candidates vertically.
-
-If called interactively, enable Icomplete-Vertical mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'icomplete-vertical-toggle "icomplete-vertical" "\
-Toggle Icomplete Vertical mode without echo area message." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "icomplete-vertical" '("icomplete-vertical-")))
 
 
 )
@@ -2924,6 +3074,152 @@ Switch to *Deft* buffer and load files.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el") (car load-path))))
+
+
+
+(autoload 'consult-multi-occur "consult" "\
+Improved version of `multi-occur' based on `completing-read-multiple'.
+See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
+
+\(fn BUFS REGEXP &optional NLINES)" t nil)
+
+(autoload 'consult-outline "consult" "\
+Jump to an outline heading." t nil)
+
+(autoload 'consult-flycheck "consult" "\
+Jump to flycheck error." t nil)
+
+(autoload 'consult-mark "consult" "\
+Jump to a marker in `mark-ring'." t nil)
+
+(autoload 'consult-line "consult" "\
+Search for a matching line and jump to the line beginning.
+The default candidate is a non-empty line closest to point.
+This command obeys narrowing. Optionally INITIAL input can be provided.
+
+\(fn &optional INITIAL)" t nil)
+
+(autoload 'consult-line-symbol-at-point "consult" "\
+Search for a symbol at point." t nil)
+
+(autoload 'consult-line-from-isearch "consult" "\
+Search by lines from isearch string." t nil)
+
+(autoload 'consult-recent-file "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-recent-file-other-frame "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-recent-file-other-window "consult" "\
+Find recent using `completing-read'." t nil)
+
+(autoload 'consult-file-externally "consult" "\
+Open FILE using system's default application.
+
+\(fn FILE)" t nil)
+
+(autoload 'consult-completion-in-region "consult" "\
+Prompt for completion of region in the minibuffer if non-unique.
+
+The function is called with 4 arguments: START END COLLECTION PREDICATE.
+The arguments and expected return value are as specified for
+`completion-in-region'. Use as a value for `completion-in-region-function'.
+
+\(fn START END COLLECTION &optional PREDICATE)" nil nil)
+
+(autoload 'consult-yank "consult" "\
+Select text from the kill ring and insert it." t nil)
+
+(autoload 'consult-yank-pop "consult" "\
+If there is a recent yank act like `yank-pop'.
+Otherwise select text from the kill ring and insert it.
+See `yank-pop' for the meaning of ARG.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'consult-yank-replace "consult" "\
+Select text from the kill ring.
+If there was no recent yank, insert the text.
+Otherwise replace the just-yanked text with the selected text." t nil)
+
+(autoload 'consult-register "consult" "\
+Use register REG. Either jump to location or insert the stored text.
+
+\(fn REG)" t nil)
+
+(autoload 'consult-bookmark "consult" "\
+If bookmark NAME exists, open it, otherwise set bookmark under the given NAME.
+
+\(fn NAME)" t nil)
+
+(autoload 'consult-apropos "consult" "\
+Select pattern and call `apropos'." t nil)
+
+(autoload 'consult-command-history "consult" "\
+Select and evaluate command from the command history." t nil)
+
+(autoload 'consult-history "consult" "\
+Insert string from buffer HISTORY.
+
+\(fn &optional HISTORY)" t nil)
+
+(autoload 'consult-minor-mode-menu "consult" "\
+Enable or disable minor mode.
+This is an alternative to `minor-mode-menu-from-indicator'." t nil)
+
+(autoload 'consult-theme "consult" "\
+Disable current themes and enable THEME from `consult-themes'.
+
+During theme selection the theme is shown as
+preview if `consult-preview-mode' is enabled.
+
+\(fn THEME)" t nil)
+
+(autoload 'consult-buffer-other-frame "consult" "\
+Enhanced `switch-to-buffer-other-frame' command with support for virtual buffers." t nil)
+
+(autoload 'consult-buffer-other-window "consult" "\
+Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
+
+(autoload 'consult-buffer "consult" "\
+Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
+
+(autoload 'consult-kmacro "consult" "\
+Run a chosen keyboard macro.  With prefix ARG, run the macro that many times.
+
+Macros containing mouse clicks aren't displayed.
+
+\(fn ARG)" t nil)
+
+(defvar consult-preview-mode nil "\
+Non-nil if Consult-Preview mode is enabled.
+See the `consult-preview-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `consult-preview-mode'.")
+
+(custom-autoload 'consult-preview-mode "consult" nil)
+
+(autoload 'consult-preview-mode "consult" "\
+Enable preview for consult commands.
+
+If called interactively, enable Consult-Preview mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "consult" '("consult-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20200210.921/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3314,7 +3610,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode lv json-snatcher json-reformat json-mode iflipb ido-vertical-mode icomplete-vertical hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra htmlize highlight-indent-guides goto-last-change git-timemachine flymake-easy eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme consult browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

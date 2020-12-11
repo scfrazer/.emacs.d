@@ -66,6 +66,7 @@
  `(popup-tip-face                      ((t :background "gray85" :foreground "black" :bold t :italic t)))
  `(rg-literal-face                     ((t :foreground "lightblue")))
  `(rg-regexp-face                      ((t :foreground "yellow")))
+ `(selectrum-current-candidate         ((t :background "gray92" :underline t)))
  `(show-mark-face                      ((t :foreground "black" :background ,(smf-color 195))))
  `(speedbar-button-face                ((t :foreground "black")))
  `(sqlplus-table-odd-rows-face         ((t :background ,(smf-color 254))))
