@@ -976,10 +976,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201211.1209/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201210.1851/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201211.1209/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2197,10 +2197,10 @@ contrast ratio between new and existing colors.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201115.635/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201211.329/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201115.635/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201211.329/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3074,10 +3074,10 @@ Switch to *Deft* buffer and load files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/consult-20201211.111/consult-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201210.1844/consult-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/consult-20201211.111/consult-autoloads.el") (car load-path))))
 
 
 
@@ -3195,6 +3195,9 @@ Run a chosen keyboard macro.  With prefix ARG, run the macro that many times.
 Macros containing mouse clicks aren't displayed.
 
 \(fn ARG)" t nil)
+
+(autoload 'consult-imenu "consult" "\
+Choose from flattened `imenu' using `completing-read'." t nil)
 
 (defvar consult-preview-mode nil "\
 Non-nil if Consult-Preview mode is enabled.

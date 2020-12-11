@@ -124,6 +124,9 @@ Macros containing mouse clicks aren't displayed.
 
 \(fn ARG)" t nil)
 
+(autoload 'consult-imenu "consult" "\
+Choose from flattened `imenu' using `completing-read'." t nil)
+
 (defvar consult-preview-mode nil "\
 Non-nil if Consult-Preview mode is enabled.
 See the `consult-preview-mode' command
