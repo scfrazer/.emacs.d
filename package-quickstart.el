@@ -812,19 +812,6 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el") (car load-path))))
-
-
-
-(when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tron-legacy-theme" '("tron-legacy-theme-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -976,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201211.1209/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201212.957/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201211.1209/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201212.957/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1143,12 +1130,23 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141/rg-autoloads.el") (car load-path))))
 
 
+
+(defvar rg-keymap-prefix "\3s" "\
+Prefix for global `rg' keymap.")
+
+(custom-autoload 'rg-keymap-prefix "rg" t)
+
+(defvar rg-command-line-flags-function 'identity "\
+Function to modify command line flags of a search.
+The argument of the function is an optional list of search specific
+command line flags and the function shall return a list of command
+line flags to use.")
 
 (autoload 'rg-define-toggle "rg" "\
 Define a command line flag that can be toggled from the rg result buffer.
@@ -1274,6 +1272,7 @@ List all `rg-mode' buffers in `ibuffer'." t nil)
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-")))
 
 
+ (autoload 'rg-menu "rg-menu.el" "" t)
 
 (autoload 'rg-enable-menu "rg-menu" "\
 Bind `rg-menu' to PREFIX key.
@@ -1586,10 +1585,52 @@ Where to store autoloads for subdirectory contents.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.5.2/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.27.1/python-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.5.2/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/python-0.27.1/python-autoloads.el") (car load-path))))
+
+
+
+(add-to-list 'auto-mode-alist (cons (purecopy "\\.py[iw]?\\'") 'python-mode))
+
+(add-to-list 'interpreter-mode-alist (cons (purecopy "python[0-9.]*") 'python-mode))
+
+(autoload 'run-python "python" "\
+Run an inferior Python process.
+
+Argument CMD defaults to `python-shell-calculate-command' return
+value.  When called interactively with `prefix-arg', it allows
+the user to edit such value and choose whether the interpreter
+should be DEDICATED for the current buffer.  When numeric prefix
+arg is other than 0 or 4 do not SHOW.
+
+For a given buffer and same values of DEDICATED, if a process is
+already running for it, it will do nothing.  This means that if
+the current buffer is using a global process, the user is still
+able to switch it to use a dedicated one.
+
+Runs the hook `inferior-python-mode-hook' after
+`comint-mode-hook' is run.  (Type \\[describe-mode] in the
+process buffer for a list of commands.)
+
+\(fn &optional CMD DEDICATED SHOW)" t nil)
+
+(autoload 'python-mode "python" "\
+Major mode for editing Python files.
+
+\\{python-mode-map}
+
+\(fn)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python" '("inferior-python-mode" "python-" "run-python-internal")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.5.3/project-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.5.3/project-autoloads.el") (car load-path))))
 
 
 
@@ -1663,13 +1704,15 @@ pattern to search for.
 
 (autoload 'project-find-file "project" "\
 Visit a file (with completion) in the current project.
-The completion default is the filename at point, if one is
-recognized." t nil)
+
+The completion default is the filename at point, determined by
+`thing-at-point' (whether such file exists or not)." t nil)
 
 (autoload 'project-or-external-find-file "project" "\
 Visit a file (with completion) in the current project or external roots.
-The completion default is the filename at point, if one is
-recognized." t nil)
+
+The completion default is the filename at point, determined by
+`thing-at-point' (whether such file exists or not)." t nil)
 
 (autoload 'project-dired "project" "\
 Start Dired in the current project's root." t nil)
@@ -1761,7 +1804,7 @@ identical.  Only the buffers that match a condition in
 `project-kill-buffer-conditions' will be killed.  If NO-CONFIRM
 is non-nil, the command will not ask the user for confirmation.
 NO-CONFIRM is always nil when the command is invoked
-interactivly.
+interactively.
 
 \(fn &optional NO-CONFIRM)" t nil)
 
@@ -1786,7 +1829,12 @@ the menu entries in the dispatch menu.")
 (autoload 'project-switch-project "project" "\
 \"Switch\" to another project by running an Emacs command.
 The available commands are presented as a dispatch menu
-made from `project-switch-commands'." t nil)
+made from `project-switch-commands'.
+
+When called in a program, it will use the project corresponding
+to directory DIR.
+
+\(fn DIR)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "project" '("project-")))
 
@@ -2145,58 +2193,6 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729/modus-vivendi-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729/modus-vivendi-theme-autoloads.el") (car load-path))))
-
-
-
-(defvar modus-vivendi-theme-override-colors-alist 'nil "\
-Association list of palette color overrides.
-Values can be mapped to variables, using the same syntax as the
-one present in `modus-vivendi-theme-default-colors-alist'.
-
-This is only meant for do-it-yourself usage, with the
-understanding that the user is responsible for the resulting
-contrast ratio between new and existing colors.")
-
-(custom-autoload 'modus-vivendi-theme-override-colors-alist "modus-vivendi-theme" t)
-
-(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-vivendi-theme" '("modus-vivendi")))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729/modus-operandi-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729/modus-operandi-theme-autoloads.el") (car load-path))))
-
-
-
-(defvar modus-operandi-theme-override-colors-alist 'nil "\
-Association list of palette color overrides.
-Values can be mapped to variables, using the same syntax as the
-one present in `modus-operandi-theme-default-colors-alist'.
-
-This is only meant for do-it-yourself usage, with the
-understanding that the user is responsible for the resulting
-contrast ratio between new and existing colors.")
-
-(custom-autoload 'modus-operandi-theme-override-colors-alist "modus-operandi-theme" t)
-
-(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-operandi-theme" '("modus-operandi")))
-
-
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201211.329/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2240,10 +2236,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201213.2054/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201209.619/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201213.2054/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2937,6 +2933,28 @@ the subtree.  The filter action is read from `dired-filter-map'.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-1.0/diffview-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-1.0/diffview-autoloads.el") (car load-path))))
+
+
+
+(autoload 'diffview-current "diffview" "\
+Show current diff buffer in a side-by-side view." t nil)
+
+(autoload 'diffview-region "diffview" "\
+Show current diff region in a side-by-side view." t nil)
+
+(autoload 'diffview-message "diffview" "\
+Show `message-mode' buffer in a side-by-side view.
+
+This is useful for reading patches from mailing lists." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diffview" '("diffview-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20200515.1513/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2976,6 +2994,46 @@ Switch to *Deft* buffer and load files.
 
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash-functional" '("-rpartial" "-juxt" "-not" "-o" "-a" "-iteratefn" "-c" "-f" "-prodfn")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el") (car load-path))))
+
+
+
+(autoload 'autothemer-deftheme "autothemer" "\
+Define a theme NAME with description DESCRIPTION.
+A color PALETTE can be used to define let*-like
+bindings within both the REDUCED-SPECS and the BODY.
+
+\(fn NAME DESCRIPTION PALETTE REDUCED-SPECS &rest BODY)" nil t)
+
+(autoload 'autothemer-generate-templates "autothemer" "\
+Autogenerate customizations for all unthemed faces.
+Iterate through all currently defined faces, select those that
+have been left uncustomized by the most recent call to
+`autothemer-deftheme' and generate customizations that best
+approximate the faces' current definitions using the color
+palette used in the most recent invocation of
+`autothemer-deftheme'." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "autothemer" '("autothemer--")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20190412.142/darktooth-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20190412.142/darktooth-theme-autoloads.el") (car load-path))))
+
+
+
+(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "darktooth-theme" '("darktooth-modeline")))
 
 
 )
@@ -3382,14 +3440,14 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree deft dash-functional darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-20201114.729" "/home/scfrazer/.emacs.d/elpa/rg-20201018.1400" "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:
