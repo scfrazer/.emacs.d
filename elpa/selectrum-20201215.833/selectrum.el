@@ -1090,6 +1090,19 @@ CAND does not have any face property defined."
      'append str))
   str)
 
+(defun selectrum--affixate (fun candidates)
+  "Use affixation FUN to transform CANDIDATES."
+  (let ((items (funcall fun candidates))
+        (res ()))
+    (dolist (item items (nreverse res))
+      (push
+       (propertize (nth 0 item)
+                   'selectrum-candidate-display-prefix
+                   (nth 1 item)
+                   'selectrum-candidate-display-suffix
+                   (nth 2 item))
+       res))))
+
 (defun selectrum--candidates-display-string (candidates
                                              input
                                              highlighted-index
@@ -1104,7 +1117,13 @@ TABLE defaults to `minibuffer-completion-table'. PRED defaults to
          (props (or props completion-extra-properties))
          (annotf (or (selectrum--get-meta 'annotation-function table pred)
                      (plist-get props :annotation-function)))
+         (aff (or (selectrum--get-meta 'affixation-function table pred)
+                  (plist-get completion-extra-properties
+                             :affixation-function)))
          (docsigf (plist-get props :company-docsig))
+         (candidates (if aff
+                         (selectrum--affixate aff candidates)
+                       candidates))
          (lines
           (selectrum--ensure-single-lines
            ;; First pass the candidates to the highlight function
@@ -1607,12 +1626,10 @@ semantics of `cl-defun'."
   "Read choice using Selectrum. Can be used as `completing-read-function'.
 For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
 HIST, DEF, and INHERIT-INPUT-METHOD, see `completing-read'."
-  (ignore initial-input inherit-input-method)
+  (ignore inherit-input-method)
   (selectrum-read
    prompt nil
-   ;; Don't pass `initial-input'. We use it internally but it's
-   ;; deprecated in `completing-read' and doesn't work well with the
-   ;; Selectrum paradigm except in specific cases that we control.
+   :initial-input initial-input
    :default-candidate (or (car-safe def) def)
    :require-match (eq require-match t)
    :history hist

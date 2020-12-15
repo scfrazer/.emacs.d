@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20201026.1413
-;; Package-Commit: 5d139e5b1fe03ccaddff8c250ab8e9d795071b95
+;; Package-Version: 20201214.227
+;; Package-Commit: b12f8b06d591bf14bb641ccf321d6750f459a02c
 ;; Created: 8 Dec 2019
 ;; Package-Requires: ((emacs "25.1") (prescient "5.0") (selectrum "1.0"))
 ;; SPDX-License-Identifier: MIT
@@ -81,7 +81,7 @@ For use on `selectrum-candidate-selected-hook'."
 Such commands are created and automatically bound in this map by
 `selectrum--prescient-create-and-bind-toggle-command'.")
 
-(defmacro selectrum--prescient-create-and-bind-toggle-command
+(defmacro selectrum-prescient-create-and-bind-toggle-command
     (filter-type key-string)
   "Create and bind a command to toggle the use of a filter method in Selectrum.
 
@@ -141,12 +141,12 @@ buffer. It does not affect the default behavior (determined by
                   prescient-filter-method)
          (selectrum-exhibit)))))
 
-(selectrum--prescient-create-and-bind-toggle-command anchored "a")
-(selectrum--prescient-create-and-bind-toggle-command fuzzy "f")
-(selectrum--prescient-create-and-bind-toggle-command initialism "i")
-(selectrum--prescient-create-and-bind-toggle-command literal "l")
-(selectrum--prescient-create-and-bind-toggle-command prefix "p")
-(selectrum--prescient-create-and-bind-toggle-command regexp "r")
+(selectrum-prescient-create-and-bind-toggle-command anchored "a")
+(selectrum-prescient-create-and-bind-toggle-command fuzzy "f")
+(selectrum-prescient-create-and-bind-toggle-command initialism "i")
+(selectrum-prescient-create-and-bind-toggle-command literal "l")
+(selectrum-prescient-create-and-bind-toggle-command prefix "p")
+(selectrum-prescient-create-and-bind-toggle-command regexp "r")
 
 ;;;###autoload
 (define-minor-mode selectrum-prescient-mode

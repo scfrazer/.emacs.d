@@ -952,10 +952,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20201125.1428/prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20201214.230/prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20201125.1428/prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20201214.230/prescient-autoloads.el") (car load-path))))
 
 
 
@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201212.957/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201215.833/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201212.957/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201215.833/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1099,10 +1099,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201026.1413/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201214.227/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201026.1413/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201214.227/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1126,7 +1126,7 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-prescient" '("selectrum-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-prescient" '("selectrum-prescient-")))
 
 
 )
@@ -2236,10 +2236,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201213.2054/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201215.514/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201213.2054/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201215.514/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2788,14 +2788,14 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201215.59/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20200803.1520/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201215.59/dash-autoloads.el") (car load-path))))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("dash-" "-keep" "-butlast" "-non" "-only-some" "-zip" "-e" "->" "-a" "-gr" "-when-let" "-d" "-l" "-s" "-p" "-r" "-m" "-i" "-f" "-u" "-value-to-list" "-t" "--" "-c" "!cons" "!cdr")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-keep" "-l" "-m" "-non" "-only-some" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-")))
 
 
 
@@ -2986,14 +2986,14 @@ Switch to *Deft* buffer and load files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-functional-20200617.702/dash-functional-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-functional-20201215.40/dash-functional-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-functional-20200617.702/dash-functional-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-functional-20201215.40/dash-functional-autoloads.el") (car load-path))))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash-functional" '("-rpartial" "-juxt" "-not" "-o" "-a" "-iteratefn" "-c" "-f" "-prodfn")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash-functional" '("-a" "-c" "-f" "-iteratefn" "-juxt" "-not" "-o" "-prodfn" "-rpartial")))
 
 
 )
@@ -3024,10 +3024,10 @@ palette used in the most recent invocation of
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20190412.142/darktooth-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20201215.822/darktooth-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20190412.142/darktooth-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20201215.822/darktooth-theme-autoloads.el") (car load-path))))
 
 
 
@@ -3447,7 +3447,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20200803.1520" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20201215.59" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201205.1610" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:

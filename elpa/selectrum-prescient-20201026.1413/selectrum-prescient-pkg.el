@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201026.1413/selectrum-prescient.el  -*- no-byte-compile: t -*-
-(define-package "selectrum-prescient" "20201026.1413" "Selectrum integration" '((emacs "25.1") (prescient "5.0") (selectrum "1.0")) :commit "5d139e5b1fe03ccaddff8c250ab8e9d795071b95" :keywords '("extensions") :authors '(("Radon Rosborough" . "radon.neon@gmail.com")) :maintainer '("Radon Rosborough" . "radon.neon@gmail.com") :url "https://github.com/raxod502/prescient.el")

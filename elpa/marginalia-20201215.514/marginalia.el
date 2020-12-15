@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201213.2054
-;; Package-Commit: 091895bd17bd59aaf27531440091231be1757876
+;; Package-Version: 20201215.514
+;; Package-Commit: 56ad689886e618616f9ee282c3d8d57f8270450b
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -345,7 +345,7 @@ a face"
     (when (boundp s)
       (concat
        (if (custom-variable-p s) "u" "v")
-       (when (and (boundp s) (not (equal (symbol-value s) (default-value s)))) "*")))
+       (when (and (boundp s) (default-boundp s) (not (equal (symbol-value s) (default-value s)))) "*")))
     (when (facep s) "a")
     (when (and (fboundp 'cl-find-class) (cl-find-class s)) "t"))))
 
@@ -380,7 +380,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (when (provided-mode-derived-p (buffer-local-value 'major-mode
                                                      (window-buffer (minibuffer-selected-window)))
                                  'emacs-lisp-mode)
-    (marginalia-annotate-symbol (replace-regexp-in-string "^.*? " "" cand))))
+    (marginalia-annotate-symbol (replace-regexp-in-string "^.* " "" cand))))
 
 (defun marginalia-annotate-variable (cand)
   "Annotate variable CAND with its documentation string."

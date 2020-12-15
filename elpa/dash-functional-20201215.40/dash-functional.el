@@ -5,10 +5,10 @@
 ;; Authors: Matus Goljer <matus.goljer@gmail.com>
 ;;          Magnar Sveen <magnars@gmail.com>
 ;; Version: 1.2.0
-;; Package-Version: 20200617.702
-;; Package-Commit: 732d92eac56023a4fb4a5dc3d9d4e274ebf44bf9
+;; Package-Version: 20201215.40
+;; Package-Commit: b1bc1bfe1c454e16b611139c6248fc77c30afd10
 ;; Package-Requires: ((dash "2.0.0") (emacs "24"))
-;; Keywords: lisp functions combinators
+;; Keywords: extensions, lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
