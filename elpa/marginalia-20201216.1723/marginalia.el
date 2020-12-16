@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201215.514
-;; Package-Commit: 56ad689886e618616f9ee282c3d8d57f8270450b
+;; Package-Version: 20201216.1723
+;; Package-Commit: ac53a00c1e1742893376fcab57bdedeb528dd0e1
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -223,9 +223,13 @@ determine it."
 (defvar marginalia--original-category nil
   "Original category reported by completion metadata.")
 
-(defsubst marginalia--truncate (str width)
+(defun marginalia--truncate (str width)
   "Truncate string STR to WIDTH."
-  (truncate-string-to-width (car (split-string str "\n")) width 0 32 "…"))
+  (truncate-string-to-width
+   (if-let (pos (string-match-p "\n" str))
+       (substring str 0 pos)
+     str)
+   width 0 32 "…"))
 
 (defsubst marginalia--align (str)
   "Align STR at the right margin."
@@ -264,7 +268,7 @@ WIDTH is the format width. This can be specified as alternative to FORMAT."
     (marginalia--fields
      (str :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
-(defvar-local marginalia-annotate-binding--hash nil
+(defvar-local marginalia--annotate-binding-hash nil
   "Hash table storing the keybinding of every command.
 This hash table is needed to speed up `marginalia-annotate-binding'.")
 
@@ -275,13 +279,13 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
     ;; `where-is-internal'. `where-is-internal' generates a lot of garbage, leading to garbage
     ;; collecting pauses when interacting with the minibuffer. See
     ;; https://github.com/minad/marginalia/issues/16.
-    (unless marginalia-annotate-binding--hash
-      (setq marginalia-annotate-binding--hash (make-hash-table))
+    (unless marginalia--annotate-binding-hash
+      (setq marginalia--annotate-binding-hash (make-hash-table))
       (mapatoms (lambda (sym)
                   (when-let (key (and (commandp sym) (where-is-internal sym nil t)))
-                    (puthash sym key marginalia-annotate-binding--hash)))))
+                    (puthash sym key marginalia--annotate-binding-hash)))))
     (when-let* ((sym (intern-soft cand))
-                (binding (gethash sym marginalia-annotate-binding--hash)))
+                (binding (gethash sym marginalia--annotate-binding-hash)))
       (propertize (format " (%s)" (key-description binding)) 'face 'marginalia-key))))
 
 ;; This annotator is consult-specific, it will annotate the `consult-buffer' command.
