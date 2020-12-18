@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201216.1841/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201218.1301/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201216.1841/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201218.1301/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2236,10 +2236,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201216.1723/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201218.952/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201216.1723/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201218.952/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2766,10 +2766,10 @@ otherwise call `fill-function-arguments-to-single-line'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20201124.126/fd-dired-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20201217.547/fd-dired-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20201124.126/fd-dired-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20201217.547/fd-dired-autoloads.el") (car load-path))))
 
 
 

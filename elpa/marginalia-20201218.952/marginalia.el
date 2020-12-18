@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201216.1723
-;; Package-Commit: ac53a00c1e1742893376fcab57bdedeb528dd0e1
+;; Package-Version: 20201218.952
+;; Package-Commit: e83358412594750d5e2621e38b70f77739d5abc5
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -88,6 +88,7 @@ See also `marginalia-annotators-heavy'."
 (defcustom marginalia-annotators-heavy
   (append
    '((file . marginalia-annotate-file)
+     (project-file . marginalia-annotate-project-file)
      (buffer . marginalia-annotate-buffer)
      (virtual-buffer . marginalia-annotate-virtual-buffer-full)
      (command . marginalia-annotate-command))
@@ -212,6 +213,9 @@ determine it."
 (declare-function package-installed-p "package")
 (declare-function package-version-join "package")
 
+(declare-function project-current "project")
+(declare-function project-root "project")
+
 ;;;; Marginalia mode
 
 (defvar marginalia--separator "    "
@@ -233,12 +237,13 @@ determine it."
 
 (defsubst marginalia--align (str)
   "Align STR at the right margin."
-  (concat " "
-          (propertize
-           " "
-           'display
-           `(space :align-to (- right-fringe ,(length str))))
-          str))
+  (unless (string-blank-p str)
+    (concat " "
+            (propertize
+             " "
+             'display
+             `(space :align-to (- right-fringe ,(length str))))
+            str)))
 
 (cl-defmacro marginalia--field (field &key truncate format face width)
   "Format FIELD as a string according to some options.
@@ -355,8 +360,11 @@ a face"
 
 (defun marginalia--function-doc (sym)
   "Documentation string of function SYM."
-  (when-let (doc (ignore-errors (documentation sym)))
-    (replace-regexp-in-string marginalia--advice-regexp "" doc)))
+  (when-let (str (ignore-errors (documentation sym)))
+    (save-match-data
+      (if (string-match marginalia--advice-regexp str)
+          (substring str (match-end 0))
+        str))))
 
 (defun marginalia-annotate-symbol (cand)
   "Annotate symbol CAND with its documentation string."
@@ -444,7 +452,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
      ((package-version-join (package-desc-version desc)) :width 16 :face 'marginalia-version)
      ((cond
        ((eq (package-desc-dir desc) 'builtin) (propertize "builtin" 'face 'marginalia-installed))
-       ((package-installed-p desc) (propertize "installed" 'face 'marginalia-installed))
+       ((not (package-desc-archive desc)) (propertize "installed" 'face 'marginalia-installed))
        (t (propertize (package-desc-archive desc) 'face 'marginalia-archive))) :width 9)
      ((package-desc-summary desc) :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
@@ -464,10 +472,21 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   "Annotate coding system CAND with its description."
   (marginalia--documentation (coding-system-doc-string (intern cand))))
 
+(defun marginalia--buffer-bytes (buf)
+  "Return byte size of BUF."
+  (with-current-buffer buf
+    (position-bytes (let ((max (point-max)))
+                      (if (= (buffer-size) (- max (point-min)))
+                          max ;; Buffer not narrowed
+                        (save-restriction
+                          (widen)
+                          (point-max)))))))
+
 (defun marginalia-annotate-buffer (cand)
   "Annotate buffer CAND with modification status, file name and major mode."
   (when-let (buffer (get-buffer cand))
     (marginalia--fields
+     ((file-size-human-readable (marginalia--buffer-bytes buffer)) :width 7 :face 'marginalia-size)
      ((concat
        (if (buffer-modified-p buffer) "*" " ")
        (if (buffer-local-value 'buffer-read-only buffer) "%" " "))
@@ -508,7 +527,7 @@ using `minibuffer-force-complete' on the candidate CAND."
     cand))
 
 (defun marginalia-annotate-file (cand)
-  "Annotate file CAND with its size and modification time."
+  "Annotate file CAND with its size, modification time and other attributes."
   (when-let ((attributes (file-attributes (marginalia--full-candidate cand) 'string)))
     (marginalia--fields
      ((file-attribute-modes attributes) :face 'marginalia-file-modes)
@@ -520,6 +539,13 @@ using `minibuffer-force-complete' on the candidate CAND."
      ((format-time-string
        "%b %d %H:%M"
        (file-attribute-modification-time attributes)) :face 'marginalia-date))))
+
+(defun marginalia-annotate-project-file (cand)
+  "Annotate file CAND with its size, modification time and other attributes."
+  (when-let ((project (project-current))
+             (root (project-root project))
+             (file (expand-file-name cand root)))
+    (marginalia-annotate-file file)))
 
 (defun marginalia-classify-by-command-name ()
   "Lookup category for current command."
@@ -535,7 +561,7 @@ using `minibuffer-force-complete' on the candidate CAND."
   (when-let (mct minibuffer-completion-table)
     (when (or (eq mct 'help--symbol-completion-table)
               (obarrayp mct)
-              (and (consp mct) (symbolp (car mct)))) ; assume list of symbols
+              (and (not (functionp mct)) (consp mct) (symbolp (car mct)))) ; assume list of symbols
       'symbol)))
 
 (defun marginalia-classify-by-prompt ()
