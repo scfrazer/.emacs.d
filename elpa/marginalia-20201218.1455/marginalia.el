@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201218.952
-;; Package-Commit: e83358412594750d5e2621e38b70f77739d5abc5
+;; Package-Version: 20201218.1455
+;; Package-Commit: 2864c8efc90a39352db7752dc38006e826e2e70f
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -333,14 +333,21 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
 ;; ! and * are our additions
 (defun marginalia--symbol-class (s)
   "Return symbol class characters for symbol S.
+
+Function:
 f function
 c command
-! advised
 m macro
+! advised
+
+Variable:
 u custom
 v variable
 * modified
-a face"
+
+Other:
+a face
+t cl-type"
   (format
    "%-6s"
    (concat

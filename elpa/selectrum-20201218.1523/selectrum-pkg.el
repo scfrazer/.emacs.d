@@ -1,6 +1,6 @@
-(define-package "selectrum" "20201218.1301" "Easily select item from list"
+(define-package "selectrum" "20201218.1523" "Easily select item from list"
   '((emacs "25.1"))
-  :commit "2013bc28e888400e87918640aa6d20b698144a8b" :keywords
+  :commit "30262e4c374a2bba389ede98b43a1f2574e880a3" :keywords
   ("extensions")
   :authors
   (("Radon Rosborough" . "radon.neon@gmail.com"))
