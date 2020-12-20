@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201218.1455
-;; Package-Commit: 2864c8efc90a39352db7752dc38006e826e2e70f
+;; Package-Version: 20201219.1354
+;; Package-Commit: ef4fabfe16c2e1e1e479820229ebb8acebb24d3a
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -591,6 +591,12 @@ PROP is the property which is looked up."
      ;; we do want the advice triggered for completion-metadata-get
      (when-let (cat (completion-metadata-get metadata 'category))
        (alist-get cat (symbol-value (car marginalia-annotators)))))
+    ('affixation-function
+     ;; We do want the advice triggered for `completion-metadata-get'.
+     ;; Return wrapper around `annotation-function'.
+     (when-let* ((cat (completion-metadata-get metadata 'category))
+                 (annotate (alist-get cat (symbol-value (car marginalia-annotators)))))
+       (lambda (cands) (mapcar (lambda (x) (list x (funcall annotate x))) cands))))
     ('category
      ;; using alist-get bypasses any advice on completion-metadata-get
      ;; to avoid infinite recursion

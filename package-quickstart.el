@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201219.916/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201219.1527/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201219.916/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201219.1527/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2193,10 +2193,36 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201211.329/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-0.12.0/modus-vivendi-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201211.329/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-0.12.0/modus-vivendi-theme-autoloads.el") (car load-path))))
+
+
+
+(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-vivendi-theme" '("modus-vivendi")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-0.12.0/modus-operandi-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-0.12.0/modus-operandi-theme-autoloads.el") (car load-path))))
+
+
+
+(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-operandi-theme" '("modus-operandi")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201220.253/markdown-mode-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20201220.253/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2236,10 +2262,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201218.1455/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201219.1354/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201218.1455/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201219.1354/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3440,7 +3466,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr async with-editor wgrep web-mode web-beautify visual-regexp bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20201211.329
-;; Package-Commit: 39cc7176d3ba33d88e02cdd0707d4dac23836977
+;; Package-Version: 20201220.253
+;; Package-Commit: e250a8465f805644d372c264eb0572f569d7f2a1
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -5535,52 +5535,61 @@ See also `markdown-mode-map'.")
   "Create and return a nested imenu index alist for the current buffer.
 See `imenu-create-index-function' and `imenu--index-alist' for details."
   (let* ((root '(nil . nil))
-         cur-alist
-         (cur-level 0)
-         (empty-heading "-")
-         (self-heading ".")
-         hashes pos level heading)
+         (min-level 9999)
+         hashes headers)
     (save-excursion
       ;; Headings
       (goto-char (point-min))
       (while (re-search-forward markdown-regex-header (point-max) t)
-        (unless (markdown-code-block-at-point-p)
+        (unless (or (markdown-code-block-at-point-p)
+                    (and (match-beginning 3)
+                         (get-text-property (match-beginning 3) 'markdown-yaml-metadata-end)))
           (cond
            ((match-string-no-properties 2) ;; level 1 setext
-            (setq heading (match-string-no-properties 1))
-            (setq pos (match-beginning 1)
-                  level 1))
+            (setq min-level 1)
+            (push (list :heading (match-string-no-properties 1)
+                        :point (match-beginning 1)
+                        :level 1) headers))
            ((match-string-no-properties 3) ;; level 2 setext
-            (setq heading (match-string-no-properties 1))
-            (setq pos (match-beginning 1)
-                  level 2))
+            (setq min-level (min min-level 2))
+            (push (list :heading (match-string-no-properties 1)
+                        :point (match-beginning 1)
+                        :level (- 2 (1- min-level))) headers))
            ((setq hashes (markdown-trim-whitespace
                           (match-string-no-properties 4)))
-            (setq heading (match-string-no-properties 5)
-                  pos (match-beginning 4)
-                  level (length hashes))))
-          (let ((alist (list (cons heading pos))))
-            (cond
-             ((= cur-level level)       ; new sibling
-              (setcdr cur-alist alist)
-              (setq cur-alist alist))
-             ((< cur-level level)       ; first child
-              (dotimes (_ (- level cur-level 1))
-                (setq alist (list (cons empty-heading alist))))
-              (if cur-alist
-                  (let* ((parent (car cur-alist))
-                         (self-pos (cdr parent)))
-                    (setcdr parent (cons (cons self-heading self-pos) alist)))
-                (setcdr root alist))    ; primogenitor
-              (setq cur-alist alist)
-              (setq cur-level level))
-             (t                         ; new sibling of an ancestor
-              (let ((sibling-alist (last (cdr root))))
-                (dotimes (_ (1- level))
-                  (setq sibling-alist (last (cdar sibling-alist))))
-                (setcdr sibling-alist alist)
-                (setq cur-alist alist))
-              (setq cur-level level))))))
+            (setq min-level (min min-level (length hashes)))
+            (push (list :heading (match-string-no-properties 5)
+                        :point (match-beginning 4)
+                        :level (- (length hashes) (1- min-level))) headers)))))
+      (cl-loop with cur-level = 0
+               with cur-alist = nil
+               with empty-heading = "-"
+               with self-heading = "."
+               for header in (reverse headers)
+               for level = (plist-get header :level)
+               do
+               (let ((alist (list (cons (plist-get header :heading) (plist-get header :point)))))
+                 (cond
+                  ((= cur-level level)  ; new sibling
+                   (setcdr cur-alist alist)
+                   (setq cur-alist alist))
+                  ((< cur-level level)  ; first child
+                   (dotimes (_ (- level cur-level 1))
+                     (setq alist (list (cons empty-heading alist))))
+                   (if cur-alist
+                       (let* ((parent (car cur-alist))
+                              (self-pos (cdr parent)))
+                         (setcdr parent (cons (cons self-heading self-pos) alist)))
+                     (setcdr root alist)) ; primogenitor
+                   (setq cur-alist alist)
+                   (setq cur-level level))
+                  (t                    ; new sibling of an ancestor
+                   (let ((sibling-alist (last (cdr root))))
+                     (dotimes (_ (1- level))
+                       (setq sibling-alist (last (cdar sibling-alist))))
+                     (setcdr sibling-alist alist)
+                     (setq cur-alist alist))
+                   (setq cur-level level)))))
       ;; Footnotes
       (let ((fn (markdown-get-defined-footnotes)))
         (if (or (zerop (length fn))
@@ -8400,13 +8409,14 @@ or \\[markdown-toggle-inline-images]."
       (widen)
       (goto-char (point-min))
       (while (re-search-forward markdown-regex-link-inline nil t)
-        (let ((start (match-beginning 0))
+        (let* ((start (match-beginning 0))
               (imagep (match-beginning 1))
               (end (match-end 0))
-              (file (match-string-no-properties 6)))
+              (file (match-string-no-properties 6))
+              (unhex_file (url-unhex-string file)))
           (when (and imagep
                      (not (zerop (length file))))
-            (unless (file-exists-p file)
+            (unless (file-exists-p unhex_file)
               (let* ((download-file (funcall markdown-translate-filename-function file))
                      (valid-url (ignore-errors
                                   (member (downcase (url-type (url-generic-parse-url download-file)))
@@ -8416,10 +8426,10 @@ or \\[markdown-toggle-inline-images]."
                   (when (not valid-url)
                     ;; strip query parameter
                     (setq file (replace-regexp-in-string "?.+\\'" "" file))))))
-            (when (file-exists-p file)
-              (let* ((abspath (if (file-name-absolute-p file)
-                                  file
-                                (concat default-directory file)))
+            (when (file-exists-p unhex_file)
+              (let* ((abspath (if (file-name-absolute-p unhex_file)
+                                  unhex_file
+                                (concat default-directory unhex_file)))
                      (image
                       (if (and markdown-max-image-size
                                (image-type-available-p 'imagemagick))
