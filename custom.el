@@ -43,6 +43,11 @@
  '(modus-operandi-theme-intense-paren-match t)
  '(modus-operandi-theme-intense-standard-completions t)
  '(modus-operandi-theme-slanted-constructs t)
+ '(modus-vivendi-theme-bold-constructs t)
+ '(modus-vivendi-theme-completions 'moderate)
+ '(modus-vivendi-theme-intense-paren-match t)
+ '(modus-vivendi-theme-intense-standard-completions t)
+ '(modus-vivendi-theme-slanted-constructs t)
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-selected-packages
    '(modus-operandi-theme modus-vivendi-theme diffview darktooth-theme python marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
