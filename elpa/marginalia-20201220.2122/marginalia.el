@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201219.1354
-;; Package-Commit: ef4fabfe16c2e1e1e479820229ebb8acebb24d3a
+;; Package-Version: 20201220.2122
+;; Package-Commit: 3360875943e6084f134aebffad83878d71c367c5
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -41,23 +41,34 @@
   :group 'convenience
   :prefix "marginalia-")
 
-
 (defcustom marginalia-truncate-width 80
   "Maximum truncation width of annotation fields.
 
 This value is adjusted in the `minibuffer-setup-hook' depending on the `window-width'."
   :type 'integer)
 
+(defcustom marginalia-separator-threshold 120
+  "Use wider separator for window widths larger than this value."
+  :type 'integer)
+
+(defcustom marginalia-margin-min 8
+  "Minimum whitespace margin at the right side."
+  :type 'integer)
+
+(defcustom marginalia-margin-threshold 160
+  "Use whitespace margin for window widths larger than this value."
+  :type 'integer)
+
 (defcustom marginalia-annotators
-  '(marginalia-annotators-light marginalia-annotators-heavy)
+  '(marginalia-annotators-light marginalia-annotators-heavy nil)
   "Choose an annotator association list for minibuffer completion.
 The first entry in the list is used for annotations.
-You can cycle between the annotators using `marginalia-cycle-annotators'.
+You can cycle between the annotators using `marginalia-cycle'.
 Annotations are only shown if `marginalia-mode' is enabled.
 An entry of nil disables marginalia's annotations (leaving you
 only with the annotations that come with Emacs) without disabling
 `marginalia-mode'; this can be convenient for users of
-`marginalia-cycle-annotators'."
+`marginalia-cycle'."
   :type '(repeat (choice (const :tag "Light" marginalia-annotators-light)
                          (const :tag "Heavy" marginalia-annotators-heavy)
                          (const :tag "None" nil)
@@ -68,6 +79,7 @@ only with the annotations that come with Emacs) without disabling
     (customize-group . marginalia-annotate-customize-group)
     (variable . marginalia-annotate-variable)
     (face . marginalia-annotate-face)
+    (unicode-name . marginalia-annotate-char)
     (minor-mode . marginalia-annotate-minor-mode)
     (symbol . marginalia-annotate-symbol)
     (variable . marginalia-annotate-variable)
@@ -140,6 +152,10 @@ determine it."
   '((t :inherit font-lock-keyword-face))
   "Face used to highlight keys in `marginalia-mode'.")
 
+(defface marginalia-char
+  '((t :inherit marginalia-key))
+  "Face used to highlight char in `marginalia-mode'.")
+
 (defface marginalia-lighter
   '((t :inherit marginalia-size))
   "Face used to highlight lighters in `marginalia-mode'.")
@@ -169,7 +185,7 @@ determine it."
   "Face used to highlight dates in `marginalia-mode'.")
 
 (defface marginalia-version
-  '((t :inherit marginalia-size))
+  '((t :inherit marginalia-number))
   "Face used to highlight package version in `marginalia-mode'.")
 
 (defface marginalia-archive
@@ -181,8 +197,12 @@ determine it."
   "Face used to highlight package status in `marginalia-mode'.")
 
 (defface marginalia-size
-  '((t :inherit font-lock-constant-face))
+  '((t :inherit marginalia-number))
   "Face used to highlight sizes in `marginalia-mode'.")
+
+(defface marginalia-number
+  '((t :inherit font-lock-constant-face))
+  "Face used to highlight char in `marginalia-mode'.")
 
 (defface marginalia-modified
   '((t :inherit font-lock-negation-char-face))
@@ -221,6 +241,9 @@ determine it."
 (defvar marginalia--separator "    "
   "Field separator.")
 
+(defvar marginalia--margin nil
+  "Right margin.")
+
 (defvar marginalia--this-command nil
   "Last command symbol saved in order to allow annotations.")
 
@@ -238,6 +261,8 @@ determine it."
 (defsubst marginalia--align (str)
   "Align STR at the right margin."
   (unless (string-blank-p str)
+    (when marginalia--margin
+      (setq str (concat str marginalia--margin)))
     (concat " "
             (propertize
              " "
@@ -253,10 +278,12 @@ FORMAT is a format string. This must be used if the field value is not a string.
 FACE is the name of the face, with which the field should be propertized.
 WIDTH is the format width. This can be specified as alternative to FORMAT."
   (cl-assert (not (and width format)))
-  (when width (setq format (format "%%%ds" (- width))))
-  (if format
-      (setq field `(format ,format ,field))
-    (setq field `(or ,field "")))
+  (when width
+    (setq field `(or ,field "")
+          format (format "%%%ds" (- width))))
+  (setq field (if format
+                  `(format ,format ,field)
+                `(or ,field "")))
   (when truncate (setq field `(marginalia--truncate ,field ,truncate)))
   (when face (setq field `(propertize ,field 'face ,face)))
   field)
@@ -421,12 +448,24 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
      (val :truncate marginalia-truncate-width :face 'marginalia-variable))))
 
 (defun marginalia-annotate-face (cand)
-  "Annotate face CAND with documentation string and face example."
+  "Annotate face CAND with its documentation string and face example."
   (when-let (sym (intern-soft cand))
     (marginalia--fields
      ("abcdefghijklmNOPQRSTUVWXYZ" :face sym)
      ((documentation-property sym 'face-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
+
+(defun marginalia-annotate-char (cand)
+  "Annotate character CAND with its general character category and character code."
+  (when-let (char (char-from-name cand t))
+    (concat
+     (propertize (format " (%c)" char) 'face 'marginalia-char)
+     (marginalia--fields
+      (char :format "%06X" :face 'marginalia-number)
+      ((char-code-property-description
+        'general-category
+        (get-char-code-property char 'general-category))
+       :width 30 :face 'marginalia-documentation)))))
 
 (defun marginalia-annotate-minor-mode (cand)
   "Annotate minor-mode CAND with status and documentation string."
@@ -608,7 +647,9 @@ PROP is the property which is looked up."
 Remember `this-command' for annotation."
   (let ((w (window-width)))
     (setq-local marginalia-truncate-width (min (/ w 2) marginalia-truncate-width))
-    (setq-local marginalia--separator (if (> w 100) "    " " "))
+    (setq-local marginalia--separator (if (>= w marginalia-separator-threshold) "    " " "))
+    (setq-local marginalia--margin (when (>= w (+ marginalia-margin-min marginalia-margin-threshold))
+                                       (make-string (- w marginalia-margin-threshold) 32)))
     (setq-local marginalia--this-command this-command)))
 
 ;;;###autoload
@@ -630,24 +671,24 @@ Remember `this-command' for annotation."
 
 ;; If you want to cycle between annotators while being in the minibuffer, the completion-system
 ;; should refresh the candidate list. Currently there is no support for this in marginalia, but it
-;; is possible to advise the `marginalia-cycle-annotators' function with the necessary refreshing
-;; logic. See the discussion in https://github.com/minad/marginalia/issues/10 for reference.
+;; is possible to advise the `marginalia-cycle' function with the necessary refreshing logic. See
+;; the discussion in https://github.com/minad/marginalia/issues/10 for reference.
 ;;;###autoload
-(defun marginalia-cycle-annotators ()
+(defun marginalia-cycle ()
   "Cycle between annotators in `marginalia-annotators'.
 If called from the minibuffer the annotator cycling is local,
 that it is, it does not affect subsequent minibuffers.  When called
 from a regular buffer the effect is global."
   (interactive)
-  (let ((annotators (append (cdr marginalia-annotators)
-                            (list (car marginalia-annotators)))))
-    ;; If `marginalia-cycle-annotators' has been invoked from inside the minibuffer, only change
-    ;; the annotators locally. This is useful if the command is used as an action. If the command is
-    ;; not triggered from inside the minibuffer, cycle the annotator globally. Hopefully this is
-    ;; not too confusing.
-    (if (minibufferp)
-        (setq-local marginalia-annotators annotators)
-      (setq marginalia-annotators annotators))))
+  ;; If `marginalia-cycle' has been invoked from inside the minibuffer, only change the annotators
+  ;; locally. This is useful if the command is used as an action. If the command is not triggered
+  ;; from inside the minibuffer, cycle the annotator globally. Hopefully this is not too confusing.
+  (if-let* ((win (active-minibuffer-window))
+            (buf (window-buffer win)))
+      (let ((a (buffer-local-value 'marginalia-annotators buf)))
+        (setf (buffer-local-value 'marginalia-annotators buf) (append (cdr a) (list (car a)))))
+    (let ((a marginalia-annotators))
+      (setq marginalia-annotators (append (cdr a) (list (car a)))))))
 
 (provide 'marginalia)
 ;;; marginalia.el ends here

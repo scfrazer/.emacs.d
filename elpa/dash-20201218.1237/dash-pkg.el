@@ -1,4 +1,4 @@
-(define-package "dash" "20201215.59" "A modern list library for Emacs" 'nil :commit "b1bc1bfe1c454e16b611139c6248fc77c30afd10" :keywords
+(define-package "dash" "20201218.1237" "A modern list library for Emacs" 'nil :commit "f2c0e0d3c19dd30268b5fc08163e0436914e24ba" :keywords
   ("extensions" "lisp")
   :authors
   (("Magnar Sveen" . "magnars@gmail.com"))
