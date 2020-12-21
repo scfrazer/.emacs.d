@@ -41,7 +41,8 @@ prefix arg, copy region."
               "\\\"" "\"'\"'\""
               (replace-regexp-in-string
                "!" "\\\\!"
-               (replace-regexp-in-string "\n" "\\\\\n" text))))))
+               text)))))
+               ;; (replace-regexp-in-string "\n" "\\\\\n" text))))))
    nil 0))
 
 (defun my-tmux-term-copy (&optional arg)
