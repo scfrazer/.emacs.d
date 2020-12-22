@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201220.2122
-;; Package-Commit: 3360875943e6084f134aebffad83878d71c367c5
+;; Package-Version: 20201222.741
+;; Package-Commit: 6a64a591b59696632ba580dfceac38540ec0324f
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -312,7 +312,7 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
     ;; collecting pauses when interacting with the minibuffer. See
     ;; https://github.com/minad/marginalia/issues/16.
     (unless marginalia--annotate-binding-hash
-      (setq marginalia--annotate-binding-hash (make-hash-table))
+      (setq marginalia--annotate-binding-hash (make-hash-table :size 1025))
       (mapatoms (lambda (sym)
                   (when-let (key (and (commandp sym) (where-is-internal sym nil t)))
                     (puthash sym key marginalia--annotate-binding-hash)))))
@@ -370,6 +370,7 @@ m macro
 Variable:
 u custom
 v variable
+l local
 * modified
 
 Other:
@@ -387,6 +388,7 @@ t cl-type"
        (when (marginalia--advised s) "!")))
     (when (boundp s)
       (concat
+       (when (local-variable-if-set-p s) "l")
        (if (custom-variable-p s) "u" "v")
        (when (and (boundp s) (default-boundp s) (not (equal (symbol-value s) (default-value s)))) "*")))
     (when (facep s) "a")
@@ -482,6 +484,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
       ((if (and (boundp mode) (symbol-value mode))
            (propertize "On" 'face 'marginalia-on)
          (propertize "Off" 'face 'marginalia-off)) :width 3)
+      ((if (local-variable-if-set-p mode) "L" "G") :face 'marginalia-modified)
       (lighter-str :width 14 :face 'marginalia-lighter)
       ((marginalia--function-doc mode)
        :truncate marginalia-truncate-width :face 'marginalia-documentation)))))
@@ -537,7 +540,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
        (if (buffer-modified-p buffer) "*" " ")
        (if (buffer-local-value 'buffer-read-only buffer) "%" " "))
       :face 'marginalia-modified)
-     ((buffer-local-value 'major-mode buffer) :width 30 :face 'marginalia-mode)
+     ((buffer-local-value 'mode-name buffer) :width 20 :face 'marginalia-mode)
      ((when-let (file (buffer-file-name buffer))
         (abbreviate-file-name file))
       :truncate (/ marginalia-truncate-width 2)

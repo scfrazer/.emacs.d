@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.154/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.1347/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.154/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.1347/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1565,10 +1565,10 @@ same as writing (provide \\='bar-foo).
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20200923.610/realgud-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20201221.1435/realgud-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20200923.610/realgud-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20201221.1435/realgud-autoloads.el") (car load-path))))
 
 
 
@@ -2262,10 +2262,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201220.2122/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201222.741/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201220.2122/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201222.741/marginalia-autoloads.el") (car load-path))))
 
 
 
