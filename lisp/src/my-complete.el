@@ -16,7 +16,7 @@
       read-buffer-completion-ignore-case t
       read-file-name-completion-ignore-case t
       marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
-      marginalia-truncate-width 1000
+      prescient-sort-length-enable nil
       selectrum-count-style 'current/matches
       selectrum-refine-candidates-function #'orderless-filter
       selectrum-highlight-candidates-function #'orderless-highlight-matches)
