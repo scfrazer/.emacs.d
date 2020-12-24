@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.1347/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201222.1712/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201221.1347/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201222.1712/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2262,10 +2262,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201222.741/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201223.1343/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201222.741/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201223.1343/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2757,22 +2757,18 @@ paragraphs are used.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20190710.929/fill-function-arguments-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20201223.819/fill-function-arguments-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20190710.929/fill-function-arguments-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20201223.819/fill-function-arguments-autoloads.el") (car load-path))))
 
 
 
 (autoload 'fill-function-arguments-to-single-line "fill-function-arguments" "\
-Convert current bracketed list to a single line.
-
-\(fn)" t nil)
+Convert current bracketed list to a single line." t nil)
 
 (autoload 'fill-function-arguments-to-multi-line "fill-function-arguments" "\
-Convert current bracketed list to one line per argument.
-
-\(fn)" t nil)
+Convert current bracketed list to one line per argument." t nil)
 
 (autoload 'fill-function-arguments-dwim "fill-function-arguments" "\
 Fill the thing at point in a context-sensitive way.
@@ -2784,9 +2780,7 @@ enabled, then just run `fill-paragragh'.
 Otherwise if point is inside a bracketed list (e.g. a function
 call, an array declaration, etc.) then if the list is currently
 on a single line call `fill-function-arguments-to-multi-line',
-otherwise call `fill-function-arguments-to-single-line'.
-
-\(fn)" t nil)
+otherwise call `fill-function-arguments-to-single-line'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-")))
 
@@ -2814,10 +2808,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201218.1237/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201223.1755/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201218.1237/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201223.1755/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3517,7 +3511,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20201218.1237" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20201223.1755" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:
