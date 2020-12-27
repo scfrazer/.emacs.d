@@ -677,13 +677,12 @@ Window will be created by `selectrum-display-action'."
                    (setq buffer-read-only t)
                    (setq show-trailing-whitespace nil)
                    (goto-char (point-min))
-                   (current-buffer)))))
+                   (current-buffer))))
+        (action selectrum-display-action))
     (or (get-buffer-window buf 'visible)
         (with-selected-window (minibuffer-selected-window)
           (let* ((frame (selected-frame))
-                 (window (display-buffer
-                          buf
-                          selectrum-display-action)))
+                 (window (display-buffer buf action)))
             (select-frame-set-input-focus frame)
             window)))))
 
@@ -979,18 +978,17 @@ The specific details of the formatting are determined by
                                (minibuffer-contents)
                                lines)))
                  (match
-                  (concat
-                   (propertize
-                    (propertize newline/display 'face newline/face)
-                    'selectrum-candidate-display-prefix
-                    (number-to-string (1- len)))
+                  (propertize
                    (replace-regexp-in-string
                     "[ \t][ \t]+"
                     (propertize whitespace/display 'face whitespace/face)
                     (if (string-empty-p (minibuffer-contents))
                         ""
                       ;; Show first matched line.
-                      (or fmatch "")) 'fixed-case 'literal)))
+                      (or fmatch "")) 'fixed-case 'literal)
+                   'selectrum-candidate-display-prefix
+                   (propertize (format "(%d lines)" len)
+                               'face newline/face)))
                  (annot (replace-regexp-in-string
                          "\n" (propertize newline/display 'face newline/face)
                          (replace-regexp-in-string

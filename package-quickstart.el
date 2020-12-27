@@ -459,10 +459,10 @@ Setup wgrep preparation.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20201107.1152/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20201226.1728/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20201107.1152/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20201226.1728/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201222.1712/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201226.1908/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201222.1712/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201226.1908/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1130,10 +1130,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201226.1050/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201226.1050/rg-autoloads.el") (car load-path))))
 
 
 
@@ -2262,10 +2262,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201223.1343/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201225.1102/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201223.1343/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201225.1102/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3233,10 +3233,10 @@ ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20200624.1148/avy-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20201226.1734/avy-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20200624.1148/avy-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20201226.1734/avy-autoloads.el") (car load-path))))
 
 
 
@@ -3286,9 +3286,7 @@ When ARG is non-nil, do the opposite of `avy-all-windows'.
 \(fn CHAR1 CHAR2 &optional ARG)" t nil)
 
 (autoload 'avy-isearch "avy" "\
-Jump to one of the current isearch candidates.
-
-\(fn)" t nil)
+Jump to one of the current isearch candidates." t nil)
 
 (autoload 'avy-goto-word-0 "avy" "\
 Jump to a word start.
@@ -3378,9 +3376,7 @@ The case of CHAR is ignored.
 
 (autoload 'avy-goto-word-or-subword-1 "avy" "\
 Forward to `avy-goto-subword-1' or `avy-goto-word-1'.
-Which one depends on variable `subword-mode'.
-
-\(fn)" t nil)
+Which one depends on variable `subword-mode'." t nil)
 
 (autoload 'avy-goto-line "avy" "\
 Jump to a line start in current buffer.
@@ -3437,9 +3433,7 @@ The window scope is determined by `avy-all-windows' or
 \(fn ARG)" t nil)
 
 (autoload 'avy-move-region "avy" "\
-Select two lines and move the text between them above the current line.
-
-\(fn)" t nil)
+Select two lines and move the text between them above the current line." t nil)
 
 (autoload 'avy-kill-region "avy" "\
 Select two lines and kill the region between them.
@@ -3488,15 +3482,16 @@ newline.
 \(fn ARG)" t nil)
 
 (autoload 'avy-setup-default "avy" "\
-Setup the default shortcuts.
-
-\(fn)" nil nil)
+Setup the default shortcuts." nil nil)
 
 (autoload 'avy-goto-char-timer "avy" "\
 Read one or many consecutive chars and jump to the first one.
 The window scope is determined by `avy-all-windows' (ARG negates it).
 
 \(fn &optional ARG)" t nil)
+
+(autoload 'avy-transpose-lines-in-region "avy" "\
+Transpose lines in the active region." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "avy" '("avy-")))
 
@@ -3511,7 +3506,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20201223.1755" "/home/scfrazer/.emacs.d/elpa/rg-20201212.1141" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20201223.1755" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:
