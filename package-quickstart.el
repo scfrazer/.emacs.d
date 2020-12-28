@@ -459,10 +459,10 @@ Setup wgrep preparation.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20201226.1728/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20201227.1048/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20201226.1728/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20201227.1048/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2808,10 +2808,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201223.1755/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201227.2101/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201223.1755/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201227.2101/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3506,7 +3506,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20201223.1755" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20201227.2101" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:

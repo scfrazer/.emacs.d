@@ -3,9 +3,9 @@
 
 ;; Copyright 2011-2021 François-Xavier Bois
 
-;; Version: 17.0.3
-;; Package-Version: 20201226.1728
-;; Package-Commit: 3444cd416bca00106b6f2e33d8b24e151631e158
+;; Version: 17.0.4
+;; Package-Version: 20201227.1048
+;; Package-Commit: a3ce21f795e03c7a5489a24b2b3c4fce2d7a2f59
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -26,7 +26,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "17.0.3"
+(defconst web-mode-version "17.0.4"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -1293,7 +1293,7 @@ Must be used in conjunction with web-mode-enable-block-face."
 (defvar web-mode-engine-token-regexps
   (list
    '("artanis"     . "\"\\|#|\\|;")
-   '("asp"         . "//\\|/\\*\\|\"\\|'")
+   '("asp"         . "//\\|/\\*\\|\"\\|''")
    '("ejs"         . "//\\|/\\*\\|\"\\|'")
    '("erb"         . "\"\\|'\\|#\\|<<[-]?['\"]?\\([[:alnum:]_]+\\)['\"]?")
    '("lsp"         . "\"\\|#|\\|;")
@@ -1953,7 +1953,8 @@ shouldn't be moved back.)")
 
 (defvar web-mode-pug-font-lock-keywords
   (list
-   '("#[[:alnum:]-]+" 0 'web-mode-css-selector-face)
+   '("^[ \t]*\\(#?[[:alnum:].-]+\\)" 1 'web-mode-css-selector-face)
+   ;;'("^[ \t]*\\(#[[:alnum:]-]+\\)" 0 'web-mode-css-selector-face)
    '(" \\([@:]?\\sw+[ ]?=\\)" 1 'web-mode-param-name-face)
    ))
 
@@ -2824,23 +2825,27 @@ another auto-completion with different ac-sources (e.g. ac-php)")
   (when web-mode-trace
     (message "extend-region: font-lock-beg(%S) font-lock-end(%S) web-mode-change-beg(%S) web-mode-change-end(%S) web-mode-skip-fontification(%S)"
              font-lock-beg font-lock-end web-mode-change-beg web-mode-change-end web-mode-skip-fontification))
-  (cond
-   (t
-    (when (or (null web-mode-change-beg) (< font-lock-beg web-mode-change-beg))
-      (when web-mode-trace (message "extend-region: font-lock-beg(%S) < web-mode-change-beg(%S)" font-lock-beg web-mode-change-beg))
-      (setq web-mode-change-beg font-lock-beg))
-    (when (or (null web-mode-change-end) (> font-lock-end web-mode-change-end))
-      (when web-mode-trace (message "extend-region: font-lock-end(%S) > web-mode-change-end(%S)" font-lock-end web-mode-change-end))
-      (setq web-mode-change-end font-lock-end))
-    (let ((region (web-mode-scan web-mode-change-beg web-mode-change-end)))
-      (when region
-        ;;(message "region: %S" region)
-        (setq font-lock-beg (car region)
-              font-lock-end (cdr region))
-        ) ;when
-      ) ;let
-    nil) ;t
-   ))
+  (when (and (string= web-mode-engine "php")
+             (and (>= font-lock-beg 6) (<= font-lock-beg 9))
+             (or (message (buffer-substring-no-properties 1 6)) t)
+             (string= (buffer-substring-no-properties 1 6) "<?php"))
+    (setq font-lock-beg (point-min)
+          font-lock-end (point-max))
+    )
+  (when (or (null web-mode-change-beg) (< font-lock-beg web-mode-change-beg))
+    (when web-mode-trace (message "extend-region: font-lock-beg(%S) < web-mode-change-beg(%S)" font-lock-beg web-mode-change-beg))
+    (setq web-mode-change-beg font-lock-beg))
+  (when (or (null web-mode-change-end) (> font-lock-end web-mode-change-end))
+    (when web-mode-trace (message "extend-region: font-lock-end(%S) > web-mode-change-end(%S)" font-lock-end web-mode-change-end))
+    (setq web-mode-change-end font-lock-end))
+  (let ((region (web-mode-scan web-mode-change-beg web-mode-change-end)))
+    (when region
+      ;;(message "region: %S" region)
+      (setq font-lock-beg (car region)
+            font-lock-end (cdr region))
+      ) ;when
+    ) ;let
+  nil)
 
 (defun web-mode-scan (&optional beg end)
   (when web-mode-trace
@@ -2937,17 +2942,14 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
       (setq char (char-before)))
 
     (cond
-
      ((null char)
       )
-
      ((and (>= (point) 3)
            (web-mode--command-is-self-insert-p)
            (not (member (get-text-property (point) 'part-token) '(comment string)))
            (not (eq (get-text-property (point) 'tag-type) 'comment))
            )
       (setq ctx (web-mode-auto-complete)))
-
      ((and web-mode-enable-auto-opening
            (member this-command '(newline electric-newline-and-maybe-indent newline-and-indent))
            (or (and (not (eobp))
@@ -3051,17 +3053,19 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
         (when (< code-end end)
           (setq end code-end))
         ;; ?? pas de (web-mode-block-tokenize beg end) ?
+        (web-mode-block-tokenize beg end)
         (cons beg end)
         ) ;asp
        (t
         (goto-char pos-beg)
+        ;;(message "pos-beg=%S" pos-beg)
         (when (string= web-mode-engine "php")
           (cond
            ((and (looking-back "\*" (point-min))
                  (looking-at-p "/"))
             (search-backward "/*" code-beg))
            ) ;cond
-          )
+          ) ;when
         (if (web-mode-block-rsb "[;{}(][ ]*\n" code-beg)
             (setq beg (match-end 0))
           (setq beg code-beg))
@@ -3582,6 +3586,10 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
           (cond
            ((string= sub2 "{!")
             (setq closing-string "!}"))
+           ((string= sub2 "{}")
+            (setq closing-string nil
+                  delim-open nil
+                  delim-close nil))
            (t
             (setq closing-string '("{". "}")
                   delim-open "{[#/:?@><+^]?"
@@ -4379,7 +4387,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
 
      ((and (string= web-mode-engine "asp")
            (string= sub2 "<%"))
-      (setq regexp "//\\|/\\*\\|\"\\|'")
+      (setq regexp "//\\|/\\*\\|\"\\|''")
       ) ;asp
 
      ((string= web-mode-engine "aspx")
@@ -4530,7 +4538,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
               char (aref match 0))
         (cond
 
-         ((and (string= web-mode-engine "asp") (eq char ?\'))
+         ((and (string= web-mode-engine "asp") (string= match "''"))
           (goto-char token-end))
 
          ((and (string= web-mode-engine "razor") (eq char ?\'))
@@ -9376,7 +9384,10 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
     (when h
       (setq prev-line (car h))
       (setq prev-indentation (cdr h))
+      ;;(message "line=%S" line)
       (cond
+       ((string-match-p "''" line)
+        (setq out prev-indentation))
        ;; ----------------------------------------------------------------------
        ;; unindent
        ((string-match-p "\\_<\\(\\(end \\(if\\|function\\|class\\|sub\\|with\\)\\)\\|else\\|elseif\\|next\\|loop\\)\\_>" line)
@@ -10777,6 +10788,9 @@ Prompt user if TAG-NAME isn't provided."
          ((looking-at-p ";")
           (setq format ";"
                 prefix ";"))
+         ((looking-at-p "''")
+          (setq format "''"
+                prefix "''"))
          ) ;cond
         (list :beg beg :col col :prefix prefix :type type :format format)))))
 
@@ -11086,6 +11100,8 @@ Prompt user if TAG-NAME isn't provided."
           (setq comment (replace-regexp-in-string "\\(^[ \t]*\\*\\)" "" comment))
           ;;(message "%S" comment)
           )
+         ((string= sub2 "''")
+          (setq comment (replace-regexp-in-string "''" "" comment)))
          ((string= sub2 "//")
           (setq comment (replace-regexp-in-string "^ *//" "" comment)))
          ) ;cond
