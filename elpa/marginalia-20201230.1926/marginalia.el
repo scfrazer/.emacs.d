@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201225.1102
-;; Package-Commit: 3ec73cd5104cef843c0fc1f38ced9a0b6de71881
+;; Package-Version: 20201230.1926
+;; Package-Commit: 3c8042845c62b565c211e11d54defa093153b715
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -28,8 +28,6 @@
 ;;; Commentary:
 
 ;; Enrich existing commands with completion annotations
-
-;; Merry Christmas!
 
 ;;; Code:
 
@@ -225,7 +223,6 @@ determine it."
 ;;;; Pre-declarations for external packages
 
 (defvar package--builtins)
-(defvar package-alist)
 (defvar package-archive-contents)
 (declare-function package--from-builtin "package")
 (declare-function package-desc-archive "package")
@@ -327,6 +324,8 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
    ((pcase (- (elt cand 0) #x100000)
       (?b "Buffer")
       (?f "File")
+      (?p "Project Buffer")
+      (?q "Project File")
       (?m "Bookmark")
       (?v "View"))
     :width -8 :face 'marginalia-documentation)))
@@ -335,8 +334,8 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
 (defun marginalia-annotate-virtual-buffer-full (cand)
   "Annotate virtual-buffer CAND with the buffer class."
   (pcase (- (elt cand 0) #x100000)
-    (?b (marginalia-annotate-buffer (substring cand 1)))
-    (?f (marginalia-annotate-file (substring cand 1)))
+    ((or ?b ?p) (marginalia-annotate-buffer (substring cand 1)))
+    ((or ?f ?q) (marginalia-annotate-file (substring cand 1)))
     (_ (marginalia-annotate-virtual-buffer-class cand))))
 
 (defconst marginalia--advice-regexp
@@ -487,9 +486,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (defun marginalia-annotate-package (cand)
   "Annotate package CAND with its description summary."
-  (when-let* ((pkg (intern (replace-regexp-in-string "-[[:digit:]\\.-]+$" "" cand)))
+  (when-let* ((pkg-alist (and (bound-and-true-p package-alist) package-alist))
+              (pkg (intern-soft (replace-regexp-in-string "-[[:digit:]\\.-]+$" "" cand)))
               ;; taken from `describe-package-1'
-              (desc (or (car (alist-get pkg package-alist))
+              (desc (or (car (alist-get pkg pkg-alist))
                         (if-let (built-in (assq pkg package--builtins))
                             (package--from-builtin built-in)
                           (car (alist-get pkg package-archive-contents))))))
@@ -526,8 +526,18 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                           marginalia--separator
                           (16 (:propertize mode-name face marginalia-mode)))
                         nil nil buffer))
-     ((when-let (file (buffer-file-name buffer))
-        (abbreviate-file-name file))
+     ((cond
+       ;; see ibuffer-buffer-file-name
+       ((when-let (file (buffer-file-name buffer))
+          (abbreviate-file-name file)))
+       ((when-let (proc (get-buffer-process buffer))
+          (format "(%s %s)" proc (process-status proc))))
+       ((local-variable-p 'list-buffers-directory buffer)
+        (buffer-local-value 'list-buffers-directory buffer))
+       ((when-let (dir (and (local-variable-p 'dired-directory buffer)
+                            (buffer-local-value 'dired-directory buffer)))
+	  (expand-file-name (if (stringp dir) dir (car dir))
+                            (buffer-local-value 'default-directory buffer)))))
       :truncate (/ marginalia-truncate-width 2)
       :face 'marginalia-file-name))))
 
