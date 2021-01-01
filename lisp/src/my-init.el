@@ -367,12 +367,6 @@
                ("C-c <" . my-nxml-backward-balanced)
                ("C-c &" . nxml-insert-named-char))))
 
-(use-package package
-  :config
-  (progn
-    (setq-default package-check-signature nil)
-    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))))
-
 (use-package my-pair
   :demand t
   :bind* (("C-M-d" . my-pair-step-out-forward)

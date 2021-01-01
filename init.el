@@ -34,5 +34,7 @@
       (gc-cons-percentage 0.6)
       (file-name-handler-alist nil))
   (require 'package)
+  (setq-default package-check-signature nil)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
   (require 'my-init))
