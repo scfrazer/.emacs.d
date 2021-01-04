@@ -812,10 +812,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546/transient-autoloads.el") (car load-path))))
 
 
 
@@ -952,10 +952,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20201214.230/prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210101.2227/prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20201214.230/prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210101.2227/prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1851,10 +1851,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20200905.2113/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210101.2007/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20200905.2113/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210101.2007/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2262,10 +2262,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20201230.1926/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20201230.1926/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2296,6 +2296,8 @@ that it is, it does not affect subsequent minibuffers.  When called
 from a regular buffer the effect is global." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
+
+
 
 
 )
@@ -2808,10 +2810,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20201231.1620/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210103.1524/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20201231.1620/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210103.1524/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3019,10 +3021,10 @@ This is useful for reading patches from mailing lists." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20200515.1513/deft-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20210101.1519/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20200515.1513/deft-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20210101.1519/deft-autoloads.el") (car load-path))))
 
 
 
@@ -3037,23 +3039,19 @@ If FILE is not inside `deft-directory', fall back to using `find-file'.
 Create a new file quickly.
 Use either an automatically generated filename or the filter string if non-nil
 and `deft-use-filter-string-for-filename' is set.  If the filter string is
-non-nil and title is not from filename, use it as the title.
-
-\(fn)" t nil)
+non-nil and title is not from filename, use it as the title." t nil)
 
 (autoload 'deft "deft" "\
-Switch to *Deft* buffer and load files.
-
-\(fn)" t nil)
+Switch to *Deft* buffer and load files." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "deft" '("deft-" "org-deft-store-link")))
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-functional-20201215.40/dash-functional-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-functional-20210103.1524/dash-functional-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-functional-20201215.40/dash-functional-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-functional-20210103.1524/dash-functional-autoloads.el") (car load-path))))
 
 
 
@@ -3506,7 +3504,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20201231.1620" "/home/scfrazer/.emacs.d/elpa/transient-20201220.1911" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210103.1524" "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:
