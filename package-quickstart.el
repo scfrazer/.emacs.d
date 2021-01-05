@@ -963,10 +963,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20201226.1908/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210105.1147/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20201226.1908/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210105.1147/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1851,10 +1851,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210101.2007/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210101.2007/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1895,6 +1895,8 @@ a value in `ivy-re-builders-alist'.
 (with-eval-after-load 'ivy (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight)))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless" '("orderless-")))
+
+
 
 
 )
@@ -2262,10 +2264,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210105.1527/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210105.1527/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2810,10 +2812,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210103.1524/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210105.414/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210103.1524/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210105.414/dash-autoloads.el") (car load-path))))
 
 
 
@@ -2878,17 +2880,15 @@ See `dash-fontify-mode' for more information on Dash-Fontify mode.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20180922.1615/dired-subtree-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20210105.1127/dired-subtree-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20180922.1615/dired-subtree-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20210105.1127/dired-subtree-autoloads.el") (car load-path))))
 
 
 
 (autoload 'dired-subtree-narrow "dired-subtree" "\
-Narrow the buffer to this subtree.
-
-\(fn)" t nil)
+Narrow the buffer to this subtree." t nil)
 
 (autoload 'dired-subtree-up "dired-subtree" "\
 Jump up one directory.
@@ -2911,14 +2911,10 @@ Go to the previous sibling.
 \(fn &optional ARG)" t nil)
 
 (autoload 'dired-subtree-beginning "dired-subtree" "\
-Go to the first file in this subtree.
-
-\(fn)" t nil)
+Go to the first file in this subtree." t nil)
 
 (autoload 'dired-subtree-end "dired-subtree" "\
-Go to the first file in this subtree.
-
-\(fn)" t nil)
+Go to the first file in this subtree." t nil)
 
 (autoload 'dired-subtree-mark-subtree "dired-subtree" "\
 Mark all files in this subtree.
@@ -2940,24 +2936,16 @@ recursively.
 Revert the subtree.
 
 This means reinserting the content of this subtree and all its
-children.
-
-\(fn)" t nil)
+children." t nil)
 
 (autoload 'dired-subtree-insert "dired-subtree" "\
-Insert subtree under this directory.
-
-\(fn)" t nil)
+Insert subtree under this directory." t nil)
 
 (autoload 'dired-subtree-remove "dired-subtree" "\
-Remove subtree at point.
-
-\(fn)" t nil)
+Remove subtree at point." t nil)
 
 (autoload 'dired-subtree-toggle "dired-subtree" "\
-Insert subtree at point or remove it if it was not present.
-
-\(fn)" t nil)
+Insert subtree at point or remove it if it was not present." t nil)
 
 (autoload 'dired-subtree-cycle "dired-subtree" "\
 Org-mode like cycle visibility:
@@ -2991,9 +2979,7 @@ This depends on `dired-filter' package.
 
 It works exactly the same as global dired filters, only
 restricted to a subtree.  The global filter is also applied to
-the subtree.  The filter action is read from `dired-filter-map'.
-
-\(fn)" t nil)
+the subtree.  The filter action is read from `dired-filter-map'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-subtree" '("dired-")))
 
@@ -3504,7 +3490,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210103.1524" "/home/scfrazer/.emacs.d/elpa/marginalia-20210103.1920" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210105.414" "/home/scfrazer/.emacs.d/elpa/marginalia-20210105.1527" "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20201110.2133" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
          Info-directory-list)))
 
 ;; Local Variables:

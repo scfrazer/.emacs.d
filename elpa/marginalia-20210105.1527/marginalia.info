@@ -7,15 +7,23 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: marginalia.info,  Node: Top,  Next: Configuration,  Up: (dir)
+File: marginalia.info,  Node: Top,  Next: Introduction,  Up: (dir)
 
 marginalia.el - Marginalia in the minibuffer
 ********************************************
 
-file:https://melpa.org/packages/marginalia-badge.svg
-(https://melpa.org/#/marginalia)
+* Menu:
 
-   This package provides ‘marginalia-mode’ which adds marginalia to the
+* Introduction::
+* Configuration::
+
+
+File: marginalia.info,  Node: Introduction,  Next: Configuration,  Prev: Top,  Up: Top
+
+1 Introduction
+**************
+
+This package provides ‘marginalia-mode’ which adds marginalia to the
 minibuffer completions.  Marginalia
 (https://en.wikipedia.org/wiki/Marginalia) are marks or annotations
 placed at the margin of the page of a book or in this case helpful
@@ -41,16 +49,10 @@ fixed category with the completion initiated by the command (see the
 variable ‘marginalia-command-categories’).  The list of available
 classifiers is specified by the variable ‘marginalia-classifiers’.
 
-   <https://github.com/minad/marginalia/blob/main/marginalia-mode.png?raw=true>
-
-* Menu:
-
-* Configuration::
-
 
-File: marginalia.info,  Node: Configuration,  Prev: Top,  Up: Top
+File: marginalia.info,  Node: Configuration,  Prev: Introduction,  Up: Top
 
-1 Configuration
+2 Configuration
 ***************
 
 It is recommended to use Marginalia together with either the Selectrum
@@ -92,7 +94,8 @@ Furthermore Marginalia can be combined with Embark
 
 Tag Table:
 Node: Top203
-Node: Configuration2061
+Node: Introduction409
+Node: Configuration2027
 
 End Tag Table
 
