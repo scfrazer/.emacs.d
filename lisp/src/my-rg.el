@@ -17,21 +17,15 @@
   (setq rg-group-result (not rg-group-result))
   (rg-rerun))
 
-(rg-define-search my-rg-regexp-ask
-  :query ask
-  :format regexp
-  :files ask
-  :dir current)
-
 (rg-define-search my-rg-current-ask
   :query ask
-  :format literal
+  :format regexp
   :files current
   :dir current)
 
 (rg-define-search my-rg-current-region
-  :query (buffer-substring-no-properties (region-beginning) (region-end))
-  :format literal
+  :query (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))
+  :format regexp
   :files current
   :dir current)
 
@@ -45,13 +39,13 @@ With ARG do literal with current region."
 
 (rg-define-search my-rg-project-ask
   :query ask
-  :format literal
+  :format regexp
   :files current
   :dir project)
 
 (rg-define-search my-rg-project-region
-  :query (buffer-substring-no-properties (region-beginning) (region-end))
-  :format literal
+  :query (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))
+  :format regexp
   :files current
   :dir project)
 
