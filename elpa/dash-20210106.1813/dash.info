@@ -2548,11 +2548,12 @@ Functions iterating over lists for side-effect only.
               ⇒ '(4 3 2 1 0)
 
  -- Macro: -doto (init &rest forms)
-     Evaluate INIT and thread the result as the 2nd argument to other
-     FORMS.  INIT is evaluated once.  Its result is passed to FORMS,
-     which are then evaluated sequentially.  Returns the target form.
+     Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
+     ->::).  The RESULT of evaluating INIT is threaded through each of
+     FORMS individually using ‘->’ (*note ->::), which see.  The return
+     value is RESULT, which FORMS may have modified by side effect.
 
-          (-doto (list 1 2 3) (pop) (pop))
+          (-doto (list 1 2 3) pop pop)
               ⇒ '(3)
           (-doto (cons 1 2) (setcar 3) (setcdr 4))
               ⇒ '(3 . 4)
@@ -4709,32 +4710,32 @@ Ref: -each-r86574
 Ref: -each-r-while87007
 Ref: -dotimes87382
 Ref: -doto87872
-Node: Destructive operations88353
-Ref: !cons88526
-Ref: !cdr88732
-Node: Function combinators88927
-Ref: -partial89201
-Ref: -rpartial89595
-Ref: -juxt89998
-Ref: -compose90430
-Ref: -applify90983
-Ref: -on91414
-Ref: -flip91940
-Ref: -const92252
-Ref: -cut92591
-Ref: -not93077
-Ref: -orfn93387
-Ref: -andfn93821
-Ref: -iteratefn94316
-Ref: -fixfn95019
-Ref: -prodfn96582
-Node: Development97642
-Node: Contribute97995
-Node: Change log99001
-Node: Contributors106539
-Node: FDL108557
-Node: GPL133877
-Node: Index171626
+Node: Destructive operations88428
+Ref: !cons88601
+Ref: !cdr88807
+Node: Function combinators89002
+Ref: -partial89276
+Ref: -rpartial89670
+Ref: -juxt90073
+Ref: -compose90505
+Ref: -applify91058
+Ref: -on91489
+Ref: -flip92015
+Ref: -const92327
+Ref: -cut92666
+Ref: -not93152
+Ref: -orfn93462
+Ref: -andfn93896
+Ref: -iteratefn94391
+Ref: -fixfn95094
+Ref: -prodfn96657
+Node: Development97717
+Node: Contribute98070
+Node: Change log99076
+Node: Contributors106614
+Node: FDL108632
+Node: GPL133952
+Node: Index171701
 
 End Tag Table
 

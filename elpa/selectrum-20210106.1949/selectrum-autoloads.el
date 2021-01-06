@@ -15,6 +15,11 @@ This option needs to be set before activating `selectrum-mode'.")
 
 (custom-autoload 'selectrum-complete-in-buffer "selectrum" t)
 
+(autoload 'selectrum-select-from-history "selectrum" "\
+Select a candidate from the minibuffer history.
+If Selectrum isn't active, insert this candidate into the
+minibuffer." t nil)
+
 (autoload 'selectrum-completing-read "selectrum" "\
 Read choice using Selectrum. Can be used as `completing-read-function'.
 For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
