@@ -62,6 +62,28 @@
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
 
+
+(add-hook 'minibuffer-setup-hook 'my-complete-selectrum-setup 100)
+
+(defun my-complete-selectrum-setup ()
+  (when (and selectrum-active-p
+             minibuffer-completing-file-name)
+    (let ((map (copy-keymap (current-local-map))))
+      (define-key map (kbd "RET") 'my-complete-selectrum-select-current-candidate)
+      (use-local-map map))))
+
+(defun my-complete-selectrum-select-current-candidate (&optional arg)
+  (interactive "P")
+  (let* ((index (selectrum--index-for-arg arg))
+         (candidate (selectrum--get-candidate index))
+         (path (selectrum--get-full candidate)))
+    (call-interactively
+     (if (and (file-directory-p path)
+              (not (eq minibuffer-completion-predicate
+                       'file-directory-p)))
+         'selectrum-insert-current-candidate
+       'selectrum-select-current-candidate))))
+
 (define-key selectrum-minibuffer-map (kbd "M-N") 'selectrum-next-page)
 (define-key selectrum-minibuffer-map (kbd "M-P") 'selectrum-previous-page)
 (define-key selectrum-minibuffer-map (kbd "M-j") 'my-minibuffer-backward-kill)
