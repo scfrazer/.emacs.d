@@ -1010,6 +1010,13 @@ or the region with prefix arg."
       (fill-region (region-beginning) (region-end))
     (fill-paragraph nil)))
 
+(defun my-find-alternate-file ()
+  "Like `find-alternate-file', but don't fill in current filename."
+  (interactive)
+  (when buffer-file-name
+    (find-alternate-file
+     (read-file-name "Find alternate file: " (file-name-directory buffer-file-name)))))
+
 (defun my-fixme-next (&optional arg)
   "Go to next TODO/FIXME, or FIXME with prefix arg."
   (interactive "P")
@@ -1762,6 +1769,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x C-c"     . my-kill-frame-or-emacs)
  ("C-x C-n"     . other-window)
  ("C-x C-p"     . (lambda () (interactive (other-window -1))))
+ ("C-x C-v"     . my-find-alternate-file)
  ("C-x C-z"     . (lambda () (interactive) (ding)))
  ("C-x E"       . my-apply-macro-to-region-lines)
  ("C-x K"       . kill-buffer-and-window)

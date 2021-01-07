@@ -68,7 +68,7 @@ Functions
 * Tree operations::
 * Threading macros::
 * Binding::
-* Side-effects::
+* Side effects::
 * Destructive operations::
 * Function combinators::
 
@@ -188,7 +188,7 @@ following example, which demonstrates the utility of both versions.
 * Tree operations::
 * Threading macros::
 * Binding::
-* Side-effects::
+* Side effects::
 * Destructive operations::
 * Function combinators::
 
@@ -200,16 +200,16 @@ File: dash.info,  Node: Maps,  Next: Sublist selection,  Up: Functions
 
 Functions in this category take a transforming function, which is then
 applied sequentially to each or selected elements of the input list.
-The results are collected in order and returned as new list.
+The results are collected in order and returned as a new list.
 
  -- Function: -map (fn list)
-     Return a new list consisting of the result of applying FN to the
-     items in LIST.
+     Apply FN to each item in LIST and return the list of results.  This
+     function’s anaphoric counterpart is ‘--map’.
 
           (-map (lambda (num) (* num num)) '(1 2 3 4))
               ⇒ '(1 4 9 16)
-          (-map 'square '(1 2 3 4))
-              ⇒ '(1 4 9 16)
+          (-map #'1+ '(1 2 3 4))
+              ⇒ '(2 3 4 5)
           (--map (* it it) '(1 2 3 4))
               ⇒ '(1 4 9 16)
 
@@ -1925,10 +1925,9 @@ Other list functions not fit to be classified elsewhere.
               ⇒ '(1 2 3)
 
  -- Function: -list (&rest args)
-     Return a list with ARGS.
-
-     If first item of ARGS is already a list, simply return ARGS.  If
-     not, return a list with ARGS as elements.
+     Return a list based on ARGS.  If the first item of ARGS is already
+     a list, simply return it.  Otherwise, return a list with ARGS as
+     elements.
 
           (-list 1)
               ⇒ '(1)
@@ -2172,8 +2171,21 @@ File: dash.info,  Node: Threading macros,  Next: Binding,  Prev: Tree operations
           (-some--> '(1 3 5) (-filter 'even? it) (append it it) (-map 'square it))
               ⇒ nil
 
+ -- Macro: -doto (init &rest forms)
+     Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
+     ->::).  The RESULT of evaluating INIT is threaded through each of
+     FORMS individually using ‘->’ (*note ->::), which see.  The return
+     value is RESULT, which FORMS may have modified by side effect.
+
+          (-doto (list 1 2 3) pop pop)
+              ⇒ '(3)
+          (-doto (cons 1 2) (setcar 3) (setcdr 4))
+              ⇒ '(3 . 4)
+          (gethash 'k (--doto (make-hash-table) (puthash 'k 'v it)))
+              ⇒ 'v
+
 
-File: dash.info,  Node: Binding,  Next: Side-effects,  Prev: Threading macros,  Up: Functions
+File: dash.info,  Node: Binding,  Next: Side effects,  Prev: Threading macros,  Up: Functions
 
 2.13 Binding
 ============
@@ -2473,72 +2485,82 @@ control.
               ⇒ "c"
 
 
-File: dash.info,  Node: Side-effects,  Next: Destructive operations,  Prev: Binding,  Up: Functions
+File: dash.info,  Node: Side effects,  Next: Destructive operations,  Prev: Binding,  Up: Functions
 
-2.14 Side-effects
+2.14 Side effects
 =================
 
-Functions iterating over lists for side-effect only.
+Functions iterating over lists for side effect only.
 
  -- Function: -each (list fn)
-     Call FN with every item in LIST.  Return nil, used for side-effects
-     only.
+     Call FN on each element of LIST.  Return nil; this function is
+     intended for side effects.  Its anaphoric counterpart is ‘--each’.
+     For access to the current element’s index in LIST, see
+     ‘-each-indexed’ (*note -each-indexed::).
 
-          (let (s) (-each '(1 2 3) (lambda (item) (setq s (cons item s)))))
+          (let (l) (-each '(1 2 3) (lambda (x) (push x l))) l)
+              ⇒ '(3 2 1)
+          (let (l) (--each '(1 2 3) (push it l)) l)
+              ⇒ '(3 2 1)
+          (-each '(1 2 3) #'identity)
               ⇒ nil
-          (let (s) (-each '(1 2 3) (lambda (item) (setq s (cons item s)))) s)
-              ⇒ '(3 2 1)
-          (let (s) (--each '(1 2 3) (setq s (cons it s))) s)
-              ⇒ '(3 2 1)
 
  -- Function: -each-while (list pred fn)
-     Call FN with every item in LIST while (PRED item) is non-nil.
-     Return nil, used for side-effects only.
+     Call FN on each ITEM in LIST, while (PRED ITEM) is non-nil.  Once
+     an ITEM is reached for which PRED returns nil, FN is no longer
+     called.  Return nil; this function is intended for side effects.
+     Its anaphoric counterpart is ‘--each-while’.
 
-          (let (s) (-each-while '(2 4 5 6) 'even? (lambda (item) (push item s))) s)
+          (let (l) (-each-while '(2 4 5 6) #'even? (lambda (x) (push x l))) l)
               ⇒ '(4 2)
-          (let (s) (--each-while '(1 2 3 4) (< it 3) (push it s)) s)
+          (let (l) (--each-while '(1 2 3 4) (< it 3) (push it l)) l)
               ⇒ '(2 1)
           (let ((s 0)) (--each-while '(1 3 4 5) (odd? it) (setq s (+ s it))) s)
               ⇒ 4
 
  -- Function: -each-indexed (list fn)
-     Call (FN index item) for each item in LIST.
+     Call FN on each index and element of LIST.  For each ITEM at INDEX
+     in LIST, call (funcall FN INDEX ITEM).  Return nil; this function
+     is intended for side effects.  See also: ‘-map-indexed’ (*note
+     -map-indexed::).
 
-     In the anaphoric form ‘--each-indexed’, the index is exposed as
-     symbol ‘it-index’.
-
-     See also: ‘-map-indexed’ (*note -map-indexed::).
-
-          (let (s) (-each-indexed '(a b c) (lambda (index item) (setq s (cons (list item index) s)))) s)
+          (let (l) (-each-indexed '(a b c) (lambda (i x) (push (list x i) l))) l)
               ⇒ '((c 2) (b 1) (a 0))
-          (let (s) (--each-indexed '(a b c) (setq s (cons (list it it-index) s))) s)
+          (let (l) (--each-indexed '(a b c) (push (list it it-index) l)) l)
               ⇒ '((c 2) (b 1) (a 0))
+          (let (l) (--each-indexed nil (push it l)) l)
+              ⇒ nil
 
  -- Function: -each-r (list fn)
-     Call FN with every item in LIST in reversed order.  Return nil,
-     used for side-effects only.
+     Call FN on each element of LIST in reversed order.  Return nil;
+     this function is intended for side effects.  Its anaphoric
+     counterpart is ‘--each-r’.
 
-          (let (s) (-each-r '(1 2 3) (lambda (item) (setq s (cons item s)))))
+          (let (l) (-each-r '(1 2 3) (lambda (x) (push x l))) l)
+              ⇒ '(1 2 3)
+          (let (l) (--each-r '(1 2 3) (push it l)) l)
+              ⇒ '(1 2 3)
+          (-each-r '(1 2 3) #'identity)
               ⇒ nil
-          (let (s) (-each-r '(1 2 3) (lambda (item) (setq s (cons item s)))) s)
-              ⇒ '(1 2 3)
-          (let (s) (--each-r '(1 2 3) (setq s (cons it s))) s)
-              ⇒ '(1 2 3)
 
  -- Function: -each-r-while (list pred fn)
-     Call FN with every item in reversed LIST while (PRED item) is
-     non-nil.  Return nil, used for side-effects only.
+     Call FN on each ITEM in reversed LIST, while (PRED ITEM) is
+     non-nil.  Once an ITEM is reached for which PRED returns nil, FN is
+     no longer called.  Return nil; this function is intended for side
+     effects.  Its anaphoric counterpart is ‘--each-r-while’.
 
-          (let (s) (-each-r-while '(2 4 5 6) 'even? (lambda (item) (!cons item s))) s)
+          (let (l) (-each-r-while '(2 4 5 6) #'even? (lambda (x) (push x l))) l)
               ⇒ '(6)
-          (let (s) (--each-r-while '(1 2 3 4) (>= it 3) (!cons it s)) s)
+          (let (l) (--each-r-while '(1 2 3 4) (>= it 3) (push it l)) l)
               ⇒ '(3 4)
+          (let ((s 0)) (--each-r-while '(1 2 3 5) (odd? it) (setq s (+ s it))) s)
+              ⇒ 8
 
  -- Function: -dotimes (num fn)
-     Call FN NUM times, presumably for side-effects.  FN is called with
+     Call FN NUM times, presumably for side effects.  FN is called with
      a single argument on successive integers running from 0, inclusive,
-     to NUM, exclusive.  FN is not called if NUM is less than 1.
+     to NUM, exclusive.  FN is not called if NUM is less than 1.  This
+     function’s anaphoric counterpart is ‘--dotimes’.
 
           (let (s) (-dotimes 3 (lambda (n) (push n s))) s)
               ⇒ '(2 1 0)
@@ -2547,21 +2569,8 @@ Functions iterating over lists for side-effect only.
           (let (s) (--dotimes 5 (push it s)) s)
               ⇒ '(4 3 2 1 0)
 
- -- Macro: -doto (init &rest forms)
-     Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
-     ->::).  The RESULT of evaluating INIT is threaded through each of
-     FORMS individually using ‘->’ (*note ->::), which see.  The return
-     value is RESULT, which FORMS may have modified by side effect.
-
-          (-doto (list 1 2 3) pop pop)
-              ⇒ '(3)
-          (-doto (cons 1 2) (setcar 3) (setcdr 4))
-              ⇒ '(3 . 4)
-          (gethash 'k (--doto (make-hash-table) (puthash 'k 'v it)))
-              ⇒ 'v
-
 
-File: dash.info,  Node: Destructive operations,  Next: Function combinators,  Prev: Side-effects,  Up: Functions
+File: dash.info,  Node: Destructive operations,  Next: Function combinators,  Prev: Side effects,  Up: Functions
 
 2.15 Destructive operations
 ===========================
@@ -4343,16 +4352,16 @@ Index
                                                               (line 168)
 * -difference:                           Set operations.      (line  20)
 * -distinct:                             Set operations.      (line  62)
-* -dotimes:                              Side-effects.        (line  63)
-* -doto:                                 Side-effects.        (line  75)
+* -dotimes:                              Side effects.        (line  72)
+* -doto:                                 Threading macros.    (line  95)
 * -drop:                                 Sublist selection.   (line 128)
 * -drop-last:                            Sublist selection.   (line 142)
 * -drop-while:                           Sublist selection.   (line 171)
-* -each:                                 Side-effects.        (line   8)
-* -each-indexed:                         Side-effects.        (line  30)
-* -each-r:                               Side-effects.        (line  43)
-* -each-r-while:                         Side-effects.        (line  54)
-* -each-while:                           Side-effects.        (line  19)
+* -each:                                 Side effects.        (line   8)
+* -each-indexed:                         Side effects.        (line  34)
+* -each-r:                               Side effects.        (line  47)
+* -each-r-while:                         Side effects.        (line  59)
+* -each-while:                           Side effects.        (line  21)
 * -elem-index:                           Indexing.            (line   9)
 * -elem-indices:                         Indexing.            (line  21)
 * -fifth-item:                           Other list operations.
@@ -4366,7 +4375,7 @@ Index
 * -first-item:                           Other list operations.
                                                               (line 271)
 * -fix:                                  Other list operations.
-                                                              (line 376)
+                                                              (line 375)
 * -fixfn:                                Function combinators.
                                                               (line 175)
 * -flatten:                              List to list.        (line  33)
@@ -4540,202 +4549,202 @@ Node: Using in a package3162
 Node: Fontification of special variables3662
 Node: Functions4425
 Node: Maps5909
-Ref: -map6204
-Ref: -map-when6545
-Ref: -map-first7123
-Ref: -map-last7601
-Ref: -map-indexed8074
-Ref: -annotate8554
-Ref: -splice9044
-Ref: -splice-list9825
-Ref: -mapcat10287
-Ref: -copy10663
-Node: Sublist selection10867
-Ref: -filter11060
-Ref: -remove11512
-Ref: -remove-first11918
-Ref: -remove-last12445
-Ref: -remove-item12966
-Ref: -non-nil13361
-Ref: -slice13520
-Ref: -take14052
-Ref: -take-last14461
-Ref: -drop14894
-Ref: -drop-last15324
-Ref: -take-while15752
-Ref: -drop-while16278
-Ref: -select-by-indices16802
-Ref: -select-columns17316
-Ref: -select-column18022
-Node: List to list18486
-Ref: -keep18678
-Ref: -concat19181
-Ref: -flatten19478
-Ref: -flatten-n20237
-Ref: -replace20624
-Ref: -replace-first21087
-Ref: -replace-last21584
-Ref: -insert-at22074
-Ref: -replace-at22401
-Ref: -update-at22791
-Ref: -remove-at23282
-Ref: -remove-at-indices23770
-Node: Reductions24352
-Ref: -reduce-from24521
-Ref: -reduce-r-from25287
-Ref: -reduce26054
-Ref: -reduce-r26783
-Ref: -reductions-from27654
-Ref: -reductions-r-from28369
-Ref: -reductions29094
-Ref: -reductions-r29719
-Ref: -count30354
-Ref: -sum30578
-Ref: -running-sum30767
-Ref: -product31060
-Ref: -running-product31269
-Ref: -inits31582
-Ref: -tails31830
-Ref: -common-prefix32077
-Ref: -common-suffix32374
-Ref: -min32671
-Ref: -min-by32897
-Ref: -max33420
-Ref: -max-by33645
-Node: Unfolding34173
-Ref: -iterate34414
-Ref: -unfold34864
-Node: Predicates35672
-Ref: -any?35796
-Ref: -all?36116
-Ref: -none?36446
-Ref: -only-some?36748
-Ref: -contains?37233
-Ref: -same-items?37622
-Ref: -is-prefix?38007
-Ref: -is-suffix?38330
-Ref: -is-infix?38653
-Node: Partitioning39007
-Ref: -split-at39195
-Ref: -split-with39480
-Ref: -split-on39883
-Ref: -split-when40559
-Ref: -separate41199
-Ref: -partition41641
-Ref: -partition-all42093
-Ref: -partition-in-steps42521
-Ref: -partition-all-in-steps43018
-Ref: -partition-by43503
-Ref: -partition-by-header43885
-Ref: -partition-after-pred44489
-Ref: -partition-before-pred44833
-Ref: -partition-before-item45184
-Ref: -partition-after-item45495
-Ref: -group-by45801
-Node: Indexing46238
-Ref: -elem-index46440
-Ref: -elem-indices46835
-Ref: -find-index47218
-Ref: -find-last-index47707
-Ref: -find-indices48211
-Ref: -grade-up48619
-Ref: -grade-down49022
-Node: Set operations49432
-Ref: -union49615
-Ref: -difference50057
-Ref: -intersection50474
-Ref: -powerset50911
-Ref: -permutations51124
-Ref: -distinct51424
-Node: Other list operations51802
-Ref: -rotate52027
-Ref: -repeat52397
-Ref: -cons*52678
-Ref: -snoc53065
-Ref: -interpose53478
-Ref: -interleave53776
-Ref: -zip-with54145
-Ref: -zip54862
-Ref: -zip-lists55694
-Ref: -zip-fill56395
-Ref: -unzip56718
-Ref: -cycle57463
-Ref: -pad57865
-Ref: -table58188
-Ref: -table-flat58977
-Ref: -first59985
-Ref: -some60357
-Ref: -last60666
-Ref: -first-item61000
-Ref: -second-item61416
-Ref: -third-item61696
-Ref: -fourth-item61974
-Ref: -fifth-item62240
-Ref: -last-item62502
-Ref: -butlast62794
-Ref: -sort63041
-Ref: -list63530
-Ref: -fix63861
-Node: Tree operations64401
-Ref: -tree-seq64597
-Ref: -tree-map65455
-Ref: -tree-map-nodes65898
-Ref: -tree-reduce66748
-Ref: -tree-reduce-from67630
-Ref: -tree-mapreduce68231
-Ref: -tree-mapreduce-from69091
-Ref: -clone70377
-Node: Threading macros70705
-Ref: ->70850
-Ref: ->>71341
-Ref: -->71846
-Ref: -as->72402
-Ref: -some->72857
-Ref: -some->>73231
-Ref: -some-->73667
-Node: Binding74138
-Ref: -when-let74350
-Ref: -when-let*74835
-Ref: -if-let75358
-Ref: -if-let*75753
-Ref: -let76370
-Ref: -let*82445
-Ref: -lambda83385
-Ref: -setq84181
-Node: Side-effects84997
-Ref: -each85191
-Ref: -each-while85598
-Ref: -each-indexed86056
-Ref: -each-r86574
-Ref: -each-r-while87007
-Ref: -dotimes87382
-Ref: -doto87872
-Node: Destructive operations88428
-Ref: !cons88601
-Ref: !cdr88807
-Node: Function combinators89002
-Ref: -partial89276
-Ref: -rpartial89670
-Ref: -juxt90073
-Ref: -compose90505
-Ref: -applify91058
-Ref: -on91489
-Ref: -flip92015
-Ref: -const92327
-Ref: -cut92666
-Ref: -not93152
-Ref: -orfn93462
-Ref: -andfn93896
-Ref: -iteratefn94391
-Ref: -fixfn95094
-Ref: -prodfn96657
-Node: Development97717
-Node: Contribute98070
-Node: Change log99076
-Node: Contributors106614
-Node: FDL108632
-Node: GPL133952
-Node: Index171701
+Ref: -map6206
+Ref: -map-when6582
+Ref: -map-first7160
+Ref: -map-last7638
+Ref: -map-indexed8111
+Ref: -annotate8591
+Ref: -splice9081
+Ref: -splice-list9862
+Ref: -mapcat10324
+Ref: -copy10700
+Node: Sublist selection10904
+Ref: -filter11097
+Ref: -remove11549
+Ref: -remove-first11955
+Ref: -remove-last12482
+Ref: -remove-item13003
+Ref: -non-nil13398
+Ref: -slice13557
+Ref: -take14089
+Ref: -take-last14498
+Ref: -drop14931
+Ref: -drop-last15361
+Ref: -take-while15789
+Ref: -drop-while16315
+Ref: -select-by-indices16839
+Ref: -select-columns17353
+Ref: -select-column18059
+Node: List to list18523
+Ref: -keep18715
+Ref: -concat19218
+Ref: -flatten19515
+Ref: -flatten-n20274
+Ref: -replace20661
+Ref: -replace-first21124
+Ref: -replace-last21621
+Ref: -insert-at22111
+Ref: -replace-at22438
+Ref: -update-at22828
+Ref: -remove-at23319
+Ref: -remove-at-indices23807
+Node: Reductions24389
+Ref: -reduce-from24558
+Ref: -reduce-r-from25324
+Ref: -reduce26091
+Ref: -reduce-r26820
+Ref: -reductions-from27691
+Ref: -reductions-r-from28406
+Ref: -reductions29131
+Ref: -reductions-r29756
+Ref: -count30391
+Ref: -sum30615
+Ref: -running-sum30804
+Ref: -product31097
+Ref: -running-product31306
+Ref: -inits31619
+Ref: -tails31867
+Ref: -common-prefix32114
+Ref: -common-suffix32411
+Ref: -min32708
+Ref: -min-by32934
+Ref: -max33457
+Ref: -max-by33682
+Node: Unfolding34210
+Ref: -iterate34451
+Ref: -unfold34901
+Node: Predicates35709
+Ref: -any?35833
+Ref: -all?36153
+Ref: -none?36483
+Ref: -only-some?36785
+Ref: -contains?37270
+Ref: -same-items?37659
+Ref: -is-prefix?38044
+Ref: -is-suffix?38367
+Ref: -is-infix?38690
+Node: Partitioning39044
+Ref: -split-at39232
+Ref: -split-with39517
+Ref: -split-on39920
+Ref: -split-when40596
+Ref: -separate41236
+Ref: -partition41678
+Ref: -partition-all42130
+Ref: -partition-in-steps42558
+Ref: -partition-all-in-steps43055
+Ref: -partition-by43540
+Ref: -partition-by-header43922
+Ref: -partition-after-pred44526
+Ref: -partition-before-pred44870
+Ref: -partition-before-item45221
+Ref: -partition-after-item45532
+Ref: -group-by45838
+Node: Indexing46275
+Ref: -elem-index46477
+Ref: -elem-indices46872
+Ref: -find-index47255
+Ref: -find-last-index47744
+Ref: -find-indices48248
+Ref: -grade-up48656
+Ref: -grade-down49059
+Node: Set operations49469
+Ref: -union49652
+Ref: -difference50094
+Ref: -intersection50511
+Ref: -powerset50948
+Ref: -permutations51161
+Ref: -distinct51461
+Node: Other list operations51839
+Ref: -rotate52064
+Ref: -repeat52434
+Ref: -cons*52715
+Ref: -snoc53102
+Ref: -interpose53515
+Ref: -interleave53813
+Ref: -zip-with54182
+Ref: -zip54899
+Ref: -zip-lists55731
+Ref: -zip-fill56432
+Ref: -unzip56755
+Ref: -cycle57500
+Ref: -pad57902
+Ref: -table58225
+Ref: -table-flat59014
+Ref: -first60022
+Ref: -some60394
+Ref: -last60703
+Ref: -first-item61037
+Ref: -second-item61453
+Ref: -third-item61733
+Ref: -fourth-item62011
+Ref: -fifth-item62277
+Ref: -last-item62539
+Ref: -butlast62831
+Ref: -sort63078
+Ref: -list63567
+Ref: -fix63907
+Node: Tree operations64447
+Ref: -tree-seq64643
+Ref: -tree-map65501
+Ref: -tree-map-nodes65944
+Ref: -tree-reduce66794
+Ref: -tree-reduce-from67676
+Ref: -tree-mapreduce68277
+Ref: -tree-mapreduce-from69137
+Ref: -clone70423
+Node: Threading macros70751
+Ref: ->70896
+Ref: ->>71387
+Ref: -->71892
+Ref: -as->72448
+Ref: -some->72903
+Ref: -some->>73277
+Ref: -some-->73713
+Ref: -doto74184
+Node: Binding74740
+Ref: -when-let74952
+Ref: -when-let*75437
+Ref: -if-let75960
+Ref: -if-let*76355
+Ref: -let76972
+Ref: -let*83047
+Ref: -lambda83987
+Ref: -setq84783
+Node: Side effects85599
+Ref: -each85793
+Ref: -each-while86310
+Ref: -each-indexed86914
+Ref: -each-r87504
+Ref: -each-r-while87942
+Ref: -dotimes88565
+Node: Destructive operations89121
+Ref: !cons89294
+Ref: !cdr89500
+Node: Function combinators89695
+Ref: -partial89969
+Ref: -rpartial90363
+Ref: -juxt90766
+Ref: -compose91198
+Ref: -applify91751
+Ref: -on92182
+Ref: -flip92708
+Ref: -const93020
+Ref: -cut93359
+Ref: -not93845
+Ref: -orfn94155
+Ref: -andfn94589
+Ref: -iteratefn95084
+Ref: -fixfn95787
+Ref: -prodfn97350
+Node: Development98410
+Node: Contribute98763
+Node: Change log99769
+Node: Contributors107307
+Node: FDL109325
+Node: GPL134645
+Node: Index172394
 
 End Tag Table
 
