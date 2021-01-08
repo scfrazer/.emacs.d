@@ -50,7 +50,7 @@
  '(modus-vivendi-theme-slanted-constructs t)
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-selected-packages
-   '(modus-operandi-theme modus-vivendi-theme diffview darktooth-theme python marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(which-key modus-operandi-theme modus-vivendi-theme diffview darktooth-theme python marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
@@ -63,6 +63,9 @@
      (checkdoc-force-docstrings-flag)
      (folded-file . t)))
  '(speedbar-indentation-width 4)
+ '(which-key-add-column-padding 3)
+ '(which-key-max-display-columns 3)
+ '(which-key-mode t)
  '(yank-excluded-properties
    '(category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop)))
 (custom-set-faces

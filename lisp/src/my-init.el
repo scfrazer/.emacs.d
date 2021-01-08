@@ -14,7 +14,7 @@
 (setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
 
 (require 'bind-key)
-(require 'bind-remind)
+;; (require 'bind-remind)
 
 (require 'my-dired)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
