@@ -1536,15 +1536,25 @@ indices."
 If Selectrum isn't active, insert this candidate into the
 minibuffer."
   (interactive)
-  (let ((selectrum-should-sort-p nil)
-        (enable-recursive-minibuffers t)
-        (history (symbol-value minibuffer-history-variable)))
+  (unless (minibufferp)
+    (user-error "Command can only be used in minibuffer"))
+  (let ((history (symbol-value minibuffer-history-variable)))
     (when (eq history t)
       (user-error "No history is recorded for this command"))
-    (let ((result
-           (let ((selectrum-candidate-inserted-hook nil)
-                 (selectrum-candidate-selected-hook nil))
-             (selectrum-read "History: " history :history t))))
+    (let* ((enable-rec enable-recursive-minibuffers)
+           (result
+            (minibuffer-with-setup-hook
+                (lambda ()
+                  (setq-local selectrum-should-sort-p nil)
+                  (setq-local selectrum-candidate-inserted-hook nil)
+                  (setq-local selectrum-candidate-selected-hook nil))
+              (setq-local enable-recursive-minibuffers t)
+              (unwind-protect
+                  (selectrum-read "History: "
+                                  history
+                                  :history t
+                                  :require-match t)
+                (setq-local enable-recursive-minibuffers enable-rec)))))
       (if (and selectrum--match-required-p
                (not (member result selectrum--refined-candidates)))
           (user-error "That history element is not one of the candidates")
@@ -1899,6 +1909,7 @@ PREDICATE, see `read-buffer'."
 For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
             HIST, DEF, _INHERIT-INPUT-METHOD see `completing-read'."
   (let* ((last-dir nil)
+         (sortf nil)
          (coll
           (lambda (input)
             (let* (;; Full path of input dir (might include shadowed parts).
@@ -1907,15 +1918,18 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                    (matchstr (file-name-nondirectory input))
                    (cands
                     (cond ((equal last-dir dir)
+                           (setq-local selectrum-preprocess-candidates-function
+                                       #'identity)
                            selectrum--preprocessed-candidates)
                           (t
+                           (setq-local selectrum-preprocess-candidates-function
+                                       sortf)
                            (condition-case _
-                               (funcall collection dir
-                                        (lambda (i)
-                                          (and (not (member i '("./" "../")))
-                                               (or (not predicate)
-                                                   (funcall predicate i))))
-                                        t)
+                               (delete
+                                "./"
+                                (delete
+                                 "../"
+                                 (funcall collection dir predicate t)))
                              ;; May happen in case user quits out
                              ;; of a TRAMP prompt.
                              (quit))))))
@@ -1926,8 +1940,12 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
         ;; The hook needs to run late as `read-file-name-default' sets
         ;; its own syntax table in `minibuffer-with-setup-hook'.
         (:append (lambda ()
+                   ;; Pickup the value as configured for current
+                   ;; session.
+                   (setq sortf selectrum-preprocess-candidates-function)
                    ;; Ensure the variable is also set when
-                   ;; selectrum--completing-read-file-name is called directly.
+                   ;; selectrum--completing-read-file-name is called
+                   ;; directly.
                    (setq-local minibuffer-completing-file-name t)
                    (set-syntax-table
                     selectrum--minibuffer-local-filename-syntax)))
