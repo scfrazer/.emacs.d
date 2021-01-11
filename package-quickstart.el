@@ -353,10 +353,10 @@ Run ‘dired-do-rename’ asynchronously.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210110.1545/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210110.1545/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1167,10 +1167,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210108.2237/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210110.2134/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210108.2237/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210110.2134/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2473,10 +2473,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210107.1446/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210110.2056/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210107.1446/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210110.2056/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3021,10 +3021,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210108.1603/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210110.2108/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210108.1603/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210110.2108/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3071,6 +3071,10 @@ Dash-Fontify mode is enabled in all buffers where
 See `dash-fontify-mode' for more information on Dash-Fontify mode.
 
 \(fn &optional ARG)" t nil)
+
+(autoload 'dash-register-info-lookup "dash" "\
+Register the Dash Info manual with `info-lookup-symbol'.
+This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-keep" "-l" "-m" "-non" "-only-some" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-")))
 
@@ -3699,7 +3703,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210108.1603" "/home/scfrazer/.emacs.d/elpa/marginalia-20210107.1446" "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20201030.1232")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210110.2108" "/home/scfrazer/.emacs.d/elpa/marginalia-20210110.2056" "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20210110.1545")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -860,9 +860,10 @@ See also: `-last-item'."
   "Counts the number of items in LIST where (PRED item) is non-nil."
   (--count (funcall pred it) list))
 
-(defun ---truthy? (val)
+(defun ---truthy? (obj)
+  "Return OBJ as a boolean value (t or nil)."
   (declare (pure t) (side-effect-free t))
-  (not (null val)))
+  (and obj t))
 
 (defmacro --any? (form list)
   "Anaphoric form of `-any?'."
@@ -965,7 +966,12 @@ section is returned.  Defaults to 1."
     (nreverse new-list)))
 
 (defmacro --take-while (form list)
-  "Anaphoric form of `-take-while'."
+  "Take successive items from LIST for which FORM evals to non-nil.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating FORM.  Return a new
+list of the successive elements from the start of LIST for which
+FORM evaluates to non-nil.
+This is the anaphoric counterpart to `-take-while'."
   (declare (debug (form form)))
   (let ((r (make-symbol "result")))
     `(let (,r)
@@ -977,24 +983,30 @@ section is returned.  Defaults to 1."
 PRED is a function of one argument.  Return a new list of the
 successive elements from the start of LIST for which PRED returns
 non-nil.
-
-See also: `-drop-while'"
+This function's anaphoric counterpart is `--take-while'.
+For another variant, see also `-drop-while'."
   (--take-while (funcall pred it) list))
 
 (defmacro --drop-while (form list)
-  "Anaphoric form of `-drop-while'."
+  "Drop successive items from LIST for which FORM evals to non-nil.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating FORM.  Return the
+tail (not a copy) of LIST starting from its first element for
+which FORM evaluates to nil.
+This is the anaphoric counterpart to `-drop-while'."
   (declare (debug (form form)))
   (let ((l (make-symbol "list")))
     `(let ((,l ,list))
        (--each-while ,l ,form (pop ,l))
-       (copy-sequence ,l))))
+       ,l)))
 
 (defun -drop-while (pred list)
   "Drop successive items from LIST for which PRED returns non-nil.
-PRED is a function of one argument.  Return a copy of the tail of
-LIST starting from its first element for which PRED returns nil.
-
-See also: `-take-while'"
+PRED is a function of one argument.  Return the tail (not a copy)
+of LIST starting from its first element for which PRED returns
+nil.
+This function's anaphoric counterpart is `--drop-while'.
+For another variant, see also `-take-while'."
   (--drop-while (funcall pred it) list))
 
 (defun -take (n list)
@@ -1002,7 +1014,7 @@ See also: `-take-while'"
 Return a copy of LIST if it contains N items or fewer.
 Return nil if N is zero or less.
 
-See also: `-take-last'"
+See also: `-take-last'."
   (declare (pure t) (side-effect-free t))
   (--take-while (< it-index n) list))
 
@@ -1011,35 +1023,37 @@ See also: `-take-last'"
 Return a copy of LIST if it contains N items or fewer.
 Return nil if N is zero or less.
 
-See also: `-take'"
+See also: `-take'."
   (declare (pure t) (side-effect-free t))
   (copy-sequence (last list n)))
 
-(defun -drop (n list)
-  "Return a copy of the tail of LIST without the first N items.
-Return a copy of LIST if N is zero or less.
+(defalias '-drop #'nthcdr
+  "Return the tail (not a copy) of LIST without the first N items.
 Return nil if LIST contains N items or fewer.
-
-See also: `-drop-last'"
-  (copy-sequence (nthcdr n list)))
+Return LIST if N is zero or less.
+For another variant, see also `-drop-last'.
+\n(fn N LIST)")
 
 (defun -drop-last (n list)
   "Return a copy of LIST without its last N items.
 Return a copy of LIST if N is zero or less.
 Return nil if LIST contains N items or fewer.
 
-See also: `-drop'"
+See also: `-drop'."
   (declare (pure t) (side-effect-free t))
   (nbutlast (copy-sequence list) n))
 
 (defun -split-at (n list)
-  "Return a list of ((-take N LIST) (-drop N LIST)), in no more than one pass through the list."
+  "Split LIST into two sublists after the Nth element.
+The result is a list of two elements (TAKE DROP) where TAKE is a
+new list of the first N elements of LIST, and DROP is the
+remaining elements of LIST (not a copy).  TAKE and DROP are like
+the results of `-take' and `-drop', respectively, but the split
+is done in a single list traversal."
   (declare (pure t) (side-effect-free t))
   (let (result)
-    (--dotimes n
-      (when list
-        (!cons (car list) result)
-        (!cdr list)))
+    (--each-while list (< it-index n)
+      (push (pop list) result))
     (list (nreverse result) list)))
 
 (defun -rotate (n list)
@@ -1050,7 +1064,7 @@ The time complexity is O(n)."
     (let* ((len (length list))
            (n-mod-len (mod n len))
            (new-tail-len (- len n-mod-len)))
-      (append (-drop new-tail-len list) (-take new-tail-len list)))))
+      (append (nthcdr new-tail-len list) (-take new-tail-len list)))))
 
 (defun -insert-at (n x list)
   "Return a list with X inserted into LIST at position N.
@@ -1173,28 +1187,29 @@ This function can be thought of as a generalization of
   "Return a list of ((-filter PRED LIST) (-remove PRED LIST)), in one pass through the list."
   (--separate (funcall pred it) list))
 
-(defun ---partition-all-in-steps-reversed (n step list)
-  "Private: Used by -partition-all-in-steps and -partition-in-steps."
+(defun dash--partition-all-in-steps-reversed (n step list)
+  "Used by `-partition-all-in-steps' and `-partition-in-steps'."
   (when (< step 1)
-    (error "Step must be a positive number, or you're looking at some juicy infinite loops."))
-  (let ((result nil))
+    (signal 'wrong-type-argument
+            `("Step size < 1 results in juicy infinite loops" ,step)))
+  (let (result)
     (while list
-      (!cons (-take n list) result)
-      (setq list (-drop step list)))
+      (push (-take n list) result)
+      (setq list (nthcdr step list)))
     result))
 
 (defun -partition-all-in-steps (n step list)
   "Return a new list with the items in LIST grouped into N-sized sublists at offsets STEP apart.
 The last groups may contain less than N items."
   (declare (pure t) (side-effect-free t))
-  (nreverse (---partition-all-in-steps-reversed n step list)))
+  (nreverse (dash--partition-all-in-steps-reversed n step list)))
 
 (defun -partition-in-steps (n step list)
   "Return a new list with the items in LIST grouped into N-sized sublists at offsets STEP apart.
 If there are not enough items to make the last group N-sized,
 those items are discarded."
   (declare (pure t) (side-effect-free t))
-  (let ((result (---partition-all-in-steps-reversed n step list)))
+  (let ((result (dash--partition-all-in-steps-reversed n step list)))
     (while (and result (< (length (car result)) n))
       (!cdr result))
     (nreverse result)))
@@ -1668,7 +1683,7 @@ last item in second form, etc."
 Insert X at the position signified by the symbol `it' in the first
 form.  If there are more forms, insert the first form at the position
 signified by `it' in in second form, etc."
-  (declare (debug (form body)))
+  (declare (debug (form body)) (indent 1))
   `(-as-> ,x it ,@forms))
 
 (defmacro -as-> (value variable &rest forms)
@@ -1741,24 +1756,20 @@ Note: `it' need not be used in each form."
      it))
 
 (defun -grade-up (comparator list)
-  "Grade elements of LIST using COMPARATOR relation, yielding a
-permutation vector such that applying this permutation to LIST
-sorts it in ascending order."
-  ;; ugly hack to "fix" lack of lexical scope
-  (let ((comp `(lambda (it other) (funcall ',comparator (car it) (car other)))))
-    (->> (--map-indexed (cons it it-index) list)
-         (-sort comp)
-         (-map 'cdr))))
+  "Grade elements of LIST using COMPARATOR relation.
+This yields a permutation vector such that applying this
+permutation to LIST sorts it in ascending order."
+  (->> (--map-indexed (cons it it-index) list)
+       (-sort (lambda (it other) (funcall comparator (car it) (car other))))
+       (mapcar #'cdr)))
 
 (defun -grade-down (comparator list)
-  "Grade elements of LIST using COMPARATOR relation, yielding a
-permutation vector such that applying this permutation to LIST
-sorts it in descending order."
-  ;; ugly hack to "fix" lack of lexical scope
-  (let ((comp `(lambda (it other) (funcall ',comparator (car other) (car it)))))
-    (->> (--map-indexed (cons it it-index) list)
-         (-sort comp)
-         (-map 'cdr))))
+  "Grade elements of LIST using COMPARATOR relation.
+This yields a permutation vector such that applying this
+permutation to LIST sorts it in descending order."
+  (->> (--map-indexed (cons it it-index) list)
+       (-sort (lambda (it other) (funcall comparator (car other) (car it))))
+       (mapcar #'cdr)))
 
 (defvar dash--source-counter 0
   "Monotonic counter for generated symbols.")
@@ -2284,27 +2295,28 @@ such that:
   (-lambda (x y ...) body)
 
 has the usual semantics of `lambda'.  Furthermore, these get
-translated into normal lambda, so there is no performance
+translated into normal `lambda', so there is no performance
 penalty.
 
-See `-let' for the description of destructuring mechanism."
+See `-let' for a description of the destructuring mechanism."
   (declare (doc-string 2) (indent defun)
            (debug (&define sexp
                            [&optional stringp]
                            [&optional ("interactive" interactive)]
                            def-body)))
   (cond
-   ((not (consp match-form))
-    (signal 'wrong-type-argument "match-form must be a list"))
-   ;; no destructuring, so just return regular lambda to make things faster
-   ((-all? 'symbolp match-form)
+   ((nlistp match-form)
+    (signal 'wrong-type-argument (list #'listp match-form)))
+   ;; No destructuring, so just return regular `lambda' for speed.
+   ((-all? #'symbolp match-form)
     `(lambda ,match-form ,@body))
-   (t
-    (let* ((inputs (--map-indexed (list it (make-symbol (format "input%d" it-index))) match-form)))
-      ;; TODO: because inputs to the lambda are evaluated only once,
-      ;; -let* need not to create the extra bindings to ensure that.
+   ((let ((inputs (--map-indexed
+                   (list it (make-symbol (format "input%d" it-index)))
+                   match-form)))
+      ;; TODO: because inputs to the `lambda' are evaluated only once,
+      ;; `-let*' need not create the extra bindings to ensure that.
       ;; We should find a way to optimize that.  Not critical however.
-      `(lambda ,(--map (cadr it) inputs)
+      `(lambda ,(mapcar #'cadr inputs)
          (-let* ,inputs ,@body))))))
 
 (defmacro -setq (&rest forms)
@@ -2331,7 +2343,7 @@ multiple assignments it does not cause unexpected side effects.
   (declare (debug (&rest sexp form))
            (indent 1))
   (when (= (mod (length forms) 2) 1)
-    (error "Odd number of arguments"))
+    (signal 'wrong-number-of-arguments (list '-setq (1+ (length forms)))))
   (let* ((forms-and-sources
           ;; First get all the necessary mappings with all the
           ;; intermediate bindings.
@@ -2608,12 +2620,18 @@ if the first element should sort before the second."
   (declare (debug (form form)))
   `(-sort (lambda (it other) ,form) ,list))
 
-(defun -list (&rest args)
-  "Return a list based on ARGS.
-If the first item of ARGS is already a list, simply return it.
-Otherwise, return a list with ARGS as elements."
-  (declare (pure t) (side-effect-free t))
-  (if (listp (car args)) (car args) args))
+(defun -list (&optional arg &rest args)
+  "Ensure ARG is a list.
+If ARG is already a list, return it as is (not a copy).
+Otherwise, return a new list with ARG as its only element.
+
+Another supported calling convention is (-list &rest ARGS).
+In this case, if ARG is not a list, a new list with all of
+ARGS as elements is returned.  This use is supported for
+backward compatibility and is otherwise deprecated."
+  (declare (advertised-calling-convention (arg) "2.18.0")
+           (pure t) (side-effect-free t))
+  (if (listp arg) arg (cons arg args)))
 
 (defun -repeat (n x)
   "Return a new list of length N with each element being X.
@@ -2628,12 +2646,10 @@ Return nil if N is less than 1."
 
 (defun -running-sum (list)
   "Return a list with running sums of items in LIST.
-
 LIST must be non-empty."
   (declare (pure t) (side-effect-free t))
-  (unless (consp list)
-    (error "LIST must be non-empty"))
-  (-reductions '+ list))
+  (or list (signal 'wrong-type-argument (list #'consp list)))
+  (-reductions #'+ list))
 
 (defun -product (list)
   "Return the product of LIST."
@@ -2642,12 +2658,10 @@ LIST must be non-empty."
 
 (defun -running-product (list)
   "Return a list with running products of items in LIST.
-
 LIST must be non-empty."
   (declare (pure t) (side-effect-free t))
-  (unless (consp list)
-    (error "LIST must be non-empty"))
-  (-reductions '* list))
+  (or list (signal 'wrong-type-argument (list #'consp list)))
+  (-reductions #'* list))
 
 (defun -max (list)
   "Return the largest value from LIST of numbers or markers."
@@ -2689,6 +2703,21 @@ The items for the comparator form are exposed as \"it\" and \"other\"."
   (declare (debug (form form)))
   `(-min-by (lambda (it other) ,form) ,list))
 
+(defun -iota (count &optional start step)
+  "Return a list containing COUNT numbers.
+Starts from START and adds STEP each time.  The default START is
+zero, the default STEP is 1.
+This function takes its name from the corresponding primitive in
+the APL language."
+  (declare (pure t) (side-effect-free t))
+  (unless (natnump count)
+    (signal 'wrong-type-argument (list #'natnump count)))
+  (or start (setq start 0))
+  (or step (setq step 1))
+  (if (zerop step)
+      (make-list count start)
+    (--iterate (+ it step) start count)))
+
 (defun -fix (fn list)
   "Compute the (least) fixpoint of FN with initial input LIST.
 
@@ -2724,14 +2753,12 @@ the new seed."
   (declare (debug (form form)))
   `(-unfold (lambda (it) ,form) ,seed))
 
-(defun -cons-pair? (con)
-  "Return non-nil if CON is true cons pair.
-That is (A . B) where B is not a list.
-
-Alias: `-cons-pair-p'"
+(defun -cons-pair? (obj)
+  "Return non-nil if OBJ is a true cons pair.
+That is, a cons (A . B) where B is not a list.
+Alias: `-cons-pair-p'."
   (declare (pure t) (side-effect-free t))
-  (and (listp con)
-       (not (listp (cdr con)))))
+  (nlistp (cdr-safe obj)))
 
 (defalias '-cons-pair-p '-cons-pair?)
 
@@ -2894,7 +2921,7 @@ replaced with new ones.  This is useful when you need to clone a
 structure such as plist or alist."
   (declare (pure t) (side-effect-free t))
   (-tree-map 'identity list))
-
+
 ;;; Font lock
 
 (defvar dash--keywords
@@ -3050,6 +3077,39 @@ See also `dash-fontify-mode-lighter' and
 
 (define-obsolete-function-alias
   'dash-enable-font-lock #'global-dash-fontify-mode "2.18.0")
+
+;;; Info
+
+(defvar dash--info-doc-spec '("(dash) Index" nil "^ -+ .*: " "\\( \\|$\\)")
+  "The Dash :doc-spec entry for `info-lookup-alist'.
+It is based on that for `emacs-lisp-mode'.")
+
+(defun dash--info-elisp-docs ()
+  "Return the `emacs-lisp-mode' symbol docs from `info-lookup-alist'.
+Specifically, return the cons containing their
+`info-lookup->doc-spec' so that we can modify it."
+  (defvar info-lookup-alist)
+  (nthcdr 3 (assq #'emacs-lisp-mode (cdr (assq 'symbol info-lookup-alist)))))
+
+;;;###autoload
+(defun dash-register-info-lookup ()
+  "Register the Dash Info manual with `info-lookup-symbol'.
+This allows Dash symbols to be looked up with \\[info-lookup-symbol]."
+  (interactive)
+  (require 'info-look)
+  (let ((docs (dash--info-elisp-docs)))
+    (setcar docs (append (car docs) (list dash--info-doc-spec)))
+    (info-lookup-reset)))
+
+(defun dash-unload-function ()
+  "Remove Dash from `info-lookup-alist'.
+Used by `unload-feature', which see."
+  (let ((docs (and (featurep 'info-look)
+                   (dash--info-elisp-docs))))
+    (when (member dash--info-doc-spec (car docs))
+      (setcar docs (remove dash--info-doc-spec (car docs)))
+      (info-lookup-reset)))
+  nil)
 
 (provide 'dash)
 ;;; dash.el ends here

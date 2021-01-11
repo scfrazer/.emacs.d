@@ -578,11 +578,13 @@ This is non-nil during the first call of
 ;;;;; Minibuffer state utility functions
 
 (defun selectrum-get-current-candidate (&optional notfull)
-  "Return currently selected Selectrum candidate.
+  "Return currently selected Selectrum candidate if there is one.
 If NOTFULL is non-nil don't use canonical representation of
 candidate and return the candidate as displayed."
   (when (and selectrum-active-p
-             selectrum--current-candidate-index)
+             selectrum--current-candidate-index
+             (or selectrum--refined-candidates
+                 (< selectrum--current-candidate-index 0)))
     (if notfull
         (selectrum--get-candidate
          selectrum--current-candidate-index)
@@ -802,24 +804,28 @@ the update."
               (setq selectrum--repeat nil))
           (setq selectrum--current-candidate-index
                 (cond
+                 ;; Check for candidates needs to be first!
+                 ((null selectrum--refined-candidates)
+                  (when (not selectrum--match-required-p)
+                    -1))
                  (keep-selected
                   (or (cl-position keep-selected
                                    selectrum--refined-candidates
                                    :key #'selectrum--get-full
                                    :test #'equal)
                       0))
-                 ((null selectrum--refined-candidates)
-                  (when (not selectrum--match-required-p)
-                    -1))
                  ((and selectrum--default-candidate
                        (string-empty-p (minibuffer-contents))
                        (not (member selectrum--default-candidate
                                     selectrum--refined-candidates)))
                   -1)
-                 ((and (or selectrum--init-p
-                           (eq this-command 'next-history-element))
-                       (equal selectrum--default-candidate
-                              (minibuffer-contents)))
+                 ((or (and selectrum--init-p
+                           (equal selectrum--default-candidate
+                                  (minibuffer-contents)))
+                      (and (not (= (minibuffer-prompt-end) (point-max)))
+                           (memq this-command '(next-history-element
+                                                previous-history-element))
+                           (not selectrum--match-required-p)))
                   -1)
                  (selectrum--move-default-candidate-p
                   0)
@@ -1278,13 +1284,11 @@ TABLE defaults to `minibuffer-completion-table'. PRED defaults to
     (delete-overlay selectrum--count-overlay))
   (setq selectrum--count-overlay nil))
 
-(cl-defun selectrum--minibuffer-setup-hook
-    (candidates &key default-candidate)
+(defun selectrum--minibuffer-setup-hook (candidates)
   "Set up minibuffer for interactive candidate selection.
 CANDIDATES is the list of strings that was passed to
-`selectrum-read'. DEFAULT-CANDIDATE, if provided, is added to the
-list and sorted first. If `minibuffer-default' is set it will
-have precedence over DEFAULT-CANDIDATE."
+`selectrum-read'."
+  (setq-local auto-hscroll-mode t)
   (setq-local selectrum-active-p t)
   (add-hook
    'minibuffer-exit-hook #'selectrum--minibuffer-exit-hook nil 'local)
@@ -1308,11 +1312,8 @@ have precedence over DEFAULT-CANDIDATE."
                (funcall selectrum-preprocess-candidates-function
                         candidates))
          (setq selectrum--total-num-candidates (length candidates))))
-  ;; If the default is added by setup hook it should have
-  ;; precedence like with default completion.
   (let ((default (or (car-safe minibuffer-default)
-                     minibuffer-default
-                     default-candidate)))
+                     minibuffer-default)))
     (setq selectrum--default-candidate
           (if (and default (symbolp default))
               (symbol-name default)
@@ -1457,16 +1458,20 @@ indices."
     (user-error "Cannot select a candidate when Selectrum is not active"))
   (with-selected-window (active-minibuffer-window)
     (let ((index (selectrum--index-for-arg arg)))
-      (when (or (not selectrum--match-required-p)
-                (and index (>= index 0))
-                (and minibuffer-completing-file-name
-                     (file-exists-p
-                      (substitute-in-file-name
-                       (minibuffer-contents))))
-                (string-empty-p
-                 (minibuffer-contents)))
-        (selectrum--exit-with
-         (selectrum--get-candidate index))))))
+      (if (or (not selectrum--match-required-p)
+              (string-empty-p
+               (minibuffer-contents))
+              (and index (>= index 0))
+              (if minibuffer-completing-file-name
+                  (file-exists-p
+                   (substitute-in-file-name
+                    (minibuffer-contents)))
+                (member (minibuffer-contents)
+                        selectrum--refined-candidates)))
+          (selectrum--exit-with
+           (selectrum--get-candidate index))
+        (minibuffer-message
+         (propertize "Match required" 'face 'minibuffer-prompt))))))
 
 (defun selectrum-submit-exact-input ()
   "Exit minibuffer, using the current user input.
@@ -1677,8 +1682,7 @@ semantics of `cl-defun'."
     (minibuffer-with-setup-hook
         (:append (lambda ()
                    (selectrum--minibuffer-setup-hook
-                    candidates
-                    :default-candidate default-candidate)))
+                    candidates)))
       (let* ((minibuffer-allow-text-properties t)
              (resize-mini-windows 'grow-only)
              (max-mini-window-height
@@ -1688,7 +1692,7 @@ semantics of `cl-defun'."
              (icomplete-mode nil)
              (res (read-from-minibuffer
                    prompt initial-input selectrum-minibuffer-map nil
-                   (or history 'minibuffer-history))))
+                   (or history 'minibuffer-history) default-candidate)))
         (cond (minibuffer-completion-table
                ;; Behave like completing-read-default which strips the
                ;; text properties but leaves the default unchanged
