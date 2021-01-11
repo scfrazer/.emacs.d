@@ -206,15 +206,8 @@ This function's anaphoric counterpart is `--map'."
 Each element of LIST in turn is bound to `it' before evaluating
 BODY.
 This is the anaphoric counterpart to `-map'."
-  (declare (debug (form form)))
-  (let ((l (make-symbol "list"))
-        (r (make-symbol "res")))
-    `(let ((,l ,list) ,r it)
-       (ignore it)
-       (while ,l
-         (setq it (pop ,l))
-         (push ,form ,r))
-       (nreverse ,r))))
+  (declare (debug (def-form form)))
+  `(mapcar (lambda (it) (ignore it) ,form) ,list))
 
 (defmacro --reduce-from (form init list)
   "Accumulate a value by evaluating FORM across LIST.
