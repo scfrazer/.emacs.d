@@ -191,7 +191,8 @@ list of strings."
 These are used for the initial filtering of candidates according
 to the text around point. The initial filtering styles for
 completion in region might generally differ from the styles you
-want to use for usual completion."
+want to use for usual completion. If this option is nil the
+candidates will be filtered by `all-completions'."
   :type 'completion--styles-type)
 
 (defcustom selectrum-preprocess-candidates-function
@@ -443,40 +444,10 @@ destructively and return the modified list."
         (setq link (cdr link))))
     (nconc (nreverse elts) (cdr lst))))
 
-(defun selectrum--normalize-collection (collection &optional predicate)
-  "Normalize COLLECTION into a list of strings.
-COLLECTION may be a list of strings or symbols or cons cells, an
-obarray, a hash table, or a function, as per the docstring of
-`all-completions'. The returned list may be mutated without
-damaging the original COLLECTION.
-
-If PREDICATE is non-nil, then it filters the collection as in
-`all-completions'."
-  ;; Making the last buffer current avoids the cost of potential
-  ;; buffer switching for each candidate within the predicate (see
-  ;; `describe-variable').
-  (with-current-buffer (if (eq collection 'help--symbol-completion-table)
-                           (window-buffer (minibuffer-selected-window))
-                         (current-buffer))
-    (let ((completion-regexp-list nil))
-      (all-completions "" collection predicate))))
-
-(defun selectrum--remove-default-from-prompt (prompt)
-  "Remove the indication of the default value from PROMPT.
-Selectrum has its own methods for indicating the default value,
-making other methods redundant."
-  (save-match-data
-    (let ((regexps selectrum--minibuffer-default-in-prompt-regexps))
-      (cl-dolist (matcher regexps prompt)
-        (let ((regex (if (stringp matcher) matcher (car matcher))))
-          (when (string-match regex prompt)
-            (cl-return
-             (replace-match "" nil nil prompt
-                            (if (consp matcher)
-                                (cadr matcher)
-                              0)))))))))
-
 ;;;; Minibuffer state
+
+(defvar-local selectrum--last-buffer nil
+  "The buffer that was current before the active session")
 
 (defvar selectrum--candidates-overlay nil
   "Overlay used to display current candidates.")
@@ -576,6 +547,39 @@ This is non-nil during the first call of
   "Buffer to display candidates using `selectrum-display-action'.")
 
 ;;;;; Minibuffer state utility functions
+
+(defun selectrum--normalize-collection (collection &optional predicate)
+  "Normalize COLLECTION into a list of strings.
+COLLECTION may be a list of strings or symbols or cons cells, an
+obarray, a hash table, or a function, as per the docstring of
+`all-completions'. The returned list may be mutated without
+damaging the original COLLECTION.
+
+If PREDICATE is non-nil, then it filters the collection as in
+`all-completions'."
+  ;; Making the last buffer current avoids the cost of potential
+  ;; buffer switching for each candidate within the predicate (see
+  ;; `describe-variable').
+  (with-current-buffer (if (eq collection 'help--symbol-completion-table)
+                           selectrum--last-buffer
+                         (current-buffer))
+    (let ((completion-regexp-list nil))
+      (all-completions "" collection predicate))))
+
+(defun selectrum--remove-default-from-prompt (prompt)
+  "Remove the indication of the default value from PROMPT.
+Selectrum has its own methods for indicating the default value,
+making other methods redundant."
+  (save-match-data
+    (let ((regexps selectrum--minibuffer-default-in-prompt-regexps))
+      (cl-dolist (matcher regexps prompt)
+        (let ((regex (if (stringp matcher) matcher (car matcher))))
+          (when (string-match regex prompt)
+            (cl-return
+             (replace-match "" nil nil prompt
+                            (if (consp matcher)
+                                (cadr matcher)
+                              0)))))))))
 
 (defun selectrum-get-current-candidate (&optional notfull)
   "Return currently selected Selectrum candidate if there is one.
@@ -717,6 +721,12 @@ greather than the window height."
        (>= (cdr (window-text-pixel-size window))
            (window-body-height window 'pixelwise))))
 
+(defun selectrum--at-existing-prompt-path-p ()
+  "Return non-nil when current file prompt exists."
+  (and minibuffer-completing-file-name
+       (file-exists-p
+        (substitute-in-file-name (minibuffer-contents)))))
+
 (defun selectrum--minibuffer-post-command-hook ()
   "Update minibuffer in response to user input."
   (selectrum--update))
@@ -730,6 +740,9 @@ the update."
     (goto-char (max (point) (minibuffer-prompt-end)))
     ;; For some reason this resets and thus can't be set in setup hook.
     (setq-local truncate-lines t)
+    ;; Esnure minibuffer window resets any scroll, for example history
+    ;; commands can increase scroll but fail to reset it.
+    (set-window-hscroll (active-minibuffer-window) 0)
     (let ((inhibit-read-only t)
           ;; Don't record undo information while messing with the
           ;; minibuffer, as per
@@ -806,7 +819,8 @@ the update."
                 (cond
                  ;; Check for candidates needs to be first!
                  ((null selectrum--refined-candidates)
-                  (when (not selectrum--match-required-p)
+                  (when (or (not selectrum--match-required-p)
+                            (selectrum--at-existing-prompt-path-p))
                     -1))
                  (keep-selected
                   (or (cl-position keep-selected
@@ -823,9 +837,10 @@ the update."
                            (equal selectrum--default-candidate
                                   (minibuffer-contents)))
                       (and (not (= (minibuffer-prompt-end) (point-max)))
-                           (memq this-command '(next-history-element
-                                                previous-history-element))
-                           (not selectrum--match-required-p)))
+                           (and minibuffer-history-position
+                                (not (zerop minibuffer-history-position)))
+                           (or (not selectrum--match-required-p)
+                               (selectrum--at-existing-prompt-path-p))))
                   -1)
                  (selectrum--move-default-candidate-p
                   0)
@@ -1284,12 +1299,14 @@ TABLE defaults to `minibuffer-completion-table'. PRED defaults to
     (delete-overlay selectrum--count-overlay))
   (setq selectrum--count-overlay nil))
 
-(defun selectrum--minibuffer-setup-hook (candidates)
+(defun selectrum--minibuffer-setup-hook (candidates default buf)
   "Set up minibuffer for interactive candidate selection.
 CANDIDATES is the list of strings that was passed to
-`selectrum-read'."
-  (setq-local auto-hscroll-mode t)
+`selectrum-read'. DEFAULT is the default value which can be
+overridden and BUF the buffer the session was started from."
   (setq-local selectrum-active-p t)
+  (setq-local selectrum--last-buffer buf)
+  (setq-local auto-hscroll-mode t)
   (add-hook
    'minibuffer-exit-hook #'selectrum--minibuffer-exit-hook nil 'local)
   (setq-local selectrum--init-p t)
@@ -1312,12 +1329,10 @@ CANDIDATES is the list of strings that was passed to
                (funcall selectrum-preprocess-candidates-function
                         candidates))
          (setq selectrum--total-num-candidates (length candidates))))
-  (let ((default (or (car-safe minibuffer-default)
-                     minibuffer-default)))
-    (setq selectrum--default-candidate
-          (if (and default (symbolp default))
-              (symbol-name default)
-            default)))
+  (setq selectrum--default-candidate
+        (if (and default (symbolp default))
+            (symbol-name default)
+          default))
   ;; Make sure to trigger an "user input changed" event, so that
   ;; candidate refinement happens in `post-command-hook' and an index
   ;; is assigned.
@@ -1344,9 +1359,7 @@ CANDIDATES is the list of strings that was passed to
            (+ selectrum--current-candidate-index (or arg 1))
            (if (and selectrum--match-required-p
                     (cond (minibuffer-completing-file-name
-                           (not (file-exists-p
-                                 (substitute-in-file-name
-                                  (minibuffer-contents)))))
+                           (not (selectrum--at-existing-prompt-path-p)))
                           (t
                            (not (string-empty-p
                                  (minibuffer-contents))))))
@@ -1463,9 +1476,7 @@ indices."
                (minibuffer-contents))
               (and index (>= index 0))
               (if minibuffer-completing-file-name
-                  (file-exists-p
-                   (substitute-in-file-name
-                    (minibuffer-contents)))
+                  (selectrum--at-existing-prompt-path-p)
                 (member (minibuffer-contents)
                         selectrum--refined-candidates)))
           (selectrum--exit-with
@@ -1497,7 +1508,8 @@ inserted automatically when using
 Give a prefix argument ARG to select the nth displayed candidate.
 Zero means to select the current user input. See
 `selectrum-show-indices' which can be used to show candidate
-indices."
+indices. When the prompt is selected this command triggers a
+refresh."
   (interactive "P")
   (with-selected-window (active-minibuffer-window)
     (if-let ((index (selectrum--index-for-arg arg))
@@ -1505,8 +1517,11 @@ indices."
              (full (selectrum--get-full candidate)))
         (progn
           ;; Ignore for prompt selection.
-          (unless (and selectrum--current-candidate-index
-                       (< selectrum--current-candidate-index 0))
+          (if (and selectrum--current-candidate-index
+                   (< selectrum--current-candidate-index 0))
+              (when (and (= (minibuffer-prompt-end) (point-max))
+                         selectrum--default-candidate)
+                (insert selectrum--default-candidate))
             (cond ((not selectrum--crm-p)
                    (delete-region (minibuffer-prompt-end)
                                   (point-max))
@@ -1530,7 +1545,9 @@ indices."
           ;; Ensure refresh of UI. The input input string might be the
           ;; same when the prompt was reinserted. When the prompt was
           ;; selected this will switch selection to first candidate.
-          (setq selectrum--previous-input-string nil))
+          (setq selectrum--previous-input-string nil)
+          ;; Reset history as current candidate was accepted.
+          (setq-local minibuffer-history-position 0))
       (unless completion-fail-discreetly
         (ding)
         (minibuffer-message "No match")))))
@@ -1679,31 +1696,37 @@ semantics of `cl-defun'."
       (setq selectrum--last-prefix-arg current-prefix-arg))
     (setq selectrum--match-required-p require-match)
     (setq selectrum--move-default-candidate-p (not no-move-default-candidate))
-    (minibuffer-with-setup-hook
-        (:append (lambda ()
-                   (selectrum--minibuffer-setup-hook
-                    candidates)))
-      (let* ((minibuffer-allow-text-properties t)
-             (resize-mini-windows 'grow-only)
-             (max-mini-window-height
-              (1+ selectrum-num-candidates-displayed))
-             (prompt (selectrum--remove-default-from-prompt prompt))
-             ;; <https://github.com/raxod502/selectrum/issues/99>
-             (icomplete-mode nil)
-             (res (read-from-minibuffer
-                   prompt initial-input selectrum-minibuffer-map nil
-                   (or history 'minibuffer-history) default-candidate)))
-        (cond (minibuffer-completion-table
-               ;; Behave like completing-read-default which strips the
-               ;; text properties but leaves the default unchanged
-               ;; when submitting the empty prompt to get it (see
-               ;; #180, #107).
-               (if (and selectrum--previous-input-string
-                        (string-empty-p selectrum--previous-input-string)
-                        (equal res selectrum--default-candidate))
-                   default-candidate
-                 (substring-no-properties res)))
-              (t res))))))
+    (let* ((minibuffer-allow-text-properties t)
+           (resize-mini-windows 'grow-only)
+           (max-mini-window-height
+            (1+ selectrum-num-candidates-displayed))
+           (prompt (selectrum--remove-default-from-prompt prompt))
+           ;; <https://github.com/raxod502/selectrum/issues/99>
+           (icomplete-mode nil)
+           (buf (current-buffer))
+           (res
+            (minibuffer-with-setup-hook
+                (:append (lambda ()
+                           (selectrum--minibuffer-setup-hook
+                            candidates
+                            (or (car-safe minibuffer-default)
+                                minibuffer-default
+                                default-candidate)
+                            buf)))
+              (read-from-minibuffer
+               prompt initial-input selectrum-minibuffer-map nil
+               (or history 'minibuffer-history) default-candidate))))
+      (cond (minibuffer-completion-table
+             ;; Behave like completing-read-default which strips the
+             ;; text properties but leaves the default unchanged
+             ;; when submitting the empty prompt to get it (see
+             ;; #180, #107).
+             (if (and selectrum--previous-input-string
+                      (string-empty-p selectrum--previous-input-string)
+                      (equal res selectrum--default-candidate))
+                 default-candidate
+               (substring-no-properties res)))
+            (t res)))))
 
 ;;;###autoload
 (defun selectrum-completing-read
@@ -1808,13 +1831,16 @@ COLLECTION, and PREDICATE, see `completion-in-region'."
                                     input collection predicate ""))))))
          (exit-func (plist-get completion-extra-properties
                                :exit-function))
-         (cands (nconc
-                 (let ((completion-styles
-                        selectrum-completion-in-region-styles))
-                   (completion-all-completions
-                    input collection predicate
-                    (- end start) meta))
-                 nil))
+         (cands (if (not selectrum-completion-in-region-styles)
+                    (let ((completion-regexp-list nil))
+                      (all-completions input collection predicate))
+                  (nconc
+                   (let ((completion-styles
+                          selectrum-completion-in-region-styles))
+                     (completion-all-completions
+                      input collection predicate
+                      (- end start) meta))
+                   nil)))
          ;; See doc of `completion-extra-properties'.
          (exit-status nil)
          (result nil))
@@ -1921,22 +1947,33 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                    ;; The input used for matching current dir entries.
                    (matchstr (file-name-nondirectory input))
                    (cands
-                    (cond ((equal last-dir dir)
-                           (setq-local selectrum-preprocess-candidates-function
-                                       #'identity)
-                           selectrum--preprocessed-candidates)
-                          (t
-                           (setq-local selectrum-preprocess-candidates-function
-                                       sortf)
-                           (condition-case _
-                               (delete
-                                "./"
-                                (delete
-                                 "../"
-                                 (funcall collection dir predicate t)))
-                             ;; May happen in case user quits out
-                             ;; of a TRAMP prompt.
-                             (quit))))))
+                    (cond
+                     ((and minibuffer-history-position
+                           (not (zerop minibuffer-history-position)))
+                      nil)
+                     ((and (equal last-dir dir)
+                           (not (and minibuffer-history-position
+                                     (zerop minibuffer-history-position))))
+                      (setq-local selectrum-preprocess-candidates-function
+                                  #'identity)
+                      selectrum--preprocessed-candidates)
+                     (t
+                      (setq-local selectrum-preprocess-candidates-function
+                                  sortf)
+                      (let ((non-essential
+                             (or (and minibuffer-history-position
+                                      (not (zerop
+                                            minibuffer-history-position)))
+                                 non-essential)))
+                        (condition-case _
+                            (delete
+                             "./"
+                             (delete
+                              "../"
+                              (funcall collection dir predicate t)))
+                          ;; May happen in case user quits out
+                          ;; of a TRAMP prompt.
+                          (quit)))))))
               (setq last-dir dir)
               `((input . ,matchstr)
                 (candidates . ,cands))))))

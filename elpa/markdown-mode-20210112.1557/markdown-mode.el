@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210107.101
-;; Package-Commit: 6d64f9e96203b1e76e3f0adfd2f545b5b02f5ffb
+;; Package-Version: 20210112.1557
+;; Package-Commit: 3e380572a5177d0fa527c15efd15e340f53a923b
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -1670,7 +1670,7 @@ region of a YAML metadata block as propertized by
                                     markdown--syntax-properties)
             (put-text-property comment-begin comment-end
                                'markdown-comment (list comment-begin comment-end))
-            (goto-char (min (1+ comment-end) end (point-max)))))
+            (goto-char (min comment-end end (point-max)))))
          ;; Nothing found
          (t (setq finish t)))))
     nil))
