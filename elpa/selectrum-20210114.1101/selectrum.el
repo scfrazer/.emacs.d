@@ -149,26 +149,23 @@ frame you can use the provided action function
   :type '(cons (choice function (repeat :tag "Functions" function))
                alist))
 
-(defun selectrum-default-candidate-refine-function (input candidates)
-  "Default value of `selectrum-refine-candidates-function'.
-Return only candidates that contain the input as a substring.
-INPUT is a string, CANDIDATES is a list of strings."
-  (let ((regexp (regexp-quote input)))
-    (cl-delete-if-not
-     (lambda (candidate)
-       (string-match-p regexp candidate))
-     (copy-sequence candidates))))
+(defun selectrum-refine-candidates-using-completions-styles (input candidates)
+  "Use INPUT to filter and highlight CANDIDATES.
+Uses `completion-styles'."
+  (nconc
+   (completion-all-completions
+    input candidates nil (length input))
+   nil))
 
 (defcustom selectrum-refine-candidates-function
-  #'selectrum-default-candidate-refine-function
+  #'selectrum-refine-candidates-using-completions-styles
   "Function used to decide which candidates should be displayed.
-Receives two arguments, the user input (a string) and the list of
-candidates (strings).
-
-Returns a new list of candidates. Should not modify the input
-list. The returned list may be modified by Selectrum, so a copy
-of the input should be made. (Beware that `cl-remove-if' doesn't
-make a copy if there's nothing to remove.)"
+The function receives two arguments, the user input (a string)
+and the list of candidates (strings). Returns a new list of
+candidates. Should not modify the input list. The returned list
+may be modified by Selectrum, so a copy of the input should be
+made. (Beware that `cl-remove-if' doesn't make a copy if there's
+nothing to remove.)"
   :type 'function)
 
 (defun selectrum-default-candidate-preprocess-function (candidates)
@@ -206,32 +203,18 @@ properties will retain their ordering, which may be significant
 \(e.g. for `load-path' shadows in `read-library-name')."
   :type 'function)
 
-(defun selectrum-default-candidate-highlight-function (input candidates)
-  "Default value of `selectrum-highlight-candidates-function'.
-Highlight the substring match with
-`selectrum-primary-highlight'. INPUT is a string, CANDIDATES is a
-list of strings."
-  (let ((regexp (regexp-quote input)))
-    (save-match-data
-      (mapcar
-       (lambda (candidate)
-         (when (string-match regexp candidate)
-           (setq candidate (copy-sequence candidate))
-           (put-text-property
-            (match-beginning 0) (match-end 0)
-            'face 'selectrum-primary-highlight
-            candidate))
-         candidate)
-       candidates))))
+(defun selectrum-candidates-identity (_input candidates)
+  "Return CANDIDATES unchanged."
+  candidates)
 
 (defcustom selectrum-highlight-candidates-function
-  #'selectrum-default-candidate-highlight-function
-  "Function used to highlight matched candidates.
-Receive two arguments, the input string and the list of
-candidates (strings) that are going to be displayed (length at
-most `selectrum-num-candidates-displayed'). Return a list of
-propertized candidates. Do not modify the input list or
-strings."
+  #'selectrum-candidates-identity
+  "Function used to highlight matched candidates for display.
+The function receives two arguments, the input string and the
+list of candidates (strings) that are going to be
+displayed (length at most `selectrum-num-candidates-displayed').
+Return a list of propertized candidates. Do not modify the input
+list or strings."
   :type 'function)
 
 (defvar selectrum-minibuffer-map
@@ -1502,6 +1485,9 @@ If current `crm-separator' has a mapping the separator gets
 inserted automatically when using
 `selectrum-insert-current-candidate'.")
 
+(defvar-local selectrum--refresh-next-file-completion nil
+  "Non-nil when command should trigger refresh.")
+
 (defun selectrum-insert-current-candidate (&optional arg)
   "Insert current candidate into user input area.
 
@@ -1546,43 +1532,69 @@ refresh."
           ;; same when the prompt was reinserted. When the prompt was
           ;; selected this will switch selection to first candidate.
           (setq selectrum--previous-input-string nil)
-          ;; Reset history as current candidate was accepted.
-          (setq-local minibuffer-history-position 0))
+          (when minibuffer-history-position
+            (when (and minibuffer-completing-file-name
+                       (not (zerop minibuffer-history-position)))
+              ;; Choosing a history item needs to trigger a refresh.
+              (setq-local selectrum--refresh-next-file-completion t))
+            ;; Reset history state as current candidate was accepted.
+            (setq-local minibuffer-history-position 0)
+            (setq-local minibuffer-text-before-history
+                        (minibuffer-contents-no-properties))))
       (unless completion-fail-discreetly
         (ding)
         (minibuffer-message "No match")))))
 
 ;;;###autoload
 (defun selectrum-select-from-history ()
-  "Select a candidate from the minibuffer history.
-If Selectrum isn't active, insert this candidate into the
-minibuffer."
+  "Submit or insert candidate from minibuffer history.
+To insert the history item into the previous session use the
+binding for `selectrum-insert-current-candidate'. To submit the
+history item and exit use `selectrum-select-current-candidate'."
   (interactive)
   (unless (minibufferp)
     (user-error "Command can only be used in minibuffer"))
   (let ((history (symbol-value minibuffer-history-variable)))
     (when (eq history t)
       (user-error "No history is recorded for this command"))
-    (let* ((enable-rec enable-recursive-minibuffers)
-           (result
-            (minibuffer-with-setup-hook
-                (lambda ()
-                  (setq-local selectrum-should-sort-p nil)
-                  (setq-local selectrum-candidate-inserted-hook nil)
-                  (setq-local selectrum-candidate-selected-hook nil))
-              (setq-local enable-recursive-minibuffers t)
-              (unwind-protect
-                  (selectrum-read "History: "
-                                  history
-                                  :history t
-                                  :require-match t)
-                (setq-local enable-recursive-minibuffers enable-rec)))))
-      (if (and selectrum--match-required-p
-               (not (member result selectrum--refined-candidates)))
-          (user-error "That history element is not one of the candidates")
-        (if selectrum-active-p
-            (selectrum--exit-with result)
-          (insert result))))))
+    (let ((result
+           (minibuffer-with-setup-hook
+               (lambda ()
+                 (setq-local enable-recursive-minibuffers t)
+                 (setq-local selectrum-should-sort-p nil)
+                 (setq-local selectrum-candidate-inserted-hook nil)
+                 (setq-local selectrum-candidate-selected-hook nil)
+                 (use-local-map (make-composed-keymap nil (current-local-map)))
+                 (define-key (current-local-map)
+                   [remap selectrum-insert-current-candidate]
+                   'selectrum--insert-history)
+                 (let ((inhibit-read-only t))
+                   (goto-char (or (search-backward ":" nil t)
+                                  (1- (minibuffer-prompt-end))))
+                   (insert
+                    (apply
+                     #'propertize
+                     " [history]"
+                     (text-properties-at (point))))))
+             (catch 'selectrum-insert-action
+               (completing-read
+                (minibuffer-prompt) history nil t nil t)))))
+      (if (get-text-property 0 'selectum--insert result)
+          (progn
+            (delete-minibuffer-contents)
+            (insert result))
+        (if (and selectrum--match-required-p
+                 (not (member result selectrum--refined-candidates)))
+            (user-error "That history element is not one of the candidates")
+          (selectrum--exit-with result))))))
+
+(defun selectrum--insert-history ()
+  "Insert history item.
+Only to be used from `selectrum-select-from-history'"
+  (interactive)
+  (throw 'selectrum-insert-action
+         (propertize (selectrum-get-current-candidate 'notfull)
+                     'selectum--insert t)))
 
 (defvar selectrum--minibuffer-local-filename-syntax
   (let ((table (copy-syntax-table minibuffer-local-filename-syntax)))
@@ -1949,15 +1961,22 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                    (cands
                     (cond
                      ((and minibuffer-history-position
+                           (not selectrum--refresh-next-file-completion)
                            (not (zerop minibuffer-history-position)))
                       nil)
                      ((and (equal last-dir dir)
+                           (not selectrum--refresh-next-file-completion)
                            (not (and minibuffer-history-position
-                                     (zerop minibuffer-history-position))))
+                                     (zerop minibuffer-history-position)
+                                     (memq this-command
+                                           '(previous-history-element
+                                             next-history-element)))))
                       (setq-local selectrum-preprocess-candidates-function
                                   #'identity)
                       selectrum--preprocessed-candidates)
                      (t
+                      (setq last-dir dir)
+                      (setq-local selectrum--refresh-next-file-completion nil)
                       (setq-local selectrum-preprocess-candidates-function
                                   sortf)
                       (let ((non-essential
@@ -1974,7 +1993,6 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                           ;; May happen in case user quits out
                           ;; of a TRAMP prompt.
                           (quit)))))))
-              (setq last-dir dir)
               `((input . ,matchstr)
                 (candidates . ,cands))))))
     (minibuffer-with-setup-hook

@@ -16,9 +16,10 @@ This option needs to be set before activating `selectrum-mode'.")
 (custom-autoload 'selectrum-complete-in-buffer "selectrum" t)
 
 (autoload 'selectrum-select-from-history "selectrum" "\
-Select a candidate from the minibuffer history.
-If Selectrum isn't active, insert this candidate into the
-minibuffer." t nil)
+Submit or insert candidate from minibuffer history.
+To insert the history item into the previous session use the
+binding for `selectrum-insert-current-candidate'. To submit the
+history item and exit use `selectrum-select-current-candidate'." t nil)
 
 (autoload 'selectrum-completing-read "selectrum" "\
 Read choice using Selectrum. Can be used as `completing-read-function'.

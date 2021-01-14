@@ -1167,10 +1167,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210113.1343/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210114.1101/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210113.1343/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210114.1101/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1181,9 +1181,10 @@ This option needs to be set before activating `selectrum-mode'.")
 (custom-autoload 'selectrum-complete-in-buffer "selectrum" t)
 
 (autoload 'selectrum-select-from-history "selectrum" "\
-Select a candidate from the minibuffer history.
-If Selectrum isn't active, insert this candidate into the
-minibuffer." t nil)
+Submit or insert candidate from minibuffer history.
+To insert the history item into the previous session use the
+binding for `selectrum-insert-current-candidate'. To submit the
+history item and exit use `selectrum-select-current-candidate'." t nil)
 
 (autoload 'selectrum-completing-read "selectrum" "\
 Read choice using Selectrum. Can be used as `completing-read-function'.
@@ -1339,10 +1340,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20201226.1050/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210113.1559/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20201226.1050/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210113.1559/rg-autoloads.el") (car load-path))))
 
 
 
@@ -3703,7 +3704,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210111.1247" "/home/scfrazer/.emacs.d/elpa/marginalia-20210110.2056" "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20210110.1545")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210111.1247" "/home/scfrazer/.emacs.d/elpa/marginalia-20210110.2056" "/home/scfrazer/.emacs.d/elpa/orderless-20210105.448" "/home/scfrazer/.emacs.d/elpa/rg-20210113.1559" "/home/scfrazer/.emacs.d/elpa/transient-20210103.1546" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20210110.1545")
          Info-directory-list)))
 
 ;; Local Variables:
