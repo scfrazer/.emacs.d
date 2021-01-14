@@ -35,7 +35,7 @@
 
 (require 'beacon)
 (beacon-mode 1)
-(bind-keys* ("C-M-b" . beacon-blink))
+(bind-keys* ("<f12>" . beacon-blink))
 
 (require 'my-bookmark)
 (my-bookmark-reload)
