@@ -69,6 +69,7 @@
  '(which-key-lighter "")
  '(which-key-max-display-columns 3)
  '(which-key-mode t)
+ '(which-key-paging-prefixes '("C-x" "C-c"))
  '(yank-excluded-properties
    '(category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop)))
 (custom-set-faces
