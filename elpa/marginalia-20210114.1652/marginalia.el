@@ -49,6 +49,15 @@ This value is adjusted in the `minibuffer-setup-hook' depending on the `window-w
   "Use wider separator for window widths larger than this value."
   :type 'integer)
 
+;; See https://github.com/minad/marginalia/issues/42 for the discussion
+;; regarding the alignment.
+(defcustom marginalia-align-offset nil
+  "Additional offset at the right margin used by `marginalia--align'.
+
+This value should be set to nil to enable auto-configuration.
+It can also be set to an integer value of 1 or larger to force an offset."
+  :type '(choice (const nil) integer))
+
 (defcustom marginalia-margin-min 8
   "Minimum whitespace margin at the right side."
   :type 'integer)
@@ -267,7 +276,7 @@ determine it."
             (propertize
              " "
              'display
-             `(space :align-to (- right-fringe ,(length str))))
+             `(space :align-to (- right ,marginalia-align-offset ,(length str))))
             str)))
 
 (cl-defmacro marginalia--field (field &key truncate format face width)
@@ -323,7 +332,7 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
 (defun marginalia-annotate-consult-buffer-class (cand)
   "Annotate consult-buffer CAND with the buffer class."
   (marginalia--fields
-   ((pcase (- (elt cand 0) #x100000)
+   ((pcase (- (aref cand 0) #x100000)
       (?b "Buffer")
       (?h "Hidden Buffer")
       (?f "File")
@@ -336,7 +345,7 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
 ;; This annotator is consult-specific, it will annotate the `consult-buffer' command.
 (defun marginalia-annotate-consult-buffer-full (cand)
   "Annotate consult-buffer CAND with the buffer class."
-  (pcase (- (elt cand 0) #x100000)
+  (pcase (- (aref cand 0) #x100000)
     ((or ?b ?h ?p) (marginalia-annotate-buffer (substring cand 1)))
     ((or ?f ?q) (marginalia-annotate-file (substring cand 1)))
     (?m (marginalia-annotate-bookmark (substring cand 1)))
@@ -641,15 +650,22 @@ looking for a regexp that matches the prompt."
 
 (defmacro marginalia--context (&rest body)
   "Setup annotator context around BODY."
-  (let ((w (make-symbol "w")))
+  (let ((w (make-symbol "w"))
+        (o (make-symbol "o")))
     ;; Take the window width of the current window (minibuffer window!)
-    `(let ((,w (window-width)))
+    `(let ((,w (window-width))
+           ;; Compute marginalia-align-offset. If the right-fringe-width is
+           ;; zero, use an additional offset of 1 by default! See
+           ;; https://github.com/minad/marginalia/issues/42 for the discussion
+           ;; regarding the alignment.
+           (,o (if (eq 0 (nth 1 (window-fringes))) 1 0)))
        ;; We generally run the annotators in the original window.
        ;; `with-selected-window' is necessary because of `lookup-minor-mode-from-indicator'.
        ;; Otherwise it would probably suffice to only change the current buffer.
        ;; We need the `selected-window' fallback for Embark Occur.
        (with-selected-window (or (minibuffer-selected-window) (selected-window))
          (let ((marginalia-truncate-width (min (/ ,w 2) marginalia-truncate-width))
+               (marginalia-align-offset (or marginalia-align-offset ,o))
                (marginalia--separator (if (>= ,w marginalia-separator-threshold) "    " " "))
                (marginalia--margin (when (>= ,w (+ marginalia-margin-min marginalia-margin-threshold))
                                      (make-string (- ,w marginalia-margin-threshold) 32))))
