@@ -76,7 +76,7 @@
   (interactive "P")
   (let* ((index (selectrum--index-for-arg arg))
          (candidate (selectrum--get-candidate index))
-         (path (selectrum--get-full candidate)))
+         (path (expand-file-name (substitute-in-file-name (selectrum--get-full candidate)))))
     (call-interactively
      (if (and (file-directory-p path)
               (not (eq minibuffer-completion-predicate
