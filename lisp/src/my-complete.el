@@ -63,7 +63,47 @@
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
 
-(add-hook 'minibuffer-setup-hook 'my-complete-selectrum-setup 100)
+(defun orderless--highlight (regexps string)
+  "Like original `orderless--highlight', but adds a score property to the string for sorting later on."
+  (let ((score 0)
+        (regexp-start -1))
+    (cl-loop with n = (length orderless-match-faces)
+             for regexp in regexps and i from 0
+             when (string-match regexp string) do
+             (let ((match-start (match-beginning 0)))
+               (when (> match-start regexp-start)
+                 (setq score (1+ score)
+                       regexp-start match-start))
+               (cl-loop
+                for (x y) on (or (cddr (match-data)) (match-data)) by #'cddr
+                when x do
+                (font-lock-prepend-text-property
+                 x y
+                 'face (aref orderless-match-faces (mod i n))
+                 string))))
+    (propertize string 'score score)))
+
+(defun orderless-highlight-matches (regexps strings)
+  "Like original `orderless-highlight-matches', but sorts collected strings."
+    (when (stringp regexps)
+      (setq regexps (funcall orderless-pattern-compiler regexps)))
+    (sort
+     (cl-loop for original in strings
+              for string = (copy-sequence original)
+              collect (orderless--highlight regexps string))
+     #'my-complete-sort-orderless-matches))
+
+(defun my-complete-sort-orderless-matches (s1 s2)
+  "Sort by score, then shortest length, then alphabetically"
+  (let ((score1 (get-text-property 0 'score s1))
+        (score2 (get-text-property 0 'score s2)))
+    (if (= score1 score2)
+        (let ((length1 (length s1))
+              (length2 (length s2)))
+          (if (= length1 length2)
+              (string< s1 s2)
+            (< length1 length2)))
+      (> score1 score2))))
 
 (defun my-complete-selectrum-setup ()
   (when (and selectrum-active-p
@@ -71,6 +111,8 @@
     (let ((map (copy-keymap (current-local-map))))
       (define-key map (kbd "RET") 'my-complete-selectrum-select-current-candidate)
       (use-local-map map))))
+
+(add-hook 'minibuffer-setup-hook 'my-complete-selectrum-setup 100)
 
 (defun my-complete-selectrum-select-current-candidate (&optional arg)
   (interactive "P")
