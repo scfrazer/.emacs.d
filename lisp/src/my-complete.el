@@ -72,8 +72,8 @@
              when (string-match regexp string) do
              (let ((match-start (match-beginning 0)))
                (when (> match-start regexp-start)
-                 (setq score (1+ score)
-                       regexp-start match-start))
+                 (setq score (1+ score)))
+               (setq regexp-start match-start)
                (cl-loop
                 for (x y) on (or (cddr (match-data)) (match-data)) by #'cddr
                 when x do
