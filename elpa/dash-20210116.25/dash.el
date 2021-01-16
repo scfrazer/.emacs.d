@@ -456,24 +456,34 @@ For similar operations, see also `-keep' and `-filter'."
 (defalias '-reject '-remove)
 (defalias '--reject '--remove)
 
-(defun -remove-first (pred list)
-  "Return a new list with the first item matching PRED removed.
-
-Alias: `-reject-first'
-
-See also: `-remove', `-map-first'"
-  (let (front)
-    (while (and list (not (funcall pred (car list))))
-      (push (car list) front)
-      (!cdr list))
-    (if list
-        (-concat (nreverse front) (cdr list))
-      (nreverse front))))
-
 (defmacro --remove-first (form list)
-  "Anaphoric form of `-remove-first'."
+  "Remove the first item from LIST for which FORM evals to non-nil.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating FORM.  This is a
+non-destructive operation, but only the front of LIST leading up
+to the removed item is a copy; the rest is LIST's original tail.
+If no item is removed, then the result is a complete copy.
+This is the anaphoric counterpart to `-remove-first'."
   (declare (debug (form form)))
-  `(-remove-first (lambda (it) ,form) ,list))
+  (let ((front (make-symbol "front"))
+        (tail (make-symbol "tail")))
+    `(let ((,tail ,list) ,front)
+       (--each-while ,tail (not ,form)
+         (push (pop ,tail) ,front))
+       (if ,tail
+           (nconc (nreverse ,front) (cdr ,tail))
+         (nreverse ,front)))))
+
+(defun -remove-first (pred list)
+  "Remove the first item from LIST for which PRED returns non-nil.
+This is a non-destructive operation, but only the front of LIST
+leading up to the removed item is a copy; the rest is LIST's
+original tail.  If no item is removed, then the result is a
+complete copy.
+Alias: `-reject-first'.
+This function's anaphoric counterpart is `--remove-first'.
+See also `-map-first', `-remove-item', and `-remove-last'."
+  (--remove-first (funcall pred it) list))
 
 (defalias '-reject-first '-remove-first)
 (defalias '--reject-first '--remove-first)
@@ -731,38 +741,45 @@ If ELEMENTS is non nil, append these to the list as well."
   (-concat list (list elem) elements))
 
 (defmacro --first (form list)
-  "Anaphoric form of `-first'."
+  "Return the first item in LIST for which FORM evals to non-nil.
+Return nil if no such element is found.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating FORM.
+This is the anaphoric counterpart to `-first'."
   (declare (debug (form form)))
   (let ((n (make-symbol "needle")))
     `(let (,n)
-       (--each-while ,list (not ,n)
-         (when ,form (setq ,n it)))
+       (--each-while ,list (or (not ,form)
+                               (ignore (setq ,n it))))
        ,n)))
 
 (defun -first (pred list)
-  "Return the first x in LIST where (PRED x) is non-nil, else nil.
-
+  "Return the first item in LIST for which PRED returns non-nil.
+Return nil if no such element is found.
 To get the first item in the list no questions asked, use `car'.
-
-Alias: `-find'"
+Alias: `-find'.
+This function's anaphoric counterpart is `--first'."
   (--first (funcall pred it) list))
 
 (defalias '-find '-first)
 (defalias '--find '--first)
 
 (defmacro --some (form list)
-  "Anaphoric form of `-some'."
+  "Return non-nil if FORM evals to non-nil for at least one item in LIST.
+If so, return the first such result of FORM.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating FORM.
+This is the anaphoric counterpart to `-some'."
   (declare (debug (form form)))
   (let ((n (make-symbol "needle")))
     `(let (,n)
-       (--each-while ,list (not ,n)
-         (setq ,n ,form))
+       (--each-while ,list (not (setq ,n ,form)))
        ,n)))
 
 (defun -some (pred list)
   "Return (PRED x) for the first LIST item where (PRED x) is non-nil, else nil.
-
-Alias: `-any'"
+Alias: `-any'.
+This function's anaphoric counterpart is `--some'."
   (--some (funcall pred it) list))
 
 (defalias '-any '-some)
