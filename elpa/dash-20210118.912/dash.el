@@ -430,7 +430,7 @@ For the opposite operation, see also `--remove'."
 (defun -filter (pred list)
   "Return a new list of the items in LIST for which PRED returns non-nil.
 Alias: `-select'.
-This function's anaphoric counterpart `--filter'.
+This function's anaphoric counterpart is `--filter'.
 For similar operations, see also `-keep' and `-remove'."
   (--filter (funcall pred it) list))
 
@@ -449,7 +449,7 @@ For the opposite operation, see also `--filter'."
 (defun -remove (pred list)
   "Return a new list of the items in LIST for which PRED returns nil.
 Alias: `-reject'.
-This function's anaphoric counterpart `--remove'.
+This function's anaphoric counterpart is `--remove'.
 For similar operations, see also `-keep' and `-filter'."
   (--remove (funcall pred it) list))
 
@@ -488,48 +488,57 @@ See also `-map-first', `-remove-item', and `-remove-last'."
 (defalias '-reject-first '-remove-first)
 (defalias '--reject-first '--remove-first)
 
-(defun -remove-last (pred list)
-  "Return a new list with the last item matching PRED removed.
-
-Alias: `-reject-last'
-
-See also: `-remove', `-map-last'"
-  (nreverse (-remove-first pred (reverse list))))
-
 (defmacro --remove-last (form list)
-  "Anaphoric form of `-remove-last'."
+  "Remove the last item from LIST for which FORM evals to non-nil.
+Each element of LIST in turn is bound to `it' before evaluating
+FORM.  The result is a copy of LIST regardless of whether an
+element is removed.
+This is the anaphoric counterpart to `-remove-last'."
   (declare (debug (form form)))
-  `(-remove-last (lambda (it) ,form) ,list))
+  `(nreverse (--remove-first ,form (reverse ,list))))
+
+(defun -remove-last (pred list)
+  "Remove the last item from LIST for which PRED returns non-nil.
+The result is a copy of LIST regardless of whether an element is
+removed.
+Alias: `-reject-last'.
+This function's anaphoric counterpart is `--remove-last'.
+See also `-map-last', `-remove-item', and `-remove-first'."
+  (--remove-last (funcall pred it) list))
 
 (defalias '-reject-last '-remove-last)
 (defalias '--reject-last '--remove-last)
 
-(defun -remove-item (item list)
-  "Remove all occurrences of ITEM from LIST.
-
-Comparison is done with `equal'."
-  (declare (pure t) (side-effect-free t))
-  (--remove (equal it item) list))
+(defalias '-remove-item #'remove
+  "Return a copy of LIST with all occurrences of ITEM removed.
+The comparison is done with `equal'.
+\n(fn ITEM LIST)")
 
 (defmacro --keep (form list)
-  "Anaphoric form of `-keep'."
+  "Eval FORM for each item in LIST and return the non-nil results.
+Like `--filter', but returns the non-nil results of FORM instead
+of the corresponding elements of LIST.  Each element of LIST in
+turn is bound to `it' and its index within LIST to `it-index'
+before evaluating FORM.
+This is the anaphoric counterpart to `-keep'."
   (declare (debug (form form)))
   (let ((r (make-symbol "result"))
         (m (make-symbol "mapped")))
     `(let (,r)
-       (--each ,list (let ((,m ,form)) (when ,m (!cons ,m ,r))))
+       (--each ,list (let ((,m ,form)) (when ,m (push ,m ,r))))
        (nreverse ,r))))
 
 (defun -keep (fn list)
-  "Return a new list of the non-nil results of applying FN to the items in LIST.
-
-If you want to select the original items satisfying a predicate use `-filter'."
+  "Return a new list of the non-nil results of applying FN to each item in LIST.
+Like `-filter', but returns the non-nil results of FN instead of
+the corresponding elements of LIST.
+Its anaphoric counterpart is `--keep'."
   (--keep (funcall fn it) list))
 
 (defun -non-nil (list)
-  "Return all non-nil elements of LIST."
+  "Return a copy of LIST with all nil items removed."
   (declare (pure t) (side-effect-free t))
-  (-remove 'null list))
+  (--filter it list))
 
 (defmacro --map-indexed (form list)
   "Anaphoric form of `-map-indexed'."
@@ -2939,15 +2948,16 @@ structure such as plist or alist."
 (defvar dash--keywords
   `(;; TODO: Do not fontify the following automatic variables
     ;; globally; detect and limit to their local anaphoric scope.
-    (,(concat "\\_<" (regexp-opt '("acc" "it" "it-index" "other")) "\\_>")
+    (,(rx symbol-start (| "acc" "it" "it-index" "other") symbol-end)
      0 font-lock-variable-name-face)
     ;; Macros in dev/examples.el.  Based on `lisp-mode-symbol-regexp'.
-    (,(concat "(" (regexp-opt '("defexamples" "def-example-group") t)
-              "\\_>[\t ]+\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)*\\)")
+    (,(rx ?\( (group (| "defexamples" "def-example-group")) symbol-end
+          (+ (in "\t "))
+          (group (* (| (syntax word) (syntax symbol) (: ?\\ nonl)))))
      (1 font-lock-keyword-face)
      (2 font-lock-function-name-face))
     ;; Symbols in dev/examples.el.
-    ,(concat "\\_<" (regexp-opt '("=>" "~>" "!!>")) "\\_>")
+    ,(rx symbol-start (| "=>" "~>" "!!>") symbol-end)
     ;; Elisp macro fontification was static prior to Emacs 25.
     ,@(when (< emacs-major-version 25)
         (let ((macs '("!cdr"
