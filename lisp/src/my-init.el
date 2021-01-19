@@ -202,7 +202,7 @@
 
 (use-package doxymacs
   :defer t
-  :bind-keymap (("C-c D" . doxymacs-mode-map))
+  :bind-keymap (("C-x d" . doxymacs-mode-map))
   :config
   (progn
     (require 'my-doxymacs)
