@@ -22,6 +22,9 @@
       selectrum-highlight-candidates-function #'orderless-highlight-matches
       selectrum-refine-candidates-function #'orderless-filter)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Completion from other sources
+
 (defun my-complete-presorted-completion-table (completions)
   "Keep completion table order."
   (lambda (string pred action)
@@ -63,25 +66,60 @@
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
 
-;; (defun orderless-filter (string table &optional pred)
-;;   "Split STRING into components and find entries TABLE matching all.
-;; The predicate PRED is used to constrain the entries in TABLE."
-;;   (condition-case nil
-;;       (save-match-data
-;;         (pcase-let* ((`(,prefix . ,pattern)
-;;                       (orderless--prefix+pattern string table pred))
-;;                      (completion-regexp-list
-;;                       (funcall orderless-pattern-compiler pattern))
-;;                      (completion-ignore-case
-;;                       (if orderless-smart-case
-;;                           (cl-loop for regexp in completion-regexp-list
-;;                                    always (isearch-no-upper-case-p regexp t))
-;;                         completion-ignore-case)))
-;;           (sort (mapcar
-;;                  #'my-complete-score-orderless-match
-;;                  (all-completions prefix table pred))
-;;                 #'my-complete-sort-orderless-matches)))
-;;     (invalid-regexp nil)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Completion sorting
+
+(defvar my-complete-completion-regexp-list nil)
+
+(defun orderless-filter (string table &optional pred)
+  "Same as original `orderless-filter', but save the completion regexps for scoring later."
+  (condition-case nil
+      (save-match-data
+        (pcase-let* ((`(,prefix . ,pattern)
+                      (orderless--prefix+pattern string table pred))
+                     (completion-regexp-list
+                      (funcall orderless-pattern-compiler pattern))
+                     (completion-ignore-case
+                      (if orderless-smart-case
+                          (cl-loop for regexp in completion-regexp-list
+                                   always (isearch-no-upper-case-p regexp t))
+                        completion-ignore-case)))
+          (setq my-complete-completion-regexp-list completion-regexp-list)
+          (all-completions prefix table pred)))
+    (invalid-regexp nil)))
+
+(defmacro my-complete-prescient--sort-compare ()
+  "Same as `prescient--sort-compare', but do my own sorting."
+  `(progn
+     (let* ((p1 (gethash c1 hist len))
+            (p2 (gethash c2 hist len)))
+       (or (< p1 p2)
+           (and (eq p1 p2)
+                (let* ((f1 (gethash c1 freq 0))
+                       (f2 (gethash c2 freq 0)))
+                  (or (> f1 f2)
+                      (and (eq f1 f2)
+                           (let ((s1 (get-text-property 0 'score c1))
+                                 (s2 (get-text-property 0 'score c2)))
+                             (if (= s1 s2)
+                                 (let ((length1 (length c1))
+                                       (length2 (length c2)))
+                                   (if (= length1 length2)
+                                       (string< c1 c2)
+                                     (< length1 length2)))
+                               (> s1 s2)))))))))))
+
+(defun my-complete-prescient-sort (candidates)
+  "Same as `prescient-sort', but call my own sorting algorithm."
+  (when (and prescient-persist-mode (not prescient--cache-loaded))
+    (prescient--load))
+  (let ((hist prescient--history)
+        (len prescient-history-length)
+        (freq prescient--frequency))
+    (sort
+     (mapcar #'my-complete-score-orderless-match candidates)
+     (lambda (c1 c2)
+       (my-complete-prescient--sort-compare)))))
 
 (defun my-complete-score-orderless-match (str)
   "Score an orderless match"
@@ -96,17 +134,14 @@
         (setq prev-regexp-start regexp-start)))
     (propertize str 'score score)))
 
-(defun my-complete-sort-orderless-matches (s1 s2)
-  "Sort by score, then shortest length, then alphabetically"
-  (let ((score1 (get-text-property 0 'score s1))
-        (score2 (get-text-property 0 'score s2)))
-    (if (= score1 score2)
-        (let ((length1 (length s1))
-              (length2 (length s2)))
-          (if (= length1 length2)
-              (string< s1 s2)
-            (< length1 length2)))
-      (> score1 score2))))
+(defun selectrum-prescient--preprocess (candidates)
+  "Sort CANDIDATES, unless `selectrum-should-sort-p' is nil."
+  (when selectrum-should-sort-p
+    (setq candidates (my-complete-prescient-sort candidates)))
+  candidates)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Completion interface
 
 (defun my-complete-selectrum-setup ()
   (when (and selectrum-active-p
