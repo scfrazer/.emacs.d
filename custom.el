@@ -67,6 +67,7 @@
  '(speedbar-indentation-width 4)
  '(which-key-add-column-padding 3)
  '(which-key-lighter "")
+ '(which-key-max-description-length 50)
  '(which-key-max-display-columns 3)
  '(which-key-mode t)
  '(which-key-paging-prefixes '("C-x" "C-c"))
