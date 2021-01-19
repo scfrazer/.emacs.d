@@ -63,25 +63,25 @@
           (t (completing-read "Multiple matches: " result-list nil t))))
       (call-interactively 'find-file))))
 
-(defun orderless-filter (string table &optional pred)
-  "Split STRING into components and find entries TABLE matching all.
-The predicate PRED is used to constrain the entries in TABLE."
-  (condition-case nil
-      (save-match-data
-        (pcase-let* ((`(,prefix . ,pattern)
-                      (orderless--prefix+pattern string table pred))
-                     (completion-regexp-list
-                      (funcall orderless-pattern-compiler pattern))
-                     (completion-ignore-case
-                      (if orderless-smart-case
-                          (cl-loop for regexp in completion-regexp-list
-                                   always (isearch-no-upper-case-p regexp t))
-                        completion-ignore-case)))
-          (sort (mapcar
-                 #'my-complete-score-orderless-match
-                 (all-completions prefix table pred))
-                #'my-complete-sort-orderless-matches)))
-    (invalid-regexp nil)))
+;; (defun orderless-filter (string table &optional pred)
+;;   "Split STRING into components and find entries TABLE matching all.
+;; The predicate PRED is used to constrain the entries in TABLE."
+;;   (condition-case nil
+;;       (save-match-data
+;;         (pcase-let* ((`(,prefix . ,pattern)
+;;                       (orderless--prefix+pattern string table pred))
+;;                      (completion-regexp-list
+;;                       (funcall orderless-pattern-compiler pattern))
+;;                      (completion-ignore-case
+;;                       (if orderless-smart-case
+;;                           (cl-loop for regexp in completion-regexp-list
+;;                                    always (isearch-no-upper-case-p regexp t))
+;;                         completion-ignore-case)))
+;;           (sort (mapcar
+;;                  #'my-complete-score-orderless-match
+;;                  (all-completions prefix table pred))
+;;                 #'my-complete-sort-orderless-matches)))
+;;     (invalid-regexp nil)))
 
 (defun my-complete-score-orderless-match (str)
   "Score an orderless match"
