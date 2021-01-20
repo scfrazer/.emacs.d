@@ -66,12 +66,15 @@
  '(selectrum-extend-current-candidate-highlight t)
  '(speedbar-indentation-width 4)
  '(which-key-add-column-padding 3)
+ '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-lighter "")
  '(which-key-max-description-length 50)
  '(which-key-max-display-columns 3)
  '(which-key-mode t)
  '(which-key-paging-prefixes '("C-x" "C-c"))
  '(which-key-separator " -> ")
+ '(which-key-sort-order 'which-key-key-order-alpha)
+ '(which-key-sort-uppercase-first nil)
  '(yank-excluded-properties
    '(category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop)))
 (custom-set-faces
@@ -79,4 +82,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(beacon-fallback-background ((t (:background "#ffffff")))))
+ '(beacon-fallback-background ((t (:background "#ffffff"))))
+ '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t :weight bold)))))
