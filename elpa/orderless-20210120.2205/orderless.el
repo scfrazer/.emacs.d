@@ -103,17 +103,6 @@ or a function of a single string argument."
                  (function : tag "Custom function"))
   :group 'orderless)
 
-(defvar-local orderless-transient-component-separator nil
-  "Component separator regexp override.
-This variabel, if non-nil, overrides `orderless-component-separator'.
-It is meant to be set by commands that interactively change the
-separator.  No such commands are provided with this package, but
-this variable is meant to make writing them simple.  If you do
-use this variable you are likely to want to reset it to nil after
-every completion session, which can be achieved by adding the
-function `orderless-remove-transient-configuration' to the
-`minibuffer-exit-hook'.")
-
 (defcustom orderless-match-faces
   [orderless-match-face-0
    orderless-match-face-1
@@ -166,30 +155,6 @@ information on how this variable is used, see
 `orderless-default-pattern-compiler'."
   :type 'hook
   :group 'orderless)
-
-(defvar-local orderless-transient-matching-styles nil
-  "Component matching styles override.
-This variable, if non-nil, overrides `orderless-matching-styles'.
-It is meant to be set by commands that interactively change the
-matching style configuration.  No such commands are provided with
-this package, but this variable is meant to make writing them
-simple.  If you do use this variable you are likely to want to
-reset it to nil after every completion session, which can be
-achieved by adding the function
-`orderless-remove-transient-configuration' to the
-`minibuffer-exit-hook'.")
-
-(defvar-local orderless-transient-style-dispatchers nil
-  "Component style dispatchers override.
-This variable, if non-nil, overrides `orderless-style-dispatchers'.
-It is meant to be set by commands that interactively change the
-matching style configuration.  No such commands are provided with
-this package, but this variable is meant to make writing them
-simple.  If you do use this variable you are likely to want to
-reset it to nil after every completion session, which can be
-achieved by adding the function
-`orderless-remove-transient-configuration' to the
-`minibuffer-exit-hook'.")
 
 (defcustom orderless-pattern-compiler #'orderless-default-pattern-compiler
   "The `orderless' pattern compiler.
@@ -355,12 +320,6 @@ converted to a list of regexps according to the value of
    (lambda (piece) (replace-regexp-in-string (string 0) " " piece))
    (split-string (replace-regexp-in-string "\\\\ " (string 0) string) " ")))
 
-(defun orderless-remove-transient-configuration ()
-  "Remove all transient orderless configuration.
-Meant to be added to `exit-minibuffer-hook'."
-  (setq orderless-transient-matching-styles nil
-        orderless-transient-component-separator nil))
-
 (defun orderless-dispatch (dispatchers default string &rest args)
   "Run DISPATCHERS to compute matching styles for STRING.
 
@@ -415,60 +374,20 @@ DISPATCHERS decline to handle the component, then the list of
 matching STYLES is used.  See `orderless-dispatch' for details on
 dispatchers.
 
-If the variable `orderless-transient-component-separator' is
-non-nil, it is used in place of `orderless-component-separator'.
-
-When STYLES is nil, it defaults to a list computed as follows:
-
-- if the value of `orderless-transient-matching-styles' is
-  non-nil, this value is used;
-
-- next, the category of the current minibuffer completion session
-  is looked up in `completion-category-overrides' and if the
-  alist associated to it has an `orderless-matching-styles' key,
-  the corresponding value is used;
-
-- otherwise, STYLES defaults to the value of the variable
-  `orderless-matching-styles'.
-
-The analogous process is used if DISPATCHERS is nil. Since nil
-gets you this default, if want to no dispatchers to be run, use
-'(ignore) as the value of DISPATCHERS.
+The STYLES default to `orderless-matching-styles', and the
+DISPATCHERS default to `orderless-dipatchers'.  Since nil gets you
+the default, if want to no dispatchers to be run, use '(ignore)
+as the value of DISPATCHERS.
 
 This function is the default for `orderless-pattern-compiler' and
 might come in handy as a subroutine to implement other pattern
 compilers."
-
-  ;; figure out defaults for styles and dispatchers
-  (let ((overrides
-         (unless (or (not minibuffer-completion-table)
-                     (and (or styles orderless-transient-matching-styles)
-                          (or dispatchers orderless-transient-style-dispatchers)))
-           ;; we are in minibuffer completion and at least one out of
-           ;; styles and dispachers might be overridden in
-           ;; completion-category-overrides
-           (let* ((metadata (completion-metadata
-                             (buffer-substring-no-properties
-                              (field-beginning) (point))
-                             minibuffer-completion-table
-                             minibuffer-completion-predicate))
-                  (category (completion-metadata-get metadata 'category)))
-             (cdr (assq category completion-category-overrides))))))
-    (setq styles (or styles
-                     orderless-transient-matching-styles
-                     (cdr (assq 'orderless-matching-styles overrides))
-                     orderless-matching-styles))
-    (setq dispatchers (or dispatchers
-                          orderless-transient-style-dispatchers
-                          (cdr (assq 'orderless-style-dispatchers overrides))
-                          orderless-style-dispatchers)))
-  
+  (unless styles (setq styles orderless-matching-styles))
+  (unless dispatchers (setq dispatchers orderless-style-dispatchers))
   (cl-loop
-   with splitter = (or orderless-transient-component-separator
-                       orderless-component-separator)
-   with components = (if (functionp splitter)
-                         (funcall splitter pattern)
-                       (split-string pattern splitter))
+   with components = (if (functionp orderless-component-separator)
+                         (funcall orderless-component-separator pattern)
+                       (split-string pattern orderless-component-separator))
    with total = (length components)
    for component in components and index from 0
    for (newstyles . newcomp) = (orderless-dispatch
@@ -545,6 +464,44 @@ This function is part of the `orderless' completion style."
              '(orderless
                orderless-try-completion orderless-all-completions
                "Completion of multiple components, in any order."))
+
+(defmacro orderless-define-completion-style
+    (name &optional docstring &rest configuration)
+  "Define an orderless completion style with given CONFIGURATION.
+The CONFIGURATION should be a list of bindings that you could use
+with `let' to configure orderless.  You can include bindings for
+`orderless-matching-styles' and `orderless-style-dispatchers',
+for example.
+
+The completion style consists of two functions that this macro
+defines for you, NAME-try-completion and NAME-all-completions.
+This macro registers those in `completion-styles-alist' as
+forming the completion style NAME.
+
+The optional DOCSTRING argument is used as the documentation
+string for the completion style."
+  (declare (doc-string 2) (indent 1))
+  (unless (stringp docstring)
+    (push docstring configuration)
+    (setq docstring nil))
+  (let* ((fn-name (lambda (string) (intern (concat (symbol-name name) string))))
+         (try-completion  (funcall fn-name "-try-completion"))
+         (all-completions (funcall fn-name "-all-completions"))
+         (doc-fmt "`%s' function for the %s completion style.
+This configures orderless according to the %s completion style and
+delegates to `orderless-%s'.")
+         (fn-doc (lambda (fn) (format doc-fmt fn name name fn))))
+  `(progn
+     (defun ,try-completion (string table pred point)
+       ,(funcall fn-doc "try-completion")
+       (let ,configuration
+         (orderless-all-completions string table pred point)))
+     (defun ,all-completions (string table pred point)
+       ,(funcall fn-doc "all-completions")
+       (let ,configuration
+         (orderless-all-completions string table pred point)))
+     (add-to-list 'completion-styles-alist
+                  '(,name ,try-completion ,all-completions ,docstring)))))
 
 ;;; Ivy integration
 
