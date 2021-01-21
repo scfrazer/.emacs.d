@@ -1101,6 +1101,7 @@ function/task definition/implementation in other file."
         (dolist (ns (reverse namespaces))
           (setq prev-func-re (concat ns "::" prev-func-re)))
         (setq prev-func-re (concat prev-func-type ".+\\_<" prev-func-re "\\_>"))))
+    (push-mark)
     (when (ff-other-file-name)
       (ff-get-other-file))
     (goto-char (point-min))

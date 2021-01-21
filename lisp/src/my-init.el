@@ -500,7 +500,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
   (defalias 'sl 'my-sort-lines))
 
 (use-package sr-speedbar
-  :bind* ("C-c I" . sr-speedbar-toggle)
+  :bind* ("<f5>" . sr-speedbar-toggle)
   :config
   (require 'my-speedbar))
 
