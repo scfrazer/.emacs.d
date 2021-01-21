@@ -7,21 +7,6 @@
 (require 'bookmark)
 (require 'recentf)
 
-(selectrum-mode 1)
-(selectrum-prescient-mode 1)
-(marginalia-mode)
-
-(setq completion-styles '(orderless)
-      marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
-      orderless-matching-styles '(orderless-prefixes)
-      prescient-filter-method '(prefix)
-      prescient-sort-length-enable nil
-      read-buffer-completion-ignore-case t
-      read-file-name-completion-ignore-case t
-      selectrum-count-style 'current/matches
-      selectrum-highlight-candidates-function #'orderless-highlight-matches
-      selectrum-refine-candidates-function #'orderless-filter)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion from other sources
 
@@ -69,25 +54,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion sorting
 
-(defvar my-complete-completion-regexp-list nil)
-
-(defun orderless-filter (string table &optional pred)
-  "Same as original `orderless-filter', but save the completion regexps for scoring later."
-  (condition-case nil
-      (save-match-data
-        (pcase-let* ((`(,prefix . ,pattern)
-                      (orderless--prefix+pattern string table pred))
-                     (completion-regexp-list
-                      (funcall orderless-pattern-compiler pattern))
-                     (completion-ignore-case
-                      (if orderless-smart-case
-                          (cl-loop for regexp in completion-regexp-list
-                                   always (isearch-no-upper-case-p regexp t))
-                        completion-ignore-case)))
-          (setq my-complete-completion-regexp-list completion-regexp-list)
-          (all-completions prefix table pred)))
-    (invalid-regexp nil)))
-
 (defmacro my-complete-prescient--sort-compare ()
   "Same as `prescient--sort-compare', but do my own sorting."
   `(progn
@@ -117,12 +83,12 @@
         (len prescient-history-length)
         (freq prescient--frequency))
     (sort
-     (mapcar #'my-complete-score-orderless-match candidates)
+     (mapcar #'my-complete-score-match candidates)
      (lambda (c1 c2)
        (my-complete-prescient--sort-compare)))))
 
-(defun my-complete-score-orderless-match (str)
-  "Score an orderless match"
+(defun my-complete-score-match (str)
+  "Score a completion match"
   (let ((score 0)
         (prev-regexp-start -1)
         regexp-start)
@@ -134,14 +100,38 @@
         (setq prev-regexp-start regexp-start)))
     (propertize str 'score score)))
 
-(defun selectrum-prescient--preprocess (candidates)
-  "Sort CANDIDATES, unless `selectrum-should-sort-p' is nil."
+(defun my-complete-selectrum-prescient--preprocess (candidates)
+  "Same as `selectrum-prescient--preprocess', but call my own sorting algorithm."
   (when selectrum-should-sort-p
     (setq candidates (my-complete-prescient-sort candidates)))
   candidates)
 
+(defun my-selectrum-prescient-mode-hook ()
+  "Swap in my own sorting."
+  (if selectrum-prescient-mode
+      (setq selectrum-preprocess-candidates-function #'my-complete-selectrum-prescient--preprocess)
+    (when (eq selectrum-preprocess-candidates-function #'selectrum-prescient--preprocess)
+      (setq selectrum-preprocess-candidates-function selectrum-prescient--old-preprocess-function))))
+
+(add-hook 'selectrum-prescient-mode-hook #'my-selectrum-prescient-mode-hook)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion interface
+
+(selectrum-mode 1)
+(selectrum-prescient-mode 1)
+(marginalia-mode)
+
+(setq completion-styles '(orderless)
+      marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
+      orderless-matching-styles '(orderless-prefixes)
+      prescient-filter-method '(prefix)
+      prescient-sort-length-enable nil
+      read-buffer-completion-ignore-case t
+      read-file-name-completion-ignore-case t
+      selectrum-count-style 'current/matches
+      selectrum-highlight-candidates-function #'orderless-highlight-matches
+      selectrum-refine-candidates-function #'orderless-filter)
 
 (defun my-complete-selectrum-setup ()
   (when (and selectrum-active-p
