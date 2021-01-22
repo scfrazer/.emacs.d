@@ -62,16 +62,20 @@ initialism matches are enabled.
    A completion style is a back-end for completion and is used from a
 front-end that provides a completion UI.  Any completion style can be
 used with the default Emacs completion UI (sometimes called minibuffer
-tab completion) or with the built-in Icomplete package (which is similar
-to the more well-known Ido Mode).  To use a completion style in this
-fashion simply add it as an entry in the variables ‘completion-styles’
-and ‘completion-category-overrides’ (see their documentation).
+tab completion), with the built-in Icomplete package (which is similar
+to the more well-known Ido Mode), or with some third party completion
+frameworks such as Selectrum (https://github.com/raxod502/selectrum).
+To use a completion style in this fashion simply add it as an entry in
+the variables ‘completion-styles’ and ‘completion-category-overrides’
+(see their documentation).  You may also want to modify the
+‘completion-category-defaults’ variable, which serves as a default value
+for ‘completion-category-overrides’: if you want to use ‘orderless’
+exclusively, set both variables to ‘nil’.
 
    With a bit of effort, it might still be possible to use ‘orderless’
 with other completion UIs, even if those UIs don’t support the standard
 Emacs completion styles.  Currently there is support for Ivy
-(https://github.com/abo-abo/swiper) and Selectrum
-(https://github.com/raxod502/selectrum) (see below).
+(https://github.com/abo-abo/swiper) (see below).
 
    If you use MELPA, the easiest way to install ‘orderless’ is via
 ‘package-install’.  If you use both MELPA and ‘use-package’, you can
@@ -309,53 +313,30 @@ File: orderless.info,  Node: Interactively changing the configuration,  Prev: Pa
 ============================================
 
 You might want to change the separator or the matching style
-configuration on the fly while matching.  There many possible UIs for
-this: you could toggle between two chosen configurations, cycle among
-several, have a keymap where each key sets a different configurations,
-have a set of named configurations and be prompted (with completion) for
-one of them, popup a hydra (https://github.com/abo-abo/hydra) to choose
-a configuration, etc.
-
-   Rather than include commands for any of those on-the-fly
-configuration changes, ‘orderless’ provides a general mechanism to make
-it easy to write such commands yourself.  For each variable you might to
-temporarily change there is a corresponding _transient_ variable that
-overrides it when the transient variable is non-nil.  You can write your
-own commands to set these transient variable to the desired value
-without clobbering the value of the variables they override.  To reset
-the transient variables to ‘nil’ again after each completion session,
-use the following configuration:
-
-     (add-hook 'minibuffer-exit-hook
-               #'orderless-remove-transient-configuration)
-
-   The transient variables provided are:
-
-   • ‘orderless-transient-component-separator’
-   • ‘orderless-transient-matching-styles’
-   • ‘orderless-transient-style-dispatchers’
+configuration on the fly while matching.  There many possible user
+interfaces for this: you could toggle between two chosen configurations,
+cycle among several, have a keymap where each key sets a different
+configurations, have a set of named configurations and be prompted (with
+completion) for one of them, popup a hydra
+(https://github.com/abo-abo/hydra) to choose a configuration, etc.
+Since there are so many possible UIs and which to use is mostly a matter
+of taste, ‘orderless’ does not provide any such commands.  But it’s easy
+to write your own!
 
    For example, say you want to use the keybinding ‘C-l’ to make all
-components match literally.  You could use the following configuration:
+components match literally.  You could use the following code:
 
      (defun my/match-components-literally ()
        "Components match literally for the rest of the session."
        (interactive)
-       (setq orderless-transient-matching-styles '(orderless-literal)
-             orderless-transient-style-dispatchers '(ignore)))
-
-     (add-hook 'minibuffer-exit-hook
-               #'orderless-remove-transient-configuration)
+       (setq-local orderless-matching-styles '(orderless-literal)
+                   orderless-style-dispatchers nil))
 
      (define-key minibuffer-local-completion-map (kbd "C-l")
        #'my/match-components-literally)
 
-   Note that we also set ‘orderless-transient-style-dispatchers’ to
-‘'(ignore)’, to ensure no style dispatchers are used so the literal
-matching does not get overridden.  You may want to allow the dispatchers
-in ‘orderless-style-dispatchers’ to override, in which case you’d set
-‘orderless-transient-style-dispatchers’ to ‘nil’ or simply remove that
-assignment.
+   Using ‘setq-local’ to assign to the configuration variables ensures
+the values are only used for that minibuffer completion session.
 
 
 File: orderless.info,  Node: Integration with other completion UIs,  Next: Related packages,  Prev: Customization,  Up: Top
@@ -395,11 +376,15 @@ File: orderless.info,  Node: Selectrum,  Next: Company,  Prev: Ivy,  Up: Integra
 3.2 Selectrum
 =============
 
-To use ‘orderless’ from Selectrum add this to your Selectrum
-configuration:
+Recent versions of Selectrum default to using whatever completion styles
+you have configured.  You can use ‘orderless’ that way, or you can use
+this configuration:
 
      (setq selectrum-refine-candidates-function #'orderless-filter)
      (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
+
+   If you use the above configuration, only the visible candidates are
+highlighted, which is a litte more efficient.
 
 
 File: orderless.info,  Node: Company,  Prev: Selectrum,  Up: Integration with other completion UIs
@@ -526,21 +511,21 @@ out of order matching!
 Tag Table:
 Node: Top221
 Node: Overview909
-Node: Customization3103
-Node: Component matching styles3424
-Node: Style dispatchers6211
-Node: Component separator regexp8387
-Node: Faces for component matches9619
-Node: Pattern compiler10417
-Node: Interactively changing the configuration11222
-Node: Integration with other completion UIs13756
-Node: Ivy14547
-Node: Selectrum14800
-Node: Company15175
-Node: Related packages16668
-Node: Ivy and Helm16966
-Node: Prescient18163
-Node: Restricting to current matches in Icicles Ido and Ivy19017
+Node: Customization3384
+Node: Component matching styles3705
+Node: Style dispatchers6492
+Node: Component separator regexp8668
+Node: Faces for component matches9900
+Node: Pattern compiler10698
+Node: Interactively changing the configuration11503
+Node: Integration with other completion UIs12966
+Node: Ivy13757
+Node: Selectrum14010
+Node: Company14591
+Node: Related packages16084
+Node: Ivy and Helm16382
+Node: Prescient17579
+Node: Restricting to current matches in Icicles Ido and Ivy18433
 
 End Tag Table
 
