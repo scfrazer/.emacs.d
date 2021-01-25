@@ -1751,23 +1751,24 @@ and when that result is non-nil, through the next form, etc."
                    (->> ,result ,form))
                  ,@more))))
 
-(defmacro -some--> (x &optional form &rest more)
-  "When expr is non-nil, thread it through the first form (via `-->'),
-and when that result is non-nil, through the next form, etc."
-  (declare (debug ->)
-           (indent 1))
-  (if (null form) x
+(defmacro -some--> (expr &rest forms)
+  "Thread EXPR through FORMS via `-->', while the result is non-nil.
+When EXPR evaluates to non-nil, thread the result through the
+first of FORMS, and when that result is non-nil, thread it
+through the next form, etc."
+  (declare (debug (form &rest &or symbolp consp)) (indent 1))
+  (if (null forms) expr
     (let ((result (make-symbol "result")))
-      `(-some--> (-when-let (,result ,x)
-                   (--> ,result ,form))
-                 ,@more))))
+      `(-some--> (-when-let (,result ,expr)
+                   (--> ,result ,(car forms)))
+         ,@(cdr forms)))))
 
 (defmacro -doto (init &rest forms)
   "Evaluate INIT and pass it as argument to FORMS with `->'.
 The RESULT of evaluating INIT is threaded through each of FORMS
 individually using `->', which see.  The return value is RESULT,
 which FORMS may have modified by side effect."
-  (declare (debug (form body)) (indent 1))
+  (declare (debug (form &rest &or symbolp consp)) (indent 1))
   (let ((retval (make-symbol "result")))
     `(let ((,retval ,init))
        ,@(mapcar (lambda (form) `(-> ,retval ,form)) forms)
@@ -2604,20 +2605,22 @@ Alias: `-same-items-p'"
 (defalias '-same-items-p '-same-items?)
 
 (defun -is-prefix? (prefix list)
-  "Return non-nil if PREFIX is prefix of LIST.
+  "Return non-nil if PREFIX is a prefix of LIST.
 
-Alias: `-is-prefix-p'"
+Alias: `-is-prefix-p'."
   (declare (pure t) (side-effect-free t))
-  (--each-while list (equal (car prefix) it)
-    (!cdr prefix))
-  (not prefix))
+  (--each-while list (and (equal (car prefix) it)
+                          (!cdr prefix)))
+  (null prefix))
 
 (defun -is-suffix? (suffix list)
-  "Return non-nil if SUFFIX is suffix of LIST.
+  "Return non-nil if SUFFIX is a suffix of LIST.
 
-Alias: `-is-suffix-p'"
+Alias: `-is-suffix-p'."
   (declare (pure t) (side-effect-free t))
-  (-is-prefix? (reverse suffix) (reverse list)))
+  (cond ((null suffix))
+        ((setq list (member (car suffix) list))
+         (equal (cdr suffix) (cdr list)))))
 
 (defun -is-infix? (infix list)
   "Return non-nil if INFIX is infix of LIST.

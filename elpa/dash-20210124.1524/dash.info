@@ -1186,9 +1186,9 @@ File: dash.info,  Node: Predicates,  Next: Partitioning,  Prev: Unfolding,  Up: 
               ⇒ nil
 
  -- Function: -is-prefix? (prefix list)
-     Return non-nil if PREFIX is prefix of LIST.
+     Return non-nil if PREFIX is a prefix of LIST.
 
-     Alias: ‘-is-prefix-p’
+     Alias: ‘-is-prefix-p’.
 
           (-is-prefix? '(1 2 3) '(1 2 3 4 5))
               ⇒ t
@@ -1198,9 +1198,9 @@ File: dash.info,  Node: Predicates,  Next: Partitioning,  Prev: Unfolding,  Up: 
               ⇒ nil
 
  -- Function: -is-suffix? (suffix list)
-     Return non-nil if SUFFIX is suffix of LIST.
+     Return non-nil if SUFFIX is a suffix of LIST.
 
-     Alias: ‘-is-suffix-p’
+     Alias: ‘-is-suffix-p’.
 
           (-is-suffix? '(3 4 5) '(1 2 3 4 5))
               ⇒ t
@@ -2218,17 +2218,18 @@ File: dash.info,  Node: Threading macros,  Next: Binding,  Prev: Tree operations
           (-some->> '(2 4 6) (-last 'even?) (+ 100))
               ⇒ 106
 
- -- Macro: -some--> (x &optional form &rest more)
-     When expr is non-nil, thread it through the first form (via ‘-->’
-     (*note -->::)), and when that result is non-nil, through the next
-     form, etc.
+ -- Macro: -some--> (expr &rest forms)
+     Thread EXPR through FORMS via ‘-->’ (*note -->::), while the result
+     is non-nil.  When EXPR evaluates to non-nil, thread the result
+     through the first of FORMS, and when that result is non-nil, thread
+     it through the next form, etc.
 
           (-some--> "def" (concat "abc" it "ghi"))
               ⇒ "abcdefghi"
           (-some--> nil (concat "abc" it "ghi"))
               ⇒ nil
-          (-some--> '(1 3 5) (-filter 'even? it) (append it it) (-map 'square it))
-              ⇒ nil
+          (-some--> '(0 1) (-remove #'natnump it) (append it it) (-map #'1+ it))
+              ⇒ '()
 
  -- Macro: -doto (init &rest forms)
      Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
@@ -4414,7 +4415,7 @@ Index
 * -difference:                           Set operations.      (line  20)
 * -distinct:                             Set operations.      (line  62)
 * -dotimes:                              Side effects.        (line  72)
-* -doto:                                 Threading macros.    (line  95)
+* -doto:                                 Threading macros.    (line  96)
 * -drop:                                 Sublist selection.   (line 132)
 * -drop-last:                            Sublist selection.   (line 147)
 * -drop-while:                           Sublist selection.   (line 175)
@@ -4687,131 +4688,131 @@ Ref: -only-some?40257
 Ref: -contains?40742
 Ref: -same-items?41131
 Ref: -is-prefix?41516
-Ref: -is-suffix?41839
-Ref: -is-infix?42162
-Ref: -cons-pair?42516
-Node: Partitioning42836
-Ref: -split-at43024
-Ref: -split-with43691
-Ref: -split-on44094
-Ref: -split-when44770
-Ref: -separate45410
-Ref: -partition45852
-Ref: -partition-all46304
-Ref: -partition-in-steps46732
-Ref: -partition-all-in-steps47229
-Ref: -partition-by47714
-Ref: -partition-by-header48096
-Ref: -partition-after-pred48700
-Ref: -partition-before-pred49082
-Ref: -partition-before-item49471
-Ref: -partition-after-item49782
-Ref: -group-by50088
-Node: Indexing50525
-Ref: -elem-index50727
-Ref: -elem-indices51122
-Ref: -find-index51505
-Ref: -find-last-index51994
-Ref: -find-indices52498
-Ref: -grade-up52906
-Ref: -grade-down53315
-Node: Set operations53731
-Ref: -union53914
-Ref: -difference54356
-Ref: -intersection54773
-Ref: -powerset55210
-Ref: -permutations55423
-Ref: -distinct55723
-Node: Other list operations56101
-Ref: -rotate56326
-Ref: -repeat56696
-Ref: -cons*56977
-Ref: -snoc57395
-Ref: -interpose57808
-Ref: -interleave58106
-Ref: -iota58475
-Ref: -zip-with58962
-Ref: -zip59679
-Ref: -zip-lists60511
-Ref: -zip-fill61212
-Ref: -unzip61535
-Ref: -cycle62280
-Ref: -pad62682
-Ref: -table63005
-Ref: -table-flat63794
-Ref: -first64802
-Ref: -some65283
-Ref: -last65763
-Ref: -first-item66097
-Ref: -second-item66513
-Ref: -third-item66793
-Ref: -fourth-item67071
-Ref: -fifth-item67337
-Ref: -last-item67599
-Ref: -butlast67891
-Ref: -sort68138
-Ref: -list68627
-Ref: -fix69221
-Node: Tree operations69712
-Ref: -tree-seq69908
-Ref: -tree-map70766
-Ref: -tree-map-nodes71209
-Ref: -tree-reduce72059
-Ref: -tree-reduce-from72941
-Ref: -tree-mapreduce73542
-Ref: -tree-mapreduce-from74402
-Ref: -clone75688
-Node: Threading macros76016
-Ref: ->76161
-Ref: ->>76652
-Ref: -->77157
-Ref: -as->77713
-Ref: -some->78168
-Ref: -some->>78542
-Ref: -some-->78978
-Ref: -doto79449
-Node: Binding80005
-Ref: -when-let80217
-Ref: -when-let*80702
-Ref: -if-let81225
-Ref: -if-let*81620
-Ref: -let82237
-Ref: -let*88312
-Ref: -lambda89252
-Ref: -setq90061
-Node: Side effects90885
-Ref: -each91079
-Ref: -each-while91596
-Ref: -each-indexed92199
-Ref: -each-r92789
-Ref: -each-r-while93227
-Ref: -dotimes93850
-Node: Destructive operations94406
-Ref: !cons94579
-Ref: !cdr94785
-Node: Function combinators94980
-Ref: -partial95254
-Ref: -rpartial95648
-Ref: -juxt96051
-Ref: -compose96483
-Ref: -applify97036
-Ref: -on97467
-Ref: -flip97993
-Ref: -const98305
-Ref: -cut98644
-Ref: -not99130
-Ref: -orfn99440
-Ref: -andfn99874
-Ref: -iteratefn100369
-Ref: -fixfn101072
-Ref: -prodfn102635
-Node: Development103695
-Node: Contribute104048
-Node: Change log105058
-Node: Contributors112596
-Node: FDL114614
-Node: GPL139934
-Node: Index177683
+Ref: -is-suffix?41842
+Ref: -is-infix?42168
+Ref: -cons-pair?42522
+Node: Partitioning42842
+Ref: -split-at43030
+Ref: -split-with43697
+Ref: -split-on44100
+Ref: -split-when44776
+Ref: -separate45416
+Ref: -partition45858
+Ref: -partition-all46310
+Ref: -partition-in-steps46738
+Ref: -partition-all-in-steps47235
+Ref: -partition-by47720
+Ref: -partition-by-header48102
+Ref: -partition-after-pred48706
+Ref: -partition-before-pred49088
+Ref: -partition-before-item49477
+Ref: -partition-after-item49788
+Ref: -group-by50094
+Node: Indexing50531
+Ref: -elem-index50733
+Ref: -elem-indices51128
+Ref: -find-index51511
+Ref: -find-last-index52000
+Ref: -find-indices52504
+Ref: -grade-up52912
+Ref: -grade-down53321
+Node: Set operations53737
+Ref: -union53920
+Ref: -difference54362
+Ref: -intersection54779
+Ref: -powerset55216
+Ref: -permutations55429
+Ref: -distinct55729
+Node: Other list operations56107
+Ref: -rotate56332
+Ref: -repeat56702
+Ref: -cons*56983
+Ref: -snoc57401
+Ref: -interpose57814
+Ref: -interleave58112
+Ref: -iota58481
+Ref: -zip-with58968
+Ref: -zip59685
+Ref: -zip-lists60517
+Ref: -zip-fill61218
+Ref: -unzip61541
+Ref: -cycle62286
+Ref: -pad62688
+Ref: -table63011
+Ref: -table-flat63800
+Ref: -first64808
+Ref: -some65289
+Ref: -last65769
+Ref: -first-item66103
+Ref: -second-item66519
+Ref: -third-item66799
+Ref: -fourth-item67077
+Ref: -fifth-item67343
+Ref: -last-item67605
+Ref: -butlast67897
+Ref: -sort68144
+Ref: -list68633
+Ref: -fix69227
+Node: Tree operations69718
+Ref: -tree-seq69914
+Ref: -tree-map70772
+Ref: -tree-map-nodes71215
+Ref: -tree-reduce72065
+Ref: -tree-reduce-from72947
+Ref: -tree-mapreduce73548
+Ref: -tree-mapreduce-from74408
+Ref: -clone75694
+Node: Threading macros76022
+Ref: ->76167
+Ref: ->>76658
+Ref: -->77163
+Ref: -as->77719
+Ref: -some->78174
+Ref: -some->>78548
+Ref: -some-->78984
+Ref: -doto79534
+Node: Binding80090
+Ref: -when-let80302
+Ref: -when-let*80787
+Ref: -if-let81310
+Ref: -if-let*81705
+Ref: -let82322
+Ref: -let*88397
+Ref: -lambda89337
+Ref: -setq90146
+Node: Side effects90970
+Ref: -each91164
+Ref: -each-while91681
+Ref: -each-indexed92284
+Ref: -each-r92874
+Ref: -each-r-while93312
+Ref: -dotimes93935
+Node: Destructive operations94491
+Ref: !cons94664
+Ref: !cdr94870
+Node: Function combinators95065
+Ref: -partial95339
+Ref: -rpartial95733
+Ref: -juxt96136
+Ref: -compose96568
+Ref: -applify97121
+Ref: -on97552
+Ref: -flip98078
+Ref: -const98390
+Ref: -cut98729
+Ref: -not99215
+Ref: -orfn99525
+Ref: -andfn99959
+Ref: -iteratefn100454
+Ref: -fixfn101157
+Ref: -prodfn102720
+Node: Development103780
+Node: Contribute104133
+Node: Change log105143
+Node: Contributors112681
+Node: FDL114699
+Node: GPL140019
+Node: Index177768
 
 End Tag Table
 

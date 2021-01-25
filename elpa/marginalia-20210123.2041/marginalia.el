@@ -340,7 +340,7 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
       (?q "Project File")
       (?m "Bookmark")
       (?v "View"))
-    :width -8 :face 'marginalia-documentation)))
+    :face 'marginalia-documentation)))
 
 ;; This annotator is consult-specific, it will annotate the `consult-buffer' command.
 (defun marginalia-annotate-consult-buffer-full (cand)
@@ -519,14 +519,14 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (defun marginalia-annotate-bookmark (cand)
   "Annotate bookmark CAND with its file name and front context string."
-  (when-let ((bm (bookmark-get-bookmark-record (assoc cand bookmark-alist)))
-             (front (alist-get 'front-context-string bm)))
-    (marginalia--fields
-     ((alist-get 'filename bm) :width 40 :face 'marginalia-file-name)
-     ((if (or (not front) (string= front ""))
-          ""
-        (concat (replace-regexp-in-string "\n" "\\\\n" front) "…"))
-      :width 20 :face 'marginalia-documentation))))
+  (when-let ((bm (bookmark-get-bookmark-record (assoc cand bookmark-alist))))
+    (let ((front (alist-get 'front-context-string bm)))
+      (marginalia--fields
+       ((alist-get 'filename bm) :width 40 :face 'marginalia-file-name)
+       ((if (or (not front) (string= front ""))
+            ""
+          (concat (replace-regexp-in-string "\n" "\\\\n" front) "…"))
+        :width 20 :face 'marginalia-documentation)))))
 
 (defun marginalia-annotate-customize-group (cand)
   "Annotate customization group CAND with its documentation string."
