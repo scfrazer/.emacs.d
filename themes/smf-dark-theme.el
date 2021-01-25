@@ -7,7 +7,7 @@
  'smf-dark
 
 ;; `(default                      ((t :foreground "white" :background "gray10")))
- `(font-lock-builtin-face       ((t :foreground "lightskyblue3")))
+ `(font-lock-builtin-face       ((t :foreground "lightskyblue3" :bold t)))
  `(font-lock-comment-face       ((t :foreground "gray50" :italic t)))
  `(font-lock-constant-face      ((t :foreground "deepskyblue3" :italic t)))
  `(font-lock-doc-face           ((t :foreground "thistle4" :italic t)))

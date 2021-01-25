@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-greymatters
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 95))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 95) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 246) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 58) :italic t)))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 23) :italic t)))

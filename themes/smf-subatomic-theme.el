@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-subatomic
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 214))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 214) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 60) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 15))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 133) :italic t)))

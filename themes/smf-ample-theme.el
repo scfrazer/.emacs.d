@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-ample
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 146))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 146) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 243) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 139))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 101) :italic t)))

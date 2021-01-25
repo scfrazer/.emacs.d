@@ -38,7 +38,6 @@
  `(outline-2                      ((t :foreground ,(smf-color 44))))
  `(outline-3                      ((t :foreground ,(smf-color 43))))
  `(outline-4                      ((t :foreground ,(smf-color 42))))
- `(p4o-merge-face                 ((t :inherit warning)))
  `(show-mark-face                 ((t :foreground nil :background ,(smf-color 239))))
  `(speedbar-button-face           ((t :foreground "white")))
  `(sqlplus-table-odd-rows-face    ((t :background ,(smf-color 254))))

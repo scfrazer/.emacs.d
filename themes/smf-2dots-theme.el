@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-2dots
 
- `(font-lock-builtin-face       ((t :foreground "#425772")))
+ `(font-lock-builtin-face       ((t :foreground "#425772" :bold t)))
  `(font-lock-comment-face       ((t :foreground "gray66" :italic t)))
  `(font-lock-constant-face      ((t :foreground "#8f6c82" :italic t)))
  `(font-lock-doc-face           ((t :foreground "slategray4" :italic t)))
