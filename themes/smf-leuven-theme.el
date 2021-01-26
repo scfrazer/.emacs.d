@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-leuven
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 26))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 26) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 245) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 130))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 22) :italic t)))

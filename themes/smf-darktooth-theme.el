@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-darktooth
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 208))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 208) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 243) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 95))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 151) :italic t)))

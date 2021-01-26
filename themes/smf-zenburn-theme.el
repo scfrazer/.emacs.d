@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-zenburn
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 73))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 73) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 102) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 151))))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 151) :italic t)))

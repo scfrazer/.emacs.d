@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'smf-github
 
- `(font-lock-builtin-face       ((t :foreground ,(smf-color 94))))
+ `(font-lock-builtin-face       ((t :foreground ,(smf-color 94) :bold t)))
  `(font-lock-comment-face       ((t :foreground ,(smf-color 246) :italic t)))
  `(font-lock-constant-face      ((t :foreground ,(smf-color 60) :italic t)))
  `(font-lock-doc-face           ((t :foreground ,(smf-color 24) :italic t)))
