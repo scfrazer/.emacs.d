@@ -92,7 +92,7 @@
      (3 'sim-log-mode-path-face)
      (4 'sim-log-mode-msg-id-face)
      (5 'sim-log-mode-msg-face))
-    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\) @ \\([0-9.]+ [fpnum]?s\\)\\( \\[\\(.+:[0-9]+\\)\\]\\)?: \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
+    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\) @ \\([0-9.]+ [fpnum]?s\\)\\( \\(.+:[0-9]+\\)\\)?: \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
      (1 'error)
      (4 'sim-log-mode-timestamp-face)
      (5 'sim-log-mode-filename-face)
@@ -114,7 +114,7 @@
      (4 'sim-log-mode-path-face)
      (5 'sim-log-mode-msg-id-face)
      (6 'sim-log-mode-msg-face))
-    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\)\\( [a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
+    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\)\\( [a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\(.+?\\) \\(.*\\)$"
      (1 'error)
      (3 'sim-log-mode-filename-face)
      (4 'sim-log-mode-timestamp-face)
