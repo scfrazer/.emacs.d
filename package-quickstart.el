@@ -1007,10 +1007,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210126.1013/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210127.1037/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210126.1013/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210127.1037/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1901,10 +1901,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210121.1925/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210127.104/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210121.1925/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210127.104/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -3544,7 +3544,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210124.1524" "/home/scfrazer/.emacs.d/elpa/marginalia-20210123.2041" "/home/scfrazer/.emacs.d/elpa/orderless-20210121.1925" "/home/scfrazer/.emacs.d/elpa/rg-20210113.1559" "/home/scfrazer/.emacs.d/elpa/transient-20210117.2008" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210124.1524" "/home/scfrazer/.emacs.d/elpa/marginalia-20210123.2041" "/home/scfrazer/.emacs.d/elpa/orderless-20210127.104" "/home/scfrazer/.emacs.d/elpa/rg-20210113.1559" "/home/scfrazer/.emacs.d/elpa/transient-20210117.2008" "/home/scfrazer/.emacs.d/elpa/use-package-20210106.2145" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:

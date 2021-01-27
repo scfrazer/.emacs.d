@@ -193,27 +193,6 @@ Uses `completion-styles'."
                          minibuffer-completion-predicate))
    nil))
 
-(defun selectrum--completion-pcm-all-completions (_string cands pred _point)
-  "Used for partial-style file completions.
-For STRING, CANDS, PRED and POINT see
-`completion-pcm-all-completions'."
-  (when cands
-    (let* ((prefix (get-text-property 0 'selectrum--partial (car cands)))
-           (len (length prefix))
-           (string (substitute-in-file-name (minibuffer-contents)))
-           (point (length string))
-           (cands (cl-loop for cand in cands
-                           collect
-                           (propertize (concat prefix cand)
-                                       'selectrum-candidate-full
-                                       (get-text-property
-                                        0 'selectrum-candidate-full cand))))
-           (res (nconc (completion-pcm-all-completions
-                        string cands pred point)
-                       nil)))
-      (cl-loop for cand in res
-               collect (substring cand len)))))
-
 (defcustom selectrum-refine-candidates-function
   #'selectrum-refine-candidates-using-completions-styles
   "Function used to decide which candidates should be displayed.
@@ -380,19 +359,17 @@ This option is a workaround for 2 problems:
   :type 'integer)
 
 (defcustom selectrum-multiline-display-settings
-  '((match      "->"  success)
-    (truncation "..." shadow)
+  '((match      ":"  success)
+    (line-count "%d lines" success)
     (newline    "\\n" warning)
-    (whitespace ".."  shadow))
+    (truncation "..." shadow)
+    (whitespace " "  shadow))
   "Settings used to configure the formatting of multi-line candidates.
 
 Currently, multi-line candidates are flattened, stripped of
-repeated whitespace, and, if need be, truncated. Additionally,
-when a multi-line candidate matches the user's input, the
-matching line is also displayed at the beginning of the
-candidate. This option affects how such formatting looks.
-
-This formatting does not affect the actual value of a candidate.
+repeated whitespace, and, if need be, truncated. The first line
+is displayed truncated followed by a line count and trunctated
+matches. This option configures how the formatting is done.
 
 When customizing this option, a setting for each transformation
 \(defined below) must be present in the list.
@@ -405,9 +382,11 @@ There are three values that make a setting:
    whitespace, which shortens the candidate.
    - `truncation' determines the string to append to a flattened and
    truncated candidate.
-   - `match' determines the string to insert between the matching
-    line and the flattened candidate.
-2. A string to indicate the display change.
+   - `match' determines the string to insert between the first
+   line and the matched lines.
+   - `line-count' determines the string for displaying the line count.
+2. A string to indicate the display change. For `line-count' it should
+   be a format string for a decimal or the empty string for no display.
 3. A face to assign to the indicator string.
 
 Therefore, a setting is represented as a list with three
@@ -422,7 +401,9 @@ setting."
                                (const :tag "New lines"
                                       newline)
                                (const :tag "Repeated whitespace"
-                                      whitespace))
+                                      whitespace)
+                               (const :tag "Line count"
+                                      line-count))
                        (string :tag "Indicator string")
                        (face :tag "Indicator face"))))
 
@@ -1051,9 +1032,14 @@ the update."
             (setq selectrum--preprocessed-candidates
                   (cond (dynamic
                          (let* ((result
-                                 (funcall
-                                  selectrum--dynamic-candidates
-                                  input))
+                                 ;; Ensure dynamic functions won't
+                                 ;; break in post command hook.
+                                 (condition-case-unless-debug err
+                                     (funcall
+                                      selectrum--dynamic-candidates
+                                      input)
+                                   (error (message (error-message-string err))
+                                          nil)))
                                 (cands
                                  ;; Avoid modifying the returned
                                  ;; candidates to let the function
@@ -1330,7 +1316,12 @@ SETTINGS, see `selectrum-multiline-display-settings'."
          (whitespace/transformation
           (alist-get 'whitespace settings))
          (whitespace/display (car whitespace/transformation))
-         (whitespace/face (cadr whitespace/transformation)))
+         (whitespace/face (cadr whitespace/transformation))
+         ;; - Line count
+         (nline/info
+          (alist-get 'line-count settings))
+         (nlines/display (car nline/info))
+         (nlines/face (cdr nline/info)))
 
     (dolist (cand candidates (nreverse single/lines))
       (let ((line
@@ -1339,53 +1330,64 @@ SETTINGS, see `selectrum-multiline-display-settings'."
                (let* ((lines (split-string cand "\n"))
                       (len (length lines))
                       (input (minibuffer-contents))
-                      (fmatch (if (string-empty-p input)
-                                  (with-temp-buffer
+                      (first-line (with-temp-buffer
                                     (insert cand)
                                     (goto-char (point-min))
                                     (skip-chars-forward " \t\n")
                                     (buffer-substring
                                      (line-beginning-position)
-                                     (line-end-position)))
-                                (car (funcall
-                                      selectrum-refine-candidates-function
-                                      input
-                                      lines))))
-                      (prefix (propertize (format "(%d lines)" len)
-                                          'face newline/face))
-                      (match
-                       (propertize
-                        (replace-regexp-in-string
-                         "[ \t][ \t]+"
-                         (propertize whitespace/display
-                                     'face whitespace/face)
-                         (or fmatch "") 'fixed-case 'literal)
-                        'selectrum-candidate-display-prefix prefix))
-                      (annot (replace-regexp-in-string
-                              "\n" (propertize newline/display
-                                               'face newline/face)
-                              (replace-regexp-in-string
-                               "[ \t][ \t]+"
-                               (propertize whitespace/display
-                                           'face whitespace/face)
-                               (concat
-                                (unless (string-empty-p match)
-                                  (propertize match/display
-                                              'face match/face))
-                                (if (< (length cand) 1000)
-                                    cand
-                                  (concat
-                                   (substring cand 0 1000)
-                                   (propertize truncation/display
-                                               'face truncation/face))))
-                               ;; Replacements should be fixed-case and
-                               ;; literal, to make things simpler.
-                               'fixed-case 'literal)
-                              'fixed-case 'literal)))
-                 (propertize
-                  (if (string-empty-p match) " " match)
-                  'selectrum-candidate-display-suffix
-                  annot)))))
+                                     (line-end-position))))
+                      (matches (delete
+                                first-line
+                                (if (string-empty-p input)
+                                    lines
+                                  (funcall
+                                   selectrum-highlight-candidates-function
+                                   input
+                                   (funcall
+                                    selectrum-refine-candidates-function
+                                    input
+                                    lines)))))
+                      (nlines (unless (string-empty-p nlines/display)
+                                (propertize (format nlines/display len)
+                                            'face nlines/face)))
+                      (truncated-first-line
+                       (replace-regexp-in-string
+                        "[ \t][ \t]+"
+                        (propertize whitespace/display
+                                    'face whitespace/face)
+                        first-line 'fixed-case 'literal))
+                      (shortened-line
+                       (if (< (length truncated-first-line) 78)
+                           truncated-first-line
+                         (substring truncated-first-line 0 78)))
+                      (concated-matches
+                       (mapconcat #'identity matches
+                                  (propertize newline/display
+                                              'face newline/face)))
+                      (truncated-matches
+                       (replace-regexp-in-string
+                        "[ \t][ \t]+"
+                        (propertize whitespace/display
+                                    'face whitespace/face)
+                        concated-matches
+                        'fixed-case 'literal))
+                      (shortened-matches
+                       (if (< (length truncated-matches) 1000)
+                           truncated-matches
+                         (concat
+                          (substring truncated-matches 0 1000)
+                          (propertize truncation/display
+                                      'face truncation/face))))
+                      (line (concat shortened-line
+                                    (propertize truncation/display
+                                                'face truncation/face)
+                                    nlines
+                                    (unless (string-empty-p shortened-matches)
+                                      (propertize match/display
+                                                  'face match/face))
+                                    shortened-matches)))
+                 line))))
         (push line single/lines)))))
 
 (defun selectrum--annotation (fun cand face)
@@ -1870,10 +1872,10 @@ refresh."
           ;; same when the prompt was reinserted. When the prompt was
           ;; selected this will switch selection to first candidate.
           (setq selectrum--previous-input-string nil)
+          (when minibuffer-completing-file-name
+            ;; Force a refresh for files.
+            (setq-local selectrum--refresh-next-file-completion t))
           (when minibuffer-history-position
-            (when minibuffer-completing-file-name
-              ;; Force a refresh for files.
-              (setq-local selectrum--refresh-next-file-completion t))
             (selectrum--reset-minibuffer-history-state)))
       (unless completion-fail-discreetly
         (ding)
@@ -2283,6 +2285,50 @@ PREDICATE, see `read-buffer'."
 (defvar selectrum--old-read-buffer-function nil
   "Previous value of `read-buffer-function'.")
 
+(defun selectrum--partial-file-completions
+    (path collection predicate &optional raw)
+  "Get partial comps for PATH, file COLLECTION and PREDICATE.
+Candidates are filtered for ./ and ../ and propertized for
+Selectrum unless RAW is non-nil."
+  (pcase-let ((`(,pattern ,all ,prefix ,suffix)
+               (completion-pcm--find-all-completions
+                path collection predicate
+                (length path))))
+    (when all
+      (let ((matches (completion-pcm--hilit-commonality
+                      pattern all)))
+        (if raw
+            matches
+          (cl-loop for match in matches
+                   unless (string-suffix-p "../" match)
+                   collect
+                   (let* ((path (string-remove-suffix
+                                 "./" match))
+                          (full (concat prefix path suffix)))
+                     (propertize path
+                                 'selectrum-candidate-full
+                                 full
+                                 'selectrum--partial
+                                 prefix))))))))
+
+(defun selectrum--completion-pcm-all-completions (_string cands pred _point)
+  "Used for partial-style file completions.
+For STRING, CANDS, PRED and POINT see
+`completion-pcm-all-completions'."
+  (when cands
+    (let* ((prefix (get-text-property 0 'selectrum--partial (car cands)))
+           (len (length prefix))
+           (string (substitute-in-file-name (minibuffer-contents)))
+           (cands (cl-loop for cand in cands
+                           collect
+                           (propertize (concat prefix cand)
+                                       'selectrum-candidate-full
+                                       (get-text-property
+                                        0 'selectrum-candidate-full cand))))
+           (res (selectrum--partial-file-completions string cands pred 'raw)))
+      (cl-loop for cand in res
+               collect (substring cand len)))))
+
 (defun selectrum--completing-read-file-name
     (prompt collection &optional
             predicate require-match initial-input
@@ -2300,16 +2346,17 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                    (path (substitute-in-file-name input))
                    (is-remote-path
                     (file-remote-p path))
+                   (is-connected
+                    (and is-remote-path
+                         (file-remote-p path nil t)))
                    (dir (or (file-name-directory path) ""))
                    ;; The input used for matching current dir entries.
                    (matchstr (file-name-nondirectory path))
                    (cands
                     (cond
-                     ;; Guard against automatic tramp connections when
-                     ;; browsing history.
-                     ((and minibuffer-history-position
-                           (not (zerop minibuffer-history-position))
-                           (not selectrum--refresh-next-file-completion)
+                     ;; Guard against automatic tramp connections.
+                     ((and (not selectrum--refresh-next-file-completion)
+                           (not is-connected)
                            is-remote-path)
                       (prog1 nil
                         (minibuffer-message
@@ -2331,6 +2378,8 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                                 val)))
                      ;; Use cache.
                      ((and (equal last-dir dir)
+                           ;; Might be tramp path.
+                           (not (equal "/" dir))
                            (not is-env-completion)
                            (not selectrum--refresh-next-file-completion)
                            (not (and minibuffer-history-position
@@ -2342,56 +2391,48 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                                   #'identity)
                       selectrum--preprocessed-candidates)
                      ;; Use partial completion.
-                     ((and (not (string-empty-p dir))
+                     ((and (not selectrum--refresh-next-file-completion)
+                           (not (string-empty-p dir))
+                           (or (not is-remote-path)
+                               is-connected)
                            (not (file-exists-p dir)))
-                      (if (and is-remote-path
-                               (not selectrum--refresh-next-file-completion))
-                          (prog1 nil
-                            (minibuffer-message
-                             (substitute-command-keys msg)))
-                        (pcase-let ((`(,pattern ,all ,prefix ,suffix)
-                                     (completion-pcm--find-all-completions
-                                      path collection predicate
-                                      (length path))))
-                          (setq is-env-completion nil)
-                          (setq-local selectrum--refresh-next-file-completion
-                                      nil)
-                          (setq-local selectrum-preprocess-candidates-function
-                                      sortf)
-                          (when all
-                            (cl-loop for match in
-                                     (completion-pcm--hilit-commonality
-                                      pattern all)
-                                     unless (string-suffix-p "../" match)
-                                     collect
-                                     (let* ((path (string-remove-suffix
-                                                   "./" match))
-                                            (full (concat prefix path suffix)))
-                                       (propertize path
-                                                   'selectrum-candidate-full
-                                                   full
-                                                   'selectrum--partial
-                                                   prefix)))))))
+                      (setq is-env-completion nil)
+                      (setq-local selectrum--refresh-next-file-completion
+                                  nil)
+                      (setq-local selectrum-preprocess-candidates-function
+                                  sortf)
+                      (selectrum--partial-file-completions
+                       path collection predicate))
                      ;; Compute from file table.
                      (t
                       (setq is-env-completion nil)
                       (setq-local selectrum--refresh-next-file-completion nil)
                       (setq-local selectrum-preprocess-candidates-function
                                   sortf)
-                      (let ((non-essential
-                             (or (and minibuffer-history-position
-                                      (not (zerop
-                                            minibuffer-history-position)))
-                                 non-essential)))
-                        (condition-case _
-                            (delete
-                             "./"
-                             (delete
-                              "../"
-                              (funcall collection dir predicate t)))
-                          ;; May happen in case user quits out
-                          ;; of a TRAMP prompt.
-                          (quit)))))))
+                      (let ((files
+                             (condition-case _
+                                 (delete
+                                  "./"
+                                  (delete
+                                   "../"
+                                   (funcall collection path predicate t)))
+                               ;; May happen in case user quits out
+                               ;; of a TRAMP prompt.
+                               (quit 'quit))))
+                        (unless (eq files 'quit)
+                          (if (and (not files)
+                                   is-remote-path
+                                   (not is-connected)
+                                   (not (file-exists-p dir)))
+                              ;; On first connection when there aren't
+                              ;; any results and dir doesn't exist try
+                              ;; to get partial completions.
+                              (selectrum--partial-file-completions
+                               path collection predicate)
+                            ;; Remove duplicate tramp entries.
+                            (if (equal dir "/")
+                                (delete-dups files)
+                              files))))))))
               (setq last-dir dir)
               `((input . ,matchstr)
                 (candidates . ,cands))))))
@@ -2436,20 +2477,30 @@ PREDICATE, see `read-file-name'."
          (completing-read-function
           (lambda (&rest args)
             (setq completing-read-function crf)
-            (when (and default-filename
-                       ;; ./ should be omitted.
-                       (not (equal
-                             (expand-file-name default-filename)
-                             (expand-file-name default-directory))))
-              (setf (nth 6 args)        ; DEFAULT
-                    ;; Sort for directories needs any final
-                    ;; slash removed.
-                    (directory-file-name
-                     ;; The candidate should be sorted by it's
-                     ;; relative name.
-                     (file-relative-name default-filename
-                                         default-directory))))
-            (apply #'selectrum--completing-read-file-name args))))
+            (let ((default (if (consp default-filename)
+                               (car default-filename)
+                             default-filename)))
+              ;; Get the default back for internal handling as it
+              ;; wasn't passed to `read-file-name-default'. See
+              ;; comment below.
+              (when default
+                (when (equal (file-name-directory
+                              (directory-file-name
+                               (expand-file-name
+                                default)))
+                             (file-name-directory
+                              (expand-file-name
+                               default-directory)))
+                  ;; Make the default sorted first by its relative name
+                  ;; when it is inside the prompting directory.
+                  (setq default
+                        (file-relative-name default default-directory)))
+                (if (consp default-filename)
+                    (setcar default-filename default)
+                  (setq default-filename default))
+                ;; Adjust the DEFAULT arg.
+                (setf (nth 6 args) default-filename))
+              (apply #'selectrum--completing-read-file-name args)))))
     (read-file-name-default
      prompt dir
      ;; We don't pass default-candidate here to avoid that
