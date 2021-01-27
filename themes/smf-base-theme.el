@@ -21,6 +21,23 @@
         (format "#%02X%02X%02X" r g b))
     (format "color-%d" color-num)))
 
+(defun smf-load-theme (theme &optional no-confirm no-enable)
+  "Set face attributes after changing themes"
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapcar #'symbol-name
+                                     (custom-available-themes))))
+    nil nil))
+  (make-face-bold 'font-lock-builtin-face)
+  (make-face-bold 'font-lock-keyword-face)
+  (make-face-italic 'font-lock-comment-face)
+  (make-face-italic 'font-lock-constant-face)
+  (make-face-italic 'font-lock-doc-face)
+  (set-face-underline 'font-lock-function-name-face t))
+
+(advice-add #'load-theme :after #'smf-load-theme)
+
 (defface caution
   `((((class color)) :foreground ,(smf-color 202)))
   "Caution face."
