@@ -1803,7 +1803,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-s u"       . unhighlight-regexp)
  ("M-s U"       . (lambda() (interactive) (unhighlight-regexp t)))
  ("M-u"         . my-recenter)
- ("M-z"         . undo-redo)
+ ("M-z"         . redo)
  ("M-~"         . previous-error))
 
 ;; These have to be in this order
