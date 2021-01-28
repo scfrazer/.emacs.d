@@ -644,14 +644,17 @@ behavior."
 
 (defun selectrum--get-full (candidate)
   "Get full form of CANDIDATE."
-  (or (get-text-property 0 'selectrum-candidate-full candidate)
+  (or (get-text-property 0 'selectrum--candidate-full candidate)
       (when minibuffer-completing-file-name
         (if (and selectrum--current-candidate-index
                  (< selectrum--current-candidate-index 0))
             candidate
           (let* ((input (minibuffer-contents))
-                 (pathprefix (or (file-name-directory input) "")))
-            (concat pathprefix candidate))))
+                 (path (substitute-in-file-name input))
+                 (dirlen (length (file-name-directory path)))
+                 (prefixlen (car (completion--sifn-requote dirlen input)))
+                 (prefix (substring input 0 prefixlen)))
+            (concat prefix candidate))))
       candidate))
 
 (defun selectrum--get-candidate (index)
@@ -1825,7 +1828,7 @@ inserted automatically when using
   (setq-local minibuffer-text-before-history
               (minibuffer-contents-no-properties)))
 
-(defvar-local selectrum--refresh-next-file-completion nil
+(defvar-local selectrum--inserted-file-completion nil
   "Non-nil when command should trigger refresh.")
 
 (defun selectrum-insert-current-candidate (&optional arg)
@@ -1873,8 +1876,8 @@ refresh."
           ;; selected this will switch selection to first candidate.
           (setq selectrum--previous-input-string nil)
           (when minibuffer-completing-file-name
-            ;; Force a refresh for files.
-            (setq-local selectrum--refresh-next-file-completion t))
+            ;; Possibly force a refresh for files.
+            (setq-local selectrum--inserted-file-completion t))
           (when minibuffer-history-position
             (selectrum--reset-minibuffer-history-state)))
       (unless completion-fail-discreetly
@@ -2306,7 +2309,7 @@ Selectrum unless RAW is non-nil."
                                  "./" match))
                           (full (concat prefix path suffix)))
                      (propertize path
-                                 'selectrum-candidate-full
+                                 'selectrum--candidate-full
                                  full
                                  'selectrum--partial
                                  prefix))))))))
@@ -2322,9 +2325,9 @@ For STRING, CANDS, PRED and POINT see
            (cands (cl-loop for cand in cands
                            collect
                            (propertize (concat prefix cand)
-                                       'selectrum-candidate-full
+                                       'selectrum--candidate-full
                                        (get-text-property
-                                        0 'selectrum-candidate-full cand))))
+                                        0 'selectrum--candidate-full cand))))
            (res (selectrum--partial-file-completions string cands pred 'raw)))
       (cl-loop for cand in res
                collect (substring cand len)))))
@@ -2350,12 +2353,13 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                     (and is-remote-path
                          (file-remote-p path nil t)))
                    (dir (or (file-name-directory path) ""))
+                   (maybe-tramp (equal dir "/"))
                    ;; The input used for matching current dir entries.
                    (matchstr (file-name-nondirectory path))
                    (cands
                     (cond
                      ;; Guard against automatic tramp connections.
-                     ((and (not selectrum--refresh-next-file-completion)
+                     ((and (not selectrum--inserted-file-completion)
                            (not is-connected)
                            is-remote-path)
                       (prog1 nil
@@ -2372,16 +2376,21 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                                collect
                                (propertize
                                 var
-                                'selectrum-candidate-full
+                                'selectrum--candidate-full
                                 (concat dir val)
                                 'selectrum-candidate-display-right-margin
                                 val)))
                      ;; Use cache.
                      ((and (equal last-dir dir)
-                           ;; Might be tramp path.
-                           (not (equal "/" dir))
+                           (not maybe-tramp)
                            (not is-env-completion)
-                           (not selectrum--refresh-next-file-completion)
+                           (or (not selectrum--inserted-file-completion)
+                               ;; Reuse cache if inserting file names
+                               ;; in same dir.
+                               (and (not (directory-name-p matchstr))
+                                    (or (not is-remote-path)
+                                        is-connected)
+                                    (file-exists-p dir)))
                            (not (and minibuffer-history-position
                                      (zerop minibuffer-history-position)
                                      (memq this-command
@@ -2391,31 +2400,34 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                                   #'identity)
                       selectrum--preprocessed-candidates)
                      ;; Use partial completion.
-                     ((and (not selectrum--refresh-next-file-completion)
+                     ((and (not selectrum--inserted-file-completion)
                            (not (string-empty-p dir))
                            (or (not is-remote-path)
                                is-connected)
                            (not (file-exists-p dir)))
                       (setq is-env-completion nil)
-                      (setq-local selectrum--refresh-next-file-completion
-                                  nil)
                       (setq-local selectrum-preprocess-candidates-function
                                   sortf)
+                      (setq-local selectrum--inserted-file-completion nil)
                       (selectrum--partial-file-completions
                        path collection predicate))
                      ;; Compute from file table.
                      (t
                       (setq is-env-completion nil)
-                      (setq-local selectrum--refresh-next-file-completion nil)
                       (setq-local selectrum-preprocess-candidates-function
                                   sortf)
+                      (setq-local selectrum--inserted-file-completion nil)
                       (let ((files
                              (condition-case _
                                  (delete
                                   "./"
                                   (delete
                                    "../"
-                                   (funcall collection path predicate t)))
+                                   (funcall collection
+                                            (if maybe-tramp
+                                                path
+                                              dir)
+                                            predicate t)))
                                ;; May happen in case user quits out
                                ;; of a TRAMP prompt.
                                (quit 'quit))))
@@ -2430,7 +2442,7 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                               (selectrum--partial-file-completions
                                path collection predicate)
                             ;; Remove duplicate tramp entries.
-                            (if (equal dir "/")
+                            (if maybe-tramp
                                 (delete-dups files)
                               files))))))))
               (setq last-dir dir)
@@ -2483,7 +2495,12 @@ PREDICATE, see `read-file-name'."
               ;; Get the default back for internal handling as it
               ;; wasn't passed to `read-file-name-default'. See
               ;; comment below.
-              (when default
+              (when (and default
+                         ;; Don't pass when they are the same in which
+                         ;; case the prompt should get selected.
+                         (not (equal
+                               (expand-file-name default)
+                               (expand-file-name default-directory))))
                 (when (equal (file-name-directory
                               (directory-file-name
                                (expand-file-name
