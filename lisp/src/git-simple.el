@@ -101,9 +101,9 @@
                        (state (match-string-no-properties 2)))
                    (with-current-buffer buf
                      (insert "Branch:    " branch (or state "") "\n")
-                     (insert "Tracking:  NONE\n"
+                     (insert "Tracking:  NONE\n")
                      (insert "URL:       NONE\n")
-                     (insert "\n")))))
+                     (insert "\n"))))
                 ((looking-at "\\([ MADRCU?!]\\)\\([ MADU?!]\\) \\(.+\\)")
                  (let ((index (match-string-no-properties 1))
                        (work-tree (match-string-no-properties 2))
