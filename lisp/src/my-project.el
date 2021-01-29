@@ -22,4 +22,12 @@
 
 (advice-add #'project--files-in-directory :override #'my-project--files-in-directory)
 
+(defun my-project-find-file-below ()
+  (interactive)
+  (let ((command "fd -t f -0 ."))
+    (find-file
+     (completing-read
+      (concat "Find file in " default-directory ": ")
+      (split-string (shell-command-to-string command) "\0" t) nil t))))
+
 (provide 'my-project)

@@ -1772,6 +1772,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-x C-v"     . my-find-alternate-file)
  ("C-x C-z"     . (lambda () (interactive) (ding)))
  ("C-x E"       . my-apply-macro-to-region-lines)
+ ("C-x F"       . my-project-find-file-below)
  ("C-x K"       . kill-buffer-and-window)
  ("C-x M-q"     . my-toggle-buffer-modified)
  ("C-x S"       . (lambda () "Shrink other window." (interactive) (shrink-window-if-larger-than-buffer (next-window))))
