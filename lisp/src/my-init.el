@@ -1858,7 +1858,7 @@ Prefix with C-u to resize the `next-window'."
 
   (set-terminal-coding-system 'utf-8)
 
-  ;; (xterm-mouse-mode 1)
+  (xterm-mouse-mode 1)
 
   (defface my-display-table-face
     '((((class color) (background dark)) :foreground "yellow2" :background "gray33")
