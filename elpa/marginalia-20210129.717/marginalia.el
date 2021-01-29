@@ -96,8 +96,7 @@ only with the annotations that come with Emacs) without disabling
     (charset . marginalia-annotate-charset)
     (package . marginalia-annotate-package)
     (imenu . marginalia-annotate-imenu)
-    (bookmark . marginalia-annotate-bookmark)
-    (consult-buffer . marginalia-annotate-consult-buffer-class))
+    (bookmark . marginalia-annotate-bookmark))
   "Lightweight annotator functions.
 Associates completion categories with annotation functions.
 Each annotation function must return a string,
@@ -110,8 +109,8 @@ See also `marginalia-annotators-heavy'."
    '((file . marginalia-annotate-file)
      (project-file . marginalia-annotate-project-file)
      (buffer . marginalia-annotate-buffer)
-     (consult-buffer . marginalia-annotate-consult-buffer-full)
-     (command . marginalia-annotate-command))
+     (command . marginalia-annotate-command)
+     (consult-multi . marginalia-annotate-consult-multi))
    marginalia-annotators-light)
   "Heavy annotator functions.
 
@@ -328,28 +327,12 @@ This hash table is needed to speed up `marginalia-annotate-binding'.")
               (binding (gethash sym marginalia--annotate-binding-hash)))
     (propertize (format " (%s)" (key-description binding)) 'face 'marginalia-key)))
 
-;; This annotator is consult-specific, it will annotate the `consult-buffer' command.
-(defun marginalia-annotate-consult-buffer-class (cand)
-  "Annotate consult-buffer CAND with the buffer class."
-  (marginalia--fields
-   ((pcase (- (aref cand 0) #x100000)
-      (?b "Buffer")
-      (?h "Hidden Buffer")
-      (?f "File")
-      (?p "Project Buffer")
-      (?q "Project File")
-      (?m "Bookmark")
-      (?v "View"))
-    :face 'marginalia-documentation)))
-
-;; This annotator is consult-specific, it will annotate the `consult-buffer' command.
-(defun marginalia-annotate-consult-buffer-full (cand)
-  "Annotate consult-buffer CAND with the buffer class."
-  (pcase (- (aref cand 0) #x100000)
-    ((or ?b ?h ?p) (marginalia-annotate-buffer (substring cand 1)))
-    ((or ?f ?q) (marginalia-annotate-file (substring cand 1)))
-    (?m (marginalia-annotate-bookmark (substring cand 1)))
-    (_ (marginalia-annotate-consult-buffer-class cand))))
+;; This annotator is consult-specific, it will annotate commands with `consult-multi' category
+(defun marginalia-annotate-consult-multi (cand)
+  "Annotate consult-multi CAND with the buffer class."
+  (when-let (annotate (alist-get (get-text-property 0 'consult-multi cand)
+                                 (symbol-value (car marginalia-annotators))))
+    (funcall annotate (substring cand 1))))
 
 (defconst marginalia--advice-regexp
   (rx bos
@@ -729,20 +712,10 @@ Remember `this-command' for `marginalia-classify-by-command-name'."
 ;; the discussion in https://github.com/minad/marginalia/issues/10 for reference.
 ;;;###autoload
 (defun marginalia-cycle ()
-  "Cycle between annotators in `marginalia-annotators'.
-If called from the minibuffer the annotator cycling is local,
-that it is, it does not affect subsequent minibuffers.  When called
-from a regular buffer the effect is global."
+  "Cycle between annotators in `marginalia-annotators'."
   (interactive)
-  ;; If `marginalia-cycle' has been invoked from inside the minibuffer, only change the annotators
-  ;; locally. This is useful if the command is used as an action. If the command is not triggered
-  ;; from inside the minibuffer, cycle the annotator globally. Hopefully this is not too confusing.
-  (if-let* ((win (active-minibuffer-window))
-            (buf (window-buffer win)))
-      (let ((a (buffer-local-value 'marginalia-annotators buf)))
-        (setf (buffer-local-value 'marginalia-annotators buf) (append (cdr a) (list (car a)))))
-    (let ((a marginalia-annotators))
-      (setq marginalia-annotators (append (cdr a) (list (car a)))))))
+  (setq marginalia-annotators (append (cdr marginalia-annotators)
+                                      (list (car marginalia-annotators)))))
 
 (provide 'marginalia)
 ;;; marginalia.el ends here

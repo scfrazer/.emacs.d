@@ -30,10 +30,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (autoload 'marginalia-cycle "marginalia" "\
-Cycle between annotators in `marginalia-annotators'.
-If called from the minibuffer the annotator cycling is local,
-that it is, it does not affect subsequent minibuffers.  When called
-from a regular buffer the effect is global." t nil)
+Cycle between annotators in `marginalia-annotators'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
 
