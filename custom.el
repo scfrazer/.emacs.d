@@ -52,7 +52,7 @@
  '(orderless-skip-highlighting t)
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-selected-packages
-   '(which-key modus-operandi-theme modus-vivendi-theme diffview darktooth-theme python marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(tron-legacy-theme which-key diffview darktooth-theme python marginalia selectrum selectrum-prescient flymake project realgud darkburn-theme beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
@@ -66,6 +66,7 @@
      (folded-file . t)))
  '(selectrum-extend-current-candidate-highlight t)
  '(speedbar-indentation-width 4)
+ '(tron-legacy-theme-softer-bg t)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-lighter "")

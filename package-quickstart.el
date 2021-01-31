@@ -856,6 +856,19 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20200601.533/tron-legacy-theme-autoloads.el") (car load-path))))
+
+
+
+(when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tron-legacy-theme" '("tron-legacy-theme-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210117.2008/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2245,32 +2258,6 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-0.12.0/modus-vivendi-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-vivendi-theme-0.12.0/modus-vivendi-theme-autoloads.el") (car load-path))))
-
-
-
-(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-vivendi-theme" '("modus-vivendi")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-0.12.0/modus-operandi-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-operandi-theme-0.12.0/modus-operandi-theme-autoloads.el") (car load-path))))
-
-
-
-(when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modus-operandi-theme" '("modus-operandi")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20210128.41/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3534,7 +3521,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors modus-vivendi-theme modus-operandi-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
