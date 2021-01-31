@@ -35,20 +35,59 @@
         (let ((default-directory dir))
           (call-interactively 'find-file))))))
 
-(defun my-complete-recentf-file ()
-  "Find a file in the recently opened file list using completing-read."
+(defun my-complete-switch-to-buffer ()
+  "`switch-to-buffer', or choose from `recentf-list', or `project-find-file'"
   (interactive)
+  (let (buffer-or-name filename)
+    (let ((confirm-nonexistent-file-or-buffer nil))
+      (setq buffer-or-name (read-buffer-to-switch "Switch to buffer: ")))
+    (if (and buffer-or-name (get-buffer buffer-or-name))
+        (switch-to-buffer buffer-or-name)
+      (setq filename (my-complete-get-recentf-file nil buffer-or-name))
+      (if (and filename
+               (not (string= filename ""))
+               (file-exists-p filename))
+          (find-file filename)
+        (let* ((pr (project-current t))
+               (dirs (list (project-root pr)))
+               (project-read-file-name-function #'my-complete-project--read-file-cpd-relative))
+          (project-find-file-in buffer-or-name dirs pr))))))
+
+(defun my-complete-get-recentf-file (&optional require-match initial-input)
+  "Get a file from recentf file list."
   (let* ((file-alist (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) recentf-list))
          (choice-list (delete-dups (mapcar 'car file-alist)))
-         (filename (completing-read "Find recent file: " (my-complete-presorted-completion-table choice-list) nil t))
+         (filename (completing-read "Find recent file: " (my-complete-presorted-completion-table choice-list) nil require-match initial-input))
          (result-list (delq nil (mapcar (lambda (x) (when (string= (car x) filename) (cdr x))) file-alist)))
          (result-length (length result-list)))
     (if (and filename (not (string= filename "")))
-        (find-file
-         (cond
-          ((= result-length 0) filename)
-          ((= result-length 1) (car result-list))
-          (t (completing-read "Multiple matches: " result-list nil t))))
+        (cond
+         ((= result-length 0) filename)
+         ((= result-length 1) (car result-list))
+         (t (completing-read "Multiple matches: " result-list nil require-match initial-input)))
+      filename)))
+
+(defun my-complete-project--read-file-cpd-relative (prompt all-files &optional predicate hist default)
+  "Like `project--read-file-cpd-relative' but DEFAULT becomes INITIAL-INPUT."
+  (let* ((common-parent-directory
+          (let ((common-prefix (try-completion "" all-files)))
+            (if (> (length common-prefix) 0)
+                (file-name-directory common-prefix))))
+         (cpd-length (length common-parent-directory))
+         (prompt (if (zerop cpd-length)
+                     prompt
+                   (concat prompt (format " in %s" common-parent-directory))))
+         (substrings (mapcar (lambda (s) (substring s cpd-length)) all-files))
+         (new-collection (project--file-completion-table substrings))
+         (res (completing-read prompt new-collection predicate t default hist)))
+    (concat common-parent-directory res)))
+
+(defun my-complete-recentf-file ()
+  "Find a file in the recently opened file list using completing-read."
+  (interactive)
+  (let ((filename (my-complete-get-recentf-file t)))
+    (if filename
+        (find-file filename)
       (call-interactively 'find-file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1798,7 +1798,7 @@ Prefix with C-u to resize the `next-window'."
  ("M-`"         . next-error)
  ("M-e"         . my-mc/edit-lines)
  ("M-g"         . my-goto-line-column)
- ("M-i"         . switch-to-buffer)
+ ("M-i"         . my-complete-switch-to-buffer)
  ("M-q"         . my-fill)
  ("M-s h"       . my-highlight-regexp)
  ("M-s u"       . unhighlight-regexp)
