@@ -6,6 +6,7 @@
 (require 'marginalia)
 (require 'bookmark)
 (require 'recentf)
+(require 'project)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion from other sources
