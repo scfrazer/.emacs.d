@@ -237,6 +237,14 @@
   (git-simple-edit-file)
   (call-interactively 'git-timemachine))
 
+;;;###autoload
+(defun git-simple-blame()
+  "Run git-blame."
+  (interactive)
+  (require 'vc-annotate)
+  (git-simple-edit-file)
+  (call-interactively 'vc-annotate))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar git-simple-ediff-head-rev-buf nil)
@@ -433,6 +441,7 @@ Substitute '%' in command with current file name."
     (define-key map (kbd "RET") 'git-simple-edit-file)
     (define-key map (kbd "TAB") 'git-simple-diff-file)
     (define-key map (kbd "a") 'git-simple-add-current-file)
+    (define-key map (kbd "b") 'git-simple-blame)
     (define-key map (kbd "g") 'git-simple-refresh)
     (define-key map (kbd "h") 'git-simple-history)
     (define-key map (kbd "k") 'git-simple-discard)
@@ -449,6 +458,7 @@ Substitute '%' in command with current file name."
 (define-key git-simple-global-map (kbd "=") 'git-simple-diff-file)
 (define-key git-simple-global-map (kbd "RET") 'git-simple-switch-next)
 (define-key git-simple-global-map (kbd "a") 'git-simple-add-current-file)
+(define-key git-simple-global-map (kbd "b") 'git-simple-blame)
 (define-key git-simple-global-map (kbd "g") 'git-simple-grep)
 (define-key git-simple-global-map (kbd "h") 'git-simple-history)
 (define-key git-simple-global-map (kbd "k") 'git-simple-discard)

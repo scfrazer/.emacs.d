@@ -4,6 +4,28 @@
 (require 'vc-dir)
 (require 'vc-git)
 
+(setq vc-annotate-background nil
+      vc-annotate-background-mode nil
+      vc-annotate-color-map '((20 . "red3")
+                              (40 . "magenta4")
+                              (60 . "maroon3")
+                              (80 . "orangered3")
+                              (100 . "chocolate3")
+                              (120 . "gold4")
+                              (140 . "darkolivegreen4")
+                              (160 . "green4")
+                              (180 . "aquamarine4")
+                              (200 . "cyan4")
+                              (220 . "lightcyan4")
+                              (240 . "skyblue4")
+                              (260 . "dodgerblue4")
+                              (280 . "blue4")
+                              (300 . "royalblue4")
+                              (320 . "slateblue4")
+                              (340 . "gray30")
+                              (360 . "black"))
+      vc-annotate-very-old-color nil)
+
 (defun my-vc-git-command (verb fn)
   (let* ((fileset-arg (vc-deduce-fileset nil t))
          (backend (car fileset-arg))
