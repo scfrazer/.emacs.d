@@ -618,7 +618,6 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
               cursor-type 'box
               custom-theme-directory (concat user-emacs-directory "themes")
               dabbrev-case-fold-search nil
-              desktop-restore-frames nil
               display-line-numbers-grow-only t
               display-line-numbers-widen t
               display-line-numbers-width 3
