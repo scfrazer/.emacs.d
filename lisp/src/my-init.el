@@ -103,7 +103,6 @@
 (global-show-mark-mode 1)
 (setq minor-mode-alist (remove (assq 'show-mark-mode minor-mode-alist) minor-mode-alist))
 
-(require 'my-task)
 (require 'my-tags)
 (require 'my-undo)
 
@@ -1781,7 +1780,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-x e"       . my-call-last-kbd-macro)
  ("C-x f"       . project-find-file)
  ("C-x s"       . shrink-window-if-larger-than-buffer)
- ("C-x t"       . task-map)
  ("C-x |"       . my-win-split-horizontally)
  ("C-z"         . undo-only)
  ("ESC <left>"  . (lambda () "Select previous frame." (interactive) (other-frame 1)))
