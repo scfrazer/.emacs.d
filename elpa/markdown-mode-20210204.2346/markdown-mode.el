@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210203.429
-;; Package-Commit: 9e6aac278d284403c82da173e817f93572ce2281
+;; Package-Version: 20210204.2346
+;; Package-Commit: 3ac774377430493070330a58fba1cc9ef460feee
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -7867,7 +7867,11 @@ The location of the alias component depends on the value of
                return it)
       (progn
         (require 'project)
-        (car (project-roots (project-current t))))))
+        (let ((project (project-current t)))
+          (with-no-warnings
+            (if (fboundp 'project-root)
+                (project-root project)
+              (car (project-roots project))))))))
 
 (defun markdown-convert-wiki-link-to-filename (name)
   "Generate a filename from the wiki link NAME.
