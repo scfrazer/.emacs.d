@@ -2,11 +2,11 @@
 
 ;; Copyright (C) 2013-2021 Free Software Foundation, Inc.
 
-;; Authors: Matus Goljer <matus.goljer@gmail.com>
-;;          Magnar Sveen <magnars@gmail.com>
+;; Author: Matus Goljer <matus.goljer@gmail.com>
+;;         Magnar Sveen <magnars@gmail.com>
 ;; Version: 1.2.0
-;; Package-Version: 20210103.1524
-;; Package-Commit: 2fb97f0791c36b18bc90948083cdef67083bc880
+;; Package-Version: 20210206.1519
+;; Package-Commit: 51d81a5c4a523e56f9af83b733d5266442ba37f4
 ;; Package-Requires: ((emacs "24") (dash "2.0.0"))
 ;; Keywords: extensions, lisp
 ;; Homepage: https://github.com/magnars/dash.el
@@ -89,8 +89,10 @@ Arguments denoted by <> will be left unspecialized.
 
 See SRFI-26 for detailed description."
   (let* ((i 0)
-         (args (mapcar (lambda (_) (setq i (1+ i)) (make-symbol (format "D%d" i)))
-                       (-filter (-partial 'eq '<>) params))))
+         (args (--keep (when (eq it '<>)
+                         (setq i (1+ i))
+                         (make-symbol (format "D%d" i)))
+                       params)))
     `(lambda ,args
        ,(let ((body (--map (if (eq it '<>) (pop args) it) params)))
           (if (eq (car params) '<>)

@@ -64,10 +64,11 @@ front-end that provides a completion UI.  Any completion style can be
 used with the default Emacs completion UI (sometimes called minibuffer
 tab completion), with the built-in Icomplete package (which is similar
 to the more well-known Ido Mode), or with some third party completion
-frameworks such as Selectrum (https://github.com/raxod502/selectrum).
-To use a completion style in this fashion simply add it as an entry in
-the variables ‘completion-styles’ and ‘completion-category-overrides’
-(see their documentation).  You may also want to modify the
+frameworks such as Selectrum (https://github.com/raxod502/selectrum) or
+icomplete-vertical (https://github.com/oantolin/icomplete-vertical).  To
+use a completion style in this fashion simply add it as an entry in the
+variables ‘completion-styles’ and ‘completion-category-overrides’ (see
+their documentation).  You may also want to modify the
 ‘completion-category-defaults’ variable, which serves as a default value
 for ‘completion-category-overrides’: if you want to use ‘orderless’
 exclusively, set both variables to ‘nil’.
@@ -83,7 +84,6 @@ use:
 
      (use-package orderless
        :ensure t
-       :init (icomplete-mode) ; optional but recommended!
        :custom (completion-styles '(orderless)))
 
    Alternatively, put ‘orderless.el’ somewhere on your ‘load-path’, and
@@ -91,14 +91,6 @@ use the following configuration:
 
      (require 'orderless)
      (setq completion-styles '(orderless))
-     (icomplete-mode) ; optional but recommended!
-
-   (And of course, if you use another completion framework such as Ivy
-or Helm, disable it.)
-
-   If you like the experience of using ‘orderless’ with Icomplete, but
-wish the candidates displayed vertically, you can use icomplete-vertical
-(https://github.com/oantolin/icomplete-vertical).
 
    Bug reports are highly welcome and appreciated!
 
@@ -449,13 +441,15 @@ with the ‘ivy--regex-ignore-order’ matcher.  In Helm, it is the default,
 called “multi pattern matching”.
 
    This package is significantly smaller than either of those because it
-solely defines a completion style, meant to be used with the built-in
-Icomplete completion UI, while both of those provide their own
+solely defines a completion style, meant to be used with any completion
+UI supporting completion styles while both of those provide their own
 completion UI (and many other cool features!).
 
    It is worth pointing out that Helm does provide its multi pattern
-matching as a completion style which could be used with Icomplete!  (Ivy
-does not.)  So, Icomplete users could, instead of using this package,
+matching as a completion style which could be used with default tab
+completion, Icomplete, Selectrum or other UIs supporting completion
+styles!  (Ivy does not provide a completion style to my knowledge.)  So,
+for example, Icomplete users could, instead of using this package,
 install Helm and configure Icomplete to use it as follows:
 
      (require 'helm)
@@ -511,21 +505,21 @@ out of order matching!
 Tag Table:
 Node: Top221
 Node: Overview909
-Node: Customization3384
-Node: Component matching styles3705
-Node: Style dispatchers6492
-Node: Component separator regexp8668
-Node: Faces for component matches9900
-Node: Pattern compiler10698
-Node: Interactively changing the configuration11503
-Node: Integration with other completion UIs12966
-Node: Ivy13757
-Node: Selectrum14010
-Node: Company14591
-Node: Related packages16084
-Node: Ivy and Helm16382
-Node: Prescient17579
-Node: Restricting to current matches in Icicles Ido and Ivy18433
+Node: Customization3055
+Node: Component matching styles3376
+Node: Style dispatchers6163
+Node: Component separator regexp8339
+Node: Faces for component matches9571
+Node: Pattern compiler10369
+Node: Interactively changing the configuration11174
+Node: Integration with other completion UIs12637
+Node: Ivy13428
+Node: Selectrum13681
+Node: Company14262
+Node: Related packages15755
+Node: Ivy and Helm16053
+Node: Prescient17392
+Node: Restricting to current matches in Icicles Ido and Ivy18246
 
 End Tag Table
 
