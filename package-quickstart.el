@@ -3083,59 +3083,6 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el") (car load-path))))
-
-
-
-(autoload 'autothemer-deftheme "autothemer" "\
-Define a theme NAME with description DESCRIPTION.
-A color PALETTE can be used to define let*-like
-bindings within both the REDUCED-SPECS and the BODY.
-
-\(fn NAME DESCRIPTION PALETTE REDUCED-SPECS &rest BODY)" nil t)
-
-(autoload 'autothemer-generate-templates "autothemer" "\
-Autogenerate customizations for all unthemed faces.
-Iterate through all currently defined faces, select those that
-have been left uncustomized by the most recent call to
-`autothemer-deftheme' and generate customizations that best
-approximate the faces' current definitions using the color
-palette used in the most recent invocation of
-`autothemer-deftheme'." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "autothemer" '("autothemer--")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20201215.822/darktooth-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/darktooth-theme-20201215.822/darktooth-theme-autoloads.el") (car load-path))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "darktooth-theme" '("darktooth-modeline")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/darkburn-theme-20170423.1652/darkburn-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/darkburn-theme-20170423.1652/darkburn-theme-autoloads.el") (car load-path))))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "darkburn-theme" '("darkburn")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20200210.921/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3521,7 +3468,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional autothemer darktooth-theme darkburn-theme browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
