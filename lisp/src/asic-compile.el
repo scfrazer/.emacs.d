@@ -32,10 +32,12 @@
   (list "$WORKSPACE/lawson/test/bin/run_build"
         "$WORKSPACE/lawson/test/bin/run_build pam_msg"
         "$WORKSPACE/lawson/test/bin/run_build pam_prot"
+        "$WORKSPACE/lawson/test/bin/run_build pam_coh"
         "$WORKSPACE/lawson/test/bin/run_build eno_pkt"
         "$WORKSPACE/lawson/test/bin/run_dv_lint"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_msg"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_prot"
+        "$WORKSPACE/lawson/test/bin/run_dv_lint pam_coh"
         "$WORKSPACE/lawson/test/bin/run_dv_lint eno_pkt"
         "$WORKSPACE/lawson/doc/run_doxygen"))
 

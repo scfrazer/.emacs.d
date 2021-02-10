@@ -241,9 +241,9 @@
 (defun git-simple-blame()
   "Run git-blame."
   (interactive)
-  (require 'vc-annotate)
+  (require 'git-blame)
   (git-simple-edit-file)
-  (call-interactively 'vc-annotate))
+  (git-blame-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

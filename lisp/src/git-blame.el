@@ -31,7 +31,6 @@
 
 ;; http://www.fsf.org/copyleft/gpl.html
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
@@ -73,19 +72,18 @@
 ;;            (overlay-put ovl 'face (cons 'background-color
 ;;                                         (cdr (assq 'color (cddddr info)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl))			      ; to use `push', `pop'
+(eval-when-compile (require 'cl))                             ; to use `push', `pop'
 (require 'format-spec)
 
 (defface git-blame-prefix-face
   '((((background dark)) (:foreground "gray"
-                          :background "black"))
+                                      :background "black"))
     (((background light)) (:foreground "gray"
-                           :background "white"))
+                                       :background "white"))
     (t (:weight bold)))
   "The face used for the hash prefix."
   :group 'git-blame)
@@ -95,14 +93,13 @@
   :group 'git
   :link '(function-link git-blame-mode))
 
-
 (defcustom git-blame-use-colors t
   "Use colors to indicate commits in `git-blame-mode'."
   :type 'boolean
   :group 'git-blame)
 
 (defcustom git-blame-prefix-format
-  "%h %20A:"
+  "%h  <%d>  %20a:"
   "The format of the prefix added to each line in `git-blame'
 mode. The format is passed to `format-spec' with the following format keys:
 
@@ -110,10 +107,12 @@ mode. The format is passed to `format-spec' with the following format keys:
   %H - the full hash
   %a - the author name
   %A - the author email
+  %d - the author date (time)
   %c - the committer name
   %C - the committer email
   %s - the commit summary
 "
+  :type 'string
   :group 'git-blame)
 
 (defcustom git-blame-mouseover-format
@@ -130,8 +129,8 @@ with the following format keys:
   %C - the committer email
   %s - the commit summary
 "
+  :type 'string
   :group 'git-blame)
-
 
 (defun git-blame-color-scale (&rest elements)
   "Given a list, returns a list of triples formed with each
@@ -213,12 +212,12 @@ minor mode.")
 (defvar git-blame-mode nil)
 (make-variable-buffer-local 'git-blame-mode)
 
-(defvar git-blame-mode-line-string " blame"
+(defvar git-blame-mode-line-string ""
   "String to display on the mode line when git-blame is active.")
 
 (or (assq 'git-blame-mode minor-mode-alist)
     (setq minor-mode-alist
-	  (cons '(git-blame-mode git-blame-mode-line-string) minor-mode-alist)))
+          (cons '(git-blame-mode git-blame-mode-line-string) minor-mode-alist)))
 
 ;;;###autoload
 (defun git-blame-mode (&optional arg)
@@ -243,7 +242,7 @@ See also function `git-blame-mode'."
   (git-blame-cleanup)
   (let ((bgmode (cdr (assoc 'background-mode (frame-parameters)))))
     (if (eq bgmode 'dark)
-	(setq git-blame-colors git-blame-dark-colors)
+        (setq git-blame-colors git-blame-dark-colors)
       (setq git-blame-colors git-blame-light-colors)))
   (setq git-blame-cache (make-hash-table :test 'equal))
   (setq git-blame-mode t)
@@ -304,9 +303,9 @@ See also function `git-blame-mode'."
 
 (defun git-blame-cleanup ()
   "Remove all blame properties"
-    (mapc 'delete-overlay git-blame-overlays)
-    (setq git-blame-overlays nil)
-    (remove-git-blame-text-properties (point-min) (point-max)))
+  (mapc 'delete-overlay git-blame-overlays)
+  (setq git-blame-overlays nil)
+  (remove-git-blame-text-properties (point-min) (point-max)))
 
 (defun git-blame-update-region (start end)
   "Rerun blame to get updates between START and END"
@@ -399,6 +398,7 @@ See also function `git-blame-mode'."
                        (?H . ,hash)
                        (?a . ,(git-blame-get-info info 'author))
                        (?A . ,(git-blame-get-info info 'author-mail))
+                       (?d . ,(format-time-string "%Y-%m-%d %H:%M" (string-to-number (git-blame-get-info info 'author-time))))
                        (?c . ,(git-blame-get-info info 'committer))
                        (?C . ,(git-blame-get-info info 'committer-mail))
                        (?s . ,(git-blame-get-info info 'summary)))))
@@ -429,7 +429,7 @@ See also function `git-blame-mode'."
   (with-temp-buffer
     (call-process "git" nil t nil
                   "log" "-1"
-		  (concat "--pretty=" git-blame-log-oneline-format)
+                  (concat "--pretty=" git-blame-log-oneline-format)
                   hash)
     (buffer-substring (point-min) (point-max))))
 
