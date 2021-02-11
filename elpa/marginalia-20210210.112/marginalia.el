@@ -4,7 +4,7 @@
 ;; Maintainer: Omar Antolín Camarena, Daniel Mendler
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
-;; Version: 0.2
+;; Version: 0.3
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -395,20 +395,20 @@ t cl-type"
    (concat
     (when (fboundp s)
       (concat
-       (when (get s 'byte-obsolete-info) "o")
+       (and (get s 'byte-obsolete-info) "o")
        (cond
         ((commandp s) "c")
         ((eq (car-safe (symbol-function s)) 'macro) "m")
         (t "f"))
-       (when (marginalia--advised s) "!")))
+       (and (marginalia--advised s) "!")))
     (when (boundp s)
       (concat
-       (when (get s 'byte-obsolete-variable) "o")
-       (when (local-variable-if-set-p s) "l")
+       (and (get s 'byte-obsolete-variable) "o")
+       (and (local-variable-if-set-p s) "l")
        (if (custom-variable-p s) "u" "v")
-       (when (and (boundp s) (default-boundp s) (not (equal (symbol-value s) (default-value s)))) "*")))
-    (when (facep s) "a")
-    (when (and (fboundp 'cl-find-class) (cl-find-class s)) "t"))))
+       (and (ignore-errors (not (equal (symbol-value s) (default-value s)))) "*")))
+    (and (facep s) "a")
+    (and (fboundp 'cl-find-class) (cl-find-class s) "t"))))
 
 (defun marginalia--function-doc (sym)
   "Documentation string of function SYM."
