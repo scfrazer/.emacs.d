@@ -406,11 +406,15 @@ setting."
                        (string :tag "Indicator string")
                        (face :tag "Indicator face"))))
 
-(defcustom selectrum-extend-current-candidate-highlight nil
+(defcustom selectrum-extend-current-candidate-highlight 'auto
   "Whether to extend highlighting of the current candidate until the margin.
 
-Nil (the default) means to only highlight the displayed text."
-  :type 'boolean)
+When set to nil only highlight the displayed text. When set to
+`auto' (the default) Selectrum will only highlight the displayed
+text unless the session defines any annotations in which case the
+highlighting is automatically extended. Any other non-nil value
+means to always extend the highlighting."
+  :type '(choice (const :tag "Automatic" auto) boolean))
 
 ;;;###autoload
 (defcustom selectrum-complete-in-buffer t
@@ -1493,8 +1497,8 @@ specs."
       (setq start end))
     display))
 
-(defun selectrum--add-face (str face)
-  "Return copy of STR with FACE added."
+(defun selectrum--selection-highlight (str)
+  "Return copy of STR with selection highlight."
   ;; Avoid trampling highlighting done by
   ;; `selectrum-highlight-candidates-function'. In
   ;; Emacs<27 `add-face-text-property' has a bug but
@@ -1511,16 +1515,22 @@ specs."
   ;; <https://github.com/raxod502/selectrum/issues/21>
   ;; <https://github.com/raxod502/selectrum/issues/58>
   ;; <https://github.com/raxod502/selectrum/pull/76>
-  (setq str (copy-sequence str))
-  (if (version< emacs-version "27")
-      (font-lock-prepend-text-property
+  (let ((str (copy-sequence str))
+        (face 'selectrum-current-candidate))
+    (if (version< emacs-version "27")
+        (font-lock-prepend-text-property
+         0 (length str)
+         'face face str)
+      (add-face-text-property
        0 (length str)
-       'face face str)
-    (add-face-text-property
-     0 (length str)
-     face
-     'append str))
-  str)
+       face
+       'append str)
+      ;; Prepend the background to ensure selection is always visible.
+      (add-face-text-property
+       0 (length str)
+       `(:background ,(face-attribute face :background nil 'inherit))
+       nil str))
+    str))
 
 (defun selectrum--affixate (fun candidates)
   "Use affixation FUN to transform CANDIDATES.
@@ -1576,8 +1586,11 @@ defaults to `completion-extra-properties'."
                                                  :annotf annotf
                                                  :docsigf docsigf))
                            (t candidates)))
-         (extend (and selectrum-extend-current-candidate-highlight
-                      (not horizontalp)))
+         (extend (and (not horizontalp)
+                      (if (eq selectrum-extend-current-candidate-highlight
+                              'auto)
+                          (or aff annotf docsigf)
+                        selectrum-extend-current-candidate-highlight)))
          (show-indices selectrum-show-indices)
          (margin-padding selectrum-right-margin-padding)
          (lines (selectrum--ensure-single-lines
@@ -1622,8 +1635,7 @@ defaults to `completion-extra-properties'."
            displayed-candidate)
           (when formatting-current-candidate
             (setq displayed-candidate
-                  (selectrum--add-face
-                   displayed-candidate 'selectrum-current-candidate))
+                  (selectrum--selection-highlight displayed-candidate))
             (when annot-fun
               (funcall annot-fun prefix suffix right-margin)))
           (insert "\n")
@@ -1650,8 +1662,7 @@ defaults to `completion-extra-properties'."
                                     ,(string-width right-margin)
                                     ,margin-padding)))
               (if formatting-current-candidate
-                  (selectrum--add-face
-                   right-margin'selectrum-current-candidate)
+                  (selectrum--selection-highlight right-margin)
                 right-margin))))
            ((and extend
                  formatting-current-candidate)

@@ -45,6 +45,9 @@
  '(icomplete-compute-delay 0)
  '(icomplete-delay-completions-threshold 10000)
  '(icomplete-max-delay-chars 0)
+ '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#D08770"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#A3BE8C"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#4f5b66"))
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
@@ -61,6 +64,7 @@
  '(modus-vivendi-theme-slanted-constructs t)
  '(nrepl-message-colors
    '("#183691" "#969896" "#a71d5d" "#969896" "#0086b3" "#795da3" "#a71d5d" "#969896"))
+ '(objed-cursor-color "#BF616A")
  '(orderless-skip-highlighting t)
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-selected-packages
@@ -68,6 +72,8 @@
  '(pdf-view-midnight-colors '("#969896" . "#f8eec7"))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
+ '(rustic-ansi-faces
+   ["#2b303b" "#BF616A" "#A3BE8C" "#ECBE7B" "#8FA1B3" "#c678dd" "#46D9FF" "#c0c5ce"])
  '(safe-local-variable-values
    '((eval modify-syntax-entry 35 "<")
      (eval modify-syntax-entry 10 ">")
@@ -80,6 +86,28 @@
  '(selectrum-extend-current-candidate-highlight t)
  '(speedbar-indentation-width 4)
  '(tron-legacy-theme-softer-bg t)
+ '(vc-annotate-background "#2b303b")
+ '(vc-annotate-color-map
+   (list
+    (cons 20 "#A3BE8C")
+    (cons 40 "#bbbe86")
+    (cons 60 "#d3be80")
+    (cons 80 "#ECBE7B")
+    (cons 100 "#e2ab77")
+    (cons 120 "#d99973")
+    (cons 140 "#D08770")
+    (cons 160 "#cc8294")
+    (cons 180 "#c97db8")
+    (cons 200 "#c678dd")
+    (cons 220 "#c370b6")
+    (cons 240 "#c16890")
+    (cons 260 "#BF616A")
+    (cons 280 "#a35f69")
+    (cons 300 "#875e68")
+    (cons 320 "#6b5c67")
+    (cons 340 "#65737E")
+    (cons 360 "#65737E")))
+ '(vc-annotate-very-old-color nil)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-lighter "")
