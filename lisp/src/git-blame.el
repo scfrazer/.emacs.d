@@ -76,15 +76,10 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl))                             ; to use `push', `pop'
 (require 'format-spec)
 
 (defface git-blame-prefix-face
-  '((((background dark)) (:foreground "gray"
-                                      :background "black"))
-    (((background light)) (:foreground "gray"
-                                       :background "white"))
-    (t (:weight bold)))
+  '((t (:inherit line-number)))
   "The face used for the hash prefix."
   :group 'git-blame)
 
@@ -93,13 +88,13 @@
   :group 'git
   :link '(function-link git-blame-mode))
 
-(defcustom git-blame-use-colors t
+(defcustom git-blame-use-colors nil
   "Use colors to indicate commits in `git-blame-mode'."
   :type 'boolean
   :group 'git-blame)
 
 (defcustom git-blame-prefix-format
-  "%h  <%d>  %20a:"
+  "%h (%a %d) "
   "The format of the prefix added to each line in `git-blame'
 mode. The format is passed to `format-spec' with the following format keys:
 
@@ -116,7 +111,7 @@ mode. The format is passed to `format-spec' with the following format keys:
   :group 'git-blame)
 
 (defcustom git-blame-mouseover-format
-  "%h %a %A: %s"
+  "%h (%a %d) %s"
   "The format of the description shown when pointing at a line in
 `git-blame' mode. The format string is passed to `format-spec'
 with the following format keys:
@@ -125,6 +120,7 @@ with the following format keys:
   %H - the full hash
   %a - the author name
   %A - the author email
+  %d - the author date (time)
   %c - the committer name
   %C - the committer email
   %s - the commit summary
@@ -143,10 +139,6 @@ a b => bbb bba bab baa abb aba aaa aab"
         (dolist (c elements)
           (setq result (cons (format "#%s%s%s" a b c) result)))))
     result))
-
-;; (git-blame-color-scale "0c" "04" "24" "1c" "2c" "34" "14" "3c") =>
-;; ("#3c3c3c" "#3c3c14" "#3c3c34" "#3c3c2c" "#3c3c1c" "#3c3c24"
-;; "#3c3c04" "#3c3c0c" "#3c143c" "#3c1414" "#3c1434" "#3c142c" ...)
 
 (defmacro git-blame-random-pop (l)
   "Select a random element from L and returns it. Also remove
@@ -201,6 +193,12 @@ minor mode.")
   "An idle timer that updates the blame")
 (make-variable-buffer-local 'git-blame-cache)
 
+(defvar git-blame-info-idle-timer nil
+  "Idle timer to show info in minibuffer.")
+
+(defun git-blame-mode-info-timer-fcn ()
+  (message (overlay-get (car (overlays-at (point-at-bol))) 'help-echo)))
+
 (defvar git-blame-update-queue nil
   "A queue of update requests")
 (make-variable-buffer-local 'git-blame-update-queue)
@@ -212,29 +210,28 @@ minor mode.")
 (defvar git-blame-mode nil)
 (make-variable-buffer-local 'git-blame-mode)
 
-(defvar git-blame-mode-line-string ""
-  "String to display on the mode line when git-blame is active.")
+(defvar git-blame-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "q") 'git-blame-mode-off)
+    map)
+  "Keymap used in git-blame-mode.")
 
-(or (assq 'git-blame-mode minor-mode-alist)
-    (setq minor-mode-alist
-          (cons '(git-blame-mode git-blame-mode-line-string) minor-mode-alist)))
+(define-minor-mode git-blame-mode
+  "Minor mode to git blame information."
+  :init-value nil
+  :lighter " git-blame"
+  :keymap git-blame-mode-map
+  (if git-blame-mode
+      (git-blame-mode-on)
+    (git-blame-mode-off)))
 
-;;;###autoload
-(defun git-blame-mode (&optional arg)
-  "Toggle minor mode for displaying Git blame
-
-With prefix ARG, turn the mode on if ARG is positive."
-  (interactive "P")
-  (cond
-   ((null arg)
-    (if git-blame-mode (git-blame-mode-off) (git-blame-mode-on)))
-   ((> (prefix-numeric-value arg) 0) (git-blame-mode-on))
-   (t (git-blame-mode-off))))
+(defvar git-blame-buffer-read-only nil)
 
 (defun git-blame-mode-on ()
   "Turn on git-blame mode.
 
 See also function `git-blame-mode'."
+  (interactive)
   (make-local-variable 'git-blame-colors)
   (if git-blame-autoupdate
       (add-hook 'after-change-functions 'git-blame-after-change nil t)
@@ -246,14 +243,22 @@ See also function `git-blame-mode'."
       (setq git-blame-colors git-blame-light-colors)))
   (setq git-blame-cache (make-hash-table :test 'equal))
   (setq git-blame-mode t)
+  (setq git-blame-buffer-read-only buffer-read-only)
+  (setq git-blame-info-idle-timer
+        (run-with-idle-timer 1.0 t 'git-blame-mode-info-timer-fcn))
+  (setq buffer-read-only t)
   (git-blame-run))
 
 (defun git-blame-mode-off ()
   "Turn off git-blame mode.
 
 See also function `git-blame-mode'."
+  (interactive)
   (git-blame-cleanup)
   (if git-blame-idle-timer (cancel-timer git-blame-idle-timer))
+  (when git-blame-info-idle-timer
+    (cancel-timer git-blame-info-idle-timer))
+  (setq buffer-read-only git-blame-buffer-read-only)
   (setq git-blame-mode nil))
 
 ;;;###autoload
@@ -328,10 +333,7 @@ See also function `git-blame-mode'."
     (with-current-buffer git-blame-file
       (setq git-blame-proc nil)
       (if git-blame-update-queue
-          (git-blame-delayed-update))))
-  ;;(kill-buffer (process-buffer proc))
-  ;;(message "git blame finished")
-  )
+          (git-blame-delayed-update)))))
 
 (defvar in-blame-filter nil)
 
@@ -441,12 +443,6 @@ See also function `git-blame-mode'."
     (when (and info (not (eq info git-blame-last-identification)))
       (message "%s" (nth 4 info))
       (setq git-blame-last-identification info))))
-
-;; (defun git-blame-after-save ()
-;;   (when git-blame-mode
-;;     (git-blame-cleanup)
-;;     (git-blame-run)))
-;; (add-hook 'after-save-hook 'git-blame-after-save)
 
 (defun git-blame-after-change (start end length)
   (when git-blame-mode

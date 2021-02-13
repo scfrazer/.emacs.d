@@ -38,7 +38,6 @@
  '(fci-rule-color "#969896")
  '(flyspell-mode-line-string " Sp")
  '(frame-background-mode 'light)
- '(git-blame-prefix-format "%h %d %20a: ")
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method 'character)
@@ -126,5 +125,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-fallback-background ((t (:background "#ffffff"))))
- '(git-blame-prefix-face ((t (:background "gray92" :foreground "gray40"))))
  '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t :weight bold)))))
