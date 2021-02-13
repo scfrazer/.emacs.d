@@ -30,7 +30,7 @@
  '(desktop-lazy-verbose nil)
  '(desktop-load-locked-desktop t)
  '(desktop-path '("."))
- '(desktop-restore-frames nil)
+ '(desktop-restore-frames t)
  '(desktop-save 'if-exists)
  '(desktop-save-mode t)
  '(eldoc-echo-area-use-multiline-p t)

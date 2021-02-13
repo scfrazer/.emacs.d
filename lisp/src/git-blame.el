@@ -94,7 +94,7 @@
   :group 'git-blame)
 
 (defcustom git-blame-prefix-format
-  "%h (%a %d) "
+  "%h (%-15a %d) "
   "The format of the prefix added to each line in `git-blame'
 mode. The format is passed to `format-spec' with the following format keys:
 
@@ -197,7 +197,8 @@ minor mode.")
   "Idle timer to show info in minibuffer.")
 
 (defun git-blame-mode-info-timer-fcn ()
-  (message (overlay-get (car (overlays-at (point-at-bol))) 'help-echo)))
+  (when git-blame-mode
+    (message (overlay-get (car (overlays-at (point-at-bol))) 'help-echo))))
 
 (defvar git-blame-update-queue nil
   "A queue of update requests")
