@@ -14,7 +14,6 @@
 (setq minor-mode-alist (remove (assq 'whitespace-mode minor-mode-alist) minor-mode-alist))
 
 (require 'bind-key)
-;; (require 'bind-remind)
 
 (require 'my-dired)
 (bind-key* "M-d" 'my-dired-pop-to-or-create)
@@ -36,6 +35,11 @@
 (require 'beacon)
 (beacon-mode 1)
 (bind-keys* ("<f12>" . beacon-blink))
+
+(require 'my-bm)
+(bind-keys* ("M-^" . my-bm-toggle-or-show)
+            ("M-(" . bm-previous)
+            ("M-)" . bm-next))
 
 (require 'my-bookmark)
 (my-bookmark-reload)
@@ -141,20 +145,6 @@
 
 (use-package asic-compile
   :commands (asic-compile))
-
-(use-package bm
-  :bind* (("M-^" . my-bm-toggle-or-show)
-          ("M-(" . bm-previous)
-          ("M-)" . bm-next))
-  :config
-  (progn
-    (setq bm-goto-position nil
-          bm-recenter t
-          bm-wrap-immediately nil)
-    (defun my-bm-toggle-or-show (&optional arg)
-      "Toggle or show bookmarks"
-      (interactive "P")
-      (if arg (bm-show-all) (bm-toggle)))))
 
 (use-package calculator
   :bind* ("C-x *" . calculator)
@@ -1857,7 +1847,6 @@ Prefix with C-u to resize the `next-window'."
 
   (xterm-mouse-mode 1)
 
-  (require 'desktop)
   (setq desktop-restore-forces-onscreen nil)
   (add-hook 'desktop-after-read-hook
             (lambda ()
