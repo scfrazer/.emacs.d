@@ -1848,14 +1848,14 @@ Prefix with C-u to resize the `next-window'."
   (xterm-mouse-mode 1)
 
   (setq desktop-restore-forces-onscreen nil)
-  (add-hook 'desktop-after-read-hook
-            (lambda ()
-              (frameset-restore
-               desktop-saved-frameset
-               :reuse-frames (eq desktop-restore-reuses-frames t)
-               :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-               :force-display desktop-restore-in-current-display
-               :force-onscreen desktop-restore-forces-onscreen)))
+  (defun my-desktop-restore-tty-windows ()
+    (frameset-restore
+     desktop-saved-frameset
+     :reuse-frames (eq desktop-restore-reuses-frames t)
+     :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+     :force-display desktop-restore-in-current-display
+     :force-onscreen desktop-restore-forces-onscreen))
+  (add-hook 'desktop-after-read-hook #'my-desktop-restore-tty-windows)
 
   (defface my-display-table-face
     '((((class color) (background dark)) :foreground "yellow2" :background "gray33")
