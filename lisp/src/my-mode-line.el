@@ -1,7 +1,5 @@
 ;;; my-mode-line.el
 
-;; (require 'my-clearcase)
-;; (defvar clearcase-setview-viewtag)
 
 (defvar my-mode-line-buffer-line-count nil)
 (make-variable-buffer-local 'my-mode-line-buffer-line-count)
@@ -19,11 +17,6 @@
 (defface my-modified-face
   '((t :inherit error))
   "Modified buffer highlighting."
-  :group 'faces)
-
-(defface my-workspace-face
-  '((t :background "skyblue4" :italic t))
-  "Workspace name highlighting."
   :group 'faces)
 
 (setq-default
@@ -50,13 +43,7 @@
    (list 'column-number-mode "  C%C")
    "  " mode-line-buffer-identification
    "  " mode-line-modes
-   (:eval (when (and (boundp 'xterm-mouse-mode) xterm-mouse-mode) "  ◓"))
-   ;; (:eval (let ((workspace-path (getenv "WORKSPACE")))
-   ;;          (when workspace-path
-   ;;            (concat " " (propertize (concat " " (file-name-nondirectory workspace-path) " ") 'face 'my-workspace-face)))))
-   (:eval (if (and (featurep 'task) task-current-name)
-              (concat "  [Task: " (or task-current-name "NONE") "]")
-            ""))))
+   ))
 
 (nbutlast mode-line-modes 1)
 
