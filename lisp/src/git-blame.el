@@ -94,7 +94,7 @@
   :group 'git-blame)
 
 (defcustom git-blame-prefix-format
-  "%h (%-15a %d) "
+  "%h (%-17a %d) "
   "The format of the prefix added to each line in `git-blame'
 mode. The format is passed to `format-spec' with the following format keys:
 
@@ -401,7 +401,7 @@ See also function `git-blame-mode'."
                        (?H . ,hash)
                        (?a . ,(git-blame-get-info info 'author))
                        (?A . ,(git-blame-get-info info 'author-mail))
-                       (?d . ,(format-time-string "%Y-%m-%d %H:%M" (string-to-number (git-blame-get-info info 'author-time))))
+                       (?d . ,(format-time-string "%Y-%b-%d %H:%M" (string-to-number (git-blame-get-info info 'author-time))))
                        (?c . ,(git-blame-get-info info 'committer))
                        (?C . ,(git-blame-get-info info 'committer-mail))
                        (?s . ,(git-blame-get-info info 'summary)))))
