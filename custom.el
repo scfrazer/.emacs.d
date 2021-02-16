@@ -85,7 +85,7 @@
  '(selectrum-extend-current-candidate-highlight t)
  '(speedbar-indentation-width 4)
  '(tron-legacy-theme-softer-bg t)
- '(vc-annotate-background "#2b303b")
+ '(vc-annotate-background "#2b303b" t)
  '(vc-annotate-color-map
    (list
     (cons 20 "#A3BE8C")
@@ -105,10 +105,11 @@
     (cons 300 "#875e68")
     (cons 320 "#6b5c67")
     (cons 340 "#65737E")
-    (cons 360 "#65737E")))
- '(vc-annotate-very-old-color nil)
+    (cons 360 "#65737E")) t)
+ '(vc-annotate-very-old-color nil t)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
+ '(which-key-idle-delay 2.0)
  '(which-key-lighter "")
  '(which-key-max-description-length 50)
  '(which-key-max-display-columns 3)
