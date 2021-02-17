@@ -5,7 +5,7 @@
   (interactive)
   (let ((start (save-excursion (skip-syntax-backward "w_") (point)))
         (end (point)))
-    (unless tags-file-name
+    (unless (and tags-file-name (get-file-buffer tags-file-name))
       (visit-tags-table (funcall default-tags-table-function)))
     (when-let (result
                (completing-read "Tag: "
