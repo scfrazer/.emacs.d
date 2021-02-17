@@ -258,6 +258,12 @@
     (rename-buffer new-name))
   (call-interactively 'ibuffer-update))
 
+(defun my-ibuffer-save-buffer ()
+  "Save buffer at point."
+  (interactive)
+  (with-current-buffer (ibuffer-current-buffer)
+    (save-buffer)))
+
 (defun my-ibuffer (&optional arg)
   "Open ibuffer with point on last buffer name."
   (interactive "P")
@@ -283,7 +289,7 @@
   (define-key ibuffer-mode-map (kbd "V") 'ibuffer-forward-filter-group)
   (define-key ibuffer-mode-map (kbd "^") 'ibuffer-backward-filter-group)
   (define-key ibuffer-mode-map (kbd "a") 'my-ibuffer-toggle-hidden-filter-groups)
-  (define-key ibuffer-mode-map (kbd "s r") 'ibuffer-do-sort-by-recency))
+  (define-key ibuffer-mode-map (kbd "s") 'my-ibuffer-save-buffer))
 
 (add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
 
