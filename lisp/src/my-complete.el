@@ -142,7 +142,7 @@
 
 (defun my-complete-selectrum-prescient--preprocess (candidates)
   "Same as `selectrum-prescient--preprocess', but call my own sorting algorithm."
-  (when selectrum-should-sort-p
+  (when selectrum-should-sort
     (setq candidates (my-complete-prescient-sort candidates)))
   candidates)
 
@@ -174,7 +174,7 @@
       selectrum-refine-candidates-function #'orderless-filter)
 
 (defun my-complete-selectrum-setup ()
-  (when (and selectrum-active-p
+  (when (and selectrum-is-active
              minibuffer-completing-file-name)
     (let ((map (copy-keymap (current-local-map))))
       (define-key map (kbd "RET") 'my-complete-selectrum-select-current-candidate)
@@ -197,7 +197,7 @@
 (defvar my-complete-showing-completions nil)
 
 (defun my-complete-completion-all-completions (orig-fun string table pred point &optional metadata)
-  (if (and selectrum-active-p my-complete-showing-completions)
+  (if (and selectrum-is-active my-complete-showing-completions)
       (copy-sequence (selectrum-get-current-candidates t))
     (apply orig-fun (list string table pred point metadata))))
 
