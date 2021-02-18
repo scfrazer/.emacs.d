@@ -515,12 +515,6 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
   :config
   (require 'my-vc))
 
-(use-package visual-regexp
-  :commands (vr/query-replace)
-  :config
-  (setq vr/auto-show-help nil
-        vr/default-replace-preview t))
-
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode)
          ("\\.js\\'" . web-mode)
@@ -1646,6 +1640,7 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
   (local-set-key (kbd "C-z") 'undo)
+  (local-set-key (kbd "M-/") 'mdabbrev-expand)
   (local-set-key (kbd "M-;") 'qe-forward-word-end)
   (local-set-key (kbd "M-H") 'qe-backward-word-section)
   (local-set-key (kbd "M-J") 'qe-backward-kill-section)
@@ -1653,7 +1648,6 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "M-L") 'qe-forward-word-section)
   (local-set-key (kbd "M-\\") 'completion-at-point)
   (local-set-key (kbd "M-h") 'my-minibuffer-backward)
-  (local-set-key (kbd "M-h") 'qe-backward-word)
   (local-set-key (kbd "M-j") 'my-minibuffer-backward-kill)
   (local-set-key (kbd "M-k") 'my-minibuffer-forward-kill)
   (local-set-key (kbd "M-l") 'my-minibuffer-forward)
@@ -1829,7 +1823,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
 (defalias 'light 'my-theme-light)
-(defalias 'qrr 'vr/query-replace)
+(defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
 (defalias 'sb 'sr-speedbar-toggle)
