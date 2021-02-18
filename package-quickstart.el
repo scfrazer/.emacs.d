@@ -118,10 +118,10 @@ FILES must be a list of absolute file names.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.20/xr-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.21/xr-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.20/xr-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.21/xr-autoloads.el") (car load-path))))
 
 
 
@@ -1193,10 +1193,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210209.1953/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210209.1953/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905/rg-autoloads.el") (car load-path))))
 
 
 
@@ -3471,7 +3471,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210210.1449" "/home/scfrazer/.emacs.d/elpa/marginalia-20210216.1025" "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645" "/home/scfrazer/.emacs.d/elpa/rg-20210209.1953" "/home/scfrazer/.emacs.d/elpa/transient-20210213.1909" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210210.1449" "/home/scfrazer/.emacs.d/elpa/marginalia-20210216.1025" "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645" "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905" "/home/scfrazer/.emacs.d/elpa/transient-20210213.1909" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:
