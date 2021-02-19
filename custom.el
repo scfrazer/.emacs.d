@@ -109,14 +109,13 @@
  '(vc-annotate-very-old-color nil t)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
- '(which-key-idle-delay 2.0)
  '(which-key-lighter "")
  '(which-key-max-description-length 50)
  '(which-key-max-display-columns 3)
  '(which-key-mode t)
  '(which-key-paging-prefixes '("C-x" "C-c"))
  '(which-key-separator " -> ")
- '(which-key-sort-order 'which-key-key-order-alpha)
+ '(which-key-sort-order 'which-key-local-then-key-order)
  '(which-key-sort-uppercase-first nil)
  '(yank-excluded-properties
    '(category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop)))
@@ -126,4 +125,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-fallback-background ((t (:background "#ffffff"))))
- '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t :weight bold)))))
+ '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t))))
+ '(which-key-local-map-description-face ((t (:inherit font-lock-builtin-face)))))
