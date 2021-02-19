@@ -44,7 +44,7 @@ reading a new value in the minibuffer.
    Calling a suffix command usually causes the transient to be exited
 but suffix commands can also be configured to not exit the transient.
 
-This manual is for Transient version 0.2.0 (v0.2.0-77-g94582a3f+1).
+This manual is for Transient version 0.2.0 (v0.2.0-78-g7065e1ce+1).
 
      Copyright (C) 2018-2021 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -348,7 +348,7 @@ File: transient.info,  Node: Common Suffix Commands,  Next: Saving Values,  Prev
 A few shared suffix commands are available in all transients.  These
 suffix commands are not shown in the popup buffer by default.
 
-   This includes the abording commands mentioned in the previous node as
+   This includes the aborting commands mentioned in the previous node as
 well as some other commands that are all bound to ‘C-x <key>’.  After
 ‘C-x’ is pressed, a section featuring all these common commands is
 temporarily shown in the popup buffer.  After invoking one of them, the

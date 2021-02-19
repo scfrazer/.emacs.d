@@ -1,6 +1,6 @@
-(define-package "selectrum" "20210216.2234" "Easily select item from list"
+(define-package "selectrum" "20210219.1101" "Easily select item from list"
   '((emacs "25.1"))
-  :commit "ad9d9f02d6ac916cf4caa548c1967457bfc37c02" :authors
+  :commit "88a14ee8f3be08a576b18615af6109ed93792f28" :authors
   '(("Radon Rosborough" . "radon.neon@gmail.com"))
   :maintainer
   '("Radon Rosborough" . "radon.neon@gmail.com")
