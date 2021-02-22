@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/magit/transient
 ;; Package-Requires: ((emacs "25.1"))
-;; Package-Version: 0
+;; Package-Version: 0.3.0
 ;; Keywords: bindings
 
 ;; This file is part of GNU Emacs.
@@ -1060,8 +1060,8 @@ example, sets a variable use `transient-define-infix' instead.
               (let ((spred (transient--suffix-predicate suf))
                     (epred (transient--suffix-predicate elt)))
                 ;; If both suffixes have a predicate and they
-                ;; are not identical, then the probability is
-                ;; high that we want to keep both.
+                ;; are not identical, then there is a high
+                ;; probability that we want to keep both.
                 (when (or (not spred)
                           (not epred)
                           (equal spred epred))
@@ -1622,9 +1622,8 @@ be nil and PARAMS may be (but usually is not) used to set e.g. the
 This function is also called internally in which case LAYOUT and
 EDIT may be non-nil."
   (transient--debug 'setup)
-  (when (and (>= (minibuffer-depth) 1) transient--prefix)
-    (error "Cannot invoke %s while minibuffer is active %s"
-           this-command "on behalf of another prefix command"))
+  (when (> (minibuffer-depth) 0)
+    (user-error "Cannot invoke transient %s while minibuffer is active"))
   (transient--with-emergency-exit
     (cond
      ((not name)
@@ -1633,6 +1632,12 @@ EDIT may be non-nil."
       (transient--pop-keymap 'transient--redisplay-map)
       (setq name (oref transient--prefix command))
       (setq params (list :scope (oref transient--prefix scope))))
+     (transient--transient-map
+      ;; Invoked as a ":transient-non-suffix 'transient--do-{stay,call}"
+      ;; of an outer prefix.  Unlike the usual `transient--do-replace',
+      ;; these predicates fail to clean up after the outer prefix.
+      (transient--pop-keymap 'transient--transient-map)
+      (transient--pop-keymap 'transient--redisplay-map))
      ((not (or layout                      ; resuming parent/suspended prefix
                transient-current-command)) ; entering child prefix
       (transient--stack-zap))              ; replace suspended prefix, if any
@@ -1883,7 +1888,8 @@ value.  Otherwise return CHILDREN as is."
   (transient--pop-keymap 'transient--redisplay-map)
   (remove-hook 'pre-command-hook #'transient--pre-command)
   (unless transient--showp
-    (message ""))
+    (let ((message-log-max nil))
+      (message "")))
   (setq transient--transient-map nil)
   (setq transient--predicate-map nil)
   (setq transient--redisplay-map nil)
@@ -2026,8 +2032,11 @@ value.  Otherwise return CHILDREN as is."
 (defun transient--debug (arg &rest args)
   (when transient--debug
     (if (symbolp arg)
-        (message "-- %-16s (cmd: %s, exit: %s)"
-                 arg this-command transient--exitp)
+        (message "-- %-16s (cmd: %s, event: %S, exit: %s)"
+                 arg
+                 (transient--suffix-symbol this-command)
+                 (key-description (this-command-keys-vector))
+                 transient--exitp)
       (apply #'message arg args))))
 
 (defun transient--emergency-exit ()
@@ -2507,11 +2516,11 @@ stand-alone command."
 
 (defun transient-read-directory (prompt _initial-input _history)
   "Read a directory."
-  (expand-file-name (read-directory-name prompt)))
+  (file-local-name (expand-file-name (read-directory-name prompt))))
 
 (defun transient-read-existing-directory (prompt _initial-input _history)
   "Read an existing directory."
-  (expand-file-name (read-directory-name prompt nil nil t)))
+  (file-local-name (expand-file-name (read-directory-name prompt nil nil t))))
 
 (defun transient-read-number-N0 (prompt initial-input history)
   "Read a natural number (including zero) and return it as a string."

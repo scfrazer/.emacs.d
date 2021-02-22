@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20201214.227
-;; Package-Commit: b12f8b06d591bf14bb641ccf321d6750f459a02c
+;; Package-Version: 20210222.349
+;; Package-Commit: 44be76c676c0d3d61d0911404dc62b38df63c469
 ;; Created: 8 Dec 2019
 ;; Package-Requires: ((emacs "25.1") (prescient "5.0") (selectrum "1.0"))
 ;; SPDX-License-Identifier: MIT
@@ -29,6 +29,20 @@
 (require 'selectrum)
 
 (require 'subr-x)
+
+;;;; Faces
+
+(defface selectrum-primary-highlight
+  '((t :weight bold))
+  "Face used to highlight the parts of candidates that match the input."
+  :group 'selectrum-faces)
+
+(defface selectrum-secondary-highlight
+  '((t :inherit selectrum-primary-highlight :underline t))
+  "Additional face used to highlight parts of candidates.
+May be used to highlight parts of candidates that match specific
+parts of the input."
+  :group 'selectrum-faces)
 
 ;;;; Minor mode
 

@@ -869,10 +869,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210218.1421/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210218.1421/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1009,10 +1009,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210101.2227/prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210222.417/prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210101.2227/prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210222.417/prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1162,10 +1162,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201214.227/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210222.349/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20201214.227/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210222.349/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -3471,7 +3471,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210210.1449" "/home/scfrazer/.emacs.d/elpa/marginalia-20210216.1025" "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645" "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905" "/home/scfrazer/.emacs.d/elpa/transient-20210218.1421" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210210.1449" "/home/scfrazer/.emacs.d/elpa/marginalia-20210216.1025" "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645" "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905" "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:

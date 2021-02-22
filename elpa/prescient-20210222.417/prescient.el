@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210101.2227
-;; Package-Commit: 42adc802d3ba6c747bed7ea1f6e3ffbbdfc7192d
+;; Package-Version: 20210222.417
+;; Package-Commit: 44be76c676c0d3d61d0911404dc62b38df63c469
 ;; Created: 7 Aug 2017
 ;; Package-Requires: ((emacs "25.1"))
 ;; SPDX-License-Identifier: MIT
@@ -184,6 +184,15 @@ these results in some already-sorted order)."
 If non-nil, then write the cache data to `prescient-save-file'
 after the cache data is updated by `prescient-remember' when
 `prescient-persist-mode' is activated."
+  :type 'boolean)
+
+(defcustom prescient-sort-full-matches-first nil
+  "Whether to sort fully matched candidates before others.
+
+Prescient can sort by recency, frequency, and candidate length.
+With this option, fully matched candidates will be sorted before
+partially matched candidates, but candidates in each group will
+still be sorted like normal."
   :type 'boolean)
 
 ;;;; Caches
@@ -527,18 +536,27 @@ must match each subquery, either using substring or initialism
 matching. Discard any that do not, and return the resulting list.
 Do not modify CANDIDATES; always make a new copy of the list."
   (let ((regexps (prescient-filter-regexps query))
-        (results nil))
+        (results nil)
+        (prioritized-results nil))
     (save-match-data
       ;; Use named block in case somebody loads `cl' accidentally
-      ;; which causes `dolist' to turn into `cl-dolist' which creates
-      ;; a nil block implicitly.
+      ;; which causes `dolist' to turn into `cl-dolist' which
+      ;; creates a nil block implicitly.
       (dolist (candidate candidates)
         (cl-block done
-          (dolist (regexp regexps)
-            (unless (string-match regexp candidate)
-              (cl-return-from done)))
-          (push candidate results)))
-      (nreverse results))))
+          (let ((fully-matched nil))
+            (dolist (regexp regexps)
+              (unless (string-match regexp candidate)
+                (cl-return-from done))
+              (when (and
+                     prescient-sort-full-matches-first
+                     (equal (length candidate)
+                            (length (match-string 0 candidate))))
+                (setq fully-matched t)))
+            (if fully-matched
+                (push candidate prioritized-results)
+              (push candidate results)))))
+      (nconc (nreverse prioritized-results) (nreverse results)))))
 
 (defmacro prescient--sort-compare ()
   "Hack used to cause the byte-compiler to produce faster code.
