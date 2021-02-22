@@ -41,5 +41,6 @@
 (define-key xref--button-map (kbd "TAB")  #'xref-goto-xref)
 (define-key xref--xref-buffer-mode-map (kbd "n") #'my-xref-next-line)
 (define-key xref--xref-buffer-mode-map (kbd "p") #'my-xref-prev-line)
+(define-key xref--xref-buffer-mode-map (kbd "C-g") #'quit-window)
 
 (provide 'my-xref)
