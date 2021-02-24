@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210223.52/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210223.1329/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210223.52/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210223.1329/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2348,6 +2348,17 @@ Cycle between annotators in `marginalia-annotators'." t nil)
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/jsonrpc-1.0.14/jsonrpc-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/jsonrpc-1.0.14/jsonrpc-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "jsonrpc" '("jsonrpc-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-snatcher-20200916.1717/json-snatcher-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2843,6 +2854,51 @@ use in place of \"-ls\" as the final argument.
 \(fn DIR ARGS)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fd-dired" '("fd-dired-")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210224.1127/eglot-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210224.1127/eglot-autoloads.el") (car load-path))))
+
+
+
+(autoload 'eglot "eglot" "\
+Manage a project with a Language Server Protocol (LSP) server.
+
+The LSP server of CLASS is started (or contacted) via CONTACT.
+If this operation is successful, current *and future* file
+buffers of MANAGED-MAJOR-MODE inside PROJECT become \"managed\"
+by the LSP server, meaning information about their contents is
+exchanged periodically to provide enhanced code-analysis via
+`xref-find-definitions', `flymake-mode', `eldoc-mode',
+`completion-at-point', among others.
+
+Interactively, the command attempts to guess MANAGED-MAJOR-MODE
+from current buffer, CLASS and CONTACT from
+`eglot-server-programs' and PROJECT from `project-current'.  If
+it can't guess, the user is prompted.  With a single
+\\[universal-argument] prefix arg, it always prompt for COMMAND.
+With two \\[universal-argument] prefix args, also prompts for
+MANAGED-MAJOR-MODE.
+
+PROJECT is a project instance as returned by `project-current'.
+
+CLASS is a subclass of `eglot-lsp-server'.
+
+CONTACT specifies how to contact the server.  It is a
+keyword-value plist used to initialize CLASS or a plain list as
+described in `eglot-server-programs', which see.
+
+INTERACTIVE is t if called interactively.
+
+\(fn MANAGED-MAJOR-MODE PROJECT CLASS CONTACT &optional INTERACTIVE)" t nil)
+
+(autoload 'eglot-ensure "eglot" "\
+Start Eglot session for current buffer if there isn't one." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eglot" '("eglot-")))
 
 
 )
@@ -3464,7 +3520,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv jsonrpc json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired eglot dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
