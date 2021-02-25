@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210222.417
-;; Package-Commit: 44be76c676c0d3d61d0911404dc62b38df63c469
+;; Package-Version: 20210224.1657
+;; Package-Commit: 9631db72b95f87a50453867587f03c5862acf873
 ;; Created: 7 Aug 2017
 ;; Package-Requires: ((emacs "25.1"))
 ;; SPDX-License-Identifier: MIT
@@ -195,6 +195,16 @@ partially matched candidates, but candidates in each group will
 still be sorted like normal."
   :type 'boolean)
 
+(defcustom prescient-use-char-folding t
+  "Whether certain literal filtering methods use character folding.
+
+This affects the `literal' and `literal-prefix' filtering methods.
+
+In Emacs versions 27 or greater, see also the customizable
+variables `char-fold-include', `char-fold-exclude', and
+`char-fold-symmetric'."
+  :type 'boolean)
+
 ;;;; Caches
 
 (defvar prescient--history (make-hash-table :test 'equal)
@@ -360,19 +370,27 @@ as a sub-query delimiter."
 
 (cl-defun prescient-literal-regexp (query &key with-group
                                           &allow-other-keys)
-  "Return a regexp matching QUERY with character folding.
-If WITH-GROUP is `all', enclose the match in a capture group."
+  "Return a regexp matching QUERY with optional character folding.
+
+If WITH-GROUP is `all', enclose the match in a capture group.
+
+See also the customizable variable `prescient-use-char-folding'."
   (prescient-with-group
-   (char-fold-to-regexp query)
+   (if prescient-use-char-folding
+       (char-fold-to-regexp query)
+     query)
    (eq with-group 'all)))
 
 (cl-defun prescient-literal-prefix-regexp
     (query &key with-group subquery-number
            &allow-other-keys)
-  "Return a regexp matching QUERY with character folding.
+  "Return a regexp matching QUERY with optional character folding.
+
 If WITH-GROUP is `all', enclose the match in a capture group.
 Anchor the QUERY at the beginning of the candidate if
-SUBQUERY-NUMBER equals 0."
+SUBQUERY-NUMBER equals 0.
+
+See also the customizable variable `prescient-use-char-folding'."
   (prescient-with-group
    (concat (if (= subquery-number 0)
                ;; 1. subquery => anchor at the beginning of candidate.
@@ -380,7 +398,9 @@ SUBQUERY-NUMBER equals 0."
              ;; Otherwise, just anchor at the beginning of some word
              ;; in the candidate.
              "\\b")
-           (char-fold-to-regexp query))
+           (if prescient-use-char-folding
+               (char-fold-to-regexp query)
+             query))
    (eq with-group 'all)))
 
 (cl-defun prescient-initials-regexp (query &key with-group

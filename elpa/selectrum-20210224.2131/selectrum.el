@@ -1413,7 +1413,11 @@ window is supposed to be shown vertically."
            (cond (selectrum-display-action
                   (selectrum--fit-window-to-buffer window))
                  (t
-                  (selectrum--set-window-height window)))))))
+                  ;; With `truncate-lines' `resize-mini-windows'
+                  ;; doesn't work before Emacs 28:
+                  ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=46718
+                  (when (version< emacs-version "28")
+                    (selectrum--set-window-height window))))))))
 
 (defun selectrum--fit-window-to-buffer (window)
   "Fit window height to its buffer contents.
@@ -1907,20 +1911,26 @@ plus CANDIDATE."
   (let* ((result (cond ((and selectrum--is-crm-session
                              (string-match crm-separator
                                            selectrum--previous-input-string))
-                        (let ((crm
-                               (if (and selectrum--current-candidate-index
-                                        (< selectrum--current-candidate-index
-                                           0))
-                                   candidate
-                                 (with-temp-buffer
-                                   (insert selectrum--previous-input-string)
-                                   (goto-char (point-min))
-                                   (while (re-search-forward
-                                           crm-separator nil t))
-                                   (delete-region (point) (point-max))
-                                   (insert (selectrum--get-full candidate))
-                                   (buffer-string)))))
-                          (dolist (cand (split-string crm crm-separator t))
+                        (let* ((previous-input-string
+                                selectrum--previous-input-string)
+                               (separator
+                                crm-separator)
+                               (full-candidate
+                                (selectrum--get-full candidate))
+                               (crm
+                                (if (and selectrum--current-candidate-index
+                                         (< selectrum--current-candidate-index
+                                            0))
+                                    candidate
+                                  (with-temp-buffer
+                                    (insert previous-input-string)
+                                    (goto-char (point-min))
+                                    (while (re-search-forward
+                                            separator nil t))
+                                    (delete-region (point) (point-max))
+                                    (insert full-candidate)
+                                    (buffer-string)))))
+                          (dolist (cand (split-string crm separator t))
                             (apply #'run-hook-with-args
                                    'selectrum-candidate-selected-hook
                                    (selectrum--get-full cand)
@@ -2344,16 +2354,24 @@ COLLECTION, and PREDICATE, see `completion-in-region'."
            (prog1 t
              (pcase category
                ('file
-                (let ((try nil))
-                  (setq result
-                        (if (and (not (cdr cands))
-                                 (stringp (setq try
-                                                (try-completion
-                                                 input collection predicate))))
-                            try
-                          (selectrum--completing-read-file-name
-                           "Completion: " collection predicate
-                           nil input))
+                (let* ((try (and (not (cdr cands))
+                                 (try-completion
+                                  input collection predicate)))
+                       (comp (and (stringp try)
+                                  try))
+                       (initial (if (string-empty-p input)
+                                    (abbreviate-file-name default-directory)
+                                  input))
+                       (path
+                        (or comp
+                            (selectrum--completing-read-file-name
+                             "Completion: " collection predicate
+                             nil initial))))
+                  (setq result (if (and (derived-mode-p 'comint-mode)
+                                        (not comp)
+                                        (fboundp 'comint-quote-filename))
+                                   (comint-quote-filename path)
+                                 path)
                         exit-status 'sole)))
                (_
                 (setq result
