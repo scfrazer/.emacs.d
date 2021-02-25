@@ -97,8 +97,8 @@
      (3 'sim-log-mode-timestamp-face)
      (4 'sim-log-mode-filename-face)
      (5 'sim-log-mode-path-face)
-     (6 'sim-log-mode-msg-id-face)
-     (7 'sim-log-mode-error-msg-face))
+     (7 'sim-log-mode-error-msg-face)
+     (8 'sim-log-mode-error-msg-face))
     ("^\\(UVM_WARNING\\) @ \\([0-9.]+ [fpnum]?s\\)\\( \\(.+:[0-9]+\\)\\)?: \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
      (1 'warning)
      (2 'sim-log-mode-timestamp-face)
@@ -119,8 +119,8 @@
      (3 'sim-log-mode-filename-face)
      (4 'sim-log-mode-timestamp-face)
      (5 'sim-log-mode-path-face)
-     (6 'sim-log-mode-msg-id-face)
-     (7 'sim-log-mode-msg-face))
+     (7 'sim-log-mode-error-msg-face)
+     (8 'sim-log-mode-error-msg-face))
     ("^\\(UVM_WARNING\\)\\( /[a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
      (1 'warning)
      (2 'sim-log-mode-filename-face)
