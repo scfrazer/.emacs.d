@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210224.1657
-;; Package-Commit: 9631db72b95f87a50453867587f03c5862acf873
+;; Package-Version: 20210226.415
+;; Package-Commit: 0e213cad7776388a21b24bcbdc6b4dad31cba170
 ;; Created: 7 Aug 2017
 ;; Package-Requires: ((emacs "25.1"))
 ;; SPDX-License-Identifier: MIT
@@ -683,7 +683,3 @@ Return the sorted list. The original is modified destructively."
 (provide 'prescient)
 
 ;;; prescient.el ends here
-
-;; Local Variables:
-;; outline-regexp: ";;;;* "
-;; End:
