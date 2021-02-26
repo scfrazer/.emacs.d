@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210225.1909/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210226.1338/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210225.1909/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210226.1338/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2857,10 +2857,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210224.1127/eglot-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210226.1930/eglot-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210224.1127/eglot-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210226.1930/eglot-autoloads.el") (car load-path))))
 
 
 

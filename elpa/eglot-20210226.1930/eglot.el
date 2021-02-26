@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210224.1127
-;; Package-Commit: a2d1fc9c3c8a04072699713e8697cdeb92b2a4c7
+;; Package-Version: 20210226.1930
+;; Package-Commit: ee980cf59b2bf0ebe0c046d445273d356aee6ce7
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -1574,15 +1574,16 @@ COMMAND is a symbol naming the command."
 (cl-defmethod eglot-handle-request
   (_server (_method (eql window/showMessageRequest)) &key type message actions)
   "Handle server request window/showMessageRequest"
-  (let ((label (completing-read
-                (concat
-                 (format (propertize "[eglot] Server reports (type=%s): %s"
-                                     'face (if (<= type 1) 'error))
-                         type message)
-                 "\nChoose an option: ")
-                (or (mapcar (lambda (obj) (plist-get obj :title)) actions)
-                    '("OK"))
-                nil t (plist-get (elt actions 0) :title))))
+  (let* ((actions (append actions nil)) ;; gh#627
+         (label (completing-read
+                 (concat
+                  (format (propertize "[eglot] Server reports (type=%s): %s"
+                                      'face (if (<= type 1) 'error))
+                          type message)
+                  "\nChoose an option: ")
+                 (or (mapcar (lambda (obj) (plist-get obj :title)) actions)
+                     '("OK"))
+                 nil t (plist-get (elt actions 0) :title))))
     (if label `(:title ,label) :null)))
 
 (cl-defmethod eglot-handle-notification
