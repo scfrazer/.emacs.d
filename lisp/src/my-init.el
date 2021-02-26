@@ -1495,7 +1495,7 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
   "Load my light theme."
   (interactive)
   (my-theme-disable-all)
-  (load-theme 'smf-light t))
+  (load-theme 'smf-light2 t))
 
 (defun my-toggle-buffer-modified ()
   "Toggle buffer modified/unmodified."
