@@ -869,10 +869,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1009,10 +1009,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210226.415/prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210227.600/prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210226.415/prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210227.600/prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210226.1338/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210228.1401/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210226.1338/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210228.1401/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1135,37 +1135,11 @@ Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum" '("selectrum-")))
 
 
-
-(defvar selectrum-helm-mode nil "\
-Non-nil if Selectrum-Helm mode is enabled.
-See the `selectrum-helm-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `selectrum-helm-mode'.")
-
-(custom-autoload 'selectrum-helm-mode "selectrum-helm" nil)
-
-(autoload 'selectrum-helm-mode "selectrum-helm" "\
-Minor mode to use Selectrum to implement Helm commands.
-
-If called interactively, enable Selectrum-Helm mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-helm" '("selectrum-helm--adapter")))
-
-
-
-
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210224.1657/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210227.600/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210224.1657/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210227.600/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1193,10 +1167,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210227.1113/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210227.1113/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1332,7 +1306,7 @@ List all `rg-mode' buffers in `ibuffer'." t nil)
  (autoload 'rg-isearch-current-dir "rg-isearch.el" "" t)
  (autoload 'rg-isearch-project "rg-isearch.el" "" t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-get-isearch-string")))
 
 
  (autoload 'rg-menu "rg-menu.el" "" t)
@@ -1343,7 +1317,7 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 
 \(fn &optional PREFIX)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-menu" '("rg-menu")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-menu" '("rg-menu-")))
 
 
 
@@ -1914,10 +1888,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1944,7 +1918,7 @@ returns nil.  In any other case it \"completes\" STRING to
 itself, without moving POINT.
 This function is part of the `orderless' completion style.
 
-\(fn STRING TABLE PRED POINT &optional METADATA)" nil nil)
+\(fn STRING TABLE PRED POINT)" nil nil)
 
 (add-to-list 'completion-styles-alist '(orderless orderless-try-completion orderless-all-completions "Completion of multiple components, in any order."))
 
@@ -2857,10 +2831,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210226.1930/eglot-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210227.1019/eglot-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210226.1930/eglot-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210227.1019/eglot-autoloads.el") (car load-path))))
 
 
 
@@ -2902,10 +2876,10 @@ Start Eglot session for current buffer if there isn't one." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210210.1449/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210228.2221/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210210.1449/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210228.2221/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3527,7 +3501,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210210.1449" "/home/scfrazer/.emacs.d/elpa/marginalia-20210224.1404" "/home/scfrazer/.emacs.d/elpa/orderless-20210212.1645" "/home/scfrazer/.emacs.d/elpa/rg-20210217.1905" "/home/scfrazer/.emacs.d/elpa/transient-20210221.2251" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210228.2221" "/home/scfrazer/.emacs.d/elpa/marginalia-20210224.1404" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210227.1113" "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:
