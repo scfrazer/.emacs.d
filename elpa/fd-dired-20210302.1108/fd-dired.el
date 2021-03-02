@@ -3,8 +3,8 @@
 ;; Copyright © 2018, Free Software Foundation, Inc.
 
 ;; Version: 0.1.0
-;; Package-Version: 20201217.547
-;; Package-Commit: 9fb966df33e7dde9360b8707f7a0197694f46abd
+;; Package-Version: 20210302.1108
+;; Package-Commit: 157dd0be9d63d15a0a06e234463c1e5067ee66bf
 ;; URL: https://github.com/yqrashawn/fd-dired
 ;; Package-Requires: ((emacs "25"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
@@ -62,7 +62,7 @@
   :type 'string
   :group 'fd-dired)
 
-(defcustom fd-dired-ls-option '("| xargs -0 ls -ld --quoting-style=literal" . "-ld")
+(defcustom fd-dired-ls-option `(,(concat "| xargs -0 " insert-directory-program " -ld --quoting-style=literal") . "-ld")
   "A pair of options to produce and parse an `ls -l'-type list from `fd'.
 This is a cons of two strings (FD-ARGUMENTS . LS-SWITCHES).
 FD-ARGUMENTS is the option passed to `fd' to produce a file

@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210228.1401/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210302.844/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210228.1401/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210302.844/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -2809,10 +2809,10 @@ otherwise call `fill-function-arguments-to-single-line'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20201217.547/fd-dired-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210302.1108/fd-dired-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20201217.547/fd-dired-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210302.1108/fd-dired-autoloads.el") (car load-path))))
 
 
 

@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/fd-dired-20201217.547/fd-dired.el  -*- no-byte-compile: t -*-
-(define-package "fd-dired" "20201217.547" "find-dired alternative using fd" '((emacs "25")) :commit "9fb966df33e7dde9360b8707f7a0197694f46abd" :keywords '("tools" "fd" "find" "dired") :authors '(("Rashawn Zhang" . "namy.19@gmail.com")) :maintainer '("Rashawn Zhang" . "namy.19@gmail.com") :url "https://github.com/yqrashawn/fd-dired")
