@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210227.1019
-;; Package-Commit: 92b0c5d385cc6f3593f60c2f93917fd8b2d44207
+;; Package-Version: 20210303.1008
+;; Package-Commit: d784d6022c19f7d1da8c1e4a71505749a22a314c
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -2135,7 +2135,7 @@ is not active."
                                        insertText)
                                       (t
                                        (string-trim-left label)))))
-                           (unless (zerop (length item))
+                           (unless (zerop (length proxy))
                              (put-text-property 0 1 'eglot--lsp-item item proxy))
                            proxy))
                        items)))))
