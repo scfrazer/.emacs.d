@@ -1718,7 +1718,6 @@ Prefix with C-u to resize the `next-window'."
  ("C-/"         . dabbrev-expand)
  ("C-M-_"       . my-tags-complete)
  ("C-M-h"       . backward-sexp)
- ("C-M-i"       . my-tags-complete)
  ("C-M-k"       . delete-region)
  ("C-M-l"       . forward-sexp)
  ("C-M-t"       . my-transpose-sexps)
