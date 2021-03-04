@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210303.1118
-;; Package-Commit: 338279bb74b41f235c37640f079ffdaf8332166e
+;; Package-Version: 20210304.1620
+;; Package-Commit: 1be3e7e17bcc40c9db4e61cc31b03df391d4cf2c
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -465,7 +465,7 @@ This macro is only needed to prevent memory leaking issues with
 the upstream `minibuffer-with-setup-hook' macro. FUN is the hook
 function and BODY opens the minibuffer."
   ;; Copied from https://github.com/minad/consult/commit/27e055e.
-  (declare (indent 1) (debug t))
+  (declare (indent 1) (debug ([&or (":append" form) [&or symbolp form]] body)))
   (let ((hook (make-symbol "hook"))
         (append))
     (when (eq (car-safe fun) :append)
@@ -618,6 +618,9 @@ changes, and is subsequently passed to
   "Previous user input string in the minibuffer.
 Used to check if the user input has changed and candidates need
 to be re-filtered.")
+
+(defvar-local selectrum--current-input nil
+  "Current user input (possibly transformed).")
 
 (defvar-local selectrum--match-is-required nil
   "Non-nil if the user must select one of the candidates.
@@ -1186,14 +1189,13 @@ the update."
     (with-current-buffer selectrum--last-buffer
       (setq-local selectrum--last-input input)))
   (setq-local selectrum--previous-input-string input)
-  (setq input (selectrum--update-dynamic-candidates input))
-  (selectrum--update-refined-candidates input)
+  (setq-local selectrum--current-input
+              (selectrum--update-dynamic-candidates input))
+  (selectrum--update-refined-candidates selectrum--current-input)
   (setq-local selectrum--first-index-displayed nil)
   (setq-local selectrum--actual-num-candidates-displayed nil)
   (setq-local selectrum--current-candidate-index
-              (selectrum--compute-current-candidate-index keep-selected))
-  ;; Return input string which may be transformed
-  input)
+              (selectrum--compute-current-candidate-index keep-selected)))
 
 (defun selectrum--compute-current-candidate-index (keep-selected)
   "Compute the index of the current candidate.
@@ -1292,7 +1294,7 @@ the update."
                                  (point-max)))
         (keep-mark-active (not deactivate-mark)))
     (unless (equal input selectrum--previous-input-string)
-      (setq input (selectrum--update-input-changed input keep-selected)))
+      (selectrum--update-input-changed input keep-selected))
     ;; Handle prompt selection.
     (if (and selectrum--current-candidate-index
              (< selectrum--current-candidate-index 0))
@@ -1311,7 +1313,7 @@ the update."
            (inserted-res
             (selectrum--insert-candidates
              window
-             input
+             selectrum--current-input
              ;; FIXME: This only takes our count overlay into
              ;; account there might be other overlays prefixing the
              ;; prompt.
@@ -1404,8 +1406,8 @@ vertically."
     (window-resize
      window (- dheight wheight) nil nil 'pixelwise)))
 
-(defun selectrum--ensure-single-line (cand settings)
-  "Return single-line CAND string.
+(defun selectrum--ensure-single-line (cand input settings)
+  "Return single-line CAND string for INPUT.
 
 Multi-line candidates are merged into a single line. The
 resulting single-line candidates are then shortened by replacing
@@ -1444,7 +1446,6 @@ SETTINGS, see `selectrum-multiline-display-settings'."
          (nlines/face (cdr nline/info))
          (lines (split-string cand "\n"))
          (len (length lines))
-         (input (minibuffer-contents))
          (first-line
           (save-match-data
             (if (string-match "\\`\\(?:[ \t]*\n\\)*\\([^\n]*\\)" cand)
@@ -1675,6 +1676,7 @@ If SHOULD-ANNOTATE is non-nil candidate annotations are added."
       (let* ((single-line-candidate (if (string-match-p "\n" candidate)
                                         (selectrum--ensure-single-line
                                          candidate
+                                         input
                                          selectrum-multiline-display-settings)
                                       candidate))
              (displayed-candidate
