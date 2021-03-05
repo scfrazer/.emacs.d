@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/selectrum-20210304.1620/selectrum.el  -*- no-byte-compile: t -*-
-(define-package "selectrum" "20210304.1620" "Easily select item from list" '((emacs "26.1")) :commit "1be3e7e17bcc40c9db4e61cc31b03df391d4cf2c" :authors '(("Radon Rosborough" . "radon.neon@gmail.com")) :maintainer '("Radon Rosborough" . "radon.neon@gmail.com") :keywords '("extensions") :url "https://github.com/raxod502/selectrum")
