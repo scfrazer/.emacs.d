@@ -1,8 +1,8 @@
-(define-package "rg" "20210227.1113" "A search tool based on ripgrep"
+(define-package "rg" "20210305.1621" "A search tool based on ripgrep"
   '((emacs "25.1")
     (transient "0.3.0")
     (wgrep "2.1.10"))
-  :commit "8a537d9f033ba1b47f2ebe4d76f68b3dd74aefcb" :authors
+  :commit "10e64887c224002572e1f1e19c74453cba606c3f" :authors
   '(("David Landell" . "david.landell@sunnyhill.email")
     ("Roland McGrath" . "roland@gnu.org"))
   :maintainer
