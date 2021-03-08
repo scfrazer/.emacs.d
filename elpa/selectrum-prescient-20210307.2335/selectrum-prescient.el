@@ -5,10 +5,10 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210227.600
-;; Package-Commit: b6da466e552a710a9362c73a3c1c265984de9790
+;; Package-Version: 20210307.2335
+;; Package-Commit: b36b7f38511430e434694d25a7a6a8914071f7f7
 ;; Created: 8 Dec 2019
-;; Package-Requires: ((emacs "25.1") (prescient "5.1") (selectrum "1.0"))
+;; Package-Requires: ((emacs "25.1") (prescient "5.1") (selectrum "3.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 5.1
 
@@ -63,8 +63,8 @@ parts of the input."
 ;;;; Minor mode
 
 (defun selectrum-prescient--preprocess (candidates)
-  "Sort CANDIDATES, unless `selectrum-should-sort-p' is nil."
-  (when selectrum-should-sort-p
+  "Sort CANDIDATES, unless `selectrum-should-sort' is nil."
+  (when selectrum-should-sort
     (setq candidates (prescient-sort candidates)))
   candidates)
 

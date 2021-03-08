@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210306.915
-;; Package-Commit: bacf490892f5a4a8c7f7e9d2eaeb2a7d377ef7d3
+;; Package-Version: 20210306.1539
+;; Package-Commit: 21cee863a07f9114172d5b9bd33eeed7f11bcf66
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -606,7 +606,8 @@ changes, and is subsequently passed to
 `selectrum-highlight-candidates-function'.")
 
 (defvar-local selectrum--current-candidate-index nil
-  "Index of currently selected candidate, or nil if no candidates.")
+  "Index of currently selected candidate, or nil if no candidates.
+The value -1 means prompt selection.")
 
 (defvar-local selectrum--first-index-displayed nil
   "Index of the first displayed candidate.")
@@ -858,17 +859,6 @@ content height is greater than the window height."
        (>= (cdr (window-text-pixel-size window))
            (window-body-height window 'pixelwise))))
 
-(defun selectrum--display-index (index)
-  "Return prefix for INDEX accoring to `selectrum-show-indices'."
-  (let ((show-indices
-         (cond
-          ((functionp selectrum-show-indices) selectrum-show-indices)
-          (selectrum-show-indices (lambda (i) (format "%2d " i))))))
-    (when show-indices
-      (propertize
-       (funcall show-indices index)
-       'face 'minibuffer-prompt))))
-
 (defun selectrum--vertical-display-style
     (win input nrows _ncols index
          max-index _first-index-displayed _last-index-displayed)
@@ -909,15 +899,12 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
          (groupf (or (completion-metadata-get metadata 'x-group-function)
                      (plist-get completion-extra-properties
                                 :x-group-function)))
-         (candidates (selectrum--format-candidates
-                      input
-                      (cond (aff
-                             (selectrum--affixate aff highlighted-candidates))
-                            ((or annotf docsigf)
-                             (selectrum--annotate
-                              highlighted-candidates annotf docsigf))
-                            (t highlighted-candidates))
-                      index first-index-displayed 'should-annotate))
+         (candidates (cond (aff
+                            (selectrum--affixate aff highlighted-candidates))
+                           ((or annotf docsigf)
+                            (selectrum--annotate
+                             highlighted-candidates annotf docsigf))
+                           (t highlighted-candidates)))
          (last-title nil)
          (lines ()))
     (dolist (cand candidates)
@@ -938,9 +925,10 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
                          selectrum-extend-current-candidate-highlight))
                   (selectrum--selection-highlight "\n")
                 "\n"))
-             (full-cand (concat (selectrum--display-index
-                                 (1+ (- i first-index-displayed)))
-                                cand)))
+             (full-cand (selectrum--format-candidate
+                         input cand i index
+                         first-index-displayed
+                         'should-annotate)))
         (push full-cand lines)
         (push newline lines)
         (cl-incf i)))
@@ -989,20 +977,21 @@ the `horizontal' description of `selectrum-display-style'."
                 (t
                  first-index-displayed)))
          (cands
-          (selectrum--format-candidates
-           input (selectrum--highlighted-candidates
-                  input first-index-displayed
-                  (floor ncols (1+ (length separator))))
-           index first-index-displayed))
+          (selectrum--highlighted-candidates
+           input first-index-displayed
+           (floor ncols (1+ (length separator)))))
          (n 0)
          (insert nil))
     (when cands
       (let ((ncols ncols))
         (while (and cands (> ncols 0))
           (let ((cand (pop cands)))
+            (setq cand
+                  (selectrum--format-candidate
+                   input cand (+ n first-index-displayed)
+                   index first-index-displayed))
             (setq cand (string-trim (replace-regexp-in-string
                                      "[ \t][ \t]+" " " cand)))
-            (setq cand (concat (selectrum--display-index (1+ n)) cand))
             (when (zerop n)
               (setq ncols (- ncols (length start)))
               (push start insert))
@@ -1263,14 +1252,16 @@ the update."
   "Compute the index of the current candidate.
 KEEP-SELECTED can be a candidate which should stay selected after
 the update."
+  ;; Be careful with reordering of the cond clauses because they are
+  ;; assumed to get checked in this order!
   (cond
-   ;; Restore the old index when repeating
+   ;; Restore the old index when repeating.
    (selectrum--repeat
     (setq-local selectrum--repeat nil)
     (and (> (length selectrum--refined-candidates) 0)
          (min (or selectrum--current-candidate-index 0)
               (1- (length selectrum--refined-candidates)))))
-   ;; Check for candidates needs to be first!
+   ;; If there are no candidates the prompt should be selected.
    ((null selectrum--refined-candidates)
     (when (or (not selectrum--match-is-required)
               (selectrum--at-existing-prompt-path-p))
@@ -1281,33 +1272,46 @@ the update."
                      :key #'selectrum--get-full
                      :test #'equal)
         0))
-   ((and selectrum--default-candidate
-         (string-empty-p (minibuffer-contents))
-         (not (member selectrum--default-candidate
-                      selectrum--refined-candidates)))
+   ;; Prompt selection.
+   ((or
+     ;; When the default isn't available via candidate selection, select
+     ;; the prompt.
+     (and selectrum--default-candidate
+          (string-empty-p (minibuffer-contents))
+          (not (member selectrum--default-candidate
+                       selectrum--refined-candidates)))
+     ;; When the prompt contains the the default select it right away.
+     (and selectrum--is-initializing
+          (equal selectrum--default-candidate
+                 (minibuffer-contents)))
+     ;; For history navigation select the prompt as the suggested
+     ;; candidates are inserted there.
+     (and (not (= (minibuffer-prompt-end) (point-max)))
+          (or (and minibuffer-history-position
+                   (not (zerop
+                         minibuffer-history-position))
+                   isearch-mode)
+              (memq this-command
+                    '(next-history-element
+                      previous-history-element)))
+          (or (not selectrum--match-is-required)
+              (selectrum--at-existing-prompt-path-p))))
     -1)
-   ((or (and selectrum--is-initializing
-             (equal selectrum--default-candidate
-                    (minibuffer-contents)))
-        (and (not (= (minibuffer-prompt-end) (point-max)))
-             (or (and minibuffer-history-position
-                      (not (zerop
-                            minibuffer-history-position))
-                      isearch-mode)
-                 (memq this-command
-                       '(next-history-element
-                         previous-history-element)))
-             (or (not selectrum--match-is-required)
-                 (selectrum--at-existing-prompt-path-p))))
-    -1)
-   (selectrum-move-default-candidate
+   ;; Select first candidate if the first candidate is known to be the
+   ;; default.
+   ((or (not selectrum--default-candidate)
+        selectrum-move-default-candidate)
     0)
-   (t
+   ;; Select the default initially.
+   (selectrum--is-initializing
+    ;; FIXME: For file completions the default can be relative, also
+    ;; there might be a mismatch because of name abbreviation.
     (or (cl-position selectrum--default-candidate
                      selectrum--refined-candidates
                      :key #'selectrum--get-full
                      :test #'equal)
-        0))))
+        0))
+   (t 0)))
 
 (defun selectrum--format-default ()
   "Format default value using `selectrum-default-value-format'.
@@ -1611,23 +1615,32 @@ has a face property."
                     cand)))
         (push new res)))))
 
-(defun selectrum--display-string (str)
-  "Return display string of STR.
-Any string display specs in STR are replaced with the string they
-will display as. This avoids prompt bleeding issues that occur
-with display specs used within the after-string overlay."
+(defun selectrum--replace-prop (str prop handler)
+  "Replace STR parts with PROP using HANDLER.
+HANDLER function can return a replacement for the part of string
+which has the property value it receives as argument."
   (let ((len (length str))
         (pos 0)
         (chunks ()))
     (while (not (eq pos len))
-      (let* ((end (next-single-property-change pos 'display str len))
-             (display (get-text-property pos 'display str))
-             (chunk (if (stringp display)
-                        display
+      (let* ((end (next-single-property-change pos prop str len))
+             (val (get-text-property pos prop str))
+             (chunk (if-let ((rep (and val (funcall handler val))))
+                        rep
                       (substring str pos end))))
         (push chunk chunks)
         (setq pos end)))
     (apply #'concat (nreverse chunks))))
+
+(defun selectrum--display-string (str)
+  "Return display string of STR.
+Any string display specs in STR are replaced with the string they
+will display as. This avoids prompt bleeding issues that occur
+with display specs used within the after-string overlay.
+Invisible parts of the display string are removed."
+  (let ((str (selectrum--replace-prop
+              str 'display (lambda (val) (when (stringp val) val)))))
+    (selectrum--replace-prop str 'invisible (lambda (val) (when val "")))))
 
 (defun selectrum--selection-highlight (str)
   "Return copy of STR with selection highlight."
@@ -1702,80 +1715,81 @@ NCANDS the maximal number of candidates to get."
         selectrum-num-candidates-displayed
       ncands))))
 
-(defun selectrum--format-candidates
-    (input candidates current-index first-index-displayed
+(defun selectrum--format-candidate
+    (input candidate candidate-index current-index first-index
            &optional should-annotate)
-  "Get display strings for CANDIDATES.
-INPUT is the input string for highlighting.
-CURRENT-INDEX is the index of the current candidate.
-FIRST-INDEX-DISPLAYED is the first index which is displayed."
-  (let* ((highlighted-index
-          (when (and first-index-displayed current-index)
-            (- current-index first-index-displayed)))
-         (index 0)
-         (result ()))
-    (dolist (candidate candidates (nreverse result))
-      (let* ((single-line-candidate (if (string-match-p "\n" candidate)
-                                        (selectrum--ensure-single-line
-                                         candidate
-                                         input
-                                         selectrum-multiline-display-settings)
-                                      candidate))
-             (prefix (and should-annotate
+  "Get display string of CANDIDATE.
+INPUT is the input string, CANDIDATE-INDEX the display-index of
+the CANDIDATE, CURRENT-INDEX the display-index of the selected
+candidate in the UI and FIRST-INDEX is the first display-index
+which is displayed in the UI."
+  (let* ((hl (eq candidate-index current-index))
+         (display-index (- candidate-index first-index))
+         (single-line-candidate (if (string-match-p "\n" candidate)
+                                    (selectrum--ensure-single-line
+                                     candidate
+                                     input
+                                     selectrum-multiline-display-settings)
+                                  candidate))
+         (prefix (and should-annotate
+                      (get-text-property
+                       0 'selectrum-candidate-display-prefix
+                       candidate)))
+         (suffix (and should-annotate
+                      (get-text-property
+                       0 'selectrum-candidate-display-suffix
+                       candidate)))
+         (right-margin
+          (and should-annotate
+               (when-let (right-margin
                           (get-text-property
-                           0 'selectrum-candidate-display-prefix
-                           candidate)))
-             (suffix (and should-annotate
-                          (get-text-property
-                           0 'selectrum-candidate-display-suffix
-                           candidate)))
-             (right-margin
-              (and should-annotate
-                   (when-let (right-margin
-                              (get-text-property
-                               0 'selectrum-candidate-display-right-margin
-                               candidate))
-                     (concat (propertize
-                              " "
-                              'display
-                              `(space
-                                :align-to
-                                (- right-fringe
-                                   ,(string-width right-margin)
-                                   ,selectrum-right-margin-padding)))
-                             right-margin))))
-             (displayed-candidate
-              (selectrum--display-string
-               single-line-candidate))
-             (formatting-current-candidate
-              (equal index highlighted-index)))
-        (when should-annotate
-          (setq displayed-candidate
-                (concat prefix displayed-candidate suffix right-margin)))
-        ;; Add the ability to interact with candidates via the mouse.
-        (add-text-properties
-         0 (length displayed-candidate)
-         (list
-          'mouse-face 'highlight
-          ;; 'help-echo
-          ;; "mouse-1: select candidate\nmouse-3: insert candidate"
-          'keymap
-          (let ((keymap (make-sparse-keymap)))
-            (define-key keymap [mouse-1]
-              `(lambda ()
-                 (interactive)
-                 (selectrum-select-current-candidate ,(1+ index))))
-            (define-key keymap [mouse-3]
-              `(lambda ()
-                 (interactive)
-                 (selectrum-insert-current-candidate ,(1+ index))))
-            keymap))
-         displayed-candidate)
-        (when formatting-current-candidate
-          (setq displayed-candidate
-                (selectrum--selection-highlight displayed-candidate)))
-        (push displayed-candidate result)
-        (cl-incf index)))))
+                           0 'selectrum-candidate-display-right-margin
+                           candidate))
+                 (concat (propertize
+                          " "
+                          'display
+                          `(space
+                            :align-to
+                            (- right-fringe
+                               ,(string-width right-margin)
+                               ,selectrum-right-margin-padding)))
+                         right-margin))))
+         (displayed-candidate
+          (selectrum--display-string
+           single-line-candidate)))
+    (when should-annotate
+      (setq displayed-candidate
+            (concat prefix displayed-candidate suffix right-margin)))
+    ;; Add the ability to interact with candidates via the mouse.
+    (add-text-properties
+     0 (length displayed-candidate)
+     (list
+      'mouse-face 'highlight
+      'keymap
+      (let ((keymap (make-sparse-keymap)))
+        (define-key keymap [mouse-1]
+          `(lambda ()
+             (interactive)
+             (selectrum-select-current-candidate ,(1+ display-index))))
+        (define-key keymap [mouse-3]
+          `(lambda ()
+             (interactive)
+             (selectrum-insert-current-candidate ,(1+ display-index))))
+        keymap))
+     displayed-candidate)
+    (when hl
+      (setq displayed-candidate
+            (selectrum--selection-highlight displayed-candidate)))
+    (when-let (show-indices
+               (cond
+                ((functionp selectrum-show-indices) selectrum-show-indices)
+                (selectrum-show-indices (lambda (i) (format "%2d " i)))))
+      (setq displayed-candidate
+            (concat
+             (propertize
+              (funcall show-indices (1+ display-index))
+              'face 'minibuffer-prompt) displayed-candidate)))
+    displayed-candidate))
 
 (defun selectrum--setup (candidates default buf)
   "Set up minibuffer for interactive candidate selection.

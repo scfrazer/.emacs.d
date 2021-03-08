@@ -254,7 +254,7 @@ determine it."
 (declare-function package-desc-version "package")
 (declare-function package-version-join "package")
 (declare-function project-current "project")
-(declare-function project-root "project")
+(declare-function project-roots "project")
 
 ;;;; Marginalia mode
 
@@ -607,8 +607,8 @@ component of a full file path.
 This function returns what would be the minibuffer contents after
 using `minibuffer-force-complete' on the candidate CAND."
   (if-let (win (active-minibuffer-window))
-      (with-selected-window win
-        (let* ((contents (minibuffer-contents))
+      (with-current-buffer (window-buffer win)
+        (let* ((contents (minibuffer-contents-no-properties))
                (pt (- (point) (minibuffer-prompt-end)))
                (bounds (completion-boundaries
                         (substring contents 0 pt)
@@ -622,24 +622,34 @@ using `minibuffer-force-complete' on the candidate CAND."
     ;; necessary information (there's not much else we can do)
     cand))
 
+(defun marginalia--remote-p (path)
+  "Return t if PATH is a remote path."
+  (string-match-p "\\`/[^:]+:" (substitute-in-file-name path)))
+
 (defun marginalia-annotate-file (cand)
-  "Annotate file CAND with its size, modification time and other attributes."
-  (when-let ((attributes (file-attributes (marginalia--full-candidate cand) 'string)))
-    (marginalia--fields
-     ((file-attribute-modes attributes) :face 'marginalia-file-modes)
-     ((format "%s:%s"
-              (file-attribute-user-id attributes)
-              (file-attribute-group-id attributes))
-      :width 12 :face 'marginalia-file-owner)
-     ((file-size-human-readable (file-attribute-size attributes)) :width 7 :face 'marginalia-size)
-     ((format-time-string
-       "%b %d %H:%M"
-       (file-attribute-modification-time attributes)) :face 'marginalia-date))))
+  "Annotate file CAND with its size, modification time and other attributes.
+These annotations are skipped for remote paths."
+  (if (or (marginalia--remote-p cand)
+          (when-let (win (active-minibuffer-window))
+            (with-current-buffer (window-buffer win)
+              (marginalia--remote-p (minibuffer-contents-no-properties)))))
+      (marginalia--fields ("*Remote*" :face 'marginalia-documentation))
+    (when-let (attributes (file-attributes (substitute-in-file-name (marginalia--full-candidate cand)) 'string))
+      (marginalia--fields
+       ((file-attribute-modes attributes) :face 'marginalia-file-modes)
+       ((format "%s:%s"
+                (file-attribute-user-id attributes)
+                (file-attribute-group-id attributes))
+        :width 12 :face 'marginalia-file-owner)
+       ((file-size-human-readable (file-attribute-size attributes)) :width 7 :face 'marginalia-size)
+       ((format-time-string
+         "%b %d %H:%M"
+         (file-attribute-modification-time attributes)) :face 'marginalia-date)))))
 
 (defun marginalia-annotate-project-file (cand)
   "Annotate file CAND with its size, modification time and other attributes."
   (when-let ((project (project-current))
-             (root (project-root project))
+             (root (car (project-roots project)))
              (file (expand-file-name cand root)))
     (marginalia-annotate-file file)))
 

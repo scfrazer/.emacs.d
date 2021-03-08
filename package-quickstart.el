@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.915/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.1539/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.915/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.1539/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1136,10 +1136,10 @@ Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210227.600/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210307.2335/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210227.600/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210307.2335/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -2275,10 +2275,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210303.1053/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210307.2050/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210303.1053/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210307.2050/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2831,10 +2831,10 @@ use in place of \"-ls\" as the final argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210303.1008/eglot-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210306.2312/eglot-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210303.1008/eglot-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210306.2312/eglot-autoloads.el") (car load-path))))
 
 
 
@@ -2872,14 +2872,16 @@ INTERACTIVE is t if called interactively.
 (autoload 'eglot-ensure "eglot" "\
 Start Eglot session for current buffer if there isn't one." nil nil)
 
+(put 'eglot-workspace-configuration 'safe-local-variable 'listp)
+
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eglot" '("eglot-")))
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210228.2221/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210308.1034/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210228.2221/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210308.1034/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3501,7 +3503,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210228.2221" "/home/scfrazer/.emacs.d/elpa/marginalia-20210303.1053" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.1034" "/home/scfrazer/.emacs.d/elpa/marginalia-20210307.2050" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:
