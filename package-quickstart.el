@@ -1136,10 +1136,10 @@ Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210307.2335/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210308.2054/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210307.2335/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210308.2054/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -2878,10 +2878,10 @@ Start Eglot session for current buffer if there isn't one." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210308.1034/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210308.2109/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210308.1034/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210308.2109/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3503,7 +3503,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.1034" "/home/scfrazer/.emacs.d/elpa/marginalia-20210307.2050" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.2109" "/home/scfrazer/.emacs.d/elpa/marginalia-20210307.2050" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210228.1207" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
          Info-directory-list)))
 
 ;; Local Variables:

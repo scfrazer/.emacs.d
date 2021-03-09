@@ -2700,61 +2700,71 @@ File: dash.info,  Node: Function combinators,  Prev: Destructive operations,  Up
 
 Functions that manipulate and compose other functions.
 
- -- Function: -partial (fn &rest args)
-     Take a function FN and fewer than the normal arguments to FN, and
-     return a fn that takes a variable number of additional ARGS.  When
-     called, the returned function calls FN with ARGS first and then
-     additional args.
+ -- Function: -partial (fun &rest args)
+     Return a function that is a partial application of FUN to ARGS.
+     ARGS is a list of the first N arguments to pass to FUN.  The result
+     is a new function which does the same as FUN, except that the first
+     N arguments are fixed at the values with which this function was
+     called.
 
-          (funcall (-partial '- 5) 3)
+          (funcall (-partial #'+ 5))
+              ⇒ 5
+          (funcall (-partial #'- 5) 3)
               ⇒ 2
-          (funcall (-partial '+ 5 2) 3)
+          (funcall (-partial #'+ 5 2) 3)
               ⇒ 10
 
  -- Function: -rpartial (fn &rest args)
-     Takes a function FN and fewer than the normal arguments to FN, and
-     returns a fn that takes a variable number of additional ARGS.  When
-     called, the returned function calls FN with the additional args
-     first and then ARGS.
+     Return a function that is a partial application of FN to ARGS.
+     ARGS is a list of the last N arguments to pass to FN.  The result
+     is a new function which does the same as FN, except that the last N
+     arguments are fixed at the values with which this function was
+     called.  This is like ‘-partial’ (*note -partial::), except the
+     arguments are fixed starting from the right rather than the left.
 
-          (funcall (-rpartial '- 5) 8)
+          (funcall (-rpartial #'- 5))
+              ⇒ -5
+          (funcall (-rpartial #'- 5) 8)
               ⇒ 3
-          (funcall (-rpartial '- 5 2) 10)
+          (funcall (-rpartial #'- 5 2) 10)
               ⇒ 3
 
  -- Function: -juxt (&rest fns)
-     Takes a list of functions and returns a fn that is the
-     juxtaposition of those fns.  The returned fn takes a variable
-     number of args, and returns a list containing the result of
-     applying each fn to the args (left-to-right).
+     Return a function that is the juxtaposition of FNS.  The returned
+     function takes a variable number of ARGS, applies each of FNS in
+     turn to ARGS, and returns the list of results.
 
-          (funcall (-juxt '+ '-) 3 5)
-              ⇒ (8 -2)
-          (-map (-juxt 'identity 'square) '(1 2 3))
-              ⇒ ((1 1) (2 4) (3 9))
+          (funcall (-juxt) 1 2)
+              ⇒ ()
+          (funcall (-juxt #'+ #'- #'* #'/) 7 5)
+              ⇒ (12 2 35 1)
+          (mapcar (-juxt #'number-to-string #'1+) '(1 2))
+              ⇒ (("1" 2) ("2" 3))
 
  -- Function: -compose (&rest fns)
-     Takes a list of functions and returns a fn that is the composition
-     of those fns.  The returned fn takes a variable number of
-     arguments, and returns the result of applying each fn to the result
-     of applying the previous fn to the arguments (right-to-left).
+     Compose FNS into a single composite function.  Return a function
+     that takes a variable number of ARGS, applies the last function in
+     FNS to ARGS, and returns the result of calling each remaining
+     function on the result of the previous function, right-to-left.  If
+     no FNS are given, return a variadic ‘identity’ function.
 
-          (funcall (-compose 'square '+) 2 3)
-              ⇒ (square (+ 2 3))
-          (funcall (-compose 'identity 'square) 3)
-              ⇒ (square 3)
-          (funcall (-compose 'square 'identity) 3)
-              ⇒ (square 3)
+          (funcall (-compose #'- #'1+ #'+) 1 2 3)
+              ⇒ -7
+          (funcall (-compose #'identity #'1+) 3)
+              ⇒ 4
+          (mapcar (-compose #'not #'stringp) '(nil ""))
+              ⇒ (t nil)
 
  -- Function: -applify (fn)
-     Changes an n-arity function FN to a 1-arity function that expects a
-     list with n items as arguments
+     Return a function that applies FN to a single list of args.  This
+     changes the arity of FN from taking N distinct arguments to taking
+     1 argument which is a list of N arguments.
 
-          (-map (-applify '+) '((1 1 1) (1 2 3) (5 5 5)))
+          (funcall (-applify #'+) nil)
+              ⇒ 0
+          (mapcar (-applify #'+) '((1 1 1) (1 2 3) (5 5 5)))
               ⇒ (3 6 15)
-          (-map (-applify (lambda (a b c) `(,a (,b (,c))))) '((1 1 1) (1 2 3) (5 5 5)))
-              ⇒ ((1 (1 (1))) (1 (2 (3))) (5 (5 (5))))
-          (funcall (-applify '<) '(3 6))
+          (funcall (-applify #'<) '(3 6))
               ⇒ t
 
  -- Function: -on (operator transformer)
@@ -4222,11 +4232,11 @@ Index
 * ->>:                                   Threading macros.    (line  22)
 * -all?:                                 Predicates.          (line  20)
 * -andfn:                                Function combinators.
-                                                              (line 137)
+                                                              (line 147)
 * -annotate:                             Maps.                (line  84)
 * -any?:                                 Predicates.          (line   8)
 * -applify:                              Function combinators.
-                                                              (line  54)
+                                                              (line  63)
 * -as->:                                 Threading macros.    (line  49)
 * -butlast:                              Other list operations.
                                                               (line 350)
@@ -4234,18 +4244,18 @@ Index
 * -common-prefix:                        Reductions.          (line 242)
 * -common-suffix:                        Reductions.          (line 252)
 * -compose:                              Function combinators.
-                                                              (line  41)
+                                                              (line  49)
 * -concat:                               List to list.        (line  23)
 * -cons*:                                Other list operations.
                                                               (line  30)
 * -cons-pair?:                           Predicates.          (line 126)
 * -const:                                Function combinators.
-                                                              (line  91)
+                                                              (line 101)
 * -contains?:                            Predicates.          (line  59)
 * -copy:                                 Maps.                (line 139)
 * -count:                                Reductions.          (line 172)
 * -cut:                                  Function combinators.
-                                                              (line 103)
+                                                              (line 113)
 * -cycle:                                Other list operations.
                                                               (line 180)
 * -difference:                           Set operations.      (line  20)
@@ -4275,11 +4285,11 @@ Index
 * -fix:                                  Other list operations.
                                                               (line 390)
 * -fixfn:                                Function combinators.
-                                                              (line 174)
+                                                              (line 184)
 * -flatten:                              List to list.        (line  34)
 * -flatten-n:                            List to list.        (line  56)
 * -flip:                                 Function combinators.
-                                                              (line  79)
+                                                              (line  89)
 * -fourth-item:                          Other list operations.
                                                               (line 320)
 * -grade-down:                           Indexing.            (line  81)
@@ -4301,9 +4311,9 @@ Index
 * -is-suffix?:                           Predicates.          (line 100)
 * -iterate:                              Unfolding.           (line   9)
 * -iteratefn:                            Function combinators.
-                                                              (line 151)
+                                                              (line 161)
 * -juxt:                                 Function combinators.
-                                                              (line  30)
+                                                              (line  37)
 * -keep:                                 List to list.        (line   8)
 * -lambda:                               Binding.             (line 247)
 * -last:                                 Other list operations.
@@ -4327,12 +4337,12 @@ Index
 * -non-nil:                              Sublist selection.   (line  94)
 * -none?:                                Predicates.          (line  32)
 * -not:                                  Function combinators.
-                                                              (line 116)
+                                                              (line 126)
 * -on:                                   Function combinators.
-                                                              (line  65)
+                                                              (line  75)
 * -only-some?:                           Predicates.          (line  44)
 * -orfn:                                 Function combinators.
-                                                              (line 125)
+                                                              (line 135)
 * -pad:                                  Other list operations.
                                                               (line 191)
 * -partial:                              Function combinators.
@@ -4350,7 +4360,7 @@ Index
 * -permutations:                         Set operations.      (line  52)
 * -powerset:                             Set operations.      (line  44)
 * -prodfn:                               Function combinators.
-                                                              (line 208)
+                                                              (line 218)
 * -product:                              Reductions.          (line 201)
 * -reduce:                               Reductions.          (line  53)
 * -reduce-from:                          Reductions.          (line   8)
@@ -4375,7 +4385,7 @@ Index
 * -rotate:                               Other list operations.
                                                               (line   8)
 * -rpartial:                             Function combinators.
-                                                              (line  19)
+                                                              (line  22)
 * -running-product:                      Reductions.          (line 211)
 * -running-sum:                          Reductions.          (line 190)
 * -same-items?:                          Predicates.          (line  74)
@@ -4628,26 +4638,26 @@ Ref: !cons94064
 Ref: !cdr94268
 Node: Function combinators94461
 Ref: -partial94665
-Ref: -rpartial95059
-Ref: -juxt95462
-Ref: -compose95892
-Ref: -applify96445
-Ref: -on96874
-Ref: -flip97398
-Ref: -const97709
-Ref: -cut98047
-Ref: -not98527
-Ref: -orfn98836
-Ref: -andfn99269
-Ref: -iteratefn99763
-Ref: -fixfn100465
-Ref: -prodfn102021
-Node: Development103079
-Node: Contribute103368
-Node: Contributors104380
-Node: FDL106473
-Node: GPL131793
-Node: Index169542
+Ref: -rpartial95183
+Ref: -juxt95831
+Ref: -compose96283
+Ref: -applify96890
+Ref: -on97320
+Ref: -flip97844
+Ref: -const98155
+Ref: -cut98493
+Ref: -not98973
+Ref: -orfn99282
+Ref: -andfn99715
+Ref: -iteratefn100209
+Ref: -fixfn100911
+Ref: -prodfn102467
+Node: Development103525
+Node: Contribute103814
+Node: Contributors104826
+Node: FDL106919
+Node: GPL132239
+Node: Index169988
 
 End Tag Table
 
