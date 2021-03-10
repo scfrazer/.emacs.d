@@ -12,7 +12,7 @@
 (autoload 'flymake-log "flymake" "\
 Log, at level LEVEL, the message MSG formatted with ARGS.
 LEVEL is passed to `display-warning', which is used to display
-the warning.  If this form is included in a byte-compiled file,
+the warning.  If this form is included in a file,
 the generated warning contains an indication of the file that
 generated it.
 
@@ -44,7 +44,7 @@ diagnostics at BEG.
 (autoload 'flymake-diag-region "flymake" "\
 Compute BUFFER's region (BEG . END) corresponding to LINE and COL.
 If COL is nil, return a region just for LINE.  Return nil if the
-region is invalid.
+region is invalid.  This function saves match data.
 
 \(fn BUFFER LINE &optional COL)" nil nil)
 
@@ -95,6 +95,10 @@ Turn Flymake mode on." nil nil)
 Turn Flymake mode off." nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake" '("flymake-")))
+
+;;;***
+
+;;;### (autoloads nil nil ("flymake-pkg.el") (0 0 0 0))
 
 ;;;***
 

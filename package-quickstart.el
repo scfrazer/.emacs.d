@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.1539/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210309.1948/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210306.1539/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210309.1948/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1664,10 +1664,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.5.3/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.5.4/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.5.3/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.5.4/project-autoloads.el") (car load-path))))
 
 
 
@@ -1690,7 +1690,7 @@ of the project instance object.
 
 \(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
 
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
 
@@ -1774,8 +1774,12 @@ if one already exists." t nil)
 (autoload 'project-async-shell-command "project" "\
 Run `async-shell-command' in the current project's root directory." t nil)
 
+(function-put 'project-async-shell-command 'interactive-only 'async-shell-command)
+
 (autoload 'project-shell-command "project" "\
 Run `shell-command' in the current project's root directory." t nil)
+
+(function-put 'project-shell-command 'interactive-only 'shell-command)
 
 (autoload 'project-search "project" "\
 Search for REGEXP in all the files of the project.
@@ -1794,10 +1798,9 @@ loop using the command \\[fileloop-continue].
 \(fn FROM TO)" t nil)
 
 (autoload 'project-compile "project" "\
-Run `compile' in the project root.
-Arguments the same as in `compile'.
+Run `compile' in the project root." t nil)
 
-\(fn COMMAND &optional COMINT)" t nil)
+(function-put 'project-compile 'interactive-only 'compile)
 
 (autoload 'project-switch-to-buffer "project" "\
 Display buffer BUFFER-OR-NAME in the selected window.
@@ -1854,14 +1857,10 @@ Save the result in `project-list-file' if the list of projects has changed.
 (autoload 'project-known-project-roots "project" "\
 Return the list of root directories of all known projects." nil nil)
 
-(defvar project-switch-commands '((102 "Find file" project-find-file) (103 "Find regexp" project-find-regexp) (100 "Dired" project-dired) (118 "VC-Dir" project-vc-dir) (101 "Eshell" project-eshell)) "\
-Alist mapping keys to project switching menu entries.
-Used by `project-switch-project' to construct a dispatch menu of
-commands available upon \"switching\" to another project.
+(autoload 'project-execute-extended-command "project" "\
+Execute an extended command in project root." t nil)
 
-Each element is of the form (KEY LABEL COMMAND), where COMMAND is the
-command to run when KEY is pressed.  LABEL is used to distinguish
-the menu entries in the dispatch menu.")
+(function-put 'project-execute-extended-command 'interactive-only 'command-execute)
 
 (autoload 'project-switch-project "project" "\
 \"Switch\" to another project by running an Emacs command.
@@ -1874,6 +1873,8 @@ to directory DIR.
 \(fn DIR)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "project" '("project-")))
+
+
 
 
 )
@@ -2663,17 +2664,17 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.0.9/flymake-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.1.1/flymake-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.0.9/flymake-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.1.1/flymake-autoloads.el") (car load-path))))
 
 
 
 (autoload 'flymake-log "flymake" "\
 Log, at level LEVEL, the message MSG formatted with ARGS.
 LEVEL is passed to `display-warning', which is used to display
-the warning.  If this form is included in a byte-compiled file,
+the warning.  If this form is included in a file,
 the generated warning contains an indication of the file that
 generated it.
 
@@ -2705,7 +2706,7 @@ diagnostics at BEG.
 (autoload 'flymake-diag-region "flymake" "\
 Compute BUFFER's region (BEG . END) corresponding to LINE and COL.
 If COL is nil, return a region just for LINE.  Return nil if the
-region is invalid.
+region is invalid.  This function saves match data.
 
 \(fn BUFFER LINE &optional COL)" nil nil)
 
@@ -2756,6 +2757,8 @@ Turn Flymake mode on." nil nil)
 Turn Flymake mode off." nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake" '("flymake-")))
+
+
 
 
 )
