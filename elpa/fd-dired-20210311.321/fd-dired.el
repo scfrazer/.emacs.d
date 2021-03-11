@@ -3,8 +3,8 @@
 ;; Copyright © 2018, Free Software Foundation, Inc.
 
 ;; Version: 0.1.0
-;; Package-Version: 20210302.1108
-;; Package-Commit: 157dd0be9d63d15a0a06e234463c1e5067ee66bf
+;; Package-Version: 20210311.321
+;; Package-Commit: 7d18938751d047eef18bfb5975195419f0d1e2d3
 ;; URL: https://github.com/yqrashawn/fd-dired
 ;; Package-Requires: ((emacs "25"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
@@ -40,6 +40,9 @@
 (defvar fd-dired-program "fd"
   "The default fd program.")
 
+(defvar fd-grep-dired-program "rg"
+  "The default fd grep program.")
+
 (defvar fd-dired-input-fd-args ""
   "Last used fd arguments.")
 
@@ -62,7 +65,12 @@
   :type 'string
   :group 'fd-dired)
 
-(defcustom fd-dired-ls-option `(,(concat "| xargs -0 " insert-directory-program " -ld --quoting-style=literal") . "-ld")
+(defcustom fd-grep-dired-pre-grep-args "--color never --regexp"
+  "Fd grep argumens inserted before user arguments."
+  :type 'string
+  :group 'fd-dired)
+
+(defcustom fd-dired-ls-option `(,(concat "| xargs -0 " insert-directory-program " -ld --quoting-style=literal | uniq") . "-ld")
   "A pair of options to produce and parse an `ls -l'-type list from `fd'.
 This is a cons of two strings (FD-ARGUMENTS . LS-SWITCHES).
 FD-ARGUMENTS is the option passed to `fd' to produce a file
@@ -181,6 +189,30 @@ use in place of \"-ls\" as the final argument."
         ;; Initialize the process marker; it is used by the filter.
         (move-marker (process-mark proc) (point) (get-buffer fd-dired-buffer-name)))
       (setq mode-line-process '(":%s")))))
+
+;;;###autoload
+(defun fd-name-dired (dir pattern)
+  "Search DIR recursively for files matching the globbing pattern PATTERN,
+and run Dired on those files.
+PATTERN is a shell wildcard (not an Emacs regexp) and need not be quoted.
+The default command run (after changing into DIR) is
+
+    fd . ARGS \\='PATTERN\\=' | fd-dired-ls-option"
+  (interactive
+   "DFd-name (directory): \nsFd-name (filename regexp): ")
+  (fd-dired dir (shell-quote-argument pattern)))
+
+;;;###autoload
+(defun fd-grep-dired (dir regexp)
+  "Find files in DIR that contain matches for REGEXP and start Dired on output.
+The command run (after changing into DIR) is
+
+  fd . ARGS --exec rg --regexp REGEXP -0 -ls | fd-dired-ls-option"
+  (interactive "DFd-grep (directory): \nsFd-grep (rg regexp): ")
+  (fd-dired dir (concat "--exec " fd-grep-dired-program
+                        " " fd-grep-dired-pre-grep-args " "
+		                (shell-quote-argument regexp)
+                        " -0 -ls ")))
 
 (defun fd-dired-cleanup ()
   "Clean up fd-dired created temp buffers for multiple searching processes."

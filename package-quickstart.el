@@ -2812,10 +2812,10 @@ otherwise call `fill-function-arguments-to-single-line'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210302.1108/fd-dired-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210311.321/fd-dired-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210302.1108/fd-dired-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210311.321/fd-dired-autoloads.el") (car load-path))))
 
 
 
@@ -2830,7 +2830,25 @@ use in place of \"-ls\" as the final argument.
 
 \(fn DIR ARGS)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fd-dired" '("fd-dired-")))
+(autoload 'fd-name-dired "fd-dired" "\
+Search DIR recursively for files matching the globbing pattern PATTERN,
+and run Dired on those files.
+PATTERN is a shell wildcard (not an Emacs regexp) and need not be quoted.
+The default command run (after changing into DIR) is
+
+    fd . ARGS \\='PATTERN\\=' | fd-dired-ls-option
+
+\(fn DIR PATTERN)" t nil)
+
+(autoload 'fd-grep-dired "fd-dired" "\
+Find files in DIR that contain matches for REGEXP and start Dired on output.
+The command run (after changing into DIR) is
+
+  fd . ARGS --exec rg --regexp REGEXP -0 -ls | fd-dired-ls-option
+
+\(fn DIR REGEXP)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fd-dired" '("fd-")))
 
 
 )
