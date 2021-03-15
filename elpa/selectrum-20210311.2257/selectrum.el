@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210309.1948
-;; Package-Commit: 62fc67e1ba553cc8f7185b30bbb2e78abd3ccb1a
+;; Package-Version: 20210311.2257
+;; Package-Commit: a8806f71f9cc07daa0149c89a4dbdae0aa5aebff
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -1803,10 +1803,6 @@ which is displayed in the UI."
     (when hl
       (setq displayed-candidate
             (selectrum--selection-highlight displayed-candidate)))
-    (when (and selectrum--quick-fun
-               (not hl))
-      (setq displayed-candidate
-            (funcall selectrum--quick-fun display-index displayed-candidate)))
     (when-let (show-indices
                (cond
                 ((functionp selectrum-show-indices) selectrum-show-indices)
@@ -1816,6 +1812,10 @@ which is displayed in the UI."
              (propertize
               (funcall show-indices (1+ display-index))
               'face 'minibuffer-prompt) displayed-candidate)))
+    (when (and selectrum--quick-fun
+               (not hl))
+      (setq displayed-candidate
+            (funcall selectrum--quick-fun display-index displayed-candidate)))
     displayed-candidate))
 
 (defun selectrum--setup (candidates default buf)

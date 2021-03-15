@@ -550,7 +550,7 @@ If `transient-save-history' is nil, then do nothing."
    (transient-suffix     :initarg :transient-suffix     :initform nil)
    (transient-non-suffix :initarg :transient-non-suffix :initform nil)
    (incompatible         :initarg :incompatible         :initform nil)
-   (suffix-description   :initarg :suffix-description   :initform nil))
+   (suffix-description   :initarg :suffix-description))
   "Transient prefix command.
 
 Each transient prefix command consists of a command, which is
@@ -2513,6 +2513,14 @@ stand-alone command."
     (transient-infix-read (get command 'transient--suffix))))
 
 ;;;; Readers
+
+(defun transient-read-file (prompt _initial-input _history)
+  "Read a file."
+  (file-local-name (expand-file-name (read-file-name prompt))))
+
+(defun transient-read-existing-file (prompt _initial-input _history)
+  "Read an existing file."
+  (file-local-name (expand-file-name (read-file-name prompt nil nil t))))
 
 (defun transient-read-directory (prompt _initial-input _history)
   "Read a directory."

@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210308.2054
-;; Package-Commit: 84b0918666f0415a92bac3468add4f3ff9c3b522
+;; Package-Version: 20210311.1613
+;; Package-Commit: 52afa7e90534d59d3cec2ace2a96c232e25e3f7b
 ;; Created: 8 Dec 2019
 ;; Package-Requires: ((emacs "25.1") (prescient "5.1") (selectrum "3.1"))
 ;; SPDX-License-Identifier: MIT
@@ -109,7 +109,7 @@ For use on `selectrum-candidate-selected-hook'."
          (prog1 candidate
            (dolist (regexp regexps)
              (when (string-match regexp candidate)
-               (put-text-property
+               (font-lock-prepend-text-property
                 (match-beginning 0) (match-end 0)
                 'face 'selectrum-prescient-primary-highlight candidate)
                (cl-loop
@@ -117,7 +117,7 @@ For use on `selectrum-candidate-selected-hook'."
                 on (cddr (match-data))
                 by #'cddr
                 do (when (and start end)
-                     (put-text-property
+                     (font-lock-prepend-text-property
                       start end
                       'face 'selectrum-prescient-secondary-highlight
                       candidate)))))))

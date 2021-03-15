@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210306.2312
-;; Package-Commit: f0c770cfbbc75c7aeb22cd2b118bc3948596d7a7
+;; Package-Version: 20210315.949
+;; Package-Commit: 97ed4caff5f6c09910ef6bfa64671d25a8a6772b
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -654,11 +654,12 @@ Interactively, read SERVER from the minibuffer unless there is
 only one and it's managing the current buffer.
 
 Forcefully quit it if it doesn't respond within TIMEOUT seconds.
-Don't leave this function with the server still running.
+TIMEOUT defaults to 1.5 seconds.  Don't leave this function with
+the server still running.
 
 If PRESERVE-BUFFERS is non-nil (interactively, when called with a
 prefix argument), do not kill events and output buffers of
-SERVER.  ."
+SERVER."
   (interactive (list (eglot--read-server "Shutdown which server"
                                          (eglot-current-server))
                      t nil current-prefix-arg))
@@ -671,6 +672,13 @@ SERVER.  ."
     ;; Now ask jsonrpc.el to shut down the server.
     (jsonrpc-shutdown server (not preserve-buffers))
     (unless preserve-buffers (kill-buffer (jsonrpc-events-buffer server)))))
+
+(defun eglot-shutdown-all (&optional preserve-buffers)
+  "Politely ask all language servers to quit, in order.
+PRESERVE-BUFFERS as in `eglot-shutdown', which see."
+  (interactive (list current-prefix-arg))
+  (cl-loop for ss being the hash-values of eglot--servers-by-project
+           do (cl-loop for s in ss do (eglot-shutdown s nil preserve-buffers))))
 
 (defun eglot--on-shutdown (server)
   "Called by jsonrpc.el when SERVER is already dead."
