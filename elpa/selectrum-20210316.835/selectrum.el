@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210311.2257
-;; Package-Commit: a8806f71f9cc07daa0149c89a4dbdae0aa5aebff
+;; Package-Version: 20210316.835
+;; Package-Commit: a72109ab3eb3a06d1d8e01629bed06871b2c94d2
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -562,6 +562,7 @@ new candidate string used for display.")
   '((":\\|,\\|\\s-" . ",")
     ("[ \t]*:[ \t]*" . ":")
     ("[ \t]*,[ \t]*" . ",")
+    ("\\s-*&\\s-*" . " & ")
     (" " . " "))
   "Values of `crm-separator' mapped to separator strings.
 If current `crm-separator' has a mapping the separator gets
@@ -597,7 +598,7 @@ as symbol constituents.")
 ;;; Session state
 
 (defvar-local selectrum--last-buffer nil
-  "The buffer that was current before the active session")
+  "The buffer that was current before the active session.")
 
 (defvar-local selectrum--candidates-overlay nil
   "Overlay used to display current candidates.")
@@ -666,9 +667,9 @@ input that does not match any of the displayed candidates.")
   "Prefix argument given to last interactive command that invoked Selectrum.")
 
 (defvar-local selectrum--last-input nil
-  "Input of last Selectrum session. This is different from
-`selectrum--previous-input-string' which reflects the previous
-input within a session.")
+  "Input of last Selectrum session.
+This is different from `selectrum--previous-input-string' which
+reflects the previous input within a session.")
 
 (defvar-local selectrum--repeat nil
   "Non-nil means try to restore the minibuffer state during setup.
@@ -1886,8 +1887,7 @@ started from."
                     (cond (minibuffer-completing-file-name
                            (not (selectrum--at-existing-prompt-path-p)))
                           (t
-                           (not (string-empty-p
-                                 (minibuffer-contents))))))
+                           (not (string-empty-p selectrum--virtual-input)))))
                0
              -1)
            (1- (length selectrum--refined-candidates))))))
@@ -1935,40 +1935,41 @@ Or if there is an active region, save the region to kill ring."
   "Exit minibuffer with given CANDIDATE.
 If `selectrum--is-crm-session' is non-nil exit with the choosen candidates
 plus CANDIDATE."
-  (let* ((result (cond ((and selectrum--is-crm-session
-                             (string-match crm-separator
-                                           selectrum--previous-input-string))
-                        (let* ((previous-input-string
-                                selectrum--previous-input-string)
-                               (separator
-                                crm-separator)
-                               (full-candidate
-                                (selectrum--get-full candidate))
-                               (crm
-                                (if (and selectrum--current-candidate-index
-                                         (< selectrum--current-candidate-index
-                                            0))
-                                    candidate
-                                  (with-temp-buffer
-                                    (insert previous-input-string)
-                                    (goto-char (point-min))
-                                    (while (re-search-forward
-                                            separator nil t))
-                                    (delete-region (point) (point-max))
-                                    (insert full-candidate)
-                                    (buffer-string)))))
-                          (dolist (cand (split-string crm separator t))
-                            (apply #'run-hook-with-args
-                                   'selectrum-candidate-selected-hook
-                                   (selectrum--get-full cand)
-                                   selectrum--read-args))
-                          crm))
-                       (t
-                        (apply #'run-hook-with-args
-                               'selectrum-candidate-selected-hook
-                               candidate
-                               selectrum--read-args)
-                        (selectrum--get-full candidate))))
+  (let* ((result
+          (cond ((and selectrum--is-crm-session
+                      (string-match crm-separator
+                                    selectrum--previous-input-string))
+                 (let* ((previous-input-string
+                         selectrum--previous-input-string)
+                        (separator
+                         crm-separator)
+                        (full-candidate
+                         (selectrum--get-full candidate))
+                        (crm
+                         (if (or (not selectrum--current-candidate-index)
+                                 (< selectrum--current-candidate-index
+                                    0))
+                             candidate
+                           (with-temp-buffer
+                             (insert previous-input-string)
+                             (goto-char (point-min))
+                             (while (re-search-forward
+                                     separator nil t))
+                             (delete-region (point) (point-max))
+                             (insert full-candidate)
+                             (buffer-string)))))
+                   (dolist (cand (split-string crm separator t))
+                     (apply #'run-hook-with-args
+                            'selectrum-candidate-selected-hook
+                            (selectrum--get-full cand)
+                            selectrum--read-args))
+                   crm))
+                (t
+                 (apply #'run-hook-with-args
+                        'selectrum-candidate-selected-hook
+                        candidate
+                        selectrum--read-args)
+                 (selectrum--get-full candidate))))
          (inhibit-read-only t))
     (erase-buffer)
     (insert (if (string-empty-p result)
@@ -2003,7 +2004,7 @@ indices."
     (let ((index (selectrum--index-for-arg arg)))
       (if (or (not selectrum--match-is-required)
               (string-empty-p
-               (minibuffer-contents))
+               selectrum--virtual-input)
               (and index (>= index 0))
               (if minibuffer-completing-file-name
                   (selectrum--at-existing-prompt-path-p)
@@ -2053,6 +2054,9 @@ refresh."
                                   (point-max))
                    (insert full))
                   (t
+                   ;; Select input after crm insertion.
+                   (setq-local selectrum--repeat t)
+                   (setq-local selectrum--current-candidate-index -1)
                    (goto-char
                     (if (re-search-backward crm-separator
                                             (minibuffer-prompt-end) t)
@@ -2206,15 +2210,15 @@ KEYS is a list of key strings to combine."
   "Select a candidate using `selectrum-quick-keys'."
   (interactive)
   (when-let (index (selectrum--quick-read))
-    (let ((selectrum--current-candidate-index index))
-      (selectrum-select-current-candidate))))
+    (setq-local selectrum--current-candidate-index index)
+    (selectrum-select-current-candidate)))
 
 (defun selectrum-quick-insert ()
   "Insert a candidate using `selectrum-quick-keys'."
   (interactive)
   (when-let (index (selectrum--quick-read))
-    (let ((selectrum--current-candidate-index index))
-      (selectrum-insert-current-candidate))))
+    (setq-local selectrum--current-candidate-index index)
+    (selectrum-insert-current-candidate)))
 
 ;;; Main entry points
 
