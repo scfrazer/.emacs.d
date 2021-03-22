@@ -17,7 +17,7 @@
  `(font-lock-type-face          ((t :foreground "deepskyblue4")))
  `(font-lock-variable-name-face ((t :foreground "darkgreen")))
 
- `(mode-line ((t :foreground "brightwhite" :background "dodgerblue4")))
+ `(mode-line ((t :foreground "#ffffff" :background "dodgerblue4")))
 
  )
 
