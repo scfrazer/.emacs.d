@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210311.1613
-;; Package-Commit: 52afa7e90534d59d3cec2ace2a96c232e25e3f7b
+;; Package-Version: 20210321.1927
+;; Package-Commit: 8573df977eaceffc6607b7242ff8c0dab02aad65
 ;; Created: 8 Dec 2019
 ;; Package-Requires: ((emacs "25.1") (prescient "5.1") (selectrum "3.1"))
 ;; SPDX-License-Identifier: MIT
@@ -200,18 +200,20 @@ buffer. It does not affect the default behavior (determined by
 (selectrum-prescient-create-and-bind-toggle-command prefix "p")
 (selectrum-prescient-create-and-bind-toggle-command regexp "r")
 
-;; This is the same binding used by `isearch-toggle-char-fold'.
-(define-key selectrum-prescient-toggle-map (kbd "'")
-  (defun selectrum-prescient-toggle-char-fold ()
-    "Toggle character folding in the current Selectrum buffer.
+(defun selectrum-prescient-toggle-char-fold ()
+  "Toggle character folding in the current Selectrum buffer.
 
 See the customizable variable `prescient-use-char-folding'."
-    (interactive)
-    (setq-local prescient-use-char-folding
-                (not prescient-use-char-folding))
-    (message "Character folding toggled %s"
-             (if prescient-use-char-folding "on" "off"))
-    (selectrum-exhibit)))
+  (interactive)
+  (setq-local prescient-use-char-folding
+              (not prescient-use-char-folding))
+  (message "Character folding toggled %s"
+           (if prescient-use-char-folding "on" "off"))
+  (selectrum-exhibit))
+
+;; This is the same binding used by `isearch-toggle-char-fold'.
+(define-key selectrum-prescient-toggle-map (kbd "'")
+  #'selectrum-prescient-toggle-char-fold)
 
 ;;;###autoload
 (define-minor-mode selectrum-prescient-mode
