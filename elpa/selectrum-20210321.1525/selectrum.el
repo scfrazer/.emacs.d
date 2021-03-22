@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210316.835
-;; Package-Commit: a72109ab3eb3a06d1d8e01629bed06871b2c94d2
+;; Package-Version: 20210321.1525
+;; Package-Commit: 0475abc5989ff5aacc867655b01fb47d9432315c
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -287,17 +287,43 @@ nothing to remove.)"
 
 (defun selectrum-default-candidate-preprocess-function (candidates)
   "Default value of `selectrum-preprocess-candidates-function'.
-Sort first by length and then alphabetically. CANDIDATES is a
-list of strings."
-  (if selectrum-should-sort
-      (sort candidates
-            (lambda (c1 c2)
-              (or (< (length c1)
-                     (length c2))
-                  (and (= (length c1)
-                          (length c2))
-                       (string-lessp c1 c2)))))
-    candidates))
+Sort first by history position, then by length and then alphabetically.
+CANDIDATES is a list of strings."
+  (when selectrum-should-sort
+    ;; History disabled if `minibuffer-history-variable' eq `t'.
+    (let* ((list (and (not (eq minibuffer-history-variable t))
+                      (symbol-value minibuffer-history-variable)))
+           (hist-len (length list))
+           (hist (make-hash-table :test #'equal
+                                  :size hist-len))
+           (hist-idx 0)
+           (cand candidates))
+      ;; Store the history position first in a hashtable in order to
+      ;; allow O(1) history lookup.
+      (dolist (elem list)
+        (unless (gethash elem hist)
+          (puthash elem hist-idx hist))
+        (cl-incf hist-idx))
+      ;; Decorate each candidate with (hist-idx<<13) + length. This
+      ;; way we sort first by hist-idx and then by length. We assume
+      ;; that the candidates are not longer than 2**13 characters.
+      (while cand
+        (setcar cand (cons (car cand)
+                           (+ (lsh (gethash (car cand) hist hist-len) 13)
+                              (length (car cand)))))
+        (setq cand (cdr cand)))
+      (setq candidates
+            (sort candidates
+                  (lambda (c1 c2)
+                    (or (< (cdr c1) (cdr c2))
+                        (and (= (cdr c1) (cdr c2))
+                             (string< (car c1) (car c2))))))
+            cand candidates)
+      ;; Drop decoration from the candidates
+      (while cand
+        (setcar cand (caar cand))
+        (setq cand (cdr cand)))))
+  candidates)
 
 (defcustom selectrum-completion-in-region-styles
   '(basic partial-completion emacs22)
@@ -533,8 +559,10 @@ function and BODY opens the minibuffer."
       #'selectrum-kill-ring-save)
     (define-key map [remap previous-matching-history-element]
       #'selectrum-select-from-history)
-    (define-key map (kbd "C-M-DEL") #'backward-kill-sexp)
-    (define-key map (kbd "C-M-<backspace>") #'backward-kill-sexp)
+    (define-key map [remap backward-kill-sexp]
+      #'selectrum-backward-kill-sexp)
+    (define-key map (kbd "C-M-DEL") #'selectrum-backward-kill-sexp)
+    (define-key map (kbd "C-M-<backspace>") #'selectrum-backward-kill-sexp)
     (define-key map (kbd "C-j") #'selectrum-submit-exact-input)
     (define-key map (kbd "TAB") #'selectrum-insert-current-candidate)
     (define-key map (kbd "M-q") 'selectrum-cycle-display-style)
@@ -1921,6 +1949,17 @@ started from."
     (setq-local selectrum--current-candidate-index
                 (1- (length selectrum--refined-candidates)))))
 
+(defun selectrum-backward-kill-sexp (&optional arg)
+  "Selectrum wrapper for `backward-kill-sexp'.
+ARG is the same as for `backward-kill-sexp'."
+  (interactive "p")
+  ;; For Selectrum file prompts `backward-kill-sexp' would wrongly
+  ;; include trailing (read only) spaces as part of the input (see
+  ;; `selectrum--minibuffer-local-filename-syntax').
+  (save-restriction
+    (narrow-to-region (minibuffer-prompt-end) (point-max))
+    (backward-kill-sexp arg)))
+
 (defun selectrum-kill-ring-save ()
   "Save current candidate to kill ring.
 Or if there is an active region, save the region to kill ring."
@@ -2181,8 +2220,10 @@ KEYS is a list of key strings to combine."
                 (setq str (copy-sequence str))
                 (add-face-text-property 0 (match-end 0)
                                         'selectrum-quick-keys-match nil str))
-              (concat str (substring cand (min (length cand)
-                                               (length str))))))))
+              (concat str (if (eq (car selectrum-display-style) 'vertical)
+                              cand
+                            (substring cand (min (length cand)
+                                                 (length str)))))))))
     (if-let* ((input
                (cl-loop with pressed = 0
                         while (< pressed len)

@@ -193,10 +193,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210319.1930/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210319.1930/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1020,10 +1020,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210316.835/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210321.1525/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210316.835/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210321.1525/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1136,10 +1136,10 @@ Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210311.1613/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210321.1927/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210311.1613/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210321.1927/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
@@ -2852,10 +2852,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210315.949/eglot-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eglot-20210319.2010/eglot-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210315.949/eglot-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eglot-20210319.2010/eglot-autoloads.el") (car load-path))))
 
 
 
@@ -3524,7 +3524,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.2109" "/home/scfrazer/.emacs.d/elpa/marginalia-20210317.1054" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210315.1902" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210117.2008")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.2109" "/home/scfrazer/.emacs.d/elpa/marginalia-20210317.1054" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210315.1902" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210319.1930")
          Info-directory-list)))
 
 ;; Local Variables:

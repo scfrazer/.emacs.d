@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210315.949
-;; Package-Commit: 97ed4caff5f6c09910ef6bfa64671d25a8a6772b
+;; Package-Version: 20210319.2010
+;; Package-Commit: b4ffcf26fb392ed83f6c40bc9b62cbe54483119c
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -127,7 +127,8 @@ language-server/bin/php-language-server.php"))
                                 (erlang-mode . ("erlang_ls" "--transport" "stdio"))
                                 (nix-mode . ("rnix-lsp"))
                                 (gdscript-mode . ("localhost" 6008))
-                                (f90-mode . ("fortls")))
+                                (f90-mode . ("fortls"))
+                                (zig-mode . ("zls")))
   "How the command `eglot' guesses the server to start.
 An association list of (MAJOR-MODE . CONTACT) pairs.  MAJOR-MODE
 is a mode symbol, or a list of mode symbols.  The associated
