@@ -2233,6 +2233,41 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/monokai-pro-theme-20210206.1820/monokai-pro-theme-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/monokai-pro-theme-20210206.1820/monokai-pro-theme-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-classic-theme" '("monokai-pro-classic-theme-colors")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-machine-theme" '("monokai-pro-machine-theme-colors")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-octagon-theme" '("monokai-pro-octagon-theme-colors")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-ristretto-theme" '("monokai-pro-ristretto-theme-colors")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-spectrum-theme" '("monokai-pro-spectrum-theme-colors")))
+
+
+
+(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-theme" '("monokai-pro-theme-")))
+
+
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20210220.1301/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3517,7 +3552,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv jsonrpc json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired eglot dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv jsonrpc json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired eglot dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
