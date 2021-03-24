@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210323.946
-;; Package-Commit: 0c88ca69ff0cb0f24ea83b7fff786e3597d602df
+;; Package-Version: 20210324.1004
+;; Package-Commit: 83b296c3c9023009b3ef504c968789e5e726ac55
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -147,6 +147,11 @@ parts of the input."
 (defface selectrum-completion-docsig
   '((t :inherit selectrum-completion-annotation :slant italic))
   "Face used to display docsigs of completion tables."
+  :group 'selectrum-faces)
+
+(defface selectrum-mouse-highlight
+  '((t :inherit selectrum-current-candidate :underline t))
+  "Face used for candidates during mouse hovering."
   :group 'selectrum-faces)
 
 ;;; User options
@@ -1822,7 +1827,7 @@ which is displayed in the UI."
     (add-text-properties
      0 (length displayed-candidate)
      (list
-      'mouse-face 'highlight
+      'mouse-face 'selectrum-mouse-highlight
       'keymap
       (let ((keymap (make-sparse-keymap)))
         (define-key keymap [mouse-1]
@@ -2220,15 +2225,6 @@ KEYS is a list of key strings to combine."
          (len (ceiling (log needed nkeys)))
          (keys (seq-take (selectrum--quick-keys len qkeys) needed))
          (input nil)
-         (read-char (lambda ()
-                      (let ((char nil))
-                        (unwind-protect
-                            (when (characterp (setq char (read-char)))
-                              char)
-                          (when (or (eq ?\C-g char)
-                                    (not (characterp char)))
-                            (let ((selectrum--quick-fun nil))
-                              (selectrum--update)))))))
          (selectrum--quick-fun
           (lambda (i cand)
             (let ((str (propertize (or (nth i keys) "")
@@ -2245,24 +2241,37 @@ KEYS is a list of key strings to combine."
                (cl-loop with pressed = 0
                         while (< pressed len)
                         do (selectrum--update)
-                        for char = (funcall read-char)
-                        for key = (when char
-                                    (char-to-string char))
+                        for ev = (unwind-protect (read-key)
+                                   (let ((selectrum--quick-fun nil))
+                                     (selectrum--update)))
+                        if (not (characterp ev))
+                        return (vector ev)
+                        for key = (char-to-string ev)
                         if (and (not (zerop pressed))
-                                (equal char ?\C-?))
+                                (equal ev ?\C-?))
                         do (setq pressed (1- pressed)
                                  input (substring
                                         input 0 (1- (length input))))
                         else if (not (member key qkeys))
-                        return nil
+                        return key
                         else
                         do (setq pressed (1+ pressed)
                                  input (concat input key))
                         finally return input))
-              (pos (cl-position input keys :test #'string=)))
+              (pos (and (stringp input)
+                        (cl-position input keys :test #'string=))))
         (+ selectrum--first-index-displayed pos)
       (prog1 nil
-        (message "No matching key")))))
+        (unless (and (vectorp input)
+                     (memq (key-binding input)
+                           '(selectrum-quick-select
+                             selectrum-quick-insert)))
+          (let* ((desc (key-description input))
+                 (msg (if (equal "C-g" desc)
+                          "Quit"
+                        (format "No matching key: %S" desc))))
+            (minibuffer-message
+             (propertize msg 'face 'minibuffer-prompt))))))))
 
 (defun selectrum-quick-select ()
   "Select a candidate using `selectrum-quick-keys'."

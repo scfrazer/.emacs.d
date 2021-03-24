@@ -123,7 +123,10 @@ orderless-regexp
      the component is treated as a regexp that must match somewhere in
      the candidate.
 
-     This is simply the identity function!
+     If the component is not a valid regexp, it matches literally.
+     (Having the component be invalid is actually pretty common while
+     you are typing, so be prepared for the results to be a little funny
+     before you close a bracket or parentheses, etc.)
 
 orderless-literal
      the component is treated as a literal string that must occur in the
@@ -182,8 +185,8 @@ orderless-flex
      This maps ‘abc’ to ‘a.*b.*c’.
 
    The variable ‘orderless-matching-styles’ can be set to a list of the
-desired matching styles to use.  By default it enables the regexp and
-initialism styles.
+desired matching styles to use.  By default it enables the literal,
+regexp and initialism styles.
 
 * Menu:
 
@@ -507,19 +510,19 @@ Node: Top221
 Node: Overview909
 Node: Customization3055
 Node: Component matching styles3376
-Node: Style dispatchers6163
-Node: Component separator regexp8339
-Node: Faces for component matches9571
-Node: Pattern compiler10369
-Node: Interactively changing the configuration11174
-Node: Integration with other completion UIs12637
-Node: Ivy13428
-Node: Selectrum13681
-Node: Company14262
-Node: Related packages15755
-Node: Ivy and Helm16053
-Node: Prescient17392
-Node: Restricting to current matches in Icicles Ido and Ivy18246
+Node: Style dispatchers6393
+Node: Component separator regexp8569
+Node: Faces for component matches9801
+Node: Pattern compiler10599
+Node: Interactively changing the configuration11404
+Node: Integration with other completion UIs12867
+Node: Ivy13658
+Node: Selectrum13911
+Node: Company14492
+Node: Related packages15985
+Node: Ivy and Helm16283
+Node: Prescient17622
+Node: Restricting to current matches in Icicles Ido and Ivy18476
 
 End Tag Table
 

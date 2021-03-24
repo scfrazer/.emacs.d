@@ -42,7 +42,8 @@
 (defcustom marginalia-truncate-width 80
   "Maximum truncation width of annotation fields.
 
-This value is adjusted in the `minibuffer-setup-hook' depending on the `window-width'."
+This value is adjusted in the `minibuffer-setup-hook' depending
+on the `window-width'."
   :type 'integer)
 
 (defcustom marginalia-separator-threshold 120
@@ -86,6 +87,7 @@ only with the annotations that come with Emacs) without disabling
     (customize-group . marginalia-annotate-customize-group)
     (variable . marginalia-annotate-variable)
     (face . marginalia-annotate-face)
+    (color . marginalia-annotate-color)
     (unicode-name . marginalia-annotate-char)
     (minor-mode . marginalia-annotate-minor-mode)
     (symbol . marginalia-annotate-symbol)
@@ -110,6 +112,7 @@ See also `marginalia-annotators-heavy'."
      (project-file . marginalia-annotate-project-file)
      (buffer . marginalia-annotate-buffer)
      (command . marginalia-annotate-command)
+     (embark-keybinding . marginalia-annotate-embark-keybinding)
      (consult-multi . marginalia-annotate-consult-multi))
    marginalia-annotators-light)
   "Heavy annotator functions.
@@ -137,6 +140,7 @@ determine it."
     ("\\<package\\>" . package)
     ("\\<bookmark\\>" . bookmark)
     ("\\<face\\>" . face)
+    ("\\<color\\>" . color)
     ("\\<environment variable\\>" . environment-variable)
     ("\\<variable\\>" . variable)
     ("\\<input method\\>" . input-method)
@@ -439,6 +443,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
      (marginalia-annotate-binding cand)
      (marginalia--documentation (marginalia--function-doc sym)))))
 
+(defun marginalia-annotate-embark-keybinding (cand)
+  "Annotate Embark keybinding CAND with its documentation string.
+Similar to `marginalia-annotate-command', but does not show the
+keybinding since CAND includes it."
+  (when-let (cmd (get-text-property 0 'embark-command cand))
+    (marginalia--documentation (marginalia--function-doc cmd))))
+
 (defun marginalia-annotate-imenu (cand)
   "Annotate imenu CAND with its documentation string."
   (when (derived-mode-p 'emacs-lisp-mode)
@@ -471,6 +482,26 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
      ("abcdefghijklmNOPQRSTUVWXYZ" :face sym)
      ((documentation-property sym 'face-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
+
+(defun marginalia-annotate-color (cand)
+  "Annotate face CAND with its documentation string and face example."
+  (when-let (rgb (color-name-to-rgb cand))
+    (pcase-let ((`(,r ,g ,b) rgb)
+                (`(,h ,s ,l) (apply #'color-rgb-to-hsl rgb)))
+      (marginalia--fields
+       ("      " :face `(:background ,(apply #'color-rgb-to-hex rgb)))
+       ((format "%s%s%s %s"
+         (propertize "r" 'face `(:background ,(color-rgb-to-hex r 0 0)))
+         (propertize "g" 'face `(:background ,(color-rgb-to-hex 0 g 0)))
+         (propertize "b" 'face `(:background ,(color-rgb-to-hex 0 0 b)))
+         (color-rgb-to-hex r g b 2)))
+       ((format "%s%s%s %3s° %3s%% %3s%%"
+         (propertize "h" 'face `(:background ,(apply #'color-rgb-to-hex (color-hsl-to-rgb h 1 0.5))))
+         (propertize "s" 'face `(:background ,(apply #'color-rgb-to-hex (color-hsl-to-rgb h s 0.5))))
+         (propertize "l" 'face `(:background ,(apply #'color-rgb-to-hex (color-hsl-to-rgb 0 0 l))))
+         (round (* 360 h))
+         (round (* 100 s))
+         (round (* 100 l))))))))
 
 (defun marginalia-annotate-char (cand)
   "Annotate character CAND with its general character category and character code."
