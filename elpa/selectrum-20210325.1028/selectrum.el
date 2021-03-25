@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210324.1004
-;; Package-Commit: 83b296c3c9023009b3ef504c968789e5e726ac55
+;; Package-Version: 20210325.1028
+;; Package-Commit: 666f12f467e9ac0a834e0320a6e885d514cf2efe
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -482,6 +482,12 @@ highlighting is automatically extended. Any other non-nil value
 means to always extend the highlighting."
   :type '(choice (const :tag "Automatic" auto) boolean))
 
+(defcustom selectrum-files-select-input-dirs nil
+  "Whether to select the input for directories.
+When this is non-nil the input in file completions will get
+selected when it contains a directory name."
+  :type 'boolean)
+
 ;;;###autoload
 (defcustom selectrum-complete-in-buffer t
   "If non-nil, use Selectrum for `completion-in-region'.
@@ -706,7 +712,8 @@ reflects the previous input within a session.")
 
 (defvar-local selectrum--repeat nil
   "Non-nil means try to restore the minibuffer state during setup.
-This is used to implement `selectrum-repeat'.")
+This is used to implement `selectrum-repeat' and also to restore
+a candidate index on next computation.")
 
 (defvar-local selectrum-is-active nil
   "Non-nil means Selectrum is currently active.")
@@ -1318,12 +1325,13 @@ the update."
   ;; Be careful with reordering of the cond clauses because they are
   ;; assumed to get checked in this order!
   (cond
-   ;; Restore the old index when repeating.
+   ;; Try to restore the old index when repeating.
    (selectrum--repeat
     (setq-local selectrum--repeat nil)
-    (and (> (length selectrum--refined-candidates) 0)
-         (min (or selectrum--current-candidate-index 0)
-              (1- (length selectrum--refined-candidates)))))
+    (if (and selectrum--refined-candidates
+             selectrum--current-candidate-index)
+        selectrum--current-candidate-index
+      (selectrum--compute-current-candidate-index nil)))
    ;; If there are no candidates the prompt should be selected.
    ((null selectrum--refined-candidates)
     (when (or (not (selectrum--match-strictly-required-p))
@@ -2772,6 +2780,10 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
                             (if maybe-tramp
                                 (delete-dups files)
                               files))))))))
+              (when (and selectrum-files-select-input-dirs
+                         (directory-name-p path))
+                (setq-local selectrum--repeat t)
+                (setq-local selectrum--current-candidate-index -1))
               (setq last-dir dir)
               `((input . ,matchstr)
                 (candidates . ,cands))))))

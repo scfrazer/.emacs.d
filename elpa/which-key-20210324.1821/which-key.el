@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210131.1837
-;; Package-Commit: c0608e812a8d1bc7aefeacdfaeb56a7272eabf44
+;; Package-Version: 20210324.1821
+;; Package-Commit: c632dbf27a77c1c73ce559041b3a78ec5f78b187
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -966,8 +966,7 @@ In the second case, the second string is used to provide a longer
 name for the keys under a prefix.
 
 MORE allows you to specifcy additional KEY REPLACEMENT pairs.  All
-replacements are added to
-`which-key-key-based-description-replacement-alist'."
+replacements are added to `which-key-replacement-alist'."
   ;; TODO: Make interactive
   (while key-sequence
     ;; normalize key sequences before adding

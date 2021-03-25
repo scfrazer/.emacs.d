@@ -281,10 +281,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210131.1837/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210324.1821/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210131.1837/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210324.1821/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -370,8 +370,7 @@ In the second case, the second string is used to provide a longer
 name for the keys under a prefix.
 
 MORE allows you to specifcy additional KEY REPLACEMENT pairs.  All
-replacements are added to
-`which-key-key-based-description-replacement-alist'.
+replacements are added to `which-key-replacement-alist'.
 
 \(fn KEY-SEQUENCE REPLACEMENT &rest MORE)" nil nil)
 
@@ -1018,10 +1017,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210324.1004/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210325.1028/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210324.1004/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210325.1028/selectrum-autoloads.el") (car load-path))))
 
 
 
