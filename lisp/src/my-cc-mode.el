@@ -18,6 +18,7 @@
                         (c-block-comment-prefix . "")))
 (c-add-style "allman" '("bsd"
                         (topmost-intro . -)
+                        (c-offsets-alist . ((inextern-lang . 0)))
                         (c-basic-offset . 4)))
 (setq c-default-style '((c-mode . "allman")
                         (cc-mode . "allman")
