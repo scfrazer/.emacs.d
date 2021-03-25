@@ -48,7 +48,7 @@
 ;; from strings to strings that map a component to a regexp to match
 ;; against.  The variable `orderless-matching-styles' lists the
 ;; matching styles to be used for components, by default it allows
-;; regexp and initialism matching.
+;; literal, regexp and initialism matching.
 
 ;;; Code:
 
@@ -114,7 +114,7 @@ value means highlighting is skipped."
   :type '(choice boolean function))
 
 (defcustom orderless-matching-styles
-  '(orderless-regexp orderless-initialism)
+  '(orderless-literal orderless-regexp orderless-initialism)
   "List of component matching styles.
 If this variable is nil, regexp matching is assumed.
 
@@ -186,9 +186,11 @@ is determined by the values of `completion-ignore-case',
 
 ;;; Matching styles
 
-(defalias 'orderless-regexp #'identity
-  "Match a component as a regexp.
-This is simply the identity function.")
+(defun orderless-regexp (component)
+  "Match COMPONENT as a regexp."
+  (condition-case nil
+      (progn (string-match-p component "") component)
+    (invalid-regexp nil)))
 
 (defalias 'orderless-literal #'regexp-quote
   "Match a component as a literal string.
@@ -389,13 +391,11 @@ compilers."
    for component in components and index from 0
    for (newstyles . newcomp) = (orderless-dispatch
                                 dispatchers styles component index total)
-   collect
-   (if (functionp newstyles)
-       (funcall newstyles newcomp)
-     (rx-to-string
-      `(or
-        ,@(cl-loop for style in newstyles
-                   collect `(regexp ,(funcall style newcomp))))))))
+   when (functionp newstyles) do (setq newstyles (list newstyles))
+   for regexps = (cl-loop for style in newstyles
+                          for result = (funcall style newcomp)
+                          when result collect `(regexp ,result))
+   when regexps collect (rx-to-string `(or ,@regexps))))
 
 ;;; Completion style implementation
 
@@ -409,19 +409,17 @@ The predicate PRED is used to constrain the entries in TABLE."
 (defun orderless-filter (string table &optional pred)
   "Split STRING into components and find entries TABLE matching all.
 The predicate PRED is used to constrain the entries in TABLE."
-  (condition-case nil
-      (save-match-data
-        (pcase-let* ((`(,prefix . ,pattern)
-                      (orderless--prefix+pattern string table pred))
-                     (completion-regexp-list
-                      (funcall orderless-pattern-compiler pattern))
-                     (completion-ignore-case
-                      (if orderless-smart-case
-                          (cl-loop for regexp in completion-regexp-list
-                                   always (isearch-no-upper-case-p regexp t))
-                        completion-ignore-case)))
-          (all-completions prefix table pred)))
-    (invalid-regexp nil)))
+  (save-match-data
+    (pcase-let* ((`(,prefix . ,pattern)
+                  (orderless--prefix+pattern string table pred))
+                 (completion-regexp-list
+                  (funcall orderless-pattern-compiler pattern))
+                 (completion-ignore-case
+                  (if orderless-smart-case
+                      (cl-loop for regexp in completion-regexp-list
+                               always (isearch-no-upper-case-p regexp t))
+                    completion-ignore-case)))
+      (all-completions prefix table pred))))
 
 ;;;###autoload
 (defun orderless-all-completions (string table pred _point)

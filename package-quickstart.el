@@ -281,10 +281,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210131.1837/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210324.1821/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210131.1837/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210324.1821/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -370,8 +370,7 @@ In the second case, the second string is used to provide a longer
 name for the keys under a prefix.
 
 MORE allows you to specifcy additional KEY REPLACEMENT pairs.  All
-replacements are added to
-`which-key-key-based-description-replacement-alist'.
+replacements are added to `which-key-replacement-alist'.
 
 \(fn KEY-SEQUENCE REPLACEMENT &rest MORE)" nil nil)
 
@@ -1018,10 +1017,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210323.946/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210325.1028/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210323.946/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210325.1028/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -1887,10 +1886,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210323.2341/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210323.2341/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2309,10 +2308,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210323.1015/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210324.906/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210323.1015/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210324.906/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3557,7 +3556,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.2109" "/home/scfrazer/.emacs.d/elpa/marginalia-20210323.1015" "/home/scfrazer/.emacs.d/elpa/orderless-20210227.1543" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210315.1902" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210319.1930")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210308.2109" "/home/scfrazer/.emacs.d/elpa/marginalia-20210324.906" "/home/scfrazer/.emacs.d/elpa/orderless-20210323.2341" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210315.1902" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210319.1930")
          Info-directory-list)))
 
 ;; Local Variables:
