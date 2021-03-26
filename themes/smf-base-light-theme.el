@@ -57,7 +57,7 @@
  `(outline-2                           ((t :foreground ,(smf-color 32) :bold t)))
  `(outline-3                           ((t :foreground "cyan4" :bold t)))
  `(outline-4                           ((t :foreground ,(smf-color 130) :bold t)))
- `(popup-tip-face                      ((t :background "gray85" :foreground "black" :bold t :italic t)))
+ `(popup-tip-face                      ((t :background "gray85" :foreground "black")))
  `(rg-literal-face                     ((t :foreground "lightblue")))
  `(rg-regexp-face                      ((t :foreground "yellow")))
  `(selectrum-current-candidate         ((t :background "lightsteelblue1")))
