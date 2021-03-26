@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210325.1028
-;; Package-Commit: 666f12f467e9ac0a834e0320a6e885d514cf2efe
+;; Package-Version: 20210325.1415
+;; Package-Commit: f5a1f6b6c89719f80c29388c2c784d6b4e346081
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -245,6 +245,11 @@ frame you can use the provided action function
 `selectrum-display-full-frame'."
   :type '(cons (choice function (repeat :tag "Functions" function))
                alist))
+
+(defcustom selectrum-display-action-hook nil
+  "Hook to run when initializing the candidates buffer.
+See `selectrum-display-action'."
+  :type 'hook)
 
 (defcustom selectrum-display-style
   '(vertical)
@@ -910,6 +915,7 @@ Window will be created by `selectrum-display-action'."
                    (setq buffer-read-only t)
                    (setq show-trailing-whitespace nil)
                    (goto-char (point-min))
+                   (run-hooks 'selectrum-display-action-hook)
                    (current-buffer))))
         (action selectrum-display-action))
     (or (get-buffer-window buf 'visible)
