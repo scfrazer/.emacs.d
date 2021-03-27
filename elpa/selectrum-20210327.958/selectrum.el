@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210325.1415
-;; Package-Commit: f5a1f6b6c89719f80c29388c2c784d6b4e346081
+;; Package-Version: 20210327.958
+;; Package-Commit: a7130cab247d1fff096f213eaf00b7825b3fd696
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -2076,8 +2076,9 @@ indices."
                                selectrum--refined-candidates))))))
       (cond ((and index (< index 0)
                   (not valid-prompt-selection)
-                  (memq selectrum--match-is-required
-                        '(confirm confirm-after-completion))
+                  ;; There is no try-completion action in Selectrum,
+                  ;; so `confirm-after-completion' is ignored.
+                  (eq selectrum--match-is-required 'confirm)
                   (not (eq last-command this-command)))
              (minibuffer-message
               (propertize "Confirm" 'face 'minibuffer-prompt)))
