@@ -164,7 +164,7 @@
 
 (setq completion-styles '(orderless)
       marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)
-      orderless-matching-styles '(orderless-prefixes)
+      orderless-matching-styles '(orderless-prefixes orderless-literal)
       prescient-filter-method '(prefix)
       prescient-sort-length-enable nil
       read-buffer-completion-ignore-case t

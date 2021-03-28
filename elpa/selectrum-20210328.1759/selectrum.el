@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210327.958
-;; Package-Commit: a7130cab247d1fff096f213eaf00b7825b3fd696
+;; Package-Version: 20210328.1759
+;; Package-Commit: 847947bb3fdc5991132ab9005feea0c5d650417f
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -39,67 +39,6 @@
 (require 'seq)
 (require 'subr-x)
 
-(define-obsolete-variable-alias
-  'selectrum-active-p
-  'selectrum-is-active
-  "3.1")
-
-(define-obsolete-variable-alias
-  'selectrum-should-sort-p
-  'selectrum-should-sort
-  "3.1")
-
-(define-obsolete-variable-alias
-  'selectrum-fix-minibuffer-height
-  'selectrum-fix-vertical-window-height
-  "3.1")
-
-(define-obsolete-function-alias
-  'selectrum-read
-  'selectrum--read
-  "3.1")
-
-(define-obsolete-function-alias
-  'selectrum-default-candidate-refine-function
-  'selectrum--default-candidate-refine-function
-  "3.1")
-
-(defun selectrum--default-candidate-refine-function (input candidates)
-  "Default value of `selectrum-refine-candidates-function'.
-Return only candidates that contain the input as a substring.
-INPUT is a string, CANDIDATES is a list of strings."
-  (let ((regexp (regexp-quote input)))
-    (seq-filter
-     (lambda (candidate)
-       (string-match-p regexp candidate))
-     candidates)))
-
-(define-obsolete-function-alias
-  'selectrum-default-candidate-highlight-function
-  'selectrum--default-candidate-highlight-function
-  "3.1")
-
-(defun selectrum--default-candidate-highlight-function (input candidates)
-  "Default value of `selectrum-highlight-candidates-function'.
-Highlight the substring match with
-`selectrum-primary-highlight'. INPUT is a string, CANDIDATES is a
-list of strings."
-  (let ((regexp (regexp-quote input)))
-    (save-match-data
-      (mapcar
-       (lambda (candidate)
-         (when (string-match regexp candidate)
-           (setq candidate (copy-sequence candidate))
-           (put-text-property
-            (match-beginning 0) (match-end 0)
-            'face 'selectrum-primary-highlight
-            candidate))
-         candidate)
-       candidates))))
-
-(put 'selectrum-primary-highlight 'obsolete-face t)
-(put 'selectrum-secondary-highlight 'obsolete-face t)
-
 ;;; Faces
 
 (defface selectrum-quick-keys-highlight
@@ -125,18 +64,6 @@ list of strings."
 (defface selectrum-current-candidate
   '((t :inherit highlight :extend t))
   "Face used to highlight the currently selected candidate."
-  :group 'selectrum-faces)
-
-(defface selectrum-primary-highlight
-  '((t :weight bold))
-  "Face used to highlight the parts of candidates that match the input."
-  :group 'selectrum-faces)
-
-(defface selectrum-secondary-highlight
-  '((t :inherit selectrum-primary-highlight :underline t))
-  "Additional face used to highlight parts of candidates.
-May be used to highlight parts of candidates that match specific
-parts of the input."
   :group 'selectrum-faces)
 
 (defface selectrum-completion-annotation
@@ -335,14 +262,17 @@ CANDIDATES is a list of strings."
         (setq cand (cdr cand)))))
   candidates)
 
-(defcustom selectrum-completion-in-region-styles
-  '(basic partial-completion emacs22)
+(defcustom selectrum-completion-in-region-styles nil
   "The `completion-styles' used by `selectrum-completion-in-region'.
 These are used for the initial filtering of candidates according
 to the text around point. The initial filtering styles for
 completion in region might generally differ from the styles you
 want to use for usual completion. If this option is nil the
-candidates will be filtered by `all-completions'."
+candidates will be filtered by `all-completions' first and if
+that doesn't reveal any matches the completion is retried using
+`completion-styles', honoring adjustments according to
+`completion-category-overrides' and
+`completion-category-defaults'."
   :type completion--styles-type)
 
 (defcustom selectrum-preprocess-candidates-function
@@ -740,12 +670,6 @@ This is non-nil during the first call of
 (defvar-local selectrum--inserted-file-completion nil
   "Non-nil when command should trigger refresh.")
 
-;; TODO: Remove together with deprecated selectrum-read
-(defvar-local selectrum--read-args nil
-  "List of arguments passed to `selectrum--read'.
-Passed to various hook functions, but the this usage of the hooks
-has been deprecated.")
-
 ;;;; Minibuffer state utility functions
 
 (defun selectrum--match-strictly-required-p ()
@@ -867,10 +791,13 @@ behavior."
      (point-max))))
 
 (defun selectrum--metadata ()
-  "Get completion metadata."
-  (completion-metadata (minibuffer-contents)
-                       minibuffer-completion-table
-                       minibuffer-completion-predicate))
+  "Get completion metadata.
+Demotes any errors to messages."
+  (condition-case-unless-debug err
+      (completion-metadata (minibuffer-contents)
+                           minibuffer-completion-table
+                           minibuffer-completion-predicate)
+    (error (message (error-message-string err)) nil)))
 
 (defun selectrum--get-meta (setting)
   "Get metadata SETTING from completion table."
@@ -2024,16 +1951,14 @@ plus CANDIDATE."
                              (insert full-candidate)
                              (buffer-string)))))
                    (dolist (cand (split-string crm separator t))
-                     (apply #'run-hook-with-args
-                            'selectrum-candidate-selected-hook
-                            (selectrum--get-full cand)
-                            selectrum--read-args))
+                     (run-hook-with-args
+                      'selectrum-candidate-selected-hook
+                      (selectrum--get-full cand)))
                    crm))
                 (t
-                 (apply #'run-hook-with-args
-                        'selectrum-candidate-selected-hook
-                        candidate
-                        selectrum--read-args)
+                 (run-hook-with-args
+                  'selectrum-candidate-selected-hook
+                  candidate)
                  (selectrum--get-full candidate))))
          (inhibit-read-only t))
     (erase-buffer)
@@ -2051,7 +1976,7 @@ candidate via prefix argument."
        (+ (prefix-numeric-value arg)
           (1- selectrum--first-index-displayed))
        (1- (length selectrum--refined-candidates)))
-    selectrum--current-candidate-index))
+    (or selectrum--current-candidate-index -1)))
 
 (defun selectrum-select-current-candidate (&optional arg)
   "Exit minibuffer, picking the currently selected candidate.
@@ -2068,13 +1993,13 @@ indices."
   (with-selected-window (active-minibuffer-window)
     (let* ((index (selectrum--index-for-arg arg))
            (valid-prompt-selection
-            (and index (< index 0)
+            (and (< index 0)
                  (or (string-empty-p selectrum--virtual-input)
                      (if minibuffer-completing-file-name
                          (selectrum--at-existing-prompt-path-p)
                        (member (minibuffer-contents)
                                selectrum--refined-candidates))))))
-      (cond ((and index (< index 0)
+      (cond ((and (< index 0)
                   (not valid-prompt-selection)
                   ;; There is no try-completion action in Selectrum,
                   ;; so `confirm-after-completion' is ignored.
@@ -2084,9 +2009,17 @@ indices."
               (propertize "Confirm" 'face 'minibuffer-prompt)))
             ((or (not (selectrum--match-strictly-required-p))
                  valid-prompt-selection
-                 (and index (>= index 0)))
+                 (>= index 0))
              (selectrum--exit-with
               (selectrum--get-candidate index)))
+            ;; For dynamic tables we currently don't update the
+            ;; candidates after each input. The following clause
+            ;; ensures one can still exit out of such a prompt when a
+            ;; valid candidate is in the input.
+            ((and (functionp minibuffer-completion-table)
+                  (eq t (test-completion (minibuffer-contents)
+                                         minibuffer-completion-table)))
+             (selectrum--exit-with (minibuffer-contents)))
             (t
              (minibuffer-message
               (propertize "Match required" 'face 'minibuffer-prompt)))))))
@@ -2144,10 +2077,9 @@ refresh."
                                (assoc crm-separator
                                       selectrum--crm-separator-alist)))
                      (insert (cdr match)))))
-            (apply #'run-hook-with-args
-                   'selectrum-candidate-inserted-hook
-                   candidate
-                   selectrum--read-args))
+            (run-hook-with-args
+             'selectrum-candidate-inserted-hook
+             candidate))
           ;; Ensure refresh of UI. The input input string might be the
           ;; same when the prompt was reinserted. When the prompt was
           ;; selected this will switch selection to first candidate.
@@ -2174,28 +2106,33 @@ history item and exit use `selectrum-select-current-candidate'."
     (when (eq history t)
       (user-error "No history is recorded for this command"))
     (let* ((enable-recursive-minibuffers t)
+           (hist-buf nil)
            (result
-            (selectrum--minibuffer-with-setup-hook
-                (lambda ()
-                  (setq-local selectrum-should-sort nil)
-                  (setq-local selectrum-candidate-inserted-hook nil)
-                  (setq-local selectrum-candidate-selected-hook nil)
-                  (use-local-map
-                   (make-composed-keymap nil (current-local-map)))
-                  (define-key (current-local-map)
-                    [remap selectrum-insert-current-candidate]
-                    'selectrum--insert-history)
-                  (let ((inhibit-read-only t))
-                    (goto-char (or (search-backward ":" nil t)
-                                   (1- (minibuffer-prompt-end))))
-                    (insert
-                     (apply
-                      #'propertize
-                      " [history]"
-                      (text-properties-at (point))))))
-              (catch 'selectrum-insert-action
-                (completing-read
-                 (minibuffer-prompt) history nil t nil t)))))
+            (cl-letf* ((orig
+                        (symbol-function #'selectrum-insert-current-candidate))
+                       ((symbol-function #'selectrum-insert-current-candidate)
+                        (lambda (&optional arg)
+                          (interactive "P")
+                          (if (eq hist-buf (current-buffer))
+                              (selectrum--insert-history arg)
+                            (funcall orig arg)))))
+              (selectrum--minibuffer-with-setup-hook
+                  (lambda ()
+                    (setq hist-buf (current-buffer))
+                    (setq-local selectrum-should-sort nil)
+                    (setq-local selectrum-candidate-inserted-hook nil)
+                    (setq-local selectrum-candidate-selected-hook nil)
+                    (let ((inhibit-read-only t))
+                      (goto-char (or (search-backward ":" nil t)
+                                     (1- (minibuffer-prompt-end))))
+                      (insert
+                       (apply
+                        #'propertize
+                        " [history]"
+                        (text-properties-at (point))))))
+                (catch 'selectrum-insert-action
+                  (completing-read
+                   (minibuffer-prompt) history nil t nil t))))))
       (if (get-text-property 0 'selectum--insert result)
           (progn
             (delete-minibuffer-contents)
@@ -2206,13 +2143,18 @@ history item and exit use `selectrum-select-current-candidate'."
             (user-error "That history element is not one of the candidates")
           (selectrum--exit-with result))))))
 
-(defun selectrum--insert-history ()
+(defun selectrum--insert-history (&optional arg)
   "Insert history item.
-Only to be used from `selectrum-select-from-history'"
-  (interactive)
-  (throw 'selectrum-insert-action
-         (propertize (selectrum-get-current-candidate 'notfull)
-                     'selectum--insert t)))
+Only to be used from `selectrum-select-from-history'. Give a
+prefix argument ARG to select the nth displayed candidate. Zero
+means to select the current user input."
+  (interactive "P")
+  (let* ((index (selectrum--index-for-arg arg))
+         (cand
+          (selectrum--get-full
+           (selectrum--get-candidate index))))
+    (throw 'selectrum-insert-action
+           (propertize cand 'selectum--insert t))))
 
 (defun selectrum--quick-keys (len keys)
   "Get list of key combinations up to key length LEN.
@@ -2307,8 +2249,7 @@ KEYS is a list of key strings to combine."
 (cl-defun selectrum--read
     (prompt candidates &rest args &key
             default-candidate initial-input require-match
-            history no-move-default-candidate
-            may-modify-candidates
+            history
             minibuffer-completion-table
             minibuffer-completion-predicate)
   "Prompt user with PROMPT to select one of CANDIDATES.
@@ -2345,28 +2286,12 @@ this case.
 HISTORY is the `minibuffer-history-variable' to use (by default
 `minibuffer-history').
 
-NO-MOVE-DEFAULT-CANDIDATE, if non-nil, means that the default
-candidate is not sorted first. Instead, it is left at its
-original position in the candidate list. However, it is still
-selected initially. This is handy for `switch-to-buffer' and
-friends, for which getting the candidate list out of order at all
-is very confusing.
-
-MAY-MODIFY-CANDIDATES, if non-nil, means that Selectrum is
-allowed to modify the CANDIDATES list destructively. Otherwise a
-copy is made.
-
 For MINIBUFFER-COMPLETION-TABLE and
 MINIBUFFER-COMPLETION-PREDICATE see `minibuffer-completion-table'
 and `minibuffer-completion-predicate'. They are used for internal
 purposes and compatibility to Emacs completion API. By passing
 these as keyword arguments they will be dynamically bound as per
 semantics of `cl-defun'."
-  ;; TODO: Make may-modify-candidates the default behavior,
-  ;; as soon as `selectrum-read' is removed.
-  (unless (or may-modify-candidates
-              (functionp candidates))
-    (setq candidates (copy-sequence candidates)))
   (let* ((minibuffer-allow-text-properties t)
          (resize-mini-windows 'grow-only)
          (prompt (selectrum--remove-default-from-prompt prompt))
@@ -2382,15 +2307,8 @@ semantics of `cl-defun'."
                 (setq-local selectrum-is-active t))
             (selectrum--minibuffer-with-setup-hook
                 (:append (lambda ()
-                           (setq-local selectrum--read-args
-                                       (cl-list* prompt candidates args))
                            (setq-local selectrum--match-is-required
                                        require-match)
-                           ;; TODO the `:no-move-default-candidate' option of
-                           ;; `selectrum--read' should be removed together with
-                           ;; the obsolete `selectrum-read' alias.
-                           (when no-move-default-candidate
-                             (setq-local selectrum-move-default-candidate nil))
                            (selectrum--setup
                             candidates
                             (or minibuffer-default default-candidate)
@@ -2426,7 +2344,6 @@ HIST, DEF, and INHERIT-INPUT-METHOD, see `completing-read'."
    :default-candidate def
    :require-match require-match
    :history hist
-   :may-modify-candidates t
    :minibuffer-completion-table collection
    :minibuffer-completion-predicate predicate))
 
@@ -2491,7 +2408,6 @@ the prompt."
         :initial-input initial-input
         :history hist
         :default-candidate def
-        :may-modify-candidates t
         :minibuffer-completion-table table
         :minibuffer-completion-predicate predicate)))
     (split-string res crm-separator t)))
@@ -2507,6 +2423,7 @@ COLLECTION, and PREDICATE, see `completion-in-region'."
          (meta (completion-metadata input collection predicate))
          (threshold (completion--cycle-threshold meta))
          (category (completion-metadata-get meta 'category))
+         (styles (completion--styles meta))
          (bound (pcase category
                   ('file start)
                   (_ (+ start (car (completion-boundaries
@@ -2514,8 +2431,14 @@ COLLECTION, and PREDICATE, see `completion-in-region'."
          (exit-func (plist-get completion-extra-properties
                                :exit-function))
          (cands (if (not selectrum-completion-in-region-styles)
-                    (let ((completion-regexp-list nil))
-                      (all-completions input collection predicate))
+                    (or (let ((completion-regexp-list nil))
+                          (all-completions input collection predicate))
+                        (nconc
+                         (let ((completion-styles styles))
+                           (completion-all-completions
+                            input collection predicate
+                            (- end start) meta))
+                         nil))
                   (nconc
                    (let ((completion-styles
                           selectrum-completion-in-region-styles))
@@ -2626,7 +2549,6 @@ PREDICATE, see `read-buffer'."
        :default-candidate def
        :require-match require-match
        :history 'buffer-name-history
-       :may-modify-candidates t
        :minibuffer-completion-table #'internal-complete-buffer
        :minibuffer-completion-predicate predicate))))
 
@@ -2813,7 +2735,6 @@ For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
        :initial-input (or (car-safe initial-input) initial-input)
        :history hist
        :require-match require-match
-       :may-modify-candidates t
        :minibuffer-completion-table collection
        :minibuffer-completion-predicate predicate))))
 
@@ -2988,7 +2909,7 @@ shadows correctly."
     (get-text-property
      0 'selectrum--lib-path
      (selectrum--read
-      "Library name: " lst :require-match t :may-modify-candidates t))))
+      "Library name: " lst :require-match t))))
 
 (defun selectrum-repeat ()
   "Repeat the last command that used Selectrum, and try to restore state."
