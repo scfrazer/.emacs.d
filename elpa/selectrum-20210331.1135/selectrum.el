@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210328.1759
-;; Package-Commit: 847947bb3fdc5991132ab9005feea0c5d650417f
+;; Package-Version: 20210331.1135
+;; Package-Commit: b34e24587ae9eda60ff75ed7941c45abad85c0f7
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -1440,10 +1440,7 @@ window is supposed to be shown vertically."
                    (and (window-at-side-p window 'bottom)
                         (not (window-at-side-p window 'top))))
            (set-window-text-height window 1)))
-        ((and vertical
-              (or selectrum-fix-vertical-window-height
-                  ;; Workaround for #435.
-                  (version<= "28" emacs-version)))
+        ((and vertical selectrum-fix-vertical-window-height)
          (let* ((max (selectrum--max-window-height))
                 (lines (if selectrum-display-action
                            max
@@ -2326,7 +2323,8 @@ semantics of `cl-defun'."
              (if (and exit-string
                       (string-empty-p exit-string)
                       (equal res default))
-                 default-candidate
+                 (or (car-safe default-candidate)
+                     default-candidate)
                (substring-no-properties res))))
           (t res))))
 
@@ -2338,6 +2336,13 @@ semantics of `cl-defun'."
   "Read choice using Selectrum. Can be used as `completing-read-function'.
 For PROMPT, COLLECTION, PREDICATE, REQUIRE-MATCH, INITIAL-INPUT,
 HIST, DEF, and INHERIT-INPUT-METHOD, see `completing-read'."
+  (when (consp initial-input)
+    (setq initial-input
+          (cons (car initial-input)
+                ;; `completing-read' uses 0-based index while
+                ;; `read-from-minibuffer' uses 1-based index, see
+                ;; `completing-read-default'.
+                (1+ (cdr initial-input)))))
   (selectrum--read
    prompt nil
    :initial-input initial-input
