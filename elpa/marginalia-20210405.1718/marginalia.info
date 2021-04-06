@@ -56,7 +56,8 @@ File: marginalia.info,  Node: Configuration,  Prev: Introduction,  Up: Top
 ***************
 
 It is recommended to use Marginalia together with either the Selectrum
-(https://github.com/raxod502/selectrum) or the Icomplete-vertical
+(https://github.com/raxod502/selectrum), Vertico
+(https://github.com/minad/vertico) or the Icomplete-vertical
 (https://github.com/oantolin/icomplete-vertical) completion system.
 Furthermore Marginalia can be combined with Embark
 (https://github.com/oantolin/embark) for action support and Consult
