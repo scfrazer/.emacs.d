@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210324.1821
-;; Package-Commit: c632dbf27a77c1c73ce559041b3a78ec5f78b187
+;; Package-Version: 20210407.28
+;; Package-Commit: 5fb30301cb3b4fca5a0e1ce8ec1ef59290b79199
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -842,6 +842,7 @@ problems at github. If DISABLE is non-nil disable support."
       (setq-local cursor-type nil)
       (setq-local cursor-in-non-selected-windows nil)
       (setq-local mode-line-format nil)
+      (setq-local header-line-format nil)
       (setq-local word-wrap nil)
       (setq-local show-trailing-whitespace nil)
       (run-hooks 'which-key-init-buffer-hook))))
