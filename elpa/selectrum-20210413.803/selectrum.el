@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210411.1153
-;; Package-Commit: 35665560c217fc7c39ec7ef006edc6d556a4d3cf
+;; Package-Version: 20210413.803
+;; Package-Commit: 13b71b4c34bdeaf39b5e33a7a81d33c5ec13c13a
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -748,6 +748,7 @@ candidate and return the candidate as displayed."
   (when selectrum-is-active
     (with-selected-window (active-minibuffer-window)
       (minibuffer-contents))))
+(make-obsolete 'selectrum-get-current-input nil "3.1")
 
 (defun selectrum-set-selected-candidate (&optional string)
   "Set currently selected candidate to STRING.

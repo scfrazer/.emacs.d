@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210410.1942
-;; Package-Commit: 8a5598d06a0539492ec30fc90201a263ea6a03e6
+;; Package-Version: 20210413.21
+;; Package-Commit: 05fe6472cb1766e4dafae7562b8793d96d0bb271
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -27,7 +27,7 @@
 ;;; Commentary:
 
 ;; Simply M-x eglot should be enough to get you started, but here's a
-;; little info (see the accompanying README.md or the URL for more).
+ ;; little info (see the accompanying README.md or the URL for more).
 ;;
 ;; M-x eglot starts a server via a shell-command guessed from
 ;; `eglot-server-programs', using the current major-mode (for whatever
@@ -2248,6 +2248,13 @@ is not active."
                (concat " "
                        (propertize annotation
                                    'face 'font-lock-function-name-face))))))
+       :company-kind
+       ;; Associate each lsp-item with a lsp-kind symbol.
+       (lambda (proxy)
+         (when-let* ((lsp-item (get-text-property 0 'eglot--lsp-item proxy))
+                     (kind (alist-get (plist-get lsp-item :kind)
+                                      eglot--kind-names)))
+           (intern (downcase kind))))
        :company-doc-buffer
        (lambda (proxy)
          (let* ((documentation
@@ -2778,6 +2785,15 @@ If NOERROR, return predicate, else erroring function."
   `(,self () (re-search-forward ,(concat "\\=" arg)) (,next)))
 
 (defun eglot--files-recursively (&optional dir)
+  "Because `directory-files-recursively' isn't complete in 26.3."
+  (cons (setq dir (expand-file-name (or dir default-directory)))
+        (cl-loop with default-directory = dir
+                 with completion-regexp-list = '("^[^.]")
+                 for f in (file-name-all-completions "" dir)
+                 if (file-directory-p f) append (eglot--files-recursively f)
+                 else collect (expand-file-name f))))
+
+(defun eglot--directories-recursively (&optional dir)
   "Because `directory-files-recursively' isn't complete in 26.3."
   (cons (setq dir (expand-file-name (or dir default-directory)))
         (cl-loop with default-directory = dir
