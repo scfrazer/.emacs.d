@@ -1599,10 +1599,10 @@ same as writing (provide \\='bar-foo).
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20210411.1241/realgud-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20210414.235/realgud-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20210411.1241/realgud-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20210414.235/realgud-autoloads.el") (car load-path))))
 
 
 
