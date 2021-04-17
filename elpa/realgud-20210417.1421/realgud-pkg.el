@@ -1,9 +1,9 @@
-(define-package "realgud" "20210414.235" "A modular front-end for interacting with external debuggers"
+(define-package "realgud" "20210417.1421" "A modular front-end for interacting with external debuggers"
   '((load-relative "1.3.1")
     (loc-changes "1.2")
     (test-simple "1.3.0")
     (emacs "25"))
-  :commit "219175e9698d9550a1202be746ba0500f79ddd25" :authors
+  :commit "3f0a69e8ddf85bafad2eecdfc82952edeccf5677" :authors
   '(("Rocky Bernstein" . "rocky@gnu.org"))
   :maintainer
   '("Rocky Bernstein" . "rocky@gnu.org")
