@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210413.803
-;; Package-Commit: 13b71b4c34bdeaf39b5e33a7a81d33c5ec13c13a
+;; Package-Version: 20210417.2123
+;; Package-Commit: 2009e5490034855d151b8ac0fa5af73c61c6e74f
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -906,9 +906,7 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
                   (plist-get completion-extra-properties
                              :affixation-function)))
          (docsigf (plist-get completion-extra-properties :company-docsig))
-         (groupf (or (completion-metadata-get metadata 'x-group-function)
-                     (plist-get completion-extra-properties
-                                :x-group-function)))
+         (groupf (completion-metadata-get metadata 'x-group-function))
          (candidates (cond (aff
                             (selectrum--affixate aff highlighted-candidates))
                            ((or annotf docsigf)
@@ -1194,9 +1192,7 @@ and the `x-group-function'."
                          input cands)))
   ;; Group candidates. This has to be done after refinement, since
   ;; refinement can reorder the candidates.
-  (when-let (groupf (or (selectrum--get-meta 'x-group-function)
-                        (plist-get completion-extra-properties
-                                   :x-group-function)))
+  (when-let (groupf (selectrum--get-meta 'x-group-function))
     ;; Ensure that default candidate appears at the top if
     ;; `selectrum-move-default-candidate' is set. It is redundant to
     ;; do this here, since we move the default candidate also

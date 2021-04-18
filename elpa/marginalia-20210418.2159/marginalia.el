@@ -1,7 +1,7 @@
 ;;; marginalia.el --- Enrich existing commands with completion annotations -*- lexical-binding: t -*-
 
-;; Author: Omar Antolín Camarena, Daniel Mendler
-;; Maintainer: Omar Antolín Camarena, Daniel Mendler
+;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
+;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.4
@@ -778,7 +778,7 @@ Remember `this-command' for `marginalia-classify-by-command-name'."
   ;; NOTE: As a small optimization track the base position only for file completions,
   ;; since `marginalia--full-candidate' is only used for files as of now.
   (when minibuffer-completing-file-name
-    (setq marginalia--base-position (cdr (last completions))))
+    (setq marginalia--base-position (or (cdr (last completions)) 0)))
   completions)
 
 ;;;###autoload
