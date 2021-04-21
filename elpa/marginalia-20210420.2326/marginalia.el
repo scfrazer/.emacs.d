@@ -264,6 +264,8 @@ determine it."
 (declare-function color-rgb-to-hsl "color")
 (declare-function color-hsl-to-rgb "color")
 
+(declare-function selectrum--get-full "ext:selectrum")
+
 ;;;; Marginalia mode
 
 (defvar marginalia--separator "    "
@@ -647,14 +649,16 @@ For some completion tables, the completion candidates offered are
 meant to be only a part of the full minibuffer contents. For
 example, during file name completion the candidates are one path
 component of a full file path."
-  (if-let (win (active-minibuffer-window))
-      (with-current-buffer (window-buffer win)
-        (concat (substring (minibuffer-contents-no-properties)
-                           0 marginalia--base-position)
-                cand))
-    ;; no minibuffer is active, trust that cand already conveys all
-    ;; necessary information (there's not much else we can do)
-    cand))
+    (if-let (win (active-minibuffer-window))
+        (with-current-buffer (window-buffer win)
+          (if (bound-and-true-p selectrum-is-active)
+              (selectrum--get-full cand)
+            (concat (substring (minibuffer-contents-no-properties)
+                               0 marginalia--base-position)
+                    cand)))
+      ;; no minibuffer is active, trust that cand already conveys all
+      ;; necessary information (there's not much else we can do)
+      cand))
 
 (defun marginalia--remote-p (path)
   "Return t if PATH is a remote path."
