@@ -2966,10 +2966,10 @@ Display items in the `kill-ring' in another buffer.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20201116.2341/bm-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20210421.1351/bm-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bm-20201116.2341/bm-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bm-20210421.1351/bm-autoloads.el") (car load-path))))
 
 
 
