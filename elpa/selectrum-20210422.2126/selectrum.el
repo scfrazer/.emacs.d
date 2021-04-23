@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210417.2123
-;; Package-Commit: 2009e5490034855d151b8ac0fa5af73c61c6e74f
+;; Package-Version: 20210422.2126
+;; Package-Commit: 43f75f44d86e201c1108fbbd3c97711b4789378f
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -917,11 +917,12 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
          (lines ()))
     (dolist (cand candidates)
       (when groupf
-        (when-let (title (and selectrum-group-format
-                              (caar (funcall groupf (list cand)))))
-          (unless (equal title last-title)
-            (setq last-title title)
-            (push (format selectrum-group-format title) lines)
+        (when-let (group-result (and selectrum-group-format
+                                     (funcall groupf cand)))
+          (setq cand (car group-result))
+          (unless (equal (cdr group-result) last-title)
+            (setq last-title (cdr group-result))
+            (push (format selectrum-group-format last-title) lines)
             (push "\n" lines))))
       (let* ((formatting-current-candidate
               (eq i index))
