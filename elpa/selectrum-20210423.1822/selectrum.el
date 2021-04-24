@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210422.2126
-;; Package-Commit: 43f75f44d86e201c1108fbbd3c97711b4789378f
+;; Package-Version: 20210423.1822
+;; Package-Commit: 093f7e96a323179ee2a68a5a674e7fa2c5d721b8
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -869,6 +869,17 @@ content height is greater than the window height."
        (>= (cdr (window-text-pixel-size window))
            (window-body-height window 'pixelwise))))
 
+(defun selectrum--group-by (fun elems)
+  "Group ELEMS by FUN."
+  (let ((groups))
+    (dolist (cand elems)
+      (let* ((key (funcall fun cand nil))
+             (group (assoc key groups)))
+        (if group
+            (setcdr group (cons cand (cdr group)))
+          (push (list key cand) groups))))
+    (mapcan (lambda (x) (nreverse (cdr x))) (nreverse groups))))
+
 (defun selectrum--vertical-display-style
     (win input nrows _ncols index
          max-index _first-index-displayed _last-index-displayed)
@@ -906,7 +917,8 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
                   (plist-get completion-extra-properties
                              :affixation-function)))
          (docsigf (plist-get completion-extra-properties :company-docsig))
-         (groupf (completion-metadata-get metadata 'x-group-function))
+         (titlef (and selectrum-group-format
+                      (completion-metadata-get metadata 'x-title-function)))
          (candidates (cond (aff
                             (selectrum--affixate aff highlighted-candidates))
                            ((or annotf docsigf)
@@ -916,14 +928,11 @@ displayed first and LAST-INDEX-DISPLAYED the index of the last one."
          (last-title nil)
          (lines ()))
     (dolist (cand candidates)
-      (when groupf
-        (when-let (group-result (and selectrum-group-format
-                                     (funcall groupf cand)))
-          (setq cand (car group-result))
-          (unless (equal (cdr group-result) last-title)
-            (setq last-title (cdr group-result))
-            (push (format selectrum-group-format last-title) lines)
-            (push "\n" lines))))
+      (when-let (new-title (and titlef (funcall titlef cand nil)))
+        (unless (equal last-title new-title)
+          (push (format selectrum-group-format (setq last-title new-title)) lines)
+          (push "\n" lines))
+        (setq cand (funcall titlef cand 'transform)))
       (let* ((formatting-current-candidate
               (eq i index))
              (newline
@@ -1131,7 +1140,7 @@ defaults to the current one and MAX which defaults to
 (defun selectrum--preprocess (candidates)
   "Preprocess CANDIDATES list.
 The preprocessing applies the `selectrum-preprocess-candidates-function'
-and the `x-group-function'."
+and the `x-title-function'."
   (setq-local selectrum--preprocessed-candidates
               (funcall selectrum-preprocess-candidates-function
                        candidates))
@@ -1193,7 +1202,7 @@ and the `x-group-function'."
                          input cands)))
   ;; Group candidates. This has to be done after refinement, since
   ;; refinement can reorder the candidates.
-  (when-let (groupf (selectrum--get-meta 'x-group-function))
+  (when-let (titlef (selectrum--get-meta 'x-title-function))
     ;; Ensure that default candidate appears at the top if
     ;; `selectrum-move-default-candidate' is set. It is redundant to
     ;; do this here, since we move the default candidate also
@@ -1207,7 +1216,7 @@ and the `x-group-function'."
                    selectrum--refined-candidates)))
     (setq-local
      selectrum--refined-candidates
-     (mapcan #'cdr (funcall groupf selectrum--refined-candidates))))
+     (selectrum--group-by titlef selectrum--refined-candidates)))
   (when selectrum--virtual-default-file
     (unless (equal selectrum--virtual-default-file "")
       (setq-local selectrum--refined-candidates
