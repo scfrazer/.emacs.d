@@ -639,6 +639,12 @@ With C-u prefix arg, delete instead of kill.  With numeric prefix arg, append ki
 comma/semicolon/spaces also."
   (let (start end forward-sexp-function)
     (save-excursion
+      (let (limit)
+        (save-excursion
+          (backward-up-list)
+          (setq limit (point)))
+        (while (not (looking-back "[,;{([][[:space:]\n]*" limit))
+          (backward-sexp)))
       (setq start (point))
       (while (and (not (eobp))
                   (not (looking-at "[[:space:]\n]*[])},;]")))
