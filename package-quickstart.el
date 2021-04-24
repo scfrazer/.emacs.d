@@ -853,19 +853,6 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20210420.1201/tron-legacy-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tron-legacy-theme-20210420.1201/tron-legacy-theme-autoloads.el") (car load-path))))
-
-
-
-(when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tron-legacy-theme" '("tron-legacy-theme-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210420.1635/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3327,7 +3314,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package tron-legacy-theme transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
