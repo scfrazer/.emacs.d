@@ -5,8 +5,8 @@
 ;; Author: Radon Rosborough <radon.neon@gmail.com>
 ;; Homepage: https://github.com/raxod502/prescient.el
 ;; Keywords: extensions
-;; Package-Version: 20210411.2007
-;; Package-Commit: ed2b762241bbea03e374dc9dcd4fbe207c6b2ea4
+;; Package-Version: 20210425.1720
+;; Package-Commit: 4a0f5405798cfcb98ea005078ef2e2d490e922c4
 ;; Created: 8 Dec 2019
 ;; Package-Requires: ((emacs "25.1") (prescient "5.1") (selectrum "3.1"))
 ;; SPDX-License-Identifier: MIT
@@ -101,7 +101,7 @@ For use on `selectrum-candidate-selected-hook'."
 
 (defun selectrum-prescient--highlight (input candidates)
   "According to INPUT, return list of propertized CANDIDATES."
-  (let ((regexps (prescient-filter-regexps input 'with-groups))
+  (let ((regexps (prescient-filter-regexps input 'with-group))
         (case-fold-search (if (eq prescient-use-case-folding
                                   'smart)
                               (let ((case-fold-search nil))

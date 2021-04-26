@@ -959,10 +959,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210411.2007/prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/prescient-20210425.1720/prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210411.2007/prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/prescient-20210425.1720/prescient-autoloads.el") (car load-path))))
 
 
 
@@ -1086,10 +1086,10 @@ Minor mode to use Selectrum for `completing-read'." :global t (if selectrum-mode
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210411.2007/selectrum-prescient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210425.1720/selectrum-prescient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210411.2007/selectrum-prescient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-prescient-20210425.1720/selectrum-prescient-autoloads.el") (car load-path))))
 
 
 
