@@ -7,6 +7,7 @@
 ;; Package-Requires: ((emacs "25.1"))
 ;; Package-Version: 0.3.2
 ;; Keywords: bindings
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is part of GNU Emacs.
 
@@ -2816,7 +2817,8 @@ have a history of their own.")
         (focus nil))
     (unless (window-live-p transient--window)
       (setq transient--window
-            (display-buffer buf transient-display-buffer-action)))
+            (let ((pop-up-windows t))
+              (display-buffer buf transient-display-buffer-action))))
     (with-selected-window transient--window
       (when transient-enable-popup-navigation
         (setq focus (button-get (point) 'command)))
