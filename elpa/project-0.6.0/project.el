@@ -1,7 +1,7 @@
 ;;; project.el --- Operations on the current project  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2021 Free Software Foundation, Inc.
-;; Version: 0.5.4
+;; Version: 0.6.0
 ;; Package-Requires: ((emacs "26.1") (xref "1.0.2"))
 
 ;; This is a GNU ELPA :core package.  Avoid using functionality that
@@ -106,7 +106,7 @@
 ;;
 ;; - Write a new function that will determine the current project
 ;; based on the directory and add it to `project-find-functions'
-;; (which see) using `add-hook'. It is a good idea to depend on the
+;; (which see) using `add-hook'.  It is a good idea to depend on the
 ;; directory only, and not on the current major mode, for example.
 ;; Because the usual expectation is that all files in the directory
 ;; belong to the same project (even if some/most of them are ignored).
@@ -201,12 +201,15 @@ of the project instance object."
     (when maybe-prompt
       (if pr
           (project-remember-project pr)
-        (project--remove-from-project-list directory)
+        (project--remove-from-project-list
+         directory "Project `%s' not found; removed from list")
         (setq pr (cons 'transient directory))))
     pr))
 
 (defun project--find-in-directory (dir)
   (run-hook-with-args-until-success 'project-find-functions dir))
+
+(defvar project--within-roots-fallback nil)
 
 (cl-defgeneric project-root (project)
   "Return root directory of the current project.
@@ -214,7 +217,11 @@ of the project instance object."
 It usually contains the main build file, dependencies
 configuration file, etc. Though neither is mandatory.
 
-The directory name must be absolute."
+The directory name must be absolute.")
+
+(cl-defmethod project-root (project
+                            &context (project--within-roots-fallback
+                                      (eql nil)))
   (car (project-roots project)))
 
 (cl-defgeneric project-roots (project)
@@ -226,7 +233,8 @@ and the rest should be possible to express through
   ;; FIXME: Can we specify project's version here?
   ;; FIXME: Could we make this affect cl-defmethod calls too?
   (declare (obsolete project-root "0.3.0"))
-  (list (project-root project)))
+  (let ((project--within-roots-fallback t))
+    (list (project-root project))))
 
 ;; FIXME: Add MODE argument, like in `ede-source-paths'?
 (cl-defgeneric project-external-roots (_project)
@@ -288,7 +296,7 @@ to find the list of ignores for each directory."
          ;; Make sure ~/ etc. in local directory name is
          ;; expanded and not left for the shell command
          ;; to interpret.
-         (localdir (file-local-name (expand-file-name dir)))
+         (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
          (command (format "%s %s %s -type f %s -print0"
                           find-program
                           ;; In case DIR is a symlink.
@@ -303,16 +311,25 @@ to find the list of ignores for each directory."
                                        (concat " -o " find-name-arg " "))
                                       " "
                                       (shell-quote-argument ")"))
-                            ""))))
+                            "")))
+         (output (with-output-to-string
+                   (with-current-buffer standard-output
+                     (let ((status
+                            (process-file-shell-command command nil t)))
+                       (unless (zerop status)
+                         (error "File listing failed: %s" (buffer-string))))))))
     (project--remote-file-names
-     (sort (split-string (shell-command-to-string command) "\0" t)
+     (sort (split-string output "\0" t)
            #'string<))))
 
 (defun project--remote-file-names (local-files)
-  "Return LOCAL-FILES as if they were on the system of `default-directory'."
+  "Return LOCAL-FILES as if they were on the system of `default-directory'.
+Also quote LOCAL-FILES if `default-directory' is quoted."
   (let ((remote-id (file-remote-p default-directory)))
     (if (not remote-id)
-        local-files
+        (if (file-name-quoted-p default-directory)
+            (mapcar #'file-name-quote local-files)
+          local-files)
       (mapcar (lambda (file)
                 (concat remote-id file))
               local-files))))
@@ -724,13 +741,14 @@ requires quoting, e.g. `\\[quoted-insert]<space>'."
   (interactive (list (project--read-regexp)))
   (require 'xref)
   (require 'grep)
-  (let* ((pr (project-current t))
+  (let* ((caller-dir default-directory)
+         (pr (project-current t))
          (default-directory (project-root pr))
          (files
           (if (not current-prefix-arg)
               (project-files pr)
             (let ((dir (read-directory-name "Base directory: "
-                                            nil default-directory t)))
+                                            caller-dir nil t)))
               (project--files-in-directory dir
                                            nil
                                            (grep-read-files regexp))))))
@@ -774,9 +792,12 @@ pattern to search for."
       (user-error "No matches for: %s" regexp))
     xrefs))
 
+(defvar project-regexp-history-variable 'grep-regexp-history)
+
 (defun project--read-regexp ()
   (let ((sym (thing-at-point 'symbol t)))
-    (read-regexp "Find regexp" (and sym (regexp-quote sym)))))
+    (read-regexp "Find regexp" (and sym (regexp-quote sym))
+                 project-regexp-history-variable)))
 
 ;;;###autoload
 (defun project-find-file ()
@@ -897,14 +918,10 @@ With \\[universal-argument] prefix arg, create a new inferior shell buffer even
 if one already exists."
   (interactive)
   (let* ((default-directory (project-root (project-current t)))
-         (default-project-shell-name
-           (concat "*" (file-name-nondirectory
-                        (directory-file-name
-                         (file-name-directory default-directory)))
-                   "-shell*"))
+         (default-project-shell-name (project-prefixed-buffer-name "shell"))
          (shell-buffer (get-buffer default-project-shell-name)))
     (if (and shell-buffer (not current-prefix-arg))
-        (pop-to-buffer shell-buffer)
+        (pop-to-buffer-same-window shell-buffer)
       (shell (generate-new-buffer-name default-project-shell-name)))))
 
 ;;;###autoload
@@ -917,11 +934,7 @@ if one already exists."
   (interactive)
   (defvar eshell-buffer-name)
   (let* ((default-directory (project-root (project-current t)))
-         (eshell-buffer-name
-          (concat "*" (file-name-nondirectory
-                       (directory-file-name
-                        (file-name-directory default-directory)))
-                  "-eshell*"))
+         (eshell-buffer-name (project-prefixed-buffer-name "eshell"))
          (eshell-buffer (get-buffer eshell-buffer-name)))
     (if (and eshell-buffer (not current-prefix-arg))
         (pop-to-buffer-same-window eshell-buffer)
@@ -973,12 +986,34 @@ loop using the command \\[fileloop-continue]."
 (defvar compilation-read-command)
 (declare-function compilation-read-command "compile")
 
+(defun project-prefixed-buffer-name (mode)
+  (concat "*"
+          (file-name-nondirectory
+           (directory-file-name default-directory))
+          "-"
+          (downcase mode)
+          "*"))
+
+(defcustom project-compilation-buffer-name-function nil
+  "Function to compute the name of a project compilation buffer.
+If non-nil, it overrides `compilation-buffer-name-function' for
+`project-compile'."
+  :version "28.1"
+  :group 'project
+  :type '(choice (const :tag "Default" nil)
+                 (const :tag "Prefixed with root directory name"
+                        project-prefixed-buffer-name)
+                 (function :tag "Custom function")))
+
 ;;;###autoload
 (defun project-compile ()
   "Run `compile' in the project root."
   (declare (interactive-only compile))
   (interactive)
-  (let ((default-directory (project-root (project-current t))))
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
     (call-interactively #'compile)))
 
 (defun project--read-project-buffer ()
@@ -1210,16 +1245,26 @@ Save the result in `project-list-file' if the list of projects has changed."
       (push (list dir) project--list)
       (project--write-project-list))))
 
-(defun project--remove-from-project-list (pr-dir)
-  "Remove directory PR-DIR of a missing project from the project list.
+(defun project--remove-from-project-list (project-root report-message)
+  "Remove directory PROJECT-ROOT of a missing project from the project list.
 If the directory was in the list before the removal, save the
 result in `project-list-file'.  Announce the project's removal
-from the list."
+from the list using REPORT-MESSAGE, which is a format string
+passed to `message' as its first argument."
   (project--ensure-read-project-list)
-  (when-let ((ent (assoc pr-dir project--list)))
+  (when-let ((ent (assoc project-root project--list)))
     (setq project--list (delq ent project--list))
-    (message "Project `%s' not found; removed from list" pr-dir)
+    (message report-message project-root)
     (project--write-project-list)))
+
+;;;###autoload
+(defun project-remove-known-project (project-root)
+  "Remove directory PROJECT-ROOT from the project list.
+PROJECT-ROOT is the root directory of a known project listed in
+the project list."
+  (interactive (list (project-prompt-project-dir)))
+  (project--remove-from-project-list
+   project-root "Project `%s' removed from known projects"))
 
 (defun project-prompt-project-dir ()
   "Prompt the user for a directory that is one of the known project roots.
@@ -1271,6 +1316,7 @@ to distinguish the menu entries in the dispatch menu.  If KEY is
 absent, COMMAND must be bound in `project-prefix-map', and the
 key is looked up in that map."
   :version "28.1"
+  :group 'project
   :package-version '(project . "0.6.0")
   :type '(repeat
           (list
@@ -1287,6 +1333,7 @@ listed in `project-switch-commands' and signal an error when
 others are invoked.  Otherwise, all keys in `project-prefix-map'
 are legal even if they aren't listed in the dispatch menu."
   :type 'boolean
+  :group 'project
   :version "28.1")
 
 (defun project--keymap-prompt ()
@@ -1300,7 +1347,7 @@ are legal even if they aren't listed in the dispatch menu."
                key tmp)))
      (let ((key (if key
                     (vector key)
-                  (where-is-internal cmd project-prefix-map t))))
+                  (where-is-internal cmd (list project-prefix-map) t))))
        (format "[%s] %s"
                (propertize (key-description key) 'face 'bold)
                label)))
@@ -1316,28 +1363,36 @@ made from `project-switch-commands'.
 When called in a program, it will use the project corresponding
 to directory DIR."
   (interactive (list (project-prompt-project-dir)))
-  (let ((commands-menu
-         (mapcar
-          (lambda (row)
-            (if (characterp (car row))
-                ;; Deprecated format.
-                ;; XXX: Add a warning about it?
-                (reverse row)
-              row))
-          project-switch-commands))
-        command)
+  (let* ((commands-menu
+          (mapcar
+           (lambda (row)
+             (if (characterp (car row))
+                 ;; Deprecated format.
+                 ;; XXX: Add a warning about it?
+                 (reverse row)
+               row))
+           project-switch-commands))
+         (commands-map
+          (let ((temp-map (make-sparse-keymap)))
+            (set-keymap-parent temp-map project-prefix-map)
+            (dolist (row commands-menu temp-map)
+              (when-let ((cmd (nth 0 row))
+                         (keychar (nth 2 row)))
+                (define-key temp-map (vector keychar) cmd)))))
+         command)
     (while (not command)
-      (let ((choice (read-event (project--keymap-prompt))))
-        (when (setq command
-                    (or (car
-                         (seq-find (lambda (row) (equal choice (nth 2 row)))
-                                   commands-menu))
-                        (lookup-key project-prefix-map (vector choice))))
+      (let ((overriding-local-map commands-map)
+            (choice (read-key-sequence (project--keymap-prompt))))
+        (when (setq command (lookup-key commands-map choice))
           (unless (or project-switch-use-entire-map
                       (assq command commands-menu))
             ;; TODO: Add some hint to the prompt, like "key not
             ;; recognized" or something.
-            (setq command nil)))))
+            (setq command nil)))
+        (let ((global-command (lookup-key (current-global-map) choice)))
+          (when (memq global-command
+                      '(keyboard-quit keyboard-escape-quit))
+            (call-interactively global-command)))))
     (let ((default-directory dir)
           (project-current-inhibit-prompt t))
       (call-interactively command))))

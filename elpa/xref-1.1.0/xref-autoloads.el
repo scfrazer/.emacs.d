@@ -97,6 +97,10 @@ FILES must be a list of absolute file names.
 
 ;;;***
 
+;;;### (autoloads nil nil ("xref-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

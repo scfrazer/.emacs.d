@@ -23,10 +23,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.1.0/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.0.4/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.1.0/xref-autoloads.el") (car load-path))))
 
 
 
@@ -115,6 +115,8 @@ FILES must be a list of absolute file names.
 \(fn REGEXP FILES)" nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xref" '("xref-")))
+
+
 
 
 )
@@ -1484,10 +1486,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.5.4/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.6.0/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.5.4/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.6.0/project-autoloads.el") (car load-path))))
 
 
 
@@ -1673,6 +1675,13 @@ Add project PR to the front of the project list.
 Save the result in `project-list-file' if the list of projects has changed.
 
 \(fn PR)" nil nil)
+
+(autoload 'project-remove-known-project "project" "\
+Remove directory PROJECT-ROOT from the project list.
+PROJECT-ROOT is the root directory of a known project listed in
+the project list.
+
+\(fn PROJECT-ROOT)" t nil)
 
 (autoload 'project-known-project-roots "project" "\
 Return the list of root directories of all known projects." nil nil)
@@ -2131,10 +2140,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210427.1743/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210428.2307/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210427.1743/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210428.2307/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3321,7 +3330,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/marginalia-20210427.1743" "/home/scfrazer/.emacs.d/elpa/orderless-20210407.1548" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210427.833" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210427.1244")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/marginalia-20210428.2307" "/home/scfrazer/.emacs.d/elpa/orderless-20210407.1548" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210427.833" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210427.1244")
          Info-directory-list)))
 
 ;; Local Variables:
