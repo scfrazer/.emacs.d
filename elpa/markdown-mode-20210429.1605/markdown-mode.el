@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210405.1349
-;; Package-Commit: ac9ea26b941eef512a3c206375a6404625c229ed
+;; Package-Version: 20210429.1605
+;; Package-Commit: 94c65e2de2e10b7f3a5e72d412c64ab83b2b1a5e
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -6997,7 +6997,7 @@ demote."
       (markdown-backward-same-level 1))))
 
 (defun markdown-outline-up ()
-  "Move to previous list item, when in a list, or next heading."
+  "Move to previous list item, when in a list, or previous heading."
   (interactive)
   (unless (markdown-up-list)
     (markdown-up-heading 1)))
