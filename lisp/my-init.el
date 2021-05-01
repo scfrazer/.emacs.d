@@ -1818,7 +1818,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'fnd 'my-dired-find-name-dired)
 (defalias 'fre 'my-forward-regexp)
 (defalias 'ind 'my-indent)
-(defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/src/my-init.el"))))
+(defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/my-init.el"))))
 (defalias 'light 'my-theme-light)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
