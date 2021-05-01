@@ -8,6 +8,7 @@
   (tooltip-mode -1))
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
+(add-to-list 'load-path (concat user-emacs-directory "lisp/cc-mode") t)
 
 (setq inhibit-startup-echo-area-message "scfrazer")
 
