@@ -686,6 +686,9 @@ These annotations are skipped for remote paths."
 
 (defun marginalia-annotate-project-file (cand)
   "Annotate file CAND with its size, modification time and other attributes."
+  ;; TODO project-find-file can be called from outside all projects in
+  ;; which case it prompts for a project first; we don't support that
+  ;; case yet, since there is no current project.
   (when-let ((project (project-current))
              (root (car (project-roots project)))
              (file (expand-file-name cand root)))
