@@ -1119,6 +1119,17 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/s-20180406.808/s-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/s-20180406.808/s-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "s" '("s-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3323,7 +3334,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient s rg relint reformatter python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

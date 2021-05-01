@@ -37,7 +37,7 @@
  '(eldoc-minor-mode-string " Doc")
  '(fci-rule-color "#969896")
  '(flyspell-mode-line-string " Sp")
- '(frame-background-mode 'dark)
+ '(frame-background-mode 'light)
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method 'character)
@@ -67,7 +67,7 @@
  '(orderless-skip-highlighting t)
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-selected-packages
-   '(monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(s monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(pdf-view-midnight-colors '("#969896" . "#f8eec7"))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
