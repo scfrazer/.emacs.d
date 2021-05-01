@@ -1,10 +1,11 @@
 *archive-contents*
 auto-save-list
 bookmarks
+eln-cache
 elpa/gnupg
 external
+lisp/confidential.el
 lisp/confidential.elc
-lisp/src/confidential.el
 projects
 tasks
 tramp
