@@ -7,6 +7,8 @@
 (when (fboundp 'tooltip-mode)
   (tooltip-mode -1))
 
+(setq-default load-prefer-newer nil)
+
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp/cc-mode") t)
 

@@ -565,17 +565,17 @@ Format the current buffer according to the js-beautify command.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/visual-regexp-20190414.814/visual-regexp-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/visual-regexp-20210502.2019/visual-regexp-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/visual-regexp-20190414.814/visual-regexp-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/visual-regexp-20210502.2019/visual-regexp-autoloads.el") (car load-path))))
 
 
 
 (autoload 'vr/mc-mark "visual-regexp" "\
 Convert regexp selection to multiple cursors.
 
-\(fn REGEXP START END)" nil nil)
+\(fn REGEXP START END)" t nil)
 
 (autoload 'vr/replace "visual-regexp" "\
 Regexp-replace with live visual feedback.
@@ -583,11 +583,11 @@ Regexp-replace with live visual feedback.
 \(fn REGEXP REPLACE START END)" t nil)
 
 (autoload 'vr/query-replace "visual-regexp" "\
-Use vr/query-replace like you would use query-replace-regexp.
+Use `vr/query-replace' like you would use `query-replace-regexp'.
 
 \(fn REGEXP REPLACE START END)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "visual-regexp" '("vr/" "vr--")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "visual-regexp" '("vr--" "vr/")))
 
 
 )
