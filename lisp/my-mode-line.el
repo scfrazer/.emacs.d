@@ -55,12 +55,12 @@
 (add-hook 'after-revert-hook 'my-mode-line-count-lines)
 (add-hook 'dired-after-readin-hook 'my-mode-line-count-lines)
 
-(defadvice narrow-to-region (after my-mode-line-ntr activate)
-  (when (not (buffer-modified-p))
-    (my-mode-line-count-lines)))
+;; (defadvice narrow-to-region (after my-mode-line-ntr activate)
+;;   (when (not (buffer-modified-p))
+;;     (my-mode-line-count-lines)))
 
-(defadvice narrow-to-defun (after my-mode-line-ntd activate)
-  (when (not (buffer-modified-p))
-    (my-mode-line-count-lines)))
+;; (defadvice narrow-to-defun (after my-mode-line-ntd activate)
+;;   (when (not (buffer-modified-p))
+;;     (my-mode-line-count-lines)))
 
 (provide 'my-mode-line)
