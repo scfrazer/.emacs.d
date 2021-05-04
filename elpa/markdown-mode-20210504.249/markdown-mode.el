@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210429.1605
-;; Package-Commit: 94c65e2de2e10b7f3a5e72d412c64ab83b2b1a5e
+;; Package-Version: 20210504.249
+;; Package-Commit: 9977753eebe3f5cca7ab85b18a7c719fdb0b7654
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3587,13 +3587,26 @@ prefixed with an integer from 1 to the length of
          (insert (car markdown-hr-strings))))
   (markdown-ensure-blank-line-after))
 
-(defun markdown--insert-common (start-delim end-delim regex start-group end-group face)
+(defun markdown--insert-common (start-delim end-delim regex start-group end-group face
+                                            &optional skip-space)
   (if (use-region-p)
       ;; Active region
-      (let ((bounds (markdown-unwrap-things-in-region
-                     (region-beginning) (region-end)
-                     regex start-group end-group)))
-        (markdown-wrap-or-insert start-delim end-delim nil (car bounds) (cdr bounds)))
+      (let* ((bounds (markdown-unwrap-things-in-region
+                      (region-beginning) (region-end)
+                      regex start-group end-group))
+             (beg (car bounds))
+             (end (cdr bounds)))
+        (when (and beg skip-space)
+          (save-excursion
+            (goto-char beg)
+            (skip-chars-forward "[ \t]")
+            (setq beg (point))))
+        (when (and end skip-space)
+          (save-excursion
+            (goto-char end)
+            (skip-chars-backward "[ \t]")
+            (setq end (point))))
+        (markdown-wrap-or-insert start-delim end-delim nil beg end))
     (if (markdown--face-p (point) (list face))
         (save-excursion
           (while (and (markdown--face-p (point) (list face)) (not (bobp)))
@@ -3615,7 +3628,7 @@ bold word or phrase, remove the bold markup.  Otherwise, simply
 insert bold delimiters and place the point in between them."
   (interactive)
   (let ((delim (if markdown-bold-underscore "__" "**")))
-    (markdown--insert-common delim delim markdown-regex-bold 2 4 'markdown-bold-face)))
+    (markdown--insert-common delim delim markdown-regex-bold 2 4 'markdown-bold-face t)))
 
 (defun markdown-insert-italic ()
   "Insert markup to make a region or word italic.
@@ -3625,7 +3638,7 @@ italic word or phrase, remove the italic markup.  Otherwise, simply
 insert italic delimiters and place the point in between them."
   (interactive)
   (let ((delim (if markdown-italic-underscore "_" "*")))
-    (markdown--insert-common delim delim markdown-regex-italic 1 3 'markdown-italic-face)))
+    (markdown--insert-common delim delim markdown-regex-italic 1 3 'markdown-italic-face t)))
 
 (defun markdown-insert-strike-through ()
   "Insert markup to make a region or word strikethrough.
@@ -3635,7 +3648,7 @@ strikethrough word or phrase, remove the strikethrough markup.  Otherwise,
 simply insert bold delimiters and place the point in between them."
   (interactive)
   (markdown--insert-common
-   "~~" "~~" markdown-regex-strike-through 2 4 'markdown-strike-through-face))
+   "~~" "~~" markdown-regex-strike-through 2 4 'markdown-strike-through-face t))
 
 (defun markdown-insert-code ()
   "Insert markup to make a region or word an inline code fragment.
