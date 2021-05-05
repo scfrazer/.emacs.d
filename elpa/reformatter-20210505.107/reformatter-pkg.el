@@ -1,0 +1,2 @@
+;;; Generated package description from reformatter.el  -*- no-byte-compile: t -*-
+(define-package "reformatter" "20210505.107" "Define commands which run reformatters on the current buffer" '((emacs "24.3")) :commit "cb9a5938541a28c50ecb8f72e32b67531b8bf606" :authors '(("Steve Purcell" . "steve@sanityinc.com")) :maintainer '("Steve Purcell" . "steve@sanityinc.com") :keywords '("convenience" "tools") :url "https://github.com/purcell/emacs-reformatter")

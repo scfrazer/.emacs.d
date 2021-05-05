@@ -4,10 +4,10 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: convenience, tools
-;; Package-Commit: 45c0add95025f53ca644a6c8b9afa05b2da3c474
-;; Homepage: https://github.com/purcell/reformatter.el
+;; Package-Commit: cb9a5938541a28c50ecb8f72e32b67531b8bf606
+;; Homepage: https://github.com/purcell/emacs-reformatter
 ;; Package-Requires: ((emacs "24.3"))
-;; Package-Version: 20200814.435
+;; Package-Version: 20210505.107
 ;; Package-X-Original-Version: 0
 
 ;; This program is free software; you can redistribute it and/or modify
