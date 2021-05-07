@@ -67,6 +67,9 @@ It can also be set to an integer value of 1 or larger to force an offset."
   "Use whitespace margin for window widths larger than this value."
   :type 'integer)
 
+(defvar marginalia-annotators nil)
+(defvar marginalia-annotators-light nil)
+(defvar marginalia-annotators-heavy nil)
 (make-obsolete-variable 'marginalia-annotators "Deprecated in favor of `marginalia-annotator-registry'." "0.5")
 (make-obsolete-variable 'marginalia-annotators-light "Deprecated in favor of `marginalia-annotator-registry'." "0.5")
 (make-obsolete-variable 'marginalia-annotators-heavy "Deprecated in favor of `marginalia-annotator-registry'." "0.5")
@@ -99,7 +102,7 @@ It can also be set to an integer value of 1 or larger to force an offset."
 Associates completion categories with annotation functions.
 Each annotation function must return a string,
 which is appended to the completion candidate."
-  :type 'alist)
+  :type '(alist :key-type symbol :value-type (repeat symbol)))
 
 (defcustom marginalia-classifiers
   '(marginalia-classify-by-command-name
@@ -139,7 +142,7 @@ determine it."
     ("\\`\\(.*?\\)-bookmark-jump\\(?:-handler\\)?\\'" . "\\1")
     (".*" . ,#'capitalize))
   "List of bookmark type transformers."
-  :type 'alist)
+  :type '(alist :key-type regexp :value-type (choice string function)))
 
 (defgroup marginalia-faces nil
   "Faces used by `marginalia-mode'."
