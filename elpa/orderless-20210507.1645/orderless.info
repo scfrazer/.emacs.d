@@ -1,4 +1,4 @@
-This is orderless.info, produced by makeinfo version 6.5 from
+This is orderless.info, produced by makeinfo version 6.7 from
 orderless.texi.
 
 INFO-DIR-SECTION Emacs
@@ -25,6 +25,7 @@ Customization
 
 * Component matching styles::
 * Component separator regexp::
+* Defining custom orderless styles::
 * Faces for component matches::
 * Pattern compiler::
 * Interactively changing the configuration::
@@ -57,7 +58,7 @@ pattern into space-separated components, and matches candidates that
 match all of the components in any order.  Each component can match in
 any one of several ways: literally, as a regexp, as an initialism, in
 the flex style, or as multiple word prefixes.  By default, regexp and
-initialism matches are enabled.
+literal matches are enabled.
 
    A completion style is a back-end for completion and is used from a
 front-end that provides a completion UI.  Any completion style can be
@@ -104,6 +105,7 @@ File: orderless.info,  Node: Customization,  Next: Integration with other comple
 
 * Component matching styles::
 * Component separator regexp::
+* Defining custom orderless styles::
 * Faces for component matches::
 * Pattern compiler::
 * Interactively changing the configuration::
@@ -182,8 +184,8 @@ orderless-flex
      This maps ‘abc’ to ‘a.*b.*c’.
 
    The variable ‘orderless-matching-styles’ can be set to a list of the
-desired matching styles to use.  By default it enables the literal,
-regexp and initialism styles.
+desired matching styles to use.  By default it enables the literal and
+regexp styles.
 
 * Menu:
 
@@ -232,8 +234,11 @@ details.
        (if (= index 0) 'orderless-initialism))
 
      (defun without-if-bang (pattern _index _total)
-       (when (string-prefix-p "!" pattern)
-         `(orderless-without-literal . ,(substring pattern 1))))
+       (cond
+        ((equal "!" pattern)
+         '(orderless-literal . ""))
+        ((string-prefix-p "!" pattern)
+         `(orderless-without-literal . ,(substring pattern 1)))))
 
      (setq orderless-matching-styles '(orderless-regexp)
            orderless-style-dispatchers '(first-initialism
@@ -241,7 +246,7 @@ details.
                                          without-if-bang))
 
 
-File: orderless.info,  Node: Component separator regexp,  Next: Faces for component matches,  Prev: Component matching styles,  Up: Customization
+File: orderless.info,  Node: Component separator regexp,  Next: Defining custom orderless styles,  Prev: Component matching styles,  Up: Customization
 
 2.2 Component separator regexp
 ==============================
@@ -266,9 +271,34 @@ different separator for the components, bind
 ‘orderless-component-separator’ in a ‘let’ form.
 
 
-File: orderless.info,  Node: Faces for component matches,  Next: Pattern compiler,  Prev: Component separator regexp,  Up: Customization
+File: orderless.info,  Node: Defining custom orderless styles,  Next: Faces for component matches,  Prev: Component separator regexp,  Up: Customization
 
-2.3 Faces for component matches
+2.3 Defining custom orderless styles
+====================================
+
+Orderless allows the definition of custom completion styles using the
+‘orderless-define-completion-style’ macro.  Any Orderless configuration
+variable can be adjusted locally for the new style, e.g.,
+‘orderless-matching-styles’.
+
+   By default Orderless only enables the regexp and literal matching
+styles.  In the following example an ‘orderless+initialism’ style is
+defined, which additionally enables initialism matching.  This
+completion style can then used when matching candidates of the symbol or
+command completion category.
+
+     (orderless-define-completion-style orderless+initialism
+       (orderless-matching-styles '(orderless-initialism
+                                    orderless-literal
+                                    orderless-regexp)))
+     (setq completion-category-overrides
+           '((command (styles orderless+initialism))
+             (symbol (styles orderless+initialism))))
+
+
+File: orderless.info,  Node: Faces for component matches,  Next: Pattern compiler,  Prev: Defining custom orderless styles,  Up: Customization
+
+2.4 Faces for component matches
 ===============================
 
 The portions of a candidate matching each component get highlighted in
@@ -285,7 +315,7 @@ completion is the one that ends up being used, of course.
 
 File: orderless.info,  Node: Pattern compiler,  Next: Interactively changing the configuration,  Prev: Faces for component matches,  Up: Customization
 
-2.4 Pattern compiler
+2.5 Pattern compiler
 ====================
 
 The default mechanism for turning an input string into a list of regexps
@@ -298,7 +328,7 @@ advising the ‘orderless-pattern-compiler’.
 
 File: orderless.info,  Node: Interactively changing the configuration,  Prev: Pattern compiler,  Up: Customization
 
-2.5 Interactively changing the configuration
+2.6 Interactively changing the configuration
 ============================================
 
 You might want to change the separator or the matching style
@@ -501,22 +531,23 @@ out of order matching!
 
 Tag Table:
 Node: Top221
-Node: Overview909
-Node: Customization3055
-Node: Component matching styles3376
-Node: Style dispatchers6189
-Node: Component separator regexp8365
-Node: Faces for component matches9597
-Node: Pattern compiler10395
-Node: Interactively changing the configuration10997
-Node: Integration with other completion UIs12460
-Node: Ivy13251
-Node: Selectrum13504
-Node: Company14085
-Node: Related packages15578
-Node: Ivy and Helm15876
-Node: Prescient17211
-Node: Restricting to current matches in Icicles Ido and Ivy18061
+Node: Overview946
+Node: Customization3089
+Node: Component matching styles3447
+Node: Style dispatchers6248
+Node: Component separator regexp8499
+Node: Defining custom orderless styles9736
+Node: Faces for component matches10890
+Node: Pattern compiler11694
+Node: Interactively changing the configuration12296
+Node: Integration with other completion UIs13759
+Node: Ivy14550
+Node: Selectrum14803
+Node: Company15384
+Node: Related packages16877
+Node: Ivy and Helm17175
+Node: Prescient18510
+Node: Restricting to current matches in Icicles Ido and Ivy19360
 
 End Tag Table
 

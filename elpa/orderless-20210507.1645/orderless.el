@@ -48,7 +48,7 @@
 ;; from strings to strings that map a component to a regexp to match
 ;; against.  The variable `orderless-matching-styles' lists the
 ;; matching styles to be used for components, by default it allows
-;; literal, regexp and initialism matching.
+;; literal and regexp matching.
 
 ;;; Code:
 
@@ -114,7 +114,7 @@ value means highlighting is skipped."
   :type '(choice boolean function))
 
 (defcustom orderless-matching-styles
-  '(orderless-literal orderless-regexp orderless-initialism)
+  '(orderless-literal orderless-regexp)
   "List of component matching styles.
 If this variable is nil, regexp matching is assumed.
 
@@ -477,7 +477,7 @@ delegates to `orderless-%s'.")
      (defun ,try-completion (string table pred point)
        ,(funcall fn-doc "try-completion")
        (let ,configuration
-         (orderless-all-completions string table pred point)))
+         (orderless-try-completion string table pred point)))
      (defun ,all-completions (string table pred point)
        ,(funcall fn-doc "all-completions")
        (let ,configuration
