@@ -4,10 +4,10 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: convenience, tools
-;; Package-Commit: cb9a5938541a28c50ecb8f72e32b67531b8bf606
+;; Package-Commit: e02a9ea94287f4195edeeab3033e017a56872f5b
 ;; Homepage: https://github.com/purcell/emacs-reformatter
 ;; Package-Requires: ((emacs "24.3"))
-;; Package-Version: 20210505.107
+;; Package-Version: 20210510.522
 ;; Package-X-Original-Version: 0
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -252,7 +252,7 @@ might use:
 
      ((some-major-mode
         (mode . %s-on-save)))
- " buffer-fn-name name) nil
+ " buffer-fn-name name)
                    :global nil
                    :lighter ,lighter-name
                    :keymap ,keymap
