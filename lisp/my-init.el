@@ -1094,6 +1094,18 @@ With a numeric prefix, goto that window line."
   (save-excursion
     (indent-region (point-min) (point-max))))
 
+(defun my-indent-shift-left (start end)
+  "Shift region left `standard-indent'"
+  (interactive "r")
+  (deactivate-mark t)
+  (indent-rigidly start end (* -1 standard-indent)))
+
+(defun my-indent-shift-right (start end)
+  "Shift region right `standard-indent'"
+  (interactive "r")
+  (deactivate-mark t)
+  (indent-rigidly start end standard-indent))
+
 (defun my-line-comment ()
   "Goto a line comment if one exists, or insert a comment at the
 end of a non-blank line, or insert an 80-column comment line"
@@ -1725,6 +1737,8 @@ Prefix with C-u to resize the `next-window'."
  ("C-c $"       . my-delete-trailing-whitespace)
  ("C-c ."       . my-kill-results-buffer)
  ("C-c ;"       . my-line-comment)
+ ("C-c <"       . my-indent-shift-left)
+ ("C-c >"       . my-indent-shift-right)
  ("C-c C"       . my-comment-region-after-copy)
  ("C-c M"       . asic-compile)
  ("C-c N"       . narrow-to-defun)
@@ -1786,9 +1800,9 @@ Prefix with C-u to resize the `next-window'."
  ("M-g"         . my-goto-line-column)
  ("M-i"         . my-complete-switch-to-buffer)
  ("M-q"         . my-fill)
+ ("M-s U"       . (lambda() (interactive) (unhighlight-regexp t)))
  ("M-s h"       . my-highlight-regexp)
  ("M-s u"       . unhighlight-regexp)
- ("M-s U"       . (lambda() (interactive) (unhighlight-regexp t)))
  ("M-u"         . my-recenter)
  ("M-z"         . redo)
  ("M-~"         . previous-error))
