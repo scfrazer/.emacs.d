@@ -107,6 +107,8 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
+ '(warning-suppress-log-types '((comp) (comp) (undo discard-info)))
+ '(warning-suppress-types '((comp) (undo discard-info)))
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-idle-delay 10000.0)
