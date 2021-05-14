@@ -152,9 +152,9 @@ format."
           (if (< num-lines 0)
               (progn
                 (previous-logical-line 1 nil)
-                (incf num-lines))
+                (cl-incf num-lines))
             (next-logical-line 1 nil)
-            (decf num-lines))
+            (cl-decf num-lines))
           (move-to-column col)
           (when (and (not (= num-lines 0))
                      (equal col (current-column)))
