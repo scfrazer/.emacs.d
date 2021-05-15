@@ -4,8 +4,8 @@
 ;;
 ;; Author: Joel Rosdahl <joel@rosdahl.net>
 ;; Version: 1.5
-;; Package-Version: 20201128.833
-;; Package-Commit: 4a5f051d4850024343663bdaec6f0bdff7cd930e
+;; Package-Version: 20210515.829
+;; Package-Commit: 94f12bb6d2e03690562647b5fbb7b6672ac83e37
 ;; License: BSD-3-clause
 ;; URL: https://github.com/jrosdahl/iflipb
 ;;
@@ -162,6 +162,10 @@ buffer name as an argument (a return value of nil from the
 function means include and non-nil means exclude). If the value
 is a list, the filter matches if any of the elements in the value
 match."
+  :type '(choice
+          (regexp :tag "Regexp that describes buffer names to exclude")
+          (function :tag "Function that takes a buffer name")
+          (list (string :tag "Buffer to exclude")))
   :group 'iflipb)
 
 (defcustom iflipb-always-ignore-buffers "^ "
@@ -175,6 +179,10 @@ will get a buffer name as an argument (a return value of nil from
 the function means include and non-nil means exclude). If the
 value is a list, the filter matches if any of the elements in the
 value match."
+  :type '(choice
+          (regexp :tag "Regexp that describes buffer names to exclude")
+          (function :tag "Function that takes a buffer name")
+          (list (string :tag "Buffer to always exclude")))
   :group 'iflipb)
 
 (defcustom iflipb-wrap-around nil
@@ -182,6 +190,8 @@ value match."
 
 This variable determines whether buffer cycling should wrap
 around when an edge is reached in the buffer list."
+  :type 'boolean
+  :safe #'booleanp
   :group 'iflipb)
 
 (defcustom iflipb-permissive-flip-back nil
@@ -193,6 +203,8 @@ iflipb-*-buffer command in a row. In other words: Running
 `iflipb-previous-buffer' after editing a buffer will act as if
 the current buffer was not visited; it will stay in its original
 place in the buffer list."
+  :type 'boolean
+  :safe #'booleanp
   :group 'iflipb)
 
 (defface iflipb-other-buffer-face
@@ -210,7 +222,9 @@ place in the buffer list."
   "String template for displaying other buffers.
 
 This is the template string that will be applied to a non-current
-buffer name. Use `%s' to refer to the buffer name."
+buffer name. Use `%s' to refer to the buffer name.
+Note: don't enter the surrounding quotes in the input field."
+  :type 'string
   :group 'iflipb)
 
 (defcustom iflipb-current-buffer-template
@@ -218,7 +232,9 @@ buffer name. Use `%s' to refer to the buffer name."
   "String template for displaying the current buffer.
 
 This is the template string that will be applied to the current
-buffer name. Use `%s' to refer to the buffer name."
+buffer name. Use `%s' to refer to the buffer name.
+Note: don't enter the surrounding quotes in the input field."
+  :type 'strings
   :group 'iflipb)
 
 (defcustom iflipb-buffer-list-function
