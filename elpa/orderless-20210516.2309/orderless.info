@@ -295,6 +295,17 @@ command completion category.
            '((command (styles orderless+initialism))
              (symbol (styles orderless+initialism))))
 
+   Note that in order for the ‘orderless+initialism’ style to kick-in
+with the above configuration, you’d need to use commands whose metadata
+indicates that the completion candidates are commands or symbols.  In
+Emacs 28, ‘execute-extended-command’ has metadata indicating you are
+selecting a command, but earlier versions of Emacs lack this metadata.
+Activating ‘marginalia-mode’ from the Marginalia
+(https://github.com/minad/marginalia) package provides this metadata
+automatically for many built-in commands and is recommended if you use
+the above example configuration, or other similarly fine-grained control
+of completion styles according to completion category.
+
 
 File: orderless.info,  Node: Faces for component matches,  Next: Pattern compiler,  Prev: Defining custom orderless styles,  Up: Customization
 
@@ -465,7 +476,7 @@ The well-known and hugely powerful completion frameworks Ivy
 (https://github.com/emacs-helm/helm) also provide for matching
 space-separated component regexps in any order.  In Ivy, this is done
 with the ‘ivy--regex-ignore-order’ matcher.  In Helm, it is the default,
-called "multi pattern matching".
+called “multi pattern matching”.
 
    This package is significantly smaller than either of those because it
 solely defines a completion style, meant to be used with any completion
@@ -499,7 +510,7 @@ be used with either the Selectrum
 (https://github.com/abo-abo/swiper) completion UIs (it does not offer a
 completion-style that could be used with Emacs’ default completion UI or
 with Icomplete).  The components can be matched literally, as regexps,
-as initialisms or in the flex style (called "fuzzy" in prescient).  In
+as initialisms or in the flex style (called “fuzzy” in prescient).  In
 addition to matching, ‘prescient.el’ also supports sorting of candidates
 (‘orderless’ leaves that up to the candidate source and the completion
 UI).
@@ -537,17 +548,17 @@ Node: Component matching styles3447
 Node: Style dispatchers6248
 Node: Component separator regexp8499
 Node: Defining custom orderless styles9736
-Node: Faces for component matches10890
-Node: Pattern compiler11694
-Node: Interactively changing the configuration12296
-Node: Integration with other completion UIs13759
-Node: Ivy14550
-Node: Selectrum14803
-Node: Company15384
-Node: Related packages16877
-Node: Ivy and Helm17175
-Node: Prescient18510
-Node: Restricting to current matches in Icicles Ido and Ivy19360
+Node: Faces for component matches11574
+Node: Pattern compiler12378
+Node: Interactively changing the configuration12980
+Node: Integration with other completion UIs14443
+Node: Ivy15234
+Node: Selectrum15487
+Node: Company16068
+Node: Related packages17561
+Node: Ivy and Helm17859
+Node: Prescient19198
+Node: Restricting to current matches in Icicles Ido and Ivy20052
 
 End Tag Table
 
