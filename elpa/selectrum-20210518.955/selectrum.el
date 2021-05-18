@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210510.1316
-;; Package-Commit: bfefb8e1a350d44b56290b2c7ddc3418ec217b30
+;; Package-Version: 20210518.955
+;; Package-Commit: 909f614319dad6c7eeebb76b2c2501e8215718ea
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -871,14 +871,25 @@ content height is greater than the window height."
 
 (defun selectrum--group-by (fun elems)
   "Group ELEMS by FUN."
-  (let ((groups))
-    (dolist (cand elems)
-      (let* ((key (funcall fun cand nil))
-             (group (assoc key groups)))
-        (if group
-            (setcdr group (cons cand (cdr group)))
-          (push (list key cand) groups))))
-    (mapcan (lambda (x) (nreverse (cdr x))) (nreverse groups))))
+  (when elems
+    (let ((group-list)
+          (group-hash (make-hash-table :test #'equal)))
+      (while elems
+        (let* ((key (funcall fun (car elems) nil))
+               (group (gethash key group-hash)))
+          (if group
+              ;; Append to tail of group
+              (setcdr group (setcdr (cdr group) elems))
+            (setq group (cons elems elems)) ;; (head . tail)
+            (push group group-list)
+            (puthash key group group-hash))
+          (setq elems (cdr elems))))
+      (setcdr (cdar group-list) nil) ;; Unlink last tail
+      (setq group-list (nreverse group-list))
+      (prog1 (caar group-list)
+        (while (cdr group-list) ;; Link groups
+          (setcdr (cdar group-list) (caadr group-list))
+          (setq group-list (cdr group-list)))))))
 
 (defun selectrum--vertical-display-style
     (win input nrows _ncols index
