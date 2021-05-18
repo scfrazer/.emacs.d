@@ -1085,8 +1085,7 @@ function/task definition/implementation in other file."
   "Turn a task/function prototype into a skeleton implementation."
   (interactive)
   (let ((proto (sv-mode-parse-prototype))
-        pos lim prev-func-type namespaces prev-func-re this-func-re
-        (ff-quiet-mode t))
+        pos lim prev-func-type namespaces prev-func-re this-func-re)
     (save-excursion
       (setq namespaces (sv-mode-get-namespaces))
       (back-to-indentation)
@@ -1102,8 +1101,6 @@ function/task definition/implementation in other file."
           (setq prev-func-re (concat ns "::" prev-func-re)))
         (setq prev-func-re (concat prev-func-type ".+\\_<" prev-func-re "\\_>"))))
     (push-mark)
-    (when (ff-other-file-name)
-      (ff-get-other-file))
     (goto-char (point-min))
     ;; If task/function already exists, update it
     (setq this-func-re "\\(task\\|function\\)\\s-+.*?")
@@ -1169,10 +1166,7 @@ default for next `query-replace'."
            (this-func-re-beg "\\(task\\|function\\)\\s-+.*?\\_<\\(")
            (this-func-re-end "\\)\\_>\\s-*[(;]")
            (this-buf (current-buffer))
-           (ff-quiet-mode t)
-           (other-buf (and (ff-other-file-name)
-                           (file-exists-p (ff-other-file-name))
-                           (find-file-noselect (ff-other-file-name))))
+           (other-buf nil))
            (not-found t)
            at-impl impl-only namespaces new-name other-modified)
       (sv-mode-beginning-of-statement)
@@ -1231,9 +1225,7 @@ default for next `query-replace'."
       ;; Done
 ;;       (when sv-mode-rename-set-query-replace
 ;;         (setq query-replace-defaults (cons name new-name)))
-      (set-buffer this-buf)
-      (when other-modified
-        (message (concat (ff-other-file-name) " was also modified."))))))
+      (set-buffer this-buf)))
 
 (defun sv-mode-electric-star ()
   "Auto-indent when in comments."
