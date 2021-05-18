@@ -358,10 +358,7 @@
 
 (use-package my-pair
   :demand t
-  :bind* (("C-M-d" . my-pair-step-out-forward)
-          ("M-'"   . my-pair-step-out-forward)
-          ("C-M-u" . my-pair-step-out-backward)
-          ("C-c '" . my-pair-quotes-dwim)
+  :bind* (("C-c '" . my-pair-quotes-dwim)
           ("C-c (" . my-pair-open-paren-dwim)
           ("C-c )" . my-pair-close-paren-dwim)
           ("C-c -" . my-pair-delete)
@@ -371,7 +368,9 @@
           ("C-c `" . my-pair-quotes-dwim)
           ("C-c e" . my-pair-close-all)
           ("C-c {" . my-pair-open-paren-dwim)
-          ("C-c }" . my-pair-close-paren-dwim)))
+          ("C-c }" . my-pair-close-paren-dwim)
+          ("M-{"   . my-pair-step-out-backward)
+          ("M-}"   . my-pair-step-out-forward)))
 
 (use-package perl-mode
   :mode (("\\.pl\\'" . perl-mode))
@@ -386,7 +385,7 @@
 (use-package quick-edit
   :bind* (("C-w" . qe-unit-kill)
           ("C-y" . qe-yank)
-          ;; ("M-'" . qe-backward-word-end)
+          ("M-'" . qe-backward-word-end)
           ("M-;" . qe-forward-word-end)
           ("M-H" . qe-backward-word-section)
           ("M-J" . qe-backward-kill-section)
@@ -398,9 +397,7 @@
           ("M-l" . qe-forward-word)
           ("M-n" . qe-forward-paragraph)
           ("M-p" . qe-backward-paragraph)
-          ("M-w" . qe-unit-copy)
-          ("M-{" . qe-backward-curly-block)
-          ("M-}" . qe-forward-curly-block))
+          ("M-w" . qe-unit-copy))
   :config
   (progn
     (defun my-qe-unit-copy-1 (orig-fun key-seq)
