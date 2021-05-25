@@ -1,6 +1,6 @@
-(define-package "marginalia" "20210518.1405" "Enrich existing commands with completion annotations"
+(define-package "marginalia" "20210524.2040" "Enrich existing commands with completion annotations"
   '((emacs "26.1"))
-  :commit "624028c69b55deb3387452b9eeabe9cb963bd2a4" :authors
+  :commit "a0e9903bdb63d70a59653f73f77082f20a669b2c" :authors
   '(("Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler" . "mail@daniel-mendler.de"))
   :maintainer
   '("Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler" . "mail@daniel-mendler.de")
