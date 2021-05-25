@@ -195,10 +195,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210427.1244/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210427.1244/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -855,10 +855,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210427.833/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210524.1637/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210427.833/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210524.1637/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2151,10 +2151,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210524.2040/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210525.637/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210524.2040/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210525.637/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2182,8 +2182,6 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 Cycle between annotators in `marginalia-annotators'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
-
-
 
 
 )
@@ -3403,7 +3401,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/marginalia-20210524.2040" "/home/scfrazer/.emacs.d/elpa/orderless-20210518.1413" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210427.833" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210427.1244")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/orderless-20210518.1413" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210524.1637" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:
