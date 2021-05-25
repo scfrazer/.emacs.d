@@ -68,7 +68,7 @@
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-native-compile t)
  '(package-selected-packages
-   '(s monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(graphviz-dot-mode s monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(pdf-view-midnight-colors '("#969896" . "#f8eec7"))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
