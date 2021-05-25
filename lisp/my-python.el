@@ -69,6 +69,10 @@
   "super"
   'my-python-insert-super-call)
 
+(define-abbrev python-mode-abbrev-table
+  "lint"
+  "# pylint: disable=")
+
 (defun my-python-insert-super-call ()
   (interactive)
   (let (fn args class)

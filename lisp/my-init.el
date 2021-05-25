@@ -1082,17 +1082,26 @@ With a numeric prefix, goto that window line."
   (save-excursion
     (indent-region (point-min) (point-max))))
 
+(defvar my-indent-transient-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<") 'my-indent-shift-left)
+    (define-key map (kbd ">") 'my-indent-shift-right)
+    map)
+  "Keymap used in indent transient mode.")
+
 (defun my-indent-shift-left (start end)
   "Shift region left `standard-indent'"
   (interactive "r")
   (deactivate-mark t)
-  (indent-rigidly start end (* -1 standard-indent)))
+  (indent-rigidly start end (* -1 standard-indent))
+  (set-transient-map my-indent-transient-map t))
 
 (defun my-indent-shift-right (start end)
   "Shift region right `standard-indent'"
   (interactive "r")
   (deactivate-mark t)
-  (indent-rigidly start end standard-indent))
+  (indent-rigidly start end standard-indent)
+  (set-transient-map my-indent-transient-map t))
 
 (defun my-line-comment ()
   "Goto a line comment if one exists, or insert a comment at the
