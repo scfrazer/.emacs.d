@@ -7,7 +7,7 @@
 ;; Keywords: bindings
 
 ;; Package-Requires: ((emacs "25.1"))
-;; Package-Version: 0.3.3
+;; Package-Version: 0.3.4
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -3572,7 +3572,7 @@ we stop there."
                                   "transient-define-argument"
                                   "transient-define-suffix")
                             t)
-                "\\_>[ \t'\(]*"
+                "\\_>[ \t'(]*"
                 "\\(\\(?:\\sw\\|\\s_\\)+\\)?")
        (1 'font-lock-keyword-face)
        (2 'font-lock-function-name-face nil t)))))
