@@ -2501,22 +2501,18 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20200603.701/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20210528.908/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20200603.701/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20210528.908/git-timemachine-autoloads.el") (car load-path))))
 
 
 
 (autoload 'git-timemachine-toggle "git-timemachine" "\
-Toggle git timemachine mode.
-
-\(fn)" t nil)
+Toggle git timemachine mode." t nil)
 
 (autoload 'git-timemachine "git-timemachine" "\
-Enable git timemachine for file of current buffer.
-
-\(fn)" t nil)
+Enable git timemachine for file of current buffer." t nil)
 
 (autoload 'git-timemachine-switch-branch "git-timemachine" "\
 Enable git timemachine for current buffer, switching to GIT-BRANCH.
