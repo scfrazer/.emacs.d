@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210521.422
-;; Package-Commit: de365c070c7deecbabfd5a7294bc8c2603d9ec22
+;; Package-Version: 20210530.1825
+;; Package-Commit: 58f2d22526ac1e4abd4ee1afff8624d2dd3123d3
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3428,7 +3428,7 @@ SEQ may be an atom or a sequence."
               font-lock-multiline t
               ,@(when (and markdown-hide-markup hr-char)
                   `(display ,(make-string
-                              (window-body-width) hr-char)))))
+                              (1- (window-body-width)) hr-char)))))
       t)))
 
 (defun markdown-fontify-sub-superscripts (last)
