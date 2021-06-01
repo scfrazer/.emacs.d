@@ -106,7 +106,9 @@ Otherwise indent them as usual."
   :type 'boolean)
 
 (defcustom sv-mode-add-package-name nil
-  "*Non-nil means add package name when appropriate.")
+  "*Non-nil means add package name when appropriate."
+  :group 'sv-mode
+  :type 'boolean)
 
 ;;;###autoload
 (defcustom sv-mode-macros-without-semi
@@ -989,7 +991,7 @@ end/endtask/endmodule/etc. also."
                (setq depth (1- depth))))))
        (when (> depth 0)
          (goto-char pos)
-         (when (interactive-p)
+         (when (called-interactively-p 'interactive)
            (error "Unbalanced parentheses or begin/end constructs")))
        (= depth 0)))))
 
@@ -1011,7 +1013,7 @@ end/endtask/endmodule/etc. also."
            (setq done t)))
        (unless done
          (goto-char pos)
-         (when (interactive-p)
+         (when (called-interactively-p 'interactive)
            (error "Unbalanced parentheses or begin/end constructs")))
        done))))
 
@@ -1166,7 +1168,7 @@ default for next `query-replace'."
            (this-func-re-beg "\\(task\\|function\\)\\s-+.*?\\_<\\(")
            (this-func-re-end "\\)\\_>\\s-*[(;]")
            (this-buf (current-buffer))
-           (other-buf nil))
+           (other-buf nil)
            (not-found t)
            at-impl impl-only namespaces new-name other-modified)
       (sv-mode-beginning-of-statement)
@@ -1225,7 +1227,7 @@ default for next `query-replace'."
       ;; Done
 ;;       (when sv-mode-rename-set-query-replace
 ;;         (setq query-replace-defaults (cons name new-name)))
-      (set-buffer this-buf)))
+      (set-buffer this-buf))))
 
 (defun sv-mode-electric-star ()
   "Auto-indent when in comments."

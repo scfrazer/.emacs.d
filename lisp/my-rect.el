@@ -2,6 +2,7 @@
 
 (require 'rect)
 (require 'multiple-cursors)
+(require 'hydra)
 
 ;; TODO -- M-# => number lines in multi-cursor mode
 

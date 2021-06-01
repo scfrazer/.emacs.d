@@ -453,6 +453,7 @@
              smerge-ediff)
   :config
   (progn
+    (require 'hydra)
     (defhydra smerge-hydra
       (:color pink :hint nil :post (smerge-auto-leave))
       "
