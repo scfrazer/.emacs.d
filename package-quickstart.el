@@ -283,10 +283,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210407.28/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210601.252/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210407.28/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210601.252/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -855,10 +855,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210525.1141/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210601.842/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210525.1141/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210601.842/transient-autoloads.el") (car load-path))))
 
 
 
@@ -3397,7 +3397,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/orderless-20210518.1413" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210525.1141" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210330.1544" "/home/scfrazer/.emacs.d/elpa/orderless-20210518.1413" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210601.842" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:
