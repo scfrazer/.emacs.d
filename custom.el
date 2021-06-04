@@ -68,7 +68,7 @@
  '(package-hidden-regexps '("\\`diffview\\'"))
  '(package-native-compile t)
  '(package-selected-packages
-   '(graphviz-dot-mode s monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
+   '(doom-themes graphviz-dot-mode s monokai-pro-theme which-key diffview python marginalia selectrum selectrum-prescient flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring dash dash-functional deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless popup relint rg sr-speedbar use-package visual-regexp web-beautify web-mode with-editor yaml-mode))
  '(pdf-view-midnight-colors '("#969896" . "#f8eec7"))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
@@ -108,7 +108,7 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-idle-delay 10000.0)
