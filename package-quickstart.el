@@ -2151,10 +2151,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210530.158/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210605.1213/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210530.158/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210605.1213/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2732,10 +2732,10 @@ otherwise call `fill-function-arguments-to-single-line'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210311.321/fd-dired-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210605.1057/fd-dired-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210311.321/fd-dired-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210605.1057/fd-dired-autoloads.el") (car load-path))))
 
 
 
@@ -2772,10 +2772,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210604.950/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210604.1922/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210604.950/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210604.1922/doom-themes-autoloads.el") (car load-path))))
 
 
 

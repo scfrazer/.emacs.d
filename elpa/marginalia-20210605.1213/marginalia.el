@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.6
-;; Package-Version: 20210530.158
-;; Package-Commit: ca9a5e35913569d66d34193a87d8511b2bb9d2b2
+;; Package-Version: 20210605.1213
+;; Package-Commit: 4c6272ffc4836de052c8b06f681b0e700cb01602
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -448,10 +448,13 @@ keybinding since CAND includes it."
   (when-let (sym (intern-soft cand))
     (marginalia--fields
      ((marginalia--symbol-class sym) :face 'marginalia-type)
-     ((let ((print-escape-newlines t)
+     ((let ((val (if (boundp sym) (symbol-value sym) 'unbound))
+            (print-escape-newlines t)
             (print-escape-control-characters t)
-            (print-escape-multibyte t))
-        (prin1-to-string (if (boundp sym) (symbol-value sym) 'unbound)))
+            (print-escape-multibyte t)
+            (print-level 10)
+            (print-length marginalia-truncate-width))
+        (prin1-to-string val))
       :truncate (/ marginalia-truncate-width 3) :face 'marginalia-variable)
      ((documentation-property sym 'variable-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))

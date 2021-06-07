@@ -1,0 +1,2 @@
+;;; Generated package description from fd-dired.el  -*- no-byte-compile: t -*-
+(define-package "fd-dired" "20210605.1057" "find-dired alternative using fd" '((emacs "25")) :commit "c223aee30af7dc7f52fb20045226ed9f49f4ec49" :authors '(("Rashawn Zhang" . "namy.19@gmail.com")) :maintainer '("Rashawn Zhang" . "namy.19@gmail.com") :keywords '("tools" "fd" "find" "dired") :url "https://github.com/yqrashawn/fd-dired")

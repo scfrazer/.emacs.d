@@ -3,8 +3,8 @@
 ;; Copyright © 2018, Free Software Foundation, Inc.
 
 ;; Version: 0.1.0
-;; Package-Version: 20210311.321
-;; Package-Commit: 7d18938751d047eef18bfb5975195419f0d1e2d3
+;; Package-Version: 20210605.1057
+;; Package-Commit: c223aee30af7dc7f52fb20045226ed9f49f4ec49
 ;; URL: https://github.com/yqrashawn/fd-dired
 ;; Package-Requires: ((emacs "25"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
@@ -70,7 +70,15 @@
   :type 'string
   :group 'fd-dired)
 
-(defcustom fd-dired-ls-option `(,(concat "| xargs -0 " insert-directory-program " -ld --quoting-style=literal | uniq") . "-ld")
+(defcustom fd-dired-ls-option
+  (pcase system-type
+    ('gnu/linux
+     `(,(concat "| xargs -0 " insert-directory-program " -ld --quoting-style=literal | uniq") . "-ld"))
+    ('darwin
+     ;; NOTE: here `gls' need to `brew install coreutils'
+     (if (executable-find "gls")
+         `(,(concat "| xargs -0 " "gls -ld --quoting-style=literal | uniq") . "-ld")
+       (warn "macOS system default 'ls' command does not support option --quoting-style=literal.\n Please install with: brew install coreutils"))))
   "A pair of options to produce and parse an `ls -l'-type list from `fd'.
 This is a cons of two strings (FD-ARGUMENTS . LS-SWITCHES).
 FD-ARGUMENTS is the option passed to `fd' to produce a file
