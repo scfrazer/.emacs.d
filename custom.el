@@ -84,6 +84,7 @@
      (checkdoc-force-docstrings-flag)
      (folded-file . t)))
  '(selectrum-extend-current-candidate-highlight t)
+ '(set-mark-command-repeat-pop t)
  '(speedbar-indentation-width 4)
  '(tron-legacy-theme-softer-bg t)
  '(vc-annotate-background "#2b303b" t)
