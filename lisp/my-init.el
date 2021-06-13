@@ -1433,9 +1433,11 @@ In the shell command, the file(s) will be substituted wherever a '%' is."
 (defun my-tab ()
   "Special TAB key behavior"
   (interactive)
-  (if (looking-at "[])}>'\"]")
-      (forward-char)
-    (call-interactively 'indent-according-to-mode)))
+  (let ((old-indent (current-indentation)))
+    (call-interactively 'indent-according-to-mode)
+    (when (and (= old-indent (current-indentation))
+               (looking-at "[])}>'\"]"))
+      (forward-char))))
 
 ;; Use global-set-key so minor modes can override
 (global-set-key (kbd "TAB") 'my-tab)

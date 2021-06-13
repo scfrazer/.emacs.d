@@ -188,20 +188,30 @@
   (git-simple-refresh))
 
 ;;;###autoload
-(defun git-simple-diff-file ()
-  "Diff file."
-  (interactive)
-  (let* ((file (git-simple-get-current-file))
+(defun git-simple-diff-file (&optional arg)
+  "Diff file.  With prefix arg, diff against master."
+  (interactive "P")
+  (let* ((file (expand-file-name (git-simple-get-current-file)))
+         (relative-file (file-relative-name file (git-simple-find-root (file-name-directory file))))
          (status (git-simple-get-file-status file))
-         (diff-arg (if (and (> (length status) 0) (string= "M" (substring status 0 1))) "--staged" "--no-color"))
+         (diff-args (list "--patience" "--no-color"))
          (buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
     (when file
+      (when (and (> (length status) 0) (string= "M" (substring status 0 1)))
+        (setq diff-args (add-to-list 'diff-args "--staged" t)))
+      (when arg
+        (setq diff-args (add-to-list 'diff-args (concat "master:" relative-file) t)))
       (with-current-buffer buf
         (setq buffer-read-only nil)
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process git-simple-executable nil t nil "diff" "--patience" diff-arg file) 0)
-          (error (concat "Couldn't diff file '" file "'")))
+        (let ((default-directory (git-simple-find-root (file-name-directory file))))
+          (unless (= (apply 'call-process
+                            (append (list git-simple-executable nil t nil "diff")
+                                    diff-args
+                                    (list relative-file)))
+                     0)
+            (error (concat "Couldn't diff file '" file "'"))))
         (goto-char (point-min))
         (set-buffer-modified-p nil)
         (require 'diff)
@@ -211,15 +221,20 @@
       (message ""))))
 
 ;;;###autoload
-(defun git-simple-diff-repo ()
-  "Diff repo."
-  (interactive)
-  (let ((buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*"))))
+(defun git-simple-diff-repo (&optional arg)
+  "Diff repo.  With prefix arg, diff against master."
+  (interactive "P")
+  (let ((buf (get-buffer-create (concat " " git-simple-buf-prefix "Diff*")))
+         (diff-args (list "--patience" "--no-color")))
     (with-current-buffer buf
+      (when arg
+        (setq diff-args (add-to-list 'diff-args "master..HEAD" t)))
       (setq buffer-read-only nil)
       (erase-buffer)
       (message "Diffing ...")
-      (unless (= (call-process git-simple-executable nil t nil "diff" "--patience" "--no-color") 0)
+      (unless (= (apply 'call-process
+                        (append (list git-simple-executable nil t nil "diff") diff-args))
+                 0)
         (error "Couldn't diff repo"))
       (goto-char (point-min))
       (set-buffer-modified-p nil)
@@ -250,21 +265,23 @@
 (defvar git-simple-ediff-head-rev-buf nil)
 
 ;;;###autoload
-(defun git-simple-ediff-file ()
-  "ediff file."
-  (interactive)
-  (let ((file (expand-file-name (git-simple-get-current-file))) bufB mode rel-file-path)
+(defun git-simple-ediff-file (&optional arg)
+  "ediff file.  With prefix arg, diff against master."
+  (interactive "P")
+  (let ((file (expand-file-name (git-simple-get-current-file)))
+        (head-rev (if arg "master:" "HEAD:"))
+        bufB mode rel-file-path)
     (when file
       (setq bufB (get-buffer-create (find-file file)))
       (with-current-buffer bufB
         (setq mode major-mode))
       (setq rel-file-path (file-relative-name file (git-simple-find-root (file-name-directory file))))
-      (setq git-simple-ediff-head-rev-buf (get-buffer-create (concat "HEAD:" rel-file-path)))
+      (setq git-simple-ediff-head-rev-buf (get-buffer-create (concat head-rev rel-file-path)))
       (with-current-buffer git-simple-ediff-head-rev-buf
         (erase-buffer)
         (message "Diffing ...")
-        (unless (= (call-process git-simple-executable nil t nil "show" (concat "HEAD:" rel-file-path)) 0)
-          (error (concat "Couldn't get HEAD revision for file '" rel-file-path "'")))
+        (unless (= (call-process git-simple-executable nil t nil "show" (concat head-rev rel-file-path)) 0)
+          (error (concat "Couldn't get " head-rev " revision for file '" rel-file-path "'")))
         (goto-char (point-min))
         (set-auto-mode-0 mode)
         (set-buffer-modified-p nil))
