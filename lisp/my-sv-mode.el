@@ -228,7 +228,19 @@ With prefix argument, add a condition."
 
 (define-abbrev sv-mode-abbrev-table
   "lint"
-  "// @DVT_LINTER_WAIVER \"\" DISABLE ")
+  ""
+  (lambda()
+    (if (looking-back "^[[:space:]]*" (point-at-bol))
+        (let (pos)
+          (indent-according-to-mode)
+          (insert "// @DVT_LINTER_WAIVER_START \"")
+          (setq pos (point))
+          (insert "\" DISABLE foo\n")
+          (indent-according-to-mode)
+          (insert "// @DVT_LINTER_WAIVER_END \"\"\n")
+          (goto-char pos))
+      (insert "// @DVT_LINTER_WAIVER \"\" DISABLE foo")
+      (backward-char 13))))
 
 (define-abbrev sv-mode-abbrev-table
   "uc"
