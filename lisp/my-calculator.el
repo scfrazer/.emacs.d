@@ -82,6 +82,7 @@
 (defun my-calculator-mode-hook ()
   (set-window-dedicated-p nil t)
   (define-key calculator-mode-map (kbd " ") nil)
+  (define-key calculator-mode-map (kbd "_") 'calculator-rotate-displayer)
   (define-key calculator-mode-map (kbd "w") 'calculator-copy)
   (define-key calculator-mode-map (kbd "y") 'calculator-paste)
   (define-key calculator-mode-map (kbd "DEL") 'calculator-backspace))
