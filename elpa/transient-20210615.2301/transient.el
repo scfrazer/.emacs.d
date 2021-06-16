@@ -7,7 +7,7 @@
 ;; Keywords: bindings
 
 ;; Package-Requires: ((emacs "25.1"))
-;; Package-Version: 0.3.4
+;; Package-Version: 0.3.5
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -571,10 +571,12 @@ the prototype is stored in the clone's `prototype' slot.")
 
 ;;;; Suffix
 
+(defconst transient--default-child-level 1)
+
 (defclass transient-child ()
   ((level
     :initarg :level
-    :initform 1
+    :initform transient--default-child-level
     :documentation "Enable if level of prefix is equal or greater.")
    (if
     :initarg :if
@@ -937,7 +939,7 @@ example, sets a variable use `transient-define-infix' instead.
           (if (eq k :class)
               (setq class pop)
             (setq args (plist-put args k pop)))))
-      (vector (or level (oref-default 'transient-child level))
+      (vector (or level transient--default-child-level)
               (or class
                   (if (vectorp car)
                       'transient-columns
@@ -1008,7 +1010,7 @@ example, sets a variable use `transient-define-infix' instead.
     (unless (plist-get args :key)
       (when-let ((shortarg (plist-get args :shortarg)))
         (setq args (plist-put args :key shortarg))))
-    (list (or level (oref-default 'transient-child level))
+    (list (or level transient--default-child-level)
           (or class 'transient-suffix)
           args)))
 
@@ -1973,6 +1975,11 @@ value.  Otherwise return CHILDREN as is."
 
 (defun transient--post-command ()
   (transient--debug 'post-command)
+  (unless this-command
+    (transient--debug "-- force pre-exit from post-command")
+    (message "Quit transient!")
+    (transient--pre-exit)
+    (setq transient--exitp t))
   (if transient--exitp
       (progn
         (unless (and (eq transient--exitp 'replace)
@@ -2048,7 +2055,8 @@ value.  Otherwise return CHILDREN as is."
     (if (symbolp arg)
         (message "-- %-16s (cmd: %s, event: %S, exit: %s)"
                  arg
-                 (transient--suffix-symbol this-command)
+                 (or (transient--suffix-symbol this-command)
+                     (list this-command this-original-command last-command))
                  (key-description (this-command-keys-vector))
                  transient--exitp)
       (apply #'message arg args))))
@@ -2171,18 +2179,7 @@ to `transient--do-warn'."
            (propertize "?"   'face 'transient-key)
            (propertize (symbol-name (transient--suffix-symbol
                                      this-original-command))
-                       'face 'font-lock-warning-face))
-  (unless (and transient--transient-map
-               (memq transient--transient-map overriding-terminal-local-map))
-    (let ((transient--prefix (or transient--prefix 'sic)))
-      (transient--emergency-exit))
-    (view-lossage)
-    (other-window 1)
-    (display-warning 'transient "Inconsistent transient state detected.
-This should never happen.
-Please open an issue and post the shown command log.
-This is a heisenbug, so any additional details might help.
-Thanks!" :error)))
+                       'face 'font-lock-warning-face)))
 
 (defun transient-toggle-common ()
   "Toggle whether common commands are always shown."
@@ -3208,13 +3205,16 @@ Show the first one that is specified."
         (transient--show-manpage manpage)
       (transient--describe-function (oref obj command)))))
 
-(cl-defmethod transient-show-help ((_   transient-suffix))
+(cl-defmethod transient-show-help ((obj transient-suffix))
   "Show the command doc-string."
   (if (eq this-original-command 'transient-help)
       (if-let ((manpage (oref transient--prefix man-page)))
           (transient--show-manpage manpage)
         (transient--describe-function (oref transient--prefix command)))
-    (transient--describe-function this-original-command)))
+    (if-let ((prefix (get (transient--suffix-command obj) 'transient--prefix))
+             (manpage (oref prefix man-page)))
+        (transient--show-manpage manpage)
+      (transient--describe-function this-original-command))))
 
 (cl-defmethod transient-show-help ((obj transient-infix))
   "Show the manpage if defined or the command doc-string.

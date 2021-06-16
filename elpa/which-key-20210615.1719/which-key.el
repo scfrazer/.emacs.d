@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210601.252
-;; Package-Commit: fc29864395fdaf688e2ef5111831663bad89a020
+;; Package-Version: 20210615.1719
+;; Package-Commit: 12f743c6955c89352f8d49d292895bd45e82d26f
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -999,7 +999,7 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply."
         (title-mode-alist
          (or (cdr-safe (assq mode which-key--prefix-title-alist)) (list))))
     (while key-sequence
-    ;; normalize key sequences before adding
+      ;; normalize key sequences before adding
       (let ((key-seq (key-description (kbd key-sequence)))
             (replace (or (and (functionp replacement) replacement)
                          (car-safe replacement)
@@ -1648,7 +1648,7 @@ If KEY contains any \"special keys\" defined in
           (let ((beg (match-beginning 0)) (end (match-end 0)))
             (concat (substring key-w-face 0 beg)
                     (which-key--propertize (substring key-w-face beg (1+ beg))
-                                'face 'which-key-special-key-face)
+                                           'face 'which-key-special-key-face)
                     (substring key-w-face end
                                (which-key--string-width key-w-face))))
         key-w-face))))
@@ -2713,7 +2713,7 @@ Finally, show the buffer."
                (bound-and-true-p god-local-mode)
                (eq this-command 'god-mode-self-insert))
       (setq this-command-keys (when which-key--god-mode-key-string
-                          (kbd which-key--god-mode-key-string))))
+                                (kbd which-key--god-mode-key-string))))
     this-command-keys))
 
 (defun which-key--update ()

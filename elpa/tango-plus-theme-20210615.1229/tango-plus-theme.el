@@ -5,8 +5,8 @@
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/tango-plus-theme
-;; Package-Version: 20210505.1051
-;; Package-Commit: f31d282a70b0eb24470935438af59de96ddace2e
+;; Package-Version: 20210615.1229
+;; Package-Commit: 6ad64d82c8bd8c559b9023cd70b1c2d0c18e9060
 ;; Version: 2.0.0
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -128,6 +128,8 @@ Semantic, and Ansi-Color faces are included.")
 					                                                :slant italic))))
 
 
+   ;; Bookmark.el:
+   `(bookmark-face                  ((,class (:background ,cham-0))))
    ;; Faces in isearch.el:
    `(isearch                        ((,class (:foreground ,white
 					      :background ,cham-1))))
