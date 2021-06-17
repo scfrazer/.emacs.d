@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.6
-;; Package-Version: 20210605.1213
-;; Package-Commit: 4c6272ffc4836de052c8b06f681b0e700cb01602
+;; Package-Version: 20210616.1240
+;; Package-Commit: e31e03c5857bf7aada333f693caedfc3087d6297
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -90,7 +90,6 @@ It can also be set to an integer value of 1 or larger to force an offset."
      (unicode-name marginalia-annotate-char)
      (minor-mode marginalia-annotate-minor-mode)
      (symbol marginalia-annotate-symbol)
-     (variable marginalia-annotate-variable)
      (environment-variable marginalia-annotate-environment-variable)
      (input-method marginalia-annotate-input-method)
      (coding-system marginalia-annotate-coding-system)
@@ -134,6 +133,11 @@ determine it."
     ("\\<minor mode\\>" . minor-mode))
   "Associates regexps to match against minibuffer prompts with categories."
   :type '(alist :key-type regexp :value-type symbol))
+
+(defcustom marginalia-censor-variables
+  '("pass")
+  "The values of variables matching any of these regular expressions is not shown."
+  :type '(repeat regexp))
 
 (defcustom marginalia-command-categories
   '((imenu . imenu))
@@ -448,13 +452,16 @@ keybinding since CAND includes it."
   (when-let (sym (intern-soft cand))
     (marginalia--fields
      ((marginalia--symbol-class sym) :face 'marginalia-type)
-     ((let ((val (if (boundp sym) (symbol-value sym) 'unbound))
-            (print-escape-newlines t)
-            (print-escape-control-characters t)
-            (print-escape-multibyte t)
-            (print-level 10)
-            (print-length marginalia-truncate-width))
-        (prin1-to-string val))
+     ((if (seq-find (lambda (r) (string-match-p r cand))
+                    marginalia-censor-variables)
+          "*****"
+        (let ((val (if (boundp sym) (symbol-value sym) 'unbound))
+              (print-escape-newlines t)
+              (print-escape-control-characters t)
+              (print-escape-multibyte t)
+              (print-level 10)
+              (print-length marginalia-truncate-width))
+          (prin1-to-string val)))
       :truncate (/ marginalia-truncate-width 3) :face 'marginalia-variable)
      ((documentation-property sym 'variable-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
