@@ -1130,10 +1130,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20210617.1715/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20210617.1715/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1718,10 +1718,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210317.138/popup-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210618.402/popup-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210317.138/popup-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210618.402/popup-autoloads.el") (car load-path))))
 
 
 
@@ -2151,10 +2151,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210616.1240/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210618.1316/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210616.1240/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210618.1316/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3744,7 +3744,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210609.1330" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210305.1621" "/home/scfrazer/.emacs.d/elpa/transient-20210616.2222" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210609.1330" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210617.1715" "/home/scfrazer/.emacs.d/elpa/transient-20210616.2222" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:

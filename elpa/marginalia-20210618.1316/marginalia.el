@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.6
-;; Package-Version: 20210616.1240
-;; Package-Commit: e31e03c5857bf7aada333f693caedfc3087d6297
+;; Package-Version: 20210618.1316
+;; Package-Commit: 10301075a3b84afd708db4fc1ef72c56d421d040
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -373,14 +373,14 @@ f function
 c command
 m macro
 ! advised
-o obsolete
+- obsolete
 
 Variable:
 u custom
 v variable
 l local
 * modified
-o obsolete
+- obsolete
 
 Other:
 a face
@@ -390,18 +390,18 @@ t cl-type"
    (concat
     (when (fboundp s)
       (concat
-       (and (get s 'byte-obsolete-info) "o")
        (cond
         ((commandp s) "c")
         ((eq (car-safe (symbol-function s)) 'macro) "m")
         (t "f"))
-       (and (marginalia--advised s) "!")))
+       (and (marginalia--advised s) "!")
+       (and (get s 'byte-obsolete-info) "-")))
     (when (boundp s)
       (concat
-       (and (get s 'byte-obsolete-variable) "o")
        (and (local-variable-if-set-p s) "l")
        (if (custom-variable-p s) "u" "v")
-       (and (ignore-errors (not (equal (symbol-value s) (default-value s)))) "*")))
+       (and (ignore-errors (not (equal (symbol-value s) (default-value s)))) "*")
+       (and (get s 'byte-obsolete-variable) "-")))
     (and (facep s) "a")
     (and (fboundp 'cl-find-class) (cl-find-class s) "t"))))
 
