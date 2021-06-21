@@ -44,7 +44,7 @@ reading a new value in the minibuffer.
    Calling a suffix command usually causes the transient to be exited
 but suffix commands can also be configured to not exit the transient.
 
-This manual is for Transient version 0.3.5.
+This manual is for Transient version 0.3.5 (v0.3.5-1-g601ebf55+1).
 
      Copyright (C) 2018-2021 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -1319,8 +1319,8 @@ call ‘transient-export’, ‘transient--stack-zap’ or
 ‘transient--stack-push’; and set the values of ‘transient--exitp’,
 ‘transient--helpp’ or ‘transient--editp’.
 
-4.5.1 Pre-commands for Infixes
-------------------------------
+Pre-commands for Infixes
+------------------------
 
 The default for infixes is ‘transient--do-stay’.  This is also the only
 function that makes sense for infixes.
@@ -1329,8 +1329,8 @@ function that makes sense for infixes.
 
      Call the command without exporting variables and stay transient.
 
-4.5.2 Pre-commands for Suffixes
--------------------------------
+Pre-commands for Suffixes
+-------------------------
 
 The default for suffixes is ‘transient--do-exit’.
 
@@ -1349,8 +1349,8 @@ The default for suffixes is ‘transient--do-exit’.
      This is used for suffixes that are prefixes themselves, i.e.  for
      sub-prefixes.
 
-4.5.3 Pre-commands for Non-Suffixes
------------------------------------
+Pre-commands for Non-Suffixes
+-----------------------------
 
 The default for non-suffixes, i.e commands that are bound in other
 keymaps beside the transient keymap, is ‘transient--do-warn’.  Silently
@@ -1369,8 +1369,8 @@ slot.
 
      Call ‘transient-noop’ and stay transient.
 
-4.5.4 Special Pre-Commands
---------------------------
+Special Pre-Commands
+--------------------
 
  -- Function: transient--do-quit-one
 
@@ -1755,8 +1755,8 @@ File: transient.info,  Node: Prefix Slots,  Next: Suffix Slots,  Prev: Suffix Me
    • ‘scope’ For some transients it might be necessary to have a sort of
      secondary value, called a "scope".  See ‘transient-define-prefix’.
 
-5.6.1 Internal Prefix Slots
----------------------------
+Internal Prefix Slots
+---------------------
 
 These slots are mostly intended for internal use.  They should not be
 set in calls to ‘transient-define-prefix’.
@@ -1796,8 +1796,8 @@ documented in *note Predicate Slots::.
 
    Also see *note Suffix Classes::.
 
-5.7.1 Slots of ‘transient-suffix’
----------------------------------
+Slots of ‘transient-suffix’
+---------------------------
 
    • ‘key’ The key, a key vector or a key description string.
 
@@ -1819,8 +1819,8 @@ documented in *note Predicate Slots::.
    • ‘description’ The description, either a string or a function that
      is called with no argument and returns a string.
 
-5.7.2 Slots of ‘transient-infix’
---------------------------------
+Slots of ‘transient-infix’
+--------------------------
 
 Some of these slots are only meaningful for some of the subclasses.
 They are defined here anyway to allow sharing certain methods.
@@ -1866,13 +1866,13 @@ They are defined here anyway to allow sharing certain methods.
    • ‘choices’ A list of valid values.  How exactly that is used depends
      on the class of the object.
 
-5.7.3 Slots of ‘transient-variable’
------------------------------------
+Slots of ‘transient-variable’
+-----------------------------
 
    • ‘variable’ The variable.
 
-5.7.4 Slots of ‘transient-switches’
------------------------------------
+Slots of ‘transient-switches’
+-----------------------------
 
    • ‘argument-format’ The display format.  Must contain ‘%s’, one of
      the ‘choices’ is substituted for that.  E.g.  ‘--%s-order’.
@@ -1944,8 +1944,8 @@ arguments, they are also quite different and much more complex.
 
    • ‘{NUMBER}’ is a footnote.
 
-6.1.1 Regular Prefix Commands
------------------------------
+Regular Prefix Commands
+-----------------------
 
 See *note (elisp)Prefix Keys::.
 
@@ -1955,8 +1955,8 @@ See *note (elisp)Prefix Keys::.
                                        |
                                        `--> command3 --> (c)
 
-6.1.2 Regular Prefix Arguments
-------------------------------
+Regular Prefix Arguments
+------------------------
 
 See *note (elisp)Prefix Command Arguments::.
 
@@ -1974,8 +1974,8 @@ See *note (elisp)Prefix Command Arguments::.
                                            |                          |
                                            `-------- discards --------'
 
-6.1.3 Transients
-----------------
+Transients
+----------
 
 (∩｀-´)⊃━☆ﾟ.*･｡ﾟ
 
@@ -2130,8 +2130,8 @@ File: transient.info,  Node: Comparison With Other Packages,  Prev: Comparison W
 6.2 Comparison With Other Packages
 ==================================
 
-6.2.1 Magit-Popup
------------------
+Magit-Popup
+-----------
 
 Transient is the successor to Magit-Popup (see *note
 (magit-popup)Top::).
@@ -2151,8 +2151,8 @@ was added, which was not already part of Magit-Popup’s initial release.
 that the key bindings for switches must begin with "-" and those for
 options must begin with "=".
 
-6.2.2 Hydra
------------
+Hydra
+-----
 
 Hydra (see <https://github.com/abo-abo/hydra>) is another package that
 provides features similar to those of Transient.
@@ -2470,46 +2470,63 @@ Appendix E Variable Index
 
 Tag Table:
 Node: Top751
-Node: Introduction3651
-Node: Usage9466
-Node: Invoking Transients9834
-Node: Aborting and Resuming Transients10911
-Node: Common Suffix Commands13570
-Node: Saving Values15404
-Ref: Saving Values-Footnote-116662
-Node: Using History16855
-Node: Getting Help for Suffix Commands18494
-Node: Enabling and Disabling Suffixes19887
-Node: Other Commands22925
-Node: Other Options23903
-Node: Modifying Existing Transients31014
-Node: Defining New Commands34408
-Node: Defining Transients34744
-Node: Binding Suffix and Infix Commands37175
-Node: Group Specifications38029
-Node: Suffix Specifications42358
-Node: Defining Suffix and Infix Commands46316
-Node: Using Infix Arguments49514
-Node: Transient State52346
-Node: Classes and Methods58219
-Node: Group Classes60433
-Node: Group Methods62349
-Node: Prefix Classes63598
-Node: Suffix Classes64690
-Node: Suffix Methods66934
-Node: Suffix Value Methods67255
-Node: Suffix Format Methods70015
-Node: Prefix Slots71467
-Node: Suffix Slots73942
-Node: Predicate Slots77468
-Node: Related Abstractions and Packages78716
-Node: Comparison With Prefix Keys and Prefix Arguments79003
-Node: Comparison With Other Packages89315
-Node: FAQ93505
-Node: Keystroke Index97239
-Node: Command Index99019
-Node: Function Index100952
-Node: Variable Index105456
+Node: Introduction3674
+Node: Usage9489
+Node: Invoking Transients9857
+Node: Aborting and Resuming Transients10934
+Node: Common Suffix Commands13593
+Node: Saving Values15427
+Ref: Saving Values-Footnote-116685
+Node: Using History16878
+Node: Getting Help for Suffix Commands18517
+Node: Enabling and Disabling Suffixes19910
+Node: Other Commands22948
+Node: Other Options23926
+Node: Modifying Existing Transients31037
+Node: Defining New Commands34431
+Node: Defining Transients34767
+Node: Binding Suffix and Infix Commands37198
+Node: Group Specifications38052
+Node: Suffix Specifications42381
+Node: Defining Suffix and Infix Commands46339
+Node: Using Infix Arguments49537
+Node: Transient State52369
+Ref: Pre-commands for Infixes56277
+Ref: Pre-commands for Suffixes56549
+Ref: Pre-commands for Non-Suffixes57068
+Ref: Special Pre-Commands57683
+Node: Classes and Methods58194
+Node: Group Classes60408
+Node: Group Methods62324
+Node: Prefix Classes63573
+Node: Suffix Classes64665
+Node: Suffix Methods66909
+Node: Suffix Value Methods67230
+Node: Suffix Format Methods69990
+Node: Prefix Slots71442
+Ref: Internal Prefix Slots72648
+Node: Suffix Slots73905
+Ref: Slots of transient-suffix74273
+Ref: Slots of transient-infix74970
+Ref: Slots of transient-variable76918
+Ref: Slots of transient-switches77020
+Node: Predicate Slots77383
+Node: Related Abstractions and Packages78631
+Node: Comparison With Prefix Keys and Prefix Arguments78918
+Ref: Regular Prefix Commands79606
+Ref: Regular Prefix Arguments79954
+Ref: Transients80923
+Node: Comparison With Other Packages89194
+Ref: Magit-Popup89425
+Ref: Hydra90324
+Node: FAQ93360
+Ref: Can I control how the popup buffer is displayed?93503
+Ref: Why did some of the key bindings change?93684
+Ref: Why does q not quit popups anymore?96001
+Node: Keystroke Index97094
+Node: Command Index98874
+Node: Function Index100807
+Node: Variable Index105311
 
 End Tag Table
 
