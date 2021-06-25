@@ -1711,10 +1711,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210618.402/popup-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210618.402/popup-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el") (car load-path))))
 
 
 
