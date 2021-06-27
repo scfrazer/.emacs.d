@@ -34,12 +34,7 @@
   ;;            (eq syn-next ?\())
   ;;       (and (eq (char-syntax char) ?\")
   ;;            (not (nth 3 (syntax-ppss)))))))
-  (not
-   (let ((syn-next (char-syntax (following-char))))
-     (or
-      (eq syn-next ?\ )
-      (eq syn-next ?\))
-      (eolp)))))
+  (not (member (following-char) (list ?\  ?\C-j ?\) ?\] ?\} ?\, ?\: ?\;))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 
