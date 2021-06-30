@@ -283,10 +283,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210622.1720/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210630.235/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210622.1720/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210630.235/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -555,32 +555,6 @@ Format the current buffer according to the js-beautify command.
 \(fn)" nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-beautify" '("web-beautify-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/visual-regexp-20210502.2019/visual-regexp-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/visual-regexp-20210502.2019/visual-regexp-autoloads.el") (car load-path))))
-
-
-
-(autoload 'vr/mc-mark "visual-regexp" "\
-Convert regexp selection to multiple cursors.
-
-\(fn REGEXP START END)" t nil)
-
-(autoload 'vr/replace "visual-regexp" "\
-Regexp-replace with live visual feedback.
-
-\(fn REGEXP REPLACE START END)" t nil)
-
-(autoload 'vr/query-replace "visual-regexp" "\
-Use `vr/query-replace' like you would use `query-replace-regexp'.
-
-\(fn REGEXP REPLACE START END)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "visual-regexp" '("vr--" "vr/")))
 
 
 )
@@ -2061,41 +2035,6 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rectangular-region-mode" '("rectangular-region-mode" "rrm/")))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/monokai-pro-theme-20210206.1820/monokai-pro-theme-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/monokai-pro-theme-20210206.1820/monokai-pro-theme-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-classic-theme" '("monokai-pro-classic-theme-colors")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-machine-theme" '("monokai-pro-machine-theme-colors")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-octagon-theme" '("monokai-pro-octagon-theme-colors")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-ristretto-theme" '("monokai-pro-ristretto-theme-colors")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-spectrum-theme" '("monokai-pro-spectrum-theme-colors")))
-
-
-
-(and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "monokai-pro-theme" '("monokai-pro-theme-")))
 
 
 
@@ -3730,7 +3669,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify visual-regexp bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient s rg relint reformatter python project popup orderless multiple-cursors monokai-pro-theme markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient s rg relint reformatter python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
