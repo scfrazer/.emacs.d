@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210630.235
-;; Package-Commit: 7abe54fa1d4aa714d9414bc6877ef2124ce126fe
+;; Package-Version: 20210630.1217
+;; Package-Commit: 27d9fec33abb989b030f7677ccf5f799287d6472
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -719,8 +719,19 @@ update.")
          (goto-char (point-max))
          (insert "\n" fmt-msg "\n")))))
 
+(defsubst which-key--safe-lookup-key (keymap key)
+  "Version of `lookup-key' that allows KEYMAP to be nil.
+Also convert numeric results of `lookup-key' to nil. KEY is not
+checked."
+  (when (keymapp keymap)
+    (let ((result (lookup-key keymap key)))
+      (when (and result (not (numberp result)))
+        result))))
+
 ;;; Third-party library support
 ;;;; Evil
+
+(defvar evil-state nil)
 
 (defcustom which-key-allow-evil-operators (boundp 'evil-this-operator)
   "Allow popup to show for evil operators.
@@ -1442,15 +1453,6 @@ local bindings coming first. Within these categories order using
   "If MAYBE-STRING is a string use `which-key--string-width' o/w return 0."
   (if (stringp maybe-string) (string-width maybe-string) 0))
 
-(defsubst which-key--safe-lookup-key (keymap key)
-  "Version of `lookup-key' that allows KEYMAP to be nil.
-Also convert numeric results of `lookup-key' to nil. KEY is not
-checked."
-  (when (keymapp keymap)
-    (let ((result (lookup-key keymap key)))
-      (when (and result (not (numberp result)))
-        result))))
-
 (defsubst which-key--butlast-string (str)
   (mapconcat #'identity (butlast (split-string str)) " "))
 
@@ -1704,7 +1706,7 @@ return the docstring."
           (t
            (format "%s %s" current docstring)))))
 
-(defun which-key--format-and-replace (unformatted &optional prefix preserve-full-key)
+(defun which-key--format-and-replace (unformatted &optional preserve-full-key)
   "Take a list of (key . desc) cons cells in UNFORMATTED, add
 faces and perform replacements according to the three replacement
 alists. Returns a list (key separator description)."
@@ -1853,7 +1855,7 @@ non-nil, then bindings are collected recursively for all prefixes."
     (when which-key-sort-order
       (setq unformatted
             (sort unformatted which-key-sort-order)))
-    (which-key--format-and-replace unformatted prefix recursive)))
+    (which-key--format-and-replace unformatted recursive)))
 
 ;;; Functions for laying out which-key buffer pages
 

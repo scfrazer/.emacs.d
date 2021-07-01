@@ -194,7 +194,7 @@ Show all bindings in KEYMAP using which-key.
 KEYMAP is selected interactively by mode in
 `minor-mode-map-alist'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("which-key-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("evil-state" "which-key-")))
 
 ;;;***
 

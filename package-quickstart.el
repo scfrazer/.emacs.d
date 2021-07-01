@@ -283,10 +283,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210630.235/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20210630.1217/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210630.235/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20210630.1217/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -475,7 +475,7 @@ Show all bindings in KEYMAP using which-key.
 KEYMAP is selected interactively by mode in
 `minor-mode-map-alist'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("which-key-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("evil-state" "which-key-")))
 
 
 )
@@ -2704,10 +2704,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210625.1302/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210701.707/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210625.1302/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210701.707/doom-themes-autoloads.el") (car load-path))))
 
 
 
