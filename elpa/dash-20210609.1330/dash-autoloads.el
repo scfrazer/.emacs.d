@@ -12,10 +12,10 @@
 (autoload 'dash-fontify-mode "dash" "\
 Toggle fontification of Dash special variables.
 
-If called interactively, enable Dash-Fontify mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp, also
-enable the mode if ARG is omitted or nil, and toggle it if ARG is
-`toggle'; disable the mode otherwise.
+If called interactively, enable Dash-Fontify mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 Dash-Fontify mode is a buffer-local minor mode intended for Emacs
 Lisp buffers.  Enabling it causes the special variables bound in
@@ -61,8 +61,7 @@ This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
 ;;;***
 
-;;;### (autoloads nil nil ("dash-functional.el" "dash-pkg.el") (0
-;;;;;;  0 0 0))
+;;;### (autoloads nil nil ("dash-pkg.el") (0 0 0 0))
 
 ;;;***
 

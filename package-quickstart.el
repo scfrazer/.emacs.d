@@ -2982,20 +2982,20 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-2.18.1/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210609.1330/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-2.18.1/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210609.1330/dash-autoloads.el") (car load-path))))
 
 
 
 (autoload 'dash-fontify-mode "dash" "\
 Toggle fontification of Dash special variables.
 
-If called interactively, enable Dash-Fontify mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp, also
-enable the mode if ARG is omitted or nil, and toggle it if ARG is
-`toggle'; disable the mode otherwise.
+If called interactively, enable Dash-Fontify mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 Dash-Fontify mode is a buffer-local minor mode intended for Emacs
 Lisp buffers.  Enabling it causes the special variables bound in
@@ -3599,9 +3599,9 @@ Transpose lines in the active region." t nil)
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
-	(append
-	 '("/home/scfrazer/.emacs.d/elpa/dash-2.18.1" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
-	 Info-directory-list)))
+        (append
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210609.1330" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         Info-directory-list)))
 
 ;; Local Variables:
 ;; version-control: never
