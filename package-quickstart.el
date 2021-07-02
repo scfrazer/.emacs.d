@@ -511,53 +511,6 @@ Major mode for editing web templates.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el") (car load-path))))
-
-
-
-(autoload 'web-beautify-html "web-beautify" "\
-Format region if active, otherwise the current buffer.
-
-Formatting is done according to the html-beautify command.
-
-\(fn)" t nil)
-
-(autoload 'web-beautify-html-buffer "web-beautify" "\
-Format the current buffer according to the html-beautify command.
-
-\(fn)" nil nil)
-
-(autoload 'web-beautify-css "web-beautify" "\
-Format region if active, otherwise the current buffer.
-
-Formatting is done according to the css-beautify command.
-
-\(fn)" t nil)
-
-(autoload 'web-beautify-css-buffer "web-beautify" "\
-Format the current buffer according to the css-beautify command.
-
-\(fn)" nil nil)
-
-(autoload 'web-beautify-js "web-beautify" "\
-Format region if active, otherwise the current buffer.
-
-Formatting is done according to the js-beautify command.
-
-\(fn)" t nil)
-
-(autoload 'web-beautify-js-buffer "web-beautify" "\
-Format the current buffer according to the js-beautify command.
-
-\(fn)" nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-beautify" '("web-beautify-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20210210.1609/bind-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -822,10 +775,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210619.1100/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210619.1100/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1083,17 +1036,6 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "selectrum-prescient" '("selectrum-prescient-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/s-20210616.619/s-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/s-20210616.619/s-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "s" '("s-")))
 
 
 )
@@ -1685,17 +1627,6 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "popup" '("popup-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -2083,10 +2014,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210620.1943/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210701.2054/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210620.1943/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210701.2054/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2704,10 +2635,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210701.707/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210702.1109/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210701.707/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210702.1109/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3051,20 +2982,20 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210609.1330/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-2.18.1/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210609.1330/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-2.18.1/dash-autoloads.el") (car load-path))))
 
 
 
 (autoload 'dash-fontify-mode "dash" "\
 Toggle fontification of Dash special variables.
 
-If called interactively, enable Dash-Fontify mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+If called interactively, enable Dash-Fontify mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp, also
+enable the mode if ARG is omitted or nil, and toggle it if ARG is
+`toggle'; disable the mode otherwise.
 
 Dash-Fontify mode is a buffer-local minor mode intended for Emacs
 Lisp buffers.  Enabling it causes the special variables bound in
@@ -3274,13 +3205,6 @@ non-nil and title is not from filename, use it as the title." t nil)
 Switch to *Deft* buffer and load files." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "deft" '("deft-" "org-deft-store-link")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-functional-20210210.1449/dash-functional-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-functional-20210210.1449/dash-functional-autoloads.el") (car load-path))))
 
 
 )
@@ -3669,15 +3593,15 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient s rg relint reformatter python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft dash-functional browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
-        (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210609.1330" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210619.1100" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
-         Info-directory-list)))
+	(append
+	 '("/home/scfrazer/.emacs.d/elpa/dash-2.18.1" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+	 Info-directory-list)))
 
 ;; Local Variables:
 ;; version-control: never

@@ -264,14 +264,14 @@
   :config
   (setq git-timemachine-abbreviation-length 7))
 
-(use-package grep
-  :bind* (("M-s G" . my-rgrep)
-          ("M-s g" . my-lgrep))
-  :config
-  (progn
-    (require 'my-grep)
-    (require 'my-grep-ed)
-    (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
+;; (use-package grep
+;;   :bind* (("M-s G" . my-rgrep)
+;;           ("M-s g" . my-lgrep))
+;;   :config
+;;   (progn
+;;     (require 'my-grep)
+;;     (require 'my-grep-ed)
+;;     (bind-key "q" 'my-kill-results-buffer grep-mode-map)))
 
 (use-package highlight-indent-guides
   :bind*  (("M-|" . highlight-indent-guides-mode))
