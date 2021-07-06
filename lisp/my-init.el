@@ -179,6 +179,7 @@
   :defines (diff-mode-shared-map)
   :config
   (progn
+    (require 'diffview)
     (setq-default diff-default-read-only t
                   diff-font-lock-prettify t
                   diff-font-lock-syntax t
@@ -187,7 +188,8 @@
     (bind-keys :map diff-mode-shared-map
                ("q" . kill-this-buffer)
                ("n" . diff-hunk-next)
-               ("p" . diff-hunk-prev))))
+               ("p" . diff-hunk-prev)
+               ("v" . diffview-current))))
 
 (use-package doxymacs
   :defer t
