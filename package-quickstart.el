@@ -1517,13 +1517,6 @@ Where to store autoloads for subdirectory contents.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-ipdb-20200722.1116/realgud-ipdb-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-ipdb-20200722.1116/realgud-ipdb-autoloads.el") (car load-path))))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.27.1/python-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3753,7 +3746,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud realgud-ipdb python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
