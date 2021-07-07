@@ -842,6 +842,29 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/test-simple-20141216.2125/test-simple-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/test-simple-20141216.2125/test-simple-autoloads.el") (car load-path))))
+
+
+
+(autoload 'test-simple-start "test-simple" "\
+
+
+\(fn &optional TEST-START-MSG)" nil t)
+
+(autoload 'test-simple-clear "test-simple" "\
+Initializes and resets everything to run tests. You should run
+this before running any assertions. Running more than once clears
+out information from the previous run.
+
+\(fn &optional TEST-INFO TEST-START-MSG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "test-simple" '("assert-" "end-tests" "note" "test-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210615.1229/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -1361,6 +1384,143 @@ EXIT-CODE-SUCCESS-P
 (function-put 'reformatter-define 'lisp-indent-function 'defun)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "reformatter" '("reformatter-")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el") (car load-path))))
+
+
+
+(autoload '__FILE__ "load-relative" "\
+Return the string name of file/buffer that is currently begin executed.
+
+The first approach for getting this information is perhaps the
+most pervasive and reliable.  But it the most low-level and not
+part of a public API, so it might change in future
+implementations.  This method uses the name that is recorded by
+readevalloop of `lread.c' as the car of variable
+`current-load-list'.
+
+Failing that, we use `load-file-name' which should work in some
+subset of the same places that the first method works.  However
+`load-file-name' will be nil for code that is eval'd.  To cover
+those cases, we try function `buffer-file-name' which is initially
+correct, for eval'd code, but will change and may be wrong if the
+code sets or switches buffers after the initial execution.
+
+As a last resort, you can pass in SYMBOL which should be some
+symbol that has been previously defined if none of the above
+methods work we will use the file-name value find via
+`symbol-file'.
+
+\(fn &optional SYMBOL)" nil nil)
+
+(autoload 'find-file-noselect-relative "load-relative" "\
+Read relative FILENAME into a buffer and return the buffer.
+If a buffer exists visiting FILENAME, return that one, but
+verify that the file has not changed since visited or saved.
+The buffer is not selected, just returned to the caller.
+Optional second arg NOWARN non-nil means suppress any warning messages.
+Optional third arg RAWFILE non-nil means the file is read literally.
+Optional fourth arg WILDCARDS non-nil means do wildcard processing
+and visit all the matching files.  When wildcards are actually
+used and expanded, return a list of buffers that are visiting
+the various files.
+
+\(fn FILENAME &optional NOWARN RAWFILE WILDCARDS)" nil nil)
+
+(autoload 'with-relative-file "load-relative" "\
+Read the relative FILE into a temporary buffer and evaluate BODY
+in this buffer.
+
+\(fn FILE &rest BODY)" nil t)
+
+(function-put 'with-relative-file 'lisp-indent-function '1)
+
+(autoload 'load-relative "load-relative" "\
+Load an Emacs Lisp file relative to Emacs Lisp code that is in
+the process of being loaded or eval'd.
+
+FILE-OR-LIST is either a string or a list of strings containing
+files that you want to loaded.  If SYMBOL is given, the location of
+of the file of where that was defined (as given by `symbol-file' is used
+if other methods of finding __FILE__ don't work.
+
+\(fn FILE-OR-LIST &optional SYMBOL)" nil nil)
+
+(autoload 'require-relative "load-relative" "\
+Run `require' on an Emacs Lisp file relative to the Emacs Lisp code
+that is in the process of being loaded or eval'd.  The symbol used in require
+is the base file name (without directory or file extension) treated as a
+symbol.
+
+WARNING: it is best to to run this function before any
+buffer-setting or buffer changing operations.
+
+\(fn RELATIVE-FILE &optional OPT-FILE OPT-PREFIX)" nil nil)
+
+(autoload 'require-relative-list "load-relative" "\
+Run `require-relative' on each name in LIST which should be a list of
+strings, each string being the relative name of file you want to run.
+
+\(fn LIST &optional OPT-PREFIX)" nil t)
+
+(autoload 'provide-me "load-relative" "\
+Call `provide' with the feature's symbol name made from
+source-code's file basename sans extension.  For example if you
+write (provide-me) inside file ~/lisp/foo.el, this is the same as
+writing: (provide \\='foo).
+
+With a prefix, that prefix is prepended to the `provide' So in
+the previous example, if you write (provide-me \"bar-\") this is the
+same as writing (provide \\='bar-foo).
+
+\(fn &optional PREFIX)" nil t)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "load-relative" '("autoload-relative")))
+
+
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/loc-changes-20200722.1111/loc-changes-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/loc-changes-20200722.1111/loc-changes-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "loc-changes" '("loc-changes")))
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20210522.2151/realgud-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20210522.2151/realgud-autoloads.el") (car load-path))))
+
+
+
+(defconst realgud--recursive-autoloads-file-name "realgud-recursive-autoloads.el" "\
+Where to store autoloads for subdirectory contents.")
+
+(defconst realgud--recursive-autoloads-base-directory (file-name-directory (if load-in-progress load-file-name buffer-file-name)))
+
+(with-demoted-errors "Error in RealGUD's autoloads: %s" (load (expand-file-name realgud--recursive-autoloads-file-name realgud--recursive-autoloads-base-directory) t t))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "realgud" '("realgud--rebuild-recursive-autoloads")))
+
+
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-ipdb-20200722.1116/realgud-ipdb-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-ipdb-20200722.1116/realgud-ipdb-autoloads.el") (car load-path))))
 
 
 )
@@ -2982,10 +3142,10 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210704.1302/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210706.1921/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210704.1302/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210706.1921/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3593,14 +3753,14 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode bind-key use-package transient tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode bind-key use-package transient test-simple tango-plus-theme sr-speedbar prescient selectrum selectrum-prescient rg relint reformatter load-relative loc-changes realgud realgud-ipdb python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210704.1302" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210706.1921" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:
