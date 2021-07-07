@@ -16,6 +16,34 @@
     (avy-with avy-goto-char
       (avy-jump "\n"))))
 
+(defun my-avy-goto-char-timer (char)
+  "Like `avy-goto-char-timer', but:
+* Jump to line if C-l
+* Kill to line if C-k
+* Copy to line if C-o"
+  (interactive (list (read-char "Char: ")))
+  (cond ((= char ?\C-l)
+         (call-interactively 'avy-goto-line))
+        ((= char ?\C-k)
+         (let ((beg (point)))
+           (call-interactively 'avy-goto-line)
+           (kill-region beg (point))))
+        ((= char ?\C-o)
+         (let ((beg (point)) end ov)
+           (save-excursion
+             (call-interactively 'avy-goto-line)
+             (setq end (point)))
+           (copy-region-as-kill beg end)
+           (setq ov (make-overlay beg end))
+           (overlay-put ov 'face 'region)
+           (sit-for 0.5)
+           (delete-overlay ov)))
+        (t
+         (setq unread-command-events (listify-key-sequence (char-to-string char)))
+         (avy-with avy-goto-char-timer
+           (setq avy--old-cands (avy--read-candidates))
+           (avy-process avy--old-cands)))))
+
 (defun my-avy-goto (char)
   "Jump to CHAR at a word start, or string if C-k, or BOL if C-l, or EOL if C-m."
   (interactive (list (read-char "Char: ")))
