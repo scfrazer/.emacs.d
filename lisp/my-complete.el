@@ -209,7 +209,7 @@
 ;;         (my-complete-showing-completions t))
 ;;     (minibuffer-completion-help)))
 
-;; (define-key selectrum-minibuffer-map (kbd "C-o") 'my-complete-show-completions)
+(define-key vertico-map (kbd "C-o") 'minibuffer-completion-help)
 ;; (define-key selectrum-minibuffer-map (kbd "C-x C-n") 'other-window)
 ;; (define-key selectrum-minibuffer-map (kbd "C-x C-p") (lambda () (interactive (other-window -1))))
 ;; (define-key selectrum-minibuffer-map (kbd "M-N") 'selectrum-next-page)
