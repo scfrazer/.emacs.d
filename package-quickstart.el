@@ -842,10 +842,10 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/test-simple-20141216.2125/test-simple-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/test-simple-20200722.1121/test-simple-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/test-simple-20141216.2125/test-simple-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/test-simple-20200722.1121/test-simple-autoloads.el") (car load-path))))
 
 
 
@@ -855,13 +855,24 @@ See info node `(transient)Modifying Existing Transients'.
 \(fn &optional TEST-START-MSG)" nil t)
 
 (autoload 'test-simple-clear "test-simple" "\
-Initializes and resets everything to run tests. You should run
-this before running any assertions. Running more than once clears
-out information from the previous run.
+Initialize and reset everything to run tests.
+You should run this before running any assertions.  Running more than once
+clears out information from the previous run.
 
 \(fn &optional TEST-INFO TEST-START-MSG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "test-simple" '("assert-" "end-tests" "note" "test-")))
+(autoload 'test-simple-run "test-simple" "\
+Register command line to run tests non-interactively and bind key to run test.
+After calling this function, you can run test by key specified by `test-simple-runner-key'.
+
+It is preferable to write at the first line of test files as a comment, e.g,
+;;;; (test-simple-run \"emacs -batch -L %s -l %s\" (file-name-directory (locate-library \"test-simple.elc\")) buffer-file-name)
+
+Calling this function interactively, COMMAND-LINE-FORMATS is set above.
+
+\(fn &rest COMMAND-LINE-FORMATS)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "test-simple" '("assert-" "end-tests" "note" "test-simple-")))
 
 
 )
@@ -915,10 +926,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210530.245/selectrum-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/selectrum-20210707.1827/selectrum-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210530.245/selectrum-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/selectrum-20210707.1827/selectrum-autoloads.el") (car load-path))))
 
 
 
@@ -3334,10 +3345,10 @@ This is useful for reading patches from mailing lists." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20210101.1519/deft-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20210707.1633/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20210101.1519/deft-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20210707.1633/deft-autoloads.el") (car load-path))))
 
 
 

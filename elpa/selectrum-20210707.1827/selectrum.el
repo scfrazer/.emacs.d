@@ -6,8 +6,8 @@
 ;; Created: 8 Dec 2019
 ;; Homepage: https://github.com/raxod502/selectrum
 ;; Keywords: extensions
-;; Package-Version: 20210530.245
-;; Package-Commit: a19bbe94de492bf504399c093cfc5695eb630fa8
+;; Package-Version: 20210707.1827
+;; Package-Commit: 48ea51aa5b6959ea2a134e36cd21f727047b0677
 ;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: MIT
 ;; Version: 3.1
@@ -1983,7 +1983,7 @@ plus CANDIDATE."
                   candidate)
                  (selectrum--get-full candidate))))
          (inhibit-read-only t))
-    (erase-buffer)
+    (delete-minibuffer-contents)
     (insert (if (string-empty-p result)
                 (or selectrum--default-candidate result)
               result))
