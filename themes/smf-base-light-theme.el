@@ -65,7 +65,7 @@
  `(sqlplus-table-odd-rows-face         ((t :background ,(smf-color 254))))
  `(success                             ((t :foreground "black" :background ,(smf-color 157))))
  `(trailing-whitespace                 ((t :background "gray88")))
- `(vertico-current                     ((t :background "lightsteelblue1")))
+ `(vertico-current                     ((t :inherit hl-line)))
  `(warning                             ((t :foreground "black" :background ,(smf-color 227))))
  `(web-mode-html-attr-custom-face      ((t :foreground ,(smf-color 143))))
  `(web-mode-html-attr-name-face        ((t :foreground ,(smf-color 65))))

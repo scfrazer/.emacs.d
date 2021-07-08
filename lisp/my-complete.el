@@ -91,131 +91,18 @@
       (call-interactively 'find-file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Completion sorting
-
-;; (defmacro my-complete-prescient--sort-compare ()
-;;   "Same as `prescient--sort-compare', but do my own sorting."
-;;   `(progn
-;;      (let* ((p1 (gethash c1 hist len))
-;;             (p2 (gethash c2 hist len)))
-;;        (or (< p1 p2)
-;;            (and (eq p1 p2)
-;;                 (let* ((f1 (gethash c1 freq 0))
-;;                        (f2 (gethash c2 freq 0)))
-;;                   (or (> f1 f2)
-;;                       (and (eq f1 f2)
-;;                            (let ((s1 (get-text-property 0 'score c1))
-;;                                  (s2 (get-text-property 0 'score c2)))
-;;                              (if (= s1 s2)
-;;                                  (let ((length1 (length c1))
-;;                                        (length2 (length c2)))
-;;                                    (if (= length1 length2)
-;;                                        (string< c1 c2)
-;;                                      (< length1 length2)))
-;;                                (> s1 s2)))))))))))
-;;
-;; (defun my-complete-prescient-sort (candidates)
-;;   "Same as `prescient-sort', but call my own sorting algorithm."
-;;   (when (and prescient-persist-mode (not prescient--cache-loaded))
-;;     (prescient--load))
-;;   (let ((hist prescient--history)
-;;         (len prescient-history-length)
-;;         (freq prescient--frequency))
-;;     (sort
-;;      (mapcar #'my-complete-score-match candidates)
-;;      (lambda (c1 c2)
-;;        (my-complete-prescient--sort-compare)))))
-;;
-;; (defun my-complete-score-match (str)
-;;   "Score a completion match"
-;;   (let ((score 0)
-;;         (prev-regexp-start -1)
-;;         regexp-start)
-;;     (when (> (length completion-regexp-list) 1)
-;;       (dolist (regexp completion-regexp-list)
-;;         (setq regexp-start (string-match regexp str))
-;;         (when (> regexp-start prev-regexp-start)
-;;           (setq score (1+ score)))
-;;         (setq prev-regexp-start regexp-start)))
-;;     (propertize str 'score score)))
-
-;; (defun my-complete-selectrum-prescient--preprocess (candidates)
-;;   "Same as `selectrum-prescient--preprocess', but call my own sorting algorithm."
-;;   (when selectrum-should-sort
-;;     (setq candidates (my-complete-prescient-sort candidates)))
-;;   candidates)
-;;
-;; (defun my-selectrum-prescient-mode-hook ()
-;;   "Swap in my own sorting."
-;;   (if selectrum-prescient-mode
-;;       (setq selectrum-preprocess-candidates-function #'my-complete-selectrum-prescient--preprocess)
-;;     (when (eq selectrum-preprocess-candidates-function #'selectrum-prescient--preprocess)
-;;       (setq selectrum-preprocess-candidates-function selectrum-prescient--old-preprocess-function))))
-;;
-;; (add-hook 'selectrum-prescient-mode-hook #'my-selectrum-prescient-mode-hook)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion interface
 
-;; (selectrum-mode 1)
-;; (selectrum-prescient-mode 1)
 (vertico-mode 1)
 (marginalia-mode)
 
 (setq completion-category-defaults nil
       completion-styles '(orderless)
-      ;; marginalia-annotator '(marginalia-annotators-heavy marginalia-annotators-light)
-      orderless-matching-styles '(orderless-prefixes orderless-literal)
-      ;; prescient-filter-method '(prefix)
-      ;; prescient-sort-length-enable nil
+      orderless-matching-styles '(orderless-literal)
       read-buffer-completion-ignore-case t
       read-file-name-completion-ignore-case t)
-      ;; selectrum-count-style 'current/matches
-      ;; selectrum-highlight-candidates-function #'orderless-highlight-matches
-      ;; selectrum-refine-candidates-function #'orderless-filter)
 
-;; (defun my-complete-selectrum-setup ()
-;;   (when (and selectrum-is-active
-;;              minibuffer-completing-file-name)
-;;     (let ((map (copy-keymap (current-local-map))))
-;;       (define-key map (kbd "RET") 'my-complete-selectrum-select-current-candidate)
-;;       (use-local-map map))))
-;;
-;; (add-hook 'minibuffer-setup-hook 'my-complete-selectrum-setup 100)
-;;
-;; (defun my-complete-selectrum-select-current-candidate (&optional arg)
-;;   (interactive "P")
-;;   (let* ((index (selectrum--index-for-arg arg))
-;;          (candidate (selectrum--get-candidate index))
-;;          (path (expand-file-name (substitute-in-file-name (selectrum--get-full candidate)))))
-;;     (call-interactively
-;;      (if (and (file-directory-p path)
-;;               (not (eq minibuffer-completion-predicate
-;;                        'file-directory-p)))
-;;          'selectrum-insert-current-candidate
-;;        'selectrum-select-current-candidate))))
-
-;; (defvar my-complete-showing-completions nil)
-;;
-;; (defun my-complete-completion-all-completions (orig-fun string table pred point &optional metadata)
-;;   (if (and selectrum-is-active my-complete-showing-completions)
-;;       (copy-sequence (selectrum-get-current-candidates t))
-;;     (apply orig-fun (list string table pred point metadata))))
-;;
-;; (advice-add 'completion-all-completions :around #'my-complete-completion-all-completions)
-;;
-;; (defun my-complete-show-completions ()
-;;   (interactive)
-;;   (let ((marginalia-annotators nil)
-;;         (my-complete-showing-completions t))
-;;     (minibuffer-completion-help)))
-
-(define-key vertico-map (kbd "C-o") 'minibuffer-completion-help)
-;; (define-key selectrum-minibuffer-map (kbd "C-x C-n") 'other-window)
-;; (define-key selectrum-minibuffer-map (kbd "C-x C-p") (lambda () (interactive (other-window -1))))
-;; (define-key selectrum-minibuffer-map (kbd "M-N") 'selectrum-next-page)
-;; (define-key selectrum-minibuffer-map (kbd "M-P") 'selectrum-previous-page)
-;; (define-key selectrum-minibuffer-map (kbd "M-j") 'my-minibuffer-backward-kill)
-;; (define-key selectrum-minibuffer-map (kbd "M-k") 'my-minibuffer-forward-kill)
+(define-key vertico-map (kbd "C-o") #'minibuffer-completion-help)
+(define-key vertico-map (kbd "C-j") (lambda() (interactive) (vertico-exit t)))
 
 (provide 'my-complete)
