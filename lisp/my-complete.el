@@ -162,7 +162,8 @@
 (vertico-mode 1)
 (marginalia-mode)
 
-(setq completion-styles '(orderless)
+(setq completion-category-defaults nil
+      completion-styles '(orderless)
       ;; marginalia-annotator '(marginalia-annotators-heavy marginalia-annotators-light)
       orderless-matching-styles '(orderless-prefixes orderless-literal)
       ;; prescient-filter-method '(prefix)
