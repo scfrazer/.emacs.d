@@ -1,10 +1,12 @@
 ;;; diffview.el --- View diffs in side-by-side format
 
-;; Copyright (C) 2013-2016 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2015, Mitchel Humpherys
 
 ;; Author: Mitchel Humpherys <mitch.special@gmail.com>
 ;; Maintainer: Mitchel Humpherys <mitch.special@gmail.com>
 ;; Keywords: convenience, diff
+;; Package-Version: 20150929.511
+;; Package-Commit: 031b70913e755c5e55222680f80185032a7d1728
 ;; Version: 1.0
 ;; URL: https://github.com/mgalgs/diffview-mode
 
@@ -194,23 +196,6 @@ This is useful for reading patches from mailing lists."
   (set-window-configuration diffview--saved-wincfg))
 
 (define-key diffview-mode-map (kbd "q") 'diffview--quit)
-
-;;;; ChangeLog:
-
-;; 2016-08-03  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
-;; 	* diffview.el: Fix copyright header
-;; 
-;; 2016-08-03  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
-;; 	Add 'packages/diffview/' from commit
-;; 	'031b70913e755c5e55222680f80185032a7d1728'
-;; 
-;; 	git-subtree-dir: packages/diffview git-subtree-mainline:
-;; 	431bb447c523ed2114d7989a7127d2fd864f62b6 git-subtree-split:
-;; 	031b70913e755c5e55222680f80185032a7d1728
-;; 
-
 
 (provide 'diffview)
 ;;; diffview.el ends here

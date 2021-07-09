@@ -1666,6 +1666,17 @@ to directory DIR.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20210625.400/popup-autoloads.el") (car load-path))))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "popup" '("popup-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3021,10 +3032,10 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210706.1921/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210708.2009/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210706.1921/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210708.2009/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3198,10 +3209,10 @@ the subtree.  The filter action is read from `dired-filter-map'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-1.0/diffview-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-20150929.511/diffview-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-1.0/diffview-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-20150929.511/diffview-autoloads.el") (car load-path))))
 
 
 
@@ -3632,14 +3643,14 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210706.1921" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.12" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210708.2009" "/home/scfrazer/.emacs.d/elpa/orderless-20210613.1723" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210701.1116" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.12" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:

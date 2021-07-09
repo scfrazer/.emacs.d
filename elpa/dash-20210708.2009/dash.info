@@ -1,6 +1,6 @@
 This is dash.info, produced by makeinfo version 6.7 from dash.texi.
 
-This manual is for Dash version 2.18.1.
+This manual is for Dash version 2.19.0.
 
    Copyright © 2012–2021 Free Software Foundation, Inc.
 
@@ -22,7 +22,7 @@ File: dash.info,  Node: Top,  Next: Installation,  Up: (dir)
 Dash
 ****
 
-This manual is for Dash version 2.18.1.
+This manual is for Dash version 2.19.0.
 
    Copyright © 2012–2021 Free Software Foundation, Inc.
 
@@ -110,7 +110,7 @@ File: dash.info,  Node: Using in a package,  Next: Fontification of special vari
 If you use Dash in your own package, be sure to list it as a dependency
 in the library’s headers as follows (*note (elisp)Library Headers::).
 
-     ;; Package-Requires: ((dash "2.18.1"))
+     ;; Package-Requires: ((dash "2.19.0"))
 
 
 File: dash.info,  Node: Fontification of special variables,  Next: Info symbol lookup,  Prev: Using in a package,  Up: Installation
@@ -2794,31 +2794,58 @@ Functions that manipulate and compose other functions.
           (funcall (-applify #'<) '(3 6))
               ⇒ t
 
- -- Function: -on (operator transformer)
-     Return a function of two arguments that first applies TRANSFORMER
-     to each of them and then applies OPERATOR on the results (in the
-     same order).
+ -- Function: -on (op trans)
+     Return a function that calls TRANS on each arg and OP on the
+     results.  The returned function takes a variable number of
+     arguments, calls the function TRANS on each one in turn, and then
+     passes those results as the list of arguments to OP, in the same
+     order.
 
-     In types: (b -> b -> c) -> (a -> b) -> a -> a -> c
+     For example, the following pairs of expressions are morally
+     equivalent:
 
-          (-sort (-on '< 'length) '((1 2 3) (1) (1 2)))
+     (funcall (-on #’+ #’1+) 1 2 3) = (+ (1+ 1) (1+ 2) (1+ 3)) (funcall
+     (-on #’+ #’1+)) = (+)
+
+          (-sort (-on #'< #'length) '((1 2 3) (1) (1 2)))
               ⇒ ((1) (1 2) (1 2 3))
-          (-min-by (-on '> 'length) '((1 2 3) (4) (1 2)))
+          (funcall (-on #'min #'string-to-number) "22" "2" "1" "12")
+              ⇒ 1
+          (-min-by (-on #'> #'length) '((1 2 3) (4) (1 2)))
               ⇒ (4)
-          (-min-by (-on 'string-lessp 'number-to-string) '(2 100 22))
-              ⇒ 22
 
- -- Function: -flip (func)
-     Swap the order of arguments for binary function FUNC.
+ -- Function: -flip (fn)
+     Return a function that calls FN with its arguments reversed.  The
+     returned function takes the same number of arguments as FN.
 
-     In types: (a -> b -> c) -> b -> a -> c
+     For example, the following two expressions are morally equivalent:
 
-          (funcall (-flip '<) 2 1)
-              ⇒ t
-          (funcall (-flip '-) 3 8)
-              ⇒ 5
-          (-sort (-flip '<) '(4 3 6 1))
+     (funcall (-flip #’-) 1 2) = (- 2 1)
+
+     See also: ‘-rotate-args’ (*note -rotate-args::).
+
+          (-sort (-flip #'<) '(4 3 6 1))
               ⇒ (6 4 3 1)
+          (funcall (-flip #'-) 3 2 1 10)
+              ⇒ 4
+          (funcall (-flip #'1+) 1)
+              ⇒ 2
+
+ -- Function: -rotate-args (n fn)
+     Return a function that calls FN with args rotated N places to the
+     right.  The returned function takes the same number of arguments as
+     FN, rotates the list of arguments N places to the right (left if N
+     is negative) just like ‘-rotate’ (*note -rotate::), and applies FN
+     to the result.
+
+     See also: ‘-flip’ (*note -flip::).
+
+          (funcall (-rotate-args -1 #'list) 1 2 3 4)
+              ⇒ (2 3 4 1)
+          (funcall (-rotate-args 1 #'-) 1 10 100)
+              ⇒ 89
+          (funcall (-rotate-args 2 #'list) 3 4 5 1 2)
+              ⇒ (1 2 3 4 5)
 
  -- Function: -const (c)
      Return a function that returns C ignoring any additional arguments.
@@ -2827,9 +2854,9 @@ Functions that manipulate and compose other functions.
 
           (funcall (-const 2) 1 3 "foo")
               ⇒ 2
-          (-map (-const 1) '("a" "b" "c" "d"))
+          (mapcar (-const 1) '("a" "b" "c" "d"))
               ⇒ (1 1 1 1)
-          (-sum (-map (-const 1) '("a" "b" "c" "d")))
+          (-sum (mapcar (-const 1) '("a" "b" "c" "d")))
               ⇒ 4
 
  -- Macro: -cut (&rest params)
@@ -2846,39 +2873,52 @@ Functions that manipulate and compose other functions.
               ⇒ ((1 2 3) [1 2 3] "\1\2\3")
 
  -- Function: -not (pred)
-     Take a unary predicate PRED and return a unary predicate that
-     returns t if PRED returns nil and nil if PRED returns non-nil.
+     Return a predicate that negates the result of PRED.  The returned
+     predicate passes its arguments to PRED.  If PRED returns nil, the
+     result is non-nil; otherwise the result is nil.
 
-          (funcall (-not 'even?) 5)
+     See also: ‘-andfn’ (*note -andfn::) and ‘-orfn’ (*note -orfn::).
+
+          (funcall (-not #'numberp) "5")
               ⇒ t
-          (-filter (-not (-partial '< 4)) '(1 2 3 4 5 6 7 8))
+          (-sort (-not #'<) '(5 2 1 0 6))
+              ⇒ (6 5 2 1 0)
+          (-filter (-not (-partial #'< 4)) '(1 2 3 4 5 6 7 8))
               ⇒ (1 2 3 4)
 
  -- Function: -orfn (&rest preds)
-     Take list of unary predicates PREDS and return a unary predicate
-     with argument x that returns non-nil if at least one of the PREDS
-     returns non-nil on x.
+     Return a predicate that returns the first non-nil result of PREDS.
+     The returned predicate takes a variable number of arguments, passes
+     them to each predicate in PREDS in turn until one of them returns
+     non-nil, and returns that non-nil result without calling the
+     remaining PREDS.  If all PREDS return nil, or if no PREDS are
+     given, the returned predicate returns nil.
 
-     In types: [a -> Bool] -> a -> Bool
+     See also: ‘-andfn’ (*note -andfn::) and ‘-not’ (*note -not::).
 
-          (-filter (-orfn 'even? (-partial (-flip '<) 5)) '(1 2 3 4 5 6 7 8 9 10))
-              ⇒ (1 2 3 4 6 8 10)
-          (funcall (-orfn 'stringp 'even?) "foo")
+          (-filter (-orfn #'natnump #'booleanp) '(1 nil "a" -4 b c t))
+              ⇒ (1 nil t)
+          (funcall (-orfn #'symbolp (-cut string-match-p "x" <>)) "axe")
+              ⇒ 1
+          (funcall (-orfn #'= #'+) 1 1)
               ⇒ t
 
  -- Function: -andfn (&rest preds)
-     Take list of unary predicates PREDS and return a unary predicate
-     with argument x that returns non-nil if all of the PREDS returns
-     non-nil on x.
+     Return a predicate that returns non-nil if all PREDS do so.  The
+     returned predicate P takes a variable number of arguments and
+     passes them to each predicate in PREDS in turn.  If any one of
+     PREDS returns nil, P also returns nil without calling the remaining
+     PREDS.  If all PREDS return non-nil, P returns the last such value.
+     If no PREDS are given, P always returns non-nil.
 
-     In types: [a -> Bool] -> a -> Bool
+     See also: ‘-orfn’ (*note -orfn::) and ‘-not’ (*note -not::).
 
-          (funcall (-andfn (-cut < <> 10) 'even?) 6)
-              ⇒ t
-          (funcall (-andfn (-cut < <> 10) 'even?) 12)
-              ⇒ nil
-          (-filter (-andfn (-not 'even?) (-cut >= 5 <>)) '(1 2 3 4 5 6 7 8 9 10))
-              ⇒ (1 3 5)
+          (-filter (-andfn #'numberp (-cut < <> 5)) '(a 1 b 6 c 2))
+              ⇒ (1 2)
+          (mapcar (-andfn #'numberp #'1+) '(a 1 b 6))
+              ⇒ (nil 2 nil 7)
+          (funcall (-andfn #'= #'+) 1 1)
+              ⇒ 2
 
  -- Function: -iteratefn (fn n)
      Return a function FN composed N times with itself.
@@ -4259,7 +4299,7 @@ Index
 * ->>:                                   Threading macros.    (line  22)
 * -all?:                                 Predicates.          (line  53)
 * -andfn:                                Function combinators.
-                                                              (line 147)
+                                                              (line 184)
 * -annotate:                             Maps.                (line  84)
 * -any?:                                 Predicates.          (line  41)
 * -applify:                              Function combinators.
@@ -4277,12 +4317,12 @@ Index
                                                               (line  30)
 * -cons-pair?:                           Predicates.          (line 167)
 * -const:                                Function combinators.
-                                                              (line 101)
+                                                              (line 128)
 * -contains?:                            Predicates.          (line 100)
 * -copy:                                 Maps.                (line 139)
 * -count:                                Reductions.          (line 172)
 * -cut:                                  Function combinators.
-                                                              (line 113)
+                                                              (line 140)
 * -cycle:                                Other list operations.
                                                               (line 180)
 * -difference:                           Set operations.      (line  20)
@@ -4313,11 +4353,11 @@ Index
 * -fix:                                  Other list operations.
                                                               (line 375)
 * -fixfn:                                Function combinators.
-                                                              (line 184)
+                                                              (line 224)
 * -flatten:                              List to list.        (line  34)
 * -flatten-n:                            List to list.        (line  56)
 * -flip:                                 Function combinators.
-                                                              (line  89)
+                                                              (line  95)
 * -fourth-item:                          Other list operations.
                                                               (line 305)
 * -grade-down:                           Indexing.            (line  81)
@@ -4339,7 +4379,7 @@ Index
 * -is-suffix?:                           Predicates.          (line 141)
 * -iterate:                              Unfolding.           (line   9)
 * -iteratefn:                            Function combinators.
-                                                              (line 161)
+                                                              (line 201)
 * -juxt:                                 Function combinators.
                                                               (line  37)
 * -keep:                                 List to list.        (line   8)
@@ -4365,12 +4405,12 @@ Index
 * -non-nil:                              Sublist selection.   (line  94)
 * -none?:                                Predicates.          (line  73)
 * -not:                                  Function combinators.
-                                                              (line 126)
+                                                              (line 153)
 * -on:                                   Function combinators.
                                                               (line  75)
 * -only-some?:                           Predicates.          (line  85)
 * -orfn:                                 Function combinators.
-                                                              (line 135)
+                                                              (line 167)
 * -pad:                                  Other list operations.
                                                               (line 191)
 * -partial:                              Function combinators.
@@ -4388,7 +4428,7 @@ Index
 * -permutations:                         Set operations.      (line  52)
 * -powerset:                             Set operations.      (line  44)
 * -prodfn:                               Function combinators.
-                                                              (line 218)
+                                                              (line 258)
 * -product:                              Reductions.          (line 201)
 * -reduce:                               Reductions.          (line  53)
 * -reduce-from:                          Reductions.          (line   8)
@@ -4412,6 +4452,8 @@ Index
 * -replace-last:                         List to list.        (line  96)
 * -rotate:                               Other list operations.
                                                               (line   8)
+* -rotate-args:                          Function combinators.
+                                                              (line 112)
 * -rpartial:                             Function combinators.
                                                               (line  22)
 * -running-product:                      Reductions.          (line 211)
@@ -4671,21 +4713,22 @@ Ref: -juxt96884
 Ref: -compose97336
 Ref: -applify97943
 Ref: -on98373
-Ref: -flip98897
-Ref: -const99208
-Ref: -cut99546
-Ref: -not100026
-Ref: -orfn100335
-Ref: -andfn100768
-Ref: -iteratefn101262
-Ref: -fixfn101964
-Ref: -prodfn103520
-Node: Development104578
-Node: Contribute104867
-Node: Contributors105879
-Node: FDL107972
-Node: GPL133292
-Node: Index171041
+Ref: -flip99145
+Ref: -rotate-args99669
+Ref: -const100298
+Ref: -cut100640
+Ref: -not101120
+Ref: -orfn101646
+Ref: -andfn102408
+Ref: -iteratefn103164
+Ref: -fixfn103866
+Ref: -prodfn105422
+Node: Development106480
+Node: Contribute106769
+Node: Contributors107781
+Node: FDL109874
+Node: GPL135194
+Node: Index172943
 
 End Tag Table
 
