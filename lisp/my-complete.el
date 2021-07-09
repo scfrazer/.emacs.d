@@ -103,6 +103,6 @@
       read-file-name-completion-ignore-case t)
 
 (define-key vertico-map (kbd "C-o") #'minibuffer-completion-help)
-(define-key vertico-map (kbd "C-j") (lambda() (interactive) (vertico-exit t)))
+(define-key vertico-map (kbd "C-j") #'vertico-exit-input)
 
 (provide 'my-complete)
