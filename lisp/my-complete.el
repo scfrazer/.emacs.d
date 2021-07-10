@@ -91,6 +91,49 @@
       (call-interactively 'find-file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Define per-completion key
+
+;; (defun define-minibuffer-key (key &rest defs)
+;;   "Define KEY conditionally in the minibuffer.
+;; DEFS is a plist associating completion categories to commands."
+;;   (define-key minibuffer-local-map key
+;;     (list 'menu-item nil defs :filter
+;;           (lambda (d)
+;;             (plist-get d (completion-metadata-get
+;;                           (completion-metadata (minibuffer-contents)
+;;                                                minibuffer-completion-table
+;;                                                minibuffer-completion-predicate)
+;;                           'category))))))
+;;
+;; (define-minibuffer-key "\C-s"
+;;   'consult-location #'previous-history-element
+;;   'file #'consult-find-for-minibuffer)
+
+;; RET to enter dir instead of finish
+
+;; (defun vertico-exit-dir ()
+;;   (interactive)
+;;   (let ((dir (file-name-directory (minibuffer-contents))))
+;;     (delete-minibuffer-contents)
+;;     (insert dir)
+;;     (exit-minibuffer)))
+;;
+;; (defun vertico-dir-ret ()
+;;   (interactive)
+;;   (if (string-suffix-p "/" (vertico--candidate))
+;;       (vertico-insert)
+;;     (vertico-exit)))
+;;
+;; (defun ret-enters-drectory (_)
+;;   (and minibuffer-completing-file-name
+;;        (>= vertico--index 0)
+;;        (string-suffix-p "/" (vertico--candidate))
+;;        (progn (vertico-insert) t)))
+;;
+;; (advice-add 'vertico-exit :before-until #'ret-enters-drectory)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion interface
 
 (vertico-mode 1)
