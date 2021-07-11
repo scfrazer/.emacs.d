@@ -10,6 +10,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion from other sources
 
+(defvar my-complete-category nil)
+
 (defun my-complete-presorted-completion-table (completions)
   "Keep completion table order."
   (lambda (string pred action)
@@ -39,7 +41,8 @@
   "`switch-to-buffer', or choose from `recentf-list', or `project-find-file'"
   (interactive)
   (let (buffer-or-name filename)
-    (let ((confirm-nonexistent-file-or-buffer nil))
+    (let ((confirm-nonexistent-file-or-buffer nil)
+          (my-complete-category 'buffer))
       (setq buffer-or-name (read-buffer-to-switch "Switch to buffer: ")))
     (if (and buffer-or-name (get-buffer buffer-or-name))
         (switch-to-buffer buffer-or-name)
@@ -55,7 +58,8 @@
 
 (defun my-complete-get-recentf-file (&optional require-match initial-input)
   "Get a file from recentf file list."
-  (let* ((file-alist (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) recentf-list))
+  (let* ((my-complete-category 'recentf)
+         (file-alist (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) recentf-list))
          (choice-list (delete-dups (mapcar 'car file-alist)))
          (filename (completing-read "Find recent file: " (my-complete-presorted-completion-table choice-list) nil require-match initial-input))
          (result-list (delq nil (mapcar (lambda (x) (when (string= (car x) filename) (cdr x))) file-alist)))
@@ -92,46 +96,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Define per-completion key
+(defun my-complete-vertico-exit ()
+  "Exit completion with current candidate or insert directory."
+  (interactive)
+  (if (and minibuffer-completing-file-name
+           (>= vertico--index 0)
+           (string-suffix-p "/" (vertico--candidate)))
+      (vertico-insert)
+    (vertico-exit)))
 
-;; (defun define-minibuffer-key (key &rest defs)
-;;   "Define KEY conditionally in the minibuffer.
-;; DEFS is a plist associating completion categories to commands."
-;;   (define-key minibuffer-local-map key
-;;     (list 'menu-item nil defs :filter
-;;           (lambda (d)
-;;             (plist-get d (completion-metadata-get
-;;                           (completion-metadata (minibuffer-contents)
-;;                                                minibuffer-completion-table
-;;                                                minibuffer-completion-predicate)
-;;                           'category))))))
-;;
-;; (define-minibuffer-key "\C-s"
-;;   'consult-location #'previous-history-element
-;;   'file #'consult-find-for-minibuffer)
+(defun my-complete-vertico-kill ()
+  "Kill what the current candidate is pointing to."
+  (interactive)
+  (cond ((eq my-complete-category 'buffer)
+         (my-complete-vertico-kill-buffer))
+        ((eq my-complete-category 'recentf)
+         (my-complete-vertico-kill-recentf))
+        (minibuffer-completing-file-name
+         (my-complete-vertico-kill-file))
 
-;; RET to enter dir instead of finish
+(defun my-complete-vertico-kill-buffer ()
+  "Kill the current buffer."
+  (kill-buffer (vertico--candidate))
+  (abort-recursive-edit)
+  (my-complete-switch-to-buffer))
 
-;; (defun vertico-exit-dir ()
-;;   (interactive)
-;;   (let ((dir (file-name-directory (minibuffer-contents))))
-;;     (delete-minibuffer-contents)
-;;     (insert dir)
-;;     (exit-minibuffer)))
-;;
-;; (defun vertico-dir-ret ()
-;;   (interactive)
-;;   (if (string-suffix-p "/" (vertico--candidate))
-;;       (vertico-insert)
-;;     (vertico-exit)))
-;;
-;; (defun ret-enters-drectory (_)
-;;   (and minibuffer-completing-file-name
-;;        (>= vertico--index 0)
-;;        (string-suffix-p "/" (vertico--candidate))
-;;        (progn (vertico-insert) t)))
-;;
-;; (advice-add 'vertico-exit :before-until #'ret-enters-drectory)
+(defun my-complete-vertico-kill-recentf ()
+  "Remove the current file from the recentf list."
+  )
+
+(defun my-complete-vertico-kill-file ()
+  "Delete the current file."
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion interface
@@ -145,7 +141,9 @@
       read-buffer-completion-ignore-case t
       read-file-name-completion-ignore-case t)
 
-(define-key vertico-map (kbd "C-o") #'minibuffer-completion-help)
 (define-key vertico-map (kbd "C-j") #'vertico-exit-input)
+(define-key vertico-map (kbd "C-k") #'my-complete-vertico-kill)
+(define-key vertico-map (kbd "C-o") #'minibuffer-completion-help)
+(define-key vertico-map (kbd "RET") #'my-complete-vertico-exit)
 
 (provide 'my-complete)
