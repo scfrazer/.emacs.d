@@ -1661,6 +1661,8 @@ Prefix with C-u to resize the `next-window'."
   (local-set-key (kbd "C-\\") 'expand-abbrev)
   (local-set-key (kbd "C-_") 'dabbrev-expand)
   (local-set-key (kbd "C-w") 'my-minibuffer-insert-word-after-point)
+  (local-set-key (kbd "C-x C-n") 'other-window)
+  (local-set-key (kbd "C-x C-p") (lambda () (interactive (other-window -1))))
   (local-set-key (kbd "C-z") 'undo)
   (local-set-key (kbd "M-/") 'mdabbrev-expand)
   (local-set-key (kbd "M-;") 'qe-forward-word-end)

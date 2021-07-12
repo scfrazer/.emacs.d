@@ -148,7 +148,10 @@
 
 (define-key vertico-map (kbd "C-j") #'vertico-exit-input)
 (define-key vertico-map (kbd "C-k") #'my-complete-vertico-kill)
-(define-key vertico-map (kbd "C-o") #'minibuffer-completion-help)
+(define-key vertico-map (kbd "C-o") (lambda () (interactive)
+                                      (marginalia-mode -1)
+                                      (call-interactively #'minibuffer-completion-help)
+                                      (marginalia-mode +1)))
 (define-key vertico-map (kbd "RET") #'my-complete-vertico-exit)
 
 (provide 'my-complete)
