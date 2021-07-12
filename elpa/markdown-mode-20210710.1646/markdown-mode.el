@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210616.122
-;; Package-Commit: 1c7d29d52986b2cb153b5f643167ea49417de469
+;; Package-Version: 20210710.1646
+;; Package-Commit: 359347b2bb15f8d7ef819692ac79759ccfe2c85d
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -5684,6 +5684,7 @@ See `imenu-create-index-function' and `imenu--index-alist' for details."
                      (setcdr sibling-alist alist)
                      (setq cur-alist alist))
                    (setq cur-level level)))))
+      (setq root (copy-tree root))
       ;; Footnotes
       (let ((fn (markdown-get-defined-footnotes)))
         (if (or (zerop (length fn))
