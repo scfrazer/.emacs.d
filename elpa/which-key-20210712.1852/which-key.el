@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210711.105
-;; Package-Commit: c39c747a0922d78db76bf7bad791b1154395a7f4
+;; Package-Version: 20210712.1852
+;; Package-Commit: 55fcce0c6143044535bc6825a68f42ca83f58f00
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -186,19 +186,6 @@ non-nil value."
                                 (choice regexp (const nil)))
                 :value-type (cons (choice string (const nil))
                                   (choice string (const nil)))))
-
-(when (bound-and-true-p which-key-key-replacement-alist)
-  (mapc
-   (lambda (repl)
-     (push (cons (cons (car repl) nil) (cons (cdr repl) nil))
-           which-key-replacement-alist))
-   which-key-key-replacement-alist))
-(when (bound-and-true-p which-key-description-replacement-alist)
-  (mapc
-   (lambda (repl)
-     (push (cons (cons nil (car repl)) (cons nil (cdr repl)))
-           which-key-replacement-alist))
-   which-key-description-replacement-alist))
 
 (defcustom which-key-allow-multiple-replacements nil
   "Allow a key binding to match and be modified by multiple
@@ -845,11 +832,7 @@ function, but it's included here in case someone cannot set that
 variable early enough in their configuration, if they are using a
 starter kit for example."
   (when (string-equal which-key-separator " → ")
-    (setq which-key-separator " : "))
-  (setq which-key-key-replacement-alist
-        (delete '("left" . "←") which-key-key-replacement-alist))
-  (setq which-key-key-replacement-alist
-        (delete '("right" . "→") which-key-key-replacement-alist)))
+    (setq which-key-separator " : ")))
 
 ;;; Default configuration functions for use by users.
 
