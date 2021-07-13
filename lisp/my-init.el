@@ -88,6 +88,7 @@
 (require 'mode-fn)
 (mode-fn-map 'tidy 'c++-mode 'my-cc-mode-tidy)
 (mode-fn-map 'tidy 'c-mode 'my-cc-mode-tidy)
+(mode-fn-map 'tidy 'json-mode 'json-pretty-print-buffer)
 (mode-fn-map 'tidy 'python-mode 'my-python-tidy)
 (mode-fn-map 'tidy 'web-mode 'my-web-mode-beautify)
 
