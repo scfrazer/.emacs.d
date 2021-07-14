@@ -5,4 +5,5 @@ elpa/archives
 elpa/gnupg
 lisp/confidential.el
 lisp/confidential.elc
+projects
 transient
