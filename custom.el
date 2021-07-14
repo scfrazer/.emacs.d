@@ -64,7 +64,7 @@
  '(set-mark-command-repeat-pop t)
  '(speedbar-indentation-width 4)
  '(vc-annotate-background "#2b303b" t)
- '(vc-annotate-background-mode nil)
+ '(vc-annotate-background-mode nil t)
  '(vc-annotate-color-map
    (list
     (cons 20 "#A3BE8C")
@@ -86,7 +86,7 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-idle-delay 10000.0)

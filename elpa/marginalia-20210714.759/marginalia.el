@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.7
-;; Package-Version: 20210701.2054
-;; Package-Commit: 3bf0a4db55f6267467f0a08715f4776509a3b503
+;; Package-Version: 20210714.759
+;; Package-Commit: f0e8a73473ad4fd4bc4bdd619836cc0fcac8fd59
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -823,7 +823,9 @@ Remember `this-command' for `marginalia-classify-by-command-name'."
           ;; metadata since we must bypass the `marginalia--completion-metadata-get' advice.
           (when (and (eq (cadr cat) 'builtin)
                      (not (assq 'annotation-function metadata))
-                     (not (assq 'affixation-function metadata)))
+                     (not (assq 'affixation-function metadata))
+                     (not (plist-get completion-extra-properties :annotation-function))
+                     (not (plist-get completion-extra-properties :affixation-function)))
             (setcdr cat (append (cddr cat) (list (cadr cat)))))
           (message "Marginalia: Use annotator `%s' for category `%s'" (cadr cat) (car cat))))
     (user-error "Marginalia: No active minibuffer")))

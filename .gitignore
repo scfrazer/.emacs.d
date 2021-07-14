@@ -1,12 +1,8 @@
-*archive-contents*
 auto-save-list
 bookmarks
 eln-cache
+elpa/archives
 elpa/gnupg
-external
 lisp/confidential.el
 lisp/confidential.elc
-projects
-tasks
-tramp
 transient
