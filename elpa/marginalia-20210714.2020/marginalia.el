@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.7
-;; Package-Version: 20210714.759
-;; Package-Commit: f0e8a73473ad4fd4bc4bdd619836cc0fcac8fd59
+;; Package-Version: 20210714.2020
+;; Package-Commit: 060c49dc5703dbd54f7323324b86088235848952
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -85,6 +85,7 @@ It can also be set to an integer value of 1 or larger to force an offset."
      (embark-keybinding marginalia-annotate-embark-keybinding)
      (customize-group marginalia-annotate-customize-group)
      (variable marginalia-annotate-variable)
+     (function marginalia-annotate-function)
      (face marginalia-annotate-face)
      (color marginalia-annotate-color)
      (unicode-name marginalia-annotate-char)
@@ -126,6 +127,7 @@ determine it."
     ("\\<face\\>" . face)
     ("\\<color\\>" . color)
     ("\\<environment variable\\>" . environment-variable)
+    ("\\<function\\>" . function)
     ("\\<variable\\>" . variable)
     ("\\<input method\\>" . input-method)
     ("\\<charset\\>" . charset)
@@ -371,7 +373,10 @@ WIDTH is the format width. This can be specified as alternative to FORMAT."
 Function:
 f function
 c command
+C interactive-only command
 m macro
+p pure
+s side-effect-free
 ! advised
 - obsolete
 
@@ -391,7 +396,10 @@ t cl-type"
     (when (fboundp s)
       (concat
        (cond
-        ((commandp s) "c")
+        ((get s 'pure) "p")
+        ((get s 'side-effect-free) "s"))
+       (cond
+        ((commandp s) (if (get s 'interactive-only) "C" "c"))
         ((eq (car-safe (symbol-function s)) 'macro) "m")
         (t "f"))
        (and (marginalia--advised s) "!")
@@ -412,6 +420,21 @@ t cl-type"
       (if (string-match marginalia--advice-regexp str)
           (substring str (match-end 0))
         str))))
+
+;; Derived from elisp-get-fnsym-args-string
+(defun marginalia--function-args (sym)
+  "Return function arguments for SYM."
+  (let ((tmp))
+    (elisp-function-argstring
+      (cond
+       ((listp (setq tmp (gethash (indirect-function sym)
+                                  advertised-signature-table t)))
+        tmp)
+       ((setq tmp (help-split-fundoc
+		   (ignore-errors (documentation sym t))
+		   sym))
+	(substitute-command-keys (car tmp)))
+       (t (help-function-arglist sym))))))
 
 (defun marginalia-annotate-symbol (cand)
   "Annotate symbol CAND with its documentation string."
@@ -447,6 +470,19 @@ keybinding since CAND includes it."
     ;; Strip until the last whitespace in order to support flat imenu
     (marginalia-annotate-symbol (replace-regexp-in-string "^.* " "" cand))))
 
+(defun marginalia-annotate-function (cand)
+  "Annotate function CAND with its documentation string."
+  (when-let (sym (intern-soft cand))
+    (when (functionp sym)
+      (concat
+       (marginalia-annotate-binding cand)
+       (marginalia--fields
+        ((marginalia--symbol-class sym) :face 'marginalia-type)
+        ((marginalia--function-args sym) :face 'marginalia-variable
+         :truncate (/ marginalia-truncate-width 2))
+        ((marginalia--function-doc sym) :truncate marginalia-truncate-width
+         :face 'marginalia-documentation))))))
+
 (defun marginalia-annotate-variable (cand)
   "Annotate variable CAND with its documentation string."
   (when-let (sym (intern-soft cand))
@@ -462,7 +498,7 @@ keybinding since CAND includes it."
               (print-level 10)
               (print-length marginalia-truncate-width))
           (prin1-to-string val)))
-      :truncate (/ marginalia-truncate-width 3) :face 'marginalia-variable)
+      :truncate (/ marginalia-truncate-width 2) :face 'marginalia-variable)
      ((documentation-property sym 'variable-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
