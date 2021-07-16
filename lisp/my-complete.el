@@ -121,11 +121,6 @@
   (abort-recursive-edit)
   (my-complete-switch-to-buffer))
 
-;; (let ((items ...)) ;; items is a list which is mutated, after the mutation call `vertico--exhibit`
-;;   (completing-read "Prompt: "
-;;     (lambda (str pred action)
-;;        (complete-with-action action items str pred))))
-
 (defun my-complete-vertico-kill-recentf ()
   "Remove the current file from the recentf list."
   )
