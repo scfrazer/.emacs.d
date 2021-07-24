@@ -11,6 +11,7 @@
 ;; Completion from other sources
 
 (defvar my-complete-category nil)
+(defvar my-complete-collection nil)
 
 (defun my-complete-presorted-completion-table (completions)
   "Keep completion table order."
@@ -41,9 +42,8 @@
   "`switch-to-buffer', or choose from `recentf-list', or `project-find-file'"
   (interactive)
   (let (buffer-or-name filename)
-    (let ((confirm-nonexistent-file-or-buffer nil)
-          (my-complete-category 'buffer))
-      (setq buffer-or-name (read-buffer-to-switch "Switch to buffer: ")))
+    (let ((confirm-nonexistent-file-or-buffer nil))
+      (setq buffer-or-name (my-complete-read-buffer-to-switch)))
     (if (and buffer-or-name (get-buffer buffer-or-name))
         (switch-to-buffer buffer-or-name)
       (setq filename (my-complete-get-recentf-file nil buffer-or-name))
@@ -55,6 +55,20 @@
                (dirs (list (project-root pr)))
                (project-read-file-name-function #'my-complete-project--read-file-cpd-relative))
           (project-find-file-in buffer-or-name dirs pr))))))
+
+(defun my-complete-read-buffer-to-switch ()
+  "Like `read-buffer-to-switch', but you can kill buffers with C-k"
+  (interactive)
+  (setq my-complete-category 'buffer)
+  (setq my-complete-collection nil)
+  (let (buf-name)
+    (dolist (buf (buffer-list))
+      (setq buf-name (buffer-name buf))
+      (unless (my-buf-ignore-buffer buf-name)
+        (push buf-name my-complete-collection))))
+  (completing-read "Switch to buffer: "
+                   (lambda (str pred action)
+                     (complete-with-action action my-complete-collection str pred))))
 
 (defun my-complete-get-recentf-file (&optional require-match initial-input)
   "Get a file from recentf file list."
@@ -108,25 +122,27 @@
 (defun my-complete-vertico-kill ()
   "Kill what the current candidate is pointing to."
   (interactive)
-  (cond ((eq my-complete-category 'buffer)
-         (my-complete-vertico-kill-buffer))
-        ((eq my-complete-category 'recentf)
-         (my-complete-vertico-kill-recentf))
-        (minibuffer-completing-file-name
-         (my-complete-vertico-kill-file))))
+  (let ((item (vertico--candidate)))
+    (cond ((eq my-complete-category 'buffer)
+           (kill-buffer item))
+          ((eq my-complete-category 'recentf)
+           (my-complete-vertico-kill-recentf item))
+          (minibuffer-completing-file-name
+           (my-complete-vertico-kill-file item)))
+    (setq my-complete-collection (delete item my-complete-collection))
+    (setq vertico--input t)))
 
-(defun my-complete-vertico-kill-buffer ()
-  "Kill the current buffer."
-  (kill-buffer (vertico--candidate))
-  (abort-recursive-edit)
-  (my-complete-switch-to-buffer))
+(defun my-complete-vertico-kill-recentf (filename)
+  "Remove filename from the recentf list."
+  (setq recentf-list (delq t (mapcar
+                              (lambda (x) (or (equal x filename)
+                                              (equal (file-name-nondirectory x) filename)
+                                              x))
+                              recentf-list))))
 
-(defun my-complete-vertico-kill-recentf ()
-  "Remove the current file from the recentf list."
-  )
-
-(defun my-complete-vertico-kill-file ()
-  "Delete the current file."
+(defun my-complete-vertico-kill-file (filename)
+  "Delete filename."
+  ;; TODO
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

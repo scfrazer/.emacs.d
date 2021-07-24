@@ -2,29 +2,27 @@
 
 ;; Ignore buffers
 
-(defvar my-buf-always-show-regexps (list (concat "^"
-                                                 (regexp-opt (list "*Fd"
-                                                                   "*Find"
-                                                                   "*Man"
-                                                                   "*Occur"
-                                                                   "*compilation"
-                                                                   "*grep"
-                                                                   "*info"
-                                                                   "*magit:"
-                                                                   "*rg"
-                                                                   "*scratch"
-                                                                   "*shell"
-                                                                   "*git-simple"
-                                                                   "*terminal"
-                                                                   "*vc-dir"
-                                                                   "*asic-compile"))))
+(defvar my-buf-always-show-regexps
+  (list (concat "^"
+                (regexp-opt (list
+                             "*Customize"
+                             "*Fd"
+                             "*Find"
+                             "*Man"
+                             "*Occur"
+                             "*asic-compile"
+                             "*compilation"
+                             "*git-simple"
+                             "*grep"
+                             "*info"
+                             "*rg"
+                             "*scratch"
+                             "*vc-dir"
+                             ))))
   "*Buffer regexps to always show when buffer switching.")
 
 (defvar my-buf-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
   "*Buffer regexps to never show when buffer switching.")
-
-(defvar my-buf-ignore-dired-buffers t
-  "*If non-nil, buffer switching should ignore dired buffers.")
 
 (defun my-buf-str-in-regexp-list (str regexp-list)
   "Return non-nil if str matches anything in regexp-list."
@@ -36,15 +34,8 @@
 
 (defun my-buf-ignore-buffer (name)
   "Return non-nil if the named buffer should be ignored."
-  (or (and (not (my-buf-str-in-regexp-list name my-buf-always-show-regexps))
-           (my-buf-str-in-regexp-list name my-buf-never-show-regexps))
-      (and my-buf-ignore-dired-buffers
-           (condition-case nil
-               (with-current-buffer name
-                 (and (equal major-mode 'dired-mode)
-                      (not (or (string= name "*Find*")
-                               (string= name "*Fd*")))))
-             (error nil)))))
+  (and (not (my-buf-str-in-regexp-list name my-buf-always-show-regexps))
+       (my-buf-str-in-regexp-list name my-buf-never-show-regexps)))
 
 ;; Toggle buffers
 
