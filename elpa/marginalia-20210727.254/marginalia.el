@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.7
-;; Package-Version: 20210721.2100
-;; Package-Commit: a3a8edbf25db4b1e167f1fdff6f60a065d0bf9cb
+;; Package-Version: 20210727.254
+;; Package-Commit: bf05519a99c06f26567fe13db6d402c26eca3cf1
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -72,6 +72,12 @@ It can also be set to an integer value of 1 or larger to force an offset."
   "Use whitespace margin for window widths larger than this value."
   :type 'integer)
 
+(defcustom marginalia-max-relative-age (* 60 60 24 14)
+  "Maximum relative age in seconds displayed by the file annotator.
+
+Set to `most-positive-fixnum' to always use a relative age, or 0 to never show a relative age."
+  :type 'integer)
+
 (defvar marginalia-annotators nil)
 (defvar marginalia-annotators-light nil)
 (defvar marginalia-annotators-heavy nil)
@@ -125,8 +131,8 @@ determine it."
     ("\\<M-x\\>" . command)
     ("\\<package\\>" . package)
     ("\\<bookmark\\>" . bookmark)
-    ("\\<face\\>" . face)
     ("\\<color\\>" . color)
+    ("\\<face\\>" . face)
     ("\\<environment variable\\>" . environment-variable)
     ("\\<function\\>" . function)
     ("\\<variable\\>" . variable)
@@ -162,19 +168,19 @@ determine it."
 
 (defface marginalia-key
   '((t :inherit font-lock-keyword-face))
-  "Face used to highlight keys in `marginalia-mode'.")
+  "Face used to highlight keys.")
 
 (defface marginalia-type
   '((t :inherit marginalia-key))
-  "Face used to highlight types in `marginalia-mode'.")
+  "Face used to highlight types.")
 
 (defface marginalia-char
   '((t :inherit marginalia-key))
-  "Face used to highlight char in `marginalia-mode'.")
+  "Face used to highlight character annotations.")
 
 (defface marginalia-lighter
   '((t :inherit marginalia-size))
-  "Face used to highlight lighters in `marginalia-mode'.")
+  "Face used to highlight minor mode lighters.")
 
 (defface marginalia-on
   '((t :inherit success))
@@ -186,55 +192,107 @@ determine it."
 
 (defface marginalia-documentation
   '((t :inherit completions-annotations))
-  "Face used to highlight documentation string in `marginalia-mode'.")
+  "Face used to highlight documentation strings.")
 
-(defface marginalia-variable
+(defface marginalia-value
   '((t :inherit marginalia-key))
-  "Face used to highlight variable values in `marginalia-mode'.")
+  "Face used to highlight general variable values.")
+
+(defface marginalia-null
+  '((t :inherit font-lock-comment-face))
+  "Face used to highlight null or unbound variable values.")
+
+(defface marginalia-true
+  '((t :inherit font-lock-builtin-face))
+  "Face used to highlight true variable values.")
+
+(defface marginalia-function
+  '((t :inherit font-lock-function-name-face))
+  "Face used to highlight function symbols.")
+
+(defface marginalia-symbol
+  '((t :inherit font-lock-type-face))
+  "Face used to highlight general symbols.")
+
+(defface marginalia-list
+  '((t :inherit font-lock-constant-face))
+  "Face used to highlight list expressions.")
 
 (defface marginalia-mode
   '((t :inherit marginalia-key))
-  "Face used to highlight major modes in `marginalia-mode'.")
+  "Face used to highlight buffer major modes.")
 
 (defface marginalia-date
   '((t :inherit marginalia-key))
-  "Face used to highlight dates in `marginalia-mode'.")
+  "Face used to highlight dates.")
 
 (defface marginalia-version
   '((t :inherit marginalia-number))
-  "Face used to highlight package version in `marginalia-mode'.")
+  "Face used to highlight package versions.")
 
 (defface marginalia-archive
   '((t :inherit warning))
-  "Face used to highlight package archives in `marginalia-mode'.")
+  "Face used to highlight package archives.")
 
 (defface marginalia-installed
   '((t :inherit success))
-  "Face used to highlight package status in `marginalia-mode'.")
+  "Face used to highlight the status of packages.")
 
 (defface marginalia-size
   '((t :inherit marginalia-number))
-  "Face used to highlight sizes in `marginalia-mode'.")
+  "Face used to highlight sizes.")
 
 (defface marginalia-number
   '((t :inherit font-lock-constant-face))
-  "Face used to highlight char in `marginalia-mode'.")
+  "Face used to highlight numeric values.")
+
+(defface marginalia-string
+  '((t :inherit font-lock-string-face))
+  "Face used to highlight string values.")
 
 (defface marginalia-modified
   '((t :inherit font-lock-negation-char-face))
-  "Face used to highlight modification indicators in `marginalia-mode'.")
+  "Face used to highlight buffer modification indicators.")
 
 (defface marginalia-file-name
   '((t :inherit marginalia-documentation))
-  "Face used to highlight file names in `marginalia-mode'.")
-
-(defface marginalia-file-modes
-  '((t :inherit font-lock-string-face))
-  "Face used to highlight file modes in `marginalia-mode'.")
+  "Face used to highlight file names.")
 
 (defface marginalia-file-owner
   '((t :inherit font-lock-preprocessor-face))
-  "Face used to highlight file owners in `marginalia-mode'.")
+  "Face used to highlight file owner and group names.")
+
+(defface marginalia-file-priv-no
+  '((t :inherit shadow))
+  "Face used to highlight the no file privilege attribute.")
+
+(defface marginalia-file-priv-dir
+  '((t :inherit font-lock-keyword-face))
+  "Face used to highlight the dir file privilege attribute.")
+
+(defface marginalia-file-priv-link
+  '((t :inherit font-lock-keyword-face))
+  "Face used to highlight the link file privilege attribute.")
+
+(defface marginalia-file-priv-read
+  '((t :inherit font-lock-type-face))
+  "Face used to highlight the read file privilege attribute.")
+
+(defface marginalia-file-priv-write
+  '((t :inherit font-lock-builtin-face))
+  "Face used to highlight the write file privilege attribute.")
+
+(defface marginalia-file-priv-exec
+  '((t :inherit font-lock-function-name-face))
+  "Face used to highlight the exec file privilege attribute.")
+
+(defface marginalia-file-priv-other
+  '((t :inherit font-lock-constant-face))
+  "Face used to highlight some other file privilege attribute.")
+
+(defface marginalia-file-priv-rare
+  '((t :inherit font-lock-variable-name-face))
+  "Face used to highlight a rare file privilege attribute.")
 
 ;;;; Pre-declarations for external packages
 
@@ -258,6 +316,17 @@ determine it."
 (declare-function selectrum--get-full "ext:selectrum")
 
 ;;;; Marginalia mode
+
+(defvar marginalia--fontified-file-attributes nil
+  "List of fontified file attributes.")
+
+(defvar-local marginalia--cache nil
+  "The cache, pair of list and hashtable.")
+
+(defvar marginalia--cache-size 100
+  "Size of the cache, set to 0 to disable the cache.
+Disabling the cache is useful on non-incremental UIs like default completion or
+for performance profiling of the annotators.")
 
 (defvar marginalia--separator "    "
   "Field separator.")
@@ -481,7 +550,7 @@ keybinding since CAND includes it."
        (marginalia-annotate-binding cand)
        (marginalia--fields
         ((marginalia--symbol-class sym) :face 'marginalia-type)
-        ((marginalia--function-args sym) :face 'marginalia-variable
+        ((marginalia--function-args sym) :face 'marginalia-value
          :truncate (/ marginalia-truncate-width 2))
         ((marginalia--function-doc sym) :truncate marginalia-truncate-width
          :face 'marginalia-documentation))))))
@@ -492,16 +561,39 @@ keybinding since CAND includes it."
     (marginalia--fields
      ((marginalia--symbol-class sym) :face 'marginalia-type)
      ((cond
-       ((not (boundp sym)) "<unbound>")
-       ((seq-find (lambda (r) (string-match-p r cand)) marginalia-censor-variables) "*****")
-       (t (let ((val (symbol-value sym))
-                (print-escape-newlines t)
-                (print-escape-control-characters t)
-                (print-escape-multibyte t)
-                (print-level 10)
-                (print-length marginalia-truncate-width))
-            (prin1-to-string val))))
-      :truncate (/ marginalia-truncate-width 2) :face 'marginalia-variable)
+       ((not (boundp sym))
+        (propertize "<unbound>" 'face 'marginalia-null))
+       ((and marginalia-censor-variables
+             (seq-find (lambda (r) (string-match-p r cand)) marginalia-censor-variables))
+        "*****")
+       (t (pcase (symbol-value sym)
+            ('nil (propertize "nil" 'face 'marginalia-null))
+            ('t (propertize "t" 'face 'marginalia-true))
+            ((pred keymapp) (propertize "<keymap>" 'face 'marginalia-value))
+            ((pred hash-table-p) (propertize "<hash-table>" 'face 'marginalia-value))
+            ((pred functionp) (propertize (symbol-name sym) 'face 'marginalia-function))
+            ((pred symbolp) (propertize (symbol-name sym) 'face 'marginalia-symbol))
+            ((and (pred numberp) val)
+             (propertize (number-to-string val) 'face 'marginalia-number))
+            (val (let ((print-escape-newlines t)
+                       (print-escape-control-characters t)
+                       (print-escape-multibyte t)
+                       (print-level 10)
+                       (print-length marginalia-truncate-width))
+                   (propertize
+                    (prin1-to-string
+                     (if (stringp val)
+                         ;; Get rid of string properties to save some of the precious space
+                         (substring-no-properties
+                          val 0
+                          (min (length val) marginalia-truncate-width))
+                       val))
+                    'face
+                    (cond
+                     ((listp val) 'marginalia-list)
+                     ((stringp val) 'marginalia-string)
+                     (t 'marginalia-value))))))))
+      :truncate (/ marginalia-truncate-width 2))
      ((documentation-property sym 'variable-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
@@ -509,7 +601,7 @@ keybinding since CAND includes it."
   "Annotate environment variable CAND with its current value."
   (when-let (val (getenv cand))
     (marginalia--fields
-     (val :truncate marginalia-truncate-width :face 'marginalia-variable))))
+     (val :truncate marginalia-truncate-width :face 'marginalia-value))))
 
 (defun marginalia-annotate-face (cand)
   "Annotate face CAND with its documentation string and face example."
@@ -699,17 +791,83 @@ These annotations are skipped for remote paths."
             (with-current-buffer (window-buffer win)
               (marginalia--remote-p (minibuffer-contents-no-properties)))))
       (marginalia--fields ("*Remote*" :face 'marginalia-documentation))
-    (when-let (attributes (file-attributes (substitute-in-file-name (marginalia--full-candidate cand)) 'string))
+    (when-let (attributes (file-attributes (substitute-in-file-name
+                                            (marginalia--full-candidate cand))
+                                           'integer))
       (marginalia--fields
-       ((file-attribute-modes attributes) :face 'marginalia-file-modes)
-       ((format "%s:%s"
-                (file-attribute-user-id attributes)
-                (file-attribute-group-id attributes))
+       ((let ((uid (file-attribute-user-id attributes))
+              (gid (file-attribute-group-id attributes)))
+          (if (or (/= (user-uid) uid) (/= (group-gid) gid))
+              (format "%s:%s" (or (user-login-name uid) uid) (or (group-name gid) gid))
+            ""))
         :width 12 :face 'marginalia-file-owner)
-       ((file-size-human-readable (file-attribute-size attributes)) :width 7 :face 'marginalia-size)
-       ((format-time-string
-         "%b %d %H:%M"
-         (file-attribute-modification-time attributes)) :face 'marginalia-date)))))
+       ((marginalia--fontify-file-attributes (file-attribute-modes attributes)))
+       ((file-size-human-readable (file-attribute-size attributes))
+        :face 'marginalia-size :width 7)
+       ((marginalia--time (file-attribute-modification-time attributes))
+        :face 'marginalia-date :format "%12s")))))
+
+(defun marginalia--fontify-file-attributes (attrs)
+  "Apply fontification to a file ATTRS string, e.g. `drwxrw-r--'."
+  ;; Without caching this can a be significant portion of the time
+  ;; `marginalia-annotate-file' takes to execute. Caching improves performance
+  ;; by about a factor of 20.
+  (or (car (member attrs marginalia--fontified-file-attributes))
+      (progn
+        (setq attrs (substring attrs)) ;; copy because attrs is about to be modified
+        (dotimes (i (length attrs))
+          (put-text-property
+           i (1+ i) 'face
+           (pcase (aref attrs i)
+             (?- 'marginalia-file-priv-no)
+             (?d 'marginalia-file-priv-dir)
+             (?l 'marginalia-file-priv-link)
+             (?r 'marginalia-file-priv-read)
+             (?w 'marginalia-file-priv-write)
+             (?x 'marginalia-file-priv-exec)
+             ((or ?s ?S ?t ?T) 'marginalia-file-priv-other)
+             (_ 'marginalia-file-priv-rare))
+           attrs))
+        (push attrs marginalia--fontified-file-attributes)
+        attrs)))
+
+(defconst marginalia--time-relative-units
+  '((?s . "sec")
+    (?m . "min")
+    (?h . "hour")
+    (?d . "day")
+    (?y . "year"))
+  "Expansions of the short units used by function `seconds-to-string'.
+
+This is used in `marginalia--time-relative'.")
+
+(defun marginalia--time-relative (time)
+  "Format TIME as a relative age."
+  (replace-regexp-in-string
+   "\\`\\([0-9]+\\)\\.[0-9]+\\([a-z]\\)\\'"
+   (lambda (age)
+     (concat (match-string 1 age) " "
+             (or (cdr (assq (aref age (match-beginning 2)) marginalia--time-relative-units))
+                 (match-string 2 age))
+             (unless (string= "1" (match-string 1 age))
+               "s")
+             " ago"))
+   (seconds-to-string (float-time (time-since time)))))
+
+(defun marginalia--time-absolute (time)
+  "Format TIME as an absolute age."
+  (format-time-string
+   (if (> (decoded-time-year (decode-time (current-time)))
+          (decoded-time-year (decode-time time)))
+       " %Y %b %d"
+     "%b %d %H:%M")
+   time))
+
+(defun marginalia--time (time)
+  "Format file age TIME, suitably for use in annotations."
+  (if (< (float-time (time-since time)) marginalia-max-relative-age)
+      (marginalia--time-relative time)
+    (marginalia--time-absolute time)))
 
 (defmacro marginalia--project-root ()
   "Return project root."
@@ -761,9 +919,11 @@ looking for a regexp that matches the prompt."
   "Setup annotator context with completion METADATA around BODY."
   (declare (indent 1))
   (let ((w (make-symbol "w"))
+        (c (make-symbol "c"))
         (o (make-symbol "o")))
     ;; Take the window width of the current window (minibuffer window!)
     `(let ((marginalia--metadata ,metadata)
+           (,c marginalia--cache)
            (,w (window-width))
            ;; Compute marginalia-align-offset. If the right-fringe-width is
            ;; zero, use an additional offset of 1 by default! See
@@ -775,12 +935,39 @@ looking for a regexp that matches the prompt."
        ;; Otherwise it would probably suffice to only change the current buffer.
        ;; We need the `selected-window' fallback for Embark Occur.
        (with-selected-window (or (minibuffer-selected-window) (selected-window))
-         (let ((marginalia-truncate-width (min (/ ,w 2) marginalia-truncate-width))
+         (let ((marginalia--cache ,c) ;; Take the cache from the minibuffer
+               (marginalia-truncate-width (min (/ ,w 2) marginalia-truncate-width))
                (marginalia-align-offset (or marginalia-align-offset ,o))
                (marginalia--separator (if (>= ,w marginalia-separator-threshold) "    " " "))
                (marginalia--margin (when (>= ,w (+ marginalia-margin-min marginalia-margin-threshold))
                                      (make-string (- ,w marginalia-margin-threshold) 32))))
            ,@body)))))
+
+(defun marginalia--cache-reset ()
+  "Reset the cache."
+  (when marginalia--cache
+    (setq marginalia--cache (and (> marginalia--cache-size 0)
+                                 (cons nil (make-hash-table :test #'equal
+                                                            :size marginalia--cache-size))))))
+
+(defun marginalia--cached (fun key)
+  "Cached application of function FUN with KEY.
+
+The cache keeps around the last `marginalia--cache-size' computed annotations.
+The cache is mainly useful when scrolling in completion UIs like Vertico or
+Selectrum."
+  (if marginalia--cache
+      (let ((ht (cdr marginalia--cache)))
+        (or (gethash key ht)
+            (let ((val (funcall fun key)))
+              (setcar marginalia--cache (cons key (car marginalia--cache)))
+              (puthash key val ht)
+              (when (>= (hash-table-count ht) marginalia--cache-size)
+                (let ((end (last (car marginalia--cache) 2)))
+                  (remhash (cadr end) ht)
+                  (setcdr end nil)))
+              val)))
+    (funcall fun key)))
 
 (defun marginalia--completion-metadata-get (metadata prop)
   "Meant as :before-until advice for `completion-metadata-get'.
@@ -793,7 +980,7 @@ PROP is the property which is looked up."
                  (annotate (marginalia--annotator cat)))
        (lambda (cand)
          (marginalia--context metadata
-           (funcall annotate cand)))))
+           (marginalia--cached annotate cand)))))
     ('affixation-function
      ;; We do want the advice triggered for `completion-metadata-get'.
      ;; Return wrapper around `annotation-function'.
@@ -801,7 +988,7 @@ PROP is the property which is looked up."
                  (annotate (marginalia--annotator cat)))
        (lambda (cands)
          (marginalia--context metadata
-           (mapcar (lambda (x) (list x "" (or (funcall annotate x) ""))) cands)))))
+           (mapcar (lambda (x) (list x "" (or (marginalia--cached annotate x) ""))) cands)))))
     ('category
      ;; Find the completion category by trying each of our classifiers.
      ;; Store the metadata for `marginalia-classify-original-category'.
@@ -811,14 +998,18 @@ PROP is the property which is looked up."
 (defun marginalia--minibuffer-setup ()
   "Setup minibuffer for `marginalia-mode'.
 Remember `this-command' for `marginalia-classify-by-command-name'."
-  (setq marginalia--this-command this-command))
+  (setq marginalia--cache t marginalia--this-command this-command)
+  (marginalia--cache-reset))
 
 (defun marginalia--base-position (completions)
   "Record the base position of COMPLETIONS."
   ;; NOTE: As a small optimization track the base position only for file completions,
   ;; since `marginalia--full-candidate' is only used for files as of now.
   (when minibuffer-completing-file-name
-    (setq marginalia--base-position (or (cdr (last completions)) 0)))
+    (let ((base (or (cdr (last completions)) 0)))
+      (unless (= marginalia--base-position base)
+        (marginalia--cache-reset)
+        (setq marginalia--base-position base))))
   completions)
 
 ;;;###autoload
@@ -856,6 +1047,7 @@ Remember `this-command' for `marginalia-classify-by-command-name'."
           (setq cat (assq cat marginalia-annotator-registry))
           (unless cat
             (user-error "Marginalia: No annotators found"))
+          (marginalia--cache-reset)
           (setcdr cat (append (cddr cat) (list (cadr cat))))
           ;; When the builtin annotator is selected and no builtin function is available, skip to
           ;; the next annotator. Note that we cannot use `completion-metadata-get' to access the
