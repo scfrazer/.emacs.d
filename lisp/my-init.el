@@ -296,7 +296,7 @@
     (setq filter-buffer-substring-function #'my-buffer-substring--filter)))
 
 (use-package hl-line
-  :bind* ("C-c #" . hl-line-mode))
+  :bind* ("C-c #" . global-hl-line-mode))
 
 (use-package ibuffer
   :bind* ("M-o" . my-ibuffer)
