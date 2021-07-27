@@ -932,6 +932,15 @@
     (markdown-html-entity-face        :inherit 'font-lock-variable-name-face)
     (markdown-html-tag-delimiter-face :inherit 'markdown-markup-face)
     (markdown-html-tag-name-face      :inherit 'font-lock-keyword-face)
+    ;;;; marginalia
+    (marginalia-documentation   :inherit 'font-lock-doc-face)
+    (marginalia-file-priv-dir   :foreground blue)
+    (marginalia-file-priv-exec  :foreground green)
+    (marginalia-file-priv-link  :foreground violet)
+    (marginalia-file-priv-other :foreground magenta)
+    (marginalia-file-priv-rare  :foreground fg)
+    (marginalia-file-priv-read  :foreground yellow)
+    (marginalia-file-priv-write :foreground red)
     ;;;; message <built-in>
     (message-header-name       :foreground green)
     (message-header-subject    :foreground highlight :weight 'bold)
@@ -1044,6 +1053,11 @@
     ;;;; objed
     (objed-mode-line :inherit 'warning :weight 'bold)
     (objed-hl        :inherit 'region :background (doom-blend region bg 0.5))
+    ;;;; orderless
+    (orderless-match-face-0 :weight 'bold :foreground (doom-blend blue    fg 0.6) :background (doom-blend blue    bg 0.1))
+    (orderless-match-face-1 :weight 'bold :foreground (doom-blend magenta fg 0.6) :background (doom-blend magenta bg 0.1))
+    (orderless-match-face-2 :weight 'bold :foreground (doom-blend green   fg 0.6) :background (doom-blend green   bg 0.1))
+    (orderless-match-face-3 :weight 'bold :foreground (doom-blend yellow  fg 0.6) :background (doom-blend yellow  bg 0.1))
     ;;;; org <built-in> <modes:org-mode>
     (org-archived                 :foreground doc-comments)
     (org-block                    :background base3    :extend t)
