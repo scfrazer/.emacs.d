@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.7
-;; Package-Version: 20210727.254
-;; Package-Commit: bf05519a99c06f26567fe13db6d402c26eca3cf1
+;; Package-Version: 20210728.620
+;; Package-Commit: 9ca552c9c745ab52e315ba5e0032c8228d165dfc
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -566,16 +566,20 @@ keybinding since CAND includes it."
        ((and marginalia-censor-variables
              (seq-find (lambda (r) (string-match-p r cand)) marginalia-censor-variables))
         "*****")
-       (t (pcase (symbol-value sym)
-            ('nil (propertize "nil" 'face 'marginalia-null))
-            ('t (propertize "t" 'face 'marginalia-true))
-            ((pred keymapp) (propertize "<keymap>" 'face 'marginalia-value))
-            ((pred hash-table-p) (propertize "<hash-table>" 'face 'marginalia-value))
-            ((pred functionp) (propertize (symbol-name sym) 'face 'marginalia-function))
-            ((pred symbolp) (propertize (symbol-name sym) 'face 'marginalia-symbol))
-            ((and (pred numberp) val)
-             (propertize (number-to-string val) 'face 'marginalia-number))
-            (val (let ((print-escape-newlines t)
+       (t (let ((val (symbol-value sym)))
+            (pcase (symbol-value sym)
+              ('nil (propertize "nil" 'face 'marginalia-null))
+              ('t (propertize "t" 'face 'marginalia-true))
+              ((pred keymapp) (propertize "<keymap>" 'face 'marginalia-value))
+              ((pred hash-table-p) (propertize "<hash-table>" 'face 'marginalia-value))
+              ((and (pred functionp) (pred symbolp))
+               ;; NOTE: We are not consistent here, values are generally printed unquoted. But we
+               ;; make an exception for function symbols to visually distinguish them from symbols.
+               ;; I am not entirely happy with this, but we should not add quotation to every type.
+               (propertize (format "#'%s" val) 'face 'marginalia-function))
+              ((pred symbolp) (propertize (symbol-name val) 'face 'marginalia-symbol))
+              ((pred numberp) (propertize (number-to-string val) 'face 'marginalia-number))
+              (_ (let ((print-escape-newlines t)
                        (print-escape-control-characters t)
                        (print-escape-multibyte t)
                        (print-level 10)
@@ -592,7 +596,7 @@ keybinding since CAND includes it."
                     (cond
                      ((listp val) 'marginalia-list)
                      ((stringp val) 'marginalia-string)
-                     (t 'marginalia-value))))))))
+                     (t 'marginalia-value)))))))))
       :truncate (/ marginalia-truncate-width 2))
      ((documentation-property sym 'variable-documentation)
       :truncate marginalia-truncate-width :face 'marginalia-documentation))))
@@ -803,9 +807,9 @@ These annotations are skipped for remote paths."
         :width 12 :face 'marginalia-file-owner)
        ((marginalia--fontify-file-attributes (file-attribute-modes attributes)))
        ((file-size-human-readable (file-attribute-size attributes))
-        :face 'marginalia-size :width 7)
+        :face 'marginalia-size :width -7)
        ((marginalia--time (file-attribute-modification-time attributes))
-        :face 'marginalia-date :format "%12s")))))
+        :face 'marginalia-date :width -12)))))
 
 (defun marginalia--fontify-file-attributes (attrs)
   "Apply fontification to a file ATTRS string, e.g. `drwxrw-r--'."

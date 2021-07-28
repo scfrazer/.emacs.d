@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210726.1255
-;; Package-Commit: ab99cb182f8c38b24fe55233db972093236d0420
+;; Package-Version: 20210728.756
+;; Package-Commit: 8158bc8239c531756fbf6602f4b4dea8d52eb4cc
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -49,8 +49,10 @@
 (defvar jit-lock-end)
 (defvar flyspell-generic-check-word-predicate)
 (defvar electric-pair-pairs)
+(defvar sh-ancestor-alist)
 
 (declare-function project-roots "project")
+(declare-function sh-set-shell "sh-script")
 
 
 ;;; Constants =================================================================
@@ -8786,6 +8788,15 @@ at the END of code blocks."
                       (lambda (_parent-buffer _beg _end)
                         (funcall mode)))
                      (indirect-buf (edit-indirect-region begin end 'display-buffer)))
+                  ;; reset `sh-shell' when indirect buffer
+                (when (and (not (member system-type '(ms-dos windows-nt)))
+                           (member mode '(shell-script-mode sh-mode))
+                           (member lang (append
+                                         (mapcar (lambda (e) (symbol-name (car e)))
+                                                 sh-ancestor-alist)
+                                         '("csh" "rc" "sh"))))
+                  (with-current-buffer indirect-buf
+                    (sh-set-shell lang)))
                 (when (> indentation 0) ;; un-indent in edit-indirect buffer
                   (with-current-buffer indirect-buf
                     (indent-rigidly (point-min) (point-max) (- indentation)))))

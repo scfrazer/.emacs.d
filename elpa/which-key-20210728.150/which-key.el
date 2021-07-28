@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20210712.1852
-;; Package-Commit: 55fcce0c6143044535bc6825a68f42ca83f58f00
+;; Package-Version: 20210728.150
+;; Package-Commit: cc84b2d0da629ecb62a92e3fd23cbee4ea20ce56
 ;; Version: 3.5.1
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -1745,8 +1745,8 @@ Requires `which-key-compute-remaps' to be non-nil"
                     (binding
                      (cons key-desc
                            (cond
-                            ((keymapp def) "prefix")
                             ((symbolp def) (which-key--compute-binding def))
+                            ((keymapp def) "prefix")
                             ((eq 'lambda (car-safe def)) "lambda")
                             ((eq 'closure (car-safe def)) "closure")
                             ((stringp def) def)
