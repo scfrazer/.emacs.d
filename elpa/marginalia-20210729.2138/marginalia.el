@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.7
-;; Package-Version: 20210729.1226
-;; Package-Commit: a36af71f8ac530fbb24700494f5b2a75f2cc0111
+;; Package-Version: 20210729.2138
+;; Package-Commit: 11235445365c6ab119acabe91828e9182097ece7
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -342,7 +342,7 @@ for performance profiling of the annotators.")
    (if-let (pos (string-match-p "\n" str))
        (substring str 0 pos)
      str)
-   width 0 32 "…"))
+   width 0 32 t))
 
 (defun marginalia--align (str)
   "Align STR at the right margin."
