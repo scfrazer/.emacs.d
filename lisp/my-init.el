@@ -1760,7 +1760,7 @@ Prefix with C-u to resize the `next-window'."
  ("C-c U"       . (lambda () (interactive) (my-case-symbol 'upcase)))
  ("C-c W"       . winner-redo)
  ("C-c c"       . my-comment-or-uncomment-region)
- ("C-c i"       . (lambda () "Insert register" (interactive) (let ((current-prefix-arg '(4))) (call-interactively 'insert-register))))
+ ("C-c i"       . insert-register)
  ("C-c l"       . (lambda () (interactive) (my-case-symbol 'downcase)))
  ("C-c m"       . my-compile)
  ("C-c n"       . my-narrow)
