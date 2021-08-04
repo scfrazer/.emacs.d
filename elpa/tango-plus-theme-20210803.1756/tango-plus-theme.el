@@ -5,8 +5,8 @@
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/tango-plus-theme
-;; Package-Version: 20210615.1229
-;; Package-Commit: 6ad64d82c8bd8c559b9023cd70b1c2d0c18e9060
+;; Package-Version: 20210803.1756
+;; Package-Commit: fb883f6c33c032bccda59cc1e41d9220ac0bed2d
 ;; Version: 2.0.0
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -342,6 +342,11 @@ Semantic, and Ansi-Color faces are included.")
                                               :height 1.3))))
    `(helm-selection                 ((,class (:inherit highlight))))
    `(helm-match                     ((,class (:inherit lazy-highlight))))
+   `(helm-match-item                ((,class (:inherit lazy-highlight))))
+   `(helm-grep-match                ((,class (:inherit lazy-highlight))))
+   `(helm-grep-file                 ((,class (:inherit default))))
+   `(helm-grep-lineno               ((,class (:inherit default))))
+   `(helm-grep-cmd-line             ((,class (:inherit warning))))
    `(helm-action                    ((,class ())))
    `(helm-candidate-number          ((,class (:inherit mode-line))))
    `(helm-swoop-target-word-face    ((,class (:inherit lazy-highlight))))

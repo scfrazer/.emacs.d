@@ -909,10 +909,10 @@ Calling this function interactively, COMMAND-LINE-FORMATS is set above.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210615.1229/tango-plus-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210803.1756/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210615.1229/tango-plus-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210803.1756/tango-plus-theme-autoloads.el") (car load-path))))
 
 
 
@@ -2064,10 +2064,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210729.2138/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210803.1251/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210729.2138/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210803.1251/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2092,7 +2092,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (autoload 'marginalia-cycle "marginalia" "\
-Cycle between annotators in `marginalia-annotators'." t nil)
+Cycle between annotators in `marginalia-annotator-registry'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
 

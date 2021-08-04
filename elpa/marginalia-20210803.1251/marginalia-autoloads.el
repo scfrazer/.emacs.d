@@ -30,7 +30,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (autoload 'marginalia-cycle "marginalia" "\
-Cycle between annotators in `marginalia-annotators'." t nil)
+Cycle between annotators in `marginalia-annotator-registry'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
 
