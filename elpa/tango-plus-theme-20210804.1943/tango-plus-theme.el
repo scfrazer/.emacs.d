@@ -5,8 +5,8 @@
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/tango-plus-theme
-;; Package-Version: 20210803.1756
-;; Package-Commit: fb883f6c33c032bccda59cc1e41d9220ac0bed2d
+;; Package-Version: 20210804.1943
+;; Package-Commit: 0460aff3638b7c9e290f28be8eb2b90887a74eed
 ;; Version: 2.0.0
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -193,12 +193,24 @@ Semantic, and Ansi-Color faces are included.")
 					      :foreground ,cham-3))))
    `(gnus-group-mail-3-low          ((,class (:foreground ,cham-3))))
    `(gnus-group-mail-low            ((,class (:foreground ,alum-4))))
-   `(gnus-header-content            ((,class (:foreground ,cham-3))))
-   `(gnus-header-from               ((,class (:weight bold
-					      :foreground ,butter-3))))
-   `(gnus-header-subject            ((,class (:foreground ,red-3))))
-   `(gnus-header-name               ((,class (:foreground ,blue-3))))
+   `(gnus-header-content            ((,class (:inherit default))))
+   `(gnus-header-from               ((,class (:inherit default :weight bold))))
+   `(gnus-header-subject            ((,class (:inherit font-lock-keyword-face :weight bold))))
+   `(gnus-header-name               ((,class (:inherit font-lock-builtin-face))))
    `(gnus-header-newsgroups         ((,class (:foreground ,alum-4))))
+   `(gnus-cite-attribution          ((,class (:inherit tango-plus-deemphasized :slant italic))))
+   `(gnus-cite-1                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-2                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-3                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-4                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-5                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-6                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-7                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-8                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-9                    ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-10                   ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-cite-11                   ((,class (:inherit tango-plus-deemphasized))))
+   `(gnus-signature                 ((,class (:inherit tango-plus-deemphasized :slant italic))))
 
    ;; Message faces
    `(message-header-name            ((,class (:inherit font-lock-builtin-face))))

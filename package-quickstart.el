@@ -909,10 +909,10 @@ Calling this function interactively, COMMAND-LINE-FORMATS is set above.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210803.1756/tango-plus-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210804.1943/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210803.1756/tango-plus-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210804.1943/tango-plus-theme-autoloads.el") (car load-path))))
 
 
 
