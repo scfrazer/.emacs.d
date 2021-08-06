@@ -511,6 +511,41 @@ Major mode for editing web templates.
 
 
 )
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el") (car load-path))))
+
+
+
+(autoload 'web-beautify-html "web-beautify" "\
+Format region if active, otherwise the current buffer.
+
+Formatting is done according to the html-beautify command." t nil)
+
+(autoload 'web-beautify-html-buffer "web-beautify" "\
+Format the current buffer according to the html-beautify command." nil nil)
+
+(autoload 'web-beautify-css "web-beautify" "\
+Format region if active, otherwise the current buffer.
+
+Formatting is done according to the css-beautify command." t nil)
+
+(autoload 'web-beautify-css-buffer "web-beautify" "\
+Format the current buffer according to the css-beautify command." nil nil)
+
+(autoload 'web-beautify-js "web-beautify" "\
+Format region if active, otherwise the current buffer.
+
+Formatting is done according to the js-beautify command." t nil)
+
+(autoload 'web-beautify-js-buffer "web-beautify" "\
+Format the current buffer according to the js-beautify command." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-beautify" '("web-beautify-")))
+
+
+)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.12/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -1677,10 +1712,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210721.2059/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20210806.1538/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210721.2059/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20210806.1538/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -3643,14 +3678,14 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210708.2009" "/home/scfrazer/.emacs.d/elpa/orderless-20210721.2059" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210723.1601" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.12" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210708.2009" "/home/scfrazer/.emacs.d/elpa/orderless-20210806.1538" "/home/scfrazer/.emacs.d/elpa/rg-20210625.939" "/home/scfrazer/.emacs.d/elpa/transient-20210723.1601" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.12" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:
