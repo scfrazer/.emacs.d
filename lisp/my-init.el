@@ -519,7 +519,8 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode)
          ("\\.js\\'" . web-mode)
-         ("\\.css\\'" . web-mode))
+         ("\\.css\\'" . web-mode)
+         ("\\.jinja\\'" . web-mode))
   :config
   (require 'my-web-mode))
 
