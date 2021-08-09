@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210801.656
-;; Package-Commit: f28e263b915d48ee9757990da1cdd160b355cb8c
+;; Package-Version: 20210809.240
+;; Package-Commit: 536061ed01ae96414af4f2c9164bade4500210da
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -1554,7 +1554,8 @@ MIDDLE-BEGIN is the start of the \"middle\" section of the block."
                          (cl-third fence-spec)
                          (list middle-begin close-begin))
       ;; If the block is a YAML block, propertize the declarations inside
-      (markdown-syntax-propertize-yaml-metadata middle-begin close-begin)
+      (when (< middle-begin close-begin) ;; workaround #634
+        (markdown-syntax-propertize-yaml-metadata middle-begin close-begin))
       ;; Propertize closing line of fenced block.
       (put-text-property close-begin close-end
                          (cl-cadadr fence-spec) close-data))))
@@ -9001,7 +9002,8 @@ This function assumes point is on a table."
     (save-excursion
       (beginning-of-line)
       (while (search-forward "|" pos t)
-        (unless (markdown--thing-at-wiki-link (match-beginning 0))
+        (when (and (not (looking-back "\\\\|" (line-beginning-position)))
+                   (not (markdown--thing-at-wiki-link (match-beginning 0))))
           (setq cnt (1+ cnt)))))
     cnt))
 
@@ -9040,7 +9042,8 @@ table."
   (beginning-of-line 1)
   (when (> n 0)
     (while (and (> n 0) (search-forward "|" (point-at-eol) t))
-      (unless (markdown--thing-at-wiki-link (match-beginning 0))
+      (when (and (not (looking-back "\\\\|" (line-beginning-position)))
+                 (not (markdown--thing-at-wiki-link (match-beginning 0))))
         (cl-decf n)))
     (if on-delim
         (backward-char 1)
@@ -9258,7 +9261,7 @@ With optional argument UP, move it up."
      (goto-char begin)
      (while (< (point) end)
        (markdown-table-goto-column col t)
-       (and (looking-at "|[^|\n]+|")
+       (and (looking-at "|\\(?:\\\\|\\|[^|\n]\\)+|")
             (replace-match "|"))
        (forward-line)))
     (set-marker end nil)
@@ -9285,7 +9288,7 @@ With optional argument LEFT, move it to the left."
      (goto-char begin)
      (while (< (point) end)
        (markdown-table-goto-column col1 t)
-       (when (looking-at "|\\([^|\n]+\\)|\\([^|\n]+\\)|")
+       (when (looking-at "|\\(\\(?:\\\\|\\|[^|\n]\\|\\)+\\)|\\(\\(?:\\\\|\\|[^|\n]\\|\\)+\\)|")
          (replace-match "|\\2|\\1|"))
        (forward-line)))
     (set-marker end nil)

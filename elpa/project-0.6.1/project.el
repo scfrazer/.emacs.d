@@ -1,7 +1,7 @@
 ;;; project.el --- Operations on the current project  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2021 Free Software Foundation, Inc.
-;; Version: 0.6.0
+;; Version: 0.6.1
 ;; Package-Requires: ((emacs "26.1") (xref "1.0.2"))
 
 ;; This is a GNU ELPA :core package.  Avoid using functionality that
@@ -297,10 +297,10 @@ to find the list of ignores for each directory."
          ;; expanded and not left for the shell command
          ;; to interpret.
          (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
-         (command (format "%s %s %s -type f %s -print0"
+         (command (format "%s -H %s %s -type f %s -print0"
                           find-program
-                          ;; In case DIR is a symlink.
-                          (file-name-as-directory localdir)
+                          (shell-quote-argument
+                           (directory-file-name localdir)) ; Bug#48471
                           (xref--find-ignores-arguments ignores localdir)
                           (if files
                               (concat (shell-quote-argument "(")
@@ -879,23 +879,16 @@ PREDICATE, HIST, and DEFAULT have the same meaning as in
 (defun project--completing-read-strict (prompt
                                         collection &optional predicate
                                         hist default)
-  ;; Tried both expanding the default before showing the prompt, and
-  ;; removing it when it has no matches.  Neither seems natural
-  ;; enough.  Removal is confusing; early expansion makes the prompt
-  ;; too long.
-  (let* ((new-prompt (if (and default (not (string-equal default "")))
-                         (format "%s (default %s): " prompt default)
-                       (format "%s: " prompt)))
-         (res (completing-read new-prompt
-                               collection predicate t
-                               nil ;; initial-input
-                               hist default)))
-    (when (and (equal res default)
-               (not (test-completion res collection predicate)))
-      (setq res
-            (completing-read (format "%s: " prompt)
-                             collection predicate t res hist nil)))
-    res))
+  (minibuffer-with-setup-hook
+      (lambda ()
+        (setq-local minibuffer-default-add-function
+                    (lambda ()
+                      (let ((minibuffer-default default))
+                        (minibuffer-default-add-completions)))))
+    (completing-read (format "%s: " prompt)
+                     collection predicate 'confirm
+                     nil
+                     hist)))
 
 ;;;###autoload
 (defun project-dired ()
@@ -1120,11 +1113,16 @@ current project, it will be killed."
 
 (defun project--buffer-list (pr)
   "Return the list of all buffers in project PR."
-  (let (bufs)
+  (let ((conn (file-remote-p (project-root pr)))
+        bufs)
     (dolist (buf (buffer-list))
-      (when (equal pr
-                   (with-current-buffer buf
-                     (project-current)))
+      ;; For now we go with the assumption that a project must reside
+      ;; entirely on one host.  We might relax that in the future.
+      (when (and (equal conn
+                        (file-remote-p (buffer-local-value 'default-directory buf)))
+                 (equal pr
+                        (with-current-buffer buf
+                          (project-current))))
         (push buf bufs)))
     (nreverse bufs)))
 
@@ -1381,8 +1379,8 @@ to directory DIR."
                 (define-key temp-map (vector keychar) cmd)))))
          command)
     (while (not command)
-      (let ((overriding-local-map commands-map)
-            (choice (read-key-sequence (project--keymap-prompt))))
+      (let* ((overriding-local-map commands-map)
+             (choice (read-key-sequence (project--keymap-prompt))))
         (when (setq command (lookup-key commands-map choice))
           (unless (or project-switch-use-entire-map
                       (assq command commands-menu))
