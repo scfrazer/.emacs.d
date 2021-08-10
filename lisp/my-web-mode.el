@@ -96,6 +96,7 @@
 
 (defun my-web-mode-hook ()
   (set (make-local-variable 'electric-pair-pairs) '((?\" . ?\") (?\' . ?\')))
+  (electric-pair-local-mode -1)
   (when (string= (file-name-extension (buffer-file-name)) "js")
     (web-mode-set-content-type "jsx")
     (setq comment-start "// "
