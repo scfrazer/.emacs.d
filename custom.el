@@ -94,7 +94,9 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
+ '(web-mode-enable-control-block-indentation nil)
+ '(web-mode-indent-style 1)
  '(which-key-add-column-padding 3)
  '(which-key-highlighted-command-list '("my-.+"))
  '(which-key-idle-delay 10000.0)
@@ -116,5 +118,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-fallback-background ((t (:background "#ffffff"))))
+ '(web-mode-block-control-face ((t (:inherit font-lock-keyword-face))))
+ '(web-mode-block-delimiter-face ((t (:inherit font-lock-type-face :weight bold))))
  '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t))))
  '(which-key-local-map-description-face ((t (:inherit font-lock-builtin-face)))))
