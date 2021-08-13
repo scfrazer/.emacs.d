@@ -29,17 +29,12 @@
 
 (defvar asic-compile-command nil)
 (defvar asic-compile-command-list
-  (list "$WORKSPACE/lawson/test/bin/run_build"
-        "$WORKSPACE/lawson/test/bin/run_build pam_msg"
-        "$WORKSPACE/lawson/test/bin/run_build pam_prot"
-        "$WORKSPACE/lawson/test/bin/run_build pam_coh"
-        "$WORKSPACE/lawson/test/bin/run_build eno_pkt"
-        "$WORKSPACE/lawson/test/bin/run_dv_lint"
+  (list "pb fe build --tb lawson::lawson_pam_msg_tb --clean --opt"
+        "pb fe build --tb lawson::lawson_pam_prot_tb --clean --opt"
+        "pb fe build --tb lawson::lawson_pam_coh_tb --clean --opt"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_msg"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_prot"
-        "$WORKSPACE/lawson/test/bin/run_dv_lint pam_coh"
-        "$WORKSPACE/lawson/test/bin/run_dv_lint eno_pkt"
-        "$WORKSPACE/lawson/doc/run_doxygen"))
+        "$WORKSPACE/lawson/test/bin/run_dv_lint pam_coh"))
 
 (defun asic-compile ()
   "ASIC compile."
