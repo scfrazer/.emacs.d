@@ -5,10 +5,16 @@
 (defvar asic-compile-error-regexp-alist
   (list
    '("^Error-\\[.+?\\].+\n\\(.+\n\\)*?\\s-*\"?\\([^,\"]+\\)\"?,[ \t\n]+\\([0-9]+\\)" 2 3) ;; VCS
-   '("^[*][*][*] LINT.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 2 1) ;; SV Lint
-   '("^[*][*][*] \\(SEMANTIC\\|COMPILE\\) ERROR.+at line: \\([0-9]+\\) in file: \\(.+\\)\\s-*$" 3 2) ;; SV Lint
+   `("^[*][*][*] LINT.+at line: \\([0-9,]+\\) in file: \\(.+\\)\\s-*$" 2 ,'asic-compile-get-line-from-match-data ) ;; SV Lint
+   `("^[*][*][*] \\(?:SEMANTIC\\|COMPILE\\) ERROR.+at line: \\([0-9,]+\\) in file: \\(.+\\)\\s-*$" 2 ,'asic-compile-get-line-from-match-data) ;; SV Lint
    '("^\\([^:]+\\):\\([0-9]+\\): warning: .+$" 1 2) ;; Doxygen
    ))
+
+(defun asic-compile-get-line-from-match-data()
+  "Get the line number from match-data.
+Need to do this because SV lint puts commas in the line number."
+  (save-match-data
+    (string-to-number (replace-regexp-in-string "," "" (match-string 1)))))
 
 (defvar asic-compile-error-regexp-alist-alist nil)
 
