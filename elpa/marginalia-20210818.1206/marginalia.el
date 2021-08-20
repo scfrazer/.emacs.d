@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.8
-;; Package-Version: 20210811.226
-;; Package-Commit: b65d66e9301f9a0e3012568ca6721ae4ec276ebc
+;; Package-Version: 20210818.1206
+;; Package-Commit: 72dafdac39097d13babe44c81402cf4cd4a68ce7
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -877,12 +877,13 @@ These annotations are skipped for remote paths."
 
 (defun marginalia--time-absolute (time)
   "Format TIME as an absolute age."
-  (format-time-string
-   (if (> (decoded-time-year (decode-time (current-time)))
-          (decoded-time-year (decode-time time)))
-       " %Y %b %d"
-     "%b %d %H:%M")
-   time))
+  (let ((system-time-locale "C"))
+    (format-time-string
+     (if (> (decoded-time-year (decode-time (current-time)))
+            (decoded-time-year (decode-time time)))
+         " %Y %b %d"
+       "%b %d %H:%M")
+     time)))
 
 (defun marginalia--time (time)
   "Format file age TIME, suitably for use in annotations."
