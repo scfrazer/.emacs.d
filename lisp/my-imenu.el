@@ -25,7 +25,7 @@
       (setq idx (1+ idx)))
     (delete-overlay ov)))
 
-(defvar my-imenu-prefix-symbols nil
+(defvar my-imenu-prefix-symbols t
   "*Prefix symbols with their menu drill-downs.")
 (make-local-variable 'my-imenu-prefix-symbols)
 
@@ -34,7 +34,7 @@
     (dolist (symbol symbols)
       (cond ((and (listp symbol) (imenu--subalist-p symbol))
              (setq result (my-imenu-add-symbols (if my-imenu-prefix-symbols
-                                                        (concat prefix (car symbol) " > ")
+                                                        (concat prefix (car symbol) " -> ")
                                                       "")
                                                     symbol result)))
             ((listp symbol)
