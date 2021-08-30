@@ -4,8 +4,8 @@
 ;; Copyright 2011-2021 François-Xavier Bois
 
 ;; Version: 17.0.4
-;; Package-Version: 20210131.1758
-;; Package-Commit: 8ef47935d638902ba35a557cae5edd6ab6ab1346
+;; Package-Version: 20210829.1552
+;; Package-Commit: 950ac58bd9e7d14a63761c7c8c245d0fc04595c5
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -972,7 +972,7 @@ Must be used in conjunction with web-mode-enable-block-face."
     ("ctemplate"        . "\\.\\(chtml\\|mustache\\)\\'")
     ("django"           . "\\.\\(djhtml\\|tmpl\\|dtl\\|liquid\\|j2\\|njk\\)\\'")
     ("dust"             . "\\.dust\\'")
-    ("elixir"           . "\\.l?eex\\'")
+    ("elixir"           . "\\.[hl]?eex\\'")
     ("ejs"              . "\\.ejs\\'")
     ("erb"              . "\\.\\(erb\\|rhtml\\|erb\\.html\\)\\'")
     ("expressionengine" . "\\.ee\\'")
