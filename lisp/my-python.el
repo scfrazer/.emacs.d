@@ -23,7 +23,7 @@
              :name "python-flymake"
              :noquery t
              :connection-type 'pipe
-             :buffer (generate-new-buffer " *python-flymake*")
+             :buffer (generate-new-buffer "*flymake-python*")
              :command (append python-flymake-command (list (buffer-file-name)))
              :sentinel
              (lambda (proc _event)

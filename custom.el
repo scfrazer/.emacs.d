@@ -39,6 +39,7 @@
  '(desktop-restore-frames t)
  '(desktop-save 'if-exists)
  '(desktop-save-mode t)
+ '(edebug-print-length nil)
  '(eldoc-echo-area-use-multiline-p t)
  '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
