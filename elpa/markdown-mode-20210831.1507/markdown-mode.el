@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210819.57
-;; Package-Commit: 0839d0709e116584bd070305e4a0d28bd03bc547
+;; Package-Version: 20210831.1507
+;; Package-Commit: a9cb2308530dbe72c3bcb6a144b03dcd536e292b
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -9732,7 +9732,7 @@ rows and columns and the column alignment."
                            ;; not paragraph-ending suffixes:
                            ".*  $" ; line ending in two spaces
                            "^#+"
-                           "^[-=]+"
+                           "^\\(?:   \\)?[-=]+[ \t]*$" ;; setext
                            "[ \t]*\\[\\^\\S-*\\]:[ \t]*$") ; just the start of a footnote def
                          "\\|"))
   (setq-local adaptive-fill-first-line-regexp "\\`[ \t]*[A-Z]?>[ \t]*?\\'")
