@@ -34,17 +34,16 @@
      ;; Quote was inserted, and no longer inside a string
      (and (eq (char-syntax char) ?\")
           (not inside-string))
-     ;; Not inside string and next char is not ...
-     (and (not inside-string)
-          (not (member (following-char)
-                       (list
-                        ?\C-@        ;; EOB
-                        ?\           ;; Space
-                        ?\C-i        ;; TAB
-                        ?\C-j        ;; EOL
-                        ?\) ?\] ?\}  ;; Close paren
-                        ?\, ?\: ?\;  ;; Other select punctuation
-                        )))))))
+     ;; Next char is not ...
+     (not (member (following-char)
+                  (list
+                   ?\C-@        ;; EOB
+                   ?\           ;; Space
+                   ?\C-i        ;; TAB
+                   ?\C-j        ;; EOL
+                   ?\) ?\] ?\}  ;; Close paren
+                   ?\, ?\: ?\;  ;; Other select punctuation
+                   ))))))
 
 (setq electric-pair-inhibit-predicate 'my-electric-pair-inhibit)
 

@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20210831.1507
-;; Package-Commit: a9cb2308530dbe72c3bcb6a144b03dcd536e292b
+;; Package-Version: 20210904.733
+;; Package-Commit: 4810cac10355310ec76cd0946d0af92d595b3b81
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -348,6 +348,13 @@ Math support can be enabled, disabled, or toggled later using
   :type 'boolean
   :safe 'booleanp
   :package-version '(markdown-mode . "2.4"))
+
+(defcustom markdown-enable-highlighting-syntax nil
+  "Enable highlighting syntax."
+  :group 'markdown
+  :type 'boolean
+  :safe 'booleanp
+  :package-version '(markdown-mode . "2.5"))
 
 (defcustom markdown-css-paths nil
   "List of URLs of CSS files to link to in the output XHTML."
@@ -1044,6 +1051,15 @@ Group 3 matches all attributes and whitespace following the tag name.")
 (defconst markdown-regex-html-entity
   "\\(&#?[[:alnum:]]+;\\)"
   "Regular expression for matching HTML entities.")
+
+(defconst markdown-regex-highlighting
+  "\\(?1:^\\|[^\\]\\)\\(?2:\\(?3:==\\)\\(?4:[^ \n\t\\]\\|[^ \n\t]\\(?:.\\|\n[^\n]\\)*?[^\\ ]\\)\\(?5:==\\)\\)"
+"Regular expression for matching highlighting text.
+Group 1 matches the character before the opening equal, if any,
+ensuring that it is not a backslash escape.
+Group 2 matches the entire expression, including delimiters.
+Groups 3 and 5 matches the opening and closing delimiters.
+Group 4 matches the text inside the delimiters.")
 
 
 ;;; Syntax ====================================================================
@@ -1981,6 +1997,11 @@ For example, this applies to plain angle bracket URLs:
   "Face for HTML entities."
   :group 'markdown-faces)
 
+(defface markdown-highlighting-face
+  '((t (:background "yellow" :foreground "black")))
+  "Face for highlighting."
+  :group 'markdown-faces)
+
 (defcustom markdown-header-scaling nil
   "Whether to use variable-height faces for headers.
 When non-nil, `markdown-header-face' will inherit from
@@ -2173,6 +2194,9 @@ Depending on your font, some reasonable choices are:
     (,markdown-regex-strike-through . ((3 markdown-markup-properties)
                                        (4 'markdown-strike-through-face)
                                        (5 markdown-markup-properties)))
+    (markdown--match-highlighting . ((3 markdown-markup-properties)
+                                     (4 'markdown-highlighting-face)
+                                     (5 markdown-markup-properties)))
     (,markdown-regex-line-break . (1 'markdown-line-break-face prepend))
     (markdown-fontify-sub-superscripts)
     (markdown-match-inline-attributes . ((0 markdown-markup-properties prepend)))
@@ -2892,6 +2916,10 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
                                 (match-beginning 3) (match-end 3)
                                 (match-beginning 4) (match-end 4)))
           t)))))
+
+(defun markdown--match-highlighting (last)
+  (when markdown-enable-highlighting-syntax
+    (re-search-forward markdown-regex-highlighting last t)))
 
 (defun markdown-match-math-generic (regex last)
   "Match REGEX from point to LAST.
