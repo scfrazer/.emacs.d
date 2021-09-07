@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.1.0/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.2.2/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.1.0/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.2.2/xref-autoloads.el") (car load-path))))
 
 
 
@@ -49,6 +49,8 @@ If sufficient information is available to determine a unique
 definition for IDENTIFIER, display it in the selected window.
 Otherwise, display the list of the possible definitions in a
 buffer where the user can select from the list.
+
+Use \\[xref-pop-marker-stack] to return back to where you invoked this command.
 
 \(fn IDENTIFIER)" t nil)
 
@@ -74,6 +76,12 @@ is nil, prompt only if there's no usable symbol at point.
 
 (autoload 'xref-find-definitions-at-mouse "xref" "\
 Find the definition of identifier at or around mouse click.
+This command is intended to be bound to a mouse event.
+
+\(fn EVENT)" t nil)
+
+(autoload 'xref-find-references-at-mouse "xref" "\
+Find references to the identifier at or around mouse click.
 This command is intended to be bound to a mouse event.
 
 \(fn EVENT)" t nil)
@@ -2101,10 +2109,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210823.1004/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20210905.1700/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210823.1004/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20210905.1700/marginalia-autoloads.el") (car load-path))))
 
 
 

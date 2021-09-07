@@ -27,6 +27,8 @@ definition for IDENTIFIER, display it in the selected window.
 Otherwise, display the list of the possible definitions in a
 buffer where the user can select from the list.
 
+Use \\[xref-pop-marker-stack] to return back to where you invoked this command.
+
 \(fn IDENTIFIER)" t nil)
 
 (autoload 'xref-find-definitions-other-window "xref" "\
@@ -51,6 +53,12 @@ is nil, prompt only if there's no usable symbol at point.
 
 (autoload 'xref-find-definitions-at-mouse "xref" "\
 Find the definition of identifier at or around mouse click.
+This command is intended to be bound to a mouse event.
+
+\(fn EVENT)" t nil)
+
+(autoload 'xref-find-references-at-mouse "xref" "\
+Find references to the identifier at or around mouse click.
 This command is intended to be bound to a mouse event.
 
 \(fn EVENT)" t nil)
