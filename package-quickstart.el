@@ -2242,10 +2242,10 @@ Beautify / pretty-print the active region (or the entire buffer if no active reg
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iflipb-20210515.829/iflipb-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/iflipb-20210907.1717/iflipb-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iflipb-20210515.829/iflipb-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/iflipb-20210907.1717/iflipb-autoloads.el") (car load-path))))
 
 
 
