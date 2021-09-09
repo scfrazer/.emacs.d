@@ -111,6 +111,8 @@
  '(which-key-show-early-on-C-h t)
  '(which-key-sort-order 'which-key-local-then-key-order)
  '(which-key-sort-uppercase-first nil)
+ '(xref-search-program 'ripgrep)
+ '(xref-show-definitions-function 'xref-show-definitions-buffer-at-bottom)
  '(yank-excluded-properties
    '(category field follow-link fontified font-lock-face help-echo intangible invisible keymap local-map mouse-face read-only yank-handler display highlight-indent-guides-prop)))
 (custom-set-faces
