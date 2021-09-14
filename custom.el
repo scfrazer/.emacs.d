@@ -11,6 +11,7 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#ffffff" "#183691" "#969896" "#a71d5d" "#969896" "#969896" "#795da3" "#969896"])
+ '(auto-save-list-file-prefix "~/.emacs.d/.auto-save-list/.saves-")
  '(beacon-blink-delay 0.25)
  '(beacon-blink-duration 0.1)
  '(beacon-blink-when-window-scrolls nil)
@@ -19,6 +20,7 @@
  '(beacon-mode t)
  '(beacon-push-mark nil)
  '(beacon-size 40)
+ '(bookmark-default-file "~/.emacs.d/.bookmarks")
  '(clean-buffer-list-kill-buffer-names
    '("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*"))
  '(completion-category-overrides '((file (styles basic substring))))
@@ -72,6 +74,9 @@
      (folded-file . t)))
  '(set-mark-command-repeat-pop t)
  '(speedbar-indentation-width 4)
+ '(transient-history-file "~/.emacs.d/.transient/history.el")
+ '(transient-levels-file "~/.emacs.d/.transient/levels.el")
+ '(transient-values-file "~/.emacs.d/.transient/values.el")
  '(vc-annotate-background "#2b303b" t)
  '(vc-annotate-background-mode nil t)
  '(vc-annotate-color-map
@@ -95,7 +100,7 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
  '(web-mode-enable-control-block-indentation nil)
  '(web-mode-indent-style 1)
  '(which-key-add-column-padding 3)

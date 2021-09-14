@@ -1,9 +1,9 @@
-auto-save-list
-bookmarks
+.auto-save-list
+.bookmarks
+.transient
 eln-cache
 elpa/archives
 elpa/gnupg
 lisp/confidential.el
 lisp/confidential.elc
 projects
-transient
