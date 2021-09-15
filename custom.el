@@ -54,6 +54,13 @@
  '(icomplete-compute-delay 0)
  '(icomplete-delay-completions-threshold 10000)
  '(icomplete-max-delay-chars 0)
+ '(marginalia-command-categories
+   '((imenu . imenu)
+     (my-imenu-nav . imenu)
+     (my-complete-switch-to-buffer . buffer)
+     (my-complete-recentf-file . file)))
+ '(marginalia-margin-threshold 160)
+ '(marginalia-separator-threshold 1000)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
