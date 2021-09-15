@@ -80,14 +80,14 @@ pattern to search for.
 (autoload 'project-find-file "project" "\
 Visit a file (with completion) in the current project.
 
-The completion default is the filename at point, determined by
-`thing-at-point' (whether such file exists or not)." t nil)
+The filename at point (determined by `thing-at-point'), if any,
+is available as part of \"future history\"." t nil)
 
 (autoload 'project-or-external-find-file "project" "\
 Visit a file (with completion) in the current project or external roots.
 
-The completion default is the filename at point, determined by
-`thing-at-point' (whether such file exists or not)." t nil)
+The filename at point (determined by `thing-at-point'), if any,
+is available as part of \"future history\"." t nil)
 
 (autoload 'project-dired "project" "\
 Start Dired in the current project's root." t nil)
