@@ -579,8 +579,11 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
 (winner-mode 1)
 (windmove-default-keybindings 'meta)
 
-(setq savehist-file (concat default-directory ".emacs.savehist"))
-(savehist-mode 1)
+(if (string-prefix-p (getenv "HOME") default-directory)
+  (progn
+    (setq savehist-file (concat default-directory ".emacs.savehist"))
+    (savehist-mode 1))
+  (desktop-save-mode -1))
 
 (setq-default Man-notify-method 'bully
               auto-hscroll-mode t ;;'current-line
