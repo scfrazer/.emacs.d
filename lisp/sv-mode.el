@@ -764,13 +764,13 @@ uses the package name if one can be found (see
 default.  Users should change `sv-mode-guess-uvm-tag-function' to point
 to their own function."
   ;; Look in file first
-  (unless sv-mode-uvm-tag
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (when (re-search-forward "`uvm_\\(info\\|warning\\|error\\|fatal\\).+?\"\\([a-zA-Z0-9_]+\\)" nil t)
-          (setq sv-mode-uvm-tag (match-string-no-properties 2))))))
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (if (re-search-forward "`uvm_info.+?\"\\([a-zA-Z0-9_]+\\)" nil t)
+          (setq sv-mode-uvm-tag (match-string-no-properties 1))
+        (setq sv-mode-uvm-tag nil))))
   ;; Use the package name if one can be found
   (unless sv-mode-uvm-tag
     (let ((pkg (sv-mode-get-package-name)))
@@ -786,7 +786,7 @@ Users should change `sv-mode-uvm-info-function' to point to their
 own function.  This function can be called through abbrevs."
   (interactive "sVerbosity? ")
   (sv-mode-guess-uvm-tag)
-  (insert "`uvm_info(\"" sv-mode-uvm-tag "\", \"TODO\", " verbosity ")")
+  (insert "`uvm_info(\"" sv-mode-uvm-tag "\", $sformatf(\"TODO\"), " verbosity ")")
   (sv-mode-indent-line)
   (search-backward "TODO"))
 
@@ -1722,6 +1722,11 @@ TYPE is component/object, and BEGIN non-nil inserts begin/end pair."
   "uif"
   ""
   (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_FULL") (insert "uif"))))
+
+(define-abbrev sv-mode-abbrev-table
+  "uid"
+  ""
+  (lambda() (if (looking-back "^\\s-*" (point-at-bol)) (funcall sv-mode-uvm-info-function "UVM_DEBUG") (insert "uih"))))
 
 (define-abbrev sv-mode-abbrev-table
   "uw"

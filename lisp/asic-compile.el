@@ -35,9 +35,9 @@ Need to do this because SV lint puts commas in the line number."
 
 (defvar asic-compile-command nil)
 (defvar asic-compile-command-list
-  (list "pb fe build --tb lawson::lawson_pam_msg_tb --clean --opt"
-        "pb fe build --tb lawson::lawson_pam_prot_tb --clean --opt"
-        "pb fe build --tb lawson::lawson_pam_coh_tb --clean --opt"
+  (list "pb fe build --tb lawson::lawson_pam_msg_tb --clean"
+        "pb fe build --tb lawson::lawson_pam_prot_tb --clean"
+        "pb fe build --tb lawson::lawson_pam_coh_tb --clean"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_msg"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_prot"
         "$WORKSPACE/lawson/test/bin/run_dv_lint pam_coh"))
