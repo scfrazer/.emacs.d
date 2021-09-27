@@ -3312,10 +3312,10 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210924.1215/citre-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210927.940/citre-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210924.1215/citre-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210927.940/citre-autoloads.el") (car load-path))))
 
 
 
@@ -3422,7 +3422,7 @@ An updating recipe is written to it so later it can be updated by
 
 
 (autoload 'citre-peek "citre-peek" "\
-Peek the definition of the symbol at point.
+Peek the definition of the symbol in BUF at POINT.
 When BUF or POINT is nil, it's set to the current buffer and
 point.
 

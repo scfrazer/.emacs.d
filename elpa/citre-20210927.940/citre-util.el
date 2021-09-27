@@ -7,7 +7,7 @@
 ;; Created: 23 Nov 2020
 ;; Keywords: convenience, tools
 ;; Homepage: https://github.com/universal-ctags/citre
-;; Version: 0.1.1
+;; Version: 0.1.3
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -182,8 +182,7 @@ This is like `citre-core-get-tags', except that:
 
 - TAGSFILE could be nil, and it will be find automatically.
 - When MATCH is nil or `exact', CASE-FOLD is always nil,
-  otherwise it's decided by `citre-completion-case-sensitive' and
-  NAME.
+  otherwise it's decided by `citre-completion-case-sensitive'.
 
 TAGSFILE is the absolute path of the tags file.  For FILTER,
 SORTER, REQUIRE, OPTIONAL, EXCLUDE, and PARSE-ALL-FIELDS, see
@@ -195,7 +194,8 @@ and some of its fields, which can be utilized by
   (citre-core-get-tags (or tagsfile (citre-tags-file-path)
                            (user-error "Can't find a tags file"))
                        name match
-                       (not citre-completion-case-sensitive)
+                       (unless (or (null match) (eq match 'exact))
+                         (not citre-completion-case-sensitive))
                        :filter filter :sorter sorter
                        :require require :optional optional
                        :exclude exclude
@@ -673,8 +673,8 @@ PROP controls the format.  See `citre-make-tag-str' for details."
          (ref-first (plist-get prop :reference-first))
          (face 'citre-definition-annotation-face))
     ;; "typename:" is a placeholder. It doesn't offer useful info, so we can
-    ;; drop it.  We don't drop it if it is, say, "struct" or "union".
-    (when (string-prefix-p "typename:" type)
+    ;; drop it.  We don't drop it if it is, say, "struct:" or "union:".
+    (when (and type (string-prefix-p "typename:" type))
       (setq type (substring type (length "typename:"))))
     (unless (plist-get prop :full-anonymous-name)
       (when type (setq type (citre--reduce-anonymous-value type)))
@@ -722,10 +722,30 @@ PROP controls the format.  See `citre-make-tag-str' for details."
 (defun citre--make-tag-content-str (tag prop)
   "Return the string recorded in the pattern field of TAG.
 PROP controls the format.  See `citre-make-tag-str' for details."
-  (when-let ((str (citre-core-get-field 'extra-matched-str tag)))
-    (concat (or (plist-get prop :prefix) "")
-            (string-trim str)
-            (or (plist-get prop :suffix) ""))))
+  (if-let ((str (citre-core-get-field 'extra-matched-str tag)))
+      (concat (or (plist-get prop :prefix) "")
+              (string-trim str)
+              (or (plist-get prop :suffix) ""))
+    (when (plist-get prop :ensure)
+      ;; TODO: Make this a macro.
+      (let* ((path (citre-core-get-field 'ext-abspath tag))
+             (buf-opened (find-buffer-visiting path))
+             buf line)
+        (when (citre-non-dir-file-exists-p path))
+        (if buf-opened
+            (setq buf buf-opened)
+          (setq buf (generate-new-buffer (format " *citre-xref-%s*" path)))
+          (with-current-buffer buf
+            (insert-file-contents path)))
+        (with-current-buffer buf
+          (save-excursion
+            (goto-char (citre-core-locate-tag tag))
+            (setq line
+                  (buffer-substring (line-beginning-position)
+                                    (line-end-position)))))
+        (unless buf-opened
+          (kill-buffer buf))
+        line))))
 
 ;;;;;; The API
 
@@ -765,9 +785,13 @@ Avaliable ones are:
 
   relevant fields: `ext-abspath', `extra-line'.
 
-- content: The string recorded in the pattern field of TAG.
+- content: The string recorded in the pattern field of TAG.  When
+  `:ensure' is non-nil, and the search pattern is not presented,
+  get the line content from the file containing the tag.
 
-  relevant fields: `pattern'.
+  relevant fields: `pattern'.  When `:ensure' is non-nil, all
+  fields used for locating the tag may be relevant, including
+  `ext-abspath', `line', `pattern' and `name'.
 
 All components have `:prefix' and `:suffix' properties to attach
 extra prefix and suffix strings to them.  When a component or

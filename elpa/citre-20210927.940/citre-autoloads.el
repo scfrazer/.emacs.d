@@ -140,7 +140,7 @@ An updating recipe is written to it so later it can be updated by
 ;;; Generated autoloads from citre-peek.el
 
 (autoload 'citre-peek "citre-peek" "\
-Peek the definition of the symbol at point.
+Peek the definition of the symbol in BUF at POINT.
 When BUF or POINT is nil, it's set to the current buffer and
 point.
 

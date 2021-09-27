@@ -7,7 +7,7 @@
 ;; Created: 04 May 2020
 ;; Keywords: convenience, tools
 ;; Homepage: https://github.com/universal-ctags/citre
-;; Version: 0.1.1
+;; Version: 0.1.3
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -60,7 +60,7 @@ Set this if readtags is not in your PATH, or its name is not
 \"readtags\".
 
 Citre requires the readtags program provided by Universal Ctags."
-  :type 'string)
+  :type '(set string (const nil)))
 
 ;;;; Internals: Basic Helpers
 
@@ -238,7 +238,7 @@ any valid actions in readtags, e.g., \"-D\", to get pseudo tags."
                     ('prefix "p")
                     (_ (error "Unexpected value of MATCH")))
                   (if case-fold "i" "")))
-         (output-buf (get-buffer-create " *readtags*"))
+         (output-buf (get-buffer-create " *citre-readtags*"))
          (tagsfile (substring-no-properties tagsfile))
          (name (when name (substring-no-properties name)))
          (filter (citre-core--strip-text-property-in-list filter))
@@ -764,9 +764,9 @@ It tries these in turn:
   "Get the string contained by the pattern field from TAG.
 Returns nil if the pattern field doesn't exist or contain a
 search pattern."
-  (when-let ((pat (nth 1 (citre-core--split-pattern
-                          (citre-core-get-field 'pattern tag)))))
-    (car (citre-core--parse-search-pattern pat))))
+  (when-let* ((pat (citre-core-get-field 'pattern tag))
+              (search-pat (nth 1 (citre-core--split-pattern pat))))
+    (car (citre-core--parse-search-pattern search-pat))))
 
 (defun citre-core--get-lang-from-tag (tag)
   "Get language from TAG.
@@ -1493,8 +1493,8 @@ This function has no side-effect on the buffer.  Upper components
 could wrap this function to provide a desired UI for jumping to
 the position of a tag."
   (pcase-let*
-      ((name (or (citre-core-get-field 'name tag)))
-       (pat (or (citre-core-get-field 'pattern tag)))
+      ((name (citre-core-get-field 'name tag))
+       (pat (citre-core-get-field 'pattern tag))
        (`(,line ,pat) (when pat (citre-core--split-pattern pat)))
        (line (or (citre-core-get-field 'line tag) line))
        (`(,str ,from-beg ,to-end)
@@ -1510,33 +1510,39 @@ the position of a tag."
         (widen)
         (goto-char 1)
         (when line (forward-line (1- line)))
-        (when pat
-          (or
-           ;; Search for the whole line.
-           (citre-core--find-nearest-regexp
-            (concat pat-beg (regexp-quote str) pat-end)
-            lim)
-           ;; Maybe the indentation or trailing whitespaces has changed, or
-           ;; something is added after.  From now on we also use case-fold
-           ;; search to deal with projects that uses a case-insensitive
-           ;; language and don't have a consistant style on it.
-           (citre-core--find-nearest-regexp
-            (concat pat-beg "[ \t]*" (regexp-quote (string-trim str)))
-            lim 'case-fold)
-           ;; The content is changed.  Try cutting from the end of the tag name
-           ;; and search.
-           (when-let ((name name)
-                      (bound (when (let ((case-fold-search nil))
-                                     (string-match (regexp-quote name) str))
-                               (match-end 0)))
-                      (str (substring str 0 bound)))
-             (citre-core--find-nearest-regexp
-              (concat pat-beg "[ \t]*" (regexp-quote (string-trim str)))
-              lim 'case-fold))
-           ;; Last try: search for the tag name.
-           (when name
-             (citre-core--find-nearest-regexp (regexp-quote name)
-                                              lim 'case-fold))))
+        (or
+         (when pat
+           (or
+            ;; Search for the whole line.
+            (citre-core--find-nearest-regexp
+             (concat pat-beg (regexp-quote str) pat-end)
+             lim)
+            ;; Maybe the indentation or trailing whitespaces has changed, or
+            ;; something is added after.  From now on we also use case-fold
+            ;; search to deal with projects that uses a case-insensitive
+            ;; language and don't have a consistant style on it.
+            (citre-core--find-nearest-regexp
+             (concat pat-beg "[ \t]*" (regexp-quote (string-trim str)))
+             lim 'case-fold)
+            ;; The content is changed.  Try cutting from the end of the tag
+            ;; name and search.
+            (when-let ((name name)
+                       (bound (when (let ((case-fold-search nil))
+                                      (string-match (regexp-quote name) str))
+                                (match-end 0)))
+                       (str (substring str 0 bound)))
+              (citre-core--find-nearest-regexp
+               (concat pat-beg "[ \t]*" (regexp-quote (string-trim str)))
+               lim 'case-fold))))
+         ;; Last try: search for the tag name.
+         (when name
+           (or
+            (citre-core--find-nearest-regexp (concat "\\_<"
+                                                     (regexp-quote name)
+                                                     "\\_>")
+                                             lim 'case-fold)
+            (citre-core--find-nearest-regexp (regexp-quote name)
+                                             lim 'case-fold))))
         (if use-linum (line-number-at-pos) (point))))))
 
 ;;;;; Edit pseudo tags

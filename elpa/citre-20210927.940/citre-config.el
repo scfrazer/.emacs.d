@@ -7,7 +7,7 @@
 ;; Created: 14 Feb 2021
 ;; Keywords: convenience, tools
 ;; Homepage: https://github.com/universal-ctags/citre
-;; Version: 0.1.1
+;; Version: 0.1.3
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -62,15 +62,15 @@
 ;;
 ;; Then you probably don't need these in your config.
 
-(autoload 'citre-update-tags-file "citre")
-(autoload 'citre-update-this-tags-file "citre")
-(autoload 'citre-edit-tags-file-recipe "citre")
-(autoload 'citre-create-tags-file "citre")
-(autoload 'citre-jump "citre")
-(autoload 'citre-mode "citre")
-(autoload 'citre-peek "citre")
-(autoload 'citre-ace-peek "citre")
-(autoload 'citre-auto-enable-citre-mode "citre")
+(autoload 'citre-update-tags-file "citre" nil t)
+(autoload 'citre-update-this-tags-file "citre" nil t)
+(autoload 'citre-edit-tags-file-recipe "citre" nil t)
+(autoload 'citre-create-tags-file "citre" nil t)
+(autoload 'citre-jump "citre" nil t)
+(autoload 'citre-mode "citre" nil t)
+(autoload 'citre-peek "citre" nil t)
+(autoload 'citre-ace-peek "citre" nil t)
+(autoload 'citre-auto-enable-citre-mode "citre" nil t)
 
 (provide 'citre-config)
 
