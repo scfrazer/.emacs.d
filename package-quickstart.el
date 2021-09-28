@@ -853,10 +853,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210919.1006/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20210920.1038/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210919.1006/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20210920.1038/transient-autoloads.el") (car load-path))))
 
 
 
@@ -914,7 +914,7 @@ See info node `(transient)Modifying Existing Transients'.
 
 (function-put 'transient-remove-suffix 'lisp-indent-function 'defun)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "transient" '("transient-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "transient" '("magit--fit-window-to-buffer" "transient-")))
 
 
 
@@ -3312,10 +3312,10 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210927.940/citre-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210927.1344/citre-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210927.940/citre-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210927.1344/citre-autoloads.el") (car load-path))))
 
 
 
@@ -3406,6 +3406,34 @@ An updating recipe is written to it so later it can be updated by
 `citre-update-tags-file'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-ctags" '("citre-")))
+
+
+
+(autoload 'citre-global-create-database "citre-global" "\
+Create gtags database." t nil)
+
+(autoload 'citre-global-update-database "citre-global" "\
+Update the gtags database in use." t nil)
+
+(autoload 'citre-jump-to-reference "citre-global" "\
+Jump to the reference of the symbol at point.
+This uses the `citre-jump' UI." t nil)
+
+(autoload 'citre-peek-references "citre-global" "\
+Peek the references of the symbol in BUF and POINT.
+When BUF or POINT is nil, it's set to the current buffer and
+point.
+
+\(fn &optional BUF POINT)" t nil)
+
+(autoload 'citre-ace-peek-references "citre-global" "\
+Peek the references of a symbol on screen using ace jump.
+This is similar to `citre-ace-peek'." t nil)
+
+(autoload 'citre-peek-through-references "citre-global" "\
+Peek through a symbol in current peek window for its references." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-global" '("citre-")))
 
 
 
@@ -3840,7 +3868,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20210919.1006" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20210920.1038" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20210524.1654")
          Info-directory-list)))
 
 ;; Local Variables:

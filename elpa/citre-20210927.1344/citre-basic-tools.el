@@ -7,7 +7,7 @@
 ;; Created: 23 Nov 2020
 ;; Keywords: convenience, tools
 ;; Homepage: https://github.com/universal-ctags/citre
-;; Version: 0.1.3
+;; Version: 0.2
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -309,7 +309,15 @@ This uses the `completing-read' interface.  See
 `citre-jump-select-definition-function' for the use of this function."
   (pcase (length definitions)
     (1 (car definitions))
-    (_ (completing-read (format "%s: " symbol) definitions nil t))))
+    (_ (let ((collection
+              (lambda (str pred action)
+                (if (eq action 'metadata)
+                    '(metadata
+                      (category . citre-jump)
+                      (cycle-sort-function . identity)
+                      (display-sort-function . identity))
+                  (complete-with-action action definitions str pred)))))
+         (completing-read (format "%s: " symbol) collection nil t)))))
 
 ;;;;; API
 
@@ -472,7 +480,7 @@ STR is a candidate in a capf session.  See the implementation of
                (lambda (str pred action)
                  (if (eq action 'metadata)
                      '(metadata
-                       (category . citre)
+                       (category . citre-completion)
                        (cycle-sort-function . identity)
                        (display-sort-function . identity))
                    (complete-with-action action collection str pred))))
