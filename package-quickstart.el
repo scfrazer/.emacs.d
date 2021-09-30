@@ -3312,10 +3312,10 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210927.1344/citre-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210929.1422/citre-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210927.1344/citre-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210929.1422/citre-autoloads.el") (car load-path))))
 
 
 
