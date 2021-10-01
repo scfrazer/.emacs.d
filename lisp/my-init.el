@@ -579,7 +579,7 @@ _p_rev       _b_ase (middle)      _=_: upper/lower
 (winner-mode 1)
 (windmove-default-keybindings 'meta)
 
-(if (string-prefix-p (getenv "HOME") default-directory)
+(if (string-prefix-p (getenv "HOME") (expand-file-name default-directory))
   (progn
     (setq savehist-file (concat default-directory ".emacs.savehist"))
     (savehist-mode 1))
