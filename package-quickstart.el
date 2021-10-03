@@ -205,10 +205,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20210928.1826/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20210928.1826/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -3868,7 +3868,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20210920.1038" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20210928.1826")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20210920.1038" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220")
          Info-directory-list)))
 
 ;; Local Variables:
