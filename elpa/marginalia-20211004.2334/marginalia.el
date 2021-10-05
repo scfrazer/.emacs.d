@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.8
-;; Package-Version: 20210905.1700
-;; Package-Commit: cb1d3ba604dda17d8d44e7355ad76a1651830a30
+;; Package-Version: 20211004.2334
+;; Package-Commit: 56ac0265b37d5331bb3d2520245df8a900cb326c
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -47,11 +47,10 @@
 (defcustom marginalia-truncate-width 80
   "Maximum truncation width of annotation fields.
 
-This value is adjusted in the `minibuffer-setup-hook' depending
-on the `window-width'."
+This value is adjusted depending on the `window-width'."
   :type 'integer)
 
-(defcustom marginalia-separator-threshold 120
+(defcustom marginalia-separator-threshold 160
   "Use wider separator for window widths larger than this value."
   :type 'integer)
 
@@ -327,7 +326,7 @@ for performance profiling of the annotators.")
 (defvar marginalia--separator "    "
   "Field separator.")
 
-(defvar marginalia--margin nil
+(defvar marginalia--margin 0
   "Right margin.")
 
 (defvar-local marginalia--this-command nil
@@ -350,13 +349,11 @@ for performance profiling of the annotators.")
 (defun marginalia--align (str)
   "Align STR at the right margin."
   (unless (string-blank-p str)
-    (when marginalia--margin
-      (setq str (concat str marginalia--margin)))
     (concat " "
             (propertize
              " "
              'display
-             `(space :align-to (- right ,marginalia-align-offset ,(string-width str))))
+             `(space :align-to (- right ,marginalia--margin ,(string-width str))))
             str)))
 
 (cl-defmacro marginalia--field (field &key truncate format face width)
@@ -964,10 +961,12 @@ looking for a regexp that matches the prompt."
        (with-selected-window (or (minibuffer-selected-window) (selected-window))
          (let ((marginalia--cache ,c) ;; Take the cache from the minibuffer
                (marginalia-truncate-width (min (/ ,w 2) marginalia-truncate-width))
-               (marginalia-align-offset (or marginalia-align-offset ,o))
                (marginalia--separator (if (>= ,w marginalia-separator-threshold) "    " " "))
-               (marginalia--margin (when (>= ,w (+ marginalia-margin-min marginalia-margin-threshold))
-                                     (make-string (- ,w marginalia-margin-threshold) 32))))
+               (marginalia--margin
+                (+ (or marginalia-align-offset ,o)
+                   (if (>= ,w (+ marginalia-margin-min marginalia-margin-threshold))
+                       (- ,w marginalia-margin-threshold)
+                     0))))
            ,@body)))))
 
 (defun marginalia--cache-reset ()
@@ -1023,9 +1022,11 @@ PROP is the property which is looked up."
        (run-hook-with-args-until-success 'marginalia-classifiers)))))
 
 (defun marginalia--minibuffer-setup ()
-  "Setup minibuffer for `marginalia-mode'.
+  "Setup the minibuffer for Marginalia.
 Remember `this-command' for `marginalia-classify-by-command-name'."
   (setq marginalia--cache t marginalia--this-command this-command)
+  ;; Reset cache if window size changes, recompute alignment
+  (add-hook 'window-state-change-hook #'marginalia--cache-reset nil 'local)
   (marginalia--cache-reset))
 
 (defun marginalia--base-position (completions)
