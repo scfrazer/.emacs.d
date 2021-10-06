@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.8
-;; Package-Version: 20211004.2334
-;; Package-Commit: 56ac0265b37d5331bb3d2520245df8a900cb326c
+;; Package-Version: 20211006.724
+;; Package-Commit: c9444d790d75c7cfaab1046570a05125f62576f0
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -881,8 +881,9 @@ These annotations are skipped for remote paths."
   "Format TIME as an absolute age."
   (let ((system-time-locale "C"))
     (format-time-string
-     (if (> (decoded-time-year (decode-time (current-time)))
-            (decoded-time-year (decode-time time)))
+     ;; decoded-time-year is only available on Emacs 27, use nth 5 here.
+     (if (> (nth 5 (decode-time (current-time)))
+            (nth 5 (decode-time time)))
          " %Y %b %d"
        "%b %d %H:%M")
      time)))
