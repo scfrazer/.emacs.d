@@ -28,7 +28,7 @@ of the project instance object.
 
 \(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
 
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
 
@@ -89,6 +89,9 @@ Visit a file (with completion) in the current project or external roots.
 The filename at point (determined by `thing-at-point'), if any,
 is available as part of \"future history\"." t nil)
 
+(autoload 'project-find-dir "project" "\
+Start Dired in a directory inside the current project." t nil)
+
 (autoload 'project-dired "project" "\
 Start Dired in the current project's root." t nil)
 
@@ -130,8 +133,8 @@ command \\[fileloop-continue].
 (autoload 'project-query-replace-regexp "project" "\
 Query-replace REGEXP in all the files of the project.
 Stops when a match is found and prompts for whether to replace it.
-If you exit the query-replace, you can later continue the query-replace
-loop using the command \\[fileloop-continue].
+If you exit the `query-replace', you can later continue the
+`query-replace' loop using the command \\[fileloop-continue].
 
 \(fn FROM TO)" t nil)
 
@@ -188,11 +191,12 @@ interactively.
 
 (autoload 'project-remember-project "project" "\
 Add project PR to the front of the project list.
-Save the result in `project-list-file' if the list of projects has changed.
+Save the result in `project-list-file' if the list of projects
+has changed, and NO-WRITE is nil.
 
-\(fn PR)" nil nil)
+\(fn PR &optional NO-WRITE)" nil nil)
 
-(autoload 'project-remove-known-project "project" "\
+(autoload 'project-forget-project "project" "\
 Remove directory PROJECT-ROOT from the project list.
 PROJECT-ROOT is the root directory of a known project listed in
 the project list.
