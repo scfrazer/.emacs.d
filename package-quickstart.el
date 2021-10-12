@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.2.2/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.3.0/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.2.2/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.3.0/xref-autoloads.el") (car load-path))))
 
 
 
@@ -89,6 +89,8 @@ This command is intended to be bound to a mouse event.
 (autoload 'xref-find-apropos "xref" "\
 Find all meaningful symbols that match PATTERN.
 The argument has the same meaning as in `apropos'.
+See `tags-apropos-additional-actions' for how to augment the
+output of this command when the backend is etags.
 
 \(fn PATTERN)" t nil)
  (define-key esc-map "." #'xref-find-definitions)
@@ -121,6 +123,9 @@ IGNORES is a list of glob patterns for files to ignore.
 Find all matches for REGEXP in FILES.
 Return a list of xref values.
 FILES must be a list of absolute file names.
+
+See `xref-search-program' and `xref-search-program-alist' for how
+to control which program to use when looking for matches.
 
 \(fn REGEXP FILES)" nil nil)
 
@@ -1490,10 +1495,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.8.0/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.8.1/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.8.0/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.8.1/project-autoloads.el") (car load-path))))
 
 
 
@@ -2113,10 +2118,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211006.724/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1003/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211006.724/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1003/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2192,10 +2197,10 @@ and `json-reformat:pretty-string?'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20190123.422/json-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20211011.630/json-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20190123.422/json-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20211011.630/json-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2206,11 +2211,10 @@ List of JSON file extensions.")
 Update the `json-mode' entry of `auto-mode-alist'.
 
 FILENAMES should be a list of file as string.
-Return the new `auto-mode-alist' entry" (let* ((new-regexp (rx-to-string (\` (seq (eval (cons (quote or) (append json-mode-standard-file-ext (quote (\, filenames))))) eot)))) (new-entry (cons new-regexp (quote json-mode))) (old-entry (when (boundp (quote json-mode--auto-mode-entry)) json-mode--auto-mode-entry))) (setq auto-mode-alist (delete old-entry auto-mode-alist)) (add-to-list (quote auto-mode-alist) new-entry) new-entry))
+Return the new `auto-mode-alist' entry" (let* ((new-regexp (rx-to-string `(seq (eval (cons 'or (append json-mode-standard-file-ext ',filenames))) eot))) (new-entry (cons new-regexp 'json-mode)) (old-entry (when (boundp 'json-mode--auto-mode-entry) json-mode--auto-mode-entry))) (setq auto-mode-alist (delete old-entry auto-mode-alist)) (add-to-list 'auto-mode-alist new-entry) new-entry))
 
 (defvar json-mode-auto-mode-list '(".babelrc" ".bowerrc" "composer.lock") "\
-List of filename as string to pass for the JSON entry of
-`auto-mode-alist'.
+List of filenames for the JSON entry of `auto-mode-alist'.
 
 Note however that custom `json-mode' entries in `auto-mode-alist'
 won’t be affected.")
@@ -2225,24 +2229,25 @@ Major mode for editing JSON files
 
 \(fn)" t nil)
 
+(autoload 'jsonc-mode "json-mode" "\
+Major mode for editing JSON files with comments
+
+\(fn)" t nil)
+
 (add-to-list 'magic-fallback-mode-alist '("^[{[]$" . json-mode))
 
 (autoload 'json-mode-show-path "json-mode" "\
-Print the path to the node at point to the minibuffer, and yank to the kill ring.
-
-\(fn)" t nil)
+Print the path to the node at point to the minibuffer." t nil)
 
 (autoload 'json-mode-kill-path "json-mode" "\
-
-
-\(fn)" t nil)
+Save JSON path to object at point to kill ring." t nil)
 
 (autoload 'json-mode-beautify "json-mode" "\
 Beautify / pretty-print the active region (or the entire buffer if no active region).
 
-\(fn)" t nil)
+\(fn BEGIN END)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json")))
 
 
 )
@@ -2743,10 +2748,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20210916.2120/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20211011.1314/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20210916.2120/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20211011.1314/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3316,10 +3321,10 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20210929.1422/citre-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20211010.1654/citre-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20210929.1422/citre-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20211010.1654/citre-autoloads.el") (car load-path))))
 
 
 
@@ -3469,6 +3474,10 @@ This command is useful when you want to see the definition of a
 function while filling its arglist." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-peek" '("citre-")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-tag" '("citre-")))
 
 
 
