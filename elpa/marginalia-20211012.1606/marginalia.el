@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.9
-;; Package-Version: 20211012.1003
-;; Package-Commit: 7ac023301670802a1462d649ff703da04a2070fa
+;; Package-Version: 20211012.1606
+;; Package-Commit: 9cd762b6c3f2714375f47993e9a6384d3bc16ebf
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -147,10 +147,12 @@ determine it."
   :type '(alist :key-type symbol :value-type symbol))
 
 (defcustom marginalia-bookmark-type-transformers
-  `(("\\`bookmark-\\(.*?\\)-handler\\'" . "\\1")
-    ("default" . "File")
-    ("\\`\\(.*?\\)-+bookmark-jump\\(?:-handler\\)?\\'" . "\\1")
-    (".*" . ,#'capitalize))
+  (let ((words (regexp-opt '("handle" "handler" "jump" "bookmark"))))
+    `((,(format "-+%s-+" words) . "-")
+      (,(format "\\`%s-+" words) . "")
+      (,(format "-%s\\'" words) . "")
+      ("\\`default\\'" . "File")
+      (".*" . ,#'capitalize)))
   "List of bookmark type transformers."
   :type '(alist :key-type regexp :value-type (choice string function)))
 
@@ -576,6 +578,8 @@ keybinding since CAND includes it."
           ((pred keymapp) (propertize "#<keymap>" 'face 'marginalia-value))
           ((pred hash-table-p) (propertize "#<hash-table>" 'face 'marginalia-value))
           ((pred syntax-table-p) (propertize "#<syntax-table>" 'face 'marginalia-value))
+          ;; Emacs BUG: abbrev-table-p throws an error
+          ((guard (ignore-errors (abbrev-table-p val))) (propertize "#<abbrev-table>" 'face 'marginalia-value))
           ((pred char-table-p) (propertize "#<char-table>" 'face 'marginalia-value))
           ((pred byte-code-function-p) (propertize "#<byte-code-function>" 'face 'marginalia-function))
           ((and (pred functionp) (pred symbolp))

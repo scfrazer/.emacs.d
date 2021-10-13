@@ -2118,10 +2118,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1003/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1606/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1003/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1606/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2174,26 +2174,6 @@ Cycle between annotators in `marginalia-annotator-registry'." t nil)
 Print the path to the JSON value under point, and save it in the kill ring." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-snatcher" '("jsons-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-reformat-20160212.853/json-reformat-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-reformat-20160212.853/json-reformat-autoloads.el") (car load-path))))
-
-
-
-(autoload 'json-reformat-region "json-reformat" "\
-Reformat the JSON in the specified region.
-
-If you want to customize the reformat style,
-please see the documentation of `json-reformat:indent-width'
-and `json-reformat:pretty-string?'.
-
-\(fn BEGIN END)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-reformat" '("json-reformat")))
 
 
 )
@@ -3874,7 +3854,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-reformat json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft citre browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft citre browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
