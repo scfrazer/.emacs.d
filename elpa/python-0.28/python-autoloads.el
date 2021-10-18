@@ -44,6 +44,10 @@ Major mode for editing Python files.
 
 ;;;***
 
+;;;### (autoloads nil nil ("python-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

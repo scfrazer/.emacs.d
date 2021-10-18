@@ -210,10 +210,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20211015.1917/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20211015.1917/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1453,10 +1453,10 @@ Where to store autoloads for subdirectory contents.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.27.1/python-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.28/python-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/python-0.27.1/python-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/python-0.28/python-autoloads.el") (car load-path))))
 
 
 
@@ -1492,6 +1492,8 @@ Major mode for editing Python files.
 \(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python" '("inferior-python-mode" "python-" "run-python-internal")))
+
+
 
 
 )
@@ -2075,10 +2077,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20210904.733/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20211017.1140/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20210904.733/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20211017.1140/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2118,10 +2120,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1606/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211016.117/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211012.1606/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211016.117/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3861,7 +3863,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20211013.2148" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20211001.2220")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20211013.2148" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20211015.1917")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -307,9 +307,10 @@ package::.
      This function is like ‘set-process-filter’ but ensures that adding
      the new FILTER does not remove the ‘with-editor-process-filter’.
      This is done by wrapping the two filter functions using a lambda,
-     which becomes the actual filter.  It calls
-     ‘with-editor-process-filter’ first, passing ‘t’ as
-     NO-STANDARD-FILTER.  Then it calls FILTER.
+     which becomes the actual filter.  It calls FILTER first, which may
+     or may not insert the text into the PROCESS’s buffer.  Then it
+     calls ‘with-editor-process-filter’, passing t as
+     NO-STANDARD-FILTER.
 
 
 File: with-editor.info,  Node: Debugging,  Next: Command Index,  Prev: Using With-Editor as a library,  Up: Top
@@ -402,10 +403,10 @@ Node: Using the With-Editor package2569
 Node: Configuring With-Editor3155
 Node: Using With-Editor commands7704
 Node: Using With-Editor as a library10995
-Node: Debugging12958
-Node: Command Index13837
-Node: Function Index14719
-Node: Variable Index16185
+Node: Debugging13023
+Node: Command Index13902
+Node: Function Index14784
+Node: Variable Index16250
 
 End Tag Table
 
