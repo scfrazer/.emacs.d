@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.3.0/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.3.2/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.3.0/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.3.2/xref-autoloads.el") (car load-path))))
 
 
 
@@ -925,40 +925,6 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/test-simple-20200722.1121/test-simple-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/test-simple-20200722.1121/test-simple-autoloads.el") (car load-path))))
-
-
-
-(autoload 'test-simple-start "test-simple" "\
-
-
-\(fn &optional TEST-START-MSG)" nil t)
-
-(autoload 'test-simple-clear "test-simple" "\
-Initialize and reset everything to run tests.
-You should run this before running any assertions.  Running more than once
-clears out information from the previous run.
-
-\(fn &optional TEST-INFO TEST-START-MSG)" t nil)
-
-(autoload 'test-simple-run "test-simple" "\
-Register command line to run tests non-interactively and bind key to run test.
-After calling this function, you can run test by key specified by `test-simple-runner-key'.
-
-It is preferable to write at the first line of test files as a comment, e.g,
-;;;; (test-simple-run \"emacs -batch -L %s -l %s\" (file-name-directory (locate-library \"test-simple.elc\")) buffer-file-name)
-
-Calling this function interactively, COMMAND-LINE-FORMATS is set above.
-
-\(fn &rest COMMAND-LINE-FORMATS)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "test-simple" '("assert-" "end-tests" "note" "test-simple-")))
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210804.1943/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -1320,136 +1286,6 @@ EXIT-CODE-SUCCESS-P
 (function-put 'reformatter-define 'lisp-indent-function 'defun)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "reformatter" '("reformatter-")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/load-relative-20201130.2202/load-relative-autoloads.el") (car load-path))))
-
-
-
-(autoload '__FILE__ "load-relative" "\
-Return the string name of file/buffer that is currently begin executed.
-
-The first approach for getting this information is perhaps the
-most pervasive and reliable.  But it the most low-level and not
-part of a public API, so it might change in future
-implementations.  This method uses the name that is recorded by
-readevalloop of `lread.c' as the car of variable
-`current-load-list'.
-
-Failing that, we use `load-file-name' which should work in some
-subset of the same places that the first method works.  However
-`load-file-name' will be nil for code that is eval'd.  To cover
-those cases, we try function `buffer-file-name' which is initially
-correct, for eval'd code, but will change and may be wrong if the
-code sets or switches buffers after the initial execution.
-
-As a last resort, you can pass in SYMBOL which should be some
-symbol that has been previously defined if none of the above
-methods work we will use the file-name value find via
-`symbol-file'.
-
-\(fn &optional SYMBOL)" nil nil)
-
-(autoload 'find-file-noselect-relative "load-relative" "\
-Read relative FILENAME into a buffer and return the buffer.
-If a buffer exists visiting FILENAME, return that one, but
-verify that the file has not changed since visited or saved.
-The buffer is not selected, just returned to the caller.
-Optional second arg NOWARN non-nil means suppress any warning messages.
-Optional third arg RAWFILE non-nil means the file is read literally.
-Optional fourth arg WILDCARDS non-nil means do wildcard processing
-and visit all the matching files.  When wildcards are actually
-used and expanded, return a list of buffers that are visiting
-the various files.
-
-\(fn FILENAME &optional NOWARN RAWFILE WILDCARDS)" nil nil)
-
-(autoload 'with-relative-file "load-relative" "\
-Read the relative FILE into a temporary buffer and evaluate BODY
-in this buffer.
-
-\(fn FILE &rest BODY)" nil t)
-
-(function-put 'with-relative-file 'lisp-indent-function '1)
-
-(autoload 'load-relative "load-relative" "\
-Load an Emacs Lisp file relative to Emacs Lisp code that is in
-the process of being loaded or eval'd.
-
-FILE-OR-LIST is either a string or a list of strings containing
-files that you want to loaded.  If SYMBOL is given, the location of
-of the file of where that was defined (as given by `symbol-file' is used
-if other methods of finding __FILE__ don't work.
-
-\(fn FILE-OR-LIST &optional SYMBOL)" nil nil)
-
-(autoload 'require-relative "load-relative" "\
-Run `require' on an Emacs Lisp file relative to the Emacs Lisp code
-that is in the process of being loaded or eval'd.  The symbol used in require
-is the base file name (without directory or file extension) treated as a
-symbol.
-
-WARNING: it is best to to run this function before any
-buffer-setting or buffer changing operations.
-
-\(fn RELATIVE-FILE &optional OPT-FILE OPT-PREFIX)" nil nil)
-
-(autoload 'require-relative-list "load-relative" "\
-Run `require-relative' on each name in LIST which should be a list of
-strings, each string being the relative name of file you want to run.
-
-\(fn LIST &optional OPT-PREFIX)" nil t)
-
-(autoload 'provide-me "load-relative" "\
-Call `provide' with the feature's symbol name made from
-source-code's file basename sans extension.  For example if you
-write (provide-me) inside file ~/lisp/foo.el, this is the same as
-writing: (provide \\='foo).
-
-With a prefix, that prefix is prepended to the `provide' So in
-the previous example, if you write (provide-me \"bar-\") this is the
-same as writing (provide \\='bar-foo).
-
-\(fn &optional PREFIX)" nil t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "load-relative" '("autoload-relative")))
-
-
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/loc-changes-20200722.1111/loc-changes-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/loc-changes-20200722.1111/loc-changes-autoloads.el") (car load-path))))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "loc-changes" '("loc-changes")))
-
-
-)
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/realgud-20210522.2151/realgud-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/realgud-20210522.2151/realgud-autoloads.el") (car load-path))))
-
-
-
-(defconst realgud--recursive-autoloads-file-name "realgud-recursive-autoloads.el" "\
-Where to store autoloads for subdirectory contents.")
-
-(defconst realgud--recursive-autoloads-base-directory (file-name-directory (if load-in-progress load-file-name buffer-file-name)))
-
-(with-demoted-errors "Error in RealGUD's autoloads: %s" (load (expand-file-name realgud--recursive-autoloads-file-name realgud--recursive-autoloads-base-directory) t t))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "realgud" '("realgud--rebuild-recursive-autoloads")))
-
-
 
 
 )
@@ -3303,174 +3139,6 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/citre-20211010.1654/citre-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/citre-20211010.1654/citre-autoloads.el") (car load-path))))
-
-
-
-(put 'citre-enable-xref-integration 'safe-local-variable #'booleanp)
-
-(put 'citre-enable-capf-integration 'safe-local-variable #'booleanp)
-
-(put 'citre-enable-imenu-integration 'safe-local-variable #'booleanp)
-
-(autoload 'citre-jump "citre-basic-tools" "\
-Jump to the definition of the symbol at point.
-When there's multiple definitions, it lets you pick one using the
-`completing-read' UI, or you could use your own UI by customizing
-`citre-select-definition-function'." t nil)
-
-(autoload 'citre-mode "citre-basic-tools" "\
-Enable `completion-at-point', xref and imenu integration.
-
-If called interactively, enable Citre mode if ARG is positive, and disable it
-if ARG is zero or negative.  If called from Lisp, also enable the mode if ARG
-is omitted or nil, and toggle it if ARG is `toggle'; disable the mode
-otherwise.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'citre-auto-enable-citre-mode "citre-basic-tools" "\
-Enable `citre-mode' when a tags file can be found.
-Put this in `find-file-hook' to automatically enable `citre-mode'
-when opening a file." nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-basic-tools" '("citre-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-common" '("citre-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-core" '("citre-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-core-tables" '("citre-core--")))
-
-
-
-(autoload 'citre-update-tags-file "citre-ctags" "\
-Update TAGSFILE.
-When called interactively, ask the user to pick a tags file.
-
-If Citre can't find an updating recipe in the tagsfile, ask the
-user to edit one and save it to TAGSFILE.
-
-When SYNC is non-nil, update TAGSFILE synchronously if it
-contains a recipe.
-
-\(fn &optional TAGSFILE SYNC)" t nil)
-
-(autoload 'citre-update-this-tags-file "citre-ctags" "\
-Update the currently used tags file.
-When no such tags file is found, ask the user to create one.
-
-When a tags file is found, but Citre can't find an updating
-recipe in the tagsfile, ask the user to edit one and save it to
-the tags file.
-
-When SYNC is non-nil, update the tags file synchronously.
-
-\(fn &optional SYNC)" t nil)
-
-(autoload 'citre-edit-tags-file-recipe "citre-ctags" "\
-Edit the recipe of TAGSFILE.
-When called interactively, ask the user to select a tags file.
-
-When CMD-PTAG is non-nil, don't use a command-editing buffer, but
-write it to CITRE_CMD ptag directly.
-
-When CWD is non-nil, don't ask the user to pick a root dir to run Ctags.
-
-When NOCONFIRM is non-nil, don't ask the user whether to update
-the tags file now (update it directly instead).
-
-\(fn &optional TAGSFILE CMD-PTAG CWD NOCONFIRM)" t nil)
-
-(autoload 'citre-create-tags-file "citre-ctags" "\
-Create a new tags file.
-An updating recipe is written to it so later it can be updated by
-`citre-update-tags-file'." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-ctags" '("citre-")))
-
-
-
-(autoload 'citre-global-create-database "citre-global" "\
-Create gtags database." t nil)
-
-(autoload 'citre-global-update-database "citre-global" "\
-Update the gtags database in use." t nil)
-
-(autoload 'citre-jump-to-reference "citre-global" "\
-Jump to the reference of the symbol at point.
-This uses the `citre-jump' UI." t nil)
-
-(autoload 'citre-peek-references "citre-global" "\
-Peek the references of the symbol in BUF and POINT.
-When BUF or POINT is nil, it's set to the current buffer and
-point.
-
-\(fn &optional BUF POINT)" t nil)
-
-(autoload 'citre-ace-peek-references "citre-global" "\
-Peek the references of a symbol on screen using ace jump.
-This is similar to `citre-ace-peek'." t nil)
-
-(autoload 'citre-peek-through-references "citre-global" "\
-Peek through a symbol in current peek window for its references." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-global" '("citre-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-lang-c" '("citre-lang-c-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-lang-fileref" '("citre-lang-fileref-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-lang-verilog" '("citre-lang-verilog-")))
-
-
-
-(autoload 'citre-peek "citre-peek" "\
-Peek the definition of the symbol in BUF at POINT.
-When BUF or POINT is nil, it's set to the current buffer and
-point.
-
-\(fn &optional BUF POINT)" t nil)
-
-(autoload 'citre-ace-peek "citre-peek" "\
-Peek the definition of a symbol on screen using ace jump.
-Press a key in `citre-peek-ace-pick-symbol-at-point-keys' to pick
-the symbol under point.
-
-This command is useful when you want to see the definition of a
-function while filling its arglist." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-peek" '("citre-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-tag" '("citre-")))
-
-
-
-(put 'citre-tags-file-alist 'safe-local-variable #'listp)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "citre-util" '("citre-")))
-
-
-
-
-)
 (let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20200210.921/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3856,7 +3524,7 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient test-simple tango-plus-theme sr-speedbar rg relint reformatter load-relative loc-changes realgud python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft citre browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint reformatter python project popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)

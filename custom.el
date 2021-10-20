@@ -71,7 +71,7 @@
  '(orderless-skip-highlighting nil)
  '(package-native-compile t)
  '(package-selected-packages
-   '(citre web-beautify popup vertico realgud doom-themes graphviz-dot-mode which-key diffview python marginalia flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
+   '(web-beautify popup vertico doom-themes graphviz-dot-mode which-key diffview python marginalia flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
