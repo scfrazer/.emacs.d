@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.9
-;; Package-Version: 20211016.117
-;; Package-Commit: 86ac625169041cdc706c5e39cae0bf314c042473
+;; Package-Version: 20211028.1244
+;; Package-Commit: 09d8ab38a5a4aa55a83968dc3e454d11fee05255
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -562,7 +562,7 @@ keybinding since CAND includes it."
   "Return the variable value of SYM as string."
   (cond
    ((not (boundp sym))
-    (propertize "<unbound>" 'face 'marginalia-null))
+    (propertize "#<unbound>" 'face 'marginalia-null))
    ((and marginalia-censor-variables
          (let ((name (symbol-name sym)))
            (seq-find (lambda (r)
