@@ -598,8 +598,9 @@ If `transient-save-history' is nil, then do nothing."
    (history     :initarg :history     :initform nil)
    (history-pos :initarg :history-pos :initform 0)
    (history-key :initarg :history-key :initform nil)
-   (man-page    :initarg :man-page    :initform nil)
+   (show-help   :initarg :show-help   :initform nil)
    (info-manual :initarg :info-manual :initform nil)
+   (man-page    :initarg :man-page    :initform nil)
    (transient-suffix     :initarg :transient-suffix     :initform nil)
    (transient-non-suffix :initarg :transient-non-suffix :initform nil)
    (incompatible         :initarg :incompatible         :initform nil)
@@ -665,6 +666,7 @@ slot is non-nil."
    (transient   :initarg :transient)
    (format      :initarg :format      :initform " %k %d")
    (description :initarg :description :initform nil)
+   (show-help   :initarg :show-help   :initform nil)
    (inapt                             :initform nil)
    (inapt-if
     :initarg :inapt-if
@@ -740,9 +742,9 @@ slot is non-nil."
   "Class used for sets of mutually exclusive command-line switches.")
 
 (defclass transient-files (transient-infix) ()
-  "Class used for the \"--\" argument.
-All remaining arguments are treated as files.
-They become the value of this argument.")
+  "This class is deprecated in favor of `transient-option'.
+`transient-option' learned all the tricks of this class.
+Just switch the class and you are ready to go.")
 
 ;;;; Group
 
@@ -2460,29 +2462,29 @@ Otherwise call the primary method according to object's class."
                   default)
               nil)))))
 
+(cl-defmethod transient-init-value ((obj transient-argument))
+  (oset obj value
+        (let ((value (oref transient--prefix value))
+              (argument (and (slot-boundp obj 'argument)
+                             (oref obj argument)))
+              (multi-value (oref obj multi-value))
+              (regexp (if (slot-exists-p obj 'argument-regexp)
+                          (oref obj argument-regexp)
+                        (format "\\`%s\\(.*\\)" (oref obj argument)))))
+          (if (memq multi-value '(t rest))
+              (cdr (assoc argument value))
+            (let ((match (lambda (v)
+                           (and (stringp v)
+                                (string-match regexp v)
+                                (match-string 1 v)))))
+              (if multi-value
+                  (delq nil (mapcar match value))
+                (cl-some match value)))))))
+
 (cl-defmethod transient-init-value ((obj transient-switch))
   (oset obj value
         (car (member (oref obj argument)
                      (oref transient--prefix value)))))
-
-(cl-defmethod transient-init-value ((obj transient-option))
-  (oset obj value
-        (transient--value-match (format "\\`%s\\(.*\\)" (oref obj argument)))))
-
-(cl-defmethod transient-init-value ((obj transient-switches))
-  (oset obj value
-        (transient--value-match (oref obj argument-regexp))))
-
-(defun transient--value-match (re)
-  (when-let ((match (cl-find-if (lambda (v)
-                                  (and (stringp v)
-                                       (string-match re v)))
-                                (oref transient--prefix value))))
-    (match-string 1 match)))
-
-(cl-defmethod transient-init-value ((obj transient-files))
-  (oset obj value
-        (cdr (assoc "--" (oref transient--prefix value)))))
 
 ;;;; Read
 
@@ -2733,7 +2735,7 @@ If the current command was invoked from the transient prefix
 command PREFIX, then return the active infix arguments.  If
 the current command was not invoked from PREFIX, then return
 the set, saved or default value for PREFIX."
-  (delq nil (mapcar #'transient-infix-value (transient-suffixes prefix))))
+  (cl-mapcan #'transient--get-wrapped-value (transient-suffixes prefix)))
 
 (defun transient-suffixes (prefix)
   "Return the suffix objects of the transient prefix command PREFIX."
@@ -2745,11 +2747,19 @@ the set, saved or default value for PREFIX."
 
 (defun transient-get-value ()
   (transient--with-emergency-exit
-    (delq nil (mapcar (lambda (obj)
-                        (and (or (not (slot-exists-p obj 'unsavable))
-                                 (not (oref obj unsavable)))
-                             (transient-infix-value obj)))
-                      transient-current-suffixes))))
+    (cl-mapcan (lambda (obj)
+                 (and (or (not (slot-exists-p obj 'unsavable))
+                          (not (oref obj unsavable)))
+                      (transient--get-wrapped-value obj)))
+               transient-current-suffixes)))
+
+(defun transient--get-wrapped-value (obj)
+  (when-let ((value (transient-infix-value obj)))
+    (cl-ecase (and (slot-exists-p obj 'multi-value)
+                   (oref obj multi-value))
+      ((nil)    (list value))
+      ((t rest) (list value))
+      (repeat   value))))
 
 (cl-defgeneric transient-infix-value (obj)
   "Return the value of the suffix object OBJ.
@@ -2781,13 +2791,13 @@ does nothing." nil)
   (oref obj value))
 
 (cl-defmethod transient-infix-value ((obj transient-option))
-  "Return (concat ARGUMENT VALUE) or nil.
-
-ARGUMENT and VALUE are the values of the respective slots of OBJ.
-If VALUE is nil, then return nil.  VALUE may be the empty string,
-which is not the same as nil."
+  "Return ARGUMENT and VALUE as a unit or nil if the latter is nil."
   (when-let ((value (oref obj value)))
-    (concat (oref obj argument) value)))
+    (let ((arg (oref obj argument)))
+      (cl-ecase (oref obj multi-value)
+        ((nil)    (concat arg value))
+        ((t rest) (cons arg value))
+        (repeat   (mapcar (lambda (v) (concat arg v)) value))))))
 
 (cl-defmethod transient-infix-value ((_   transient-variable))
   "Return nil, which means \"no value\".
@@ -2796,15 +2806,6 @@ Setting the value of a variable is done by, well, setting the
 value of the variable.  I.e. this is a side-effect and does not
 contribute to the value of the transient."
   nil)
-
-(cl-defmethod transient-infix-value ((obj transient-files))
-  "Return (cons ARGUMENT VALUE) or nil.
-
-ARGUMENT and VALUE are the values of the respective slots of OBJ.
-If VALUE is nil, then return nil.  VALUE may be the empty string,
-which is not the same as nil."
-  (when-let ((value (oref obj value)))
-    (cons (oref obj argument) value)))
 
 ;;;; Utilities
 
@@ -3195,14 +3196,17 @@ If the OBJ's `key' is currently unreachable, then apply the face
                       'transient-inactive-argument)))
 
 (cl-defmethod transient-format-value ((obj transient-option))
-  (let ((value (oref obj value)))
-    (propertize (concat (oref obj argument)
-                        (if (listp value)
-                            (mapconcat #'identity value ",")
-                          value))
-                'face (if value
-                          'transient-value
-                        'transient-inactive-value))))
+  (let ((argument (oref obj argument)))
+    (if-let ((value (oref obj value)))
+        (propertize
+         (cl-ecase (oref obj multi-value)
+           ((nil)    (concat argument value))
+           ((t rest) (concat argument
+                             (and (not (string-suffix-p " " argument)) " ")
+                             (mapconcat #'prin1-to-string value " ")))
+           (repeat   (mapconcat (lambda (v) (concat argument v)) value " ")))
+         'face 'transient-value)
+      (propertize argument 'face 'transient-inactive-value))))
 
 (cl-defmethod transient-format-value ((obj transient-switches))
   (with-slots (value argument-format choices) obj
@@ -3221,15 +3225,6 @@ If the OBJ's `key' is currently unreachable, then apply the face
               choices
               (propertize "|" 'face 'transient-inactive-value))
              (propertize "]" 'face 'transient-inactive-value)))))
-
-(cl-defmethod transient-format-value ((obj transient-files))
-  (let ((argument (oref obj argument)))
-    (if-let ((value (oref obj value)))
-        (propertize (concat argument " "
-                            (mapconcat (lambda (f) (format "%S" f))
-                                       (oref obj value) " "))
-                    'face 'transient-argument)
-      (propertize argument 'face 'transient-inactive-argument))))
 
 (defun transient--key-unreachable-p (obj)
   (and transient--redisplay-key
@@ -3274,41 +3269,57 @@ a prefix command, while porting a regular keymap to a transient."
 ;;; Help
 
 (cl-defgeneric transient-show-help (obj)
-  "Show help for OBJ's command.")
+  "Show documentation for the command represented by OBJ.")
 
 (cl-defmethod transient-show-help ((obj transient-prefix))
-  "Show the info manual, manpage or command doc-string.
-Show the first one that is specified."
-  (if-let ((manual (oref obj info-manual)))
-      (info manual)
-    (if-let ((manpage (oref obj man-page)))
-        (transient--show-manpage manpage)
-      (transient--describe-function (oref obj command)))))
+  "Call `show-help' if non-nil, else show `info-manual',
+if non-nil, else show the `man-page' if non-nil, else use
+`describe-function'."
+  (with-slots (show-help info-manual man-page command) obj
+    (cond (show-help (funcall show-help obj))
+          (info-manual (transient--show-manual info-manual))
+          (man-page (transient--show-manpage man-page))
+          (t (transient--describe-function command)))))
 
 (cl-defmethod transient-show-help ((obj transient-suffix))
-  "Show the command doc-string."
-  (if (eq this-command 'transient-help)
-      (if-let ((manpage (oref transient--prefix man-page)))
-          (transient--show-manpage manpage)
-        (transient--describe-function (oref transient--prefix command)))
-    (if-let ((prefix (get (transient--suffix-command obj) 'transient--prefix))
-             (manpage (oref prefix man-page))
-             (- (not (eq this-command (oref transient--prefix command)))))
-        (transient--show-manpage manpage)
-      (transient--describe-function this-original-command))))
+  "Call `show-help' if non-nil, else use `describe-function'.
+Also used to dispatch showing documentation for the current
+prefix.  If the suffix is a sub-prefix, then also call the
+prefix method."
+  (cond
+   ((eq this-command 'transient-help)
+    (transient-show-help transient--prefix))
+   ((let ((prefix (get (transient--suffix-command obj)
+                       'transient--prefix)))
+      (and prefix (not (eq (oref transient--prefix command) this-command))
+           (prog1 t (transient-show-help prefix)))))
+   (t (if-let ((show-help (oref obj show-help)))
+          (funcall show-help obj)
+        (transient--describe-function this-command)))))
 
 (cl-defmethod transient-show-help ((obj transient-infix))
-  "Show the manpage if defined or the command doc-string.
-If the manpage is specified, then try to jump to the correct
-location."
-  (if-let ((manpage (oref transient--prefix man-page)))
-      (transient--show-manpage manpage (ignore-errors (oref obj argument)))
-    (transient--describe-function this-original-command)))
+  "Call `show-help' if non-nil, else show the `man-page'
+if non-nil, else use `describe-function'.  When showing the
+manpage, then try to jump to the correct location."
+  (if-let ((show-help (oref obj show-help)))
+      (funcall show-help obj)
+    (if-let ((man-page (oref transient--prefix man-page))
+             (argument (and (slot-boundp obj 'argument)
+                            (oref obj argument))))
+        (transient--show-manpage man-page argument)
+      (transient--describe-function this-command))))
 
 ;; `cl-generic-generalizers' doesn't support `command' et al.
 (cl-defmethod transient-show-help (cmd)
   "Show the command doc-string."
   (transient--describe-function cmd))
+
+(defun transient--describe-function (fn)
+  (describe-function fn)
+  (select-window (get-buffer-window (help-buffer))))
+
+(defun transient--show-manual (manual)
+  (info manual))
 
 (defun transient--show-manpage (manpage &optional argument)
   (require 'man)
@@ -3320,10 +3331,6 @@ location."
     (switch-to-buffer buf)
     (when argument
       (transient--goto-argument-description argument))))
-
-(defun transient--describe-function (fn)
-  (describe-function fn)
-  (select-window (get-buffer-window (help-buffer))))
 
 (defun transient--goto-argument-description (arg)
   (goto-char (point-min))

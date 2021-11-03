@@ -44,7 +44,7 @@ reading a new value in the minibuffer.
    Calling a suffix command usually causes the transient to be exited
 but suffix commands can also be configured to not exit the transient.
 
-This manual is for Transient version 0.3.7.
+This manual is for Transient version 0.3.7 (v0.3.7-8-gc9ab648e+1).
 
      Copyright (C) 2018-2021 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -1611,8 +1611,9 @@ File: transient.info,  Node: Suffix Classes,  Next: Suffix Methods,  Prev: Prefi
    • The ‘transient-switches’ class can be used for a set of mutually
      exclusive command-line switches.
 
-   • The ‘transient-files’ class can be used for a "–" argument that
-     indicates that all remaining arguments are files.
+   • The ‘transient-files’ class is deprecated in favor of
+     ‘transient-option'’, which learned all the tricks of this class.
+     Just switch the class and you are ready to go.
 
    • Classes used for infix commands that represent variables should
      derived from the abstract ‘transient-variables’ class.
@@ -1865,8 +1866,34 @@ They are defined here anyway to allow sharing certain methods.
      the prefixes.
 
    • ‘multi-value’ For options, whether the option can have multiple
-     values.  If non-nil, then default to use
-     ‘completing-read-multiple’.
+     values.  If this is non-nil, then the values are read using
+     ‘completing-read-multiple’ by default and if you specify your own
+     reader, then it should read the values using that function or
+     similar.
+
+     Supported non-nil values are:
+
+        • Use ‘rest’ for an option that can have multiple values.  This
+          is useful e.g.  for an ‘--’ argument that indicates that all
+          remaining arguments are files (such as ‘git log -- file1
+          file2’).
+
+          In the list returned by ‘transient-args’ such an option and
+          its values are represented by a single list of the form
+          ‘(ARGUMENT . VALUES)’.
+
+        • Use ‘repeat’ for an option that can be specified multiple
+          times.
+
+          In the list returned by ‘transient-args’ each instance of the
+          option and its value appears separately in the usual from, for
+          example: ‘("--another-argument" "--option=first"
+          "--option=second")’.
+
+     In both cases the option’s values have to be specified in the
+     default value of a prefix using the same format as returned by
+     ‘transient-args’, e.g.: ‘("--other" "--o=1" "--o=2" ("--" "f1"
+     "f2"))’.
 
    • ‘always-read’ For options, whether to read a value on every
      invocation.  If this is nil, then options that have a value are
@@ -2495,63 +2522,63 @@ Appendix E Variable Index
 
 Tag Table:
 Node: Top751
-Node: Introduction3651
-Node: Usage9466
-Node: Invoking Transients9834
-Node: Aborting and Resuming Transients10911
-Node: Common Suffix Commands13570
-Node: Saving Values15404
-Ref: Saving Values-Footnote-116662
-Node: Using History16855
-Node: Getting Help for Suffix Commands18494
-Node: Enabling and Disabling Suffixes19887
-Node: Other Commands22925
-Node: Other Options23903
-Node: Modifying Existing Transients31617
-Node: Defining New Commands35011
-Node: Defining Transients35347
-Node: Binding Suffix and Infix Commands37778
-Node: Group Specifications38632
-Node: Suffix Specifications42961
-Node: Defining Suffix and Infix Commands47326
-Node: Using Infix Arguments50524
-Node: Transient State53356
-Ref: Pre-commands for Infixes57264
-Ref: Pre-commands for Suffixes57536
-Ref: Pre-commands for Non-Suffixes58055
-Ref: Special Pre-Commands58670
-Node: Classes and Methods59181
-Node: Group Classes61395
-Node: Group Methods63311
-Node: Prefix Classes64560
-Node: Suffix Classes65652
-Node: Suffix Methods67896
-Node: Suffix Value Methods68217
-Node: Suffix Format Methods70977
-Node: Prefix Slots72429
-Ref: Internal Prefix Slots73687
-Node: Suffix Slots74944
-Ref: Slots of transient-suffix75312
-Ref: Slots of transient-infix76009
-Ref: Slots of transient-variable77957
-Ref: Slots of transient-switches78059
-Node: Predicate Slots78422
-Node: Related Abstractions and Packages79670
-Node: Comparison With Prefix Keys and Prefix Arguments79957
-Ref: Regular Prefix Commands80645
-Ref: Regular Prefix Arguments80993
-Ref: Transients81962
-Node: Comparison With Other Packages90233
-Ref: Magit-Popup90464
-Ref: Hydra91363
-Node: FAQ94399
-Ref: Can I control how the popup buffer is displayed?94542
-Ref: Why did some of the key bindings change?94723
-Ref: Why does q not quit popups anymore?97040
-Node: Keystroke Index98133
-Node: Command Index99913
-Node: Function Index101846
-Node: Variable Index106350
+Node: Introduction3674
+Node: Usage9489
+Node: Invoking Transients9857
+Node: Aborting and Resuming Transients10934
+Node: Common Suffix Commands13593
+Node: Saving Values15427
+Ref: Saving Values-Footnote-116685
+Node: Using History16878
+Node: Getting Help for Suffix Commands18517
+Node: Enabling and Disabling Suffixes19910
+Node: Other Commands22948
+Node: Other Options23926
+Node: Modifying Existing Transients31640
+Node: Defining New Commands35034
+Node: Defining Transients35370
+Node: Binding Suffix and Infix Commands37801
+Node: Group Specifications38655
+Node: Suffix Specifications42984
+Node: Defining Suffix and Infix Commands47349
+Node: Using Infix Arguments50547
+Node: Transient State53379
+Ref: Pre-commands for Infixes57287
+Ref: Pre-commands for Suffixes57559
+Ref: Pre-commands for Non-Suffixes58078
+Ref: Special Pre-Commands58693
+Node: Classes and Methods59204
+Node: Group Classes61418
+Node: Group Methods63334
+Node: Prefix Classes64583
+Node: Suffix Classes65675
+Node: Suffix Methods67978
+Node: Suffix Value Methods68299
+Node: Suffix Format Methods71059
+Node: Prefix Slots72511
+Ref: Internal Prefix Slots73769
+Node: Suffix Slots75026
+Ref: Slots of transient-suffix75394
+Ref: Slots of transient-infix76091
+Ref: Slots of transient-variable79199
+Ref: Slots of transient-switches79301
+Node: Predicate Slots79664
+Node: Related Abstractions and Packages80912
+Node: Comparison With Prefix Keys and Prefix Arguments81199
+Ref: Regular Prefix Commands81887
+Ref: Regular Prefix Arguments82235
+Ref: Transients83204
+Node: Comparison With Other Packages91475
+Ref: Magit-Popup91706
+Ref: Hydra92605
+Node: FAQ95641
+Ref: Can I control how the popup buffer is displayed?95784
+Ref: Why did some of the key bindings change?95965
+Ref: Why does q not quit popups anymore?98282
+Node: Keystroke Index99375
+Node: Command Index101155
+Node: Function Index103088
+Node: Variable Index107592
 
 End Tag Table
 
