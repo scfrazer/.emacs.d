@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Version: 0.14
+;; Version: 0.15
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/minad/vertico
 
@@ -76,7 +76,7 @@ See `resize-mini-windows' for documentation."
   :type '(cons (string :tag "Newline") (string :tag "Truncation")))
 
 (defcustom vertico-sort-function #'vertico-sort-history-length-alpha
-  "Default sorting function, which is used if no `display-sort-function' is specified."
+  "Default sorting function, used if no `display-sort-function' is specified."
   :type `(choice
           (const :tag "No sorting" nil)
           (const :tag "By history, length and alpha" ,#'vertico-sort-history-length-alpha)
@@ -145,6 +145,9 @@ See `resize-mini-windows' for documentation."
 
 (defvar-local vertico--candidates nil
   "List of candidates.")
+
+(defvar-local vertico--metadata nil
+  "Completion metadata.")
 
 (defvar-local vertico--base 0
   "Size of the base string, which is concatenated with the candidate.")
@@ -236,12 +239,12 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 (vertico--define-sort (length alpha) 32 (length %) string< vertico--length-string<)
 (vertico--define-sort (alpha) 32 (if (eq % "") 0 (/ (aref % 0) 4)) string< string<)
 
-(defun vertico--affixate (metadata candidates)
-  "Annotate CANDIDATES with annotation function specified by METADATA."
-  (if-let (aff (or (completion-metadata-get metadata 'affixation-function)
+(defun vertico--affixate (candidates)
+  "Annotate CANDIDATES with annotation function."
+  (if-let (aff (or (completion-metadata-get vertico--metadata 'affixation-function)
                    (plist-get completion-extra-properties :affixation-function)))
       (funcall aff candidates)
-    (if-let (ann (or (completion-metadata-get metadata 'annotation-function)
+    (if-let (ann (or (completion-metadata-get vertico--metadata 'annotation-function)
                      (plist-get completion-extra-properties :annotation-function)))
         (mapcar (lambda (cand)
                   (let ((suffix (or (funcall ann cand) "")))
@@ -310,13 +313,24 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
                     "\\)\\'")))
     (or (seq-remove (lambda (x) (string-match-p re x)) files) files)))
 
-(defun vertico--recompute-candidates (pt content bounds metadata)
-  "Recompute candidates given PT, CONTENT, BOUNDS and METADATA."
+(defun vertico--recompute-candidates (pt content metadata)
+  "Recompute candidates given PT, CONTENT and METADATA."
   ;; Redisplay the minibuffer such that the input becomes immediately
   ;; visible before the expensive candidate recomputation is performed (Issue #89).
   ;; Do not redisplay during initialization, since this leads to flicker.
   (when (consp vertico--input) (redisplay))
-  (pcase-let* ((field (substring content (car bounds) (+ pt (cdr bounds))))
+  (pcase-let* ((before (substring content 0 pt))
+               (after (substring content pt))
+               ;; bug#47678: `completion-boundaries` fails for `partial-completion`
+               ;; if the cursor is moved between the slashes of "~//".
+               ;; See also marginalia.el which has the same issue.
+               (bounds (or (condition-case nil
+                               (completion-boundaries before
+                                                      minibuffer-completion-table
+                                                      minibuffer-completion-predicate
+                                                      after)
+                             (t (cons 0 (length after))))))
+               (field (substring content (car bounds) (+ pt (cdr bounds))))
                ;; `minibuffer-completing-file-name' has been obsoleted by the completion category
                (completing-file (eq 'file (completion-metadata-get metadata 'category)))
                (`(,all . ,hl) (vertico--all-completions content
@@ -337,8 +351,7 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
     (when completing-file
       (setq all (vertico--filter-files all)))
     ;; Sort using the `display-sort-function' or the Vertico sort functions
-    (unless (memq sort '(nil identity))
-      (setq all (funcall sort all)))
+    (when sort (setq all (funcall sort all)))
     ;; Move special candidates: "field" appears at the top, before "field/", before default value
     (when (stringp def)
       (setq all (vertico--move-to-front def all)))
@@ -401,43 +414,45 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
   "Return t if PATH is a remote path."
   (string-match-p "\\`/[^/|:]+:" (substitute-in-file-name path)))
 
-(defun vertico--update-candidates (pt content bounds metadata)
-  "Preprocess candidates given PT, CONTENT, BOUNDS and METADATA."
-  (pcase
-      ;; If Tramp is used, do not compute the candidates in an interruptible fashion,
-      ;; since this will break the Tramp password and user name prompts (See #23).
-      (if (and (eq 'file (completion-metadata-get metadata 'category))
-               (or (vertico--remote-p content) (vertico--remote-p default-directory)))
-          (vertico--recompute-candidates pt content bounds metadata)
-        ;; bug#38024: Icomplete uses `while-no-input-ignore-events' to repair updating issues
-        (let ((while-no-input-ignore-events '(selection-request))
-              (non-essential t))
-          (while-no-input (vertico--recompute-candidates pt content bounds metadata))))
-    ('nil (abort-recursive-edit))
-    (`(,base ,total ,def-missing ,index ,candidates ,groups ,all-groups ,hl)
-     (setq vertico--input (cons content pt)
-           vertico--index index
-           vertico--base base
-           vertico--total total
-           vertico--highlight-function hl
-           vertico--groups groups
-           vertico--all-groups all-groups
-           vertico--candidates candidates
-           vertico--default-missing def-missing)
-     ;; If the current index is nil, compute new index. Select the prompt:
-     ;; * If there are no candidates
-     ;; * If the default is missing from the candidate list.
-     ;; * For matching content, as long as the full content after the boundary is empty,
-     ;;   including content after point.
-     (unless vertico--index
-       (setq vertico--lock-candidate nil
-             vertico--index
-             (if (or vertico--default-missing
-                     (= 0 vertico--total)
-                     (and (= (car bounds) (length content))
-                          (test-completion content minibuffer-completion-table
-                                           minibuffer-completion-predicate)))
-                 -1 0))))))
+(defun vertico--update-candidates (pt content)
+  "Preprocess candidates given PT and CONTENT."
+  (let ((metadata (completion-metadata (substring content 0 pt)
+                                       minibuffer-completion-table
+                                       minibuffer-completion-predicate)))
+    (pcase
+        ;; If Tramp is used, do not compute the candidates in an interruptible fashion,
+        ;; since this will break the Tramp password and user name prompts (See #23).
+        (if (and (eq 'file (completion-metadata-get metadata 'category))
+                 (or (vertico--remote-p content) (vertico--remote-p default-directory)))
+            (vertico--recompute-candidates pt content metadata)
+          (let ((non-essential t))
+            (while-no-input (vertico--recompute-candidates pt content metadata))))
+      ('nil (abort-recursive-edit))
+      (`(,base ,total ,def-missing ,index ,candidates ,groups ,all-groups ,hl)
+       (setq vertico--input (cons content pt)
+             vertico--index index
+             vertico--base base
+             vertico--total total
+             vertico--highlight-function hl
+             vertico--groups groups
+             vertico--all-groups all-groups
+             vertico--candidates candidates
+             vertico--default-missing def-missing
+             vertico--metadata metadata)
+       ;; If the current index is nil, compute new index. Select the prompt:
+       ;; * If there are no candidates
+       ;; * If the default is missing from the candidate list.
+       ;; * For matching content, as long as the full content after the boundary is empty,
+       ;;   including content after point.
+       (unless vertico--index
+         (setq vertico--lock-candidate nil
+               vertico--index
+               (if (or vertico--default-missing
+                       (= 0 vertico--total)
+                       (and (= base (length content))
+                            (test-completion content minibuffer-completion-table
+                                             minibuffer-completion-predicate)))
+                   -1 0)))))))
 
 (defun vertico--flatten-string (prop str)
   "Flatten STR with display or invisible PROP."
@@ -470,20 +485,20 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
     (add-face-text-property 0 (length cand) 'vertico-current 'append cand))
   cand)
 
-(defun vertico--arrange-candidates (metadata)
-  "Arrange candidates given the current METADATA."
+(defun vertico--arrange-candidates ()
+  "Arrange candidates."
   (let ((curr-line 0) (lines))
     ;; Compute group titles
     (let* ((index (min (max 0 (- vertico--index (/ vertico-count 2) (1- (mod vertico-count 2))))
                        (max 0 (- vertico--total vertico-count))))
            (title)
-           (group-fun (completion-metadata-get metadata 'group-function))
+           (group-fun (completion-metadata-get vertico--metadata 'group-function))
            (group-format (and group-fun vertico-group-format (concat vertico-group-format "\n")))
            (candidates
             (thread-last (seq-subseq vertico--candidates index
                                      (min (+ index vertico-count) vertico--total))
               (funcall vertico--highlight-function)
-              (vertico--affixate metadata))))
+              (vertico--affixate))))
       (dolist (cand candidates)
         (let ((str (car cand)))
           (when-let (new-title (and group-format (funcall group-fun str nil)))
@@ -573,35 +588,21 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 (defun vertico--remove-face (beg end face &optional obj)
   "Remove FACE between BEG and END from OBJ."
   (while (< beg end)
-    (let ((val (get-text-property beg 'face obj))
-          (next (next-single-property-change beg 'face obj end)))
-      (put-text-property beg next 'face (remq face (if (listp val) val (list val))) obj)
+    (let ((next (next-single-property-change beg 'face obj end)))
+      (when-let (val (get-text-property beg 'face obj))
+        (put-text-property beg next 'face (remq face (if (listp val) val (list val))) obj))
       (setq beg next))))
 
 (defun vertico--exhibit ()
   "Exhibit completion UI."
   (let* ((buffer-undo-list t) ;; Overlays affect point position and undo list!
          (pt (max 0 (- (point) (minibuffer-prompt-end))))
-         (content (minibuffer-contents-no-properties))
-         (before (substring content 0 pt))
-         (after (substring content pt))
-         (metadata (completion-metadata before
-                                        minibuffer-completion-table
-                                        minibuffer-completion-predicate))
-         ;; bug#47678: `completion-boundaries` fails for `partial-completion`
-         ;; if the cursor is moved between the slashes of "~//".
-         ;; See also marginalia.el which has the same issue.
-         (bounds (or (condition-case nil
-                         (completion-boundaries before
-                                                minibuffer-completion-table
-                                                minibuffer-completion-predicate
-                                                after)
-                       (t (cons 0 (length after)))))))
+         (content (minibuffer-contents-no-properties)))
     (unless (or (input-pending-p) (equal vertico--input (cons content pt)))
-      (vertico--update-candidates pt content bounds metadata))
+      (vertico--update-candidates pt content))
     (vertico--prompt-selection)
     (vertico--display-count)
-    (vertico--display-candidates (vertico--arrange-candidates metadata))))
+    (vertico--display-candidates (vertico--arrange-candidates))))
 
 (defun vertico--allow-prompt-selection-p ()
   "Return t if prompt can be selected."
@@ -726,7 +727,7 @@ When the prefix argument is 0, the group order is reset."
   "Return current candidate string with optional highlighting if HL is non-nil."
   (let ((content (minibuffer-contents)))
     (if (>= vertico--index 0)
-        (let ((cand (nth vertico--index vertico--candidates)))
+        (let ((cand (substring (nth vertico--index vertico--candidates))))
           ;;; XXX Drop the completions-common-part face which is added by `completion--twq-all'.
           ;; This is a hack in Emacs and should better be fixed in Emacs itself, the corresponding
           ;; code is already marked with a FIXME. Should this be reported as a bug?
@@ -754,14 +755,14 @@ When the prefix argument is 0, the group order is reset."
   ;; that I'dont have a specific reason for this particular value.
   (add-hook 'post-command-hook #'vertico--exhibit -90 'local))
 
-(defun vertico--advice (orig &rest args)
-  "Advice for ORIG completion function, receiving ARGS."
-  (minibuffer-with-setup-hook #'vertico--setup (apply orig args)))
+(defun vertico--advice (&rest args)
+  "Advice for completion function, receiving ARGS."
+  (minibuffer-with-setup-hook #'vertico--setup (apply args)))
 
 ;;;###autoload
 (define-minor-mode vertico-mode
   "VERTical Interactive COmpletion."
-  :global t
+  :global t :group 'vertico
   (if vertico-mode
       (progn
         (advice-add #'completing-read-default :around #'vertico--advice)

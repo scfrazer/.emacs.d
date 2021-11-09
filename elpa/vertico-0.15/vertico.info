@@ -1,4 +1,4 @@
-This is vertico.info, produced by makeinfo version 6.5 from
+This is vertico.info, produced by makeinfo version 6.7 from
 vertico.texi.
 
 INFO-DIR-SECTION Emacs
@@ -16,20 +16,25 @@ vertico.el - VERTical Interactive COmpletion
 
 * Introduction::
 * Features::
-* Configuration::
 * Key bindings::
-* Completion styles and TAB completion::
+* Configuration::
 * Extensions::
 * Complementary packages::
+* Child frames and Popups::
 * Alternatives::
 * Problematic completion commands::
 * Contributions::
 
 — The Detailed Node Listing —
 
+Configuration
+
+* Completion styles and TAB completion::
+* Completion-at-point and completion-in-region::
+* Completing-read-multiple (CRM)::
+
 Problematic completion commands
 
-* org-set-tags-command::
 * org-refile::
 * tmm-menubar::
 * Tramp hostname completion::
@@ -47,14 +52,13 @@ provide a UI which behaves _correctly_ under all circumstances.  By
 reusing the built-in facilities system, Vertico achieves _full
 compatibility_ with built-in Emacs completion commands and completion
 tables.  Vertico only provides the completion UI but aims to be flexible
-and extensible.  Additional enhancements can be installed separately via
-*note extensions: Extensions. or *note complementary packages:
-Complementary packages.  The code base is small and maintainable
-(‘vertico.el’ is only about 600 lines of code without white space and
-comments).
+and extensible.  Additional enhancements are available as *note
+extensions: Extensions. or *note complementary packages: Complementary
+packages.  The code base is small and maintainable (‘vertico.el’ is only
+about 600 lines of code without white space and comments).
 
 
-File: vertico.info,  Node: Features,  Next: Configuration,  Prev: Introduction,  Up: Top
+File: vertico.info,  Node: Features,  Next: Key bindings,  Prev: Introduction,  Up: Top
 
 2 Features
 **********
@@ -76,18 +80,45 @@ File: vertico.info,  Node: Features,  Next: Configuration,  Prev: Introduction, 
    <https://github.com/minad/vertico/blob/main/screenshot.svg?raw=true>
 
 
-File: vertico.info,  Node: Configuration,  Next: Key bindings,  Prev: Features,  Up: Top
+File: vertico.info,  Node: Key bindings,  Next: Configuration,  Prev: Features,  Up: Top
 
-3 Configuration
+3 Key bindings
+**************
+
+Vertico defines its own local keymap in the minibuffer which is derived
+from ‘minibuffer-local-map’.  The keymap keeps most of the
+‘fundamental-mode’ keybindings intact and remaps and binds only a
+handful of commands.  Note in particular the binding of ‘TAB’ to
+‘vertico-insert’ and the bindings of ‘vertico-exit/exit-input’.
+
+   • ‘beginning-of-buffer’, ‘minibuffer-beginning-of-buffer’ ->
+     ‘vertico-first’
+   • ‘end-of-buffer’ -> ‘vertico-last’
+   • ‘scroll-down-command’ -> ‘vertico-scroll-down’
+   • ‘scroll-up-command’ -> ‘vertico-scroll-up’
+   • ‘next-line’, ‘next-line-or-history-element’ -> ‘vertico-next’
+   • ‘previous-line’, ‘previous-line-or-history-element’ ->
+     ‘vertico-previous’
+   • ‘forward-paragraph’ -> ‘vertico-next-group’
+   • ‘backward-paragraph’ -> ‘vertico-previous-group’
+   • ‘exit-minibuffer’ -> ‘vertico-exit’
+   • ‘kill-ring-save’ -> ‘vertico-save’
+   • ‘C-<return>’ -> ‘vertico-exit-input’
+   • ‘TAB’ -> ‘vertico-insert’
+
+
+File: vertico.info,  Node: Configuration,  Next: Extensions,  Prev: Key bindings,  Up: Top
+
+4 Configuration
 ***************
 
 Vertico is available from GNU ELPA
-(http://elpa.gnu.org/packages/vertico.html), such that it can be
-installed directly via ‘package-install’.  After installation, the
-global minor mode can be enabled with ‘M-x vertico-mode’.  In order to
-configure Vertico and other packages in your init.el, you may want to
-use ‘use-package’.  I recommend to give Orderless completion a try,
-which is different from the prefix TAB completion used by the basic
+(http://elpa.gnu.org/packages/vertico.html).  You can install it
+directly via ‘package-install’.  After installation, you can activate
+the global minor mode with ‘M-x vertico-mode’.  In order to configure
+Vertico and other packages in your init.el, you may want to take
+advantage of ‘use-package’.  I recommend to give Orderless completion a
+try, which is different from the prefix TAB completion used by the basic
 default completion system or in shells.  Here is an example
 configuration:
 
@@ -103,13 +134,17 @@ configuration:
        ;; (setq vertico-cycle t)
        )
 
-     ;; Use the `orderless' completion style. Additionally enable
-     ;; `partial-completion' for file path expansion. `partial-completion' is
-     ;; important for wildcard support. Multiple files can be opened at once
-     ;; with `find-file' if you enter a wildcard. You may also give the
-     ;; `initials' completion style a try.
+     ;; Optionally use the `orderless' completion style. See
+     ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
+     ;; dispatcher. Additionally enable `partial-completion' for file path
+     ;; expansion. `partial-completion' is important for wildcard support.
+     ;; Multiple files can be opened at once with `find-file' if you enter a
+     ;; wildcard. You may also give the `initials' completion style a try.
      (use-package orderless
        :init
+       ;; Configure a custom style dispatcher (see the Consult wiki)
+       ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+       ;;       orderless-component-separator #'orderless-escapable-split-on-space)
        (setq completion-styles '(orderless)
              completion-category-defaults nil
              completion-category-overrides '((file (styles partial-completion)))))
@@ -141,38 +176,17 @@ configuration:
        ;; Enable recursive minibuffers
        (setq enable-recursive-minibuffers t))
 
-
-File: vertico.info,  Node: Key bindings,  Next: Completion styles and TAB completion,  Prev: Configuration,  Up: Top
+* Menu:
 
-4 Key bindings
-**************
-
-Vertico defines its own local keymap in the minibuffer which is derived
-from ‘minibuffer-local-map’.  The keymap keeps most of the
-‘fundamental-mode’ keybindings intact and remaps and binds only a
-handful of commands.  Note in particular the binding of ‘TAB’ to
-‘vertico-insert’ and the bindings of ‘vertico-exit/exit-input’.
-
-   • ‘beginning-of-buffer’, ‘minibuffer-beginning-of-buffer’ ->
-     ‘vertico-first’
-   • ‘end-of-buffer’ -> ‘vertico-last’
-   • ‘scroll-down-command’ -> ‘vertico-scroll-down’
-   • ‘scroll-up-command’ -> ‘vertico-scroll-up’
-   • ‘next-line’, ‘next-line-or-history-element’ -> ‘vertico-next’
-   • ‘previous-line’, ‘previous-line-or-history-element’ ->
-     ‘vertico-previous’
-   • ‘forward-paragraph’ -> ‘vertico-next-group’
-   • ‘backward-paragraph’ -> ‘vertico-previous-group’
-   • ‘exit-minibuffer’ -> ‘vertico-exit’
-   • ‘kill-ring-save’ -> ‘vertico-save’
-   • ‘<C-return>’ -> ‘vertico-exit-input’
-   • ‘TAB’ -> ‘vertico-insert’
+* Completion styles and TAB completion::
+* Completion-at-point and completion-in-region::
+* Completing-read-multiple (CRM)::
 
 
-File: vertico.info,  Node: Completion styles and TAB completion,  Next: Extensions,  Prev: Key bindings,  Up: Top
+File: vertico.info,  Node: Completion styles and TAB completion,  Next: Completion-at-point and completion-in-region,  Up: Configuration
 
-5 Completion styles and TAB completion
-**************************************
+4.1 Completion styles and TAB completion
+========================================
 
 The bindings of the ‘minibuffer-local-completion-map’ are not available
 in Vertico by default.  This means that TAB works differently from what
@@ -180,8 +194,8 @@ you may expect from the default Emacs completion system.
 
    If you prefer to have the default completion commands a key press
 away you can add new bindings or even replace the Vertico bindings.
-Then the default completion commands will work as usual.  For example
-you can use ‘M-TAB’ to cycle between candidates if you have set
+Then the default completion commands behave as usual.  For example you
+can use ‘M-TAB’ to cycle between candidates if you have set
 ‘completion-cycle-threshold’.
 
      (define-key vertico-map "?" #'minibuffer-completion-help)
@@ -212,12 +226,53 @@ disable case-sensitivity for file and buffer matching when built-in
 completion styles are used instead of ‘orderless’:
 
      (setq read-file-name-completion-ignore-case t
-           read-buffer-completion-ignore-case t)
+           read-buffer-completion-ignore-case t
+           completion-ignore-case t)
 
 
-File: vertico.info,  Node: Extensions,  Next: Complementary packages,  Prev: Completion styles and TAB completion,  Up: Top
+File: vertico.info,  Node: Completion-at-point and completion-in-region,  Next: Completing-read-multiple (CRM),  Prev: Completion styles and TAB completion,  Up: Configuration
 
-6 Extensions
+4.2 Completion-at-point and completion-in-region
+================================================
+
+The ‘completion-at-point’ command is usually bound to ‘M-TAB’ or ‘TAB’.
+In case you want to use Vertico for
+completion-at-point/completion-in-region, you can use the function
+‘consult-completion-in-region’ provided by the Consult package.
+
+     ;; Use `consult-completion-in-region' if Vertico is enabled.
+     ;; Otherwise use the default `completion--in-region' function.
+     (setq completion-in-region-function
+           (lambda (&rest args)
+             (apply (if vertico-mode
+                        #'consult-completion-in-region
+                      #'completion--in-region)
+                    args)))
+
+   This also affects TAB completion in the minibuffer when ‘M-:’
+(‘eval-expression’) is used.
+
+   You may also want to look into my Corfu
+(https://github.com/minad/corfu) package, which provides a minimal
+completion system for completion-in-region using overlays.  Corfu is
+developed in the same spirit as Vertico.
+
+
+File: vertico.info,  Node: Completing-read-multiple (CRM),  Prev: Completion-at-point and completion-in-region,  Up: Configuration
+
+4.3 Completing-read-multiple (CRM)
+==================================
+
+Consult offers an enhanced ‘completing-read-multiple’ implementation
+which you can use with Vertico.
+
+     (advice-add #'completing-read-multiple
+                 :override #'consult-completing-read-multiple)
+
+
+File: vertico.info,  Node: Extensions,  Next: Complementary packages,  Prev: Configuration,  Up: Top
+
+5 Extensions
 ************
 
 *NOTE*: The extensions currently require manual installation, e.g., via
@@ -239,6 +294,9 @@ are available:
    • vertico-flat.el
      (https://github.com/minad/vertico/blob/main/extensions/vertico-flat.el):
      ‘vertico-flat-mode’ to enable a flat, horizontal display
+   • vertico-grid.el
+     (https://github.com/minad/vertico/blob/main/extensions/vertico-grid.el):
+     ‘vertico-grid-mode’ to enable a grid display
    • vertico-indexed.el
      (https://github.com/minad/vertico/blob/main/extensions/vertico-indexed.el):
      ‘vertico-indexed-mode’ to select indexed candidates with prefix
@@ -276,13 +334,13 @@ look and feel.
        :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 
-File: vertico.info,  Node: Complementary packages,  Next: Alternatives,  Prev: Extensions,  Up: Top
+File: vertico.info,  Node: Complementary packages,  Next: Child frames and Popups,  Prev: Extensions,  Up: Top
 
-7 Complementary packages
+6 Complementary packages
 ************************
 
-Vertico works well together with complementary packages, which enrich
-the completion UI. These packages are fully supported:
+Vertico integrates well with complementary packages, which enrich the
+completion UI.  These packages are fully supported:
 
    • Marginalia (https://github.com/minad/marginalia): Rich annotations
      in the minibuffer
@@ -293,8 +351,8 @@ the completion UI. These packages are fully supported:
    • Orderless (https://github.com/oantolin/orderless): Advanced
      completion style
 
-   In order to get accustomed with the package ecosystem the following
-approach is recommended:
+   In order to get accustomed with the package ecosystem, I recommed the
+following approach:
 
   1. Start with plain Emacs.
   2. Install and enable Vertico to get incremental minibuffer
@@ -320,33 +378,29 @@ Consult commands, some offer new functionality not present in Emacs
 already (e.g., ‘consult-line’) and some are substitutes (e.g.,
 ‘consult-buffer’ for ‘switch-to-buffer’).
 
-   There are some special setting you may want to add to your
-configuration.  In case you want to use Vertico for
-completion-at-point/completion-in-region, you can use the function
-‘consult-completion-in-region’ provided by the Consult package.
+
+File: vertico.info,  Node: Child frames and Popups,  Next: Alternatives,  Prev: Complementary packages,  Up: Top
 
-     ;; Use `consult-completion-in-region' if Vertico is enabled.
-     ;; Otherwise use the default `completion--in-region' function.
-     (setq completion-in-region-function
-           (lambda (&rest args)
-             (apply (if vertico-mode
-                        #'consult-completion-in-region
-                      #'completion--in-region)
-                    args)))
+7 Child frames and Popups
+*************************
 
-   Furthermore Consult offers an enhanced ‘completing-read-multiple’
-implementation, which works well with Vertico.
+An often requested feature is the ability to display the completions in
+a child frame popup.  I do not recommend this, since from my experience
+it introduces more problems than it solves.  Child frames can feel slow
+and sometimes flicker.  On the other hand the completion display appears
+right in your focus at the center of the screen, leading to a modern
+look and feel.  Please give these packages a try and judge for yourself.
 
-     (advice-add #'completing-read-multiple
-                 :override #'consult-completing-read-multiple)
-
-   You may also want to look into my Corfu
-(https://github.com/minad/corfu) package, which provides a minimal
-completion system for completion-in-region using overlays.  Corfu is
-developed in the same spirit as Vertico.
+   • mini-frame (https://github.com/muffinmad/emacs-mini-frame): Display
+     the entire minibuffer in a child frame.
+   • mini-popup (https://github.com/minad/mini-popup): Slightly simpler
+     alternative to mini-frame.
+   • vertico-posframe (https://github.com/tumashu/vertico-posframe):
+     Display only the Vertico minibuffer in a child frame using the
+     posframe library.
 
 
-File: vertico.info,  Node: Alternatives,  Next: Problematic completion commands,  Prev: Complementary packages,  Up: Top
+File: vertico.info,  Node: Alternatives,  Next: Problematic completion commands,  Prev: Child frames and Popups,  Up: Top
 
 8 Alternatives
 **************
@@ -359,9 +413,9 @@ achieves that with a minimal code base, relying purely on
 ‘completing-read’ while avoiding to invent its own APIs.  Inventing a
 custom API as Helm or Ivy is explicitly avoided in order to increase
 flexibility and package reuse.  Due to its small code base and reuse of
-the Emacs built-in facilities, bugs are less likely to occur in
-comparison to completion UIs or full completion systems, which
-reimplement a lot of functionality.
+the Emacs built-in facilities, bugs and compatibility issues are less
+likely to occur in comparison to completion UIs or full completion
+systems, which reimplement a lot of functionality.
 
    Since Vertico only provides the UI, you may want to combine it with
 some of the complementary packages, to give a full-featured completion
@@ -373,8 +427,8 @@ non-intrusive as possible.  Vertico targets users interested in crafting
 their Emacs precisely to their liking - completion plays an integral
 part in how the users interacts with Emacs.
 
-   There are at least two other interactive completion UIs, which follow
-a similar philosophy:
+   There are other interactive completion UIs, which follow a similar
+philosophy:
 
    • Selectrum (https://github.com/raxod502/selectrum): Selectrum has a
      similar UI as Vertico.  Selectrum is more complex and not fully
@@ -382,8 +436,8 @@ a similar philosophy:
      (https://github.com/raxod502/selectrum/issues/481)), since it uses
      its own filtering infrastructure, which deviates from the standard
      Emacs completion facilities.  Vertico additionally has the ability
-     to cycle over candidates, offers more commands for grouping support
-     and comes with optional *note extensions: Extensions.
+     to cycle over candidates, offers commands for grouping support and
+     comes with a rich set of *note extensions: Extensions.
    • Icomplete-vertical
      (https://github.com/oantolin/icomplete-vertical): This package
      enhances the Emacs builtin Icomplete with a vertical display.  In
@@ -392,6 +446,11 @@ a similar philosophy:
      candidate rotation feels a bit less intuitive than the UI of
      Vertico or Selectrum.  Note that Emacs 28 offers a built-in
      ‘icomplete-vertical-mode’.
+   • Mct (https://gitlab.com/protesilaos/mct): Minibuffer and
+     Completions in Tandem.  Mct reuses the default completions buffer
+     and enhances it with automatic updates and additional keybindings,
+     to select a candidate and move between minibuffer and completions
+     buffer.
 
 
 File: vertico.info,  Node: Problematic completion commands,  Next: Contributions,  Prev: Alternatives,  Up: Top
@@ -399,65 +458,36 @@ File: vertico.info,  Node: Problematic completion commands,  Next: Contributions
 9 Problematic completion commands
 *********************************
 
-Vertico works well and is robust in most scenarios.  However some
-completion commands make certain assumptions about the completion styles
-and the completion UI. Some of these assumptions may not hold in Vertico
-and as such require minor workarounds.
+Vertico is robust in most scenarios.  However some completion commands
+make certain assumptions about the completion styles and the completion
+UI.  Some of these assumptions may not hold in Vertico or other UIs and
+require minor workarounds.
 
 * Menu:
 
-* org-set-tags-command::
 * org-refile::
 * tmm-menubar::
 * Tramp hostname completion::
 
 
-File: vertico.info,  Node: org-set-tags-command,  Next: org-refile,  Up: Problematic completion commands
+File: vertico.info,  Node: org-refile,  Next: tmm-menubar,  Up: Problematic completion commands
 
-9.1 ‘org-set-tags-command’
-==========================
-
-‘org-set-tags-command’ implements a completion table which relies on the
-‘basic’ completion style and TAB completion.  This table does not work
-well with Vertico and Icomplete.  The issue can be mitigated by
-deactivating most of the Vertico UI and relying purely on TAB
-completion.  The UI is still enhanced by Vertico, since Vertico shows
-the available tags.
-
-     (defun disable-selection ()
-       (when (eq minibuffer-completion-table #'org-tags-completion-function)
-         (setq-local vertico-map minibuffer-local-completion-map
-                     completion-cycle-threshold nil
-                     completion-styles '(basic))))
-     (advice-add #'vertico--setup :before #'disable-selection)
-
-   *Update:* ‘org-set-tags-command’ is changed to use
-‘completing-read-multiple’ in the current Org development version (9.5)
-as has been proposed before
-(https://lists.gnu.org/archive/html/emacs-orgmode/2020-07/msg00222.html).
-This fix improves the compatibility with many completion UIs, including
-Vertico.  See the recent mailing list discussion
-(https://lists.gnu.org/archive/html/emacs-orgmode/2021-07/msg00287.html).
-
-
-File: vertico.info,  Node: org-refile,  Next: tmm-menubar,  Prev: org-set-tags-command,  Up: Problematic completion commands
-
-9.2 ‘org-refile’
+9.1 ‘org-refile’
 ================
 
 ‘org-refile’ uses ‘org-olpath-completing-read’ to complete the outline
 path in steps, when ‘org-refile-use-outline-path’ is non-nil.
 
-   Unfortunately the implementation of this Org completion table is
-broken.  In order to fix the issue at the root, the completion table
-should make use of completion boundaries and should be written in the
-same way as the built-in file completion table.
+   Unfortunately the implementation of this Org completion table assumes
+that the default completion UI is used.  In order to fix the issue at
+the root, the completion table should make use of completion boundaries
+similar to the built-in file completion table.
 
-   In order to workaround the issues with the current implementation it
-is recommended to disable the outline path completion in steps.  The
+   In order to workaround the issues with the current implementation I
+recommend to disable the outline path completion in steps.  The
 completion on the full path is also faster since the input string
-matches directly against the full path, which works very well with
-Orderless.
+matches directly against the full path, which is particularily useful
+with Orderless.
 
      (setq org-refile-use-outline-path 'file
            org-outline-path-complete-in-steps nil)
@@ -465,19 +495,19 @@ Orderless.
 
 File: vertico.info,  Node: tmm-menubar,  Next: Tramp hostname completion,  Prev: org-refile,  Up: Problematic completion commands
 
-9.3 ‘tmm-menubar’
+9.2 ‘tmm-menubar’
 =================
 
 The text menu bar works well with Vertico but always shows a
-‘*Completions*’ buffer, which is unwanted if you are using the Vertico
-UI. This completion buffer can be disabled as follows.
+‘*Completions*’ buffer, which is unwanted if you use the Vertico UI.
+This completion buffer can be disabled as follows.
 
      (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 
 
 File: vertico.info,  Node: Tramp hostname completion,  Prev: tmm-menubar,  Up: Problematic completion commands
 
-9.4 Tramp hostname completion
+9.3 Tramp hostname completion
 =============================
 
 In combination with Orderless, hostnames are not made available for
@@ -518,20 +548,22 @@ copyright assignment to the FSF.
 
 Tag Table:
 Node: Top196
-Node: Introduction739
-Node: Features1556
-Node: Configuration2444
-Node: Key bindings5032
-Node: Completion styles and TAB completion6295
-Node: Extensions8545
-Node: Complementary packages11334
-Node: Alternatives14508
-Node: Problematic completion commands16997
-Node: org-set-tags-command17529
-Node: org-refile18839
-Node: tmm-menubar19791
-Node: Tramp hostname completion20230
-Node: Contributions21544
+Node: Introduction842
+Node: Features1644
+Node: Key bindings2531
+Node: Configuration3766
+Node: Completion styles and TAB completion6826
+Node: Completion-at-point and completion-in-region9136
+Node: Completing-read-multiple (CRM)10369
+Node: Extensions10788
+Node: Complementary packages13709
+Node: Child frames and Popups15813
+Node: Alternatives16803
+Node: Problematic completion commands19596
+Node: org-refile20094
+Node: tmm-menubar21026
+Node: Tramp hostname completion21459
+Node: Contributions22773
 
 End Tag Table
 

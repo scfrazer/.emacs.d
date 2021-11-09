@@ -561,10 +561,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.14/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.15/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.14/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.15/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1956,10 +1956,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211028.1244/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211107.853/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211028.1244/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211107.853/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3531,7 +3531,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20211105.100" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.14" "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20210912.1932" "/home/scfrazer/.emacs.d/elpa/rg-20210912.1227" "/home/scfrazer/.emacs.d/elpa/transient-20211105.100" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.15" "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105")
          Info-directory-list)))
 
 ;; Local Variables:

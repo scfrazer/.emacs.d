@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.9
-;; Package-Version: 20211028.1244
-;; Package-Commit: 09d8ab38a5a4aa55a83968dc3e454d11fee05255
+;; Package-Version: 20211107.853
+;; Package-Commit: 678b6528f3905e624b01daf787461d8c7e06ec0f
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -576,6 +576,7 @@ keybinding since CAND includes it."
           ('nil (propertize "nil" 'face 'marginalia-null))
           ('t (propertize "t" 'face 'marginalia-true))
           ((pred keymapp) (propertize "#<keymap>" 'face 'marginalia-value))
+          ((pred bool-vector-p) (propertize "#<bool-vector>" 'face 'marginalia-value))
           ((pred hash-table-p) (propertize "#<hash-table>" 'face 'marginalia-value))
           ((pred syntax-table-p) (propertize "#<syntax-table>" 'face 'marginalia-value))
           ;; Emacs BUG: abbrev-table-p throws an error
