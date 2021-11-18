@@ -54,8 +54,8 @@ compatibility_ with built-in Emacs completion commands and completion
 tables.  Vertico only provides the completion UI but aims to be flexible
 and extensible.  Additional enhancements are available as *note
 extensions: Extensions. or *note complementary packages: Complementary
-packages.  The code base is small and maintainable (‘vertico.el’ is only
-about 600 lines of code without white space and comments).
+packages.  The code base is small and maintainable (‘vertico.el’ is well
+below 1000 lines of code).
 
 
 File: vertico.info,  Node: Features,  Next: Key bindings,  Prev: Introduction,  Up: Top
@@ -126,6 +126,12 @@ configuration:
      (use-package vertico
        :init
        (vertico-mode)
+
+       ;; Different scroll margin
+       ;; (setq vertico-scroll-margin 0)
+
+       ;; Show more candidates
+       ;; (setq vertico-count 20)
 
        ;; Grow and shrink the Vertico minibuffer
        ;; (setq vertico-resize t)
@@ -431,13 +437,14 @@ part in how the users interacts with Emacs.
 philosophy:
 
    • Selectrum (https://github.com/raxod502/selectrum): Selectrum has a
-     similar UI as Vertico.  Selectrum is more complex and not fully
-     compatible with every Emacs completion command (Issue #481
-     (https://github.com/raxod502/selectrum/issues/481)), since it uses
-     its own filtering infrastructure, which deviates from the standard
-     Emacs completion facilities.  Vertico additionally has the ability
-     to cycle over candidates, offers commands for grouping support and
-     comes with a rich set of *note extensions: Extensions.
+     similar UI as Vertico, since it directly inspired Vertico.  The
+     Selectrum code base is more complex.  Unfortunately Selectrum is
+     not fully compatible with every Emacs completion command (Issue
+     #481 (https://github.com/raxod502/selectrum/issues/481)), since it
+     uses its own filtering infrastructure, which deviates from the
+     standard Emacs completion facilities.  Vertico additionally has the
+     ability to cycle over candidates, offers commands for grouping
+     support and comes with a rich set of *note extensions: Extensions.
    • Icomplete-vertical
      (https://github.com/oantolin/icomplete-vertical): This package
      enhances the Emacs builtin Icomplete with a vertical display.  In
@@ -447,10 +454,19 @@ philosophy:
      Vertico or Selectrum.  Note that Emacs 28 offers a built-in
      ‘icomplete-vertical-mode’.
    • Mct (https://gitlab.com/protesilaos/mct): Minibuffer and
-     Completions in Tandem.  Mct reuses the default completions buffer
-     and enhances it with automatic updates and additional keybindings,
-     to select a candidate and move between minibuffer and completions
-     buffer.
+     Completions in Tandem.  Mct reuses the default ‘*Completions*’
+     buffer and enhances it with automatic updates and additional
+     keybindings, to select a candidate and move between minibuffer and
+     completions buffer.  Mct is great if you prefer an unobtrusive UI
+     since it can be configured to open only when requested.
+     Furthermore since Mct uses a fully functional buffer you can reuse
+     all your familar buffer commands inside the completions buffer.
+     The main distinction to an approach like Vertico’s is that
+     ‘*Completions*’ buffer displays all matching candidates.  On the
+     one hand this is good since it allows you to interact with all the
+     candidates and jump around with Isearch or Avy.  On the other hand
+     it necessarily causes a small slowdown in comparison to Vertico,
+     which only displays a small subset of candidates.
 
 
 File: vertico.info,  Node: Problematic completion commands,  Next: Contributions,  Prev: Alternatives,  Up: Top
@@ -549,21 +565,21 @@ copyright assignment to the FSF.
 Tag Table:
 Node: Top196
 Node: Introduction842
-Node: Features1644
-Node: Key bindings2531
-Node: Configuration3766
-Node: Completion styles and TAB completion6826
-Node: Completion-at-point and completion-in-region9136
-Node: Completing-read-multiple (CRM)10369
-Node: Extensions10788
-Node: Complementary packages13709
-Node: Child frames and Popups15813
-Node: Alternatives16803
-Node: Problematic completion commands19596
-Node: org-refile20094
-Node: tmm-menubar21026
-Node: Tramp hostname completion21459
-Node: Contributions22773
+Node: Features1612
+Node: Key bindings2499
+Node: Configuration3734
+Node: Completion styles and TAB completion6936
+Node: Completion-at-point and completion-in-region9246
+Node: Completing-read-multiple (CRM)10479
+Node: Extensions10898
+Node: Complementary packages13819
+Node: Child frames and Popups15923
+Node: Alternatives16913
+Node: Problematic completion commands20451
+Node: org-refile20949
+Node: tmm-menubar21881
+Node: Tramp hostname completion22314
+Node: Contributions23628
 
 End Tag Table
 
