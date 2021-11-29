@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.10
-;; Package-Version: 20211119.938
-;; Package-Commit: 440e2b969ba8c33509c1e78b76ecf652c61a01d1
+;; Package-Version: 20211122.1844
+;; Package-Commit: a08694aa377e89d0161514b1a6473fd1c3be91eb
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -74,7 +74,8 @@ It can also be set to an integer value of 1 or larger to force an offset."
 (defcustom marginalia-max-relative-age (* 60 60 24 14)
   "Maximum relative age in seconds displayed by the file annotator.
 
-Set to `most-positive-fixnum' to always use a relative age, or 0 to never show a relative age."
+Set to `most-positive-fixnum' to always use a relative age, or 0 to never show
+a relative age."
   :type 'integer)
 
 (defcustom marginalia-annotator-registry
@@ -393,7 +394,7 @@ WIDTH is the format width. This can be specified as alternative to FORMAT."
   "Annotate command CAND with keybinding."
   (when-let* ((sym (intern-soft cand))
               (key (and (commandp sym) (where-is-internal sym nil 'first-only))))
-    (propertize (format " (%s)" (key-description key)) 'face 'marginalia-key)))
+    (format #(" (%s)" 1 5 (face marginalia-key)) (key-description key))))
 
 (defun marginalia--annotator (cat)
   "Return annotation function for category CAT."
@@ -590,8 +591,8 @@ keybinding since CAND includes it."
            ;; NOTE: We are not consistent here, values are generally printed unquoted. But we
            ;; make an exception for function symbols to visually distinguish them from symbols.
            ;; I am not entirely happy with this, but we should not add quotation to every type.
-           (propertize (format "#'%s" val) 'face 'marginalia-function))
-          ((pred recordp) (propertize (format "#<record %s>" (type-of val)) 'face 'marginalia-value))
+           (format (propertize "#'%s" 'face 'marginalia-function) val))
+          ((pred recordp) (format (propertize "#<record %s>" 'face 'marginalia-value) (type-of val)))
           ((pred symbolp) (propertize (symbol-name val) 'face 'marginalia-symbol))
           ((pred numberp) (propertize (number-to-string val) 'face 'marginalia-number))
           (_ (let ((print-escape-newlines t)
@@ -666,7 +667,7 @@ keybinding since CAND includes it."
   "Annotate character CAND with its general character category and character code."
   (when-let (char (char-from-name cand t))
     (concat
-     (propertize (format " (%c)" char) 'face 'marginalia-char)
+     (format #(" (%c)" 1 5 (face marginalia-char)) char)
      (marginalia--fields
       (char :format "%06X" :face 'marginalia-number)
       ((char-code-property-description

@@ -64,25 +64,40 @@ literal matches are enabled.
 front-end that provides a completion UI.  Any completion style can be
 used with the default Emacs completion UI (sometimes called minibuffer
 tab completion), with the built-in Icomplete package (which is similar
-to the more well-known Ido Mode), or with some third party completion
-frameworks such as Vertico (https://github.com/minad/vertico), Selectrum
+to the more well-known Ido Mode), or with some third party minibuffer
+completion frameworks such as Vertico
+(https://github.com/minad/vertico), Selectrum
 (https://github.com/raxod502/selectrum) (in its default configuration),
 or icomplete-vertical (https://github.com/oantolin/icomplete-vertical)
 (note there is also a _built-in_ package named icomplete-vertical in the
 unreleased version 28 of Emacs, which will eventually make the third
 party icomplete-vertical obsolete —orderless works equally well with
-both icomplete-vertical packages).  To use a completion style with any
-of these completion UIs simply add it as an entry in the variables
-‘completion-styles’ and ‘completion-category-overrides’ (see their
-documentation).  You may also want to modify the
-‘completion-category-defaults’ variable, which serves as a default value
-for ‘completion-category-overrides’: if you want to use ‘orderless’
-exclusively, set both variables to ‘nil’.
+both icomplete-vertical packages).
+
+   All the completion UIs just mentioned are for minibuffer completion,
+used when Emacs commands prompt the user in the minibuffer for some
+input, but there is also completion at point in normal buffers,
+typically used for identifiers in programming languages.  Completion
+styles can also be used for that purpose by completion at point UIs such
+as Corfu (https://github.com/minad/corfu), Company
+(https://company-mode.github.io/) or the function
+‘consult-completion-in-region’ from Consult
+(https://github.com/minad/consult).
+
+   To use a completion style with any of the above mentioned completion
+UIs simply add it as an entry in the variables ‘completion-styles’ and
+‘completion-category-overrides’ (see their documentation).  You may also
+want to modify the ‘completion-category-defaults’ variable, which serves
+as a default value for ‘completion-category-overrides’: if you want to
+use ‘orderless’ exclusively, set both variables to ‘nil’.
 
    With a bit of effort, it might still be possible to use ‘orderless’
 with other completion UIs, even if those UIs don’t support the standard
 Emacs completion styles.  Currently there is support for Ivy
-(https://github.com/abo-abo/swiper) (see below).
+(https://github.com/abo-abo/swiper) (see below).  Also, while Company
+does support completion styles directly, pressing ‘SPC’ takes you out of
+completion, so comfortably using ‘orderless’ with it takes a bit of
+configuration (see below).
 
    If you use MELPA, the easiest way to install ‘orderless’ is via
 ‘package-install’.  If you use both MELPA and ‘use-package’, you can
@@ -550,22 +565,22 @@ out of order matching!
 Tag Table:
 Node: Top221
 Node: Overview946
-Node: Customization3429
-Node: Component matching styles3787
-Node: Style dispatchers6588
-Node: Component separator regexp8839
-Node: Defining custom orderless styles10076
-Node: Faces for component matches11968
-Node: Pattern compiler12772
-Node: Interactively changing the configuration13374
-Node: Integration with other completion UIs14837
-Node: Ivy15628
-Node: Selectrum15881
-Node: Company16555
-Node: Related packages18048
-Node: Ivy and Helm18346
-Node: Prescient19685
-Node: Restricting to current matches in Icicles Ido and Ivy20539
+Node: Customization4186
+Node: Component matching styles4544
+Node: Style dispatchers7345
+Node: Component separator regexp9596
+Node: Defining custom orderless styles10833
+Node: Faces for component matches12725
+Node: Pattern compiler13529
+Node: Interactively changing the configuration14131
+Node: Integration with other completion UIs15594
+Node: Ivy16385
+Node: Selectrum16638
+Node: Company17312
+Node: Related packages18805
+Node: Ivy and Helm19103
+Node: Prescient20442
+Node: Restricting to current matches in Icicles Ido and Ivy21296
 
 End Tag Table
 

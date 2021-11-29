@@ -458,15 +458,27 @@ match, it completes to that match.  If there are no matches, it
 returns nil.  In any other case it \"completes\" STRING to
 itself, without moving POINT.
 This function is part of the `orderless' completion style."
-  (let ((all (orderless-filter string table pred)))
-    (cond
-     ((null all) nil)
-     ((null (cdr all))
-      (let ((full (concat
-                   (car (orderless--prefix+pattern string table pred))
-                   (car all))))
-        (cons full (length full))))
-     (t (cons string point)))))
+  (catch 'orderless--many
+    (let (one)
+      ;; Abuse all-completions/orderless-filter as a fast search loop.
+      ;; Should be more or less allocation-free since our "predicate"
+      ;; always returns nil.
+      (orderless-filter string table
+                        ;; key/value for hash tables
+                        (lambda (&rest args)
+                          (when (or (not pred) (apply pred args))
+                            (when one
+                              (throw 'orderless--many (cons string point)))
+                            (setq one (car args) ;; first argument is key
+                                  one (if (consp args) (car args) args) ;; alist
+                                  one (if (symbolp one) (symbol-name one) one)))
+                          nil))
+      (when one
+        (if (equal string one)
+            t ;; unique exact match
+          (setq one (concat (car (orderless--prefix+pattern string table pred))
+                            one))
+          (cons one (length one)))))))
 
 ;;;###autoload
 (add-to-list 'completion-styles-alist

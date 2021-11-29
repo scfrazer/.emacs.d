@@ -44,7 +44,7 @@ reading a new value in the minibuffer.
    Calling a suffix command usually causes the transient to be exited
 but suffix commands can also be configured to not exit the transient.
 
-This manual is for Transient version 0.3.7 (v0.3.7-9-g667488eb+1).
+This manual is for Transient version 0.3.7 (v0.3.7-12-g34911615+1).
 
      Copyright (C) 2018-2021 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -1184,7 +1184,7 @@ Note that an infix is a special kind of suffix.  Depending on context
      concrete methods are different for different infix command classes.
      In rare cases the above command function might not be suitable,
      even if you define your own infix command class.  In that case you
-     have to use ‘transient-suffix-command’ to define the infix command
+     have to use ‘transient-define-suffix’ to define the infix command
      and use ‘t’ as the value of the ‘:transient’ keyword.
 
  -- Macro: transient-define-argument name arglist [docstring] [keyword
@@ -2521,25 +2521,25 @@ Appendix E Variable Index
 
 Tag Table:
 Node: Top751
-Node: Introduction3674
-Node: Usage9489
-Node: Invoking Transients9857
-Node: Aborting and Resuming Transients10934
-Node: Common Suffix Commands13593
-Node: Saving Values15427
-Ref: Saving Values-Footnote-116685
-Node: Using History16878
-Node: Getting Help for Suffix Commands18517
-Node: Enabling and Disabling Suffixes19910
-Node: Other Commands22948
-Node: Other Options23926
-Node: Modifying Existing Transients31640
-Node: Defining New Commands35034
-Node: Defining Transients35370
-Node: Binding Suffix and Infix Commands37801
-Node: Group Specifications38655
-Node: Suffix Specifications42984
-Node: Defining Suffix and Infix Commands47349
+Node: Introduction3675
+Node: Usage9490
+Node: Invoking Transients9858
+Node: Aborting and Resuming Transients10935
+Node: Common Suffix Commands13594
+Node: Saving Values15428
+Ref: Saving Values-Footnote-116686
+Node: Using History16879
+Node: Getting Help for Suffix Commands18518
+Node: Enabling and Disabling Suffixes19911
+Node: Other Commands22949
+Node: Other Options23927
+Node: Modifying Existing Transients31641
+Node: Defining New Commands35035
+Node: Defining Transients35371
+Node: Binding Suffix and Infix Commands37802
+Node: Group Specifications38656
+Node: Suffix Specifications42985
+Node: Defining Suffix and Infix Commands47350
 Node: Using Infix Arguments50547
 Node: Transient State53379
 Ref: Pre-commands for Infixes57287
