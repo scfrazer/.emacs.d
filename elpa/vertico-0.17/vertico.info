@@ -37,6 +37,7 @@ Problematic completion commands
 
 * org-refile::
 * tmm-menubar::
+* ffap-menu::
 * Tramp hostname completion::
 
 
@@ -54,8 +55,8 @@ compatibility_ with built-in Emacs completion commands and completion
 tables.  Vertico only provides the completion UI but aims to be flexible
 and extensible.  Additional enhancements are available as *note
 extensions: Extensions. or *note complementary packages: Complementary
-packages.  The code base is small and maintainable (‘vertico.el’ is well
-below 1000 lines of code).
+packages.  The code base is small and maintainable (‘vertico.el’ is only
+about 600 lines of code without white space and comments).
 
 
 File: vertico.info,  Node: Features,  Next: Key bindings,  Prev: Introduction,  Up: Top
@@ -182,6 +183,9 @@ configuration:
        ;; Enable recursive minibuffers
        (setq enable-recursive-minibuffers t))
 
+   See also the Vertico Wiki (https://github.com/minad/vertico/wiki) for
+additional configuration tips.
+
 * Menu:
 
 * Completion styles and TAB completion::
@@ -255,13 +259,14 @@ completion-at-point/completion-in-region, you can use the function
                       #'completion--in-region)
                     args)))
 
-   This also affects TAB completion in the minibuffer when ‘M-:’
-(‘eval-expression’) is used.
+   The ‘completion-in-region-function’ setting also affects TAB
+completion in the minibuffer when ‘M-:’ (‘eval-expression’) is used.
 
    You may also want to look into my Corfu
 (https://github.com/minad/corfu) package, which provides a minimal
-completion system for completion-in-region using overlays.  Corfu is
-developed in the same spirit as Vertico.
+completion system for ‘completion-in-region’ in a child frame popup.
+Corfu is also a narrowly focused package and developed in the same
+spirit as Vertico.
 
 
 File: vertico.info,  Node: Completing-read-multiple (CRM),  Prev: Completion-at-point and completion-in-region,  Up: Configuration
@@ -281,56 +286,57 @@ File: vertico.info,  Node: Extensions,  Next: Complementary packages,  Prev: Con
 5 Extensions
 ************
 
-*NOTE*: The extensions currently require manual installation, e.g., via
-‘package-install-file’.  Please ensure that you are using the _newest_
-Vertico commit when using extensions.
-
-   We maintain small extension packages to Vertico in this repository in
+We maintain small extension packages to Vertico in this repository in
 the subdirectory extensions/
 (https://github.com/minad/vertico/tree/main/extensions).  The extensions
-can be installed additionally to Vertico.  Currently these extensions
-are available:
+are installed together with Vertico if you pull the package from ELPA.
+The extensions are of course inactive by default and can be enabled
+manually if desired.  Furthermore it is possible to install all of the
+files separately, both ‘vertico.el’ and the ‘vertico-*.el’ extensions.
+Currently the following extensions come with the Vertico ELPA package:
 
-   • vertico-buffer.el
+   • vertico-buffer
      (https://github.com/minad/vertico/blob/main/extensions/vertico-buffer.el):
      ‘vertico-buffer-mode’ to display Vertico in a separate buffer
-   • vertico-directory.el
+   • vertico-directory
      (https://github.com/minad/vertico/blob/main/extensions/vertico-directory.el):
      Commands for Ido-like directory navigation
-   • vertico-flat.el
+   • vertico-flat
      (https://github.com/minad/vertico/blob/main/extensions/vertico-flat.el):
      ‘vertico-flat-mode’ to enable a flat, horizontal display
-   • vertico-grid.el
+   • vertico-grid
      (https://github.com/minad/vertico/blob/main/extensions/vertico-grid.el):
      ‘vertico-grid-mode’ to enable a grid display
-   • vertico-indexed.el
+   • vertico-indexed
      (https://github.com/minad/vertico/blob/main/extensions/vertico-indexed.el):
      ‘vertico-indexed-mode’ to select indexed candidates with prefix
      arguments
-   • vertico-mouse.el
+   • vertico-mouse
      (https://github.com/minad/vertico/blob/main/extensions/vertico-mouse.el):
      ‘vertico-mouse-mode’ to support for scrolling and candidate
      selection
-   • vertico-quick.el
+   • vertico-quick
      (https://github.com/minad/vertico/blob/main/extensions/vertico-quick.el):
      Commands to select using Avy-style quick keys
-   • vertico-repeat.el
+   • vertico-repeat
      (https://github.com/minad/vertico/blob/main/extensions/vertico-repeat.el):
      The command ‘vertico-repeat’ repeats the last completion session
-   • vertico-reverse.el
+   • vertico-reverse
      (https://github.com/minad/vertico/blob/main/extensions/vertico-reverse.el):
      ‘vertico-reverse-mode’ to reverse the display
 
-   With these extensions it is possible to adapt Vertico heavily such
-that it matches your preference or behaves similar to familiar UIs.  The
-combination ‘vertico-flat’ plus ‘vertico-directory’ resembles Ido in
-look and feel.
+   With these extensions it is possible to adapt Vertico such that it
+matches your preference or behaves similar to other familiar UIs.  For
+example, the combination ‘vertico-flat’ plus ‘vertico-directory’
+resembles Ido in look and feel.  For an interface similar to Helm, the
+extension ‘vertico-buffer’ allows you to configure more freely where the
+completion buffer opens, instead of growing the minibuffer.
 
-   Configuration example for ‘vertico-directory.el’:
+   Configuration example for ‘vertico-directory’:
 
      ;; Configure directory extension.
-     ;; NOTE: The file `vertico-directory.el' must be installed manually.
      (use-package vertico-directory
+       :ensure nil
        ;; More convenient directory navigation commands
        :bind (:map vertico-map
                    ("RET" . vertico-directory-enter)
@@ -483,6 +489,7 @@ require minor workarounds.
 
 * org-refile::
 * tmm-menubar::
+* ffap-menu::
 * Tramp hostname completion::
 
 
@@ -509,7 +516,7 @@ with Orderless.
            org-outline-path-complete-in-steps nil)
 
 
-File: vertico.info,  Node: tmm-menubar,  Next: Tramp hostname completion,  Prev: org-refile,  Up: Problematic completion commands
+File: vertico.info,  Node: tmm-menubar,  Next: ffap-menu,  Prev: org-refile,  Up: Problematic completion commands
 
 9.2 ‘tmm-menubar’
 =================
@@ -521,9 +528,24 @@ This completion buffer can be disabled as follows.
      (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 
 
-File: vertico.info,  Node: Tramp hostname completion,  Prev: tmm-menubar,  Up: Problematic completion commands
+File: vertico.info,  Node: ffap-menu,  Next: Tramp hostname completion,  Prev: tmm-menubar,  Up: Problematic completion commands
 
-9.3 Tramp hostname completion
+9.3 ‘ffap-menu’
+===============
+
+The command ‘ffap-menu’ shows the ‘=*Completions*’ buffer by default
+like ‘tmm-menubar’, which is unnecessary with Vertico.  This completion
+buffer can be disabled as follows.
+
+     (advice-add #'ffap-menu-ask :around (lambda (&rest args)
+                                      (cl-letf (((symbol-function #'minibuffer-completion-help)
+                                                 #'ignore))
+                                        (apply args))))
+
+
+File: vertico.info,  Node: Tramp hostname completion,  Prev: ffap-menu,  Up: Problematic completion commands
+
+9.4 Tramp hostname completion
 =============================
 
 In combination with Orderless, hostnames are not made available for
@@ -564,22 +586,23 @@ copyright assignment to the FSF.
 
 Tag Table:
 Node: Top196
-Node: Introduction842
-Node: Features1612
-Node: Key bindings2499
-Node: Configuration3734
-Node: Completion styles and TAB completion6936
-Node: Completion-at-point and completion-in-region9246
-Node: Completing-read-multiple (CRM)10479
-Node: Extensions10898
-Node: Complementary packages13819
-Node: Child frames and Popups15923
-Node: Alternatives16913
-Node: Problematic completion commands20451
-Node: org-refile20949
-Node: tmm-menubar21881
-Node: Tramp hostname completion22314
-Node: Contributions23628
+Node: Introduction856
+Node: Features1658
+Node: Key bindings2545
+Node: Configuration3780
+Node: Completion styles and TAB completion7087
+Node: Completion-at-point and completion-in-region9397
+Node: Completing-read-multiple (CRM)10722
+Node: Extensions11141
+Node: Complementary packages14250
+Node: Child frames and Popups16354
+Node: Alternatives17344
+Node: Problematic completion commands20882
+Node: org-refile21394
+Node: tmm-menubar22326
+Node: ffap-menu22743
+Node: Tramp hostname completion23376
+Node: Contributions24688
 
 End Tag Table
 

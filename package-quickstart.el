@@ -561,10 +561,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.16/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.17/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.16/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.17/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -589,6 +589,193 @@ ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico" '("vertico-")))
+
+
+
+(defvar vertico-buffer-mode nil "\
+Non-nil if Vertico-Buffer mode is enabled.
+See the `vertico-buffer-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-buffer-mode'.")
+
+(custom-autoload 'vertico-buffer-mode "vertico-buffer" nil)
+
+(autoload 'vertico-buffer-mode "vertico-buffer" "\
+Display Vertico in a buffer instead of the minibuffer.
+
+If called interactively, enable Vertico-Buffer mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-buffer" '("vertico-buffer-")))
+
+
+
+(autoload 'vertico-directory-enter "vertico-directory" "\
+Enter directory or exit completion with current candidate." t nil)
+
+(autoload 'vertico-directory-up "vertico-directory" "\
+Delete directory before point." t nil)
+
+(autoload 'vertico-directory-delete-char "vertico-directory" "\
+Delete directory or char before point." t nil)
+
+(autoload 'vertico-directory-delete-word "vertico-directory" "\
+Delete directory or word before point." t nil)
+
+(autoload 'vertico-directory-tidy "vertico-directory" "\
+Tidy shadowed file name, see `rfn-eshadow-overlay'." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-directory" '("vertico-directory--completing-file-p")))
+
+
+
+(defvar vertico-flat-mode nil "\
+Non-nil if Vertico-Flat mode is enabled.
+See the `vertico-flat-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-flat-mode'.")
+
+(custom-autoload 'vertico-flat-mode "vertico-flat" nil)
+
+(autoload 'vertico-flat-mode "vertico-flat" "\
+Flat, horizontal display for Vertico.
+
+If called interactively, enable Vertico-Flat mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-flat" '("vertico-flat-")))
+
+
+
+(defvar vertico-grid-mode nil "\
+Non-nil if Vertico-Grid mode is enabled.
+See the `vertico-grid-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-grid-mode'.")
+
+(custom-autoload 'vertico-grid-mode "vertico-grid" nil)
+
+(autoload 'vertico-grid-mode "vertico-grid" "\
+Grid display for Vertico.
+
+If called interactively, enable Vertico-Grid mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-grid" '("vertico-grid-")))
+
+
+
+(defvar vertico-indexed-mode nil "\
+Non-nil if Vertico-Indexed mode is enabled.
+See the `vertico-indexed-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-indexed-mode'.")
+
+(custom-autoload 'vertico-indexed-mode "vertico-indexed" nil)
+
+(autoload 'vertico-indexed-mode "vertico-indexed" "\
+Prefix candidates with indices.
+
+If called interactively, enable Vertico-Indexed mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-indexed" '("vertico-indexed--")))
+
+
+
+(defvar vertico-mouse-mode nil "\
+Non-nil if Vertico-Mouse mode is enabled.
+See the `vertico-mouse-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-mouse-mode'.")
+
+(custom-autoload 'vertico-mouse-mode "vertico-mouse" nil)
+
+(autoload 'vertico-mouse-mode "vertico-mouse" "\
+Mouse support for Vertico.
+
+If called interactively, enable Vertico-Mouse mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-mouse" '("vertico-")))
+
+
+
+(autoload 'vertico-quick-jump "vertico-quick" "\
+Jump to candidate using quick keys." t nil)
+
+(autoload 'vertico-quick-exit "vertico-quick" "\
+Exit with candidate using quick keys." t nil)
+
+(autoload 'vertico-quick-insert "vertico-quick" "\
+Insert candidate using quick keys." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-quick" '("vertico-quick")))
+
+
+
+(autoload 'vertico-repeat "vertico-repeat" "\
+Repeat last Vertico completion session." t nil)
+
+(autoload 'vertico-repeat-save "vertico-repeat" "\
+Save Vertico status for `vertico-repeat'.
+This function must be registered as `minibuffer-setup-hook'." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-repeat" '("vertico-repeat--")))
+
+
+
+(defvar vertico-reverse-mode nil "\
+Non-nil if Vertico-Reverse mode is enabled.
+See the `vertico-reverse-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-reverse-mode'.")
+
+(custom-autoload 'vertico-reverse-mode "vertico-reverse" nil)
+
+(autoload 'vertico-reverse-mode "vertico-reverse" "\
+Reverse the Vertico display.
+
+If called interactively, enable Vertico-Reverse mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-reverse" '("vertico-reverse-")))
 
 
 
@@ -1569,10 +1756,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20211129.1412/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20211129.1412/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -3531,7 +3718,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211129.1412" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20211129.1146" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.16" "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20211129.1146" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.17" "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105")
          Info-directory-list)))
 
 ;; Local Variables:

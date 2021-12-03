@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Version: 0.16
+;; Version: 0.17
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/minad/vertico
 
@@ -318,10 +318,6 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 
 (defun vertico--recompute-candidates (pt content)
   "Recompute candidates given PT and CONTENT."
-  ;; Redisplay the minibuffer such that the input becomes immediately
-  ;; visible before the expensive candidate recomputation is performed (Issue #89).
-  ;; Do not redisplay during initialization, since this leads to flicker.
-  (when (consp vertico--input) (redisplay))
   (pcase-let* ((before (substring content 0 pt))
                (after (substring content pt))
                ;; bug#47678: `completion-boundaries` fails for `partial-completion`
@@ -353,7 +349,7 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
     (when completing-file
       (setq all (vertico--filter-files all)))
     ;; Sort using the `display-sort-function' or the Vertico sort functions
-    (setq all (funcall (or (vertico--sort-function) #'identity) all))
+    (setq all (delete-consecutive-dups (funcall (or (vertico--sort-function) #'identity) all)))
     ;; Move special candidates: "field" appears at the top, before "field/", before default value
     (when (stringp def)
       (setq all (vertico--move-to-front def all)))
@@ -417,6 +413,10 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 
 (defun vertico--update-candidates (pt content)
   "Preprocess candidates given PT and CONTENT."
+  ;; Redisplay the minibuffer such that the input becomes immediately
+  ;; visible before the expensive candidate recomputation is performed (Issue #89).
+  ;; Do not redisplay during initialization, since this leads to flicker.
+  (when (consp vertico--input) (redisplay))
   (let ((metadata (completion-metadata (substring content 0 pt)
                                        minibuffer-completion-table
                                        minibuffer-completion-predicate)))
@@ -603,7 +603,7 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
   "Exhibit completion UI."
   (let* ((buffer-undo-list t) ;; Overlays affect point position and undo list!
          (pt (max 0 (- (point) (minibuffer-prompt-end))))
-         (content (minibuffer-contents-no-properties)))
+         (content (minibuffer-contents)))
     (unless (or (input-pending-p) (equal vertico--input (cons content pt)))
       (vertico--update-candidates pt content))
     (vertico--prompt-selection)
@@ -731,7 +731,7 @@ When the prefix argument is 0, the group order is reset."
 
 (defun vertico--candidate (&optional hl)
   "Return current candidate string with optional highlighting if HL is non-nil."
-  (let ((content (minibuffer-contents)))
+  (let ((content (substring (or (car-safe vertico--input) (minibuffer-contents)))))
     (if (>= vertico--index 0)
         (let ((cand (substring (nth vertico--index vertico--candidates))))
           ;;; XXX Drop the completions-common-part face which is added by `completion--twq-all'.
