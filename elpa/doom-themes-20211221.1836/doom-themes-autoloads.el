@@ -94,6 +94,14 @@
 
 ;;;***
 
+;;;### (autoloads nil "doom-earl-grey-theme" "doom-earl-grey-theme.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from doom-earl-grey-theme.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-earl-grey-theme" '("doom-earl-grey")))
+
+;;;***
+
 ;;;### (autoloads nil "doom-ephemeral-theme" "doom-ephemeral-theme.el"
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from doom-ephemeral-theme.el
@@ -190,11 +198,27 @@
 
 ;;;***
 
+;;;### (autoloads nil "doom-material-dark-theme" "doom-material-dark-theme.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from doom-material-dark-theme.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-dark-theme" '("doom-material-")))
+
+;;;***
+
 ;;;### (autoloads nil "doom-material-theme" "doom-material-theme.el"
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from doom-material-theme.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-theme" '("doom-material")))
+
+;;;***
+
+;;;### (autoloads nil "doom-meltbus-theme" "doom-meltbus-theme.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from doom-meltbus-theme.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-meltbus-theme" '("doom-meltbus")))
 
 ;;;***
 
@@ -560,6 +584,14 @@ Blink the mode-line red briefly. Set `ring-bell-function' to this to use it." ni
 
 (autoload 'doom-themes-visual-bell-config "doom-themes-ext-visual-bell" "\
 Enable flashing the mode-line on error." nil nil)
+
+;;;***
+
+;;;### (autoloads nil "doom-tokyo-night-theme" "doom-tokyo-night-theme.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from doom-tokyo-night-theme.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-tokyo-night-theme" '("doom-tokyo-night")))
 
 ;;;***
 

@@ -210,10 +210,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20211226.738/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20211226.738/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -298,10 +298,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20211209.1317/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20211214.227/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20211209.1317/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20211214.227/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -1045,10 +1045,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20211208.1819/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20211226.738/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20211208.1819/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20211226.738/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1112,10 +1112,10 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210804.1943/tango-plus-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20211222.1100/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20210804.1943/tango-plus-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20211222.1100/tango-plus-theme-autoloads.el") (car load-path))))
 
 
 
@@ -2143,10 +2143,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211203.2231/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211226.1046/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211203.2231/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211226.1046/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2753,10 +2753,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20211114.1641/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20211221.1836/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20211114.1641/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20211221.1836/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2801,6 +2801,10 @@ The command run (after changing into DIR) is
 
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-dracula-theme" '("doom-dracula")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-earl-grey-theme" '("doom-earl-grey")))
 
 
 
@@ -2852,7 +2856,15 @@ The command run (after changing into DIR) is
 
 
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-dark-theme" '("doom-material-")))
+
+
+
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-theme" '("doom-material")))
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-meltbus-theme" '("doom-meltbus")))
 
 
 
@@ -3071,6 +3083,10 @@ Blink the mode-line red briefly. Set `ring-bell-function' to this to use it." ni
 
 (autoload 'doom-themes-visual-bell-config "doom-themes-ext-visual-bell" "\
 Enable flashing the mode-line on error." nil nil)
+
+
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-tokyo-night-theme" '("doom-tokyo-night")))
 
 
 
@@ -3718,7 +3734,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20211208.1819" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.17" "/home/scfrazer/.emacs.d/elpa/with-editor-20211028.2105")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20211226.738" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.17" "/home/scfrazer/.emacs.d/elpa/with-editor-20211226.738")
          Info-directory-list)))
 
 ;; Local Variables:

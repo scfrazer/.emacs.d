@@ -49,6 +49,7 @@
     (font-lock-regexp-grouping-construct :inherit 'bold :foreground operators)
     ;;;; mode-line / header-line
     (mode-line           :background bg     :foreground fg     :distant-foreground bg)
+    (mode-line-active    :inherit 'mode-line)
     (mode-line-inactive  :background bg-alt :foreground fg-alt :distant-foreground bg-alt)
     (mode-line-emphasis  :foreground highlight :distant-foreground bg)
     (mode-line-highlight :inherit 'highlight :distant-foreground bg)
@@ -282,6 +283,9 @@
     (company-template-field     :inherit 'match)
     ;;;; company-box
     (company-box-candidate :foreground fg)
+    ;;;; corfu
+    (corfu-background :inherit 'tooltip)
+    (corfu-current :background bg :foreground fg)
     ;;;; circe
     (circe-fool :foreground doc-comments)
     (circe-highlight-nick-face :weight 'bold :foreground constants)

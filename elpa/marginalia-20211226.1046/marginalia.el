@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.10
-;; Package-Version: 20211203.2231
-;; Package-Commit: 2fb2787bc302a5533e09bc558c76eb914e98543b
+;; Package-Version: 20211226.1046
+;; Package-Commit: acbaad4bda9ee2166d55a2ef61521b97170202b3
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -442,6 +442,7 @@ f function
 c command
 C interactive-only command
 m macro
+M special-form
 p pure
 s side-effect-free
 @ autoloaded
@@ -467,7 +468,8 @@ t cl-type"
         ((get s 'side-effect-free) "s"))
        (cond
         ((commandp s) (if (get s 'interactive-only) "C" "c"))
-        ((eq (car-safe (symbol-function s)) 'macro) "m")
+        ((macrop (symbol-function s)) "m")
+        ((special-form-p (symbol-function s)) "M")
         (t "f"))
        (and (autoloadp (symbol-function s)) "@")
        (and (marginalia--advised s) "!")
@@ -511,7 +513,14 @@ t cl-type"
 		   (ignore-errors (documentation sym t))
 		   sym))
 	(substitute-command-keys (car tmp)))
-       (t (help-function-arglist sym))))))
+       ((setq tmp (help-function-arglist sym))
+        (and
+         (if (and (stringp tmp)
+                  (string-match-p "Arg list not available" tmp))
+             ;; A shorter text fits better into the
+             ;; limited Marginalia space.
+             "[autoload]"
+           tmp)))))))
 
 (defun marginalia-annotate-symbol (cand)
   "Annotate symbol CAND with its documentation string."
@@ -550,7 +559,7 @@ keybinding since CAND includes it."
 (defun marginalia-annotate-function (cand)
   "Annotate function CAND with its documentation string."
   (when-let (sym (intern-soft cand))
-    (when (functionp sym)
+    (when (fboundp sym)
       (concat
        (marginalia-annotate-binding cand)
        (marginalia--fields
@@ -567,11 +576,10 @@ keybinding since CAND includes it."
     (propertize "#<unbound>" 'face 'marginalia-null))
    ((and marginalia-censor-variables
          (let ((name (symbol-name sym)))
-           (seq-find (lambda (r)
-                       (if (symbolp r)
-                           (eq r sym)
-                         (string-match-p r name)))
-                     marginalia-censor-variables)))
+           (cl-loop for r in marginalia-censor-variables
+                    thereis (if (symbolp r)
+                                (eq r sym)
+                              (string-match-p r name)))))
     (propertize "*****" 'face 'marginalia-null))
    (t (let ((val (symbol-value sym)))
         (pcase val
@@ -584,8 +592,6 @@ keybinding since CAND includes it."
           ;; Emacs BUG: abbrev-table-p throws an error
           ((guard (ignore-errors (abbrev-table-p val))) (propertize "#<abbrev-table>" 'face 'marginalia-value))
           ((pred char-table-p) (propertize "#<char-table>" 'face 'marginalia-value))
-          ((guard (and (fboundp 'subr-native-elisp-p) (subr-native-elisp-p val)))
-           (propertize "#<native-code-function>" 'face 'marginalia-function))
           ((pred byte-code-function-p) (propertize "#<byte-code-function>" 'face 'marginalia-function))
           ((and (pred functionp) (pred symbolp))
            ;; NOTE: We are not consistent here, values are generally printed unquoted. But we
@@ -974,7 +980,12 @@ looking for a regexp that matches the prompt."
     ;; Take the window width of the current window (minibuffer window!)
     `(let ((marginalia--metadata ,metadata)
            (,c marginalia--cache)
-           (,w (window-width))
+           ;; Compute minimum width of windows, which display the minibuffer.
+           ;; vertico-buffer displays the minibuffer in different windows. We may
+           ;; want to generalize this and detect other types of completion
+           ;; buffers, e.g., Embark Collect or the default completion buffer.
+           (,w (cl-loop for win in (get-buffer-window-list)
+                        minimize (window-width win)))
            ;; Compute marginalia-align-offset. If the right-fringe-width is
            ;; zero, use an additional offset of 1 by default! See
            ;; https://github.com/minad/marginalia/issues/42 for the discussion
