@@ -210,10 +210,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220101.1316/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220107.1056/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220101.1316/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220107.1056/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -561,10 +561,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.18/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.19/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.18/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.19/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -800,6 +800,30 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-reverse" '("vertico-reverse-")))
+
+
+
+(defvar vertico-unobtrusive-mode nil "\
+Non-nil if Vertico-Unobtrusive mode is enabled.
+See the `vertico-unobtrusive-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vertico-unobtrusive-mode'.")
+
+(custom-autoload 'vertico-unobtrusive-mode "vertico-unobtrusive" nil)
+
+(autoload 'vertico-unobtrusive-mode "vertico-unobtrusive" "\
+Unobtrusive display for Vertico.
+
+If called interactively, enable Vertico-Unobtrusive mode if ARG
+is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-unobtrusive" '("vertico-unobtrusive--orig-count")))
 
 
 
@@ -2124,10 +2148,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20211022.55/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220110.1204/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20211022.55/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220110.1204/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2167,10 +2191,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20211231.939/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220110.1143/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20211231.939/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220110.1143/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3758,7 +3782,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20220105.1210" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.18" "/home/scfrazer/.emacs.d/elpa/with-editor-20220101.1316")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20211130.102" "/home/scfrazer/.emacs.d/elpa/rg-20211113.1958" "/home/scfrazer/.emacs.d/elpa/transient-20220105.1210" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.19" "/home/scfrazer/.emacs.d/elpa/with-editor-20220107.1056")
          Info-directory-list)))
 
 ;; Local Variables:
