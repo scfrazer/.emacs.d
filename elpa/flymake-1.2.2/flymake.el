@@ -1,10 +1,10 @@
 ;;; flymake.el --- A universal on-the-fly syntax checker  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2021 Free Software Foundation, Inc.
+;; Copyright (C) 2003-2022 Free Software Foundation, Inc.
 
 ;; Author: Pavel Kobyakov <pk_at_work@yahoo.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
-;; Version: 1.2.1
+;; Version: 1.2.2
 ;; Keywords: c languages tools
 ;; Package-Requires: ((emacs "26.1") (eldoc "1.1.0") (project "0.7.1"))
 
@@ -266,7 +266,9 @@ If set to nil, don't suppress any zero counters."
         (warning-type-format
          (format " [%s %s]"
                  (or sublog 'flymake)
-                 (current-buffer))))
+                 ;; Handle file names with "%" correctly.  (Bug#51549)
+                 (replace-regexp-in-string "%" "%%"
+                                           (buffer-name (current-buffer))))))
     (display-warning (list 'flymake sublog)
                      (apply #'format-message msg args)
                      (if (numberp level)
@@ -330,7 +332,7 @@ retrieval with `flymake-diagnostic-data'.
 If LOCUS is a buffer BEG and END should be buffer positions
 inside it.  If LOCUS designates a file, BEG and END should be a
 cons (LINE . COL) indicating a file position.  In this second
-case, END may be ommited in which case the region is computed
+case, END may be omitted in which case the region is computed
 using `flymake-diag-region' if the diagnostic is appended to an
 actual buffer.
 
@@ -559,7 +561,7 @@ Currently accepted REPORT-KEY arguments are:
 (put :warning 'flymake-category 'flymake-warning)
 (put :note 'flymake-category 'flymake-note)
 
-(defvar flymake-diagnostic-types-alist '() "")
+(defvar flymake-diagnostic-types-alist '())
 (make-obsolete-variable
  'flymake-diagnostic-types-alist
  "Set properties on the diagnostic symbols instead.  See Info
@@ -803,12 +805,7 @@ collections of diagnostics outside the buffer where this
 (cl-defun flymake--handle-report
     (backend token report-action
              &key explanation force region
-             &allow-other-keys
-             &aux
-             (state (or (gethash backend flymake--state)
-                        (error "Can't find state for %s in `flymake--state'"
-                               backend)))
-             expected-token)
+             &allow-other-keys)
   "Handle reports from BACKEND identified by TOKEN.
 BACKEND, REPORT-ACTION and EXPLANATION, and FORCE conform to the
 calling convention described in
@@ -816,41 +813,45 @@ calling convention described in
 to handle a report even if TOKEN was not expected.  REGION is
 a (BEG . END) pair of buffer positions indicating that this
 report applies to that region."
-  (cond
-   ((null state)
-    (flymake-error
-     "Unexpected report from unknown backend %s" backend))
-   ((flymake--state-disabled state)
-    (flymake-error
-     "Unexpected report from disabled backend %s" backend))
-   ((progn
-      (setq expected-token (flymake--state-running state))
-      (null expected-token))
-    ;; should never happen
-    (flymake-error "Unexpected report from stopped backend %s" backend))
-   ((not (or (eq expected-token token)
-             force))
-    (flymake-error "Obsolete report from backend %s with explanation %s"
-                   backend explanation))
-   ((eq :panic report-action)
-    (flymake--disable-backend backend explanation))
-   ((not (listp report-action))
-    (flymake--disable-backend backend
-                              (format "Unknown action %S" report-action))
-    (flymake-error "Expected report, but got unknown key %s" report-action))
-   (t
-    (flymake--publish-diagnostics report-action
-                                  :backend backend
-                                  :state state
-                                  :region region)
-    (when flymake-check-start-time
-      (flymake-log :debug "backend %s reported %d diagnostics in %.2f second(s)"
-                   backend
-                   (length report-action)
-                   (float-time
-                    (time-since flymake-check-start-time))))))
-  (setf (flymake--state-reported-p state) t)
-  (flymake--update-diagnostics-listings (current-buffer)))
+  (let ((state (or (gethash backend flymake--state)
+                   (error "Can't find state for %s in `flymake--state'"
+                          backend)))
+        expected-token)
+    (cond
+     ((null state)
+      (flymake-error
+       "Unexpected report from unknown backend %s" backend))
+     ((flymake--state-disabled state)
+      (flymake-error
+       "Unexpected report from disabled backend %s" backend))
+     ((progn
+        (setq expected-token (flymake--state-running state))
+        (null expected-token))
+      ;; should never happen
+      (flymake-error "Unexpected report from stopped backend %s" backend))
+     ((not (or (eq expected-token token)
+               force))
+      (flymake-error "Obsolete report from backend %s with explanation %s"
+                     backend explanation))
+     ((eq :panic report-action)
+      (flymake--disable-backend backend explanation))
+     ((not (listp report-action))
+      (flymake--disable-backend backend
+                                (format "Unknown action %S" report-action))
+      (flymake-error "Expected report, but got unknown key %s" report-action))
+     (t
+      (flymake--publish-diagnostics report-action
+                                    :backend backend
+                                    :state state
+                                    :region region)
+      (when flymake-check-start-time
+        (flymake-log :debug "backend %s reported %d diagnostics in %.2f second(s)"
+                     backend
+                     (length report-action)
+                     (float-time
+                      (time-since flymake-check-start-time))))))
+    (setf (flymake--state-reported-p state) t)
+    (flymake--update-diagnostics-listings (current-buffer))))
 
 (defun flymake--clear-foreign-diags (state)
   (maphash (lambda (_buffer diags)
@@ -869,7 +870,7 @@ and other buffers."
   (dolist (d diags) (setf (flymake--diag-backend d) backend))
   (save-restriction
     (widen)
-    ;; First, clean up.  Remove diagnostics from bookeeping lists and
+    ;; First, clean up.  Remove diagnostics from bookkeeping lists and
     ;; their overlays from buffers.
     ;;
     (cond
@@ -1330,12 +1331,12 @@ default) no filter is applied."
 
 ;;; Mode-line and menu
 ;;;
-(easy-menu-define flymake-menu flymake-mode-map "Flymake"
+(easy-menu-define flymake-menu flymake-mode-map "Flymake menu."
   '("Flymake"
     [ "Go to next problem"      flymake-goto-next-error t ]
     [ "Go to previous problem"  flymake-goto-prev-error t ]
     [ "Check now"               flymake-start t ]
-    [ "List all problems"       flymake-show-diagnostics-buffer t ]
+    [ "List all problems"       flymake-show-buffer-diagnostics t ]
     "--"
     [ "Go to log buffer"        flymake-switch-to-log-buffer t ]
     [ "Turn off Flymake"        flymake-mode t ]))
@@ -1600,7 +1601,7 @@ buffer."
   ;; been set to a valid buffer.  This could happen when this function
   ;; is called too early.  For example 'global-display-line-numbers-mode'
   ;; calls us from its mode hook, when the diagnostic buffer has just
-  ;; been created by 'flymake-show-diagnostics-buffer', but is not yet
+  ;; been created by 'flymake-show-buffer-diagnostics', but is not yet
   ;; set up properly (Bug#40529).
   (when (bufferp flymake--diagnostics-buffer-source)
     (with-current-buffer flymake--diagnostics-buffer-source
@@ -1655,7 +1656,7 @@ buffer."
   "Diagnostics list meant for listing, not highlighting.
 This variable holds an alist ((FILE-NAME . DIAGS) ...) where
 FILE-NAME is a string holding an absolute file name and DIAGS is
-a list of diagnostic objects created with with
+a list of diagnostic objects created with
 `flymake-make-diagnostic'.  These diagnostics are never annotated
 as overlays in actual buffers: they merely serve as temporary
 stand-ins for more accurate diagnostics that are produced once
@@ -1748,7 +1749,7 @@ some of this variable's contents the diagnostic listings.")
       (revert-buffer))))
 
 (defun flymake--update-diagnostics-listings (buffer)
-  "Update diagnostics listings somehow relevant to BUFFER"
+  "Update diagnostics listings somehow relevant to BUFFER."
   (dolist (probe (buffer-list))
     (with-current-buffer probe
       (when (or (and (eq major-mode 'flymake-project-diagnostics-mode)

@@ -30,7 +30,7 @@ retrieval with `flymake-diagnostic-data'.
 If LOCUS is a buffer BEG and END should be buffer positions
 inside it.  If LOCUS designates a file, BEG and END should be a
 cons (LINE . COL) indicating a file position.  In this second
-case, END may be ommited in which case the region is computed
+case, END may be omitted in which case the region is computed
 using `flymake-diag-region' if the diagnostic is appended to an
 actual buffer.
 
