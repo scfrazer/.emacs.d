@@ -43,7 +43,7 @@ a value in `ivy-re-builders-alist'.
 
 \(fn STR)" nil nil)
 
-(with-eval-after-load 'ivy (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight)))
+(with-eval-after-load 'ivy (defvar ivy-highlight-functions-alist) (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight)))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless" '("orderless-")))
 
