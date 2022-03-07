@@ -11,11 +11,27 @@
 
 (autoload 'xref-find-backend "xref" nil nil nil)
 
-(autoload 'xref-pop-marker-stack "xref" "\
-Pop back to where \\[xref-find-definitions] was last invoked." t nil)
+(define-obsolete-function-alias 'xref-pop-marker-stack #'xref-go-back "29.1")
+
+(autoload 'xref-go-back "xref" "\
+Go back to the previous position in xref history.
+To undo, use \\[xref-go-forward]." t nil)
+
+(autoload 'xref-go-forward "xref" "\
+Got to the point where a previous \\[xref-go-back] was invoked." t nil)
 
 (autoload 'xref-marker-stack-empty-p "xref" "\
-Return t if the marker stack is empty; nil otherwise." nil nil)
+Whether the xref back-history is empty." nil nil)
+
+(autoload 'xref-forward-history-empty-p "xref" "\
+Whether the xref forward-history is empty." nil nil)
+
+(autoload 'xref-show-xrefs "xref" "\
+Display some Xref values produced by FETCHER using DISPLAY-ACTION.
+The meanings of both arguments are the same as documented in
+`xref-show-xrefs-function'.
+
+\(fn FETCHER DISPLAY-ACTION)" nil nil)
 
 (autoload 'xref-find-definitions "xref" "\
 Find the definition of the identifier at point.
@@ -27,7 +43,7 @@ definition for IDENTIFIER, display it in the selected window.
 Otherwise, display the list of the possible definitions in a
 buffer where the user can select from the list.
 
-Use \\[xref-pop-marker-stack] to return back to where you invoked this command.
+Use \\[xref-go-back] to return back to where you invoked this command.
 
 \(fn IDENTIFIER)" t nil)
 
@@ -71,7 +87,8 @@ output of this command when the backend is etags.
 
 \(fn PATTERN)" t nil)
  (define-key esc-map "." #'xref-find-definitions)
- (define-key esc-map "," #'xref-pop-marker-stack)
+ (define-key esc-map "," #'xref-go-back)
+ (define-key esc-map [?\C-,] #'xref-go-forward)
  (define-key esc-map "?" #'xref-find-references)
  (define-key esc-map [?\C-.] #'xref-find-apropos)
  (define-key ctl-x-4-map "." #'xref-find-definitions-other-window)

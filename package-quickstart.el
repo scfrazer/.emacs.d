@@ -25,20 +25,36 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.3.2/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.4.1/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.3.2/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.4.1/xref-autoloads.el") (car load-path))))
 
 
 
 (autoload 'xref-find-backend "xref" nil nil nil)
 
-(autoload 'xref-pop-marker-stack "xref" "\
-Pop back to where \\[xref-find-definitions] was last invoked." t nil)
+(define-obsolete-function-alias 'xref-pop-marker-stack #'xref-go-back "29.1")
+
+(autoload 'xref-go-back "xref" "\
+Go back to the previous position in xref history.
+To undo, use \\[xref-go-forward]." t nil)
+
+(autoload 'xref-go-forward "xref" "\
+Got to the point where a previous \\[xref-go-back] was invoked." t nil)
 
 (autoload 'xref-marker-stack-empty-p "xref" "\
-Return t if the marker stack is empty; nil otherwise." nil nil)
+Whether the xref back-history is empty." nil nil)
+
+(autoload 'xref-forward-history-empty-p "xref" "\
+Whether the xref forward-history is empty." nil nil)
+
+(autoload 'xref-show-xrefs "xref" "\
+Display some Xref values produced by FETCHER using DISPLAY-ACTION.
+The meanings of both arguments are the same as documented in
+`xref-show-xrefs-function'.
+
+\(fn FETCHER DISPLAY-ACTION)" nil nil)
 
 (autoload 'xref-find-definitions "xref" "\
 Find the definition of the identifier at point.
@@ -50,7 +66,7 @@ definition for IDENTIFIER, display it in the selected window.
 Otherwise, display the list of the possible definitions in a
 buffer where the user can select from the list.
 
-Use \\[xref-pop-marker-stack] to return back to where you invoked this command.
+Use \\[xref-go-back] to return back to where you invoked this command.
 
 \(fn IDENTIFIER)" t nil)
 
@@ -94,7 +110,8 @@ output of this command when the backend is etags.
 
 \(fn PATTERN)" t nil)
  (define-key esc-map "." #'xref-find-definitions)
- (define-key esc-map "," #'xref-pop-marker-stack)
+ (define-key esc-map "," #'xref-go-back)
+ (define-key esc-map [?\C-,] #'xref-go-forward)
  (define-key esc-map "?" #'xref-find-references)
  (define-key esc-map [?\C-.] #'xref-find-apropos)
  (define-key ctl-x-4-map "." #'xref-find-definitions-other-window)
@@ -510,10 +527,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220119.1026/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220227.1557/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220119.1026/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220227.1557/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1093,10 +1110,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220130.1941/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220130.1941/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2187,10 +2204,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220215.925/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220301.1104/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220215.925/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220301.1104/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2797,10 +2814,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220214.2356/doom-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220222.2326/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220214.2356/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220222.2326/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3778,7 +3795,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356" "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228" "/home/scfrazer/.emacs.d/elpa/transient-20220130.1941" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.20" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356" "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228" "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.20" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
          Info-directory-list)))
 
 ;; Local Variables:

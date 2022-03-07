@@ -1,7 +1,7 @@
 ;;; xref.el --- Cross-referencing commands              -*-lexical-binding:t-*-
 
-;; Copyright (C) 2014-2021 Free Software Foundation, Inc.
-;; Version: 1.3.2
+;; Copyright (C) 2014-2022 Free Software Foundation, Inc.
+;; Version: 1.4.1
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This is a GNU ELPA :core package.  Avoid functionality that is not
@@ -44,7 +44,7 @@
 ;;
 ;; The last three methods operate with "xref" and "location" values.
 ;;
-;; One would usually call `make-xref' and `xref-make-file-location',
+;; One would usually call `xref-make' and `xref-make-file-location',
 ;; `xref-make-buffer-location' or `xref-make-bogus-location' to create
 ;; them.  More generally, a location must be an instance of a type for
 ;; which methods `xref-location-group' and `xref-location-marker' are
@@ -118,16 +118,16 @@ When it is a file name, it should be the \"expanded\" version.")
 (defcustom xref-file-name-display 'project-relative
   "Style of file name display in *xref* buffers.
 
-If the value is the symbol `abs', the default, show the file names
-in their full absolute form.
+If the value is the symbol `abs', show the file names in their
+full absolute form.
 
 If `nondirectory', show only the nondirectory (a.k.a. \"base name\")
 part of the file name.
 
-If `project-relative', show only the file name relative to the
-current project root.  If there is no current project, or if the
-file resides outside of its root, show that particular file name
-in its full absolute form."
+If `project-relative', the default, show only the file name
+relative to the current project root.  If there is no current
+project, or if the file resides outside of its root, show that
+particular file name in its full absolute form."
   :type '(choice (const :tag "absolute file name" abs)
                  (const :tag "nondirectory file name" nondirectory)
                  (const :tag "relative to project root" project-relative))
@@ -206,7 +206,19 @@ is not known."
                   (:constructor xref-make (summary location))
                   (:noinline t))
   "An xref item describes a reference to a location somewhere."
-  summary location)
+  (summary nil :documentation "String which describes the location.
+
+When `xref-location-line' returns non-nil (a number), the summary
+is implied to be the contents of a file or buffer line containing
+the location.  When multiple locations in a row report the same
+line, in the same group (corresponding to the case of multiple
+locations on one line), the summaries are concatenated in the
+Xref output buffer.  Consequently, any code that creates xref
+values should take care to slice the summary values when several
+locations point to the same line.
+
+This behavior is new in Emacs 28.")
+  location)
 
 (xref--defstruct (xref-match-item
                   (:include xref-item)
@@ -341,15 +353,9 @@ backward."
           (t (goto-char start) nil))))
 
 
-;;; Marker stack  (M-. pushes, M-, pops)
-
-(defcustom xref-marker-ring-length 16
-  "Length of the xref marker ring.
-If this variable is not set through Customize, you must call
-`xref-set-marker-ring-length' for changes to take effect."
-  :type 'integer
-  :initialize #'custom-initialize-default
-  :set #'xref-set-marker-ring-length)
+;; Dummy variable retained for compatibility.
+(defvar xref-marker-ring-length 16)
+(make-obsolete-variable 'xref-marker-ring-length nil "29.1")
 
 (defcustom xref-prompt-for-identifier '(not xref-find-definitions
                                             xref-find-definitions-other-window
@@ -420,42 +426,77 @@ or earlier: it can break `dired-do-find-regexp-and-replace'."
   :version "28.1"
   :package-version '(xref . "1.2.0"))
 
-(defvar xref--marker-ring (make-ring xref-marker-ring-length)
-  "Ring of markers to implement the marker stack.")
+(make-obsolete-variable 'xref--marker-ring 'xref--history "29.1")
 
-(defun xref-set-marker-ring-length (var val)
-  "Set `xref-marker-ring-length'.
-VAR is the symbol `xref-marker-ring-length' and VAL is the new
-value."
-  (set-default var val)
-  (if (ring-p xref--marker-ring)
-      (ring-resize xref--marker-ring val)))
+(defun xref-set-marker-ring-length (_var _val)
+  (declare (obsolete nil "29.1"))
+  nil)
+
+(defvar xref--history (cons nil nil)
+  "(BACKWARD-STACK . FORWARD-STACK) of markers to visited Xref locations.")
+
+(defun xref--push-backward (m)
+  "Push marker M onto the backward history stack."
+  (unless (equal m (caar xref--history))
+    (push m (car xref--history))))
+
+(defun xref--push-forward (m)
+  "Push marker M onto the forward history stack."
+  (unless (equal m (cadr xref--history))
+    (push m (cdr xref--history))))
 
 (defun xref-push-marker-stack (&optional m)
-  "Add point M (defaults to `point-marker') to the marker stack."
-  (ring-insert xref--marker-ring (or m (point-marker))))
+  "Add point M (defaults to `point-marker') to the marker stack.
+The future stack is erased."
+  (xref--push-backward (or m (point-marker)))
+  (dolist (mk (cdr xref--history))
+    (set-marker mk nil nil))
+  (setcdr xref--history nil))
 
 ;;;###autoload
-(defun xref-pop-marker-stack ()
-  "Pop back to where \\[xref-find-definitions] was last invoked."
+(define-obsolete-function-alias 'xref-pop-marker-stack #'xref-go-back "29.1")
+
+;;;###autoload
+(defun xref-go-back ()
+  "Go back to the previous position in xref history.
+To undo, use \\[xref-go-forward]."
   (interactive)
-  (let ((ring xref--marker-ring))
-    (when (ring-empty-p ring)
-      (user-error "Marker stack is empty"))
-    (let ((marker (ring-remove ring 0)))
+  (if (null (car xref--history))
+      (user-error "At start of xref history")
+    (let ((marker (pop (car xref--history))))
+      (xref--push-forward (point-marker))
       (switch-to-buffer (or (marker-buffer marker)
                             (user-error "The marked buffer has been deleted")))
       (goto-char (marker-position marker))
       (set-marker marker nil nil)
       (run-hooks 'xref-after-return-hook))))
 
-(defvar xref--current-item nil)
+;;;###autoload
+(defun xref-go-forward ()
+  "Got to the point where a previous \\[xref-go-back] was invoked."
+  (interactive)
+  (if (null (cdr xref--history))
+      (user-error "At end of xref history")
+    (let ((marker (pop (cdr xref--history))))
+      (xref--push-backward (point-marker))
+      (switch-to-buffer (or (marker-buffer marker)
+                            (user-error "The marked buffer has been deleted")))
+      (goto-char (marker-position marker))
+      (set-marker marker nil nil)
+      (run-hooks 'xref-after-return-hook))))
+
+(define-obsolete-variable-alias
+  'xref--current-item
+  'xref-current-item
+  "29.1")
+
+(defvar xref-current-item nil)
 
 (defun xref-pulse-momentarily ()
   (pcase-let ((`(,beg . ,end)
                (save-excursion
                  (or
-                  (let ((length (xref-match-length xref--current-item)))
+                  (let ((length (xref-match-length xref-current-item)))
                     (and length (cons (point) (+ (point) length))))
                   (back-to-indentation)
                   (if (eolp)
@@ -465,17 +506,23 @@ value."
 
 ;; etags.el needs this
 (defun xref-clear-marker-stack ()
-  "Discard all markers from the marker stack."
-  (let ((ring xref--marker-ring))
-    (while (not (ring-empty-p ring))
-      (let ((marker (ring-remove ring)))
-        (set-marker marker nil nil)))))
+  "Discard all markers from the xref history."
+  (dolist (l (list (car xref--history) (cdr xref--history)))
+    (dolist (m l)
+      (set-marker m nil nil)))
+  (setq xref--history (cons nil nil))
+  nil)
 
 ;;;###autoload
 (defun xref-marker-stack-empty-p ()
-  "Return t if the marker stack is empty; nil otherwise."
-  (ring-empty-p xref--marker-ring))
+  "Whether the xref back-history is empty."
+  (null (car xref--history)))
+;; FIXME: rename this to `xref-back-history-empty-p'.
 
+;;;###autoload
+(defun xref-forward-history-empty-p ()
+  "Whether the xref forward-history is empty."
+  (null (cdr xref--history)))
 
 
 (defun xref--goto-char (pos)
@@ -506,7 +553,7 @@ If SELECT is non-nil, select the target window."
       (window (pop-to-buffer buf t))
       (frame  (let ((pop-up-frames t)) (pop-to-buffer buf t))))
     (xref--goto-char marker))
-  (let ((xref--current-item item))
+  (let ((xref-current-item item))
     (run-hooks 'xref-after-jump-hook)))
 
 
@@ -614,7 +661,7 @@ SELECT is `quit', also quit the *xref* window."
   "Display the source of xref at point in the appropriate window, if any."
   (interactive)
   (let* ((xref (xref--item-at-point))
-         (xref--current-item xref))
+         (xref-current-item xref))
     (when xref
       (xref--set-arrow)
       (xref--show-location (xref-item-location xref)))))
@@ -673,7 +720,7 @@ quit the *xref* buffer."
   (let* ((buffer (current-buffer))
          (xref (or (xref--item-at-point)
                    (user-error "Choose a reference to visit")))
-         (xref--current-item xref))
+         (xref-current-item xref))
     (xref--set-arrow)
     (xref--show-location (xref-item-location xref) (if quit 'quit t))
     (if (fboundp 'next-error-found)
@@ -690,17 +737,26 @@ quit the *xref* buffer."
   "Quit *xref* buffer, then pop the xref marker stack."
   (interactive)
   (quit-window)
-  (xref-pop-marker-stack))
+  (xref-go-back))
 
 (defun xref-query-replace-in-results (from to)
   "Perform interactive replacement of FROM with TO in all displayed xrefs.
 
 This command interactively replaces FROM with TO in the names of the
-references displayed in the current *xref* buffer."
+references displayed in the current *xref* buffer.
+
+When called interactively, it uses '.*' as FROM, which means
+replace the whole name.  Unless called with prefix argument, in
+which case the user is prompted for both FROM and TO."
   (interactive
-   (let ((fr (read-regexp "Xref query-replace (regexp)" ".*")))
-     (list fr
-           (read-regexp (format "Xref query-replace (regexp) %s with: " fr)))))
+   (let* ((fr
+           (if current-prefix-arg
+               (read-regexp "Query-replace (regexp)" ".*")
+             ".*"))
+          (prompt (if current-prefix-arg
+                      (format "Query-replace (regexp) %s with: " fr)
+                    "Query-replace all matches with: ")))
+     (list fr (read-regexp prompt))))
   (let* (item xrefs iter)
     (save-excursion
       (while (setq item (xref--search-property 'xref-item))
@@ -894,7 +950,7 @@ beginning of the line."
            (let ((win (get-buffer-window (current-buffer))))
              (and win (set-window-point win (point))))
            (xref--set-arrow)
-           (let ((xref--current-item xref))
+           (let ((xref-current-item xref))
              (xref--show-location (xref-item-location xref) t)))
           (t
            (error "No %s xref" (if backward "previous" "next"))))))
@@ -1008,7 +1064,7 @@ GROUP is a string for decoration purposes and XREF is an
   (run-hooks 'xref-after-update-hook))
 
 (defun xref--group-name-for-display (group project-root)
-  "Return GROUP formatted in the prefered style.
+  "Return GROUP formatted in the preferred style.
 
 The style is determined by the value of `xref-file-name-display'.
 If GROUP looks like a file name, its value is formatted according
@@ -1051,6 +1107,13 @@ Return an alist of the form ((GROUP . (XREF ...)) ...)."
              (cdr pair)))
      alist)))
 
+(defun xref--ensure-default-directory (dd buffer)
+  ;; We might be in a let-binding which will restore the current value
+  ;; to a previous one (bug#53626).  So do this later.
+  (run-with-timer
+   0 nil
+   (lambda () (with-current-buffer buffer (setq default-directory dd)))))
+
 (defun xref--show-xref-buffer (fetcher alist)
   (cl-assert (functionp fetcher))
   (let* ((xrefs
@@ -1061,7 +1124,7 @@ Return an alist of the form ((GROUP . (XREF ...)) ...)."
          (dd default-directory)
          buf)
     (with-current-buffer (get-buffer-create xref-buffer-name)
-      (setq default-directory dd)
+      (xref--ensure-default-directory dd (current-buffer))
       (xref--xref-buffer-mode)
       (xref--show-common-initialize xref-alist fetcher alist)
       (pop-to-buffer (current-buffer))
@@ -1160,7 +1223,7 @@ local keymap that binds `RET' to `xref-quit-and-goto-xref'."
                             (assoc-default 'display-action alist)))
      (t
       (with-current-buffer (get-buffer-create xref-buffer-name)
-        (setq default-directory dd)
+        (xref--ensure-default-directory dd (current-buffer))
         (xref--transient-buffer-mode)
         (xref--show-common-initialize (xref--analyze xrefs) fetcher alist)
         (pop-to-buffer (current-buffer)
@@ -1284,6 +1347,13 @@ definitions."
 
 (defvar xref--read-pattern-history nil)
 
+;;;###autoload
+(defun xref-show-xrefs (fetcher display-action)
+  "Display some Xref values produced by FETCHER using DISPLAY-ACTION.
+The meanings of both arguments are the same as documented in
+`xref-show-xrefs-function'."
+  (xref--show-xrefs fetcher display-action))
+
 (defun xref--show-xrefs (fetcher display-action &optional _always-show-list)
   (xref--push-markers)
   (unless (functionp fetcher)
@@ -1400,7 +1470,7 @@ definition for IDENTIFIER, display it in the selected window.
 Otherwise, display the list of the possible definitions in a
 buffer where the user can select from the list.
 
-Use \\[xref-pop-marker-stack] to return back to where you invoked this command."
+Use \\[xref-go-back] to return back to where you invoked this command."
   (interactive (list (xref--read-identifier "Find definitions of: ")))
   (xref--find-definitions identifier nil))
 
@@ -1426,6 +1496,23 @@ always prompt for the identifier.  If `xref-prompt-for-identifier'
 is nil, prompt only if there's no usable symbol at point."
   (interactive (list (xref--read-identifier "Find references of: ")))
   (xref--find-xrefs identifier 'references identifier nil))
+
+(defun xref-find-references-and-replace (from to)
+  "Replace all references to identifier FROM with TO."
+  (interactive
+   (let* ((query-replace-read-from-default 'find-tag-default)
+          (common
+           (query-replace-read-args "Query replace identifier" nil)))
+     (list (nth 0 common) (nth 1 common))))
+  (require 'xref)
+  (with-current-buffer
+      (let ((xref-show-xrefs-function
+             ;; Some future-proofing (bug#44905).
+             (custom--standard-value 'xref-show-xrefs-function))
+            ;; Disable auto-jumping, it will mess up replacement logic.
+            xref-auto-jump-to-first-xref)
+        (xref-find-references from))
+    (xref-query-replace-in-results ".*" to)))
 
 ;;;###autoload
 (defun xref-find-definitions-at-mouse (event)
@@ -1491,7 +1578,8 @@ output of this command when the backend is etags."
 ;;; Key bindings
 
 ;;;###autoload (define-key esc-map "." #'xref-find-definitions)
-;;;###autoload (define-key esc-map "," #'xref-pop-marker-stack)
+;;;###autoload (define-key esc-map "," #'xref-go-back)
+;;;###autoload (define-key esc-map [?\C-,] #'xref-go-forward)
 ;;;###autoload (define-key esc-map "?" #'xref-find-references)
 ;;;###autoload (define-key esc-map [?\C-.] #'xref-find-apropos)
 ;;;###autoload (define-key ctl-x-4-map "." #'xref-find-definitions-other-window)
@@ -1626,7 +1714,7 @@ IGNORES is a list of glob patterns for files to ignore."
     (ripgrep
      .
      ;; '!*/' is there to filter out dirs (e.g. submodules).
-     "xargs -0 rg <C> --null -nH --no-messages -g '!*/' -e <R>"
+     "xargs -0 rg <C> --null -nH --no-heading --no-messages -g '!*/' -e <R>"
      ))
   "Associative list mapping program identifiers to command templates.
 
@@ -1835,21 +1923,22 @@ Such as the current syntax table and the applied syntax properties."
 
 (defvar xref--last-file-buffer nil)
 (defvar xref--temp-buffer-file-name nil)
+(defvar xref--hits-remote-id nil)
 
 (defun xref--convert-hits (hits regexp)
   (let (xref--last-file-buffer
         (tmp-buffer (generate-new-buffer " *xref-temp*"))
-        (remote-id (file-remote-p default-directory))
+        (xref--hits-remote-id (file-remote-p default-directory))
         (syntax-needed (xref--regexp-syntax-dependent-p regexp)))
     (unwind-protect
         (mapcan (lambda (hit)
-                  (xref--collect-matches hit regexp tmp-buffer remote-id syntax-needed))
+                  (xref--collect-matches hit regexp tmp-buffer syntax-needed))
                 hits)
       (kill-buffer tmp-buffer))))
 
-(defun xref--collect-matches (hit regexp tmp-buffer remote-id syntax-needed)
+(defun xref--collect-matches (hit regexp tmp-buffer syntax-needed)
   (pcase-let* ((`(,line ,file ,text) hit)
-               (file (and file (concat remote-id file)))
+               (file (and file (concat xref--hits-remote-id file)))
                (buf (xref--find-file-buffer file))
                (inhibit-modification-hooks t))
     (if buf
@@ -1922,10 +2011,17 @@ Such as the current syntax table and the applied syntax properties."
 
 (defun xref--find-file-buffer (file)
   (unless (equal (car xref--last-file-buffer) file)
-    (setq xref--last-file-buffer
-          ;; `find-buffer-visiting' is considerably slower,
-          ;; especially on remote files.
-          (cons file (get-file-buffer file))))
+    ;; `find-buffer-visiting' is considerably slower,
+    ;; especially on remote files.
+    (let ((buf (get-file-buffer file)))
+      (when (and buf
+                 (or
+                  (buffer-modified-p buf)
+                  (unless xref--hits-remote-id
+                    (not (verify-visited-file-modtime (current-buffer))))))
+        ;; We can't use buffers whose contents diverge from disk (bug#54025).
+        (setq buf nil))
+      (setq xref--last-file-buffer (cons file buf))))
   (cdr xref--last-file-buffer))
 
 (provide 'xref)

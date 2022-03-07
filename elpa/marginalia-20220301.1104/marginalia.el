@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.12
-;; Package-Version: 20220215.925
-;; Package-Commit: 37f26dbf59938086b1d425e5c30c9348451883fc
+;; Package-Version: 20220301.1104
+;; Package-Commit: b86eeb7a9baa99919033011860756d7c163edf11
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -516,8 +516,8 @@ t cl-type"
                                  advertised-signature-table t)))
        tmp)
       ((setq tmp (help-split-fundoc
-		  (ignore-errors (documentation sym t))
-		  sym))
+                  (ignore-errors (documentation sym t))
+                  sym))
        (substitute-command-keys (car tmp)))
       ((setq tmp (help-function-arglist sym))
        (and
@@ -706,7 +706,7 @@ keybinding since CAND includes it."
 
 (defun marginalia-annotate-package (cand)
   "Annotate package CAND with its description summary."
-  (when-let* ((pkg-alist (and (bound-and-true-p package-alist) package-alist))
+  (when-let* ((pkg-alist (bound-and-true-p package-alist))
               (pkg (intern-soft (replace-regexp-in-string "-[[:digit:]\\.-]+\\'" "" cand)))
               ;; taken from `describe-package-1'
               (desc (or (car (alist-get pkg pkg-alist))
@@ -739,7 +739,7 @@ The string is transformed according to `marginalia-bookmark-type-transformers'."
 
 (defun marginalia-annotate-bookmark (cand)
   "Annotate bookmark CAND with its file name and front context string."
-  (when-let ((bm (assoc cand bookmark-alist)))
+  (when-let ((bm (assoc cand (bound-and-true-p bookmark-alist))))
     (let ((front (bookmark-get-front-context-string bm)))
       (marginalia--fields
        ((marginalia--bookmark-type bm) :width 10 :face 'marginalia-type)
@@ -939,21 +939,33 @@ These annotations are skipped for remote paths."
       (marginalia--time-relative time)
     (marginalia--time-absolute time)))
 
-(defmacro marginalia--project-root ()
+(defvar-local marginalia--project-root 'unset)
+(defun marginalia--project-root ()
   "Return project root."
-  (require 'project)
-  `(when-let (proj (project-current))
-     ,(if (fboundp 'project-root)
-          '(project-root proj)
-        '(car (project-roots proj)))))
+  (with-current-buffer
+      (if-let (win (active-minibuffer-window))
+          (window-buffer win)
+        (current-buffer))
+    (when (eq marginalia--project-root 'unset)
+      (setq marginalia--project-root
+            (or (let ((prompt (minibuffer-prompt)))
+                  (and (string-match
+                        "\\`\\(?:Dired\\|Find file\\) in \\(.*\\): \\'"
+                        prompt)
+                       (match-string 1 prompt)))
+                (when-let (proj (project-current))
+                  (cond
+                   ((fboundp 'project-root) (project-root proj))
+                   ((fboundp 'project-roots) (car (project-roots proj))))))))
+    marginalia--project-root))
 
 (defun marginalia-annotate-project-file (cand)
   "Annotate file CAND with its size, modification time and other attributes."
-  ;; TODO project-find-file can be called from outside all projects in
-  ;; which case it prompts for a project first; we don't support that
-  ;; case yet, since there is no current project.
-  (when-let (root (marginalia--project-root))
-    (marginalia-annotate-file (expand-file-name cand root))))
+  ;; Absolute project directories also report project-file category
+  (if (file-name-absolute-p cand)
+      (marginalia-annotate-file cand)
+    (when-let (root (marginalia--project-root))
+      (marginalia-annotate-file (expand-file-name cand root)))))
 
 (defvar-local marginalia--library-cache nil)
 (defun marginalia--library-cache ()
@@ -977,14 +989,8 @@ These annotations are skipped for remote paths."
 
 (defun marginalia--library-name (file)
   "Get name of library FILE."
-  (string-remove-suffix
-   ".el" (string-remove-suffix
-          ".gz" (file-name-nondirectory file))))
-
-(defun marginalia--library-kill ()
-  "Kill temporary buffer."
-  (ignore-errors (kill-buffer " *marginalia library*"))
-  (remove-hook 'minibuffer-exit-hook #'marginalia--library-kill))
+  (replace-regexp-in-string "\\(\\.gz\\|\\.elc?\\)+\\'" ""
+                            (file-name-nondirectory file)))
 
 (defun marginalia--library-doc (file)
   "Return library documentation string for FILE."
@@ -992,28 +998,23 @@ These annotations are skipped for remote paths."
     (unless doc
       ;; Extract documentation string. We cannot use `lm-summary' here,
       ;; since it decompresses the whole file, which is slower.
-      (let ((str (with-current-buffer
-                     (or (get-buffer " *marginalia library*")
-                         (progn
-                           (add-hook 'minibuffer-exit-hook #'marginalia--library-kill)
-                           (get-buffer-create " *marginalia library*")))
-                   (erase-buffer)
-                   (let ((inhibit-message t) (message-log-max nil))
-                     (insert-file-contents file nil 0 200))
-                   (buffer-substring (point-min) (line-end-position)))))
-        (cond
-         ((string-match "\\`(define-package\\s-+\"\\([^\"]+\\)\"" str)
-          (setq doc (format "Generated package description from %s.el"
-                            (match-string 1 str))))
-         ((string-match "\\`;+\\s-*" str)
-          (setq doc (substring str (match-end 0)))
-          (when (string-match "\\`[^ \t]+\\s-+-+\\s-+" doc)
-            (setq doc (substring doc (match-end 0))))
-          (when (string-match "\\s-*-\\*-" doc)
-            (setq doc (substring doc 0 (match-beginning 0)))))
-         (t (setq doc "")))
-        ;; Add the documentation string to the cache
-        (put-text-property 0 1 'marginalia--library-doc doc file)))
+      (setq doc (or (ignore-errors
+                      (shell-command-to-string
+                       (format "zcat -f %s | head -n1" (shell-quote-argument file))))
+                 ""))
+      (cond
+       ((string-match "\\`(define-package\\s-+\"\\([^\"]+\\)\"" doc)
+        (setq doc (format "Generated package description from %s.el"
+                          (match-string 1 doc))))
+       ((string-match "\\`;+\\s-*" doc)
+        (setq doc (substring doc (match-end 0)))
+        (when (string-match "\\`[^ \t]+\\s-+-+\\s-+" doc)
+          (setq doc (substring doc (match-end 0))))
+        (when (string-match "\\s-*-\\*-" doc)
+          (setq doc (substring doc 0 (match-beginning 0)))))
+       (t (setq doc "")))
+      ;; Add the documentation string to the cache
+      (put-text-property 0 1 'marginalia--library-doc doc file))
     doc))
 
 (defun marginalia-annotate-library (cand)
@@ -1035,22 +1036,28 @@ These annotations are skipped for remote paths."
 (defun marginalia-annotate-tab (cand)
   "Annotate named tab CAND with tab index, window and buffer information."
   (when-let* ((tabs (funcall tab-bar-tabs-function))
-              (tab (seq-find (lambda (tab) (equal (alist-get 'name tab) cand)) tabs))
-              (ws (alist-get 'ws tab))
-              ;; window-state-buffers requires Emacs 27
-              (bufs (and (fboundp 'window-state-buffers)
-                         (window-state-buffers ws))))
-    ;; NOTE: When the buffer key is present in the window state
-    ;; it is added in front of the window buffer list and gets duplicated.
-    (when (cadr (assq 'buffer ws)) (pop bufs))
-    (concat
-     (format #(" (%s)" 0 5 (face marginalia-key)) (seq-position tabs tab #'eq))
-     (marginalia--fields
-      ((if (cdr bufs)
-           (format "%d windows" (length bufs))
-         "1 window ")
-       :face 'marginalia-size)
-      ((string-join bufs " ") :face 'marginalia-documentation)))))
+              (index (seq-position
+                      tabs nil
+                      (lambda (tab _) (equal (alist-get 'name tab) cand)))))
+    (let* ((tab (nth index tabs))
+           (ws (alist-get 'ws tab))
+           ;; window-state-buffers requires Emacs 27
+           (bufs (and (fboundp 'window-state-buffers)
+                      (window-state-buffers ws))))
+      ;; NOTE: When the buffer key is present in the window state
+      ;; it is added in front of the window buffer list and gets duplicated.
+      (when (cadr (assq 'buffer ws)) (pop bufs))
+      (concat
+       (format #(" (%s)" 0 5 (face marginalia-key)) index)
+       (marginalia--fields
+        ((if (cdr bufs)
+             (format "%d windows" (length bufs))
+           "1 window ")
+         :face 'marginalia-size)
+        ((if (memq 'current-tab tab)
+             "*current tab*"
+           (string-join bufs " "))
+         :face 'marginalia-documentation))))))
 
 (defun marginalia-classify-by-command-name ()
   "Lookup category for current command."
