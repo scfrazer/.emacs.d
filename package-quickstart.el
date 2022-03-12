@@ -578,10 +578,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.20/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.21/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.20/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.21/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -637,13 +637,19 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 Enter directory or exit completion with current candidate." t nil)
 
 (autoload 'vertico-directory-up "vertico-directory" "\
-Delete directory before point." t nil)
+Delete N directories before point.
+
+\(fn &optional N)" t nil)
 
 (autoload 'vertico-directory-delete-char "vertico-directory" "\
-Delete directory or char before point." t nil)
+Delete N directories or chars before point.
+
+\(fn &optional N)" t nil)
 
 (autoload 'vertico-directory-delete-word "vertico-directory" "\
-Delete directory or word before point." t nil)
+Delete N directories or words before point.
+
+\(fn &optional N)" t nil)
 
 (autoload 'vertico-directory-tidy "vertico-directory" "\
 Tidy shadowed file name, see `rfn-eshadow-overlay'." nil nil)
@@ -1110,10 +1116,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2204,10 +2210,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220301.1104/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220308.1007/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220301.1104/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220308.1007/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2453,10 +2459,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20220117.1537/graphviz-dot-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20220309.1336/graphviz-dot-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20220117.1537/graphviz-dot-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20220309.1336/graphviz-dot-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3795,7 +3801,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356" "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228" "/home/scfrazer/.emacs.d/elpa/transient-20220227.1751" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.20" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356" "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228" "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
          Info-directory-list)))
 
 ;; Local Variables:
