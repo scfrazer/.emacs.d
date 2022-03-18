@@ -1116,10 +1116,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1222,10 +1222,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1823,10 +1823,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1863,8 +1863,6 @@ This function is for integration of orderless with ivy, use it as
 a value in `ivy-re-builders-alist'.
 
 \(fn STR)" nil nil)
-
-(with-eval-after-load 'ivy (defvar ivy-highlight-functions-alist) (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight)))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless" '("orderless-")))
 
@@ -2210,10 +2208,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220308.1007/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220312.1357/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220308.1007/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220312.1357/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3801,7 +3799,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220212.356" "/home/scfrazer/.emacs.d/elpa/rg-20220116.1228" "/home/scfrazer/.emacs.d/elpa/transient-20220307.2129" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540" "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
          Info-directory-list)))
 
 ;; Local Variables:

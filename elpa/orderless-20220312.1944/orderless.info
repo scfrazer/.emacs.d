@@ -399,6 +399,7 @@ File: orderless.info,  Node: Ivy,  Next: Selectrum,  Up: Integration with other 
 To use ‘orderless’ from Ivy add this to your Ivy configuration:
 
      (setq ivy-re-builders-alist '((t . orderless-ivy-re-builder)))
+     (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight))
 
 
 File: orderless.info,  Node: Selectrum,  Next: Company,  Prev: Ivy,  Up: Integration with other completion UIs
@@ -554,12 +555,12 @@ Node: Pattern compiler12831
 Node: Interactively changing the configuration13433
 Node: Integration with other completion UIs14896
 Node: Ivy15687
-Node: Selectrum15940
-Node: Company16614
-Node: Related packages18107
-Node: Ivy and Helm18405
-Node: Prescient19744
-Node: Restricting to current matches in Icicles Ido and Ivy20598
+Node: Selectrum16044
+Node: Company16718
+Node: Related packages18211
+Node: Ivy and Helm18509
+Node: Prescient19848
+Node: Restricting to current matches in Icicles Ido and Ivy20702
 
 End Tag Table
 
