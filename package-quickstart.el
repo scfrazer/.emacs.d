@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -527,10 +527,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220227.1557/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220319.653/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220227.1557/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220319.653/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1222,10 +1222,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216/rg-autoloads.el") (car load-path))))
 
 
 
@@ -3358,10 +3358,10 @@ the subtree.  The filter action is read from `dired-filter-map'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-20150929.511/diffview-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-20220322.2334/diffview-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-20150929.511/diffview-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-20220322.2334/diffview-autoloads.el") (car load-path))))
 
 
 
@@ -3799,7 +3799,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220317.1540" "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220211.2034")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640")
          Info-directory-list)))
 
 ;; Local Variables:
