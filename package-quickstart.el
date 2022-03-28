@@ -1116,10 +1116,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2538,10 +2538,10 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20210528.908/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220324.1057/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20210528.908/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220324.1057/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -2560,10 +2560,10 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.0/eldoc-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.1/eldoc-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.0/eldoc-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.1/eldoc-autoloads.el") (car load-path))))
 
 
 
@@ -2618,6 +2618,8 @@ Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
 See `eldoc-documentation-strategy' for more detail." nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
+
+
 
 
 )
@@ -3799,7 +3801,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220314.1605" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640")
          Info-directory-list)))
 
 ;; Local Variables:

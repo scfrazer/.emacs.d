@@ -63,6 +63,10 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 ;;;***
 
+;;;### (autoloads nil nil ("eldoc-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
