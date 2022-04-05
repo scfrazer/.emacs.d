@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220402.1641/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220402.1641/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1116,10 +1116,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220331.2312/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220331.2312/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1870,10 +1870,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20211112.2223/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220328.1724/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20211112.2223/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220328.1724/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -1958,35 +1958,54 @@ With zero ARG, skip the last one and mark next.
 \(fn ARG)" t nil)
 
 (autoload 'mc/mark-previous-like-this "mc-mark-more" "\
-Find and mark the previous part of the buffer matching the currently active region
-If no region is active add a cursor on the previous line
+Find and mark the previous part of the buffer matching the
+currently active region.
+
+If no region is active ,add a cursor on the previous line.
+
 With negative ARG, delete the last one instead.
+
 With zero ARG, skip the last one and mark next.
 
 \(fn ARG)" t nil)
 
 (autoload 'mc/mark-previous-like-this-word "mc-mark-more" "\
-Find and mark the previous part of the buffer matching the currently active region
-If no region is active, mark the word at the point and find the previous match
+Find and mark the previous part of the buffer matching the
+currently active region.
+
+If no region is active, mark the word at the point and find the
+previous match.
+
 With negative ARG, delete the last one instead.
+
 With zero ARG, skip the last one and mark previous.
 
 \(fn ARG)" t nil)
 
 (autoload 'mc/mark-previous-word-like-this "mc-mark-more" "\
-Find and mark the previous part of the buffer matching the currently active region
-The matching region must be a whole word to be a match
-If no region is active add a cursor on the previous line
+Find and mark the previous part of the buffer matching the
+currently active region.
+
+The matching region must be a whole word to be a match.
+
+If no region is active, add a cursor on the previous line.
+
 With negative ARG, delete the last one instead.
+
 With zero ARG, skip the last one and mark next.
 
 \(fn ARG)" t nil)
 
 (autoload 'mc/mark-previous-symbol-like-this "mc-mark-more" "\
-Find and mark the previous part of the buffer matching the currently active region
-The matching region must be a whole symbol to be a match
-If no region is active add a cursor on the previous line
+Find and mark the previous part of the buffer matching
+the currently active region.
+
+The matching region must be a whole symbol to be a match.
+
+If no region is active add a cursor on the previous line.
+
 With negative ARG, delete the last one instead.
+
 With zero ARG, skip the last one and mark next.
 
 \(fn ARG)" t nil)
@@ -2008,10 +2027,12 @@ Deselect next part of the buffer matching the currently active region." t nil)
 Deselect prev part of the buffer matching the currently active region." t nil)
 
 (autoload 'mc/skip-to-next-like-this "mc-mark-more" "\
-Skip the current one and select the next part of the buffer matching the currently active region." t nil)
+Skip the current one and select the next part of the buffer
+matching the currently active region." t nil)
 
 (autoload 'mc/skip-to-previous-like-this "mc-mark-more" "\
-Skip the current one and select the prev part of the buffer matching the currently active region." t nil)
+Skip the current one and select the prev part of the buffer
+matching the currently active region." t nil)
 
 (autoload 'mc/mark-all-like-this "mc-mark-more" "\
 Find and mark all the parts of the buffer matching the currently active region" t nil)
@@ -2031,7 +2052,7 @@ Find and mark all the parts in the region matching the given regexp.
 \(fn BEG END)" t nil)
 
 (autoload 'mc/mark-more-like-this-extended "mc-mark-more" "\
-Like mark-more-like-this, but then lets you adjust with arrows key.
+Like mark-more-like-this, but then lets you adjust with arrow keys.
 The adjustments work like this:
 
    <up>    Mark previous like this and set direction to 'up
@@ -2047,7 +2068,8 @@ If direction is 'down:
    <left>  Remove the cursor furthest down
    <right> Skip past the cursor furthest down
 
-The bindings for these commands can be changed. See `mc/mark-more-like-this-extended-keymap'." t nil)
+The bindings for these commands can be changed.
+See `mc/mark-more-like-this-extended-keymap'." t nil)
 
 (autoload 'mc/mark-all-like-this-dwim "mc-mark-more" "\
 Tries to guess what you want to mark all of.
@@ -2146,8 +2168,9 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 (autoload 'set-rectangular-region-anchor "rectangular-region-mode" "\
 Anchors the rectangular region at point.
 
-Think of this one as `set-mark' except you're marking a rectangular region. It is
-an exceedingly quick way of adding multiple cursors to multiple lines." t nil)
+Think of this one as `set-mark' except you're marking a
+rectangular region. It is an exceedingly quick way of adding
+multiple cursors to multiple lines." t nil)
 
 (autoload 'rectangular-region-mode "rectangular-region-mode" "\
 A mode for creating a rectangular region to edit
@@ -2208,10 +2231,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220312.1357/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220404.804/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220312.1357/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220404.804/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3183,10 +3206,10 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20210826.1149/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220404.2004/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20210826.1149/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20220404.2004/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3801,7 +3824,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20210826.1149" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220325.1619" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220318.1640")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220404.2004" "/home/scfrazer/.emacs.d/elpa/orderless-20220312.1944" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220331.2312" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.21" "/home/scfrazer/.emacs.d/elpa/with-editor-20220402.1641")
          Info-directory-list)))
 
 ;; Local Variables:
