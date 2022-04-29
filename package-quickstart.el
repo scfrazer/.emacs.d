@@ -227,10 +227,27 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220412.1340/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220412.1340/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220412.1340/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el") (car load-path))))
+
+
+
+(register-definition-prefixes "compat-help" '("compat---describe"))
+
+
+
+(register-definition-prefixes "compat-macs" '("compat-"))
+
+
+
+
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -597,10 +614,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.22/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.22/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.22/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1229,10 +1246,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220413.2332/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220413.2332/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220413.2332/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1335,10 +1352,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1452,29 +1469,30 @@ files with the same name pattern still will be searched.
  (autoload 'rg-literal "rg.el" "" t)
  (autoload 'rg "rg.el" "" t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("kill-rg" "rg-")))
+(register-definition-prefixes "rg" '("kill-rg" "rg-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-header" '("rg-")))
+(register-definition-prefixes "rg-header" '("rg-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-history" '("rg-history-")))
+(register-definition-prefixes "rg-history" '("rg-history-"))
 
 
 
 (autoload 'rg-list-searches "rg-ibuffer" "\
 List all `rg-mode' buffers in `ibuffer'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-ibuffer" '("rg-")))
+(register-definition-prefixes "rg-ibuffer" '("rg-"))
 
 
  (autoload 'rg-isearch-current-file "rg-isearch.el" "" t)
  (autoload 'rg-isearch-current-dir "rg-isearch.el" "" t)
  (autoload 'rg-isearch-project "rg-isearch.el" "" t)
+ (autoload 'rg-isearch-menu "rg-isearch.el" "" t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-get-isearch-string")))
+(register-definition-prefixes "rg-isearch" '("rg-get-isearch-string"))
 
 
  (autoload 'rg-menu "rg-menu.el" "" t)
@@ -1485,11 +1503,11 @@ If prefix is not supplied `rg-keymap-prefix' is used.
 
 \(fn &optional PREFIX)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-menu" '("rg-menu-")))
+(register-definition-prefixes "rg-menu" '("rg-menu-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-result" '("rg-")))
+(register-definition-prefixes "rg-result" '("rg-"))
 
 
 
@@ -1498,7 +1516,7 @@ Setup wgrep rg support." nil nil)
 
 (add-hook 'rg-mode-hook 'wgrep-rg-setup)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "wgrep-rg" '("wgrep-rg-")))
+(register-definition-prefixes "wgrep-rg" '("wgrep-rg-"))
 
 
 
@@ -2085,10 +2103,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220417.418/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220417.418/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220426.449/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220426.449/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220417.418/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220426.449/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2599,242 +2617,242 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220222.2326/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220222.2326/doom-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220222.2326/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el") (car load-path))))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-1337-theme" '("doom-1337")))
+(register-definition-prefixes "doom-1337-theme" '("doom-1337"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-Iosvkem-theme" '("doom-Iosvkem")))
+(register-definition-prefixes "doom-Iosvkem-theme" '("doom-Iosvkem"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-acario-dark-theme" '("doom-acario-dark")))
+(register-definition-prefixes "doom-acario-dark-theme" '("doom-acario-dark"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-acario-light-theme" '("doom-acario-light")))
+(register-definition-prefixes "doom-acario-light-theme" '("doom-acario-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-ayu-light-theme" '("doom-ayu-light")))
+(register-definition-prefixes "doom-ayu-light-theme" '("doom-ayu-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-ayu-mirage-theme" '("doom-ayu-mirage")))
+(register-definition-prefixes "doom-ayu-mirage-theme" '("doom-ayu-mirage"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-badger-theme" '("doom-badger")))
+(register-definition-prefixes "doom-badger-theme" '("doom-badger"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-challenger-deep-theme" '("doom-challenger-deep")))
+(register-definition-prefixes "doom-challenger-deep-theme" '("doom-challenger-deep"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-city-lights-theme" '("doom-city-lights")))
+(register-definition-prefixes "doom-city-lights-theme" '("doom-city-lights"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-dark+-theme" '("doom-dark+")))
+(register-definition-prefixes "doom-dark+-theme" '("doom-dark+"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-dracula-theme" '("doom-dracula")))
+(register-definition-prefixes "doom-dracula-theme" '("doom-dracula"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-earl-grey-theme" '("doom-earl-grey")))
+(register-definition-prefixes "doom-earl-grey-theme" '("doom-earl-grey"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-ephemeral-theme" '("doom-ephemeral")))
+(register-definition-prefixes "doom-ephemeral-theme" '("doom-ephemeral"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-fairy-floss-theme" '("doom-fairy-floss")))
+(register-definition-prefixes "doom-fairy-floss-theme" '("doom-fairy-floss"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-flatwhite-theme" '("doom-f")))
+(register-definition-prefixes "doom-flatwhite-theme" '("doom-f"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-gruvbox-light-theme" '("doom-gruvbox-light")))
+(register-definition-prefixes "doom-gruvbox-light-theme" '("doom-gruvbox-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-gruvbox-theme" '("doom-gruvbox")))
+(register-definition-prefixes "doom-gruvbox-theme" '("doom-gruvbox"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-henna-theme" '("doom-henna")))
+(register-definition-prefixes "doom-henna-theme" '("doom-henna"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-homage-black-theme" '("doom-homage-black")))
+(register-definition-prefixes "doom-homage-black-theme" '("doom-homage-black"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-homage-white-theme" '("doom-homage-white")))
+(register-definition-prefixes "doom-homage-white-theme" '("doom-homage-white"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-horizon-theme" '("doom-horizon")))
+(register-definition-prefixes "doom-horizon-theme" '("doom-horizon"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-ir-black-theme" '("doom-ir-black")))
+(register-definition-prefixes "doom-ir-black-theme" '("doom-ir-black"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-laserwave-theme" '("doom-laserwave")))
+(register-definition-prefixes "doom-laserwave-theme" '("doom-laserwave"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-manegarm-theme" '("doom-manegarm")))
+(register-definition-prefixes "doom-manegarm-theme" '("doom-manegarm"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-dark-theme" '("doom-material-")))
+(register-definition-prefixes "doom-material-dark-theme" '("doom-material-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-material-theme" '("doom-material")))
+(register-definition-prefixes "doom-material-theme" '("doom-material"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-meltbus-theme" '("doom-meltbus")))
+(register-definition-prefixes "doom-meltbus-theme" '("doom-meltbus"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-miramare-theme" '("doom-miramare")))
+(register-definition-prefixes "doom-miramare-theme" '("doom-miramare"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-molokai-theme" '("doom-molokai")))
+(register-definition-prefixes "doom-molokai-theme" '("doom-molokai"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-classic-theme" '("doom-monokai-classic")))
+(register-definition-prefixes "doom-monokai-classic-theme" '("doom-monokai-classic"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-machine-theme" '("doom-monokai-machine")))
+(register-definition-prefixes "doom-monokai-machine-theme" '("doom-monokai-machine"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-octagon-theme" '("doom-monokai-octagon")))
+(register-definition-prefixes "doom-monokai-octagon-theme" '("doom-monokai-octagon"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-pro-theme" '("doom-monokai-pro")))
+(register-definition-prefixes "doom-monokai-pro-theme" '("doom-monokai-pro"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-ristretto-theme" '("doom-monokai-ristretto")))
+(register-definition-prefixes "doom-monokai-ristretto-theme" '("doom-monokai-ristretto"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-monokai-spectrum-theme" '("doom-monokai-spectrum")))
+(register-definition-prefixes "doom-monokai-spectrum-theme" '("doom-monokai-spectrum"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-moonlight-theme" '("doom-moonlight")))
+(register-definition-prefixes "doom-moonlight-theme" '("doom-moonlight"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-nord-light-theme" '("doom-nord-light")))
+(register-definition-prefixes "doom-nord-light-theme" '("doom-nord-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-nord-theme" '("doom-nord")))
+(register-definition-prefixes "doom-nord-theme" '("doom-nord"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-nova-theme" '("doom-nova")))
+(register-definition-prefixes "doom-nova-theme" '("doom-nova"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-oceanic-next-theme" '("doom-oceanic-next")))
+(register-definition-prefixes "doom-oceanic-next-theme" '("doom-oceanic-next"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-old-hope-theme" '("doom-old-hope")))
+(register-definition-prefixes "doom-old-hope-theme" '("doom-old-hope"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-one-light-theme" '("doom-one-light")))
+(register-definition-prefixes "doom-one-light-theme" '("doom-one-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-one-theme" '("doom-one")))
+(register-definition-prefixes "doom-one-theme" '("doom-one"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-opera-light-theme" '("doom-opera-light")))
+(register-definition-prefixes "doom-opera-light-theme" '("doom-opera-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-opera-theme" '("doom-opera")))
+(register-definition-prefixes "doom-opera-theme" '("doom-opera"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-outrun-electric-theme" '("doom-outrun-electric")))
+(register-definition-prefixes "doom-outrun-electric-theme" '("doom-outrun-electric"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-palenight-theme" '("doom-palenight")))
+(register-definition-prefixes "doom-palenight-theme" '("doom-palenight"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-peacock-theme" '("doom-peacock")))
+(register-definition-prefixes "doom-peacock-theme" '("doom-peacock"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-plain-dark-theme" '("doom-plain-")))
+(register-definition-prefixes "doom-plain-dark-theme" '("doom-plain-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-plain-theme" '("doom-plain")))
+(register-definition-prefixes "doom-plain-theme" '("doom-plain"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-rouge-theme" '("doom-rouge")))
+(register-definition-prefixes "doom-rouge-theme" '("doom-rouge"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-shades-of-purple-theme" '("doom-shades-of-purple")))
+(register-definition-prefixes "doom-shades-of-purple-theme" '("doom-shades-of-purple"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-snazzy-theme" '("doom-snazzy")))
+(register-definition-prefixes "doom-snazzy-theme" '("doom-snazzy"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-solarized-dark-high-contrast-theme" '("doom-solarized-dark-high-contrast")))
+(register-definition-prefixes "doom-solarized-dark-high-contrast-theme" '("doom-solarized-dark-high-contrast"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-solarized-dark-theme" '("doom-solarized-dark")))
+(register-definition-prefixes "doom-solarized-dark-theme" '("doom-solarized-dark"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-solarized-light-theme" '("doom-solarized-light")))
+(register-definition-prefixes "doom-solarized-light-theme" '("doom-solarized-light"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-sourcerer-theme" '("doom-sourcerer")))
+(register-definition-prefixes "doom-sourcerer-theme" '("doom-sourcerer"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-spacegrey-theme" '("doom-spacegrey")))
+(register-definition-prefixes "doom-spacegrey-theme" '("doom-spacegrey"))
 
 
 
@@ -2891,11 +2909,11 @@ theme face specs. These is a simplified spec. For example:
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (let* ((base (file-name-directory load-file-name)) (dir (expand-file-name "themes/" base))) (add-to-list 'custom-theme-load-path (or (and (file-directory-p dir) dir) base))))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-themes" '("def-doom-theme" "doom-")))
+(register-definition-prefixes "doom-themes" '("def-doom-theme" "doom-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-themes-base" '("doom-themes-base-")))
+(register-definition-prefixes "doom-themes-base" '("doom-themes-base-"))
 
 
 
@@ -2904,14 +2922,14 @@ Install doom-themes' neotree configuration.
 
 Includes an Atom-esque icon theme and highlighting based on filetype." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-themes-ext-neotree" '("doom-")))
+(register-definition-prefixes "doom-themes-ext-neotree" '("doom-"))
 
 
 
 (autoload 'doom-themes-org-config "doom-themes-ext-org" "\
 Load `doom-themes-ext-org'." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-themes-ext-org" '("doom-themes-")))
+(register-definition-prefixes "doom-themes-ext-org" '("doom-themes-"))
 
 
 
@@ -2920,7 +2938,7 @@ Install doom-themes' treemacs configuration.
 
 Includes an Atom-esque icon theme and highlighting based on filetype." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-themes-ext-treemacs" '("doom-themes-")))
+(register-definition-prefixes "doom-themes-ext-treemacs" '("doom-themes-"))
 
 
 
@@ -2932,31 +2950,31 @@ Enable flashing the mode-line on error." nil nil)
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-tokyo-night-theme" '("doom-tokyo-night")))
+(register-definition-prefixes "doom-tokyo-night-theme" '("doom-tokyo-night"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-tomorrow-day-theme" '("doom-tomorrow-day")))
+(register-definition-prefixes "doom-tomorrow-day-theme" '("doom-tomorrow-day"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-tomorrow-night-theme" '("doom-tomorrow-night")))
+(register-definition-prefixes "doom-tomorrow-night-theme" '("doom-tomorrow-night"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-vibrant-theme" '("doom-vibrant")))
+(register-definition-prefixes "doom-vibrant-theme" '("doom-vibrant"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-wilmersdorf-theme" '("doom-wilmersdorf")))
+(register-definition-prefixes "doom-wilmersdorf-theme" '("doom-wilmersdorf"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-xcode-theme" '("doom-xcode")))
+(register-definition-prefixes "doom-xcode-theme" '("doom-xcode"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "doom-zenburn-theme" '("doom-zenburn")))
+(register-definition-prefixes "doom-zenburn-theme" '("doom-zenburn"))
 
 
 
@@ -3582,14 +3600,14 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine filladapt fill-function-arguments fd-dired eldoc doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint reformatter popup orderless multiple-cursors markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides graphviz-dot-mode goto-last-change git-timemachine filladapt fill-function-arguments fd-dired eldoc doom-themes dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220417.2250" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220319.1216" "/home/scfrazer/.emacs.d/elpa/transient-20220413.2332" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.22" "/home/scfrazer/.emacs.d/elpa/with-editor-20220412.1340")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220417.2250" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613" "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0")
          Info-directory-list)))
 
 ;; Local Variables:
