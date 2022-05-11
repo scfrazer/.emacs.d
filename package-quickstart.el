@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1/compat-autoloads.el") (car load-path))))
 
 
 
@@ -244,10 +244,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1246,10 +1246,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1352,10 +1352,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328/rg-autoloads.el") (car load-path))))
 
 
 
@@ -2050,10 +2050,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220406.410/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220406.410/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220406.410/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2554,10 +2554,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.1/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.1/eldoc-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.11.1/eldoc-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el") (car load-path))))
 
 
 
@@ -2569,10 +2569,19 @@ String to display in mode line when ElDoc Mode is enabled; nil for none.")
 (autoload 'eldoc-mode "eldoc" "\
 Toggle echo area display of Lisp objects at point (ElDoc mode).
 
-If called interactively, enable Eldoc mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the `Eldoc
+mode' mode.  If the prefix argument is positive, enable the mode,
+and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `eldoc-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 ElDoc mode is a buffer-local minor mode.  When enabled, the echo
 area displays information about a function or variable in the
@@ -2585,24 +2594,27 @@ expression point is on.
 
 (put 'global-eldoc-mode 'globalized-minor-mode t)
 
-(defvar global-eldoc-mode t "\
+(defcustom global-eldoc-mode t "\
 Non-nil if Global Eldoc mode is enabled.
 See the `global-eldoc-mode' command
 for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
-or call the function `global-eldoc-mode'.")
+or call the function `global-eldoc-mode'." :set #'custom-set-minor-mode :initialize 'custom-initialize-delay :type 'boolean)
 
 (custom-autoload 'global-eldoc-mode "eldoc" nil)
 
 (autoload 'global-eldoc-mode "eldoc" "\
 Toggle Eldoc mode in all buffers.
-With prefix ARG, enable Global Eldoc mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+With prefix ARG, enable Global Eldoc mode if ARG is positive; otherwise,
+disable it.
 
-Eldoc mode is enabled in all buffers where
-`turn-on-eldoc-mode' would do it.
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+Eldoc mode is enabled in all buffers where `turn-on-eldoc-mode' would do it.
+
 See `eldoc-mode' for more information on Eldoc mode.
 
 \(fn &optional ARG)" t nil)
@@ -2611,16 +2623,16 @@ See `eldoc-mode' for more information on Eldoc mode.
 Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
 See `eldoc-documentation-strategy' for more detail." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
+(register-definition-prefixes "eldoc" '("eldoc"))
 
 
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220421.2236/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3607,7 +3619,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220417.2250" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220427.1613" "/home/scfrazer/.emacs.d/elpa/transient-20220425.1314" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220422.1628" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220417.2250" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328" "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
          Info-directory-list)))
 
 ;; Local Variables:
