@@ -1246,10 +1246,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1307,7 +1307,7 @@ See info node `(transient)Modifying Existing Transients'.
 
 (function-put 'transient-remove-suffix 'lisp-indent-function 'defun)
 
-(register-definition-prefixes "transient" '("magit--fit-window-to-buffer" "transient-"))
+(register-definition-prefixes "transient" '("magit--fit-window-to-buffer" "transient"))
 
 
 
@@ -2050,10 +2050,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220513.1453/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220513.1453/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220508.1219/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220513.1453/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2992,10 +2992,10 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220417.2250/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220417.2250/dash-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20220417.2250/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3619,7 +3619,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220417.2250" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328" "/home/scfrazer/.emacs.d/elpa/transient-20220509.1943" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220511.1328" "/home/scfrazer/.emacs.d/elpa/transient-20220514.945" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
          Info-directory-list)))
 
 ;; Local Variables:

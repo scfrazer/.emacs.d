@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.6-dev
-;; Package-Version: 20220508.1219
-;; Package-Commit: 5b6e660c13ca3f4d15dbc1aa3d7ab2f228491ef9
+;; Package-Version: 20220513.1453
+;; Package-Commit: 4477f381de0068a04b55e198c32614793f67b38a
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -9665,7 +9665,7 @@ rows and columns and the column alignment."
 
 ;;; ElDoc Support =============================================================
 
-(defun markdown-eldoc-function ()
+(defun markdown-eldoc-function (&rest _ignored)
   "Return a helpful string when appropriate based on context.
 * Report URL when point is at a hidden URL.
 * Report language name when point is a code block with hidden markup."
@@ -9805,8 +9805,10 @@ rows and columns and the column alignment."
   ;; Cause use of ellipses for invisible text.
   (add-to-invisibility-spec '(outline . t))
   ;; ElDoc support
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'markdown-eldoc-function)
+  (if (boundp 'eldoc-documentation-functions)
+      (add-hook 'eldoc-documentation-functions #'markdown-eldoc-function nil t)
+    (add-function :before-until (local 'eldoc-documentation-function)
+                  #'markdown-eldoc-function))
   ;; Inhibiting line-breaking:
   ;; Separating out each condition into a separate function so that users can
   ;; override if desired (with remove-hook)
