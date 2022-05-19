@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20220419.227
-;; Package-Commit: 129f4ebfc74f207ac82978f6d90d8b4bb1a55cf9
+;; Package-Version: 20220518.1941
+;; Package-Commit: 1ab1d0cc88843c9a614ed3226c5a1070e32e4823
 ;; Version: 3.6.0
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -784,6 +784,7 @@ disable support."
 (define-minor-mode which-key-mode
   "Toggle which-key-mode."
   :global t
+  :group 'which-key
   :lighter which-key-lighter
   :keymap (let ((map (make-sparse-keymap)))
             (mapc

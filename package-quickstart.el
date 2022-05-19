@@ -342,10 +342,10 @@ else like the former.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220419.227/which-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220419.227/which-key-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20220419.227/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el") (car load-path))))
 
 
 
