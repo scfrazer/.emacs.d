@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Version: 0.23
+;; Version: 0.24
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/minad/vertico
 
@@ -126,7 +126,7 @@ See `resize-mini-windows' for documentation."
     (define-key map [remap forward-paragraph] #'vertico-next-group)
     (define-key map [remap exit-minibuffer] #'vertico-exit)
     (define-key map [remap kill-ring-save] #'vertico-save)
-    (define-key map "\e\r" #'vertico-exit-input)
+    (define-key map "\M-\r" #'vertico-exit-input)
     (define-key map "\t" #'vertico-insert)
     map)
   "Vertico minibuffer keymap derived from `minibuffer-local-map'.")
@@ -672,7 +672,8 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 (defun vertico-exit (&optional arg)
   "Exit minibuffer with current candidate or input if prefix ARG is given."
   (interactive "P")
-  (unless arg (vertico-insert))
+  (when (and (not arg) (>= vertico--index 0))
+    (vertico-insert))
   (when (vertico--match-p (minibuffer-contents-no-properties))
     (exit-minibuffer)))
 
@@ -716,15 +717,14 @@ When the prefix argument is 0, the group order is reset."
 (defun vertico-insert ()
   "Insert current candidate in minibuffer."
   (interactive)
-  ;; XXX There is a small bug here, depending on interpretation. When
-  ;; completing "~/emacs/master/li|/calc" where "|" is the cursor,
-  ;; then the returned candidate only includes the prefix
-  ;; "~/emacs/master/lisp/", but not the suffix "/calc". Default
-  ;; completion has the same problem when selecting in the
-  ;; *Completions* buffer. See bug#48356.
-  (when-let (cand (and (>= vertico--index 0) (vertico--candidate)))
-    (delete-minibuffer-contents)
-    (insert cand)))
+  ;; XXX There is a small bug here, depending on interpretation. When completing
+  ;; "~/emacs/master/li|/calc" where "|" is the cursor, then the returned
+  ;; candidate only includes the prefix "~/emacs/master/lisp/", but not the
+  ;; suffix "/calc". Default completion has the same problem when selecting in
+  ;; the *Completions* buffer. See bug#48356.
+  (when (or (>= vertico--index 0) (= vertico--total 1))
+    (let ((vertico--index (max 0 vertico--index)))
+      (insert (prog1 (vertico--candidate) (delete-minibuffer-contents))))))
 
 (defun vertico--candidate (&optional hl)
   "Return current candidate string with optional highlighting if HL is non-nil."

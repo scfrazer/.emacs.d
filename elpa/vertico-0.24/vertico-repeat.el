@@ -6,7 +6,7 @@
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (vertico "0.23"))
+;; Package-Requires: ((emacs "27.1") (vertico "0.24"))
 ;; Homepage: https://github.com/minad/vertico
 
 ;; This file is part of GNU Emacs.
@@ -78,8 +78,8 @@
     (vertico--exhibit)
     (when-let (idx (seq-position vertico--candidates (caddr session)))
       (setq vertico--index idx
-            vertico--lock-candidate t)
-      (vertico--exhibit))))
+            vertico--lock-candidate t)))
+  (vertico--exhibit))
 
 ;;;###autoload
 (defun vertico-repeat-save ()

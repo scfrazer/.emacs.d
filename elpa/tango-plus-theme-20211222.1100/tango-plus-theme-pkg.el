@@ -1,2 +1,0 @@
-;;; Generated package description from tango-plus-theme.el  -*- no-byte-compile: t -*-
-(define-package "tango-plus-theme" "20211222.1100" "A color theme based on the tango palette" 'nil :commit "774b03f932bbc336ce5f943af175d5faa651f2e0" :authors '(("Titus von der Malsburg" . "malsburg@posteo.de")) :maintainer '("Titus von der Malsburg" . "malsburg@posteo.de") :url "https://github.com/tmalsburg/tango-plus-theme")

@@ -563,10 +563,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220319.653/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220319.653/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220319.653/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -575,7 +575,7 @@ Major mode for editing web templates.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-mode" '("web-mode-")))
+(register-definition-prefixes "web-mode" '("web-mode-"))
 
 
 )
@@ -614,10 +614,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.23/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1313,16 +1313,16 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20211222.1100/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20211222.1100/tango-plus-theme-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20220525.1311/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20220525.1311/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20211222.1100/tango-plus-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20220525.1311/tango-plus-theme-autoloads.el") (car load-path))))
 
 
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tango-plus-theme" '("tango-plus")))
+(register-definition-prefixes "tango-plus-theme" '("tango-plus"))
 
 
 )
@@ -3619,7 +3619,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220514.945" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.23" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220514.945" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
          Info-directory-list)))
 
 ;; Local Variables:

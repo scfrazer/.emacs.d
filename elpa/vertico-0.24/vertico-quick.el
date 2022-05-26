@@ -6,7 +6,7 @@
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (vertico "0.23"))
+;; Package-Requires: ((emacs "27.1") (vertico "0.24"))
 ;; Homepage: https://github.com/minad/vertico
 
 ;; This file is part of GNU Emacs.
@@ -26,7 +26,11 @@
 
 ;;; Commentary:
 
-;; This package is a Vertico extension, which provides quick keys.
+;; This package is a Vertico extension, which prefixes candidates with
+;; quick keys. Typing these quick keys allows you to select the
+;; candidate in front of them. This is designed to be a faster
+;; alternative to selecting a candidate with `vertico-next' and
+;; `vertico-previous'.
 ;; (define-key vertico-map "\M-q" #'vertico-quick-insert)
 ;; (define-key vertico-map "\C-q" #'vertico-quick-exit)
 

@@ -93,9 +93,14 @@ configuration:
   (use-package emacs
     :init
     ;; Add prompt indicator to `completing-read-multiple'.
-    ;; Alternatively try `consult-completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
     (defun crm-indicator (args)
-      (cons (concat "[CRM] " (car args)) (cdr args)))
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
     (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
     ;; Do not allow the cursor in the minibuffer prompt
@@ -214,16 +219,6 @@ You may also want to look into my [[https://github.com/minad/corfu][Corfu]] pack
 completion system for =completion-in-region= in a child frame popup. Corfu is also
 a narrowly focused package and developed in the same spirit as Vertico.
 
-** Completing-read-multiple (CRM)
-
-Consult offers an enhanced =completing-read-multiple= implementation which you can
-use with Vertico.
-
-#+begin_src emacs-lisp
-  (advice-add #'completing-read-multiple
-              :override #'consult-completing-read-multiple)
-#+end_src
-
 * Extensions
 :properties:
 :custom_id: extensions
@@ -248,13 +243,14 @@ following extensions come with the Vertico ELPA package:
 - [[https://github.com/minad/vertico/blob/main/extensions/vertico-reverse.el][vertico-reverse]]: =vertico-reverse-mode= to reverse the display.
 - [[https://github.com/minad/vertico/blob/main/extensions/vertico-unobtrusive.el][vertico-unobtrusive]]: =vertico-unobtrusive-mode= displays only the topmost candidate.
 
-With these extensions it is possible to adapt Vertico such that it matches your
-preference or behaves similar to other familiar UIs. For example, the
-combination =vertico-flat= plus =vertico-directory= resembles Ido in look and feel.
-For an interface similar to Helm, the extension =vertico-buffer= allows you to
-configure freely where the completion buffer opens, instead of growing the
-minibuffer. Furthermore =vertico-buffer= will adjust the number of displayed
-candidates according to the buffer height.
+See the Commentary of those files for configuration details. With these
+extensions it is possible to adapt Vertico such that it matches your preference
+or behaves similar to other familiar UIs. For example, the combination
+=vertico-flat= plus =vertico-directory= resembles Ido in look and feel. For an
+interface similar to Helm, the extension =vertico-buffer= allows you to configure
+freely where the completion buffer opens, instead of growing the minibuffer.
+Furthermore =vertico-buffer= will adjust the number of displayed candidates
+according to the buffer height.
 
 Configuration example for =vertico-directory=:
 
@@ -616,7 +612,7 @@ In both cases the empty string can be submitted. In the first case no explicit
 default value is specified and Vertico preselects the *first* candidate. In order
 to exit with the empty string, press =M-RET=. In the second case the explicit
 default value "" is specified and Vertico preselects the prompt, such that
-existing with the empty string is possible by pressing =RET= only.
+exiting with the empty string is possible by pressing =RET= only.
 
 ** Tramp hostname completion
 

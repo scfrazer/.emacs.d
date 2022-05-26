@@ -32,7 +32,6 @@ Configuration
 
 * Completion styles and TAB completion::
 * Completion-at-point and completion-in-region::
-* Completing-read-multiple (CRM)::
 
 Extensions
 
@@ -159,9 +158,14 @@ advantage of ‘use-package’.  Here is an example configuration:
      (use-package emacs
        :init
        ;; Add prompt indicator to `completing-read-multiple'.
-       ;; Alternatively try `consult-completing-read-multiple'.
+       ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
        (defun crm-indicator (args)
-         (cons (concat "[CRM] " (car args)) (cdr args)))
+         (cons (format "[CRM%s] %s"
+                       (replace-regexp-in-string
+                        "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                        crm-separator)
+                       (car args))
+               (cdr args)))
        (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
        ;; Do not allow the cursor in the minibuffer prompt
@@ -214,7 +218,6 @@ documentation about completion in the Elisp manual
 
 * Completion styles and TAB completion::
 * Completion-at-point and completion-in-region::
-* Completing-read-multiple (CRM)::
 
 
 File: vertico.info,  Node: Completion styles and TAB completion,  Next: Completion-at-point and completion-in-region,  Up: Configuration
@@ -264,7 +267,7 @@ completion styles are used instead of ‘orderless’:
            completion-ignore-case t)
 
 
-File: vertico.info,  Node: Completion-at-point and completion-in-region,  Next: Completing-read-multiple (CRM),  Prev: Completion styles and TAB completion,  Up: Configuration
+File: vertico.info,  Node: Completion-at-point and completion-in-region,  Prev: Completion styles and TAB completion,  Up: Configuration
 
 4.2 Completion-at-point and completion-in-region
 ================================================
@@ -291,18 +294,6 @@ completion in the minibuffer when ‘M-:’ (‘eval-expression’) is used.
 completion system for ‘completion-in-region’ in a child frame popup.
 Corfu is also a narrowly focused package and developed in the same
 spirit as Vertico.
-
-
-File: vertico.info,  Node: Completing-read-multiple (CRM),  Prev: Completion-at-point and completion-in-region,  Up: Configuration
-
-4.3 Completing-read-multiple (CRM)
-==================================
-
-Consult offers an enhanced ‘completing-read-multiple’ implementation
-which you can use with Vertico.
-
-     (advice-add #'completing-read-multiple
-                 :override #'consult-completing-read-multiple)
 
 
 File: vertico.info,  Node: Extensions,  Next: Complementary packages,  Prev: Configuration,  Up: Top
@@ -355,12 +346,13 @@ Currently the following extensions come with the Vertico ELPA package:
      (https://github.com/minad/vertico/blob/main/extensions/vertico-unobtrusive.el):
      ‘vertico-unobtrusive-mode’ displays only the topmost candidate.
 
-   With these extensions it is possible to adapt Vertico such that it
-matches your preference or behaves similar to other familiar UIs.  For
-example, the combination ‘vertico-flat’ plus ‘vertico-directory’
-resembles Ido in look and feel.  For an interface similar to Helm, the
-extension ‘vertico-buffer’ allows you to configure freely where the
-completion buffer opens, instead of growing the minibuffer.  Furthermore
+   See the Commentary of those files for configuration details.  With
+these extensions it is possible to adapt Vertico such that it matches
+your preference or behaves similar to other familiar UIs.  For example,
+the combination ‘vertico-flat’ plus ‘vertico-directory’ resembles Ido in
+look and feel.  For an interface similar to Helm, the extension
+‘vertico-buffer’ allows you to configure freely where the completion
+buffer opens, instead of growing the minibuffer.  Furthermore
 ‘vertico-buffer’ will adjust the number of displayed candidates
 according to the buffer height.
 
@@ -806,7 +798,7 @@ to ‘completing-read’ with ‘C-x C-e’:
 no explicit default value is specified and Vertico preselects the
 *first* candidate.  In order to exit with the empty string, press
 ‘M-RET’.  In the second case the explicit default value "" is specified
-and Vertico preselects the prompt, such that existing with the empty
+and Vertico preselects the prompt, such that exiting with the empty
 string is possible by pressing ‘RET’ only.
 
 
@@ -843,28 +835,27 @@ files!
 
 Tag Table:
 Node: Top210
-Node: Introduction1037
-Node: Features1872
-Node: Key bindings2903
-Node: Configuration4133
-Node: Completion styles and TAB completion8101
-Node: Completion-at-point and completion-in-region10417
-Node: Completing-read-multiple (CRM)11742
-Node: Extensions12161
-Node: Configure Vertico per command or completion category15824
-Node: Complementary packages20302
-Node: Child frames and Popups22556
-Node: Alternatives23931
-Node: Resources27528
-Node: Contributions28547
-Node: Problematic completion commands28835
-Node: org-refile29411
-Node: org-agenda-filter31006
-Node: tmm-menubar31705
-Node: ffap-menu32304
-Node: completion-table-dynamic32937
-Node: Submitting the empty string34048
-Node: Tramp hostname completion35491
+Node: Introduction1002
+Node: Features1837
+Node: Key bindings2868
+Node: Configuration4098
+Node: Completion styles and TAB completion8237
+Node: Completion-at-point and completion-in-region10553
+Node: Extensions11839
+Node: Configure Vertico per command or completion category15564
+Node: Complementary packages20042
+Node: Child frames and Popups22296
+Node: Alternatives23671
+Node: Resources27268
+Node: Contributions28287
+Node: Problematic completion commands28575
+Node: org-refile29151
+Node: org-agenda-filter30746
+Node: tmm-menubar31445
+Node: ffap-menu32044
+Node: completion-table-dynamic32677
+Node: Submitting the empty string33788
+Node: Tramp hostname completion35230
 
 End Tag Table
 
