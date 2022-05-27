@@ -1246,10 +1246,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220514.945/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2629,10 +2629,10 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220526.2301/doom-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/doom-themes-20220526.2301/doom-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220504.1557/doom-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/doom-themes-20220526.2301/doom-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3619,7 +3619,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220514.945" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
          Info-directory-list)))
 
 ;; Local Variables:
