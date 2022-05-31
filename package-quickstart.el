@@ -563,10 +563,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220531.615/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220531.615/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220525.1422/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220531.615/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1246,10 +1246,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1261,9 +1261,11 @@ SUFFIX is a suffix command or a group specification (of
 LOC is a command, a key vector, a key description (a string
   as returned by `key-description'), or a coordination list
   (whose last element may also be a command or key).
+Remove a conflicting binding unless optional KEEP-OTHER is
+  non-nil.
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC SUFFIX)" nil nil)
+\(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)" nil nil)
 
 (function-put 'transient-insert-suffix 'lisp-indent-function 'defun)
 
@@ -1275,9 +1277,11 @@ SUFFIX is a suffix command or a group specification (of
 LOC is a command, a key vector, a key description (a string
   as returned by `key-description'), or a coordination list
   (whose last element may also be a command or key).
+Remove a conflicting binding unless optional KEEP-OTHER is
+  non-nil.
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC SUFFIX)" nil nil)
+\(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)" nil nil)
 
 (function-put 'transient-append-suffix 'lisp-indent-function 'defun)
 
@@ -1685,10 +1689,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1732,14 +1736,14 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220328.1724/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220328.1724/multiple-cursors-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220528.1215/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220528.1215/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220328.1724/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20220528.1215/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-cycle-cursors" '("mc/")))
+(register-definition-prefixes "mc-cycle-cursors" '("mc/"))
 
 
 
@@ -1763,7 +1767,7 @@ Add one cursor to the end of each line in the active region." t nil)
 (autoload 'mc/edit-beginnings-of-lines "mc-edit-lines" "\
 Add one cursor to the beginning of each line in the active region." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-edit-lines" '("mc/edit-lines-empty-lines")))
+(register-definition-prefixes "mc-edit-lines" '("mc/edit-lines-empty-lines"))
 
 
 
@@ -1774,14 +1778,24 @@ mode press \"C-'\" while multiple-cursor-mode is active. You can
 still edit lines while you are in mc-hide-unmatched-lines
 mode. To leave this mode press <return> or \"C-g\"
 
-If called interactively, enable Mc-Hide-Unmatched-Lines mode if
-ARG is positive, and disable it if ARG is zero or negative.  If
-called from Lisp, also enable the mode if ARG is omitted or nil,
-and toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Mc-Hide-Unmatched-Lines mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `mc-hide-unmatched-lines-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-hide-unmatched-lines-mode" '("hum/")))
+(register-definition-prefixes "mc-hide-unmatched-lines-mode" '("hum/"))
 
 
 
@@ -1973,7 +1987,7 @@ already there.
 (autoload 'mc/mark-sgml-tag-pair "mc-mark-more" "\
 Mark the tag we're in and its pair for renaming." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-mark-more" '("mc--" "mc/")))
+(register-definition-prefixes "mc-mark-more" '("mc--" "mc/"))
 
 
 
@@ -2009,21 +2023,31 @@ Might not behave as intended if more than one cursors are on the same line.
 (autoload 'mc/vertical-align-with-space "mc-separate-operations" "\
 Aligns all cursors with whitespace like `mc/vertical-align' does" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-separate-operations" '("mc--" "mc/insert-numbers-default")))
+(register-definition-prefixes "mc-separate-operations" '("mc--" "mc/insert-numbers-default"))
 
 
 
 (autoload 'multiple-cursors-mode "multiple-cursors-core" "\
 Mode while multiple cursors are active.
 
-If called interactively, enable Multiple-Cursors mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Multiple-Cursors mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `multiple-cursors-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("activate-cursor-for-undo" "deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd")))
+(register-definition-prefixes "multiple-cursors-core" '("activate-cursor-for-undo" "deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd"))
 
 
 
@@ -2037,14 +2061,24 @@ multiple cursors to multiple lines." t nil)
 (autoload 'rectangular-region-mode "rectangular-region-mode" "\
 A mode for creating a rectangular region to edit
 
-If called interactively, enable Rectangular-Region mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Rectangular-Region mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `rectangular-region-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rectangular-region-mode" '("rectangular-region-mode" "rrm/")))
+(register-definition-prefixes "rectangular-region-mode" '("rectangular-region-mode" "rrm/"))
 
 
 
@@ -2992,10 +3026,10 @@ Enable flashing the mode-line on error." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220527.2231/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20220527.2231/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20220516.2220/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20220527.2231/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3619,7 +3653,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220516.2220" "/home/scfrazer/.emacs.d/elpa/orderless-20220418.2119" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220526.2152" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220527.2231" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220506.420" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.1")
          Info-directory-list)))
 
 ;; Local Variables:
