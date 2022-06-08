@@ -280,7 +280,7 @@ When t, then use the emacsclient.  This has the disadvantage that
 `with-editor-mode' won't be enabled because we don't know whether
 this package was involved at all in the call to the emacsclient,
 and when it is not, then we really should.  The problem is that
-the emacsclient doesn't pass a long any environment variables to
+the emacsclient doesn't pass along any environment variables to
 the server.  This will hopefully be fixed in Emacs eventually.
 
 When nil, then use the sleeping editor.  Because in this case we
@@ -366,10 +366,14 @@ And some tools that do not handle $EDITOR properly also break."
     (cond (cancel
            (save-buffer)
            (if clients
-               (dolist (client clients)
-                 (ignore-errors
-                   (server-send-string client "-error Canceled by user"))
-                 (delete-process client))
+               (let ((buf (current-buffer)))
+                 (dolist (client clients)
+                   (message "client %S" client)
+                   (ignore-errors
+                     (server-send-string client "-error Canceled by user"))
+                   (delete-process client))
+                 (when (buffer-live-p buf)
+                   (kill-buffer buf)))
              ;; Fallback for when emacs was used as $EDITOR
              ;; instead of emacsclient or the sleeping editor.
              ;; See https://github.com/magit/magit/issues/2258.
@@ -845,7 +849,7 @@ else like the former."
   ;; that mode, even though it only runs the shell to run a single
   ;; command.  The `with-editor-export-editor' hook function is only
   ;; intended to be used in buffers in which an interactive shell is
-  ;; running, so it has to be remove here.
+  ;; running, so it has to be removed here.
   (let ((shell-mode-hook (remove 'with-editor-export-editor shell-mode-hook)))
     (cond ((or (not (or with-editor--envvar shell-command-with-editor-mode))
                (not (string-suffix-p "&" command)))
