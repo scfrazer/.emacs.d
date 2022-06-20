@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.6-dev
-;; Package-Version: 20220603.300
-;; Package-Commit: 1f709778ac7990f4a07fdf11fe37bc6541810b29
+;; Package-Version: 20220620.1343
+;; Package-Commit: 8244e0b6b94ec6183d55b1dfce4b6cd00eada718
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -7680,20 +7680,18 @@ displaying the rendered output."
          (setq markdown-live-preview-source-buffer nil))))
 
 (defun markdown-live-preview-switch-to-output ()
-  "Switch to output buffer."
-  (interactive)
   "Turn on `markdown-live-preview-mode' if not already on, and switch to its
 output buffer in another window."
+  (interactive)
   (if markdown-live-preview-mode
       (markdown-display-buffer-other-window (markdown-live-preview-export)))
   (markdown-live-preview-mode))
 
 (defun markdown-live-preview-re-export ()
-  "Re export source buffer."
-  (interactive)
   "If the current buffer is a buffer displaying the exported version of a
 `markdown-live-preview-mode' buffer, call `markdown-live-preview-export' and
 update this buffer's contents."
+  (interactive)
   (when markdown-live-preview-source-buffer
     (with-current-buffer markdown-live-preview-source-buffer
       (markdown-live-preview-export))))

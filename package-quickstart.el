@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.2/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.2/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.2/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el") (car load-path))))
 
 
 
@@ -2084,10 +2084,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220603.300/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220603.300/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220603.300/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3290,7 +3290,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3")
          Info-directory-list)))
 
 ;; Local Variables:
