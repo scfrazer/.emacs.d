@@ -104,8 +104,6 @@ Delete N directories or words before point.
 (autoload 'vertico-directory-tidy "vertico-directory" "\
 Tidy shadowed file name, see `rfn-eshadow-overlay'." nil nil)
 
-(register-definition-prefixes "vertico-directory" '("vertico-directory--completing-file-p"))
-
 ;;;***
 
 ;;;### (autoloads nil "vertico-flat" "vertico-flat.el" (0 0 0 0))

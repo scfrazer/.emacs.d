@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Version: 0.24
+;; Version: 0.25
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/minad/vertico
 
@@ -184,22 +184,19 @@ See `resize-mini-windows' for documentation."
   (or (and (equal (car vertico--history-hash) vertico--base) (cdr vertico--history-hash))
       (let* ((base vertico--base)
              (base-size (length base))
-             ;; History disabled if `minibuffer-history-variable' eq `t'.
-             (hist (and (not (eq minibuffer-history-variable t))
+             (hist (and (not (eq minibuffer-history-variable t)) ;; Disabled for `t'.
                         (symbol-value minibuffer-history-variable)))
              (hash (make-hash-table :test #'equal :size (length hist))))
-        (if (= base-size 0)
-            ;; Put history elements into the hash
-            (cl-loop for elem in hist for index from 0 do
-                     (unless (gethash elem hash)
-                       (puthash elem index hash)))
-          ;; Drop base string from history elements, before putting them into the hash
-          (cl-loop for elem in hist for index from 0 do
-                   (when (and (>= (length elem) base-size)
-                              (eq t (compare-strings base 0 base-size elem 0 base-size)))
-                     (setq elem (substring elem base-size))
-                     (unless (gethash elem hash)
-                       (puthash elem index hash)))))
+        (cl-loop for elem in hist for index from 0 do
+                 (when (or (= base-size 0)
+                           (and (>= (length elem) base-size)
+                                (eq t (compare-strings base 0 base-size elem 0 base-size))))
+                   (let ((file-sep (and (eq minibuffer-history-variable 'file-name-history)
+                                        (string-match-p "/" elem base-size))))
+                     ;; Drop base string from history elements & special file handling.
+                     (when (or (> base-size 0) file-sep)
+                       (setq elem (substring elem base-size (and file-sep (1+ file-sep)))))
+                     (unless (gethash elem hash) (puthash elem index hash)))))
         (cdr (setq vertico--history-hash (cons base hash))))))
 
 (defun vertico--length-string< (x y)
@@ -602,7 +599,7 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
   "Exhibit completion UI."
   (let* ((buffer-undo-list t) ;; Overlays affect point position and undo list!
          (pt (max 0 (- (point) (minibuffer-prompt-end))))
-         (content (minibuffer-contents)))
+         (content (minibuffer-contents-no-properties)))
     (unless (or (input-pending-p) (equal vertico--input (cons content pt)))
       (vertico--update-candidates pt content))
     (vertico--prompt-selection)
@@ -728,7 +725,7 @@ When the prefix argument is 0, the group order is reset."
 
 (defun vertico--candidate (&optional hl)
   "Return current candidate string with optional highlighting if HL is non-nil."
-  (let ((content (substring (or (car-safe vertico--input) (minibuffer-contents)))))
+  (let ((content (substring (or (car-safe vertico--input) (minibuffer-contents-no-properties)))))
     (cond
      ((>= vertico--index 0)
       (let ((cand (substring (nth vertico--index vertico--candidates))))
@@ -739,8 +736,7 @@ When the prefix argument is 0, the group order is reset."
         (concat vertico--base
                 (if hl (car (funcall vertico--highlight-function (list cand))) cand))))
      ((and (equal content "") (or (car-safe minibuffer-default) minibuffer-default)))
-     (t (vertico--remove-face 0 (length content) 'vertico-current content) ;; Remove prompt face
-        content))))
+     (t content))))
 
 (defun vertico--setup ()
   "Setup completion UI."

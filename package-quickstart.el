@@ -614,10 +614,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.25/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.25/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.24/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.25/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -707,8 +707,6 @@ Delete N directories or words before point.
 
 (autoload 'vertico-directory-tidy "vertico-directory" "\
 Tidy shadowed file name, see `rfn-eshadow-overlay'." nil nil)
-
-(register-definition-prefixes "vertico-directory" '("vertico-directory--completing-file-p"))
 
 
 
@@ -1570,10 +1568,10 @@ determined.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/reformatter-20210831.1405/reformatter-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/reformatter-20210831.1405/reformatter-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/reformatter-20220627.825/reformatter-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/reformatter-20220627.825/reformatter-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/reformatter-20210831.1405/reformatter-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/reformatter-20220627.825/reformatter-autoloads.el") (car load-path))))
 
 
 
@@ -1674,7 +1672,7 @@ EXIT-CODE-SUCCESS-P
 
 (function-put 'reformatter-define 'lisp-indent-function 'defun)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "reformatter" '("reformatter-")))
+(register-definition-prefixes "reformatter" '("reformatter-"))
 
 
 )
@@ -2084,10 +2082,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.2325/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.2325/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.1343/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220620.2325/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3290,7 +3288,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.24" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.25" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3")
          Info-directory-list)))
 
 ;; Local Variables:
