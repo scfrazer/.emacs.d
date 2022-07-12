@@ -152,10 +152,10 @@ to control which program to use when looking for matches.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.22/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.22/xr-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.23/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.23/xr-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.22/xr-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.23/xr-autoloads.el") (car load-path))))
 
 
 
@@ -221,7 +221,7 @@ See `xr' for a description of the DIALECT argument.
 
 \(fn SKIP-SET-STRING &optional DIALECT)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xr" '("xr-")))
+(register-definition-prefixes "xr" '("xr-"))
 
 
 
