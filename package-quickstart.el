@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.4.1/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.4.1/xref-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.4.1/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el") (car load-path))))
 
 
 
@@ -146,7 +146,7 @@ to control which program to use when looking for matches.
 
 \(fn REGEXP FILES)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xref" '("xref-")))
+(register-definition-prefixes "xref" '("xref-"))
 
 
 
@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0/compat-autoloads.el") (car load-path))))
 
 
 
@@ -1244,10 +1244,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2082,10 +2082,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220627.1048/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220627.1048/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220708.6/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220708.6/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220627.1048/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20220708.6/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2135,10 +2135,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220608.1645/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220608.1645/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220608.1645/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2586,10 +2586,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.13.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.13.0/eldoc-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.12.0/eldoc-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.13.0/eldoc-autoloads.el") (car load-path))))
 
 
 
@@ -3288,7 +3288,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220527.2213" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.25" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.1.3")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.25" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
