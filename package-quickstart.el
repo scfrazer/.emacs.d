@@ -2976,10 +2976,10 @@ EV is the mouse event.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20190104.1931/beacon-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20190104.1931/beacon-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20220730.100/beacon-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20220730.100/beacon-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/beacon-20190104.1931/beacon-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/beacon-20220730.100/beacon-autoloads.el") (car load-path))))
 
 
 
@@ -2987,7 +2987,7 @@ EV is the mouse event.
 Blink the beacon at the position of the cursor.
 Unlike `beacon-blink-automated', the beacon will blink
 unconditionally (even if `beacon-mode' is disabled), and this can
-be invoked as a user command or called from lisp code." t nil)
+be invoked as a user command or called from Lisp code." t nil)
 
 (defvar beacon-mode nil "\
 Non-nil if Beacon mode is enabled.
@@ -3002,16 +3002,25 @@ or call the function `beacon-mode'.")
 (autoload 'beacon-mode "beacon" "\
 Toggle Beacon mode on or off.
 
-If called interactively, enable Beacon mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Beacon mode' mode.  If the prefix argument is positive, enable
+the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `(default-value \\='beacon-mode)'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \\{beacon-mode-map}
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "beacon" '("beacon-")))
+(register-definition-prefixes "beacon" '("beacon-"))
 
 
 )
