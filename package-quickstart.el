@@ -244,10 +244,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -342,10 +342,10 @@ else like the former.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220811.1616/which-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220811.1616/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20220518.1941/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20220811.1616/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -404,7 +404,7 @@ replaced. COMMAND can be nil if the binding corresponds to a key
 prefix. An example is
 
 \(which-key-add-keymap-based-replacements global-map
-  \"C-x w\" '(\"Save as\" . write-file)).
+  \"C-x w\" \\='(\"Save as\" . write-file)).
 
 For backwards compatibility, REPLACEMENT can also be a string,
 but the above format is preferred, and the option to use a string
@@ -422,7 +422,7 @@ may either be a string, as in
 a cons of two strings as in
 
 \(which-key-add-key-based-replacements \"C-x 8\"
-                                        '(\"unicode\" . \"Unicode keys\"))
+                                        \\='(\"unicode\" . \"Unicode keys\"))
 
 or a function that takes a (KEY . BINDING) cons and returns a
 replacement.
@@ -563,10 +563,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220615.602/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220615.602/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220810.1453/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20220810.1453/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220615.602/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20220810.1453/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -980,10 +980,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20210210.1609/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20210210.1609/bind-key-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20210210.1609/bind-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el") (car load-path))))
 
 
 
@@ -1002,7 +1002,7 @@ For example:
 
   (bind-key \"M-h\" #'some-interactive-function my-mode-map)
 
-  (bind-key \"M-h\" #'some-interactive-function 'my-mode-map)
+  (bind-key \"M-h\" #'some-interactive-function \\='my-mode-map)
 
 If PREDICATE is non-nil, it is a form evaluated to determine when
 a key should be bound. It must return non-nil in such cases.
@@ -1034,6 +1034,19 @@ Accepts keyword arguments:
                          for these bindings
 :prefix-docstring STR  - docstring for the prefix-map variable
 :menu-name NAME        - optional menu string for prefix map
+:repeat-docstring STR  - docstring for the repeat-map variable
+:repeat-map MAP        - name of the repeat map that should be created
+                         for these bindings. If specified, the
+                         `repeat-map' property of each command bound
+                         (within the scope of the `:repeat-map' keyword)
+                         is set to this map.
+:exit BINDINGS         - Within the scope of `:repeat-map' will bind the
+                         key in the repeat map, but will not set the
+                         `repeat-map' property of the bound command.
+:continue BINDINGS     - Within the scope of `:repeat-map' forces the
+                         same behaviour as if no special keyword had
+                         been used (that is, the command is bound, and
+                         it's `repeat-map' property set)
 :filter FORM           - optional form to determine when bindings apply
 
 The rest of the arguments are conses of keybinding string and a
@@ -1049,14 +1062,14 @@ function symbol (unquoted).
 (autoload 'describe-personal-keybindings "bind-key" "\
 Display all the personal keybindings defined by `bind-key'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bind-key" '("bind-key" "compare-keybindings" "get-binding-description" "override-global-m" "personal-keybindings")))
+(register-definition-prefixes "bind-key" '("bind-key" "compare-keybindings" "get-binding-description" "override-global-m" "personal-keybindings"))
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926/use-package-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220809.42/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220809.42/use-package-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926/use-package-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20220809.42/use-package-autoloads.el") (car load-path))))
 
 
 
@@ -1106,7 +1119,7 @@ deferred until the prefix key sequence is pressed.
 
 \(fn NAME KEYWORD ARG REST STATE)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-bind-key" '("use-package-handler/:bind*")))
+(register-definition-prefixes "use-package-bind-key" '("use-package-handler/:bind*"))
 
 
 
@@ -1163,18 +1176,18 @@ this file.  Usage:
 :load-path       Add to the `load-path' before attempting to load the package.
 :diminish        Support for diminish.el (if installed).
 :delight         Support for delight.el (if installed).
-:custom          Call `custom-set' or `set-default' with each variable
+:custom          Call `Custom-set' or `set-default' with each variable
                  definition without modifying the Emacs `custom-file'.
                  (compare with `custom-set-variables').
-:custom-face     Call `customize-set-faces' with each face definition.
+:custom-face     Call `custom-set-faces' with each face definition.
 :ensure          Loads the package using package.el if necessary.
 :pin             Pin the package to an archive.
 
 \(fn NAME &rest ARGS)" nil t)
 
-(function-put 'use-package 'lisp-indent-function '1)
+(function-put 'use-package 'lisp-indent-function 'defun)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-core" '("use-package-")))
+(register-definition-prefixes "use-package-core" '("use-package-"))
 
 
 
@@ -1188,7 +1201,7 @@ Normalize arguments to delight.
 
 \(fn NAME KEYWORD ARGS REST STATE)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-delight" '("use-package-normalize-delight")))
+(register-definition-prefixes "use-package-delight" '("use-package-normalize-delight"))
 
 
 
@@ -1202,7 +1215,7 @@ Normalize arguments to delight.
 
 \(fn NAME KEYWORD ARG REST STATE)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-diminish" '("use-package-normalize-diminish")))
+(register-definition-prefixes "use-package-diminish" '("use-package-normalize-diminish"))
 
 
 
@@ -1216,7 +1229,7 @@ Normalize arguments to delight.
 
 \(fn NAME KEYWORD ENSURE REST STATE)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-ensure" '("use-package-")))
+(register-definition-prefixes "use-package-ensure" '("use-package-"))
 
 
 
@@ -1229,7 +1242,7 @@ instead.
 
 \(fn PACKAGE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-jump" '("use-package-find-require")))
+(register-definition-prefixes "use-package-jump" '("use-package-find-require"))
 
 
 
@@ -1238,16 +1251,16 @@ Check for errors in use-package declarations.
 For example, if the module's `:if' condition is met, but even
 with the specified `:load-path' the module cannot be found." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-lint" '("use-package-lint-declaration")))
+(register-definition-prefixes "use-package-lint" '("use-package-lint-declaration"))
 
 
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1309,7 +1322,7 @@ See info node `(transient)Modifying Existing Transients'.
 
 (function-put 'transient-remove-suffix 'lisp-indent-function 'defun)
 
-(register-definition-prefixes "transient" '("magit--fit-window-to-buffer" "transient"))
+(register-definition-prefixes "transient" '("transient"))
 
 
 
@@ -3297,7 +3310,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220717.1713" "/home/scfrazer/.emacs.d/elpa/use-package-20210207.1926" "/home/scfrazer/.emacs.d/elpa/vertico-0.25" "/home/scfrazer/.emacs.d/elpa/with-editor-20220608.1017" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224" "/home/scfrazer/.emacs.d/elpa/use-package-20220809.42" "/home/scfrazer/.emacs.d/elpa/vertico-0.25" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
