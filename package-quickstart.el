@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.5.0/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el") (car load-path))))
 
 
 
@@ -618,10 +618,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.26/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.26/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.27/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.27/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.26/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.27/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -991,10 +991,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20220815.1925/bind-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el") (car load-path))))
 
 
 
@@ -1011,9 +1011,9 @@ COMMAND must be an interactive function or lambda form.
 KEYMAP, if present, should be a keymap variable or symbol.
 For example:
 
-  (bind-key \"M-h\" #'some-interactive-function my-mode-map)
+  (bind-key \"M-h\" #\\='some-interactive-function my-mode-map)
 
-  (bind-key \"M-h\" #'some-interactive-function \\='my-mode-map)
+  (bind-key \"M-h\" #\\='some-interactive-function \\='my-mode-map)
 
 If PREDICATE is non-nil, it is a form evaluated to determine when
 a key should be bound. It must return non-nil in such cases.
@@ -1077,10 +1077,10 @@ Display all the personal keybindings defined by `bind-key'." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220819.553/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220819.553/use-package-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25/use-package-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20220819.553/use-package-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25/use-package-autoloads.el") (car load-path))))
 
 
 
@@ -1700,14 +1700,14 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20211231.1823/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20211231.1823/popup-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20211231.1823/popup-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el") (car load-path))))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "popup" '("popup-")))
+(register-definition-prefixes "popup" '("popup-"))
 
 
 )
@@ -2159,10 +2159,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220721.1833/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2311,10 +2311,10 @@ Same as `kill-buffer' but keep the iflipb buffer list state." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220102.803/hydra-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220102.803/hydra-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hydra-20220102.803/hydra-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el") (car load-path))))
 
 
 
@@ -2376,15 +2376,15 @@ result of `defhydra'.
 
 (function-put 'defhydra 'doc-string-elt '3)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra" '("defhydra" "hydra-")))
+(register-definition-prefixes "hydra" '("defhydra" "hydra-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra-examples" '("hydra-" "org-agenda-cts" "whitespace-mode")))
+(register-definition-prefixes "hydra-examples" '("hydra-" "org-agenda-cts" "whitespace-mode"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra-ox" '("hydra-ox")))
+(register-definition-prefixes "hydra-ox" '("hydra-ox"))
 
 
 
@@ -3048,10 +3048,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/avy-20220102.805/avy-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20220102.805/avy-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/avy-20220910.1936/avy-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20220910.1936/avy-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20220102.805/avy-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20220910.1936/avy-autoloads.el") (car load-path))))
 
 
 
@@ -3308,7 +3308,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 (autoload 'avy-transpose-lines-in-region "avy" "\
 Transpose lines in the active region." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "avy" '("avy-")))
+(register-definition-prefixes "avy" '("avy-"))
 
 
 )
@@ -3321,7 +3321,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224" "/home/scfrazer/.emacs.d/elpa/use-package-20220819.553" "/home/scfrazer/.emacs.d/elpa/vertico-0.26" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224" "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25" "/home/scfrazer/.emacs.d/elpa/vertico-0.27" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
          Info-directory-list)))
 
 ;; Local Variables:
