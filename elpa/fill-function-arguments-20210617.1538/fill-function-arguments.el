@@ -4,8 +4,8 @@
 
 ;; Author: David Shepherd <davidshepherd7@gmail.com>
 ;; Version: 0.9
-;; Package-Version: 20201223.819
-;; Package-Commit: 124cde3c17e31f6e3992d38f86f13f6d18711943
+;; Package-Version: 20210617.1538
+;; Package-Commit: 60a5a3c3004cffa111202b42217d604f63d72e70
 ;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: convenience
 ;; URL: https://github.com/davidshepherd7/fill-function-arguments
@@ -235,12 +235,13 @@ call, an array declaration, etc.) then if the list is currently
 on a single line call `fill-function-arguments-to-multi-line',
 otherwise call `fill-function-arguments-to-single-line'."
   (interactive)
-  (save-restriction
-    (fill-function-arguments--narrow-to-brackets)
-    (cond
-     ((fill-function-arguments--do-argument-fill-p) (fill-paragraph))
-     ((fill-function-arguments--single-line-p) (fill-function-arguments-to-multi-line))
-     (t (fill-function-arguments-to-single-line)))))
+  (if (fill-function-arguments--do-argument-fill-p)
+      (fill-paragraph)
+    (save-restriction
+      (fill-function-arguments--narrow-to-brackets)
+      (cond
+       ((fill-function-arguments--single-line-p) (fill-function-arguments-to-multi-line))
+       (t (fill-function-arguments-to-single-line))))))
 
 
 

@@ -1,4 +1,4 @@
-;;; fill-function-arguments-autoloads.el --- automatically extracted autoloads
+;;; fill-function-arguments-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -28,7 +28,7 @@ call, an array declaration, etc.) then if the list is currently
 on a single line call `fill-function-arguments-to-multi-line',
 otherwise call `fill-function-arguments-to-single-line'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-")))
+(register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-"))
 
 ;;;***
 

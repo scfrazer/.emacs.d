@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 0.14
-;; Package-Version: 20220914.945
-;; Package-Commit: db12d80307ea9d6de44b59d18533c9cbf0c51724
+;; Package-Version: 20220922.1059
+;; Package-Commit: ddba3a384916d83b68527379bbdf01161201853e
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -1052,12 +1052,16 @@ These annotations are skipped for remote paths."
       (concat
        (format #(" (%s)" 0 5 (face marginalia-key)) index)
        (marginalia--fields
-        ((if (cdr bufs)
-             (format "%d windows" (length bufs))
-           "1 window ")
+        ((format "win:%s"
+                 (if (eq (car tab) 'current-tab)
+                     (length (window-list nil 'no-minibuf))
+                   (length bufs)))
          :face 'marginalia-size)
-        ((if (memq 'current-tab tab)
-             "*current tab*"
+        ((format "group:%s" (or (alist-get 'group tab) 'none))
+         :face 'marginalia-type
+         :truncate 20)
+        ((if (eq (car tab) 'current-tab)
+             "(current tab)"
            (string-join bufs " "))
          :face 'marginalia-documentation))))))
 

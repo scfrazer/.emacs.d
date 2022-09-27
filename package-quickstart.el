@@ -1268,10 +1268,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220918.2101/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20220918.2101/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20220918.2101/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1711,10 +1711,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220918.48/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20220918.48/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20220918.48/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2159,10 +2159,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220922.1059/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20220922.1059/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220914.945/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20220922.1059/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2498,10 +2498,10 @@ will return point to the current position.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220324.1057/git-timemachine-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220324.1057/git-timemachine-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220920.828/git-timemachine-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220920.828/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220324.1057/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20220920.828/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -2516,7 +2516,7 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 
 \(fn GIT-BRANCH)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
+(register-definition-prefixes "git-timemachine" '("git-timemachine-"))
 
 
 )
@@ -2541,10 +2541,10 @@ paragraphs are used.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20201223.819/fill-function-arguments-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20201223.819/fill-function-arguments-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20210617.1538/fill-function-arguments-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20210617.1538/fill-function-arguments-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20201223.819/fill-function-arguments-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20210617.1538/fill-function-arguments-autoloads.el") (car load-path))))
 
 
 
@@ -2566,7 +2566,7 @@ call, an array declaration, etc.) then if the list is currently
 on a single line call `fill-function-arguments-to-multi-line',
 otherwise call `fill-function-arguments-to-single-line'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-")))
+(register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-"))
 
 
 )
@@ -3321,7 +3321,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220527.2228" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220806.2224" "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25" "/home/scfrazer/.emacs.d/elpa/vertico-0.27" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20220608.1931" "/home/scfrazer/.emacs.d/elpa/orderless-20220918.48" "/home/scfrazer/.emacs.d/elpa/rg-20220521.1653" "/home/scfrazer/.emacs.d/elpa/transient-20220918.2101" "/home/scfrazer/.emacs.d/elpa/use-package-20220910.25" "/home/scfrazer/.emacs.d/elpa/vertico-0.27" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
          Info-directory-list)))
 
 ;; Local Variables:
