@@ -1876,7 +1876,7 @@ Prefix with C-u to resize the `next-window'."
 
   (set-terminal-coding-system 'utf-8)
 
-  (xterm-mouse-mode 1)
+  ;; (xterm-mouse-mode 1)
 
   (setq desktop-restore-forces-onscreen nil)
   (defun my-desktop-restore-tty-windows ()

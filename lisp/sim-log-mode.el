@@ -107,27 +107,27 @@
      (6 'sim-log-mode-msg-id-face)
      (7 'sim-log-mode-debug-msg-face))
     ;; Standard log
-    ("^\\(UVM_INFO\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
+    ("^\\(UVM_INFO\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\)\\( [fpnum]?s\\)?: \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
      (1 'sim-log-mode-info-face)
      (2 'sim-log-mode-filename-face)
      (3 'sim-log-mode-timestamp-face)
-     (4 'sim-log-mode-path-face)
-     (5 'sim-log-mode-msg-id-face)
-     (6 'sim-log-mode-msg-face))
-    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\(.+?\\) \\(.*\\)$"
+     (5 'sim-log-mode-path-face)
+     (6 'sim-log-mode-msg-id-face)
+     (7 'sim-log-mode-msg-face))
+    ("^\\(UVM_\\(ERROR\\|FATAL\\)\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\)\\( [fpnum]?s\\)?: \\([^ ]+\\) \\(.+?\\) \\(.*\\)$"
      (1 'error)
      (3 'sim-log-mode-filename-face)
      (4 'sim-log-mode-timestamp-face)
      (5 'sim-log-mode-path-face)
-     (7 'sim-log-mode-error-msg-face)
-     (8 'sim-log-mode-error-msg-face))
-    ("^\\(UVM_WARNING\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\): \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
+     (8 'sim-log-mode-error-msg-face)
+     (9 'sim-log-mode-error-msg-face))
+    ("^\\(UVM_WARNING\\)\\( /[-a-zA-Z0-9_./]+([0-9]+)\\)? @ \\([0-9]+\\)\\( [fpnum]?s\\)?: \\([^ ]+\\) \\[\\(.+?\\)\\] \\(.*\\)$"
      (1 'warning)
      (2 'sim-log-mode-filename-face)
      (3 'sim-log-mode-timestamp-face)
-     (4 'sim-log-mode-path-face)
-     (5 'sim-log-mode-msg-id-face)
-     (6 'sim-log-mode-msg-face))
+     (5 'sim-log-mode-path-face)
+     (6 'sim-log-mode-msg-id-face)
+     (7 'sim-log-mode-msg-face))
     "Font locking for 'sim-log-mode'."))
 
 (add-to-list 'font-lock-extra-managed-props 'invisible)
