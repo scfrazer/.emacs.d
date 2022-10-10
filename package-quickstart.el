@@ -1700,10 +1700,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220927.1610/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20220927.1610/popup-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20220910.1225/popup-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20220927.1610/popup-autoloads.el") (car load-path))))
 
 
 

@@ -6,8 +6,8 @@
 ;; Author: Tomohiro Matsuyama <m2ym.pub@gmail.com>
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/auto-complete/popup-el
-;; Package-Version: 20220910.1225
-;; Package-Commit: 66b840b6ded808974225501d2e672da7363579a6
+;; Package-Version: 20220927.1610
+;; Package-Commit: 20ce6cbd2f06423be35b3b700c698f0e109e880c
 ;; Keywords: lisp
 ;; Version: 0.5.9
 ;; Package-Requires: ((emacs "24.3"))
@@ -246,15 +246,15 @@ ITEM is not string."
 
 Optional argument REP is the replacement string of
 non-displayable character."
-  (unless rep (setq rep ""))
-  (let ((result ""))
+  (let ((rep (or rep ""))
+        (results (list)))
     (dolist (string (split-string str ""))
       (let* ((char (string-to-char string))
              (string (if (char-displayable-p char)
                          string
                        rep)))
-        (setq result (concat result string))))
-    result))
+        (push string results)))
+    (string-join (reverse results))))
 
 (cl-defun popup-make-item (name
                            &key
