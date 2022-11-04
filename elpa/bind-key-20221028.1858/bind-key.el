@@ -1,14 +1,14 @@
 ;;; bind-key.el --- A simple way to manage personal keybindings  -*- lexical-binding: t; -*-
 
-;; Copyright (c) 2012-2017 John Wiegley
+;; Copyright (c) 2012-2022 Free Software Foundation, Inc.
 
 ;; Author: John Wiegley <johnw@newartisans.com>
 ;; Maintainer: John Wiegley <johnw@newartisans.com>
 ;; Created: 16 Jun 2012
 ;; Modified: 29 Nov 2017
-;; Version: 2.4
-;; Package-Version: 20220910.2157
-;; Package-Commit: 9a45a8004a9e520e0e822b960ca9d70c2528181e
+;; Version: 2.4.1
+;; Package-Version: 20221028.1858
+;; Package-Commit: 4095f1bdae7989981803d25a52384383116e6db6
 ;; Keywords: keys keybinding config dotemacs
 ;; URL: https://github.com/jwiegley/use-package
 

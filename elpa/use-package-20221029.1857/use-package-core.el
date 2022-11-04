@@ -1,12 +1,12 @@
 ;;; use-package-core.el --- A configuration macro for simplifying your .emacs  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2017 John Wiegley
+;; Copyright (C) 2012-2022 Free Software Foundation, Inc.
 
 ;; Author: John Wiegley <johnw@newartisans.com>
 ;; Maintainer: John Wiegley <johnw@newartisans.com>
 ;; Created: 17 Jun 2012
 ;; Modified: 29 Nov 2017
-;; Version: 2.4.1
+;; Version: 2.4.3
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: dotemacs startup speed config package
 ;; URL: https://github.com/jwiegley/use-package
@@ -66,7 +66,7 @@
   "A use-package declaration for simplifying your `.emacs'."
   :group 'startup)
 
-(defconst use-package-version "2.4.1"
+(defconst use-package-version "2.4.3"
   "This version of use-package.")
 
 (defcustom use-package-keywords
@@ -1501,7 +1501,7 @@ no keyword implies `:all'."
 (defun use-package-normalize/:custom-face (name-symbol _keyword arg)
   "Normalize use-package custom-face keyword."
   (let ((error-msg
-         (format "%s wants a (<symbol> <face-spec>) or list of these"
+         (format "%s wants a (<symbol> <face-spec> [spec-type]) or list of these"
                  name-symbol)))
     (unless (listp arg)
       (use-package-error error-msg))
@@ -1512,13 +1512,13 @@ no keyword implies `:all'."
             (spec (nth 1 def)))
         (when (or (not face)
                   (not spec)
-                  (> (length def) 2))
+                  (> (length def) 3))
           (use-package-error error-msg))))))
 
 (defun use-package-handler/:custom-face (name _keyword args rest state)
   "Generate use-package custom-face keyword code."
   (use-package-concat
-   (mapcar #'(lambda (def) `(custom-set-faces (backquote ,def))) args)
+   (mapcar #'(lambda (def) `(apply #'face-spec-set (backquote ,def))) args)
    (use-package-process-keywords name rest state)))
 
 ;;;; :init

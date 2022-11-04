@@ -989,10 +989,10 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20221028.1858/bind-key-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20221028.1858/bind-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20220910.2157/bind-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20221028.1858/bind-key-autoloads.el") (car load-path))))
 
 
 
@@ -1075,10 +1075,10 @@ Display all the personal keybindings defined by `bind-key'." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20221012.1743/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20221012.1743/use-package-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20221029.1857/use-package-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20221029.1857/use-package-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20221012.1743/use-package-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20221029.1857/use-package-autoloads.el") (car load-path))))
 
 
 
@@ -1267,10 +1267,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20221020.1019/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20221020.1019/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20221020.1019/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430/transient-autoloads.el") (car load-path))))
 
 
 
@@ -3563,7 +3563,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221023.1708" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221020.1019" "/home/scfrazer/.emacs.d/elpa/use-package-20221012.1743" "/home/scfrazer/.emacs.d/elpa/vertico-0.28" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221023.1708" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430" "/home/scfrazer/.emacs.d/elpa/use-package-20221029.1857" "/home/scfrazer/.emacs.d/elpa/vertico-0.28" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
          Info-directory-list)))
 
 ;; Local Variables:
