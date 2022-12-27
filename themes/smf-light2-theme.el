@@ -7,9 +7,9 @@
  'smf-light2
 
  `(font-lock-builtin-face       ((t :foreground "lightsalmon4" :bold t)))
- `(font-lock-comment-face       ((t :foreground "gray66" :italic t)))
- `(font-lock-constant-face      ((t :foreground "purple4" :italic t)))
- `(font-lock-doc-face           ((t :foreground "slategray4" :italic t)))
+ `(font-lock-comment-face       ((t :foreground "gray66" :italic nil)))
+ `(font-lock-constant-face      ((t :foreground "purple4" :italic nil)))
+ `(font-lock-doc-face           ((t :foreground "slategray4" :italic nil)))
  `(font-lock-function-name-face ((t :foreground "red4" :underline t)))
  `(font-lock-keyword-face       ((t :foreground "blue4" :bold t)))
  `(font-lock-preprocessor-face  ((t :foreground "yellow4")))
