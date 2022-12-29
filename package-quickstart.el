@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.5.1/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el") (car load-path))))
 
 
 
@@ -618,10 +618,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.28/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-0.28/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.0/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.0/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-0.28/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.0/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1699,10 +1699,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.8.3/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.8.3/project-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.8.3/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el") (car load-path))))
 
 
 
@@ -1717,15 +1717,15 @@ project instance.
 
 The \"transient\" project instance is a special kind of value
 which denotes a project rooted in that directory and includes all
-the files under the directory except for those that should be
-ignored (per `project-ignores').
+the files under the directory except for those that match entries
+in `vc-directory-exclusion-list' or `grep-find-ignored-files'.
 
 See the doc string of `project-find-functions' for the general form
 of the project instance object.
 
 \(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
 
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "\2" 'project-list-buffers) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
 
@@ -1889,6 +1889,16 @@ which see for how it is determined where the buffer will be
 displayed.
 
 \(fn BUFFER-OR-NAME)" t nil)
+
+(autoload 'project-list-buffers "project" "\
+Display a list of project buffers.
+The list is displayed in a buffer named \"*Buffer List*\".
+
+By default, all project buffers are listed except those whose names
+start with a space (which are for internal use).  With prefix argument
+ARG, show only buffers that are visiting files.
+
+\(fn &optional ARG)" t nil)
 
 (autoload 'project-kill-buffers "project" "\
 Kill the buffers belonging to the current project.
@@ -3563,7 +3573,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221113.1719" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430" "/home/scfrazer/.emacs.d/elpa/use-package-20221113.2322" "/home/scfrazer/.emacs.d/elpa/vertico-0.28" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221113.1719" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430" "/home/scfrazer/.emacs.d/elpa/use-package-20221113.2322" "/home/scfrazer/.emacs.d/elpa/vertico-1.0" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
          Info-directory-list)))
 
 ;; Local Variables:

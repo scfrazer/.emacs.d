@@ -1,4 +1,4 @@
-;;; vertico-directory.el --- Ido-like direction navigation for Vertico -*- lexical-binding: t -*-
+;;; vertico-directory.el --- Ido-like directory navigation for Vertico -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2021, 2022  Free Software Foundation, Inc.
 
@@ -6,7 +6,7 @@
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (vertico "0.28"))
+;; Package-Requires: ((emacs "27.1") (vertico "1.0"))
 ;; Homepage: https://github.com/minad/vertico
 
 ;; This file is part of GNU Emacs.
@@ -39,20 +39,29 @@
 ;;; Code:
 
 (require 'vertico)
+(eval-when-compile (require 'subr-x))
 
 ;;;###autoload
 (defun vertico-directory-enter ()
   "Enter directory or exit completion with current candidate."
   (interactive)
-  (if (and (>= vertico--index 0)
-           (let ((cand (vertico--candidate)))
-             (or (string-suffix-p "/" cand)
+  (if-let* (((>= vertico--index 0))
+            ((eq 'file (vertico--metadata-get 'category)))
+            ;; Check vertico--base for stepwise file path completion
+            ((not (equal vertico--base "")))
+            (cand (vertico--candidate))
+            ((or (string-suffix-p "/" cand)
                  (and (vertico--remote-p cand)
-                      (string-suffix-p ":" cand))))
-           ;; Check vertico--base for stepwise file path completion
-           (not (equal vertico--base ""))
-           (eq 'file (vertico--metadata-get 'category)))
-      (vertico-insert)
+                      (string-suffix-p ":" cand)))))
+      (progn
+        ;; Handle ./ and ../ manually instead of via `expand-file-name' and
+        ;; `abbreviate-file-name', such that we don't accidentially perform
+        ;; unwanted substitutions in the existing completion.
+        (setq cand (replace-regexp-in-string "/\\./" "/" cand))
+        (unless (string-suffix-p "/../../" cand)
+          (setq cand (replace-regexp-in-string "/[^/|:]+/\\.\\./\\'" "/" cand)))
+        (delete-minibuffer-contents)
+        (insert cand))
     (vertico-exit)))
 
 ;;;###autoload
@@ -66,7 +75,7 @@
       (when (string-match-p "\\`~[^/]*/\\'" path)
         (delete-minibuffer-contents)
         (insert (expand-file-name path)))
-      (dotimes (_ n found)
+      (dotimes (_ (or n 1) found)
         (save-excursion
           (let ((end (point)))
             (goto-char (1- end))

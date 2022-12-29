@@ -20,15 +20,15 @@ project instance.
 
 The \"transient\" project instance is a special kind of value
 which denotes a project rooted in that directory and includes all
-the files under the directory except for those that should be
-ignored (per `project-ignores').
+the files under the directory except for those that match entries
+in `vc-directory-exclusion-list' or `grep-find-ignored-files'.
 
 See the doc string of `project-find-functions' for the general form
 of the project instance object.
 
 \(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
 
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "\2" 'project-list-buffers) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
 
@@ -192,6 +192,16 @@ which see for how it is determined where the buffer will be
 displayed.
 
 \(fn BUFFER-OR-NAME)" t nil)
+
+(autoload 'project-list-buffers "project" "\
+Display a list of project buffers.
+The list is displayed in a buffer named \"*Buffer List*\".
+
+By default, all project buffers are listed except those whose names
+start with a space (which are for internal use).  With prefix argument
+ARG, show only buffers that are visiting files.
+
+\(fn &optional ARG)" t nil)
 
 (autoload 'project-kill-buffers "project" "\
 Kill the buffers belonging to the current project.

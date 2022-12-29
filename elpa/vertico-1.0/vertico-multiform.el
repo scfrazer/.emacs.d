@@ -6,7 +6,7 @@
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (vertico "0.28"))
+;; Package-Requires: ((emacs "27.1") (vertico "1.0"))
 ;; Homepage: https://github.com/minad/vertico
 
 ;; This file is part of GNU Emacs.
@@ -203,6 +203,8 @@ MODE defaults to the vertical display."
     (when mode
       (vertico-multiform--temporary-mode mode 1))
     (setq vertico-multiform--display-last last)))
+
+(put #'vertico-multiform-vertical 'completion-predicate #'vertico--command-p)
 
 (defmacro vertico-multiform--define-display-toggle (name)
   "Define toggle for display mode NAME."
