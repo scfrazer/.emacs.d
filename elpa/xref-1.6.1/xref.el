@@ -1,7 +1,7 @@
 ;;; xref.el --- Cross-referencing commands              -*-lexical-binding:t-*-
 
-;; Copyright (C) 2014-2022 Free Software Foundation, Inc.
-;; Version: 1.6.0
+;; Copyright (C) 2014-2023 Free Software Foundation, Inc.
+;; Version: 1.6.1
 ;; Package-Requires: ((emacs "26.1"))
 
 ;; This is a GNU ELPA :core package.  Avoid functionality that is not
@@ -432,18 +432,20 @@ or earlier: it can break `dired-do-find-regexp-and-replace'."
 (defcustom xref-history-storage #'xref-global-history
   "Function that returns xref history.
 
-The following functions are predefined:
+The following functions that can be used as this variable's value
+are predefined:
 
 - `xref-global-history'
     Return a single, global history used across the entire Emacs
-    instance.
+    session.  This is the default.
 - `xref-window-local-history'
-    Return different xref histories, one per window.  Allows you
-    to navigate code independently in different windows.  A new
+    Return separate xref histories, one per window.  Allows
+    independent navigation of code in each window.  A new
     xref history is created for every new window."
   :type '(radio
-          (function-item :tag "Per-window" xref-window-local-history)
-          (function-item :tag "Global history for Emacs instance" xref-global-history)
+          (function-item :tag "Per-window history" xref-window-local-history)
+          (function-item :tag "Global history for Emacs session"
+                         xref-global-history)
           (function :tag "Other"))
   :version "29.1"
   :package-version '(xref . "1.6.0"))
@@ -462,7 +464,7 @@ The following functions are predefined:
   "(BACKWARD-STACK . FORWARD-STACK) of markers to visited Xref locations.")
 
 (defun xref-global-history (&optional new-value)
-  "Return the xref history global to this Emacs instance.
+  "Return the xref history that is global for the current Emacs session.
 
 Override existing value with NEW-VALUE if NEW-VALUE is set."
   (if new-value
@@ -470,7 +472,7 @@ Override existing value with NEW-VALUE if NEW-VALUE is set."
     xref--history))
 
 (defun xref-window-local-history (&optional new-value)
-  "Return window-local xref history.
+  "Return window-local xref history for the selected window.
 
 Override existing value with NEW-VALUE if NEW-VALUE is set."
   (let ((w (selected-window)))
@@ -690,8 +692,8 @@ and finally return the window."
 
 (defun xref--show-location (location &optional select)
   "Help `xref-show-xref' and `xref-goto-xref' do their job.
-Go to LOCATION and if SELECT is non-nil select its window.  If
-SELECT is `quit', also quit the *xref* window."
+Go to LOCATION and if SELECT is non-nil select its window.
+If SELECT is `quit', also quit the *xref* window."
   (condition-case err
       (let* ((marker (xref-location-marker location))
              (buf (marker-buffer marker))
@@ -883,7 +885,12 @@ some of the references to the identifiers."
 
 (defun xref--outdated-p (item)
   "Check that the match location at current position is up-to-date.
-ITEMS is an xref item which " ; FIXME: Expand documentation.
+
+ITEM is an xref item which is expected to be produced by a search
+command and have summary that matches buffer contents near point.
+Depending on whether it's the first of the matches on the line,
+the summary should either start from bol, or only match after
+point."
   ;; FIXME: The check should most likely be a generic function instead
   ;; of the assumption that all matches' summaries relate to the
   ;; buffer text in a particular way.
@@ -972,7 +979,8 @@ ITEMS is an xref item which " ; FIXME: Expand documentation.
     (define-key map (kbd "M-,") #'xref-quit-and-pop-marker-stack)
     map))
 
-(declare-function outline-search-text-property "outline" (property &optional value bound move backward looking-at))
+(declare-function outline-search-text-property "outline"
+		  (property &optional value bound move backward looking-at))
 
 (define-derived-mode xref--xref-buffer-mode special-mode "XREF"
   "Mode for displaying cross-references."
@@ -983,8 +991,10 @@ ITEMS is an xref item which " ; FIXME: Expand documentation.
         #'xref--imenu-prev-index-position)
   (setq imenu-extract-index-name-function
         #'xref--imenu-extract-index-name)
+  (setq-local add-log-current-defun-function
+	      #'xref--add-log-current-defun)
   (setq-local outline-minor-mode-cycle t
-              outline-minor-mode-use-buttons t
+              outline-minor-mode-use-buttons 'insert
               outline-search-function
               (lambda (&optional bound move backward looking-at)
                 (outline-search-text-property
@@ -999,7 +1009,7 @@ ITEMS is an xref item which " ; FIXME: Expand documentation.
 
 (define-derived-mode xref--transient-buffer-mode
   xref--xref-buffer-mode
-  "XREF Transient")
+  "XREF Transient.")
 
 (defun xref--imenu-prev-index-position ()
   "Move point to previous line in `xref' buffer.
@@ -1016,6 +1026,15 @@ This function is used as a value for
 beginning of the line."
   (buffer-substring-no-properties (line-beginning-position)
                                   (line-end-position)))
+
+(defun xref--add-log-current-defun ()
+  "Return the string used to group a set of locations.
+This function is used as a value for `add-log-current-defun-function'."
+  (xref--group-name-for-display
+   (if-let (item (xref--item-at-point))
+       (xref-location-group (xref-match-item-location item))
+     (xref--imenu-extract-index-name))
+   (xref--project-root (project-current))))
 
 (defun xref--next-error-function (n reset?)
   (when reset?
@@ -1163,7 +1182,7 @@ to that style.  Otherwise it is returned unchanged."
   (cl-ecase xref-file-name-display
     (abs group)
     (nondirectory
-     (if (string-match-p "\\`~?/" group)
+     (if (file-name-absolute-p group)
          (file-name-nondirectory group)
        group))
     (project-relative
@@ -1404,7 +1423,7 @@ FETCHER is a function of no arguments that returns a list of xref
 values.  It must not depend on the current buffer or selected
 window.
 
-ALIST can include, but limited to, the following keys:
+ALIST can include, but is not limited to, the following keys:
 
 WINDOW for the window that was selected before the current
 command was called.
@@ -1805,7 +1824,7 @@ IGNORES is a list of glob patterns for files to ignore."
      "xargs -0 rg <C> --null -nH --no-heading --no-messages -g '!*/' -e <R>"
      )
     (ugrep . "xargs -0 ugrep <C> --null -ns -e <R>"))
-  "Associative list mapping program identifiers to command templates.
+  "Association list mapping program identifiers to command templates.
 
 Program identifier should be a symbol, named after the search program.
 

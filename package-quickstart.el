@@ -25,10 +25,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.1/xref-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.1/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.6.0/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.6.1/xref-autoloads.el") (car load-path))))
 
 
 
@@ -227,18 +227,14 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.1.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.1.0/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.1.0/compat-autoloads.el") (car load-path))))
 
 
 
-(register-definition-prefixes "compat-27" '("derived-mode-p"))
-
-
-
-(register-definition-prefixes "compat-help" '("compat---describe"))
+(register-definition-prefixes "compat" '("compat-"))
 
 
 
@@ -1699,10 +1695,10 @@ EXIT-CODE-SUCCESS-P
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.4/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.4/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.3/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.4/project-autoloads.el") (car load-path))))
 
 
 
@@ -3573,7 +3569,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221113.1719" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430" "/home/scfrazer/.emacs.d/elpa/use-package-20221113.2322" "/home/scfrazer/.emacs.d/elpa/vertico-1.0" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-28.1.2.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221113.1719" "/home/scfrazer/.emacs.d/elpa/rg-20221024.1631" "/home/scfrazer/.emacs.d/elpa/transient-20221028.1430" "/home/scfrazer/.emacs.d/elpa/use-package-20221113.2322" "/home/scfrazer/.emacs.d/elpa/vertico-1.0" "/home/scfrazer/.emacs.d/elpa/with-editor-20220810.1159" "/home/scfrazer/.emacs.d/elpa/compat-29.1.1.0")
          Info-directory-list)))
 
 ;; Local Variables:
