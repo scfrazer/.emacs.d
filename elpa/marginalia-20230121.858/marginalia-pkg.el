@@ -1,0 +1,2 @@
+;;; Generated package description from /home/scfrazer/.emacs.d/elpa/marginalia-20230121.858/marginalia.el  -*- no-byte-compile: t -*-
+(define-package "marginalia" "20230121.858" "Enrich existing commands with completion annotations" '((emacs "27.1") (compat "29.1.1.1")) :commit "2758f88db6baa6a2410ec4abb193d4dd5ba61773" :authors '(("Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler" . "mail@daniel-mendler.de")) :maintainer '("Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler" . "mail@daniel-mendler.de") :url "https://github.com/minad/marginalia")
