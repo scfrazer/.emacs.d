@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.1/compat-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.1/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4/compat-autoloads.el") (car load-path))))
 
 
 
@@ -244,10 +244,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230118.1656/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230118.1656/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -537,10 +537,10 @@ KEYMAP is selected interactively by mode in
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/wgrep-20210322.2207/wgrep-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/wgrep-20230203.1214/wgrep-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/wgrep-20210322.2207/wgrep-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/wgrep-20230203.1214/wgrep-autoloads.el") (car load-path))))
 
 
 
@@ -553,10 +553,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20221225.2142/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20230206.1654/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20221225.2142/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20230206.1654/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -975,10 +975,10 @@ it is disabled.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20221209.2013/bind-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bind-key-20230203.2004/bind-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20221209.2013/bind-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bind-key-20230203.2004/bind-key-autoloads.el") (car load-path))))
 
 
 
@@ -990,7 +990,8 @@ KEY-NAME may be a vector, in which case it is passed straight to
 spelled-out keystrokes, e.g., \"C-c C-z\".  See the documentation
 of `edmacro-mode' for details.
 
-COMMAND must be an interactive function or lambda form.
+COMMAND must be an interactive function, lambda form, or a cons
+`(STRING . DEFN)'.
 
 KEYMAP, if present, should be a keymap variable or symbol.
 For example:
@@ -1065,10 +1066,10 @@ Display all the personal keybindings defined by `bind-key'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20221209.2013/use-package-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004/use-package-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20221209.2013/use-package-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004/use-package-autoloads.el") (car load-path))))
 
 
 
@@ -1258,10 +1259,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230124.2013/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230213.1337/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230124.2013/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230213.1337/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1368,10 +1369,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20221117.1908/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20221117.1908/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1734,10 +1735,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.5/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.6/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.5/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.6/project-autoloads.el") (car load-path))))
 
 
 
@@ -1998,10 +1999,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20221225.1428/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20230209.1859/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20221225.1428/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20230209.1859/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2363,10 +2364,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230125.518/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230212.1208/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230125.518/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230212.1208/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2406,10 +2407,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230122.1118/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230212.55/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230122.1118/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230212.55/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2655,31 +2656,26 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20221128.519/graphviz-dot-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230211.1551/graphviz-dot-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20221128.519/graphviz-dot-mode-autoloads.el") (car load-path))))
-
-
-
-(autoload 'company-graphviz-dot-backend "company-graphviz-dot" "\
-Company backend for `graphviz-dot-mode'.
-In the signature, COMMAND, ARG and IGNORED are mandated by `company-mode'.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "company-graphviz-dot" '("company-g")))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230211.1551/graphviz-dot-mode-autoloads.el") (car load-path))))
 
 
 
 (autoload 'graphviz-dot-mode "graphviz-dot-mode" "\
-Major mode for the dot language. \\<graphviz-dot-mode-map>
-TAB indents for graph lines.
+Major mode for the dot language.
 
-\\[graphviz-dot-indent-graph]	- Indentation function.
-\\[graphviz-dot-preview]	- Previews graph in a buffer.
-\\[graphviz-dot-view]	- Views graph in an external viewer.
-\\[graphviz-dot-indent-line]	- Indents current line of code.
+Functionallity specific to this mode:
+
+  `indent-for-tab-command'    \\[indent-for-tab-command]
+        Indents a single line.
+  `graphviz-dot-preview'      \\[graphviz-dot-preview]
+        Previews graph in a buffer.
+  `graphviz-dot-view'         \\[graphviz-dot-view]
+        Views graph in an external viewer.
+  `graphviz-dot-indent-line'  \\[graphviz-dot-indent-line]
+        Indents current line of code.
 
 Variables specific to this mode:
 
@@ -2698,10 +2694,9 @@ Variables specific to this mode:
 
 (autoload 'graphviz-dot-preview "graphviz-dot-mode" "\
 Compile the graph between BEGIN and END and preview it in an other buffer.
-
-BEGIN (resp. END) is a number defaulting to
-`point-min' (resp. `point-max') representing the current buffer's
-point where the graph definition starts (resp. stops).
+BEGIN (resp. END) is a number defaulting to `point-min' (resp. `point-max')
+representing the current buffer's point where the graph definition starts
+\(resp. stops).
 
 \(fn &optional BEGIN END)" t nil)
 
@@ -2718,8 +2713,6 @@ Saving the file will no longer also update the preview." t nil)
 (add-to-list 'auto-mode-alist '("\\.gv\\'" . graphviz-dot-mode))
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "graphviz-dot-mode" '("dot-menu" "graphviz-")))
-
-
 
 
 )
@@ -3672,7 +3665,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20221225.1428" "/home/scfrazer/.emacs.d/elpa/rg-20221117.1908" "/home/scfrazer/.emacs.d/elpa/transient-20230124.2013" "/home/scfrazer/.emacs.d/elpa/use-package-20221209.2013" "/home/scfrazer/.emacs.d/elpa/vertico-1.0" "/home/scfrazer/.emacs.d/elpa/with-editor-20230118.1656" "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20230209.1859" "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819" "/home/scfrazer/.emacs.d/elpa/transient-20230213.1337" "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004" "/home/scfrazer/.emacs.d/elpa/vertico-1.0" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4")
          Info-directory-list)))
 
 ;; Local Variables:
