@@ -1,2 +1,0 @@
-;;; Generated package description from /home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230211.1551/graphviz-dot-mode.el  -*- no-byte-compile: t -*-
-(define-package "graphviz-dot-mode" "20230211.1551" "Mode for the dot-language used by graphviz (att)." '((emacs "25.0")) :commit "19d08c6d2af26bbdf479eb068150ee16b06bbeec" :maintainer '("Pieter Pareit" . "pieter.pareit@gmail.com") :keywords '("mode" "dot" "dot-language" "dotlanguage" "graphviz" "graphs" "att") :url "https://ppareit.github.io/graphviz-dot-mode/")
