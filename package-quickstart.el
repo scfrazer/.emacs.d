@@ -227,10 +227,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4/compat-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.0/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.0/compat-autoloads.el") (car load-path))))
 
 
 
@@ -604,10 +604,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.1/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.2/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.1/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.2/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1167,10 +1167,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230220.1425/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230304.1149/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230220.1425/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230304.1149/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1277,10 +1277,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20230223.1846/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20230223.1846/rg-autoloads.el") (car load-path))))
 
 
 
@@ -1954,10 +1954,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230113.835/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230309.1204/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230113.835/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230309.1204/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -2235,6 +2235,12 @@ Aligns all cursors with whitespace like `mc/vertical-align' does" t nil)
 
 
 
+(autoload 'activate-cursor-for-undo "multiple-cursors-core" "\
+Called when undoing to temporarily activate the fake cursor
+which action is being undone.
+
+\(fn ID)" nil nil)
+
 (autoload 'multiple-cursors-mode "multiple-cursors-core" "\
 Mode while multiple cursors are active.
 
@@ -2245,7 +2251,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("activate-cursor-for-undo" "deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd")))
 
 
 
@@ -2272,10 +2278,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230212.1208/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230306.2344/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230212.1208/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230306.2344/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2315,10 +2321,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230217.2050/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230305.733/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230217.2050/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230305.733/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2564,10 +2570,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230213.1945/graphviz-dot-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230227.2008/graphviz-dot-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230213.1945/graphviz-dot-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/graphviz-dot-mode-20230227.2008/graphviz-dot-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2937,29 +2943,20 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20221013.836/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20230304.2223/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20221013.836/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20230304.2223/dash-autoloads.el") (car load-path))))
 
 
 
 (autoload 'dash-fontify-mode "dash" "\
 Toggle fontification of Dash special variables.
 
-This is a minor mode.  If called interactively, toggle the
-`Dash-Fontify mode' mode.  If the prefix argument is positive,
-enable the mode, and if it is zero or negative, disable the mode.
-
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
-the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-To check whether the minor mode is enabled in the current buffer,
-evaluate `dash-fontify-mode'.
-
-The mode's hook is called both when the mode is enabled and when
-it is disabled.
+If called interactively, enable Dash-Fontify mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 Dash-Fontify mode is a buffer-local minor mode intended for Emacs
 Lisp buffers.  Enabling it causes the special variables bound in
@@ -2988,15 +2985,11 @@ or call the function `global-dash-fontify-mode'.")
 (autoload 'global-dash-fontify-mode "dash" "\
 Toggle Dash-Fontify mode in all buffers.
 With prefix ARG, enable Global Dash-Fontify mode if ARG is positive;
-otherwise, disable it.
+otherwise, disable it.  If called from Lisp, enable the mode if
+ARG is omitted or nil.
 
-If called from Lisp, toggle the mode if ARG is `toggle'.
-Enable the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-Dash-Fontify mode is enabled in all buffers where `dash--turn-on-fontify-mode'
-would do it.
-
+Dash-Fontify mode is enabled in all buffers where
+`dash--turn-on-fontify-mode' would do it.
 See `dash-fontify-mode' for more information on Dash-Fontify mode.
 
 \(fn &optional ARG)" t nil)
@@ -3005,7 +2998,7 @@ See `dash-fontify-mode' for more information on Dash-Fontify mode.
 Register the Dash Info manual with `info-lookup-symbol'.
 This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
-(register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-juxt" "-keep" "-l" "-m" "-no" "-o" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-juxt" "-keep" "-l" "-m" "-no" "-o" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-")))
 
 
 
@@ -3127,10 +3120,10 @@ the subtree.  The filter action is read from `dired-filter-map'." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-20220322.2334/diffview-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/diffview-20230224.1916/diffview-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-20220322.2334/diffview-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/diffview-20230224.1916/diffview-autoloads.el") (car load-path))))
 
 
 
@@ -3573,7 +3566,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20221013.836" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230201.1819" "/home/scfrazer/.emacs.d/elpa/transient-20230220.1425" "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004" "/home/scfrazer/.emacs.d/elpa/vertico-1.1" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.3.4")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230304.2223" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230223.1846" "/home/scfrazer/.emacs.d/elpa/transient-20230304.1149" "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004" "/home/scfrazer/.emacs.d/elpa/vertico-1.2" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.0")
          Info-directory-list)))
 
 ;; Local Variables:
