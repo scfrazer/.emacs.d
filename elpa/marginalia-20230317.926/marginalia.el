@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 1.1
-;; Package-Version: 20230305.733
-;; Package-Commit: ec2e99f8a12a818ddac2f7db8438477725a1a067
+;; Package-Version: 20230317.926
+;; Package-Commit: 2633b2dee22261531f960e49106771e679102a98
 ;; Package-Requires: ((emacs "27.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -453,7 +453,7 @@ FACE is the name of the face, with which the field should be propertized."
   "Return symbol class characters for symbol S.
 
 This function is an extension of `help--symbol-class'.  It returns
-more fine-grained and more detailled symbol information.
+more fine-grained and more detailed symbol information.
 
 Function:
 f function
@@ -1115,7 +1115,10 @@ These annotations are skipped for remote paths."
 (defun marginalia-classify-by-command-name ()
   "Lookup category for current command."
   (and marginalia--command
-       (alist-get marginalia--command marginalia-command-categories)))
+       (or (alist-get marginalia--command marginalia-command-categories)
+           ;; The command can be an alias, e.g., `recentf' -> `recentf-open'.
+           (when-let ((chain (function-alias-p marginalia--command)))
+             (alist-get (car (last chain)) marginalia-command-categories)))))
 
 (defun marginalia-classify-original-category ()
   "Return original category reported by completion metadata."

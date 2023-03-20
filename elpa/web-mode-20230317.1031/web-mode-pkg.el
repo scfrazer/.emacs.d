@@ -1,0 +1,2 @@
+;;; Generated package description from /home/scfrazer/.emacs.d/elpa/web-mode-20230317.1031/web-mode.el  -*- no-byte-compile: t -*-
+(define-package "web-mode" "20230317.1031" "major mode for editing web templates" '((emacs "23.1")) :commit "ff394e83b48e9ae05cf3be854272c1e4550de61a" :authors '(("François-Xavier Bois")) :maintainer '("François-Xavier Bois" . "fxbois@gmail.com") :keywords '("languages") :url "https://web-mode.org")
