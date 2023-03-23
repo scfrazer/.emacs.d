@@ -3293,10 +3293,10 @@ it is disabled.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20220910.1936/avy-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20230316.2259/avy-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20220910.1936/avy-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20230316.2259/avy-autoloads.el") (car load-path))))
 
 
 
@@ -3553,7 +3553,7 @@ The window scope is determined by `avy-all-windows' (ARG negates it).
 (autoload 'avy-transpose-lines-in-region "avy" "\
 Transpose lines in the active region." t nil)
 
-(register-definition-prefixes "avy" '("avy-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "avy" '("avy-")))
 
 
 )
