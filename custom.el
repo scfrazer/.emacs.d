@@ -68,10 +68,10 @@
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
- '(orderless-skip-highlighting nil)
+ '(orderless-skip-highlighting nil t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(web-beautify popup vertico graphviz-dot-mode which-key diffview python marginalia flymake project beacon goto-last-change reformatter tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine highlight-indent-guides hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
+   '(web-beautify popup vertico which-key diffview python marginalia flymake project beacon goto-last-change tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
