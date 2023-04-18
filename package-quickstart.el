@@ -332,10 +332,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20220811.1616/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20230330.2121/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20220811.1616/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20230330.2121/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -352,19 +352,10 @@ or call the function `which-key-mode'.")
 (autoload 'which-key-mode "which-key" "\
 Toggle which-key-mode.
 
-This is a minor mode.  If called interactively, toggle the
-`Which-Key mode' mode.  If the prefix argument is positive,
-enable the mode, and if it is zero or negative, disable the mode.
-
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
-the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-To check whether the minor mode is enabled in the current buffer,
-evaluate `(default-value \\='which-key-mode)'.
-
-The mode's hook is called both when the mode is enabled and when
-it is disabled.
+If called interactively, enable Which-Key mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -533,7 +524,7 @@ Show all bindings in KEYMAP using which-key.
 KEYMAP is selected interactively by mode in
 `minor-mode-map-alist'." t nil)
 
-(register-definition-prefixes "which-key" '("evil-state" "which-key-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("evil-state" "which-key-")))
 
 
 )
@@ -1277,10 +1268,10 @@ Create `sr-speedbar' window.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20230325.1440/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20230401.1434/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20230325.1440/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20230401.1434/rg-autoloads.el") (car load-path))))
 
 
 
@@ -2170,10 +2161,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230326.954/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230412.126/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230326.954/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230412.126/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2213,10 +2204,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230317.926/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230417.1829/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230317.926/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230417.1829/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2454,10 +2445,10 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20221109.2051/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230413.620/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20221109.2051/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230413.620/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -2472,14 +2463,14 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 
 \(fn GIT-BRANCH)" t nil)
 
-(register-definition-prefixes "git-timemachine" '("git-timemachine-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.13.0/eldoc-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.14.0/eldoc-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.13.0/eldoc-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.14.0/eldoc-autoloads.el") (car load-path))))
 
 
 
@@ -2491,19 +2482,10 @@ String to display in mode line when ElDoc Mode is enabled; nil for none.")
 (autoload 'eldoc-mode "eldoc" "\
 Toggle echo area display of Lisp objects at point (ElDoc mode).
 
-This is a minor mode.  If called interactively, toggle the `Eldoc
-mode' mode.  If the prefix argument is positive, enable the mode,
-and if it is zero or negative, disable the mode.
-
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
-the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-To check whether the minor mode is enabled in the current buffer,
-evaluate `eldoc-mode'.
-
-The mode's hook is called both when the mode is enabled and when
-it is disabled.
+If called interactively, enable Eldoc mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
 
 ElDoc mode is a buffer-local minor mode.  When enabled, the echo
 area displays information about a function or variable in the
@@ -2516,27 +2498,24 @@ expression point is on.
 
 (put 'global-eldoc-mode 'globalized-minor-mode t)
 
-(defcustom global-eldoc-mode t "\
+(defvar global-eldoc-mode t "\
 Non-nil if Global Eldoc mode is enabled.
 See the `global-eldoc-mode' command
 for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
-or call the function `global-eldoc-mode'." :set #'custom-set-minor-mode :initialize 'custom-initialize-delay :type 'boolean)
+or call the function `global-eldoc-mode'.")
 
 (custom-autoload 'global-eldoc-mode "eldoc" nil)
 
 (autoload 'global-eldoc-mode "eldoc" "\
 Toggle Eldoc mode in all buffers.
-With prefix ARG, enable Global Eldoc mode if ARG is positive; otherwise,
-disable it.
+With prefix ARG, enable Global Eldoc mode if ARG is positive;
+otherwise, disable it.  If called from Lisp, enable the mode if
+ARG is omitted or nil.
 
-If called from Lisp, toggle the mode if ARG is `toggle'.
-Enable the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-Eldoc mode is enabled in all buffers where `turn-on-eldoc-mode' would do it.
-
+Eldoc mode is enabled in all buffers where
+`turn-on-eldoc-mode' would do it.
 See `eldoc-mode' for more information on Eldoc mode.
 
 \(fn &optional ARG)" t nil)
@@ -2545,16 +2524,16 @@ See `eldoc-mode' for more information on Eldoc mode.
 Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
 See `eldoc-documentation-strategy' for more detail." nil nil)
 
-(register-definition-prefixes "eldoc" '("eldoc"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
 
 
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.2.2/flymake-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.4/flymake-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.2.2/flymake-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.3.4/flymake-autoloads.el") (car load-path))))
 
 
 
@@ -2627,6 +2606,13 @@ whereupon Flymake decides to initiate a check of the buffer.
 The commands `flymake-goto-next-error' and
 `flymake-goto-prev-error' can be used to navigate among Flymake
 diagnostics annotated in the buffer.
+
+By default, `flymake-mode' doesn't override the \\[next-error] command, but
+if you're using Flymake a lot (and don't use the regular compilation
+mechanisms that often), it can be useful to put something like
+the following in your init file:
+
+  (setq next-error-function \\='flymake-goto-next-error)
 
 The visual appearance of each type of diagnostic can be changed
 by setting properties `flymake-overlay-control', `flymake-bitmap'
@@ -2748,10 +2734,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20230304.2223/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20230415.2324/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20230304.2223/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20230415.2324/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3371,7 +3357,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230304.2223" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230325.1440" "/home/scfrazer/.emacs.d/elpa/transient-20230315.1520" "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004" "/home/scfrazer/.emacs.d/elpa/vertico-1.2" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230415.2324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230401.1434" "/home/scfrazer/.emacs.d/elpa/transient-20230315.1520" "/home/scfrazer/.emacs.d/elpa/use-package-20230203.2004" "/home/scfrazer/.emacs.d/elpa/vertico-1.2" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
          Info-directory-list)))
 
 ;; Local Variables:
