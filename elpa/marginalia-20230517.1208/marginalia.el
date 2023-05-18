@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 1.2
-;; Package-Version: 20230421.841
-;; Package-Commit: c21a8ea5da034e9f323b68f9d062d9374cd4ee7e
+;; Package-Version: 20230517.1208
+;; Package-Commit: bf6eebc13f628eef73a4a0be1c9f9aecc2a8c6bc
 ;; Package-Requires: ((emacs "27.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -136,15 +136,17 @@ determine it."
     ("\\<minor mode\\>" . minor-mode)
     ("\\<kill-ring\\>" . kill-ring)
     ("\\<tab by name\\>" . tab)
-    ("\\<[Ll]ibrary\\>" . library))
-  "Associates regexps to match against minibuffer prompts with categories."
+    ("\\<library\\>" . library))
+  "Associates regexps to match against minibuffer prompts with categories.
+The prompts are matched case-insensitively."
   :type '(alist :key-type regexp :value-type symbol))
 
 (defcustom marginalia-censor-variables
   '("pass\\|auth-source-netrc-cache\\|auth-source-.*-nonce\\|api-?key")
   "The value of variables matching any of these regular expressions is not shown.
 This configuration variable is useful to hide variables which may
-hold sensitive data, e.g., passwords."
+hold sensitive data, e.g., passwords.  The variable names are
+matched case-sensitively."
   :type '(repeat (choice symbol regexp)))
 
 (defcustom marginalia-command-categories
@@ -322,7 +324,8 @@ The value of `this-command' is used as key for the lookup."
       (".*" . ,#'capitalize)))
   "List of bookmark type transformers.
 Relying on this mechanism is discouraged in favor of the
-`bookmark-handler-type' property.")
+`bookmark-handler-type' property.  The function names are matched
+case-sensitively.")
 
 (defvar marginalia--cand-width-step 10
   "Round candidate width.")
@@ -462,7 +465,9 @@ f function
 c command
 C interactive-only command
 m macro
-M special-form
+F special-form
+M module function
+P primitive
 g cl-generic
 p pure
 s side-effect-free
@@ -495,7 +500,9 @@ t cl-type"
                  '("c" . "command")))
               ((cl-generic-p s) '("g" . "cl-generic"))
               ((macrop (symbol-function s)) '("m" . "macro"))
-              ((special-form-p (symbol-function s)) '("M" . "special-form"))
+              ((special-form-p (symbol-function s)) '("F" . "special-form"))
+              ((subr-primitive-p (symbol-function s)) '("P" . "primitive"))
+              ((module-function-p (symbol-function s)) '("M" . "module function"))
               (t '("f" . "function")))
              (and (autoloadp (symbol-function s)) '("@" . "autoload"))
              (and (marginalia--advised s) '("!" . "advised"))
@@ -610,7 +617,8 @@ keybinding since CAND includes it."
    ((not (boundp sym))
     (propertize "#<unbound>" 'face 'marginalia-null))
    ((and marginalia-censor-variables
-         (let ((name (symbol-name sym)))
+         (let ((name (symbol-name sym))
+               case-fold-search)
            (cl-loop for r in marginalia-censor-variables
                     thereis (if (symbolp r)
                                 (eq r sym)
@@ -780,7 +788,8 @@ The string is transformed according to `marginalia--bookmark-type-transforms'."
      ;; persisted.
      (symbolp handler)
      (or (get handler 'bookmark-handler-type)
-         (let ((str (symbol-name handler)))
+         (let ((str (symbol-name handler))
+               case-fold-search)
            (dolist (transformer marginalia--bookmark-type-transforms str)
              (when (string-match-p (car transformer) str)
                (setq str
@@ -999,7 +1008,8 @@ These annotations are skipped for remote paths."
         (current-buffer))
     (when (eq marginalia--project-root 'unset)
       (setq marginalia--project-root
-            (or (let ((prompt (minibuffer-prompt)))
+            (or (let ((prompt (minibuffer-prompt))
+                      case-fold-search)
                   (and (string-match
                         "\\`\\(?:Dired\\|Find file\\) in \\(.*\\): \\'"
                         prompt)
@@ -1146,7 +1156,8 @@ looking for a regexp that matches the prompt."
   (when-let (prompt (minibuffer-prompt))
     (setq prompt
           (replace-regexp-in-string "(.*?default.*?)\\|\\[.*?\\]" "" prompt))
-    (cl-loop for (regexp . category) in marginalia-prompt-categories
+    (cl-loop with case-fold-search = t
+             for (regexp . category) in marginalia-prompt-categories
              when (string-match-p regexp prompt)
              return category)))
 
@@ -1312,6 +1323,10 @@ Remember `this-command' for `marginalia-classify-by-command-name'."
             (setcdr ann (append (cddr ann) (list (cadr ann)))))
           (message "Marginalia: Use annotator `%s' for category `%s'" (cadr ann) (car ann))))
     (user-error "Marginalia: No active minibuffer")))
+
+;; Emacs 28: Only show `marginalia-cycle' in M-x in recursive minibuffers
+(put #'marginalia-cycle 'completion-predicate
+     (lambda (&rest _) (> (minibuffer-depth) 1)))
 
 (provide 'marginalia)
 ;;; marginalia.el ends here

@@ -5,8 +5,8 @@
 ;; Author: Matúš Goljer <matus.goljer@gmail.com>
 ;; Maintainer: Matúš Goljer <matus.goljer@gmail.com>
 ;; Keywords: files
-;; Package-Version: 20230118.1953
-;; Package-Commit: 1382acb219c5e3b179662bcacd9c57463802718a
+;; Package-Version: 20230512.1107
+;; Package-Commit: 523f51b4152a3bf4e60fe57f512732c698b5c96f
 ;; Version: 0.0.1
 ;; Created: 25th February 2014
 ;; Package-Requires: ((dash "2.5.0") (dired-hacks-utils "0.0.1"))
@@ -129,13 +129,13 @@ depth---that creates the prefix."
 
 (defcustom dired-subtree-cycle-depth 3
   "Default depth expanded by `dired-subtree-cycle'."
-  :type 'integer
+  :type 'natnum
   :group 'dired-subtree)
 
 (defcustom dired-subtree-ignored-regexp
   (concat "^" (regexp-opt vc-directory-exclusion-list) "$")
   "Matching directories will not be expanded in `dired-subtree-cycle'."
-  :type 'string
+  :type 'regexp
   :group 'dired-subtree)
 
 (defgroup dired-subtree-faces ()

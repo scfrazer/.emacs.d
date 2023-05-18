@@ -5,8 +5,8 @@
 ;; Author: Matúš Goljer <matus.goljer@gmail.com>
 ;; Maintainer: Matúš Goljer <matus.goljer@gmail.com>
 ;; Keywords: files
-;; Package-Version: 20221127.1247
-;; Package-Commit: 41d3eb42195d9f0894c20d18cc8e722b099aa1c1
+;; Package-Version: 20230512.1107
+;; Package-Commit: 523f51b4152a3bf4e60fe57f512732c698b5c96f
 ;; Version: 0.0.1
 ;; Created: 14th February 2014
 ;; Package-Requires: ((dash "2.5.0"))
@@ -49,11 +49,11 @@
   :group 'dired
   :prefix "dired-hacks-")
 
-(defcustom dired-hacks-file-size-formatter 'file-size-human-readable
+(defcustom dired-hacks-file-size-formatter #'file-size-human-readable
   "The function used to format file sizes.
 
 See `dired-utils-format-file-sizes'."
-  :type 'symbol
+  :type 'function
   :group 'dired-hacks)
 
 (defcustom dired-hacks-datetime-regexp
@@ -67,7 +67,7 @@ followed by at least one space character.  You should only use
 shy groups (prefixed with ?:) because the first group is used by
 the font-lock to determine what portion of the name should be
 colored."
-  :type 'string
+  :type 'regexp
   :group 'dired-hacks)
 
 (defalias 'dired-utils--string-trim

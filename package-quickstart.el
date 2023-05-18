@@ -244,10 +244,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230511.2142/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230511.2142/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -1158,10 +1158,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230508.1924/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230510.1318/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230508.1924/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230510.1318/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2161,10 +2161,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230412.126/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230517.606/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230412.126/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230517.606/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2204,10 +2204,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230421.841/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230517.1208/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230421.841/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230517.1208/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2795,10 +2795,10 @@ This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20221127.1247/dired-hacks-utils-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20230512.1107/dired-hacks-utils-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20221127.1247/dired-hacks-utils-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20230512.1107/dired-hacks-utils-autoloads.el") (car load-path))))
 
 
 
@@ -2806,10 +2806,10 @@ This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230118.1953/dired-subtree-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230512.1107/dired-subtree-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230118.1953/dired-subtree-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230512.1107/dired-subtree-autoloads.el") (car load-path))))
 
 
 
@@ -3357,7 +3357,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230502.1324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230508.1924" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.3" "/home/scfrazer/.emacs.d/elpa/with-editor-20230212.2214" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230502.1324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230510.1318" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.3" "/home/scfrazer/.emacs.d/elpa/with-editor-20230511.2142" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
          Info-directory-list)))
 
 ;; Local Variables:
