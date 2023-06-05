@@ -6,8 +6,8 @@
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
 ;; Version: 1.2
-;; Package-Version: 20230517.1208
-;; Package-Commit: bf6eebc13f628eef73a4a0be1c9f9aecc2a8c6bc
+;; Package-Version: 20230527.1021
+;; Package-Commit: ae454a2aa0c5d85b5e151938b310e7d16538157d
 ;; Package-Requires: ((emacs "27.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -576,7 +576,9 @@ t cl-type"
        ((fboundp sym) (marginalia--function-doc sym))
        ((facep sym) (documentation-property sym 'face-documentation))
        (t (documentation-property sym 'variable-documentation)))
-      :truncate 1.0 :face 'marginalia-documentation))))
+      :truncate 1.0 :face 'marginalia-documentation)
+     ((abbreviate-file-name (or (symbol-file sym) ""))
+      :truncate -0.5 :face 'marginalia-file-name))))
 
 (defun marginalia-annotate-command (cand)
   "Annotate command CAND with its documentation string.

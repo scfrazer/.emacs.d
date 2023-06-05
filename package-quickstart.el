@@ -1158,10 +1158,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230519.1940/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230519.1940/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2204,10 +2204,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230517.1208/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230527.1021/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230517.1208/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230527.1021/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3357,7 +3357,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230502.1324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230519.1940" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.3" "/home/scfrazer/.emacs.d/elpa/with-editor-20230511.2142" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230502.1324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.3" "/home/scfrazer/.emacs.d/elpa/with-editor-20230511.2142" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
          Info-directory-list)))
 
 ;; Local Variables:
