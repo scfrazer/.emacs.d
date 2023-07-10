@@ -595,10 +595,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.3/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.4/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.3/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.4/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -2206,10 +2206,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230527.1021/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230704.1551/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230527.1021/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230704.1551/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2237,6 +2237,8 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 Cycle between annotators in `marginalia-annotator-registry'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "marginalia" '("marginalia-")))
+
+
 
 
 )
@@ -2447,10 +2449,10 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230413.620/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230630.1214/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230413.620/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20230630.1214/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -2466,6 +2468,8 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 \(fn GIT-BRANCH)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
+
+
 
 
 )
@@ -2736,10 +2740,10 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20230502.1324/dash-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20230617.2046/dash-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20230502.1324/dash-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20230617.2046/dash-autoloads.el") (car load-path))))
 
 
 
@@ -3359,7 +3363,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230502.1324" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.3" "/home/scfrazer/.emacs.d/elpa/with-editor-20230608.1237" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230617.2046" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.4" "/home/scfrazer/.emacs.d/elpa/with-editor-20230608.1237" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
          Info-directory-list)))
 
 ;; Local Variables:
