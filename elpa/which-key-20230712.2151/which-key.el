@@ -5,8 +5,6 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20230330.2121
-;; Package-Commit: bd34ede7bf77ad3988330b37207f3978e7342c79
 ;; Version: 3.6.0
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -438,6 +436,25 @@ Only takken into account when popup type is side-window."
   :group
   'which-key
   :type 'boolean)
+
+(defvar which-key-C-h-map-prompt
+  (concat " \\<which-key-C-h-map>"
+          " \\[which-key-show-next-page-cycle]"
+          which-key-separator "next-page,"
+          " \\[which-key-show-previous-page-cycle]"
+          which-key-separator "previous-page,"
+          " \\[which-key-undo-key]"
+          which-key-separator "undo-key,"
+          " \\[which-key-toggle-docstrings]"
+          which-key-separator "toggle-docstrings,"
+          " \\[which-key-show-standard-help]"
+          which-key-separator "help,"
+          " \\[which-key-abort]"
+          which-key-separator "abort"
+          " 1..9"
+          which-key-separator "digit-arg")
+  "Prompt to display when invoking `which-key-C-h-map'. This string
+is fed into `substitute-command-keys'")
 
 (defvar which-key-C-h-map
   (let ((map (make-sparse-keymap)))
@@ -2421,22 +2438,7 @@ prefix) if `which-key-use-C-h-commands' is non nil."
                                   full-prefix
                                   (which-key--propertize
                                    (substitute-command-keys
-                                    (concat
-                                     " \\<which-key-C-h-map>"
-                                     " \\[which-key-show-next-page-cycle]"
-                                     which-key-separator "next-page,"
-                                     " \\[which-key-show-previous-page-cycle]"
-                                     which-key-separator "previous-page,"
-                                     " \\[which-key-undo-key]"
-                                     which-key-separator "undo-key,"
-                                     " \\[which-key-toggle-docstrings]"
-                                     which-key-separator "toggle-docstrings,"
-                                     " \\[which-key-show-standard-help]"
-                                     which-key-separator "help,"
-                                     " \\[which-key-abort]"
-                                     which-key-separator "abort"
-                                     " 1..9"
-                                     which-key-separator "digit-arg"))
+                                    which-key-C-h-map-prompt)
                                    'face 'which-key-note-face)))
                   (key (let ((key (read-key prompt)))
                          (if (numberp key)
