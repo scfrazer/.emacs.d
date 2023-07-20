@@ -2165,10 +2165,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230714.440/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230716.1308/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230714.440/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230716.1308/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2271,10 +2271,10 @@ Print the path to the JSON value under point, and save it in the kill ring." t n
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20211011.630/json-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20230717.818/json-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20211011.630/json-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20230717.818/json-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2299,12 +2299,12 @@ won’t be affected.")
 Regexp generated from the `json-mode-auto-mode-list'.")
 
 (autoload 'json-mode "json-mode" "\
-Major mode for editing JSON files
+Major mode for editing JSON files.
 
 \(fn)" t nil)
 
 (autoload 'jsonc-mode "json-mode" "\
-Major mode for editing JSON files with comments
+Major mode for editing JSON files with comments.
 
 \(fn)" t nil)
 
@@ -2317,11 +2317,15 @@ Print the path to the node at point to the minibuffer." t nil)
 Save JSON path to object at point to kill ring." t nil)
 
 (autoload 'json-mode-beautify "json-mode" "\
-Beautify / pretty-print the active region (or the entire buffer if no active region).
+Beautify/pretty-print from BEGIN to END.
+
+If the region is not active, beautify the entire buffer .
 
 \(fn BEGIN END)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json")))
+
+
 
 
 )
