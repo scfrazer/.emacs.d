@@ -154,10 +154,10 @@ to control which program to use when looking for matches.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.23/xr-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.24/xr-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.23/xr-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.24/xr-autoloads.el") (car load-path))))
 
 
 
@@ -167,9 +167,9 @@ Passing the returned value to `rx' (or `rx-to-string') yields a regexp string
 equivalent to RE-STRING.  DIALECT controls the choice of keywords,
 and is one of:
 `verbose'       -- verbose keywords
+`medium' or nil -- somewhat verbose keywords (the default)
 `brief'         -- short keywords
 `terse'         -- very short keywords
-`medium' or nil -- a compromise (the default)
 
 \(fn RE-STRING &optional DIALECT)" nil nil)
 
@@ -188,12 +188,18 @@ See `xr' for a description of the DIALECT argument.
 Detect dubious practices and possible mistakes in RE-STRING.
 This includes uses of tolerated but discouraged constructs.
 Outright regexp syntax violations are signalled as errors.
+
 If PURPOSE is `file', perform additional checks assuming that RE-STRING
 is used to match a file name.
+
+If CHECKS is absent or nil, only perform checks that are very
+likely to indicate mistakes; if `all', include all checks,
+including ones more likely to generate false alarms.
+
 Return a list of (OFFSET . COMMENT) where COMMENT applies at OFFSET
 in RE-STRING.
 
-\(fn RE-STRING &optional PURPOSE)" nil nil)
+\(fn RE-STRING &optional PURPOSE CHECKS)" nil nil)
 
 (autoload 'xr-skip-set-lint "xr" "\
 Detect dubious practices and possible mistakes in SKIP-SET-STRING.
@@ -223,16 +229,16 @@ See `xr' for a description of the DIALECT argument.
 
 \(fn SKIP-SET-STRING &optional DIALECT)" nil nil)
 
-(register-definition-prefixes "xr" '("xr-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xr" '("xr-")))
 
 
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1/compat-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2/compat-autoloads.el") (car load-path))))
 
 
 
@@ -1162,10 +1168,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230723.1411/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230723.1411/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1442,10 +1448,10 @@ Setup wgrep rg support." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-1.22/relint-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-1.23/relint-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-1.22/relint-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-1.23/relint-autoloads.el") (car load-path))))
 
 
 
@@ -1794,10 +1800,10 @@ to directory DIR.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1841,10 +1847,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230309.1204/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230728.518/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230309.1204/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230728.518/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -2138,7 +2144,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("deactivate-cursor-after-undo" "multiple-cursors-mode" "unsupported-cmd")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("deactivate-cursor-after-undo" "mc--" "mc/" "unsupported-cmd")))
 
 
 
@@ -2165,10 +2171,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230716.1308/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230807.2338/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230716.1308/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230807.2338/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2210,10 +2216,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230704.1551/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230805.915/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230704.1551/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230805.915/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2271,10 +2277,10 @@ Print the path to the JSON value under point, and save it in the kill ring." t n
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20230717.818/json-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20230805.507/json-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20230717.818/json-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20230805.507/json-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3371,7 +3377,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230219.1648" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230602.2121" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.4" "/home/scfrazer/.emacs.d/elpa/with-editor-20230711.1217" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230723.1411" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.4" "/home/scfrazer/.emacs.d/elpa/with-editor-20230711.1217" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
          Info-directory-list)))
 
 ;; Local Variables:
