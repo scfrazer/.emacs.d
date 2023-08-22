@@ -1927,6 +1927,7 @@ Prefix with C-u to resize the `next-window'."
 ;; Finish up
 
 (require 'btext-mode)
+(require 'my-vscode)
 
 ;; Disabled commands
 
