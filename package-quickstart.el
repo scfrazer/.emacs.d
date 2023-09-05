@@ -252,10 +252,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230711.1217/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20230829.1917/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230711.1217/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20230829.1917/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -605,10 +605,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-1.4/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230904.1833/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-1.4/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230904.1833/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -658,7 +658,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 (autoload 'vertico-directory-enter "vertico-directory" "\
-Enter directory or exit completion with current candidate." t nil)
+Enter directory or exit completion with current candidate.
+Exit with current input if prefix ARG is given.
+
+\(fn &optional ARG)" t nil)
 
 (autoload 'vertico-directory-up "vertico-directory" "\
 Delete N names before point.
@@ -766,7 +769,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-mouse" '("vertico-mouse--")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-mouse" '("vertico-mouse-")))
 
 
 
@@ -1168,10 +1171,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230812.2142/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230812.2142/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2173,10 +2176,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230820.2349/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230830.1338/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230820.2349/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20230830.1338/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3002,10 +3005,10 @@ Display items in the `kill-ring' in another buffer." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20210421.1351/bm-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20230830.2243/bm-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bm-20210421.1351/bm-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bm-20230830.2243/bm-autoloads.el") (car load-path))))
 
 
 
@@ -3379,7 +3382,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230812.2142" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/vertico-1.4" "/home/scfrazer/.emacs.d/elpa/with-editor-20230711.1217" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20230829.1917" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
          Info-directory-list)))
 
 ;; Local Variables:
