@@ -294,6 +294,21 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
+;;;### (autoloads nil "vertico-suspend" "vertico-suspend.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from vertico-suspend.el
+
+(autoload 'vertico-suspend "vertico-suspend" "\
+Suspend the current completion session.
+If the command is invoked from within the Vertico minibuffer, the
+current session is suspended.  If the command is invoked from
+outside the minibuffer, the active minibuffer is either selected
+or the latest completion session is restored." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-suspend" '("vertico-suspend--")))
+
+;;;***
+
 ;;;### (autoloads nil "vertico-unobtrusive" "vertico-unobtrusive.el"
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from vertico-unobtrusive.el

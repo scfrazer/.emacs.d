@@ -340,10 +340,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20230712.2151/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20230905.2128/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20230712.2151/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20230905.2128/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -554,10 +554,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20230329.601/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20230911.1817/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20230329.601/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20230911.1817/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -567,6 +567,8 @@ Major mode for editing web templates.
 \(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-mode" '("web-mode-")))
+
+
 
 
 )
@@ -605,10 +607,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230904.1833/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230912.939/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230904.1833/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230912.939/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -858,6 +860,17 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-reverse" '("vertico-reverse-map")))
+
+
+
+(autoload 'vertico-suspend "vertico-suspend" "\
+Suspend the current completion session.
+If the command is invoked from within the Vertico minibuffer, the
+current session is suspended.  If the command is invoked from
+outside the minibuffer, the active minibuffer is either selected
+or the latest completion session is restored." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "vertico-suspend" '("vertico-suspend--")))
 
 
 
@@ -1171,10 +1184,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20230907.1440/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20230907.1440/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1539,10 +1552,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.9.8/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.10.0/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.9.8/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.10.0/project-autoloads.el") (car load-path))))
 
 
 
@@ -1551,8 +1564,10 @@ Return the project instance in DIRECTORY, defaulting to `default-directory'.
 
 When no project is found in that directory, the result depends on
 the value of MAYBE-PROMPT: if it is nil or omitted, return nil,
-else ask the user for a directory in which to look for the
-project, and if no project is found there, return a \"transient\"
+else prompt the user for the project to use.  To prompt for a
+project, call the function specified by `project-prompter', which
+returns the directory in which to look for the project.  If no
+project is found in that directory, return a \"transient\"
 project instance.
 
 The \"transient\" project instance is a special kind of value
@@ -1564,6 +1579,11 @@ See the doc string of `project-find-functions' for the general form
 of the project instance object.
 
 \(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
+(put 'project-vc-ignores 'safe-local-variable (lambda (val) (and (listp val) (not (memq nil (mapcar #'stringp val))))))
+(put 'project-vc-merge-submodules 'safe-local-variable #'booleanp)
+(put 'project-vc-include-untracked 'safe-local-variable #'booleanp)
+(put 'project-vc-name 'safe-local-variable #'stringp)
+(put 'project-vc-extra-root-markers 'safe-local-variable (lambda (val) (and (listp val) (not (memq nil (mapcar #'stringp val))))))
 
 (defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "\2" 'project-list-buffers) map) "\
 Keymap for project commands.")
@@ -1618,7 +1638,8 @@ pattern to search for.
 Visit a file (with completion) in the current project.
 
 The filename at point (determined by `thing-at-point'), if any,
-is available as part of \"future history\".
+is available as part of \"future history\".  If none, the current
+buffer's file name is used.
 
 If INCLUDE-ALL is non-nil, or with prefix argument when called
 interactively, include all files under the project root, except
@@ -1630,7 +1651,8 @@ for VCS directories listed in `vc-directory-exclusion-list'.
 Visit a file (with completion) in the current project or external roots.
 
 The filename at point (determined by `thing-at-point'), if any,
-is available as part of \"future history\".
+is available as part of \"future history\".  If none, the current
+buffer's file name is used.
 
 If INCLUDE-ALL is non-nil, or with prefix argument when called
 interactively, include all files under the project root, except
@@ -1639,7 +1661,10 @@ for VCS directories listed in `vc-directory-exclusion-list'.
 \(fn &optional INCLUDE-ALL)" t nil)
 
 (autoload 'project-find-dir "project" "\
-Start Dired in a directory inside the current project." t nil)
+Start Dired in a directory inside the current project.
+
+The current buffer's `default-directory' is available as part of
+\"future history\"." t nil)
 
 (autoload 'project-dired "project" "\
 Start Dired in the current project's root." t nil)
@@ -1739,6 +1764,7 @@ start with a space (which are for internal use).  With prefix argument
 ARG, show only buffers that are visiting files.
 
 \(fn &optional ARG)" t nil)
+(put 'project-kill-buffers-display-buffer-list 'safe-local-variable #'booleanp)
 
 (autoload 'project-kill-buffers "project" "\
 Kill the buffers belonging to the current project.
@@ -1785,6 +1811,16 @@ When called in a program, it will use the project corresponding
 to directory DIR.
 
 \(fn DIR)" t nil)
+
+(autoload 'project-uniquify-dirname-transform "project" "\
+Uniquify name of directory DIRNAME using `project-name', if in a project.
+
+If you set `uniquify-dirname-transform' to this function,
+slash-separated components from `project-name' will be appended to
+the buffer's directory name when buffers from two different projects
+would otherwise have the same name.
+
+\(fn DIRNAME)" nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "project" '("project-")))
 
@@ -2221,10 +2257,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230805.915/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20230910.739/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230805.915/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20230910.739/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3382,7 +3418,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230903.1835" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20230829.1917" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20230802.218" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20230907.1440" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20230829.1917" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
          Info-directory-list)))
 
 ;; Local Variables:
