@@ -395,7 +395,7 @@
           ("M-K"       . qe-forward-kill-section)
           ("M-L"       . qe-forward-word-section)
           ("M-h"       . qe-backward-word)
-          ("C-<left>"  . qe-backward-kill)
+          ("C-<left>"  . qe-backward-word)
           ("M-k"       . qe-forward-kill)
           ("C-<right>" . qe-forward-word)
           ("C-<down>"  . qe-forward-paragraph)

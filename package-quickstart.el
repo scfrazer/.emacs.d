@@ -607,10 +607,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230912.939/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230923.2021/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230912.939/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230923.2021/vertico-autoloads.el") (car load-path))))
 
 
 
