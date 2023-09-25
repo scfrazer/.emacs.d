@@ -1625,9 +1625,11 @@ of the corresponding object."
   "<transient-show>"              #'transient--do-stay
   "<transient-update>"            #'transient--do-stay
   "<transient-toggle-common>"     #'transient--do-stay
-  "<transient-set>"               #'transient--do-stay
-  "<transient-save>"              #'transient--do-stay
-  "<transient-reset>"             #'transient--do-stay
+  "<transient-set>"               #'transient--do-call
+  "<transient-set-and-exit>"      #'transient--do-exit
+  "<transient-save>"              #'transient--do-call
+  "<transient-save-and-exit>"     #'transient--do-exit
+  "<transient-reset>"             #'transient--do-call
   "<describe-key-briefly>"        #'transient--do-stay
   "<describe-key>"                #'transient--do-stay
   "<transient-scroll-up>"         #'transient--do-stay
@@ -2476,6 +2478,8 @@ If there is no parent prefix, then just call the command."
          (setq transient--editp nil)
          (transient-setup)
          transient--stay)
+        (prefix-arg
+         transient--stay)
         (t transient--exit)))
 
 (defun transient--do-quit-all ()
@@ -2583,8 +2587,7 @@ transient is active."
 (defun transient-update ()
   "Redraw the transient's state in the popup buffer."
   (interactive)
-  (when (equal this-original-command 'negative-argument)
-    (setq prefix-arg current-prefix-arg)))
+  (setq prefix-arg current-prefix-arg))
 
 (defun transient-show ()
   "Show the transient's state in the popup buffer."
@@ -2654,14 +2657,20 @@ transient is active."
     (transient-undefined))))
 
 (defun transient-set ()
-  "Save the value of the active transient for this Emacs session."
+  "Set active transient's value for this Emacs session."
   (interactive)
   (transient-set-value (or transient--prefix transient-current-prefix)))
 
+(defalias 'transient-set-and-exit 'transient-set
+  "Set active transient's value for this Emacs session and exit.")
+
 (defun transient-save ()
-  "Save the value of the active transient persistenly across Emacs sessions."
+  "Save active transient's value for this and future Emacs sessions."
   (interactive)
   (transient-save-value (or transient--prefix transient-current-prefix)))
+
+(defalias 'transient-save-and-exit 'transient-save
+  "Save active transient's value for this and future Emacs sessions and exit.")
 
 (defun transient-reset ()
   "Clear the set and saved values of the active transient."

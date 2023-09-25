@@ -199,7 +199,7 @@ information on how this variable is used, see
 If this variable is t, then case-sensitivity is decided as
 follows: if any component contains upper case letters, the
 matches are case sensitive; otherwise case-insensitive.  This
-like the behavior of `isearch' when `search-upper-case' is
+is like the behavior of `isearch' when `search-upper-case' is
 non-nil.
 
 On the other hand, if this variable is nil, then case-sensitivity
@@ -376,7 +376,7 @@ dispatchers.
 
 The STYLES default to `orderless-matching-styles', and the
 DISPATCHERS default to `orderless-dipatchers'.  Since nil gets you
-the default, if want to no dispatchers to be run, use \\='(ignore)
+the default, if you want no dispatchers to be run, use \\='(ignore)
 as the value of DISPATCHERS."
   (unless styles (setq styles orderless-matching-styles))
   (unless dispatchers (setq dispatchers orderless-style-dispatchers))
