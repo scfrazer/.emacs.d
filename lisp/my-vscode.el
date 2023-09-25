@@ -3,20 +3,23 @@
 ;; TODO
 ;; C-d          | Select current word, or multi-cursor select next match
 ;; C-up/down    | Paragraph up/down, act different if selection is active
-;; C-S-k        | Delete whole line
-;; M-S-k        | Delete right to end-of-line
 ;; C-l          | Select line, or next line
 ;; C-backspace  | Smart delete left
 ;; M-backspace  | Smart delete right
 ;; C-y          | Smart yank
-;; M-s-f        | my-indent
-;; C-/          | Comment lines
+;; M-m          | Smart delete to char
+;; C-M?         | Smart cut to char
+;; C-enter      | Insert line below?
 
 (cua-mode 1)
 
 (bind-keys*
  ("C-<left>"  . qe-backward-word)
  ("C-<right>" . qe-forward-word)
+ ("C-_" . my-comment-or-uncomment-region)
+ ("C-k" . kill-whole-line)  ;; Should be C-K
+ ("M-F" . my-indent)
+ ("M-K" . kill-line)
  )
 
  ;; ("C-<down>"  . qe-forward-paragraph)
