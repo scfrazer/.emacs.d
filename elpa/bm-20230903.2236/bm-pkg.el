@@ -1,4 +1,4 @@
-(define-package "bm" "20230830.2243" "Visible bookmarks in buffer." 'nil :commit "99869da686ab357e5536a262faf10c2bbe3d0574" :authors
+(define-package "bm" "20230903.2236" "Visible bookmarks in buffer." 'nil :commit "62fd17d27d5f16a92bccc9ce2ad3868c01413985" :authors
   '(("Jo Odland <jo.odland(at)gmail.com>"))
   :maintainers
   '(("Jo Odland <jo.odland(at)gmail.com>"))
