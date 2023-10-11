@@ -1,61 +1,84 @@
-                xr -- Emacs regexp parser and analyser
-                ======================================
+                relint -- Emacs regexp mistake finder
+                =====================================
 
-XR converts Emacs regular expressions to the structured rx form, thus
-being an inverse of rx. It can also find mistakes and questionable
-constructs inside regexp strings.
+Relint scans Emacs Lisp files for mistakes in regexps, including
+deprecated syntax and bad practice. It also checks the regexp-like
+arguments to the functions skip-chars-forward, skip-chars-backward,
+skip-syntax-forward and skip-syntax-backward.
 
-It can be useful for:
+* Contents
 
-- Migrating existing code to rx form
-- Understanding what a regexp string really means
-- Finding errors in regexp strings
+   - Usage
+   - Installation
+   - Configuration
+   - What the diagnostics mean
+   - Suppressing diagnostics
+   - How it works
+   - Bugs
 
-It can also parse and find mistakes in skip-sets, the regexp-like
-arguments to skip-chars-forward and skip-chars-backward.
 
-The xr package can be used interactively or by other code as a library.
+* Usage
 
+  - Check a single file:
 
-* Example
+      M-x relint-file
 
-  (xr-pp "\\`\\(?:[^^]\\|\\^\\(?: \\*\\|\\[\\)\\)")
+  - Check all .el files in a directory tree:
 
-  outputs
+      M-x relint-directory
 
-  (seq bos 
-       (or (not (any "^"))
-           (seq "^"
-                (or " *" "["))))
+  - Check current buffer:
+
+      M-x relint-current-buffer
+
+  In the *relint* buffer, pressing "g" will re-run the same check.
+
+  - From batch mode:
+
+      emacs -batch -l relint.el -f relint-batch FILES-AND-DIRS...
+
+    where directories are scanned recursively.
+    (Options for finding relint and xr need to be added after
+    -batch, either -f package-initialize or -L DIR.)
+
+  - From Emacs Lisp code, use one of the above functions or
+
+      (relint-buffer BUFFER)
+
+    which returns a list of diagnostics.
+
+  - From other packages:
+
+    The flycheck-relint and flymake-relint packages run relint
+    automatically via flycheck and flymake, respectively.
+    They are available from the MELPA package archive.
 
 
 * Installation
 
-  From GNU ELPA (https://elpa.gnu.org/packages/xr.html):
+  From GNU ELPA (https://elpa.gnu.org/packages/relint.html):
 
-    M-x package-install RET xr RET
+    M-x package-install RET relint RET
+
+  Relint requires the package xr (https://elpa.gnu.org/packages/xr.html);
+  it will be installed automatically.
 
 
-* Interface
+* Configuration
 
-  Functions parsing regexp strings:
-  
-   xr       --  convert regexp to rx
-   xr-pp    --  convert regexp to rx and pretty-print
-   xr-lint  --  find mistakes in regexp
-  
-  Functions parsing skip sets:
-  
-   xr-skip-set       --  convert skip-set to rx
-   xr-skip-set-pp    --  convert skip-set to rx and pretty-print
-   xr-skip-set-lint  --  find mistakes in skip-set
-  
-  Utility:
-  
-   xr-pp-rx-to-str  --  pretty-print rx expression to string
-  
+  No configuration is required.
+
+  There is a single user option, 'relint-xr-checks'.
+  If set to 'all', it enables more thorough checks that detect more
+  errors and performance problems but may also produce more false
+  warnings. The default value is 'nil', limiting warnings to ones that
+  are likely to be accurate.
+
 
 * What the diagnostics mean
+
+  Tip: if a regexp string is difficult to understand, consider
+  using 'xr' to decode it, as in (xr-pp "your-messy-regexp").
 
   - Unescaped literal 'X'
 
@@ -125,7 +148,7 @@ The xr package can be used interactively or by other code as a library.
     A range has + as one of its endpoints, which could mean that the
     hyphen was actually intended to be literal in order to match both
     + and -.
-    This check is only enable when CHECKS=all.
+    This check is only enabled when relint-xr-checks = all.
 
   - Possibly erroneous '\X' in character alternative
 
@@ -136,7 +159,7 @@ The xr package can be used interactively or by other code as a library.
 
     For example, "[\\n\\t]" matches the characters 'n', 't' and
     backslash, but could be an attempt to match newline and tab.
-    This check is only enable when CHECKS=all.
+    This check is only enabled when relint-xr-checks = all.
 
   - Duplicated character class '[:class:]'
 
@@ -150,7 +173,7 @@ The xr package can be used interactively or by other code as a library.
     For example, a\|b is better written [ab], and \s-\|\sw is usually
     better written [[:space:][:word:]]. (There is a subtle difference
     in how syntax properties are handled but it rarely matters.)
-    This check is only enable when CHECKS=all.
+    This check is only enabled when relint-xr-checks = all.
 
   - Duplicated alternative branch
 
@@ -266,13 +289,11 @@ The xr package can be used interactively or by other code as a library.
 
     Another example: \(?:a*b+\)+ is better written a*b[ab]* .
 
-    This check is only enable when CHECKS=all.
-
   - Possibly mistyped ':?' at start of group
 
     A group starts as \(:? which makes it likely that it was really
     meant to be \(?: -- ie, a non-capturing group.
-    This check is only enable when CHECKS=all.
+    This check is only enabled when relint-xr-checks = all.
 
   - Unnecessarily escaped 'X'
 
@@ -314,18 +335,118 @@ The xr package can be used interactively or by other code as a library.
     The string "^" is a skip set that matches anything, and is therefore
     pointless.
 
+  - 'X' cannot be used for arguments to 'F'
 
-* See also
+    An expression that looks like a regexp was given as an argument to
+    a function that expects a skip-set.
 
-  The relint package (https://elpa.gnu.org/packages/relint.html) uses xr
-  to find regexp mistakes in elisp code.
+  - Value from 'X' cannot be spliced into '[...]'
 
-  The lex package (https://elpa.gnu.org/packages/lex.html), a lexical
-  analyser generator, provides the lex-parse-re function which
-  translates regexps to rx, but does not attempt to handle all the
-  edge cases of Elisp's regexp syntax or pretty-print the result.
+    An expression that looks like a regexp was used to form a string
+    where it is surrounded by square brackets, as if it were part of a
+    character alternative. Regexps are not valid inside character
+    alternatives; they use a different syntax.
 
-  The pcre2el package (https://github.com/joddie/pcre2el), a regexp
-  syntax converter and interactive regexp explainer, can also be used
-  for translating regexps to rx. However, xr is more accurate for this
-  purpose.
+    If you are just building a string containing a regexp for display
+    purposes, consider using other delimiters than square brackets;
+    displaying the regexp 0-9 as [0-9] is very misleading.
+
+  - Invalid char 'X' in syntax string
+
+    A string argument to skip-syntax-forward or skip-syntax-backward
+    contains a character that doesn't indicate a syntax class. Such a
+    string is not a regexp or skip-set, but just a string of syntax
+    codes, possibly with a leading ^ for negation.
+
+  - Duplicated char 'X' in syntax string
+
+    A string argument to skip-syntax-forward or skip-syntax-backward
+    contains a duplicated class, which is pointless and may indicate a
+    mistake. Note that some characters indicate the same syntax class:
+    '.' and ' ' (space) both mean the 'space' class.
+
+  - Empty syntax string
+
+    A string argument to skip-syntax-forward or skip-syntax-backward
+    is empty or "^", neither of which makes sense.
+
+  - Ineffective string escape '\X'
+
+    A backslash precedes a character that does not need escaping in a
+    string literal (any string, not just regexps), like in "hot\-dog".
+
+    If the backslash should be part of the string then it probably
+    needs to be doubled; otherwise, it is pointless and should be
+    removed to avoid confusion.
+
+    In Emacs versions older than 27.1, a left round or square bracket,
+    '(' or '[', at the very start of a line in a multi-line string
+    could sometimes fool the Emacs-Lisp mode into believing it to be
+    the start of a function, thus people sometimes precede such
+    brackets with an otherwise unnecessary backslash. However, there
+    is usually no reason to put backslashes before brackets in strings
+    in general.
+
+  - Character escape '\x' not followed by hex digit
+
+    In Emacs versions older than 30.1, a hex escape without any actual
+    hex digits, as in "\x", was silently accepted as a null byte which
+    is not what anyone would expect. If the backslash should be
+    included in the string, double it as usual.
+
+  - Suspect range '+-X' or 'X-+'
+
+    A character range with '+' as one of its endpoints is more often an
+    incorrect attempt to include both '+' and '-' in the set.
+
+
+* Suppressing diagnostics
+
+  While relint has been designed to avoid false positives, there may
+  be cases where it emits unfounded complaints. Most of the time, it
+  is worth the trouble to change the code to make them go away, but
+  sometimes it cannot be done in a reasonable way.
+
+  To suppress such diagnostics, add a comment on the form
+
+    ;; relint suppression: REGEXP
+
+  on the line before the code where the error occurred. REGEXP
+  matches the message to be suppressed. Multiple suppression
+  comment lines can precede a line of code to eliminate several
+  complaints on the same line.
+
+
+* How it works
+
+  Relint uses a combination of ad-hoc rules to locate regexps:
+
+  - Arguments to certain standard functions such as re-search-forward,
+    or to user-defined functions whose arguments have regexp-sounding
+    names (like 'regexp')
+
+  - Values of variables believed to be a regexp from their name
+    (ending in '-regexp', for instance), from their doc string,
+    or from their type (for defcustom forms)
+
+  - Assignment to certain standard variables, such as page-delimiter
+
+  It will then try to evaluate expressions statically as far as
+  possible in order to arrive at strings which can be analysed. The
+  regexp analysis is done by the xr library.
+
+  This means that if relint complains about something that isn't
+  actually a regexp, some names in your code may be misleading.
+
+
+* Bugs
+
+  The simplistic method employed means that many errors will go
+  undetected, but false warnings are usually rare.
+
+  If you believe that an error could have been discovered but wasn't,
+  or that an unwarranted complaint could be avoided, please report it
+  as a bug.
+
+  If you find a complaint hard to understand, don't be afraid to ask.
+  Maybe it could be explained in a better way.
