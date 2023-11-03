@@ -51,6 +51,13 @@
 
 (declare-function project-roots "project")
 (declare-function sh-set-shell "sh-script")
+(declare-function mailcap-file-name-to-mime-type "mailcap")
+(declare-function dnd-get-local-file-name "dnd")
+
+;; for older emacs<29
+(declare-function mailcap-mime-type-to-extension "mailcap")
+(declare-function file-name-with-extension "files")
+(declare-function yank-media-handler "yank-media")
 
 
 ;;; Constants =================================================================
@@ -72,6 +79,13 @@
 
 (defvar markdown-gfm-language-history nil
   "History list of languages used in the current buffer in GFM code blocks.")
+
+(defvar markdown-follow-link-functions nil
+  "Functions used to follow a link.
+Each function is called with one argument, the link's URL. It
+should return non-nil if it followed the link, or nil if not.
+Functions are called in order until one of them returns non-nil;
+otherwise the default link-following function is used.")
 
 
 ;;; Customizable Variables ====================================================
@@ -7866,7 +7880,8 @@ Value is a list of elements describing the link:
                 ((string-match "\\([^ ]+\\)\\s-+\\(.+\\)" destination-part)
                  (setq url (match-string-no-properties 1 destination-part)
                        title (substring (match-string-no-properties 2 destination-part) 1 -1)))
-                (t (setq url destination-part)))))
+                (t (setq url destination-part)))
+          (setq url (url-unhex-string url))))
        ;; Reference link at point.
        ((thing-at-point-looking-at markdown-regex-link-reference)
         (setq bang (match-string-no-properties 1)
@@ -7922,11 +7937,11 @@ If the link is a complete URL, open in browser with `browse-url'.
 Otherwise, open with `find-file' after stripping anchor and/or query string.
 Translate filenames using `markdown-filename-translate-function'."
   (interactive (list last-command-event))
-  (save-excursion
-    (if event (posn-set-point (event-start event)))
-    (if (markdown-link-p)
-        (markdown--browse-url (markdown-link-url))
-      (user-error "Point is not at a Markdown link or URL"))))
+  (if event (posn-set-point (event-start event)))
+  (if (markdown-link-p)
+      (or (run-hook-with-args-until-success 'markdown-follow-link-functions (markdown-link-url))
+          (markdown--browse-url (markdown-link-url)))
+    (user-error "Point is not at a Markdown link or URL")))
 
 (defun markdown-fontify-inline-links (last)
   "Add text properties to next inline link from point to LAST."
@@ -8336,7 +8351,7 @@ See `markdown-follow-link-at-point' and
 `markdown-follow-wiki-link-at-point'."
   (interactive "P")
   (cond ((markdown-link-p)
-         (markdown--browse-url (markdown-link-url)))
+         (markdown-follow-link-at-point))
         ((markdown-wiki-link-p)
          (markdown-follow-wiki-link-at-point arg))
         (t
@@ -9828,6 +9843,48 @@ rows and columns and the column alignment."
               (markdown--substitute-command-keys
                "\\[markdown-toggle-markup-hiding]"))))))
 
+(defun markdown--image-media-handler (mimetype data)
+  (let* ((ext (symbol-name (mailcap-mime-type-to-extension mimetype)))
+         (filename (read-string "Insert filename for image: "))
+         (link-text (read-string "Link text: "))
+         (filepath (file-name-with-extension filename ext))
+         (dir (file-name-directory filepath)))
+    (when (and dir (not (file-directory-p dir)))
+      (make-directory dir t))
+    (with-temp-file filepath
+      (insert data))
+    (when (string-match-p "\\s-" filepath)
+      (setq filepath (concat "<" filepath ">")))
+    (markdown-insert-inline-image link-text filepath)))
+
+(defun markdown--file-media-handler (_mimetype data)
+  (let* ((data (split-string data "[\0\r\n]" t "^file://"))
+         (files (cdr data)))
+    (while (not (null files))
+      (let* ((file (url-unhex-string (car files)))
+             (file (file-relative-name file))
+             (prompt (format "Link text(%s): " (file-name-nondirectory file)))
+             (link-text (read-string prompt)))
+        (when (string-match-p "\\s-" file)
+          (setq file (concat "<" file ">")))
+        (markdown-insert-inline-image link-text file)
+        (when (not (null (cdr files)))
+          (insert " "))
+        (setq files (cdr files))))))
+
+(defun markdown--dnd-local-file-handler (url _action)
+  (require 'mailcap)
+  (require 'dnd)
+  (let* ((filename (dnd-get-local-file-name url))
+         (mimetype (mailcap-file-name-to-mime-type filename))
+         (file (file-relative-name filename))
+         (link-text "link text"))
+    (when (string-match-p "\\s-" file)
+      (setq file (concat "<" file ">")))
+    (if (string-prefix-p "image/" mimetype)
+        (markdown-insert-inline-image link-text file)
+      (markdown-insert-inline-link link-text file))))
+
 
 ;;; Mode Definition  ==========================================================
 
@@ -9955,6 +10012,16 @@ rows and columns and the column alignment."
   ;; Electric quoting
   (add-hook 'electric-quote-inhibit-functions
             #'markdown--inhibit-electric-quote nil :local)
+
+  ;; drag and drop handler
+  (setq-local dnd-protocol-alist  (cons '("^file:///" . markdown--dnd-local-file-handler)
+                                        dnd-protocol-alist))
+
+  ;; media handler
+  (when (version< "29" emacs-version)
+    (yank-media-handler "image/.*" #'markdown--image-media-handler)
+    ;; TODO support other than GNOME, like KDE etc
+    (yank-media-handler "x-special/gnome-copied-files" #'markdown--file-media-handler))
 
   ;; Make checkboxes buttons
   (when markdown-make-gfm-checkboxes-buttons
