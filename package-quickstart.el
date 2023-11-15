@@ -252,10 +252,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2/compat-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4/compat-autoloads.el") (car load-path))))
 
 
 
@@ -624,10 +624,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20230930.1918/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20231112.816/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20230930.1918/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20231112.816/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1201,10 +1201,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20231102.1537/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20231112.923/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20231102.1537/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20231112.923/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1858,10 +1858,10 @@ would otherwise have the same name.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20231025.2044/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20231025.2044/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -3038,10 +3038,10 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20220410.1509/browse-kill-ring-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20220410.1509/browse-kill-ring-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el") (car load-path))))
 
 
 
@@ -3054,7 +3054,9 @@ behavior.  This function sets things up so that M-y will invoke
 (autoload 'browse-kill-ring "browse-kill-ring" "\
 Display items in the `kill-ring' in another buffer." t nil)
 
-(register-definition-prefixes "browse-kill-ring" '("browse-kill-ring-"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "browse-kill-ring" '("browse-kill-ring-")))
+
+
 
 
 )
@@ -3435,7 +3437,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20231025.2044" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20231102.1537" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20230917.958" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20230714.723" "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448" "/home/scfrazer/.emacs.d/elpa/rg-20230430.721" "/home/scfrazer/.emacs.d/elpa/transient-20231112.923" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20230917.958" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
          Info-directory-list)))
 
 ;; Local Variables:
