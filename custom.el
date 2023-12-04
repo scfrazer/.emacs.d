@@ -49,7 +49,7 @@
  '(eldoc-echo-area-use-multiline-p t)
  '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
- '(frame-background-mode 'light)
+ '(frame-background-mode 'dark)
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method 'character)
@@ -71,7 +71,7 @@
  '(orderless-skip-highlighting nil t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(web-beautify popup vertico which-key diffview python marginalia flymake project beacon goto-last-change tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
+   '(modus-themes web-beautify popup vertico which-key diffview python marginalia flymake project beacon goto-last-change tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values

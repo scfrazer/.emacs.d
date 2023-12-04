@@ -3,4 +3,5 @@
   (normal-erase-is-backspace-mode 1))
 
 ;; Theme
-(my-theme-dark)
+;; (my-theme-dark)
+(load-theme 'modus-vivendi-tinted t)
