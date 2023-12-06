@@ -6,7 +6,7 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 0.5.0
+;; Package-Version: 0.5.2
 ;; Package-Requires: ((emacs "26.1") (compat "29.1.4.4") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -28,27 +28,9 @@
 
 ;;; Commentary:
 
-;; Taking inspiration from prefix keys and prefix arguments, Transient
-;; implements a similar abstraction involving a prefix command, infix
-;; arguments and suffix commands.  We could call this abstraction a
-;; "transient command", but because it always involves at least two
-;; commands (a prefix and a suffix) we prefer to call it just a
-;; "transient".
-
-;; When the user calls a transient prefix command, then a transient
-;; (temporary) keymap is activated, which binds the transient's infix
-;; and suffix commands, and functions that control the transient state
-;; are added to `pre-command-hook' and `post-command-hook'.  The
-;; available suffix and infix commands and their state are shown in
-;; the echo area until the transient is exited by invoking a suffix
-;; command.
-
-;; Calling an infix command causes its value to be changed, possibly
-;; by reading a new value in the minibuffer.
-
-;; Calling a suffix command usually causes the transient to be exited
-;; but suffix commands can also be configured to not exit the
-;; transient state.
+;; Transient is the library used to implement the keyboard-driven menus
+;; in Magit.  It is distributed as a separate package, so that it can be
+;; used to implement similar menus in other packages.
 
 ;;; Code:
 
@@ -63,6 +45,35 @@
              (not (fboundp 'seq-keep)))
     (unload-feature 'seq 'force)))
 (require 'seq)
+(unless (fboundp 'seq-keep)
+  (display-warning 'transient (substitute-command-keys "\
+Transient requires `seq' >= 2.24,
+but due to bad defaults, Emacs' package manager, refuses to
+upgrade this and other built-in packages to higher releases
+from GNU Elpa, when a package specifies that this is needed.
+
+To fix this, you have to add this to your init file:
+
+  (setq package-install-upgrade-built-in t)
+
+Then evaluate that expression by placing the cursor after it
+and typing \\[eval-last-sexp].
+
+Once you have done that, you have to explicitly upgrade `seq':
+
+  \\[package-upgrade] seq \\`RET'
+
+Then you also must make sure the updated version is loaded,
+by evaluating this form:
+
+  (progn (unload-feature 'seq t) (require 'seq))
+
+Until you do this, you will get random errors about `seq-keep'
+being undefined while using Transient.
+
+If you don't use the `package' package manager but still get
+this warning, then your chosen package manager likely has a
+similar defect.") :emergency))
 
 (eval-when-compile (require 'subr-x))
 
@@ -71,7 +82,6 @@
 (declare-function Man-next-section "man" (n))
 (declare-function Man-getpage-in-background "man" (topic))
 
-(defvar display-line-numbers) ; since Emacs 26.1
 (defvar Man-notify-method)
 (defvar pp-default-function) ; since Emacs 29.1
 
@@ -2107,10 +2117,12 @@ value.  Otherwise return CHILDREN as is."
    (if-not-mode    (not (if (atom if-not-mode)
                             (eq major-mode if-not-mode)
                           (memq major-mode if-not-mode))))
-   (if-derived          (if (atom if-derived)
+   (if-derived          (if (or (atom if-derived)
+                                (>= emacs-major-version 30))
                             (derived-mode-p if-derived)
                           (apply #'derived-mode-p if-derived)))
-   (if-not-derived (not (if (atom if-not-derived)
+   (if-not-derived (not (if (or (atom if-not-derived)
+                                (>= emacs-major-version 30))
                             (derived-mode-p if-not-derived)
                           (apply #'derived-mode-p if-not-derived))))
    (default)))
