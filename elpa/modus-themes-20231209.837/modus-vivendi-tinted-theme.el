@@ -125,12 +125,12 @@ which corresponds to a minimum contrast in relative luminance of
       (bg-magenta-subtle  "#552f5f")
       (bg-cyan-subtle     "#004065")
 
-      (bg-red-nuanced     "#350f14")
-      (bg-green-nuanced   "#002718")
-      (bg-yellow-nuanced  "#2c1f00")
-      (bg-blue-nuanced    "#131c4d")
-      (bg-magenta-nuanced "#2f133f")
-      (bg-cyan-nuanced    "#04253f")
+      (bg-red-nuanced     "#2f0a14")
+      (bg-green-nuanced   "#04230c")
+      (bg-yellow-nuanced  "#2b190a")
+      (bg-blue-nuanced    "#0f0e39")
+      (bg-magenta-nuanced "#260733")
+      (bg-cyan-nuanced    "#02202c")
 
 ;;; Graphs
 
@@ -237,6 +237,11 @@ which corresponds to a minimum contrast in relative luminance of
       (fg-prominent-warning fg-main)
       (bg-prominent-note bg-cyan-intense)
       (fg-prominent-note fg-main)
+
+      (bg-active-argument bg-yellow-nuanced)
+      (fg-active-argument yellow-cooler)
+      (bg-active-value bg-cyan-nuanced)
+      (fg-active-value cyan-cooler)
 
 ;;;; Code mappings
 

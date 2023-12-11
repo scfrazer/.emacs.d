@@ -1672,7 +1672,7 @@ FG and BG are the main colors."
     `(mm-uu-extract ((,c :foreground ,mail-part)))
     `(next-error ((,c :inherit modus-themes-prominent-error :extend t)))
     `(pgtk-im-0 ((,c :inherit modus-themes-prominent-note)))
-    `(read-multiple-choice-face ((,c :inherit (bold modus-themes-mark-alt))))
+    `(read-multiple-choice-face ((,c :inherit modus-themes-mark-sel)))
     `(rectangle-preview ((,c :inherit secondary-selection)))
     `(region ((,c :background ,bg-region :foreground ,fg-region)))
     `(secondary-selection ((,c :background ,bg-hover-secondary :foreground ,fg-main)))
@@ -2234,7 +2234,7 @@ FG and BG are the main colors."
     `(el-search-occur-match ((,c :inherit match)))
 ;;;;; eldoc
     ;; NOTE: see https://github.com/purcell/package-lint/issues/187
-    (list 'eldoc-highlight-function-argument `((,c :inherit modus-themes-mark-alt)))
+    (list 'eldoc-highlight-function-argument `((,c :inherit bold :background ,bg-active-argument :foreground ,fg-active-argument)))
 ;;;;; eldoc-box
     `(eldoc-box-body ((,c :background ,bg-dim :foreground ,fg-main)))
     `(eldoc-box-border ((,c :background ,border)))
@@ -2427,7 +2427,7 @@ FG and BG are the main colors."
     `(font-lock-variable-name-face ((,c :foreground ,variable)))
     `(font-lock-warning-face ((,c :inherit modus-themes-bold :foreground ,warning)))
 ;;;;; geiser
-    `(geiser-font-lock-autodoc-current-arg ((,c :inherit modus-themes-mark-alt)))
+    `(geiser-font-lock-autodoc-current-arg ((,c :inherit bold :background ,bg-active-argument :foreground ,fg-active-argument)))
     `(geiser-font-lock-autodoc-identifier ((,c :foreground ,docstring)))
     `(geiser-font-lock-doc-button ((,c :inherit button)))
     `(geiser-font-lock-doc-link ((,c :inherit button)))
@@ -3184,7 +3184,7 @@ FG and BG are the main colors."
     `(org-agenda-calendar-daterange ((,c :foreground ,date-range)))
     `(org-agenda-calendar-event ((,c :foreground ,date-event)))
     `(org-agenda-calendar-sexp ((,c :inherit (modus-themes-slant org-agenda-calendar-event))))
-    `(org-agenda-clocking ((,c :inherit modus-themes-mark-alt)))
+    `(org-agenda-clocking ((,c :inherit bold :background ,bg-active-argument :foreground ,fg-active-argument)))
     `(org-agenda-column-dateline ((,c :background ,bg-inactive)))
     `(org-agenda-current-time ((,c :foreground ,date-now)))
     `(org-agenda-date ((,c ,@(modus-themes--heading 'agenda-date date-weekday))))
@@ -3697,14 +3697,25 @@ FG and BG are the main colors."
     `(transient-amaranth ((,c :inherit bold :foreground ,yellow-warmer)))
     ;; Placate the compiler for what is a spurious warning.  We also
     ;; have to do this with `eldoc-highlight-function-argument'.
-    (list 'transient-argument `((,c :inherit (bold modus-themes-mark-alt))))
+    (list 'transient-argument `((,c :inherit bold :background ,bg-active-argument :foreground ,fg-active-argument)))
     `(transient-blue ((,c :inherit bold :foreground ,blue)))
     `(transient-disabled-suffix ((,c :inherit modus-themes-mark-del)))
     `(transient-enabled-suffix ((,c :inherit modus-themes-subtle-cyan)))
     `(transient-heading ((,c :inherit bold :foreground ,fg-main)))
     `(transient-inactive-argument ((,c :inherit shadow)))
     `(transient-inactive-value ((,c :inherit shadow)))
+    ;; NOTE 2023-12-09 10:30:09 +0200: The new user option
+    ;; `transient-semantic-coloring' is enabled by default.  This is
+    ;; not good for us, because we are making it harder for users who
+    ;; need accessible colors to use the transient interfaces.  I
+    ;; could set that user option to nil, but I think it is less
+    ;; intrusive to enforce uniformity among the relevant faces.
+    ;; Those who want semantic coloring can modify these faces.
     `(transient-key ((,c :inherit modus-themes-key-binding)))
+    `(transient-key-exit ((,c :inherit modus-themes-key-binding)))
+    `(transient-key-noop ((,c :inherit (shadow modus-themes-key-binding))))
+    `(transient-key-return ((,c :inherit modus-themes-key-binding)))
+    `(transient-key-stay ((,c :inherit modus-themes-key-binding)))
     `(transient-mismatched-key ((,c :underline t)))
     `(transient-nonstandard-key ((,c :underline t)))
     `(transient-pink ((,c :inherit bold :foreground ,magenta)))
@@ -3713,7 +3724,7 @@ FG and BG are the main colors."
     `(transient-teal ((,c :inherit bold :foreground ,cyan-cooler)))
     `(transient-unreachable ((,c :inherit shadow)))
     `(transient-unreachable-key ((,c :inherit shadow)))
-    `(transient-value ((,c :inherit (bold modus-themes-mark-sel))))
+    `(transient-value ((,c :inherit bold :background ,bg-active-value :foreground ,fg-active-value)))
 ;;;;; trashed
     `(trashed-deleted ((,c :inherit modus-themes-mark-del)))
     `(trashed-directory ((,c :foreground ,accent-0)))
@@ -3928,14 +3939,14 @@ FG and BG are the main colors."
     `(which-key-special-key-face ((,c :inherit error)))
 ;;;;; whitespace-mode
     `(whitespace-big-indent ((,c :background ,bg-space-err)))
-    `(whitespace-empty ((,c :inherit modus-themes-intense-magenta)))
+    `(whitespace-empty ((,c :background ,bg-space)))
     `(whitespace-hspace ((,c :background ,bg-space :foreground ,fg-space)))
     `(whitespace-indentation ((,c :background ,bg-space :foreground ,fg-space)))
     `(whitespace-line ((,c :background ,bg-space :foreground ,warning)))
     `(whitespace-newline ((,c :background ,bg-space :foreground ,fg-space)))
     `(whitespace-space ((,c :background ,bg-space :foreground ,fg-space)))
-    `(whitespace-space-after-tab ((,c :inherit modus-themes-subtle-magenta)))
-    `(whitespace-space-before-tab ((,c :inherit modus-themes-subtle-cyan)))
+    `(whitespace-space-after-tab ((,c :inherit warning :background ,bg-space)))
+    `(whitespace-space-before-tab ((,c :inherit warning :background ,bg-space)))
     `(whitespace-tab ((,c :background ,bg-space :foreground ,fg-space)))
     `(whitespace-trailing ((,c :background ,bg-space-err)))
 ;;;;; window-divider-mode

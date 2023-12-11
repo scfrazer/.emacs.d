@@ -3,5 +3,5 @@
   (normal-erase-is-backspace-mode 1))
 
 ;; Theme
-;; (my-theme-dark)
+(setq modus-vivendi-tinted-palette-overrides '((fg-main "#e0e0e0")))
 (load-theme 'modus-vivendi-tinted t)
