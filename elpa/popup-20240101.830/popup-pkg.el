@@ -1,6 +1,6 @@
-(define-package "popup" "20230819.2306" "Visual Popup User Interface"
+(define-package "popup" "20240101.830" "Visual Popup User Interface"
   '((emacs "24.3"))
-  :commit "769318d0391e6d9a718e227678234f27f7c13a47" :authors
+  :commit "6fa7c440879ade009dd0ea37eccc771ced0ef86d" :authors
   '(("Tomohiro Matsuyama" . "m2ym.pub@gmail.com"))
   :maintainers
   '(("Shen, Jen-Chieh" . "jcs090218@gmail.com"))

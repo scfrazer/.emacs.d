@@ -1,7 +1,7 @@
 This is with-editor.info, produced by makeinfo version 6.7 from
 with-editor.texi.
 
-     Copyright (C) 2015-2023 Jonas Bernoulli <jonas@bernoul.li>
+     Copyright (C) 2015-2024 Jonas Bernoulli <jonas@bernoul.li>
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
@@ -41,7 +41,7 @@ don’t use Magit or another package which uses it internally.
 
 This manual is for With-Editor version 3.3.2.
 
-     Copyright (C) 2015-2023 Jonas Bernoulli <jonas@bernoul.li>
+     Copyright (C) 2015-2024 Jonas Bernoulli <jonas@bernoul.li>
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
