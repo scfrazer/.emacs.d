@@ -1225,10 +1225,10 @@ Also see `transient-command-completion-not-suffix-only-p'.
 Only use this alias as the value of the `command-predicate'
 symbol property.")
 
-(static-if (and (boundp 'read-extended-command-predicate) ; since Emacs 28.1
-                (not read-extended-command-predicate))
-    (setq read-extended-command-predicate
-          'transient-command-completion-not-suffix-only-p))
+(when (and (boundp 'read-extended-command-predicate) ; since Emacs 28.1
+           (not read-extended-command-predicate))
+  (setq read-extended-command-predicate
+        'transient-command-completion-not-suffix-only-p))
 
 (defun transient-parse-suffix (prefix suffix)
   "Parse SUFFIX, to be added to PREFIX.
@@ -2288,7 +2288,10 @@ value.  Otherwise return CHILDREN as is."
         ((and transient--prefix transient--redisplay-key)
          (setq transient--redisplay-key nil)
          (when transient--showp
-           (transient--show))))
+           (if-let ((win (minibuffer-selected-window)))
+               (with-selected-window win
+                 (transient--show))
+             (transient--show)))))
   (transient--pop-keymap 'transient--transient-map)
   (transient--pop-keymap 'transient--redisplay-map)
   (remove-hook 'pre-command-hook  #'transient--pre-command)
@@ -3131,7 +3134,7 @@ infix command determines what the new value should be, based
 on the previous value.")
 
 (cl-defmethod transient-infix-read :around ((obj transient-infix))
-  "Refresh the transient buffer buffer calling the next method.
+  "Refresh the transient buffer and call the next method.
 
 Also wrap `cl-call-next-method' with two macros:
 - `transient--with-suspended-override' allows use of minibuffer.
