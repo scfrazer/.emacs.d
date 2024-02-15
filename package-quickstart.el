@@ -571,10 +571,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20231225.1458/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240210.1511/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20231225.1458/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240210.1511/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1210,10 +1210,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240131.1612/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240131.1612/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1867,18 +1867,12 @@ would otherwise have the same name.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1806/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1806/orderless-autoloads.el") (car load-path))))
 
 
-
-(autoload 'orderless-filter "orderless" "\
-Split STRING into components and find entries TABLE matching all.
-The predicate PRED is used to constrain the entries in TABLE.
-
-\(fn STRING TABLE &optional PRED)" nil nil)
 
 (autoload 'orderless-all-completions "orderless" "\
 Split STRING into components and find entries TABLE matching all.
@@ -1914,10 +1908,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230728.518/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240213.1734/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20230728.518/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240213.1734/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -2238,10 +2232,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240104.1122/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240104.1122/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2395,10 +2389,10 @@ Print the path to the JSON value under point, and save it in the kill ring." t n
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20231223.548/json-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20240203.751/json-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20231223.548/json-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20240203.751/json-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2803,10 +2797,10 @@ paragraphs are used.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20210617.1538/fill-function-arguments-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20240213.2249/fill-function-arguments-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20210617.1538/fill-function-arguments-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fill-function-arguments-20240213.2249/fill-function-arguments-autoloads.el") (car load-path))))
 
 
 
@@ -2826,9 +2820,13 @@ enabled, then just run `fill-paragragh'.
 Otherwise if point is inside a bracketed list (e.g. a function
 call, an array declaration, etc.) then if the list is currently
 on a single line call `fill-function-arguments-to-multi-line',
-otherwise call `fill-function-arguments-to-single-line'." t nil)
+otherwise call `fill-function-arguments-to-single-line'.
 
-(register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-"))
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fill-function-arguments" '("fill-function-arguments-")))
+
+
 
 
 )
@@ -3497,7 +3495,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240104.1122" "/home/scfrazer/.emacs.d/elpa/orderless-20231110.1448" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240131.1612" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806" "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1806" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
          Info-directory-list)))
 
 ;; Local Variables:
