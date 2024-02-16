@@ -148,9 +148,10 @@ File: orderless.info,  Node: Component matching styles,  Next: Component separat
 =============================
 
 Each component of a pattern can match in any of several matching styles.
-A matching style is simply a function from strings to strings that maps
-a component to a regexp to match against, so it is easy to define new
-matching styles.  The predefined ones are:
+A matching style is simply a function from strings to regexps, so it is
+easy to define new matching styles.  The regexp returned by a matching
+style can be either a string or an s-expression in ‘rx’ syntax.  The
+predefined matching styles are:
 
 orderless-regexp
      the component is treated as a regexp that must match somewhere in
@@ -161,8 +162,6 @@ orderless-regexp
 orderless-literal
      the component is treated as a literal string that must occur in the
      candidate.
-
-     This is just ‘regexp-quote’.
 
 *orderless-without-literal*
      the component is a treated as a literal string that must *not*
@@ -587,20 +586,20 @@ Node: Top235
 Node: Overview955
 Node: Customization4909
 Node: Component matching styles5267
-Node: Style dispatchers7377
-Node: Component separator regexp10910
-Node: Defining custom orderless styles12147
-Node: Faces for component matches14039
-Node: Pattern compiler14843
-Node: Interactively changing the configuration15445
-Node: Integration with other completion UIs16908
-Node: Ivy17694
-Node: Helm18046
-Node: Company18390
-Node: Related packages20369
-Node: Ivy and Helm20667
-Node: Prescient22001
-Node: Restricting to current matches in Icicles Ido and Ivy22834
+Node: Style dispatchers7401
+Node: Component separator regexp10934
+Node: Defining custom orderless styles12171
+Node: Faces for component matches14063
+Node: Pattern compiler14867
+Node: Interactively changing the configuration15469
+Node: Integration with other completion UIs16932
+Node: Ivy17718
+Node: Helm18070
+Node: Company18414
+Node: Related packages20393
+Node: Ivy and Helm20691
+Node: Prescient22025
+Node: Restricting to current matches in Icicles Ido and Ivy22858
 
 End Tag Table
 
