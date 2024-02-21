@@ -1,6 +1,6 @@
 ;;; which-key.el --- Display available keybindings in popup  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2017-2024  Free Software Foundation, Inc.
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
@@ -24,13 +24,13 @@
 
 ;;; Commentary:
 
-;; which-key provides the minor mode which-key-mode for Emacs. The mode displays
+;; which-key provides the minor mode which-key-mode for Emacs.  The mode displays
 ;; the key bindings following your currently entered incomplete command (a
-;; prefix) in a popup. For example, after enabling the minor mode if you enter
+;; prefix) in a popup.  For example, after enabling the minor mode if you enter
 ;; C-x and wait for the default of 1 second the minibuffer will expand with all
 ;; of the available key bindings that follow C-x (or as many as space allows
-;; given your settings). This includes prefixes like C-x 8 which are shown in a
-;; different face. Screenshots of what the popup will look like along with
+;; given your settings).  This includes prefixes like C-x 8 which are shown in a
+;; different face.  Screenshots of what the popup will look like along with
 ;; information about additional features can be found at
 ;; https://github.com/justbur/emacs-which-key.
 ;;
@@ -51,7 +51,7 @@
 ;;; Options
 
 (defgroup which-key nil
-  "Customization options for which-key-mode"
+  "Customization options for which-key-mode."
   :group 'help
   :prefix "which-key-")
 
@@ -63,16 +63,17 @@ A value of zero might lead to issues, so a non-zero value is
 recommended
 (see https://github.com/justbur/emacs-which-key/issues/134)."
   :group 'which-key
-  :type 'float)
+  :type 'float
+  :version "1.0")
 
 (defcustom which-key-idle-secondary-delay nil
-  "Once the which-key buffer shows once for a key sequence reduce
-the idle time to this amount (in seconds). This makes it possible
-to shorten the delay for subsequent popups in the same key
-sequence. The default is for this value to be nil, which disables
-this behavior."
+  "Seconds to wait for which-key to pop up after initial display.
+This makes it possible to shorten the delay for subsequent popups
+in the same key sequence. The default is for this value to be
+nil, which disables this behavior."
   :group 'which-key
-  :type '(choice float (const :tag "Disabled" nil)))
+  :type '(choice float (const :tag "Disabled" nil))
+  :version "1.0")
 
 (defcustom which-key-echo-keystrokes (if (and echo-keystrokes
                                               (> (+ echo-keystrokes 0.01)
@@ -81,11 +82,12 @@ this behavior."
                                        echo-keystrokes)
   "Value to use for `echo-keystrokes'.
 This only applies if `which-key-popup-type' is minibuffer or
-`which-key-show-prefix' is echo. It needs to be less than
+`which-key-show-prefix' is echo.  It needs to be less than
 `which-key-idle-delay' or else the keystroke echo will erase the
 which-key popup."
   :group 'which-key
-  :type 'float)
+  :type 'float
+  :version "1.0")
 
 (defcustom which-key-max-description-length 27
   "Truncate the description of keys to this length.
@@ -98,18 +100,20 @@ before.  Truncation is done using `which-key-ellipsis'."
   :type '(choice (const :tag "Disable truncation" nil)
 		 (integer :tag "Width in characters")
 		 (float :tag "Use fraction of available width")
-		 function))
+		 function)
+  :version "1.0")
 
 (defcustom which-key-min-column-description-width 0
   "Every column should at least have this width."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-add-column-padding 0
-  "Additional padding (number of spaces) to add to the left of
-each key column."
+  "Additional spaces to add to the left of each key column."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-unicode-correction 3
   "Correction for wide unicode characters.
@@ -125,20 +129,25 @@ additional ASCII character in the which-key buffer.  Increase this
 number if you are seeing characters get cutoff on the right side
 of the which-key popup."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-dont-use-unicode nil
-  "If non-nil, don't use any unicode characters in default setup."
+  "If non-nil, don't use any unicode characters in default setup.
+For affected settings, see `which-key-replacement-alist', `which-key-ellipsis'
+'which-key-separator'."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-separator
   (if which-key-dont-use-unicode " : " " → ")
-  "Separator to use between key and description. Default is \" →
-\", unless `which-key-dont-use-unicode' is non nil, in which case
-the default is \" : \"."
+  "Separator to use between key and description.
+Default is \" → \", unless `which-key-dont-use-unicode' is non
+nil, in which case the default is \" : \"."
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 (defcustom which-key-ellipsis
   (if which-key-dont-use-unicode ".." "…")
@@ -147,19 +156,23 @@ Default is \"…\", unless `which-key-dont-use-unicode' is non nil,
 in which case the default is \"..\".  This can also be the empty
 string to truncate without using any ellipsis."
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 (defcustom which-key-prefix-prefix "+"
-  "String to insert in front of prefix commands (i.e., commands
-that represent a sub-map). Default is \"+\"."
+  "Prefix string to indicate a key bound to a keymap.
+Default is \"+\"."
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 (defcustom which-key-compute-remaps nil
-  "If non-nil, show remapped command if a command has been
-remapped given the currently active keymaps."
+  "If non-nil, show remapped commands.
+This applies to commands that have been remapped given the
+currently active keymaps."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-replacement-alist
   (delq nil
@@ -168,9 +181,8 @@ remapped given the currently active keymaps."
               '((("<left>") . ("←"))
                 (("<right>") . ("→"))))
           (("<\\([[:alnum:]-]+\\)>") . ("\\1"))))
-  "Association list to determine how to manipulate descriptions
-of key bindings in the which-key popup. Each element of the list
-is a nested cons cell with the format
+  "ALIST for manipulating display of binding descriptions.
+Each element of the list is a nested cons cell with the format
 
 \(MATCH CONS . REPLACEMENT\).
 
@@ -204,55 +216,62 @@ non-nil value."
   :type '(alist :key-type (cons (choice regexp (const nil))
                                 (choice regexp (const nil)))
                 :value-type (cons (choice string (const nil))
-                                  (choice string (const nil)))))
+                                  (choice string (const nil))))
+  :version "1.0")
 
 (defcustom which-key-allow-multiple-replacements nil
-  "Allow a key binding to match and be modified by multiple
-elements in `which-key-replacement-alist' if non-nil. When nil,
-only the first match is used to perform replacements from
+  "Allow a key binding to be modified by multiple elements.
+When non-nil, this allows a single key binding to match multiple
+patterns in `which-key-replacement-alist'. When nil, only the
+first match is used to perform replacements from
 `which-key-replacement-alist'."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-show-docstrings nil
-  "If non-nil, show each command's docstring next to the command
-in the which-key buffer. This will only display the docstring up
-to the first line break. If you set this variable to the symbol
-docstring-only, then the command's name with be omitted. You
-probably also want to adjust `which-key-max-description-length'
-at the same time if you use this feature."
+  "If non-nil, show each command's docstring in the which-key popup.
+This will only display the docstring up to the first line
+break. If you set this variable to the symbol docstring-only,
+then the command's name with be omitted. You probably also want
+to adjust `which-key-max-description-length' at the same time if
+you use this feature."
   :group 'which-key
   :type '(radio
           (const :tag "Do not show docstrings" nil)
           (const :tag "Add docstring to command names" t)
-          (const :tag "Replace command name with docstring" docstring-only)))
+          (const :tag "Replace command name with docstring" docstring-only))
+  :version "1.0")
 
 (defcustom which-key-highlighted-command-list '()
-  "A list of strings and/or cons cells used to highlight certain
-commands. If the element is a string, assume it is a regexp
-pattern for matching command names and use
+  "Rules used to highlight certain commands.
+If the element is a string, assume it is a regexp pattern for
+matching command names and use
 `which-key-highlighted-command-face' for any matching names. If
 the element is a cons cell, it should take the form (regexp .
 face to apply)."
   :group 'which-key
-  :type  '(repeat (choice string (cons regexp face))))
+  :type  '(repeat (choice string (cons regexp face)))
+  :version "1.0")
 
 (defcustom which-key-special-keys '()
-  "These keys will automatically be truncated to one character
-and have `which-key-special-key-face' applied to them. This is
-disabled by default. Try this to see the effect.
+  "These keys will automatically be truncated to one character.
+They also have `which-key-special-key-face' applied to them. This
+is disabled by default. An example configuration is
 
 \(setq which-key-special-keys \\='(\"SPC\" \"TAB\" \"RET\" \"ESC\" \"DEL\")\)"
   :group 'which-key
-  :type '(repeat string))
+  :type '(repeat string)
+  :version "1.0")
 
 (defcustom which-key-buffer-name " *which-key*"
   "Name of which-key buffer."
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 (defcustom which-key-show-prefix 'echo
-  "Whether to and where to display the current prefix sequence
+  "Whether to and where to display the current prefix sequence.
 Possible choices are echo for echo area (the default), left, top
 and nil. Nil turns the feature off."
   :group 'which-key
@@ -261,32 +280,36 @@ and nil. Nil turns the feature off."
                 (const :tag "In the last line" bottom)
                 (const :tag "In the echo area" echo)
                 (const :tag "In the mode-line" mode-line)
-                (const :tag "Hide" nil)))
+                (const :tag "Hide" nil))
+  :version "1.0")
 
 (defcustom which-key-popup-type 'side-window
-  "Supported types are minibuffer, side-window, frame, and custom"
+  "Supported types are minibuffer, side-window, frame, and custom."
   :group 'which-key
   :type '(radio (const :tag "Show in minibuffer" minibuffer)
                 (const :tag "Show in side window" side-window)
                 (const :tag "Show in popup frame" frame)
-                (const :tag "Use your custom display functions" custom)))
+                (const :tag "Use your custom display functions" custom))
+  :version "1.0")
 
 (defcustom which-key-min-display-lines 1
-  "Minimum number of horizontal lines to display in the which-key buffer"
+  "Minimum number of horizontal lines to display in the which-key buffer."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-max-display-columns nil
-  "Maximum number of columns to display in the which-key buffer
-nil means don't impose a maximum."
+  "Maximum number of columns to display in the which-key buffer.
+A value of nil means don't impose a maximum."
   :group 'which-key
-  :type '(choice integer (const :tag "Unbounded" nil)))
+  :type '(choice integer (const :tag "Unbounded" nil))
+  :version "1.0")
 
 (defcustom which-key-side-window-location 'bottom
   "Location of which-key popup when `which-key-popup-type' is side-window.
-Should be one of top, bottom, left or right. You can also specify
-a list of two locations, like (right bottom). In this case, the
-first location is tried. If there is not enough room, the second
+Should be one of top, bottom, left or right.  You can also specify
+a list of two locations, like (right bottom).  In this case, the
+first location is tried.  If there is not enough room, the second
 location is tried."
   :group 'which-key
   :type '(radio (const right)
@@ -294,12 +317,13 @@ location is tried."
                 (const left)
                 (const top)
                 (const (right bottom))
-                (const (bottom right))))
+                (const (bottom right)))
+  :version "1.0")
 
 (defcustom which-key-side-window-slot 0
-  "The `slot' to use for `display-buffer-in-side-window' when
-`which-key-popup-type' is `side-window'.  Quoting from the
-docstring of `display-buffer-in-side-window',
+  "The `slot' to use for `display-buffer-in-side-window'.
+This applies when `which-key-popup-type' is `side-window'.
+Quoting from the docstring of `display-buffer-in-side-window',
 
 `slot' if non-nil, specifies the window slot where to display
 BUFFER.  A value of zero or nil means use the middle slot on the
@@ -308,51 +332,59 @@ preceding (that is, above or on the left of) the middle slot.  A
 positive value means use a slot following (that is, below or on
 the right of) the middle slot.  The default is zero."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-side-window-max-width 0.333
-  "Maximum width of which-key popup when type is side-window
+  "Maximum width of which-key popup when type is side-window.
 This variable can also be a number between 0 and 1. In that case,
 it denotes a percentage out of the frame's width."
   :group 'which-key
-  :type 'float)
+  :type 'float
+  :version "1.0")
 
 (defcustom which-key-side-window-max-height 0.25
-  "Maximum height of which-key popup when type is side-window
+  "Maximum height of which-key popup when type is side-window.
 This variable can also be a number between 0 and 1. In that case, it denotes
 a percentage out of the frame's height."
   :group 'which-key
-  :type 'float)
+  :type 'float
+  :version "1.0")
 
 (defcustom which-key-frame-max-width 60
   "Maximum width of which-key popup when type is frame."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-frame-max-height 20
   "Maximum height of which-key popup when type is frame."
   :group 'which-key
-  :type 'integer)
+  :type 'integer
+  :version "1.0")
 
 (defcustom which-key-allow-imprecise-window-fit (not (display-graphic-p))
-  "If non-nil allow which-key to use a less intensive method of
-fitting the popup window to the buffer. If you are noticing lag
-when the which-key popup displays turning this on may help.
+  "Allow which-key to use a simpler method for resizing the popup.
+If you are noticing lag when the which-key popup displays turning
+this on may help.
 
 See https://github.com/justbur/emacs-which-key/issues/130
 and https://github.com/justbur/emacs-which-key/issues/225."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-show-remaining-keys nil
   "Show remaining keys in last slot, when keys are hidden."
   :group 'which-key
   :type '(radio (const :tag "Yes" t)
-                (const :tag "No" nil)))
+                (const :tag "No" nil))
+  :version "1.0")
 
 (defcustom which-key-sort-order 'which-key-key-order
-  "If nil, do not resort the output from
-`describe-buffer-bindings' which groups by mode. Ordering options
+  "Order in which the key bindings are sorted.
+If nil, do not resort the output from `describe-buffer-bindings'
+which groups by mode. Ordering options
 are
 
 1. `which-key-key-order': by key (default)
@@ -368,25 +400,29 @@ information."
                  (function-item which-key-key-order-alpha)
                  (function-item which-key-description-order)
                  (function-item which-key-prefix-then-key-order)
-                 (function-item which-key-local-then-key-order)))
+                 (function-item which-key-local-then-key-order))
+  :version "1.0")
 
 (defcustom which-key-sort-uppercase-first t
-  "If non-nil, uppercase comes before lowercase in sorting
-function chosen in `which-key-sort-order'. Otherwise, the order
-is reversed."
+  "If non-nil, uppercase comes before lowercase in sorting.
+This applies to the function chosen in
+`which-key-sort-order'. Otherwise, the order is reversed."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-paging-prefixes '()
   "Enable paging for these prefixes."
   :group 'which-key
-  :type '(repeat string))
+  :type '(repeat string)
+  :version "1.0")
 
 (defcustom which-key-paging-key "<f5>"
-  "Key to use for changing pages. Bound after each of the
-prefixes in `which-key-paging-prefixes'"
+  "Key to use for changing pages.
+Bound after each of the prefixes in `which-key-paging-prefixes'"
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 ;; (defcustom which-key-undo-key nil
 ;;   "Key (string) to use for undoing keypresses. Bound recursively
@@ -400,18 +436,19 @@ prefixes in `which-key-paging-prefixes'"
 ;;   :type '(repeat symbol))
 
 (defcustom which-key-use-C-h-commands t
-  "Use C-h (or whatever `help-char' is set to) for paging if
-non-nil. Normally C-h after a prefix calls
+  "Use C-h (`help-char') for paging if non-nil.
+Normally `help-char' after a prefix calls
 `describe-prefix-bindings'. This changes that command to a
 which-key paging command when which-key-mode is active."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-show-early-on-C-h nil
-  "Show the which-key buffer before if C-h (or whatever
-`help-char' is set to) is pressed in the middle of a prefix
-before the which-key buffer would normally be triggered through
-the idle delay. If combined with the following settings,
+  "Allow C-h (`help-char') to trigger which-key popup before timer.
+Show the which-key buffer if `help-char' is pressed in the middle
+of a prefix before the which-key buffer would normally be
+triggered by the time. If combined with the following settings,
 which-key will effectively only show when triggered \"manually\"
 using C-h.
 
@@ -419,23 +456,28 @@ using C-h.
 \(setq `which-key-idle-secondary-delay' 0.05)
 
 Note that `which-key-idle-delay' should be set before turning on
-`which-key-mode'. "
+`which-key-mode'."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-is-verbose nil
   "Whether to warn about potential mistakes in configuration."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-preserve-window-configuration nil
-  "If non-nil, save window configuration before which-key buffer is shown
-and restore it after which-key buffer is hidden. It prevents which-key from
-changing window position of visible buffers.
-Only takken into account when popup type is side-window."
+  "Save and restore window configuration around which-key popup display.
+If non-nil, save window configuration before which-key buffer is
+shown and restore it after which-key buffer is hidden. It
+prevents which-key from changing window position of visible
+buffers.  Only takken into account when popup type is
+side-window."
   :group
   'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defvar which-key-C-h-map-prompt
   (concat " \\<which-key-C-h-map>"
@@ -453,8 +495,8 @@ Only takken into account when popup type is side-window."
           which-key-separator "abort"
           " 1..9"
           which-key-separator "digit-arg")
-  "Prompt to display when invoking `which-key-C-h-map'. This string
-is fed into `substitute-command-keys'")
+  "Prompt to display when invoking `which-key-C-h-map'.
+This string is fed into `substitute-command-keys'")
 
 (defvar which-key-C-h-map
   (let ((map (make-sparse-keymap)))
@@ -503,10 +545,12 @@ of terminals issue META modifier for the Alt key.
 
 See http://www.gnu.org/software/emacs/manual/html_node/emacs/Modifier-Keys.html"
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-delay-functions nil
-  "A list of functions that may decide whether to delay the
+  "List of functions that may delay the which-key popup.
+A list of functions that may decide whether to delay the
 which-key popup based on the current incomplete key
 sequence. Each function in the list is run with two arguments,
 the current key sequence as produced by `key-description' and the
@@ -518,24 +562,26 @@ this list to return a value is the value that is used.
 The delay time is effectively added to the normal
 `which-key-idle-delay'."
   :group 'which-key
-  :type '(repeat function))
+  :type '(repeat function)
+  :version "1.0")
 
 (defcustom which-key-allow-regexps nil
   "A list of regexp strings to use to filter key sequences.
 When non-nil, for a key sequence to trigger the which-key popup
-it must match one of the regexps in this list. The format of the
+it must match one of the regexps in this list.  The format of the
 key sequences is what is produced by `key-description'."
   :group 'which-key
-  :type '(repeat regexp))
+  :type '(repeat regexp)
+  :version "1.0")
 
 (defcustom which-key-inhibit-regexps nil
-  "Similar to `which-key-allow-regexps', a list of regexp strings
-to use to filter key sequences. When non-nil, for a key sequence
-to trigger the which-key popup it cannot match one of the regexps
-in this list. The format of the key sequences is what is produced
-by `key-description'."
+  "A list of regexp strings to use to filter key sequences.
+When non-nil, for a key sequence to trigger the which-key popup
+it cannot match one of the regexps in this list. The format of
+the key sequences is what is produced by `key-description'."
   :group 'which-key
-  :type '(repeat regexp))
+  :type '(repeat regexp)
+  :version "1.0")
 
 (defcustom which-key-show-transient-maps nil
   "Show keymaps created by `set-transient-map' when applicable.
@@ -544,7 +590,8 @@ More specifically, detect when `overriding-terminal-local-map' is
 set (this is the keymap used by `set-transient-map') and display
 it."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (make-obsolete-variable
  'which-key-enable-extended-define-key
@@ -555,7 +602,8 @@ it."
 (defcustom which-key-init-buffer-hook '()
   "Hook run when which-key buffer is initialized."
   :group 'which-key
-  :type 'hook)
+  :type 'hook
+  :version "1.0")
 
 ;;;; Faces
 
@@ -567,112 +615,133 @@ it."
 (defface which-key-key-face
   '((t . (:inherit font-lock-constant-face)))
   "Face for which-key keys"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-separator-face
   '((t . (:inherit font-lock-comment-face)))
   "Face for the separator (default separator is an arrow)"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-note-face
   '((t . (:inherit which-key-separator-face)))
   "Face for notes or hints occasionally provided"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-command-description-face
   '((t . (:inherit font-lock-function-name-face)))
   "Face for the key description when it is a command"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-local-map-description-face
   '((t . (:inherit which-key-command-description-face)))
   "Face for the key description when it is found in `current-local-map'"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-highlighted-command-face
   '((t . (:inherit which-key-command-description-face :underline t)))
   "Default face for the command description when it is a command
 and it matches a string in `which-key-highlighted-command-list'."
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-group-description-face
   '((t . (:inherit font-lock-keyword-face)))
-  "Face for the key description when it is a group or prefix"
-  :group 'which-key-faces)
+  "Face for the key description when it is a group or prefix."
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-special-key-face
   '((t . (:inherit which-key-key-face :inverse-video t :weight bold)))
   "Face for special keys (SPC, TAB, RET)"
-  :group 'which-key-faces)
+  :group 'which-key-faces
+  :version "1.0")
 
 (defface which-key-docstring-face
   '((t . (:inherit which-key-note-face)))
-  "Face for docstrings"
-  :group 'which-key-faces)
+  "Face for docstrings."
+  :group 'which-key-faces
+  :version "1.0")
 
 ;;;; Custom popup
 
 (defcustom which-key-custom-popup-max-dimensions-function nil
-  "Variable to hold a custom max-dimensions function.
+  "Set a custom max-dimensions function.
 Will be passed the width of the active window and is expected to
 return the maximum height in lines and width in characters of the
 which-key popup in the form a cons cell (height . width)."
   :group 'which-key
-  :type '(choice function (const nil)))
+  :type '(choice function (const nil))
+  :version "1.0")
 
 (defcustom which-key-custom-hide-popup-function nil
-  "Variable to hold a custom hide-popup function.
+  "Set a custom hide-popup function.
 It takes no arguments and the return value is ignored."
   :group 'which-key
-  :type '(choice function (const nil)))
+  :type '(choice function (const nil))
+  :version "1.0")
 
 (defcustom which-key-custom-show-popup-function nil
-  "Variable to hold a custom show-popup function.
+  "Set a custom show-popup function.
 Will be passed the required dimensions in the form (height .
 width) in lines and characters respectively.  The return value is
 ignored."
   :group 'which-key
-  :type '(choice function (const nil)))
+  :type '(choice function (const nil))
+  :version "1.0")
 
 (defcustom which-key-lighter " WK"
   "Minor mode lighter to use in the mode-line."
   :group 'which-key
-  :type 'string)
+  :type 'string
+  :version "1.0")
 
 (defvar which-key-inhibit nil
-  "Prevent which-key from popping up momentarily by setting this
-to a non-nil value for the execution of a command. Like this
+  "Prevent which-key from popping up momentarily.
+This can be used by setting this to a non-nil value for the
+execution of a command, as in
 
 \(let \(\(which-key-inhibit t\)\)
 ...\)")
 
+(defcustom which-key-inhibit-display-hook nil
+  "Hook run before display of which-key popup.
+Each function in the hook is run before displaying the which-key
+popup. If any function returns a non-nil value, the popup will
+not display."
+  :group 'which-key
+  :type 'hook
+  :version "1.0")
+
 (defvar which-key-keymap-history nil
-  "History of keymap selections in functions like
-`which-key-show-keymap'.")
+  "History of keymap selections.
+Used in functions like `which-key-show-keymap'.")
 
 ;;; Internal Vars
 
 (defvar which-key--buffer nil
-  "Internal: Holds reference to which-key buffer.")
+  "Holds reference to which-key buffer.")
 (defvar which-key--timer nil
-  "Internal: Holds reference to open window timer.")
+  "Holds reference to open window timer.")
 (defvar which-key--secondary-timer-active nil
-  "Internal: Non-nil if the secondary timer is active.")
+  "Non-nil if the secondary timer is active.")
 (defvar which-key--paging-timer nil
-  "Internal: Holds reference to timer for paging.")
+  "Holds reference to timer for paging.")
 (defvar which-key--frame nil
-  "Internal: Holds reference to which-key frame.
+  "Holds reference to which-key frame.
 Used when `which-key-popup-type' is frame.")
 (defvar which-key--echo-keystrokes-backup nil
-  "Internal: Backup the initial value of `echo-keystrokes'.")
+  "Backup the initial value of `echo-keystrokes'.")
 (defvar which-key--prefix-help-cmd-backup nil
-  "Internal: Backup the value of `prefix-help-command'.")
+  "Backup the value of `prefix-help-command'.")
 (defvar which-key--last-try-2-loc nil
-  "Internal: Last location of side-window when two locations
-used.")
+  "Last location of side-window when two locations used.")
 (defvar which-key--automatic-display nil
-  "Internal: Non-nil if popup was triggered with automatic
-update.")
+  "Non-nil if popup was triggered with automatic update.")
 (defvar which-key--debug-buffer-name nil
   "If non-nil, use this buffer for debug messages.")
 (defvar which-key--multiple-locations nil)
@@ -762,6 +831,27 @@ should be formatted as an input for `kbd'."
           result)))))
 
 ;;; Third-party library support
+
+(defun which-key--this-command-keys ()
+  "Version of `this-single-command-keys' corrected for key-chords."
+  (let ((this-command-keys (this-single-command-keys)))
+    (when (and (vectorp this-command-keys)
+               (> (length this-command-keys) 0)
+               (eq (aref this-command-keys 0) 'key-chord)
+               (bound-and-true-p key-chord-mode))
+      (setq this-command-keys (this-single-command-raw-keys)))
+    this-command-keys))
+
+(defcustom which-key-this-command-keys-function 'which-key--this-command-keys
+  "Function used to retrieve current key sequence.
+The purpose of allowing this variable to be customized is to
+allow which-key to support packages that insert non-standard
+'keys' into the key sequence being read by emacs."
+  :group 'which-key
+  :type 'function
+  :version "1.0")
+
+
 ;;;; Evil
 
 (defvar evil-state nil)
@@ -772,25 +862,33 @@ The popup is normally inhibited in the middle of commands, but
 setting this to non-nil will override this behavior for evil
 operators."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
 
 (defcustom which-key-show-operator-state-maps nil
-  "Experimental: Try to show the right keys following an evil
-command that reads a motion, such as \"y\", \"d\" and \"c\" from
-normal state. This is experimental, because there might be some
-valid keys missing and it might be showing some invalid keys."
+  "Show the keys following an evil command that reads a motion.
+These are commands typically mapped to keys such as \"y\", \"d\"
+and \"c\" from normal state. This is experimental, because there
+might be some valid keys missing and it might be showing some
+invalid keys."
   :group 'which-key
-  :type 'boolean)
+  :type 'boolean
+  :version "1.0")
+
+(defun which-key-evil-this-operator-p ()
+  (and which-key-allow-evil-operators
+       (bound-and-true-p evil-this-operator)))
+
+(add-hook 'which-key-inhibit-display-hook
+          'which-key-evil-this-operator-p)
 
 ;;;; God-mode
 
 (defvar which-key--god-mode-support-enabled nil
-  "Support god-mode if non-nil. This is experimental,
-so you need to explicitly opt-in for now. Please report any
-problems at github.")
+  "Support god-mode if non-nil.")
 
 (defvar which-key--god-mode-key-string nil
-  "Holds key string to use for god-mode support.")
+  "String to use for god-mode support.")
 
 (defun which-key--god-mode-lookup-command-advice (orig-fun arg1 &rest args)
   (setq which-key--god-mode-key-string arg1)
@@ -799,18 +897,42 @@ problems at github.")
     (when (bound-and-true-p which-key-mode)
       (which-key--hide-popup))))
 
+(defun which-key--god-mode-this-command-keys ()
+  "Version of `this-single-command-keys' corrected for god-mode."
+  (let ((this-command-keys (this-single-command-keys)))
+    (when (and which-key--god-mode-support-enabled
+               (bound-and-true-p god-local-mode)
+               (eq this-command 'god-mode-self-insert))
+      (setq this-command-keys (when which-key--god-mode-key-string
+                                (kbd which-key--god-mode-key-string))))
+    this-command-keys))
+
+(defun which-key-god-mode-self-insert-p ()
+  (and which-key--god-mode-support-enabled
+       (bound-and-true-p god-local-mode)
+       (eq this-command 'god-mode-self-insert)))
+
 (defun which-key-enable-god-mode-support (&optional disable)
   "Enable support for god-mode if non-nil.
 This is experimental, so you need to explicitly opt-in for
-now. Please report any problems at github. If DISABLE is non-nil
+now.  Please report any problems at github.  If DISABLE is non-nil
 disable support."
   (interactive "P")
   (setq which-key--god-mode-support-enabled (null disable))
   (if disable
-      (advice-remove 'god-mode-lookup-command
-                     #'which-key--god-mode-lookup-command-advice)
+      (progn
+        (advice-remove 'god-mode-lookup-command
+                       #'which-key--god-mode-lookup-command-advice)
+        (setq which-key-this-command-keys-function
+              'which-key--this-command-keys)
+        (remove-hook 'which-key-inhibit-display-hook
+                     'which-key-god-mode-self-insert-p))
     (advice-add 'god-mode-lookup-command :around
-                #'which-key--god-mode-lookup-command-advice)))
+                #'which-key--god-mode-lookup-command-advice)
+    (setq which-key-this-command-keys-function
+          'which-key--god-mode-this-command-keys)
+    (add-hook 'which-key-inhibit-display-hook
+              'which-key-god-mode-self-insert-p)))
 
 ;;; Mode
 
@@ -873,8 +995,8 @@ disable support."
       (run-hooks 'which-key-init-buffer-hook))))
 
 (defun which-key--setup-echo-keystrokes ()
-  "Reduce `echo-keystrokes' if necessary (it will interfere if
-it's set too high)."
+  "Reduce `echo-keystrokes' if necessary.
+It will interfere if set too high."
   (when (and echo-keystrokes
              (> (abs (- echo-keystrokes which-key-echo-keystrokes)) 0.000001))
     (if (> which-key-idle-delay which-key-echo-keystrokes)
@@ -883,7 +1005,8 @@ it's set too high)."
             echo-keystrokes which-key-echo-keystrokes))))
 
 (defun which-key-remove-default-unicode-chars ()
-  "Use of `which-key-dont-use-unicode' is preferred to this
+  "Remove default unicode chars from settings.
+Use of `which-key-dont-use-unicode' is preferred to this
 function, but it's included here in case someone cannot set that
 variable early enough in their configuration, if they are using a
 starter kit for example."
@@ -894,7 +1017,7 @@ starter kit for example."
 
 ;;;###autoload
 (defun which-key-setup-side-window-right ()
-  "Apply suggested settings for side-window that opens on right."
+  "Set up side-window on right."
   (interactive)
   (setq which-key-popup-type 'side-window
         which-key-side-window-location 'right
@@ -902,8 +1025,8 @@ starter kit for example."
 
 ;;;###autoload
 (defun which-key-setup-side-window-right-bottom ()
-  "Apply suggested settings for side-window that opens on right
-if there is space and the bottom otherwise."
+  "Set up side-window on right if space allows.
+Otherwise, use bottom."
   (interactive)
   (setq which-key-popup-type 'side-window
         which-key-side-window-location '(right bottom)
@@ -911,7 +1034,7 @@ if there is space and the bottom otherwise."
 
 ;;;###autoload
 (defun which-key-setup-side-window-bottom ()
-  "Apply suggested settings for side-window that opens on bottom."
+  "Set up side-window that opens on bottom."
   (interactive)
   (which-key--setup-echo-keystrokes)
   (setq which-key-popup-type 'side-window
@@ -920,8 +1043,8 @@ if there is space and the bottom otherwise."
 
 ;;;###autoload
 (defun which-key-setup-minibuffer ()
-  "Apply suggested settings for minibuffer.
-Do not use this setup if you use the paging commands. Instead use
+  "Set up minibuffer display.
+Do not use this setup if you use the paging commands.  Instead use
 `which-key-setup-side-window-bottom', which is nearly identical
 but more functional."
   (interactive)
@@ -956,7 +1079,7 @@ for REPLACEMENT will eventually be removed."
                    (or (which-key--safe-lookup-key-description keymap key)
                        (make-sparse-keymap))))
             (t
-             (user-error "replacement is neither a cons cell or a string")))))
+             (user-error "Replacement is neither a cons cell or a string")))))
       (define-key keymap (kbd key) def))
     (setq key (pop more)
           replacement (pop more))))
@@ -1049,7 +1172,7 @@ If AT-ROOT is non-nil the binding is also placed at the root of MAP."
 ;;; Functions for computing window sizes
 
 (defun which-key--text-width-to-total (text-width)
-  "Convert window text-width to window total-width.
+  "Convert window TEXT-WIDTH to window total-width.
 TEXT-WIDTH is the desired text width of the window.  The function
 calculates what total width is required for a window in the
 selected to have a text-width of TEXT-WIDTH columns.  The
@@ -1065,7 +1188,7 @@ width as the frame."
        3)))
 
 (defun which-key--total-width-to-text (total-width)
-  "Convert window total-width to window text-width.
+  "Convert window TOTAL-WIDTH to window text-width.
 TOTAL-WIDTH is the desired total width of the window.  The function calculates
 what text width fits such a window.  The calculation considers possible fringes
 and scroll bars.  This function assumes that the desired window has the same
@@ -1135,8 +1258,7 @@ total height."
     (which-key--hide-popup-ignore-command)))
 
 (defun which-key--hide-popup-ignore-command ()
-  "Version of `which-key--hide-popup' without the check of
-`real-this-command'."
+  "`which-key--hide-popup' without the check of `real-this-command'."
   (cl-case which-key-popup-type
     ;; Not necessary to hide minibuffer
     ;; (minibuffer (which-key--hide-buffer-minibuffer))
@@ -1288,7 +1410,8 @@ call signature in different emacs versions"
 ;;; Max dimension of available window functions
 
 (defun which-key--popup-max-dimensions ()
-  "Dimesion functions should return the maximum possible (height
+  "Return maximum dimension available for popup.
+Dimesion functions should return the maximum possible (height
 . width) of the intended popup. SELECTED-WINDOW-WIDTH is the
 width of currently active window, not the which-key buffer
 window."
@@ -1312,8 +1435,9 @@ Measured in lines and characters respectively."
    (max 0 (- (frame-text-cols) which-key-unicode-correction))))
 
 (defun which-key--side-window-max-dimensions ()
-  "Return max-dimensions of the side-window popup (height .
-width) in lines and characters respectively."
+  "Return max-dimensions of the side-window popup.
+The return value should be (height . width) in lines and
+characters respectively."
   (cons
    ;; height
    (if (member which-key-side-window-location '(left right))
@@ -1336,8 +1460,9 @@ width) in lines and characters respectively."
            which-key-unicode-correction))))
 
 (defun which-key--frame-max-dimensions ()
-  "Return max-dimensions of the frame popup (height .
-width) in lines and characters respectively."
+  "Return max-dimensions of the frame popup.
+The return value should be (height . width) in lines and
+characters respectively."
   (cons which-key-frame-max-height which-key-frame-max-width))
 
 ;;; Sorting functions
@@ -1363,8 +1488,8 @@ width) in lines and characters respectively."
      (t (string-lessp a b)))))
 
 (defun which-key--key-description< (a b &optional alpha)
-  "Sorting function used for `which-key-key-order' and
-`which-key-key-order-alpha'."
+  "Key sorting function.
+Used for `which-key-key-order' and `which-key-key-order-alpha'."
   (save-match-data
     (let* ((a (which-key--extract-key a))
            (b (which-key--extract-key b))
@@ -1435,9 +1560,8 @@ Uses `string-lessp' after applying lowercase."
       (keymapp (intern description))))
 
 (defun which-key-prefix-then-key-order (acons bcons)
-  "Order first by whether A and/or B is a prefix with no prefix
-coming before a prefix. Within these categories order using
-`which-key-key-order'."
+  "Order prefixes before non-prefixes.
+Within these categories order using `which-key-key-order'."
   (let ((apref? (which-key--group-p (cdr acons)))
         (bpref? (which-key--group-p (cdr bcons))))
     (if (not (eq apref? bpref?))
@@ -1445,9 +1569,8 @@ coming before a prefix. Within these categories order using
       (which-key-key-order acons bcons))))
 
 (defun which-key-prefix-then-key-order-reverse (acons bcons)
-  "Order first by whether A and/or B is a prefix with prefix
-coming before a prefix. Within these categories order using
-`which-key-key-order'."
+  "Order prefixes before non-prefixes.
+Within these categories order using `which-key-key-order'."
   (let ((apref? (which-key--group-p (cdr acons)))
         (bpref? (which-key--group-p (cdr bcons))))
     (if (not (eq apref? bpref?))
@@ -1455,9 +1578,8 @@ coming before a prefix. Within these categories order using
       (which-key-key-order acons bcons))))
 
 (defun which-key-local-then-key-order (acons bcons)
-  "Order first by whether A and/or B is a local binding with
-local bindings coming first. Within these categories order using
-`which-key-key-order'."
+  "Order local bindings before non-local ones.
+Within these categories order using `which-key-key-order'."
   (let ((aloc? (which-key--local-binding-p acons))
         (bloc? (which-key--local-binding-p bcons)))
     (if (not (eq aloc? bloc?))
@@ -1521,7 +1643,7 @@ local bindings coming first. Within these categories order using
 (defun which-key--maybe-replace (key-binding)
   "Use `which-key--replacement-alist' to maybe replace KEY-BINDING.
 KEY-BINDING is a cons cell of the form \(KEY . BINDING\) each of
-which are strings. KEY is of the form produced by `key-binding'."
+which are strings.  KEY is of the form produced by `key-binding'."
   (let* ((replacer (if which-key-allow-multiple-replacements
                        #'which-key--replace-in-repl-list-many
                      #'which-key--replace-in-repl-list-once)))
@@ -1662,10 +1784,10 @@ cell" el)))))
 
 (defun which-key--propertize-description
     (description group local hl-face &optional original-description)
-  "Add face to DESCRIPTION where the face chosen depends on
-whether the description represents a group or a command. Also
-make some minor adjustments to the description string, like
-removing a \"group:\" prefix.
+  "Add face to DESCRIPTION.
+The face chosen depends on whether the description represents a
+group or a command. Also make some minor adjustments to the
+description string, like removing a \"group:\" prefix.
 
 ORIGINAL-DESCRIPTION is the description given by
 `describe-buffer-bindings'."
@@ -1709,7 +1831,7 @@ ORIGINAL-DESCRIPTION is the description given by
 (defun which-key--maybe-add-docstring (current original)
   "Maybe concat a docstring to CURRENT and return result.
 Specifically, do this if ORIGINAL is a command with a docstring
-and `which-key-show-docstrings' is non-nil. If
+and `which-key-show-docstrings' is non-nil.  If
 `which-key-show-docstrings' is the symbol docstring-only, just
 return the docstring."
   (let* ((orig-sym (intern original))
@@ -1736,7 +1858,8 @@ return the docstring."
            (format "%s %s" current docstring)))))
 
 (defun which-key--format-and-replace (unformatted &optional preserve-full-key)
-  "Take a list of (key . desc) cons cells in UNFORMATTED, add
+  "Make list of key bindings with separators and descriptions.
+Take a list of (key . desc) cons cells in UNFORMATTED, add
 faces and perform replacements according to the three replacement
 alists. Returns a list (key separator description)."
   (let ((sep-w-face
@@ -1774,8 +1897,7 @@ alists. Returns a list (key separator description)."
 
 (defun which-key--compute-binding (binding)
   "Replace BINDING with remapped binding if it exists.
-
-Requires `which-key-compute-remaps' to be non-nil"
+Requires `which-key-compute-remaps' to be non-nil."
   (let (remap)
     (if (and which-key-compute-remaps
              (setq remap (command-remapping binding)))
@@ -1847,7 +1969,7 @@ Requires `which-key-compute-remaps' to be non-nil"
     (keymap &optional start prefix filter all evil)
   "Retrieve top-level bindings from KEYMAP.
 PREFIX limits bindings to those starting with this key
-sequence. START is a list of existing bindings to add to.  If ALL
+sequence.  START is a list of existing bindings to add to.  If ALL
 is non-nil, recursively retrieve all bindings below PREFIX. If
 EVIL is non-nil, extract active evil bidings."
   (let ((bindings start)
@@ -1909,14 +2031,14 @@ non-nil, then bindings are collected recursively for all prefixes."
     (mapconcat (lambda (row) (mapconcat #'identity row " ")) rows "\n")))
 
 (defsubst which-key--max-len (keys index &optional initial-value)
-  "Internal function for finding the max length of the INDEX
-element in each list element of KEYS."
+  "Find the max length of the INDEX element in each of KEYS."
   (cl-reduce
    (lambda (x y) (max x (which-key--string-width (nth index y))))
    keys :initial-value (if initial-value initial-value 0)))
 
 (defun which-key--pad-column (col-keys avl-width)
-  "Take a column of (key separator description) COL-KEYS,
+  "Pad cells of COL-KEYS to AVL-WIDTH.
+Take a column of (key separator description) COL-KEYS,
 calculate the max width in the column and pad all cells out to
 that width."
   (let* ((col-key-width  (+ which-key-add-column-padding
@@ -2111,8 +2233,8 @@ max-lines max-width avl-lines avl-width (which-key--pages-height result))
                   (_ (format " %s" prefix-arg))))))))
 
 (defun which-key--full-prefix (prefix-keys &optional -prefix-arg dont-prop-keys)
-  "Return a description of the full key sequence up to now,
-including prefix arguments."
+  "Return a description of the full key sequence up to now.
+Include prefix arguments."
   (let* ((left (eq which-key-show-prefix 'left))
          (prefix-arg (if -prefix-arg -prefix-arg prefix-arg))
          (str (concat
@@ -2137,9 +2259,9 @@ including prefix arguments."
       map)))
 
 (defun which-key--process-page (pages-obj)
-  "Add information to the basic list of key bindings, including
-if applicable the current prefix, the name of the current prefix,
-and a page count."
+  "Add information to the basic list of key bindings.
+Include, if applicable, the current prefix, the name of the current
+prefix, and a page count."
   (let* ((page (car (which-key--pages-pages pages-obj)))
          (height (which-key--pages-height pages-obj))
          (n-pages (which-key--pages-num-pages pages-obj))
@@ -2245,7 +2367,7 @@ enough space based on your settings and frame size." prefix-keys)
 (defun which-key-reload-key-sequence (&optional key-seq)
   "Simulate entering the key sequence KEY-SEQ.
 KEY-SEQ should be a list of events as produced by
-`listify-key-sequence'. If nil, KEY-SEQ defaults to
+`listify-key-sequence'.  If nil, KEY-SEQ defaults to
 `which-key--current-key-list'. Any prefix arguments that were
 used are reapplied to the new key sequence."
   (let* ((key-seq (or key-seq (which-key--current-key-list)))
@@ -2285,8 +2407,7 @@ Usually this is `describe-prefix-bindings'."
 
 ;;;###autoload
 (defun which-key-show-next-page-no-cycle ()
-  "Show next page of keys unless on the last page, in which case
-call `which-key-show-standard-help'."
+  "Show next page of keys or `which-key-show-standard-help'."
   (interactive)
   (let ((which-key-inhibit t))
     (if (which-key--on-last-page)
@@ -2295,8 +2416,7 @@ call `which-key-show-standard-help'."
 
 ;;;###autoload
 (defun which-key-show-previous-page-no-cycle ()
-  "Show previous page of keys unless on the first page, in which
-case do nothing."
+  "Show previous page of keys if one exists."
   (interactive)
   (let ((which-key-inhibit t))
     (unless (which-key--on-first-page)
@@ -2304,16 +2424,14 @@ case do nothing."
 
 ;;;###autoload
 (defun which-key-show-next-page-cycle (&optional _)
-  "Show the next page of keys, cycling from end to beginning
-after last page."
+  "Show the next page of keys, cycling from end to beginning."
   (interactive)
   (let ((which-key-inhibit t))
     (which-key-turn-page 1)))
 
 ;;;###autoload
 (defun which-key-show-previous-page-cycle (&optional _)
-  "Show the previous page of keys, cycling from beginning to end
-after first page."
+  "Show the previous page of keys, cycling from beginning to end."
   (interactive)
   (let ((which-key-inhibit t))
     (which-key-turn-page -1)))
@@ -2327,7 +2445,6 @@ after first page."
 ;;;###autoload
 (defun which-key-show-major-mode (&optional all)
   "Show top-level bindings in the map of the current major mode.
-
 This function will also detect evil bindings made using
 `evil-define-key' in this map. These bindings will depend on the
 current evil state. "
@@ -2344,7 +2461,6 @@ current evil state. "
 ;;;###autoload
 (defun which-key-show-full-major-mode ()
   "Show all bindings in the map of the current major mode.
-
 This function will also detect evil bindings made using
 `evil-define-key' in this map. These bindings will depend on the
 current evil state. "
@@ -2354,7 +2470,6 @@ current evil state. "
 ;;;###autoload
 (defun which-key-dump-bindings (prefix buffer-name)
   "Dump bindings from PREFIX into buffer named BUFFER-NAME.
-
 PREFIX should be a string suitable for `kbd'."
   (interactive "sPrefix: \nB")
   (let* ((buffer (get-buffer-create buffer-name))
@@ -2409,15 +2524,16 @@ PREFIX should be a string suitable for `kbd'."
 
 ;;;###autoload
 (defun which-key-C-h-dispatch ()
-  "Dispatch C-h commands by looking up key in
-`which-key-C-h-map'. This command is always accessible (from any
-prefix) if `which-key-use-C-h-commands' is non nil."
+  "Dispatch C-h commands by looking up key in `which-key-C-h-map'.
+This command is always accessible (from any prefix) if
+`which-key-use-C-h-commands' is non nil."
   (interactive)
   (cond ((and (not (which-key--popup-showing-p))
               which-key-show-early-on-C-h)
          (let ((current-prefix
                 (butlast
-                 (listify-key-sequence (which-key--this-command-keys)))))
+                 (listify-key-sequence
+                  (funcall which-key-this-command-keys-function)))))
            (which-key-reload-key-sequence current-prefix)
            (if which-key-idle-secondary-delay
                (which-key--start-timer which-key-idle-secondary-delay t)
@@ -2460,7 +2576,6 @@ prefix) if `which-key-use-C-h-commands' is non nil."
 (defun which-key--try-2-side-windows
     (bindings prefix-keys prefix-title loc1 loc2 &rest _ignore)
   "Try to show BINDINGS (PAGE-N) in LOC1 first.
-
 Only if no bindings fit fallback to LOC2."
   (let (pages1)
     (let ((which-key-side-window-location loc1)
@@ -2550,7 +2665,7 @@ KEYMAP is selected interactively by mode in
     (keymap-name keymap &optional prior-args all no-paging filter)
   (when prior-args (push prior-args which-key--prior-show-keymap-args))
   (let ((bindings (which-key--get-bindings nil keymap filter all)))
-    (if (= (length bindings) 0)
+    (if (null bindings)
         (message "which-key: No bindings found in %s" keymap-name)
       (cond ((listp which-key-side-window-location)
              (setq which-key--last-try-2-loc
@@ -2639,25 +2754,9 @@ Finally, show the buffer."
      "On prefix \"%s\" which-key took %.0f ms." prefix-desc
      (* 1000 (float-time (time-since start-time))))))
 
-(defun which-key--this-command-keys ()
-  "Version of `this-single-command-keys' corrected for key-chords and god-mode."
-  (let ((this-command-keys (this-single-command-keys)))
-    (when (and (vectorp this-command-keys)
-               (> (length this-command-keys) 0)
-               (eq (aref this-command-keys 0) 'key-chord)
-               (bound-and-true-p key-chord-mode))
-      (setq this-command-keys (this-single-command-raw-keys)))
-    (when (and which-key--god-mode-support-enabled
-               (bound-and-true-p god-local-mode)
-               (eq this-command 'god-mode-self-insert))
-      (setq this-command-keys (when which-key--god-mode-key-string
-                                (kbd which-key--god-mode-key-string))))
-    this-command-keys))
-
 (defun which-key--update ()
-  "Function run by timer to possibly trigger
-`which-key--create-buffer-and-show'."
-  (let ((prefix-keys (which-key--this-command-keys))
+  "Function run by timer to possibly trigger `which-key--create-buffer-and-show'."
+  (let ((prefix-keys (funcall which-key-this-command-keys-function))
         delay-time)
     (cond ((and (> (length prefix-keys) 0)
                 (or (keymapp (key-binding prefix-keys))
@@ -2677,11 +2776,8 @@ Finally, show the buffer."
                       which-key-inhibit-regexps (key-description prefix-keys))))
                 ;; Do not display the popup if a command is currently being
                 ;; executed
-                (or (and which-key-allow-evil-operators
-                         (bound-and-true-p evil-this-operator))
-                    (and which-key--god-mode-support-enabled
-                         (bound-and-true-p god-local-mode)
-                         (eq this-command 'god-mode-self-insert))
+                (or (run-hook-with-args-until-success
+                     'which-key-inhibit-display-hook)
                     (null this-command))
                 (let ((max-dim (which-key--popup-max-dimensions)))
                   (> (min (car-safe max-dim) (cdr-safe max-dim)) 0)))
@@ -2741,7 +2837,7 @@ Finally, show the buffer."
                                         which-key--paging-functions))
                            (and (< 0 (length (this-single-command-keys)))
                                 (not (equal (which-key--current-prefix)
-                                            (which-key--this-command-keys)))))
+                                            (funcall which-key-this-command-keys-function)))))
                    (cancel-timer which-key--paging-timer)
                    (if which-key-idle-secondary-delay
                        ;; we haven't executed a command yet so the secandary

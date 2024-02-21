@@ -30,18 +30,18 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (autoload 'which-key-setup-side-window-right "which-key" "\
-Apply suggested settings for side-window that opens on right." t nil)
+Set up side-window on right." t nil)
 
 (autoload 'which-key-setup-side-window-right-bottom "which-key" "\
-Apply suggested settings for side-window that opens on right
-if there is space and the bottom otherwise." t nil)
+Set up side-window on right if space allows.
+Otherwise, use bottom." t nil)
 
 (autoload 'which-key-setup-side-window-bottom "which-key" "\
-Apply suggested settings for side-window that opens on bottom." t nil)
+Set up side-window that opens on bottom." t nil)
 
 (autoload 'which-key-setup-minibuffer "which-key" "\
-Apply suggested settings for minibuffer.
-Do not use this setup if you use the paging commands. Instead use
+Set up minibuffer display.
+Do not use this setup if you use the paging commands.  Instead use
 `which-key-setup-side-window-bottom', which is nearly identical
 but more functional." t nil)
 
@@ -97,7 +97,7 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply.
 (autoload 'which-key-reload-key-sequence "which-key" "\
 Simulate entering the key sequence KEY-SEQ.
 KEY-SEQ should be a list of events as produced by
-`listify-key-sequence'. If nil, KEY-SEQ defaults to
+`listify-key-sequence'.  If nil, KEY-SEQ defaults to
 `which-key--current-key-list'. Any prefix arguments that were
 used are reapplied to the new key sequence.
 
@@ -110,22 +110,18 @@ Usually this is `describe-prefix-bindings'.
 \(fn &optional _)" t nil)
 
 (autoload 'which-key-show-next-page-no-cycle "which-key" "\
-Show next page of keys unless on the last page, in which case
-call `which-key-show-standard-help'." t nil)
+Show next page of keys or `which-key-show-standard-help'." t nil)
 
 (autoload 'which-key-show-previous-page-no-cycle "which-key" "\
-Show previous page of keys unless on the first page, in which
-case do nothing." t nil)
+Show previous page of keys if one exists." t nil)
 
 (autoload 'which-key-show-next-page-cycle "which-key" "\
-Show the next page of keys, cycling from end to beginning
-after last page.
+Show the next page of keys, cycling from end to beginning.
 
 \(fn &optional _)" t nil)
 
 (autoload 'which-key-show-previous-page-cycle "which-key" "\
-Show the previous page of keys, cycling from beginning to end
-after first page.
+Show the previous page of keys, cycling from beginning to end.
 
 \(fn &optional _)" t nil)
 
@@ -136,7 +132,6 @@ Show top-level bindings.
 
 (autoload 'which-key-show-major-mode "which-key" "\
 Show top-level bindings in the map of the current major mode.
-
 This function will also detect evil bindings made using
 `evil-define-key' in this map. These bindings will depend on the
 current evil state. 
@@ -145,14 +140,12 @@ current evil state.
 
 (autoload 'which-key-show-full-major-mode "which-key" "\
 Show all bindings in the map of the current major mode.
-
 This function will also detect evil bindings made using
 `evil-define-key' in this map. These bindings will depend on the
 current evil state. " t nil)
 
 (autoload 'which-key-dump-bindings "which-key" "\
 Dump bindings from PREFIX into buffer named BUFFER-NAME.
-
 PREFIX should be a string suitable for `kbd'.
 
 \(fn PREFIX BUFFER-NAME)" t nil)
@@ -163,9 +156,9 @@ Undo last keypress and force which-key update.
 \(fn &optional _)" t nil)
 
 (autoload 'which-key-C-h-dispatch "which-key" "\
-Dispatch C-h commands by looking up key in
-`which-key-C-h-map'. This command is always accessible (from any
-prefix) if `which-key-use-C-h-commands' is non nil." t nil)
+Dispatch C-h commands by looking up key in `which-key-C-h-map'.
+This command is always accessible (from any prefix) if
+`which-key-use-C-h-commands' is non nil." t nil)
 
 (autoload 'which-key-show-keymap "which-key" "\
 Show the top-level bindings in KEYMAP using which-key.
