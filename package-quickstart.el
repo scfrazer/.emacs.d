@@ -357,10 +357,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240221.138/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240227.2008/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240221.138/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240227.2008/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -1203,10 +1203,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1860,10 +1860,10 @@ would otherwise have the same name.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1821/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1821/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -1901,10 +1901,10 @@ a value in `ivy-re-builders-alist'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240213.1734/multiple-cursors-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240223.1134/multiple-cursors-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240213.1734/multiple-cursors-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20240223.1134/multiple-cursors-autoloads.el") (car load-path))))
 
 
 
@@ -2086,15 +2086,15 @@ Find and mark all the parts in the region matching the given regexp.
 Like mark-more-like-this, but then lets you adjust with arrow keys.
 The adjustments work like this:
 
-   <up>    Mark previous like this and set direction to 'up
-   <down>  Mark next like this and set direction to 'down
+   <up>    Mark previous like this and set direction to \\='up
+   <down>  Mark next like this and set direction to \\='down
 
-If direction is 'up:
+If direction is \\='up:
 
    <left>  Skip past the cursor furthest up
    <right> Remove the cursor furthest up
 
-If direction is 'down:
+If direction is \\='down:
 
    <left>  Remove the cursor furthest down
    <right> Skip past the cursor furthest down
@@ -2225,10 +2225,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2382,10 +2382,10 @@ Print the path to the JSON value under point, and save it in the kill ring." t n
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20240203.751/json-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/json-mode-20240228.1443/json-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20240203.751/json-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/json-mode-20240228.1443/json-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3488,7 +3488,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240212.806" "/home/scfrazer/.emacs.d/elpa/orderless-20240215.1821" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240201.1100" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715" "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
          Info-directory-list)))
 
 ;; Local Variables:
