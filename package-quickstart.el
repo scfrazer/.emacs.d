@@ -357,10 +357,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240227.2008/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240305.104/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240227.2008/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240305.104/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -448,6 +448,8 @@ be active for KEY-SEQUENCE and REPLACEMENT (MORE contains
 addition KEY-SEQUENCE REPLACEMENT pairs) to apply.
 
 \(fn MODE KEY-SEQUENCE REPLACEMENT &rest MORE)" nil nil)
+
+(function-put 'which-key-add-major-mode-key-based-replacements 'lisp-indent-function 'defun)
 
 (autoload 'which-key-reload-key-sequence "which-key" "\
 Simulate entering the key sequence KEY-SEQ.
@@ -564,10 +566,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240210.1511/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240301.937/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240210.1511/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240301.937/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1860,10 +1862,10 @@ would otherwise have the same name.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240304.1319/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240304.1319/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2225,10 +2227,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3488,7 +3490,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240227.715" "/home/scfrazer/.emacs.d/elpa/orderless-20240225.1842" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023" "/home/scfrazer/.emacs.d/elpa/orderless-20240304.1319" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
          Info-directory-list)))
 
 ;; Local Variables:

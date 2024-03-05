@@ -165,6 +165,10 @@ orderless-literal
      the component is treated as a literal string that must occur in the
      candidate.
 
+orderless-literal-prefix
+     the component is treated as a literal string that must occur as a
+     prefix of a candidate.
+
 orderless-prefixes
      the component is split at word endings and each piece must match at
      a word boundary in the candidate, occurring in that order.
@@ -243,6 +247,7 @@ special characters used as either a prefix or suffix:
      will match against the candidate’s annotation.
    • , uses ‘orderless-initialism’.
    • = uses ‘orderless-literal’.
+   • ^ uses ‘orderless-literal-prefix’.
    • ~ uses ‘orderless-flex’.
    • % makes the string match ignoring diacritics and similar
      inflections on characters (it uses the function
@@ -292,7 +297,7 @@ following setup:
      (defun not-if-bang (pattern _index _total)
        (cond
         ((equal "!" pattern)
-         '(orderless-literal . ""))
+         #'ignore)
         ((string-prefix-p "!" pattern)
          `(orderless-not . ,(substring pattern 1)))))
 
@@ -609,21 +614,21 @@ Node: Top235
 Node: Overview975
 Node: Customization4929
 Node: Component matching styles5287
-Node: Style modifiers7453
-Node: Style dispatchers8142
-Node: Component separator regexp11740
-Node: Defining custom orderless styles12977
-Node: Faces for component matches14869
-Node: Pattern compiler15673
-Node: Interactively changing the configuration16264
-Node: Integration with other completion UIs17727
-Node: Ivy18513
-Node: Helm18865
-Node: Company19209
-Node: Related packages21188
-Node: Ivy and Helm21486
-Node: Prescient22820
-Node: Restricting to current matches in Icicles Ido and Ivy23653
+Node: Style modifiers7578
+Node: Style dispatchers8267
+Node: Component separator regexp11894
+Node: Defining custom orderless styles13131
+Node: Faces for component matches15023
+Node: Pattern compiler15827
+Node: Interactively changing the configuration16418
+Node: Integration with other completion UIs17881
+Node: Ivy18667
+Node: Helm19019
+Node: Company19363
+Node: Related packages21342
+Node: Ivy and Helm21640
+Node: Prescient22974
+Node: Restricting to current matches in Icicles Ido and Ivy23807
 
 End Tag Table
 

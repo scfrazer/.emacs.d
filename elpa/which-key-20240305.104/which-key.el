@@ -4,7 +4,6 @@
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
-;; URL: https://github.com/justbur/emacs-which-key
 ;; Version: 3.6.0
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -62,7 +61,6 @@ This variable should be set before activating `which-key-mode'.
 A value of zero might lead to issues, so a non-zero value is
 recommended
 (see https://github.com/justbur/emacs-which-key/issues/134)."
-  :group 'which-key
   :type 'float
   :version "1.0")
 
@@ -71,7 +69,6 @@ recommended
 This makes it possible to shorten the delay for subsequent popups
 in the same key sequence. The default is for this value to be
 nil, which disables this behavior."
-  :group 'which-key
   :type '(choice float (const :tag "Disabled" nil))
   :version "1.0")
 
@@ -85,7 +82,6 @@ This only applies if `which-key-popup-type' is minibuffer or
 `which-key-show-prefix' is echo.  It needs to be less than
 `which-key-idle-delay' or else the keystroke echo will erase the
 which-key popup."
-  :group 'which-key
   :type 'float
   :version "1.0")
 
@@ -96,7 +92,6 @@ characters), a float (use that fraction of the available width),
 or a function, which takes one argument, the available width in
 characters, and whose return value has one of the types mentioned
 before.  Truncation is done using `which-key-ellipsis'."
-  :group 'which-key
   :type '(choice (const :tag "Disable truncation" nil)
 		 (integer :tag "Width in characters")
 		 (float :tag "Use fraction of available width")
@@ -105,13 +100,11 @@ before.  Truncation is done using `which-key-ellipsis'."
 
 (defcustom which-key-min-column-description-width 0
   "Every column should at least have this width."
-  :group 'which-key
-  :type 'integer
+  :type 'natnum
   :version "1.0")
 
 (defcustom which-key-add-column-padding 0
   "Additional spaces to add to the left of each key column."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
@@ -128,7 +121,6 @@ contributed by any wide unicode characters to be up to one
 additional ASCII character in the which-key buffer.  Increase this
 number if you are seeing characters get cutoff on the right side
 of the which-key popup."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
@@ -136,7 +128,6 @@ of the which-key popup."
   "If non-nil, don't use any unicode characters in default setup.
 For affected settings, see `which-key-replacement-alist', `which-key-ellipsis'
 'which-key-separator'."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -145,7 +136,6 @@ For affected settings, see `which-key-replacement-alist', `which-key-ellipsis'
   "Separator to use between key and description.
 Default is \" → \", unless `which-key-dont-use-unicode' is non
 nil, in which case the default is \" : \"."
-  :group 'which-key
   :type 'string
   :version "1.0")
 
@@ -155,14 +145,12 @@ nil, in which case the default is \" : \"."
 Default is \"…\", unless `which-key-dont-use-unicode' is non nil,
 in which case the default is \"..\".  This can also be the empty
 string to truncate without using any ellipsis."
-  :group 'which-key
   :type 'string
   :version "1.0")
 
 (defcustom which-key-prefix-prefix "+"
   "Prefix string to indicate a key bound to a keymap.
 Default is \"+\"."
-  :group 'which-key
   :type 'string
   :version "1.0")
 
@@ -170,7 +158,6 @@ Default is \"+\"."
   "If non-nil, show remapped commands.
 This applies to commands that have been remapped given the
 currently active keymaps."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -212,7 +199,6 @@ the key binding is ignored by which-key.
 Finally, you can multiple replacements to occur for a given key
 binding by setting `which-key-allow-multiple-replacements' to a
 non-nil value."
-  :group 'which-key
   :type '(alist :key-type (cons (choice regexp (const nil))
                                 (choice regexp (const nil)))
                 :value-type (cons (choice string (const nil))
@@ -225,7 +211,6 @@ When non-nil, this allows a single key binding to match multiple
 patterns in `which-key-replacement-alist'. When nil, only the
 first match is used to perform replacements from
 `which-key-replacement-alist'."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -236,7 +221,6 @@ break. If you set this variable to the symbol docstring-only,
 then the command's name with be omitted. You probably also want
 to adjust `which-key-max-description-length' at the same time if
 you use this feature."
-  :group 'which-key
   :type '(radio
           (const :tag "Do not show docstrings" nil)
           (const :tag "Add docstring to command names" t)
@@ -250,7 +234,6 @@ matching command names and use
 `which-key-highlighted-command-face' for any matching names. If
 the element is a cons cell, it should take the form (regexp .
 face to apply)."
-  :group 'which-key
   :type  '(repeat (choice string (cons regexp face)))
   :version "1.0")
 
@@ -260,13 +243,11 @@ They also have `which-key-special-key-face' applied to them. This
 is disabled by default. An example configuration is
 
 \(setq which-key-special-keys \\='(\"SPC\" \"TAB\" \"RET\" \"ESC\" \"DEL\")\)"
-  :group 'which-key
   :type '(repeat string)
   :version "1.0")
 
 (defcustom which-key-buffer-name " *which-key*"
   "Name of which-key buffer."
-  :group 'which-key
   :type 'string
   :version "1.0")
 
@@ -274,7 +255,6 @@ is disabled by default. An example configuration is
   "Whether to and where to display the current prefix sequence.
 Possible choices are echo for echo area (the default), left, top
 and nil. Nil turns the feature off."
-  :group 'which-key
   :type '(radio (const :tag "Left of the keys" left)
                 (const :tag "In the first line" top)
                 (const :tag "In the last line" bottom)
@@ -285,7 +265,6 @@ and nil. Nil turns the feature off."
 
 (defcustom which-key-popup-type 'side-window
   "Supported types are minibuffer, side-window, frame, and custom."
-  :group 'which-key
   :type '(radio (const :tag "Show in minibuffer" minibuffer)
                 (const :tag "Show in side window" side-window)
                 (const :tag "Show in popup frame" frame)
@@ -294,14 +273,12 @@ and nil. Nil turns the feature off."
 
 (defcustom which-key-min-display-lines 1
   "Minimum number of horizontal lines to display in the which-key buffer."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
 (defcustom which-key-max-display-columns nil
   "Maximum number of columns to display in the which-key buffer.
 A value of nil means don't impose a maximum."
-  :group 'which-key
   :type '(choice integer (const :tag "Unbounded" nil))
   :version "1.0")
 
@@ -311,7 +288,6 @@ Should be one of top, bottom, left or right.  You can also specify
 a list of two locations, like (right bottom).  In this case, the
 first location is tried.  If there is not enough room, the second
 location is tried."
-  :group 'which-key
   :type '(radio (const right)
                 (const bottom)
                 (const left)
@@ -331,7 +307,6 @@ specified side.  A negative value means use a slot
 preceding (that is, above or on the left of) the middle slot.  A
 positive value means use a slot following (that is, below or on
 the right of) the middle slot.  The default is zero."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
@@ -339,7 +314,6 @@ the right of) the middle slot.  The default is zero."
   "Maximum width of which-key popup when type is side-window.
 This variable can also be a number between 0 and 1. In that case,
 it denotes a percentage out of the frame's width."
-  :group 'which-key
   :type 'float
   :version "1.0")
 
@@ -347,19 +321,16 @@ it denotes a percentage out of the frame's width."
   "Maximum height of which-key popup when type is side-window.
 This variable can also be a number between 0 and 1. In that case, it denotes
 a percentage out of the frame's height."
-  :group 'which-key
   :type 'float
   :version "1.0")
 
 (defcustom which-key-frame-max-width 60
   "Maximum width of which-key popup when type is frame."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
 (defcustom which-key-frame-max-height 20
   "Maximum height of which-key popup when type is frame."
-  :group 'which-key
   :type 'integer
   :version "1.0")
 
@@ -370,13 +341,11 @@ this on may help.
 
 See https://github.com/justbur/emacs-which-key/issues/130
 and https://github.com/justbur/emacs-which-key/issues/225."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
 (defcustom which-key-show-remaining-keys nil
   "Show remaining keys in last slot, when keys are hidden."
-  :group 'which-key
   :type '(radio (const :tag "Yes" t)
                 (const :tag "No" nil))
   :version "1.0")
@@ -395,7 +364,6 @@ are
 
 See the README and the docstrings for those functions for more
 information."
-  :group 'which-key
   :type '(choice (function-item which-key-key-order)
                  (function-item which-key-key-order-alpha)
                  (function-item which-key-description-order)
@@ -407,20 +375,17 @@ information."
   "If non-nil, uppercase comes before lowercase in sorting.
 This applies to the function chosen in
 `which-key-sort-order'. Otherwise, the order is reversed."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
 (defcustom which-key-paging-prefixes '()
   "Enable paging for these prefixes."
-  :group 'which-key
   :type '(repeat string)
   :version "1.0")
 
 (defcustom which-key-paging-key "<f5>"
   "Key to use for changing pages.
 Bound after each of the prefixes in `which-key-paging-prefixes'"
-  :group 'which-key
   :type 'string
   :version "1.0")
 
@@ -440,7 +405,6 @@ Bound after each of the prefixes in `which-key-paging-prefixes'"
 Normally `help-char' after a prefix calls
 `describe-prefix-bindings'. This changes that command to a
 which-key paging command when which-key-mode is active."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -457,13 +421,11 @@ using C-h.
 
 Note that `which-key-idle-delay' should be set before turning on
 `which-key-mode'."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
 (defcustom which-key-is-verbose nil
   "Whether to warn about potential mistakes in configuration."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -474,8 +436,6 @@ shown and restore it after which-key buffer is hidden. It
 prevents which-key from changing window position of visible
 buffers.  Only takken into account when popup type is
 side-window."
-  :group
-  'which-key
   :type 'boolean
   :version "1.0")
 
@@ -545,7 +505,6 @@ These translations are not relevant most of the times since a lot
 of terminals issue META modifier for the Alt key.
 
 See http://www.gnu.org/software/emacs/manual/html_node/emacs/Modifier-Keys.html"
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -562,7 +521,6 @@ this list to return a value is the value that is used.
 
 The delay time is effectively added to the normal
 `which-key-idle-delay'."
-  :group 'which-key
   :type '(repeat function)
   :version "1.0")
 
@@ -571,7 +529,6 @@ The delay time is effectively added to the normal
 When non-nil, for a key sequence to trigger the which-key popup
 it must match one of the regexps in this list.  The format of the
 key sequences is what is produced by `key-description'."
-  :group 'which-key
   :type '(repeat regexp)
   :version "1.0")
 
@@ -580,7 +537,6 @@ key sequences is what is produced by `key-description'."
 When non-nil, for a key sequence to trigger the which-key popup
 it cannot match one of the regexps in this list. The format of
 the key sequences is what is produced by `key-description'."
-  :group 'which-key
   :type '(repeat regexp)
   :version "1.0")
 
@@ -590,7 +546,6 @@ the key sequences is what is produced by `key-description'."
 More specifically, detect when `overriding-terminal-local-map' is
 set (this is the keymap used by `set-transient-map') and display
 it."
-  :group 'which-key
   :type 'boolean
   :version "1.0")
 
@@ -602,7 +557,6 @@ it."
 ;; Hooks
 (defcustom which-key-init-buffer-hook '()
   "Hook run when which-key buffer is initialized."
-  :group 'which-key
   :type 'hook
   :version "1.0")
 
@@ -1130,6 +1084,7 @@ replacements are added to `which-key-replacement-alist'."
 The difference is that MODE specifies the `major-mode' that must
 be active for KEY-SEQUENCE and REPLACEMENT (MORE contains
 addition KEY-SEQUENCE REPLACEMENT pairs) to apply."
+  (declare (indent defun))
   ;; TODO: Make interactive
   (when (not (symbolp mode))
     (error "MODE should be a symbol corresponding to a value of major-mode"))
@@ -1156,8 +1111,6 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply."
     (if (assq mode which-key--prefix-title-alist)
         (setcdr (assq mode which-key--prefix-title-alist) title-mode-alist)
       (push (cons mode title-mode-alist) which-key--prefix-title-alist))))
-(put 'which-key-add-major-mode-key-based-replacements
-     'lisp-indent-function 'defun)
 
 (defun which-key-define-key-recursively (map key def &optional at-root)
   "Recursively bind KEY in MAP to DEF on every level of MAP except the first.
@@ -1450,7 +1403,7 @@ characters respectively."
       which-key-side-window-max-height))
    ;; width
    (max 0
-        (- (if (member which-key-side-window-location '(left right))
+        (- (if (memq which-key-side-window-location '(left right))
                (which-key--total-width-to-text
                 (which-key--width-or-percentage-to-width
                  which-key-side-window-max-width))
@@ -1593,7 +1546,7 @@ Within these categories order using `which-key-key-order'."
   (if (stringp maybe-string) (string-width maybe-string) 0))
 
 (defsubst which-key--butlast-string (str)
-  (mapconcat #'identity (butlast (split-string str)) " "))
+  (string-join (butlast (split-string str)) " "))
 
 (defun which-key--match-replacement (key-binding replacement)
   ;; these are mode specific ones to ignore. The mode specific case is

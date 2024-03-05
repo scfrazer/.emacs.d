@@ -1,6 +1,6 @@
-(define-package "web-mode" "20240210.1511" "major mode for editing web templates"
+(define-package "web-mode" "20240301.937" "major mode for editing web templates"
   '((emacs "23.1"))
-  :commit "f19788e76c2359075975c20b8fda1f0b5080f042" :authors
+  :commit "10f1269ab1007ab3d5fe018c83bb82c979617bfd" :authors
   '(("François-Xavier Bois"))
   :maintainers
   '(("François-Xavier Bois" . "fxbois@gmail.com"))

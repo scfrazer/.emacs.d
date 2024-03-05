@@ -94,6 +94,8 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply.
 
 \(fn MODE KEY-SEQUENCE REPLACEMENT &rest MORE)" nil nil)
 
+(function-put 'which-key-add-major-mode-key-based-replacements 'lisp-indent-function 'defun)
+
 (autoload 'which-key-reload-key-sequence "which-key" "\
 Simulate entering the key sequence KEY-SEQ.
 KEY-SEQ should be a list of events as produced by
