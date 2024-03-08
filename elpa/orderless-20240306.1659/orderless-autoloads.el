@@ -41,6 +41,18 @@ a value in `ivy-re-builders-alist'.
 
 ;;;***
 
+;;;### (autoloads nil "orderless-kwd" "orderless-kwd.el" (0 0 0 0))
+;;; Generated autoloads from orderless-kwd.el
+
+(autoload 'orderless-kwd-dispatch "orderless-kwd" "\
+Match COMPONENT against the keywords in `orderless-kwd-alist'.
+
+\(fn COMPONENT INDEX TOTAL)" nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless-kwd" '("orderless-kwd-")))
+
+;;;***
+
 ;;;### (autoloads nil nil ("orderless-pkg.el") (0 0 0 0))
 
 ;;;***

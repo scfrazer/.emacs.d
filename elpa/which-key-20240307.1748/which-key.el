@@ -350,7 +350,7 @@ and https://github.com/justbur/emacs-which-key/issues/225."
                 (const :tag "No" nil))
   :version "1.0")
 
-(defcustom which-key-sort-order 'which-key-key-order
+(defcustom which-key-sort-order #'which-key-key-order
   "Order in which the key bindings are sorted.
 If nil, do not resort the output from `describe-buffer-bindings'
 which groups by mode. Ordering options
@@ -487,14 +487,14 @@ This string is fed into `substitute-command-keys'")
 
 (defvar which-key--paging-functions
   (list #'which-key-C-h-dispatch
-	#'which-key-manual-update
-	#'which-key-turn-page
-	#'which-key-show-next-page-cycle
-	#'which-key-show-next-page-no-cycle
-	#'which-key-show-previous-page-cycle
-	#'which-key-show-previous-page-no-cycle
-	#'which-key-undo-key
-	#'which-key-undo))
+        #'which-key-manual-update
+        #'which-key-turn-page
+        #'which-key-show-next-page-cycle
+        #'which-key-show-next-page-no-cycle
+        #'which-key-show-previous-page-cycle
+        #'which-key-show-previous-page-no-cycle
+        #'which-key-undo-key
+        #'which-key-undo))
 
 (defvar which-key-persistent-popup nil
   "Whether or not to disable `which-key--hide-popup'.")
@@ -504,7 +504,7 @@ This string is fed into `substitute-command-keys'")
 These translations are not relevant most of the times since a lot
 of terminals issue META modifier for the Alt key.
 
-See http://www.gnu.org/software/emacs/manual/html_node/emacs/Modifier-Keys.html"
+See Info node `(emacs)Modifier Keys'."
   :type 'boolean
   :version "1.0")
 
@@ -707,9 +707,8 @@ Used when `which-key-popup-type' is frame.")
 (defvar which-key--evil-keys-regexp (eval-when-compile
                                       (regexp-opt '("-state"))))
 (defvar which-key--ignore-non-evil-keys-regexp
-  (eval-when-compile
-    (regexp-opt '("mouse-" "wheel-" "remap" "drag-" "scroll-bar"
-                  "select-window" "switch-frame" "which-key"))))
+  (regexp-opt '("mouse-" "wheel-" "remap" "drag-" "scroll-bar"
+                "select-window" "switch-frame" "which-key")))
 (defvar which-key--ignore-keys-regexp
   (regexp-opt '("mouse-" "wheel-" "remap" "drag-" "scroll-bar"
                 "select-window" "switch-frame" "-state"

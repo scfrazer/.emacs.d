@@ -1,6 +1,6 @@
-(define-package "which-key" "20240305.104" "Display available keybindings in popup"
+(define-package "which-key" "20240307.1748" "Display available keybindings in popup"
   '((emacs "24.4"))
-  :commit "a79a8845a8d3229825077d29776630e7b3ac4e6c" :authors
+  :commit "daae57ea192288329af7f82607f3495291637033" :authors
   '(("Justin Burkett" . "justin@burkett.cc"))
   :maintainers
   '(("Justin Burkett" . "justin@burkett.cc"))

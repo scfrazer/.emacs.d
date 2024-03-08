@@ -243,8 +243,9 @@ special characters used as either a prefix or suffix:
 
    • !  modifies the component with ‘orderless-not’.  Both ‘!bad’ and
      ‘bad!’ will match strings that do _not_ contain the pattern ‘bad’.
-   • @ modifies the component with ‘orderless-annotation’.  The pattern
-     will match against the candidate’s annotation.
+   • & modifies the component with ‘orderless-annotation’.  The pattern
+     will match against the candidate’s annotation (cheesy mnemonic:
+     andnotation!).
    • , uses ‘orderless-initialism’.
    • = uses ‘orderless-literal’.
    • ^ uses ‘orderless-literal-prefix’.
@@ -616,19 +617,19 @@ Node: Customization4929
 Node: Component matching styles5287
 Node: Style modifiers7578
 Node: Style dispatchers8267
-Node: Component separator regexp11894
-Node: Defining custom orderless styles13131
-Node: Faces for component matches15023
-Node: Pattern compiler15827
-Node: Interactively changing the configuration16418
-Node: Integration with other completion UIs17881
-Node: Ivy18667
-Node: Helm19019
-Node: Company19363
-Node: Related packages21342
-Node: Ivy and Helm21640
-Node: Prescient22974
-Node: Restricting to current matches in Icicles Ido and Ivy23807
+Node: Component separator regexp11931
+Node: Defining custom orderless styles13168
+Node: Faces for component matches15060
+Node: Pattern compiler15864
+Node: Interactively changing the configuration16455
+Node: Integration with other completion UIs17918
+Node: Ivy18704
+Node: Helm19056
+Node: Company19400
+Node: Related packages21379
+Node: Ivy and Helm21677
+Node: Prescient23011
+Node: Restricting to current matches in Icicles Ido and Ivy23844
 
 End Tag Table
 
