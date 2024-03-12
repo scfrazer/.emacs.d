@@ -357,10 +357,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240307.1748/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240308.24/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240307.1748/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240308.24/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -1205,10 +1205,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240311.1638/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240311.1638/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1862,10 +1862,10 @@ would otherwise have the same name.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240306.1659/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240308.2052/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240306.1659/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240308.2052/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2236,10 +2236,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240312.833/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240312.833/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2287,10 +2287,10 @@ corresponding entries.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240107.831/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240311.318/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240107.831/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240311.318/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2579,10 +2579,10 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240219.2108/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240309.1109/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240219.2108/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240309.1109/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -3073,10 +3073,10 @@ This is useful for reading patches from mailing lists." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20210707.1633/deft-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20240309.2117/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20210707.1633/deft-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20240309.2117/deft-autoloads.el") (car load-path))))
 
 
 
@@ -3097,6 +3097,8 @@ non-nil and title is not from filename, use it as the title." t nil)
 Switch to *Deft* buffer and load files." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "deft" '("deft-" "org-deft-store-link")))
+
+
 
 
 )
@@ -3499,7 +3501,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240303.1023" "/home/scfrazer/.emacs.d/elpa/orderless-20240306.1659" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240226.2332" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240103.1301" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240312.833" "/home/scfrazer/.emacs.d/elpa/orderless-20240308.2052" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240311.1638" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.4")
          Info-directory-list)))
 
 ;; Local Variables:
