@@ -1,4 +1,4 @@
-(define-package "deft" "20240309.2117" "quickly browse, filter, and edit plain text notes" 'nil :commit "bb1a16b87c3e0fe70fade6227e47dd7712b89bf6" :authors
+(define-package "deft" "20240407.149" "quickly browse, filter, and edit plain text notes" 'nil :commit "7f352747a2c4dfe40ba060ab42f47ae8a9ddab41" :authors
   '(("Jason R. Blevins" . "jrblevin@xbeta.org"))
   :maintainers
   '(("Jason R. Blevins" . "jrblevin@xbeta.org"))
