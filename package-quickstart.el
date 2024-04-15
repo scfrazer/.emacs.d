@@ -357,10 +357,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240328.143/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240413.2003/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240328.143/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240413.2003/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -568,12 +568,26 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240315.1838/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240413.1455/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240315.1838/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240413.1455/web-mode-autoloads.el") (car load-path))))
 
 
+
+(put 'web-mode-attr-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
+
+(put 'web-mode-attr-value-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
+
+(put 'web-mode-markup-indent-offset 'safe-local-variable #'integerp)
+
+(put 'web-mode-markup-comment-indent-offset 'safe-local-variable #'integerp)
+
+(put 'web-mode-css-indent-offset 'safe-local-variable #'integerp)
+
+(put 'web-mode-code-indent-offset 'safe-local-variable #'integerp)
+
+(put 'web-mode-sql-indent-offset 'safe-local-variable #'integerp)
 
 (autoload 'web-mode "web-mode" "\
 Major mode for editing web templates.
@@ -621,10 +635,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240128.1526/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240409.436/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240128.1526/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240409.436/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1207,10 +1221,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240405.1443/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240414.1359/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240405.1443/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240414.1359/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2581,10 +2595,10 @@ will return point to the current position.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240309.1109/git-timemachine-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240413.909/git-timemachine-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240309.1109/git-timemachine-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20240413.909/git-timemachine-autoloads.el") (car load-path))))
 
 
 
@@ -3503,7 +3517,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240405.946" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240322.519" "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240405.1443" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240405.946" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240322.519" "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240414.1359" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240101.2226" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
          Info-directory-list)))
 
 ;; Local Variables:

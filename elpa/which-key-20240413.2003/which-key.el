@@ -326,12 +326,12 @@ a percentage out of the frame's height."
 
 (defcustom which-key-frame-max-width 60
   "Maximum width of which-key popup when type is frame."
-  :type 'integer
+  :type 'natnum
   :version "1.0")
 
 (defcustom which-key-frame-max-height 20
   "Maximum height of which-key popup when type is frame."
-  :type 'integer
+  :type 'natnum
   :version "1.0")
 
 (defcustom which-key-allow-imprecise-window-fit (not (display-graphic-p))
@@ -729,9 +729,8 @@ Used when `which-key-popup-type' is frame.")
 
 (defun which-key--rotate (list n)
   (let* ((len (length list))
-         (n (if (< n 0) (+ len n) n))
-         (n (mod n len)))
-    (append (last list (- len n)) (butlast list (- len n)))))
+         (n (- len (mod n len))))
+    (append (last list n) (butlast list n))))
 
 (defun which-key--pages-set-current-page (pages-obj n)
   (setf (which-key--pages-pages pages-obj)
@@ -1085,7 +1084,7 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply."
   (declare (indent defun))
   ;; TODO: Make interactive
   (when (not (symbolp mode))
-    (error "MODE should be a symbol corresponding to a value of major-mode"))
+    (error "`%S' should be a symbol corresponding to a value of major-mode" mode))
   (let ((mode-alist
          (or (cdr-safe (assq mode which-key-replacement-alist)) (list)))
         (title-mode-alist
@@ -1170,7 +1169,7 @@ If WIDTH-OR-PERCENTAGE is a whole number, return it unchanged.  Otherwise, it
 should be a percentage (a number between 0 and 1) out of the frame's width.
 More precisely, it should be a percentage out of the frame's root window's
 total width."
-  (if (wholenump width-or-percentage)
+  (if (natnump width-or-percentage)
       width-or-percentage
     (round (* width-or-percentage (window-total-width (frame-root-window))))))
 
@@ -1180,7 +1179,7 @@ If HEIGHT-OR-PERCENTAGE is a whole number, return it unchanged.  Otherwise, it
 should be a percentage (a number between 0 and 1) out of the frame's height.
 More precisely, it should be a percentage out of the frame's root window's
 total height."
-  (if (wholenump height-or-percentage)
+  (if (natnump height-or-percentage)
       height-or-percentage
     (round (* height-or-percentage (window-total-height (frame-root-window))))))
 
@@ -1285,6 +1284,10 @@ call signature in different emacs versions"
               (window-height . (lambda (w) (fit-window-to-buffer w nil 1)))
               (side . ,which-key-side-window-location)
               (slot . ,which-key-side-window-slot)))))
+    (which-key--debug-message "Allow imprecise fit: %s
+Display window alist: %s"
+                              which-key-allow-imprecise-window-fit
+                              alist)
     ;; Previously used `display-buffer-in-major-side-window' here, but
     ;; apparently that is meant to be an internal function. See emacs bug #24828
     ;; and advice given there.
@@ -1362,11 +1365,11 @@ call signature in different emacs versions"
 
 (defun which-key--popup-max-dimensions ()
   "Return maximum dimension available for popup.
-Dimesion functions should return the maximum possible (height
+Dimension functions should return the maximum possible (height
 . width) of the intended popup. SELECTED-WINDOW-WIDTH is the
 width of currently active window, not the which-key buffer
 window."
-  (cl-case which-key-popup-type
+  (cl-ecase which-key-popup-type
     (minibuffer (which-key--minibuffer-max-dimensions))
     (side-window (which-key--side-window-max-dimensions))
     (frame (which-key--frame-max-dimensions))
@@ -1552,7 +1555,7 @@ Within these categories order using `which-key-key-order'."
   (when (and (consp key-binding) (not (symbolp (car replacement))))
     (let ((key-regexp (caar replacement))
           (binding-regexp (cdar replacement))
-          case-fold-search)
+          (case-fold-search nil))
       (and (or (null key-regexp)
                (string-match-p key-regexp
                                (car key-binding)))
@@ -1685,7 +1688,7 @@ If KEY contains any \"special keys\" defined in
                         (mapconcat #'identity which-key-special-keys
                                    "\\|")
                         "\\)"))
-        case-fold-search)
+        (case-fold-search nil))
     (save-match-data
       (if (and which-key-special-keys
                (string-match regexp key))
@@ -2013,7 +2016,7 @@ that width."
   "Partition LIST into N-sized sublists."
   (let (res)
     (while list
-      (setq res (cons (cl-subseq list 0 (min n (length list))) res)
+      (setq res (cons (take (min n (length list)) list) res)
             list (nthcdr n list)))
     (nreverse res)))
 
@@ -2077,7 +2080,7 @@ should be minimized."
       ;; simple search for a fitting page
       (while (and (> available-lines min-lines)
                   (not found))
-        (setq available-lines (- available-lines 1)
+        (setq available-lines (cl-decf available-lines)
               prev-result result
               result (which-key--list-to-pages
                       keys available-lines available-width)
@@ -2125,11 +2128,36 @@ is the width of the live window."
         ;; `which-key-allow-imprecise-window-fit' is non-nil.
         (setf (which-key--pages-height result) which-key-min-display-lines))
       (which-key--debug-message "Frame height: %s
+Frame pixel width: %s
+Frame char width: %s
+Frame width: %s
+Which-key initial width: %s
+Which-key adjusted width: %s
 Minibuffer height: %s
-Max dimensions: (%s,%s)
-Available for bindings: (%s,%s)
-Actual lines: %s" (frame-height) (window-text-height (minibuffer-window))
-max-lines max-width avl-lines avl-width (which-key--pages-height result))
+Max dimensions: (%s, %s)
+Available for bindings: (%s, %s)
+Popup type info: (%s, %s, %s)
+Computed page widths: %s
+Actual lines: %s"
+                                (frame-height)
+                                (frame-pixel-width)
+                                (frame-char-width)
+                                (window-total-width (frame-root-window))
+                                (which-key--width-or-percentage-to-width
+                                  which-key-side-window-max-width)
+                                (which-key--total-width-to-text
+                                 (which-key--width-or-percentage-to-width
+                                  which-key-side-window-max-width))
+                                (window-text-height (minibuffer-window))
+                                max-lines
+                                max-width
+                                avl-lines
+                                avl-width
+                                which-key-popup-type
+                                which-key-side-window-location
+                                which-key-side-window-max-width
+                                (which-key--pages-widths result)
+                                (which-key--pages-height result))
       result)))
 
 (defun which-key--lighter-status ()
@@ -2659,7 +2687,7 @@ KEYMAP is selected interactively by mode in
         (let ((formatted-keys
                (which-key--get-bindings
                 nil keymap #'which-key--evil-operator-filter)))
-          (cond ((= (length formatted-keys) 0)
+          (cond ((null formatted-keys)
                  (message "which-key: Keymap empty"))
                 ((listp which-key-side-window-location)
                  (setq which-key--last-try-2-loc
@@ -2671,8 +2699,8 @@ KEYMAP is selected interactively by mode in
                           formatted-keys
                           nil "evil operator/motion keys"))
                    (which-key--show-page)))))
-      (let* ((key (read-key)))
-        (when (member key '(?f ?F ?t ?T ?`))
+      (let ((key (read-key)))
+        (when (memq key '(?f ?F ?t ?T ?`))
           ;; these keys trigger commands that read the next char manually
           (setq which-key--inhibit-next-operator-popup t))
         (cond ((and which-key-use-C-h-commands (numberp key) (= key help-char))
@@ -2692,7 +2720,7 @@ Finally, show the buffer."
         (formatted-keys (which-key--get-bindings
                          prefix-keys from-keymap filter))
         (prefix-desc (key-description prefix-keys)))
-    (cond ((= (length formatted-keys) 0)
+    (cond ((null formatted-keys)
            (message "%s-  which-key: There are no keys to show" prefix-desc))
           ((listp which-key-side-window-location)
            (setq which-key--last-try-2-loc
