@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Version: 1.7
+;; Version: 1.8
 ;; Package-Requires: ((emacs "27.1") (compat "29.1.4.4"))
 ;; Homepage: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -66,9 +66,10 @@
 (defcustom vertico-preselect 'directory
   "Configure if the prompt or first candidate is preselected.
 - prompt: Always select the prompt.
-- first: Always select the first candidate.
+- first: Select the first candidate, allow prompt selection.
+- no-prompt: Like first, but forbid selection of the prompt entirely.
 - directory: Like first, but select the prompt if it is a directory."
-  :type '(choice (const prompt) (const first) (const directory)))
+  :type '(choice (const prompt) (const first) (const no-prompt) (const directory)))
 
 (defcustom vertico-scroll-margin 2
   "Number of lines at the top and bottom when scrolling.
@@ -352,9 +353,10 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
       (vertico--candidates . ,all)
       (vertico--total . ,(length all))
       (vertico--hilit . ,(or hl #'identity))
-      (vertico--allow-prompt . ,(or def-missing (eq vertico-preselect 'prompt)
-                                    (memq minibuffer--require-match
-                                          '(nil confirm confirm-after-completion))))
+      (vertico--allow-prompt . ,(and (not (eq vertico-preselect 'no-prompt))
+                                     (or def-missing (eq vertico-preselect 'prompt)
+                                         (memq minibuffer--require-match
+                                               '(nil confirm confirm-after-completion)))))
       (vertico--lock-candidate . ,lock)
       (vertico--groups . ,(cadr groups))
       (vertico--all-groups . ,(or (caddr groups) vertico--all-groups))
