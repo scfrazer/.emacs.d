@@ -1,7 +1,7 @@
-(define-package "json-mode" "20240228.1443" "Major mode for editing JSON files"
+(define-package "json-mode" "20240427.1245" "Major mode for editing JSON files"
   '((json-snatcher "1.0.0")
     (emacs "24.4"))
-  :commit "72f340d3fb4b796589e75cb5985797a7f177f34a" :authors
+  :commit "77125b01c0ddce537085201098bea9b4b8ba6be3" :authors
   '(("Josh Johnston")
     ("taku0"))
   :maintainers

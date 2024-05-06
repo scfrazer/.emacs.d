@@ -5,7 +5,7 @@
 ;; Author: Josh Johnston
 ;;         taku0
 ;; URL: https://github.com/joshwnj/json-mode
-;; Version: 1.9.1
+;; Version: 1.9.2
 ;; Package-Requires: ((json-snatcher "1.0.0") (emacs "24.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -201,8 +201,7 @@ See `forward-sexp for ARG."
 ;;;###autoload
 (define-derived-mode jsonc-mode json-mode "JSONC"
   "Major mode for editing JSON files with comments."
-  :syntax-table jsonc-mode-syntax-table
-  (setq font-lock-defaults '(json-font-lock-keywords-1 t)))
+  :syntax-table jsonc-mode-syntax-table)
 
 ;; Well formatted JSON files almost always begin with “{” or “[”.
 ;;;###autoload
