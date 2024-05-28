@@ -18,9 +18,13 @@ If FILE is not inside `deft-directory', fall back to using `find-file'.
 
 (autoload 'deft-new-file "deft" "\
 Create a new file quickly.
-Use either an automatically generated filename or the filter string if non-nil
-and `deft-use-filter-string-for-filename' is set.  If the filter string is
-non-nil and title is not from filename, use it as the title." t nil)
+Use either an automatically generated filename or the filter
+string if non-nil and `deft-use-filter-string-for-filename' is
+set.  If the filter string is non-nil and title is not from
+filename, use it as the title.  The prefix ARG is passed to
+`deft-new-file-named'.
+
+\(fn &optional ARG)" t nil)
 
 (autoload 'deft "deft" "\
 Switch to *Deft* buffer and load files." t nil)

@@ -27,10 +27,10 @@ Simple mode to edit YAML.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.6.3/xref-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xref-1.7.0/xref-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.6.3/xref-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xref-1.7.0/xref-autoloads.el") (car load-path))))
 
 
 
@@ -43,7 +43,7 @@ Go back to the previous position in xref history.
 To undo, use \\[xref-go-forward]." t nil)
 
 (autoload 'xref-go-forward "xref" "\
-Got to the point where a previous \\[xref-go-back] was invoked." t nil)
+Go to the point where a previous \\[xref-go-back] was invoked." t nil)
 
 (autoload 'xref-marker-stack-empty-p "xref" "\
 Whether the xref back-history is empty." nil nil)
@@ -1221,10 +1221,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240509.1849/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240525.1118/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240509.1849/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240525.1118/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1589,10 +1589,10 @@ Major mode for editing Python files.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.10.0/project-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.0/project-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.10.0/project-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.11.0/project-autoloads.el") (car load-path))))
 
 
 
@@ -1622,7 +1622,7 @@ of the project instance object.
 (put 'project-vc-name 'safe-local-variable #'stringp)
 (put 'project-vc-extra-root-markers 'safe-local-variable (lambda (val) (and (listp val) (not (memq nil (mapcar #'stringp val))))))
 
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "\2" 'project-list-buffers) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "o" 'project-any-command) (define-key map "\2" 'project-list-buffers) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
 
@@ -1666,8 +1666,6 @@ requires quoting, e.g. `\\[quoted-insert]<space>'.
 
 (autoload 'project-or-external-find-regexp "project" "\
 Find all matches for REGEXP in the project roots or external roots.
-With \\[universal-argument] prefix, you can specify the file name
-pattern to search for.
 
 \(fn REGEXP)" t nil)
 
@@ -1839,6 +1837,26 @@ Execute an extended command in project root." t nil)
 
 (function-put 'project-execute-extended-command 'interactive-only 'command-execute)
 
+(autoload 'project-any-command "project" "\
+Run the next command in the current project.
+
+If the command name starts with `project-', or its symbol has
+property `project-aware', it gets passed the project to use
+with the variable `project-current-directory-override'.
+Otherwise, `default-directory' is temporarily set to the current
+project's root.
+
+If OVERRIDING-MAP is non-nil, it will be used as
+`overriding-terminal-local-map' to provide shorter bindings
+from that map which will take priority over the global ones.
+
+\(fn &optional OVERRIDING-MAP PROMPT-FORMAT)" t nil)
+
+(autoload 'project-prefix-or-any-command "project" "\
+Run the next command in the current project.
+Works like `project-any-command', but also mixes in the shorter
+bindings from `project-prefix-map'." t nil)
+
 (autoload 'project-switch-project "project" "\
 \"Switch\" to another project by running an Emacs command.
 The available commands are presented as a dispatch menu
@@ -1858,6 +1876,14 @@ the buffer's directory name when buffers from two different projects
 would otherwise have the same name.
 
 \(fn DIRNAME)" nil nil)
+
+(defvar project-mode-line nil "\
+Whether to show current project name and Project menu on the mode line.
+This feature requires the presence of the following item in
+`mode-line-format': `(project-mode-line project-mode-line-format)'; it
+is part of the default mode line beginning with Emacs 30.")
+
+(custom-autoload 'project-mode-line "project" t)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "project" '("project-")))
 
@@ -2348,10 +2374,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240404.451/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240523.1240/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240404.451/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240523.1240/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3089,10 +3115,10 @@ This is useful for reading patches from mailing lists." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20240407.149/deft-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/deft-20240524.1524/deft-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20240407.149/deft-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/deft-20240524.1524/deft-autoloads.el") (car load-path))))
 
 
 
@@ -3105,9 +3131,13 @@ If FILE is not inside `deft-directory', fall back to using `find-file'.
 
 (autoload 'deft-new-file "deft" "\
 Create a new file quickly.
-Use either an automatically generated filename or the filter string if non-nil
-and `deft-use-filter-string-for-filename' is set.  If the filter string is
-non-nil and title is not from filename, use it as the title." t nil)
+Use either an automatically generated filename or the filter
+string if non-nil and `deft-use-filter-string-for-filename' is
+set.  If the filter string is non-nil and title is not from
+filename, use it as the title.  The prefix ARG is passed to
+`deft-new-file-named'.
+
+\(fn &optional ARG)" t nil)
 
 (autoload 'deft "deft" "\
 Switch to *Deft* buffer and load files." t nil)
@@ -3517,7 +3547,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240505.331" "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240509.1849" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240415.1558" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240505.331" "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240525.1118" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240415.1558" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
          Info-directory-list)))
 
 ;; Local Variables:

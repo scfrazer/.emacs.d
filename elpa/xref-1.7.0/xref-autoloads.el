@@ -18,7 +18,7 @@ Go back to the previous position in xref history.
 To undo, use \\[xref-go-forward]." t nil)
 
 (autoload 'xref-go-forward "xref" "\
-Got to the point where a previous \\[xref-go-back] was invoked." t nil)
+Go to the point where a previous \\[xref-go-back] was invoked." t nil)
 
 (autoload 'xref-marker-stack-empty-p "xref" "\
 Whether the xref back-history is empty." nil nil)
