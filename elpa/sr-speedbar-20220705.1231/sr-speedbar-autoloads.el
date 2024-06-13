@@ -15,16 +15,16 @@ Toggle visibility of sr-speedbar by resizing
 the `sr-speedbar-window' to a minimal width
 or the last width when visible.
 Use this function to create or toggle visibility
-of a speedbar-window.  It will be created if necessary.
-
-\(fn)" t nil)
+of a speedbar-window.  It will be created if necessary." t nil)
 
 (autoload 'sr-speedbar-open "sr-speedbar" "\
-Create `sr-speedbar' window.
-
-\(fn)" t nil)
+Create `sr-speedbar' window." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "sr-speedbar" '("sr-speedbar-")))
+
+;;;***
+
+;;;### (autoloads nil nil ("sr-speedbar-pkg.el") (0 0 0 0))
 
 ;;;***
 

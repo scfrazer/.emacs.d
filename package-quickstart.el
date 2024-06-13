@@ -269,10 +269,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240415.1558/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240609.1518/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240415.1558/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240609.1518/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -351,7 +351,7 @@ else like the former.
 
 \(fn COMMAND &optional OUTPUT-BUFFER ERROR-BUFFER ENVVAR)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "with-editor" '("server-" "shell-command--shell-command-with-editor-mode" "start-file-process--with-editor-process-filter" "with-editor")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "with-editor" '("server-" "shell-command" "start-file-process" "with-editor")))
 
 
 
@@ -1221,10 +1221,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240603.2200/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240609.2020/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240603.2200/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240609.2020/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1286,7 +1286,7 @@ See info node `(transient)Modifying Existing Transients'.
 
 (function-put 'transient-remove-suffix 'lisp-indent-function 'defun)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "transient" '("static-if" "transient")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "transient" '("find-function-advised-original" "static-if" "transient")))
 
 
 
@@ -1305,10 +1305,10 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20161025.831/sr-speedbar-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20220705.1231/sr-speedbar-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20161025.831/sr-speedbar-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20220705.1231/sr-speedbar-autoloads.el") (car load-path))))
 
 
 
@@ -1318,16 +1318,14 @@ Toggle visibility of sr-speedbar by resizing
 the `sr-speedbar-window' to a minimal width
 or the last width when visible.
 Use this function to create or toggle visibility
-of a speedbar-window.  It will be created if necessary.
-
-\(fn)" t nil)
+of a speedbar-window.  It will be created if necessary." t nil)
 
 (autoload 'sr-speedbar-open "sr-speedbar" "\
-Create `sr-speedbar' window.
-
-\(fn)" t nil)
+Create `sr-speedbar' window." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "sr-speedbar" '("sr-speedbar-")))
+
+
 
 
 )
@@ -1904,10 +1902,10 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -2278,10 +2276,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240603.1554/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240610.1730/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240603.1554/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240610.1730/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3547,7 +3545,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240603.1554" "/home/scfrazer/.emacs.d/elpa/orderless-20240401.959" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240603.2200" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240415.1558" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240610.1730" "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240609.2020" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240609.1518" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
          Info-directory-list)))
 
 ;; Local Variables:
