@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 0.6.0
-;; Package-Requires: ((emacs "26.1") (compat "29.1.4.4") (seq "2.24"))
+;; Package-Version: 0.7.0
+;; Package-Requires: ((emacs "26.1") (compat "29.1.4.5") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -1078,7 +1078,10 @@ commands are aliases for."
     (and val (not (eq val 'transient--default-infix-command)) val)))
 
 (eval-and-compile ;transient--expand-define-args
-  (defun transient--expand-define-args (args arglist form &optional nobody)
+  (defun transient--expand-define-args (args &optional arglist form nobody)
+    ;; ARGLIST and FORM are only optional for backward compatibility.
+    ;; This is necessary because "emoji.el" from Emacs 29 calls this
+    ;; function directly, with just one argument.
     (unless (listp arglist)
       (error "Mandatory ARGLIST is missing"))
     (let (class keys suffixes docstr declare (interactive-only t))
@@ -3710,7 +3713,7 @@ have a history of their own.")
             (propertize "\n" 'face face 'line-height t))))
 
 (defmacro transient-with-shadowed-buffer (&rest body)
-  "While in the transient buffer, temporarly make the shadowed buffer current."
+  "While in the transient buffer, temporarily make the shadowed buffer current."
   (declare (indent 0) (debug t))
   `(with-current-buffer (or transient--shadowed-buffer (current-buffer))
      ,@body))
