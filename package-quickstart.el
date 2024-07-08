@@ -269,10 +269,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240618.1840/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240702.1952/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240618.1840/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240702.1952/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -357,10 +357,10 @@ else like the former.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240501.1251/which-key-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/which-key-20240620.2145/which-key-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240501.1251/which-key-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/which-key-20240620.2145/which-key-autoloads.el") (car load-path))))
 
 
 
@@ -375,7 +375,7 @@ or call the function `which-key-mode'.")
 (custom-autoload 'which-key-mode "which-key" nil)
 
 (autoload 'which-key-mode "which-key" "\
-Toggle which-key-mode.
+Toggle `which-key-mode'.
 
 If called interactively, enable Which-Key mode if ARG is
 positive, and disable it if ARG is zero or negative.  If called
@@ -402,12 +402,12 @@ but more functional." t nil)
 
 (autoload 'which-key-add-keymap-based-replacements "which-key" "\
 Replace the description of KEY using REPLACEMENT in KEYMAP.
-KEY should take a format suitable for use in `kbd'. REPLACEMENT
+KEY should take a format suitable for use in `kbd'.  REPLACEMENT
 should be a cons cell of the form (STRING . COMMAND) for each
 REPLACEMENT, where STRING is the replacement string and COMMAND
 is a symbol corresponding to the intended command to be
-replaced. COMMAND can be nil if the binding corresponds to a key
-prefix. An example is
+replaced.  COMMAND can be nil if the binding corresponds to a key
+prefix.  An example is
 
 \(which-key-add-keymap-based-replacements global-map
   \"C-x w\" \\='(\"Save as\" . write-file)).
@@ -422,8 +422,8 @@ for REPLACEMENT will eventually be removed.
 
 (autoload 'which-key-add-key-based-replacements "which-key" "\
 Replace the description of KEY-SEQUENCE with REPLACEMENT.
-KEY-SEQUENCE is a string suitable for use in `kbd'. REPLACEMENT
-may either be a string, as in
+KEY-SEQUENCE is a string suitable for use in `kbd'.
+REPLACEMENT may either be a string, as in
 
 \(which-key-add-key-based-replacements \"C-x 1\" \"maximize\")
 
@@ -457,7 +457,7 @@ addition KEY-SEQUENCE REPLACEMENT pairs) to apply.
 Simulate entering the key sequence KEY-SEQ.
 KEY-SEQ should be a list of events as produced by
 `listify-key-sequence'.  If nil, KEY-SEQ defaults to
-`which-key--current-key-list'. Any prefix arguments that were
+`which-key--current-key-list'.  Any prefix arguments that were
 used are reapplied to the new key sequence.
 
 \(fn &optional KEY-SEQ)" nil nil)
@@ -492,16 +492,16 @@ Show top-level bindings.
 (autoload 'which-key-show-major-mode "which-key" "\
 Show top-level bindings in the map of the current major mode.
 This function will also detect evil bindings made using
-`evil-define-key' in this map. These bindings will depend on the
-current evil state. 
+`evil-define-key' in this map.  These bindings will depend on the
+current evil state.
 
 \(fn &optional ALL)" t nil)
 
 (autoload 'which-key-show-full-major-mode "which-key" "\
 Show all bindings in the map of the current major mode.
 This function will also detect evil bindings made using
-`evil-define-key' in this map. These bindings will depend on the
-current evil state. " t nil)
+`evil-define-key' in this map.  These bindings will depend on the
+current evil state." t nil)
 
 (autoload 'which-key-dump-bindings "which-key" "\
 Dump bindings from PREFIX into buffer named BUFFER-NAME.
@@ -515,7 +515,7 @@ Undo last keypress and force which-key update.
 \(fn &optional _)" t nil)
 
 (autoload 'which-key-C-h-dispatch "which-key" "\
-Dispatch C-h commands by looking up key in `which-key-C-h-map'.
+Dispatch \\`C-h' commands by looking up key in `which-key-C-h-map'.
 This command is always accessible (from any prefix) if
 `which-key-use-C-h-commands' is non nil." t nil)
 
@@ -635,10 +635,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240511.2047/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240629.921/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240511.2047/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240629.921/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1221,10 +1221,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240619.1206/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240629.1508/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240619.1206/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240629.1508/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1292,16 +1292,18 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20221011.1012/tango-plus-theme-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20221011.1012/tango-plus-theme-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el") (car load-path))))
 
 
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
-(register-definition-prefixes "tango-plus-theme" '("tango-plus"))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tango-plus-theme" '("tango-plus")))
+
+
 
 
 )
@@ -2276,10 +2278,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240617.1403/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240617.1403/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2327,10 +2329,10 @@ corresponding entries.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240501.1057/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240626.826/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240501.1057/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240626.826/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -2975,21 +2977,23 @@ This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20230512.1107/dired-hacks-utils-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20240629.1906/dired-hacks-utils-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20230512.1107/dired-hacks-utils-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20240629.1906/dired-hacks-utils-autoloads.el") (car load-path))))
 
 
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-hacks-utils" '("dired-")))
 
 
+
+
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230512.1107/dired-subtree-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/dired-subtree-20240629.1859/dired-subtree-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20230512.1107/dired-subtree-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dired-subtree-20240629.1859/dired-subtree-autoloads.el") (car load-path))))
 
 
 
@@ -3088,6 +3092,8 @@ restricted to a subtree.  The global filter is also applied to
 the subtree.  The filter action is read from `dired-filter-map'." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-subtree" '("dired-")))
+
+
 
 
 )
@@ -3545,7 +3551,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240617.1403" "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240619.1206" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240618.1840" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437" "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240629.1508" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240702.1952" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
          Info-directory-list)))
 
 ;; Local Variables:
