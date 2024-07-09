@@ -71,7 +71,7 @@
  '(orderless-skip-highlighting nil t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(modus-themes web-beautify popup vertico which-key diffview python marginalia flymake project beacon goto-last-change tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
+   '(highlight-indent-guides modus-themes web-beautify popup vertico which-key diffview python marginalia flymake project beacon goto-last-change tango-plus-theme avy bm browse-kill-ring deft dired-subtree fd-dired fill-function-arguments filladapt git-timemachine hydra iflipb json-mode markdown-mode multiple-cursors orderless relint rg sr-speedbar use-package web-mode with-editor yaml-mode))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(safe-local-variable-values
@@ -111,7 +111,7 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
  '(web-mode-enable-control-block-indentation nil)
  '(web-mode-indent-style 1)
  '(which-key-add-column-padding 3)

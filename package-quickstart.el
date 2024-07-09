@@ -252,10 +252,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5/compat-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0/compat-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5/compat-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0/compat-autoloads.el") (car load-path))))
 
 
 
@@ -635,10 +635,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240629.921/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240708.2157/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240629.921/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240708.2157/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -2278,10 +2278,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240709.638/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240709.638/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2374,10 +2374,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240523.1240/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240708.2158/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240523.1240/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240708.2158/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -2597,6 +2597,35 @@ result of `defhydra'.
 
 
 (register-definition-prefixes "hydra-ox" '("hydra-ox"))
+
+
+
+
+)
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el") (car load-path))))
+
+
+
+(autoload 'highlight-indent-guides-auto-set-faces "highlight-indent-guides" "\
+Automatically calculate indent guide faces.
+If this feature is enabled, calculate reasonable values for the indent guide
+colors based on the current theme's colorscheme, and set them appropriately.
+This runs whenever a theme is loaded, but it can also be run interactively." t nil)
+
+(autoload 'highlight-indent-guides-mode "highlight-indent-guides" "\
+Display indent guides in a buffer.
+
+If called interactively, enable Highlight-Indent-Guides mode if
+ARG is positive, and disable it if ARG is zero or negative.  If
+called from Lisp, also enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "highlight-indent-guides" '("highlight-indent-guides-")))
 
 
 
@@ -3544,14 +3573,14 @@ Transpose lines in the active region." t nil)
 )
 (setq package-activated-list
       (append
-       '(yaml-mode xref xr seq compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint python project popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+       '(yaml-mode xref xr seq compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint python project popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
        package-activated-list))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240625.437" "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240629.1508" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240702.1952" "/home/scfrazer/.emacs.d/elpa/compat-29.1.4.5")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240709.638" "/home/scfrazer/.emacs.d/elpa/orderless-20240606.1026" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240629.1508" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240702.1952" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
