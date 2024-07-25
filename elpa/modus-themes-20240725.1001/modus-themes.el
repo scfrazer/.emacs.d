@@ -3003,6 +3003,8 @@ FG and BG are the main colors."
     `(markup-title-4-face ((,c :inherit modus-themes-heading-5)))
     `(markup-title-5-face ((,c :inherit modus-themes-heading-6)))
     `(markup-verbatim-face ((,c :inherit modus-themes-prose-verbatim)))
+;;;;; mbdepth
+    `(minibuffer-depth-indicator ((,c :inherit modus-themes-mark-alt)))
 ;;;;; mct
     `(mct-highlight-candidate ((,c :inherit modus-themes-completion-selected)))
 ;;;;; messages
@@ -3177,7 +3179,8 @@ FG and BG are the main colors."
     `(notmuch-tag-unread ((,c :foreground ,accent-1)))
     `(notmuch-tree-match-author-face ((,c :inherit notmuch-search-matching-authors)))
     `(notmuch-tree-match-date-face ((,c :inherit notmuch-search-date)))
-    `(notmuch-tree-match-face ((,c :foreground ,fg-main)))
+    `(notmuch-tree-match-face ((,c :foreground ,fg-dim)))
+    `(notmuch-tree-match-subject-face ((,c :foreground ,fg-main)))
     `(notmuch-tree-match-tag-face ((,c :inherit notmuch-tag-face)))
     `(notmuch-tree-no-match-face ((,c :inherit shadow)))
     `(notmuch-tree-no-match-date-face ((,c :inherit shadow)))
