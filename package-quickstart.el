@@ -269,10 +269,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240713.1931/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240713.1931/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -568,10 +568,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240413.1455/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240729.1537/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240413.1455/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240729.1537/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -635,10 +635,10 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240716.1919/vertico-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20240726.2131/vertico-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240716.1919/vertico-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/vertico-20240726.2131/vertico-autoloads.el") (car load-path))))
 
 
 
@@ -1221,10 +1221,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240713.2102/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240713.2102/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2278,10 +2278,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240725.1001/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240725.1001/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2374,10 +2374,10 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240710.953/marginalia-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20240726.2129/marginalia-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240710.953/marginalia-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/marginalia-20240726.2129/marginalia-autoloads.el") (car load-path))))
 
 
 
@@ -3580,7 +3580,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240725.1001" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240713.2102" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240713.1931" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

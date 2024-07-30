@@ -10,6 +10,7 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 (setq-default dired-auto-revert-buffer t
+              dired-dwim-target t
               dired-isearch-filenames 'dwim
               dired-listing-switches "-alv --group-directories-first --time-style=long-iso"
               dired-recursive-copies 'always
