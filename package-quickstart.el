@@ -154,10 +154,10 @@ to control which program to use when looking for matches.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-1.25/xr-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.0/xr-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-1.25/xr-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-2.0/xr-autoloads.el") (car load-path))))
 
 
 
@@ -186,8 +186,8 @@ See `xr' for a description of the DIALECT argument.
 
 (autoload 'xr-lint "xr" "\
 Detect dubious practices and possible mistakes in RE-STRING.
-This includes uses of tolerated but discouraged constructs.
-Outright regexp syntax violations are signalled as errors.
+This includes uses of tolerated but discouraged constructs, as well
+as outright syntax errors.
 
 If PURPOSE is `file', perform additional checks assuming that RE-STRING
 is used to match a file name.
@@ -196,19 +196,24 @@ If CHECKS is absent or nil, only perform checks that are very
 likely to indicate mistakes; if `all', include all checks,
 including ones more likely to generate false alarms.
 
-Return a list of (OFFSET . COMMENT) where COMMENT applies at OFFSET
-in RE-STRING.
+Return a list of lists of (BEG END COMMENT SEVERITY), where COMMENT
+applies at offsets BEG..END inclusive in RE-STRING, and SEVERITY is
+`error', `warning' or `info'. The middle list level groups diagnostics
+about the same problem.
 
 \(fn RE-STRING &optional PURPOSE CHECKS)" nil nil)
 
 (autoload 'xr-skip-set-lint "xr" "\
 Detect dubious practices and possible mistakes in SKIP-SET-STRING.
-This includes uses of tolerated but discouraged constructs.
-Outright syntax violations are signalled as errors.
+This includes uses of tolerated but discouraged constructs, as well
+as outright syntax errors.
 The argument is interpreted according to the syntax of
 `skip-chars-forward' and `skip-chars-backward'.
-Return a list of (OFFSET . COMMENT) where COMMENT applies at OFFSET
-in SKIP-SET-STRING.
+
+Return a list of lists of (BEG END COMMENT SEVERITY), where COMMENT
+applies at offsets BEG..END inclusive in SKIP-SET-STRING, and SEVERITY is
+`error', `warning' or `info'. The middle list level groups diagnostics
+about the same problem.
 
 \(fn SKIP-SET-STRING)" nil nil)
 
@@ -269,10 +274,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240806.1454/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240806.1454/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -568,10 +573,10 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240729.1537/web-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240804.821/web-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240729.1537/web-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240804.821/web-mode-autoloads.el") (car load-path))))
 
 
 
@@ -1221,10 +1226,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240805.1231/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240805.1231/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1501,10 +1506,10 @@ Setup wgrep rg support." nil nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-1.24/relint-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.0/relint-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-1.24/relint-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-2.0/relint-autoloads.el") (car load-path))))
 
 
 
@@ -1523,19 +1528,25 @@ Scan the current buffer for regexp errors.
 The buffer must be in emacs-lisp-mode." t nil)
 
 (autoload 'relint-buffer "relint" "\
-Scan BUFFER for regexp errors. Return list of diagnostics.
-Each element in the returned list has the form
+Scan BUFFER for regexp mistakes. Return list of diagnostics.
+Each element in the returned list is an object with the slots
 
-  (MESSAGE EXPR-POS ERROR-POS STRING STRING-IDX SEVERITY),
+  message    the message string
+  beg-pos    starting position in the buffer
+  end-pos    ending position the buffer (inclusive), or nil
+  pos-type   if `string', then the buffer at BEG-POS..END-POS is inside
+             a string literal corresponding to STRING at BEG-IDX..END-IDX;
+             otherwise BEG-POS..END-POS just point to code
+  string     the string the message is about, or nil
+  beg-idx    starting offset in STRING, or nil
+  end-idx    ending offset in STRING (inclusive), or nil
+  severity   `error', `warning' or `info'
 
-where MESSAGE is the message string, EXPR-POS the location of the
-flawed expression, ERROR-POS the exact position of the error or
-nil if unavailable, STRING is nil or a string to which the
-message pertains, STRING-IDX is nil or an index into STRING,
-and SEVERITY is `error' or `warning'.
-The intent is that ERROR-POS is the position in the buffer that
-corresponds to STRING at STRING-IDX, if such a location can be
-determined.
+Accessors are prefixed by `relint-diag-': eg, (relint-diag-message D) returns
+the message of object D.
+
+BEG-POS..END-POS is the range of interest in the buffer, and may
+correspond to the range BEG-IDX..END-IDX in STRING but not necessarily so.
 
 \(fn BUFFER)" nil nil)
 
@@ -2278,10 +2289,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20240806.528/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20240806.528/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -3580,7 +3591,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240728.1007" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240729.1524" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240725.1429" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240806.528" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240805.1231" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240806.1454" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
