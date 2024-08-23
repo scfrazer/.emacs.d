@@ -40,7 +40,7 @@ library is made available as a separate package.  It also defines some
 additional functionality which makes it useful even for end-users, who
 don’t use Magit or another package which uses it internally.
 
-This manual is for With-Editor v3.4.1-6-g5294361.
+This manual is for With-Editor v3.4.1-8-g63e60d5.
 
      Copyright (C) 2015-2024 Jonas Bernoulli
      <emacs.with-editor@jonas.bernoulli.dev>

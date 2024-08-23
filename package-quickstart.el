@@ -274,10 +274,10 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240820.2218/with-editor-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20240822.2051/with-editor-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240820.2218/with-editor-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/with-editor-20240822.2051/with-editor-autoloads.el") (car load-path))))
 
 
 
@@ -3591,7 +3591,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240821.724" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240821.158" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240820.2218" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240821.724" "/home/scfrazer/.emacs.d/elpa/orderless-20240717.758" "/home/scfrazer/.emacs.d/elpa/rg-20231202.1023" "/home/scfrazer/.emacs.d/elpa/transient-20240821.158" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240822.2051" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
