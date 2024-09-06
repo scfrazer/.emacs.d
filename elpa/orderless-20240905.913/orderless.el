@@ -212,6 +212,18 @@ is determined by the values of `completion-ignore-case',
 `read-buffer-completion-ignore-case', as usual for completion."
   :type 'boolean)
 
+(defcustom orderless-expand-substring 'prefix
+  "Whether to perform literal substring expansion.
+This configuration option affects the behavior of some completion
+interfaces when pressing TAB.  If enabled `orderless-try-completion'
+will first attempt literal substring expansion.  If disabled,
+expansion is only performed for single unique matches.  For
+performance reasons only `prefix' expansion is enabled by default.
+Set the variable to `substring' for full substring expansion."
+  :type '(choice (const :tag "No expansion" nil)
+                 (const :tag "Substring" substring)
+                 (const :tag "Prefix (efficient)" prefix)))
+
 ;;; Matching styles
 
 (defun orderless-regexp (component)
@@ -357,7 +369,6 @@ converted to a list of regexps according to the value of
                   string 'fixedcase 'literal)
                  " +" t)))
 
-(define-obsolete-function-alias 'orderless-dispatch 'orderless--dispatch "1.0")
 (defun orderless--dispatch (dispatchers default string index total)
   "Run DISPATCHERS to compute matching styles for STRING.
 
@@ -453,12 +464,6 @@ string as argument."
    when regexp collect regexp into regexps
    when pred do (cl-callf orderless--predicate-and predicate pred)
    finally return (cons predicate regexps)))
-
-(defun orderless-pattern-compiler (pattern &optional styles dispatchers)
-  "Obsolete function, use `orderless-compile' instead.
-See `orderless-compile' for the arguments PATTERN, STYLES and DISPATCHERS."
-  (cdr (orderless-compile pattern styles dispatchers)))
-(make-obsolete 'orderless-pattern-compiler 'orderless-compile "1.0")
 
 ;;; Completion style implementation
 
@@ -561,38 +566,43 @@ match, it completes to that match.  If there are no matches, it
 returns nil.  In any other case it \"completes\" STRING to
 itself, without moving POINT.
 This function is part of the `orderless' completion style."
-  (catch 'orderless--many
-    (pcase-let ((`(,prefix ,regexps ,ignore-case ,pred)
-                 (orderless--compile string table pred))
-                (one nil))
-      ;; Abuse all-completions/orderless--filter as a fast search loop.
-      ;; Should be almost allocation-free since our "predicate" is not
-      ;; called more than two times.
-      (orderless--filter
-       prefix regexps ignore-case table
-       (orderless--predicate-normalized-and
-        pred
-        (lambda (arg)
-          ;; Check if there is more than a single match (= many).
-          (when (and one (not (equal one arg)))
-            (throw 'orderless--many (cons string point)))
-          (setq one arg)
-          t)))
-      (when one
-        ;; Prepend prefix if the candidate does not already have the same
-        ;; prefix.  This workaround is needed since the predicate may either
-        ;; receive an unprefixed or a prefixed candidate as argument.  Most
-        ;; completion tables consistently call the predicate with unprefixed
-        ;; candidates, for example `completion-file-name-table'.  In contrast,
-        ;; `completion-table-with-context' calls the predicate with prefixed
-        ;; candidates.  This could be an unintended bug or oversight in
-        ;; `completion-table-with-context'.
-        (unless (or (equal prefix "")
-                    (and (string-prefix-p prefix one)
-                         (test-completion one table pred)))
-          (setq one (concat prefix one)))
-        (or (equal string one) ;; Return t for unique exact match
-            (cons one (length one)))))))
+  (or
+   (pcase orderless-expand-substring
+     ('nil nil)
+     ('prefix (completion-emacs21-try-completion string table pred point))
+     (_ (completion-substring-try-completion string table pred point)))
+   (catch 'orderless--many
+     (pcase-let ((`(,prefix ,regexps ,ignore-case ,pred)
+                  (orderless--compile string table pred))
+                 (one nil))
+       ;; Abuse all-completions/orderless--filter as a fast search loop.
+       ;; Should be almost allocation-free since our "predicate" is not
+       ;; called more than two times.
+       (orderless--filter
+        prefix regexps ignore-case table
+        (orderless--predicate-normalized-and
+         pred
+         (lambda (arg)
+           ;; Check if there is more than a single match (= many).
+           (when (and one (not (equal one arg)))
+             (throw 'orderless--many (cons string point)))
+           (setq one arg)
+           t)))
+       (when one
+         ;; Prepend prefix if the candidate does not already have the same
+         ;; prefix.  This workaround is needed since the predicate may either
+         ;; receive an unprefixed or a prefixed candidate as argument.  Most
+         ;; completion tables consistently call the predicate with unprefixed
+         ;; candidates, for example `completion-file-name-table'.  In contrast,
+         ;; `completion-table-with-context' calls the predicate with prefixed
+         ;; candidates.  This could be an unintended bug or oversight in
+         ;; `completion-table-with-context'.
+         (unless (or (equal prefix "")
+                     (and (string-prefix-p prefix one)
+                          (test-completion one table pred)))
+           (setq one (concat prefix one)))
+         (or (equal string one) ;; Return t for unique exact match
+             (cons one (length one))))))))
 
 ;;;###autoload
 (add-to-list 'completion-styles-alist

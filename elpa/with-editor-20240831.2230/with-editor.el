@@ -6,7 +6,7 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 3.4.1
+;; Package-Version: 3.4.2
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -488,7 +488,7 @@ Modify the `process-environment' for processes started in BODY,
 instructing them to use the Emacsclient as editor.  ENVVAR is the
 environment variable that is exported to do so, it is evaluated
 at run-time.
-\n(fn [ENVVAR] BODY...)"
+\n(fn ENVVAR BODY...)"
   (declare (indent defun) (debug (sexp body)))
   `(let ((with-editor--envvar ,envvar)
          (process-environment process-environment))
@@ -882,35 +882,37 @@ else like the former."
 (define-advice shell-command
     (:around (fn command &optional output-buffer error-buffer)
              shell-command-with-editor-mode)
-  "`shell-mode' and its hook are intended for buffers in which an
-interactive shell is running, but `shell-command' also turns on
-that mode, even though it only runs the shell to run a single
-command.  The `with-editor-export-editor' hook function is only
-intended to be used in buffers in which an interactive shell is
-running, so it has to be removed here."
+  "Set editor envvar, if `shell-command-with-editor-mode' is enabled.
+Also take care of that for `with-editor-[async-]shell-command'."
+  ;; `shell-mode' and its hook are intended for buffers in which an
+  ;; interactive shell is running, but `shell-command' also turns on
+  ;; that mode, even though it only runs the shell to run a single
+  ;; command.  The `with-editor-export-editor' hook function is only
+  ;; intended to be used in buffers in which an interactive shell is
+  ;; running, so it has to be removed here.
   (let ((shell-mode-hook (remove 'with-editor-export-editor shell-mode-hook)))
-    (cond ((or (not (or with-editor--envvar shell-command-with-editor-mode))
-               (not (string-suffix-p "&" command)))
-           (funcall fn command output-buffer error-buffer))
-          ((and with-editor-shell-command-use-emacsclient
-                with-editor-emacsclient-executable
-                (not (file-remote-p default-directory)))
-           (with-editor (funcall fn command output-buffer error-buffer)))
-          (t
-           (funcall fn (format "%s=%s %s"
-                               (or with-editor--envvar "EDITOR")
-                               (shell-quote-argument with-editor-sleeping-editor)
-                               command)
-                    output-buffer error-buffer)
-           (ignore-errors
-             (let ((process (get-buffer-process
-                             (or output-buffer
-                                 (get-buffer "*Async Shell Command*")))))
-               (set-process-filter
-                process (lambda (proc str)
-                          (comint-output-filter proc str)
-                          (with-editor-process-filter proc str t)))
-               process))))))
+    (cond
+     ;; If `with-editor-async-shell-command' was used, then `with-editor'
+     ;; was used, and `with-editor--envvar'.  `with-editor-shell-command'
+     ;; only goes down that path if the command ends with "&".  We might
+     ;; still have to use `with-editor' here, for `async-shell-command'
+     ;; or `shell-command', if the mode is enabled.
+     ((and (string-suffix-p "&" command)
+           (or with-editor--envvar
+               shell-command-with-editor-mode))
+      (if with-editor--envvar
+          (funcall fn command output-buffer error-buffer)
+        (with-editor (funcall fn command output-buffer error-buffer)))
+      ;; The comint filter was overridden with our filter.  Use both.
+      (and-let* ((process (get-buffer-process
+                           (or output-buffer
+                               (get-buffer "*Async Shell Command*")))))
+        (prog1 process
+          (set-process-filter process
+                              (lambda (proc str)
+                                (comint-output-filter proc str)
+                                (with-editor-process-filter proc str t))))))
+     ((funcall fn command output-buffer error-buffer)))))
 
 ;;; _
 

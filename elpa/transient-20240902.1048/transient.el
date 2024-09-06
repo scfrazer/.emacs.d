@@ -6,7 +6,7 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 0.7.4
+;; Package-Version: 0.7.5
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1184,29 +1184,23 @@ commands are aliases for."
       (cond
        ((memq car '(:info :info*)))
        ((keywordp car)
-        (error "Need command, `:info' or `:info*', got `%s'" car))
+        (error "Need command, argument, `:info' or `:info*'; got `%s'" car))
        ((symbolp car)
         (setq args (plist-put args :command (macroexp-quote pop))))
        ((and (commandp car)
-             (not (stringp car)))
+             (eq (car-safe car) 'lambda))
         (let ((cmd pop)
               (sym (intern
-                    (format "transient:%s:%s"
-                            prefix
-                            (let ((desc (plist-get args :description)))
-                              (if (and (stringp desc)
-                                       (length< desc 16))
-                                  desc
-                                (plist-get args :key)))))))
+                    (format
+                     "transient:%s:%s:%d" prefix
+                     (replace-regexp-in-string (plist-get args :key) " " "")
+                     (prog1 gensym-counter (cl-incf gensym-counter))))))
           (setq args (plist-put
                       args :command
                       `(prog1 ',sym
                          (put ',sym 'interactive-only t)
                          (put ',sym 'completion-predicate #'transient--suffix-only)
-                         (defalias ',sym
-                           ,(if (eq (car-safe cmd) 'lambda)
-                                cmd
-                              (macroexp-quote cmd))))))))
+                         (defalias ',sym ,cmd))))))
        ((or (stringp car)
             (and car (listp car)))
         (let ((arg pop)
@@ -1232,10 +1226,8 @@ commands are aliases for."
                  (setq args (plist-put args :reader (macroexp-quote pop))))
                 ((not (string-suffix-p "=" arg))
                  (setq class 'transient-switch))
-                (t
-                 (setq class 'transient-option)))))
-       (t
-        (error "Needed command or argument, got %S" car)))
+                ((setq class 'transient-option)))))
+       ((error "Need command, argument, `:info' or `:info*'; got %s" car)))
       (while (keywordp car)
         (let ((key pop)
               (val pop))
