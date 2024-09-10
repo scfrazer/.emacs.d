@@ -1,6 +1,6 @@
-(define-package "modus-themes" "20240905.857" "Elegant, highly legible and customizable themes"
+(define-package "modus-themes" "20240908.439" "Elegant, highly legible and customizable themes"
   '((emacs "27.1"))
-  :commit "1725bfd1ed2b621349d80682c7fa5529ccfb7cba" :authors
+  :commit "c2cb0404c33ebc1a38faf59fa1755679c435e219" :authors
   '(("Protesilaos Stavrou" . "info@protesilaos.com"))
   :maintainers
   '(("Protesilaos Stavrou" . "info@protesilaos.com"))
