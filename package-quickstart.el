@@ -1226,10 +1226,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240902.1048/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20240911.1551/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240902.1048/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20240911.1551/transient-autoloads.el") (car load-path))))
 
 
 
@@ -1915,10 +1915,10 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240905.913/orderless-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240910.1457/orderless-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240905.913/orderless-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240910.1457/orderless-autoloads.el") (car load-path))))
 
 
 
@@ -3591,7 +3591,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240908.439" "/home/scfrazer/.emacs.d/elpa/orderless-20240905.913" "/home/scfrazer/.emacs.d/elpa/rg-20240908.1059" "/home/scfrazer/.emacs.d/elpa/transient-20240902.1048" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20240908.439" "/home/scfrazer/.emacs.d/elpa/orderless-20240910.1457" "/home/scfrazer/.emacs.d/elpa/rg-20240908.1059" "/home/scfrazer/.emacs.d/elpa/transient-20240911.1551" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
