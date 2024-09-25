@@ -147,6 +147,13 @@ List all `rg-mode' buffers in `ibuffer'." t nil)
 
 ;;;***
 
+;;;### (autoloads nil "rg-info-hack" "rg-info-hack.el" (0 0 0 0))
+;;; Generated autoloads from rg-info-hack.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-info-hack" '("info-insert-file-contents")))
+
+;;;***
+
 ;;;### (autoloads nil "rg-isearch" "rg-isearch.el" (0 0 0 0))
 ;;; Generated autoloads from rg-isearch.el
  (autoload 'rg-isearch-current-file "rg-isearch.el" "" t)
@@ -191,8 +198,7 @@ Setup wgrep rg support." nil nil)
 
 ;;;***
 
-;;;### (autoloads nil nil ("rg-info-hack.el" "rg-pkg.el") (0 0 0
-;;;;;;  0))
+;;;### (autoloads nil nil ("rg-pkg.el") (0 0 0 0))
 
 ;;;***
 
