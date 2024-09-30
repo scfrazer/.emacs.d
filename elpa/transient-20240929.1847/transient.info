@@ -1955,6 +1955,12 @@ File: transient.info,  Node: Suffix Format Methods,  Prev: Suffix Value Methods,
      Show help for the prefix, infix or suffix command represented by
      OBJ.
 
+     Regardless of OBJ’s type, if its ‘show-help’ slot is non-nil, that
+     must be a function, which takes OBJ is its only argument.  It must
+     prepare, display and return a buffer, and select the window used to
+     display it.  The ‘transient-show-help-window’ macro is intended for
+     use in such functions.
+
      For prefixes, show the info manual, if that is specified using the
      ‘info-manual’ slot.  Otherwise, show the manpage if that is
      specified using the ‘man-page’ slot.  Otherwise, show the command’s
@@ -1965,6 +1971,11 @@ File: transient.info,  Node: Suffix Format Methods,  Prev: Suffix Value Methods,
      For infixes, show the manpage if that is specified.  Otherwise show
      the command’s documentation string.
 
+ -- Macro: transient-with-help-window &rest body
+     Evaluate BODY, send output to ‘*Help*’ buffer, and display it in a
+     window.  Select the help window, and make the help buffer current
+     and return it.
+
 
 File: transient.info,  Node: Prefix Slots,  Next: Suffix Slots,  Prev: Suffix Methods,  Up: Classes and Methods
 
@@ -1973,8 +1984,8 @@ File: transient.info,  Node: Prefix Slots,  Next: Suffix Slots,  Prev: Suffix Me
 
    • ‘show-help’, ‘man-page’ or ‘info-manual’ can be used to specify the
      documentation for the prefix and its suffixes.  The command
-     ‘transient-help’ uses the method ‘transient-show-help’ (which see)
-     to lookup and use these values.
+     ‘transient-help’ uses the function ‘transient-show-help’ (which
+     see) to lookup and use these values.
 
    • ‘history-key’ If multiple prefix commands should share a single
      value, then this slot has to be set to the same value for all of
@@ -2076,7 +2087,7 @@ Slots of ‘transient-suffix’
 
    • ‘show-help’ A function used to display help for the suffix.  If
      unspecified, the prefix controls how help is displayed for its
-     suffixes.
+     suffixes.  See also function ‘transient-show-help’.
 
 Slots of ‘transient-infix’
 --------------------------
@@ -2442,6 +2453,8 @@ Appendix C Command and Function Index
                                                               (line  18)
 * transient-toggle-level-limit:          Enabling and Disabling Suffixes.
                                                               (line  68)
+* transient-with-help-window:            Suffix Format Methods.
+                                                              (line  46)
 
 
 File: transient.info,  Node: Variable Index,  Next: Concept Index,  Prev: Command and Function Index,  Up: Top
@@ -3288,27 +3301,27 @@ Node: Suffix Classes78754
 Node: Suffix Methods81841
 Node: Suffix Value Methods82162
 Node: Suffix Format Methods84920
-Node: Prefix Slots86399
-Ref: Internal Prefix Slots88534
-Node: Suffix Slots89791
-Ref: Slots of transient-suffix90159
-Ref: Slots of transient-infix91296
-Ref: Slots of transient-variable94592
-Ref: Slots of transient-switches94694
-Node: Predicate Slots95057
-Node: FAQ96492
-Ref: Can I control how the popup buffer is displayed?96621
-Ref: How can I copy text from the popup buffer?96802
-Ref: How can I autoload prefix and suffix commands?97296
-Ref: How does Transient compare to prefix keys and universal arguments?97770
-Ref: How does Transient compare to Magit-Popup and Hydra?98013
-Ref: Why did some of the key bindings change?98207
-Ref: Why does q not quit popups anymore?100560
-Node: Keystroke Index101663
-Node: Command and Function Index103528
-Node: Variable Index110257
-Node: Concept Index112530
-Node: GNU General Public License115266
+Node: Prefix Slots86945
+Ref: Internal Prefix Slots89082
+Node: Suffix Slots90339
+Ref: Slots of transient-suffix90707
+Ref: Slots of transient-infix91890
+Ref: Slots of transient-variable95186
+Ref: Slots of transient-switches95288
+Node: Predicate Slots95651
+Node: FAQ97086
+Ref: Can I control how the popup buffer is displayed?97215
+Ref: How can I copy text from the popup buffer?97396
+Ref: How can I autoload prefix and suffix commands?97890
+Ref: How does Transient compare to prefix keys and universal arguments?98364
+Ref: How does Transient compare to Magit-Popup and Hydra?98607
+Ref: Why did some of the key bindings change?98801
+Ref: Why does q not quit popups anymore?101154
+Node: Keystroke Index102257
+Node: Command and Function Index104122
+Node: Variable Index110988
+Node: Concept Index113261
+Node: GNU General Public License115997
 
 End Tag Table
 
