@@ -8,7 +8,8 @@
 ;; URL: https://github.com/yoshiki/yaml-mode
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: data yaml
-;; Version: 0.0.16
+;; Package-Version: 20241003.153
+;; Package-Revision: d91f87872931
 
 ;; This file is not part of Emacs
 
@@ -103,7 +104,7 @@ that key is pressed to begin a block literal."
 
 (defface yaml-tab-face
   '((((class color)) (:background "red" :foreground "red" :bold t))
-    (t (:reverse-video t)))
+    (t (:inverse-video t)))
   "Face to use for highlighting tabs in YAML files."
   :group 'faces
   :group 'yaml)
