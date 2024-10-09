@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241004.1739
-;; Package-Revision: fc03c0b75826
+;; Package-Version: 20241008.1808
+;; Package-Revision: bbda5bb67eee
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1189,10 +1189,10 @@ commands are aliases for."
        ((symbolp car)
         (setq args (plist-put args :command (macroexp-quote pop))))
        ;; During macro-expansion this is expected to be a `lambda'
-       ;; expression.  When this is called from a `:setup-children'
-       ;; function, it may also be a byte-code function object or a
-       ;; compiled function.  However, we never treat a string as a
-       ;; command, so we have to check for that explicitly.
+       ;; expression (i.e., source code).  When this is called from a
+       ;; `:setup-children' function, it may also be a function object
+       ;; (a.k.a a function value).  However, we never treat a string
+       ;; as a command, so we have to check for that explicitly.
        ((and (commandp car)
              (not (stringp car)))
         (let ((cmd pop)
@@ -1235,8 +1235,8 @@ commands are aliases for."
                 ((setq class 'transient-option)))))
        ((error "Need command, argument, `:info' or `:info*'; got %s" car)))
       (while (keywordp car)
-        (let ((key pop)
-              (val pop))
+        (let* ((key pop)
+               (val (if spec pop (error "No value for `%s'" key))))
           (cond ((eq key :class) (setq class val))
                 ((eq key :level) (setq level val))
                 ((eq key :info)
@@ -1250,7 +1250,9 @@ commands are aliases for."
                 ((or (symbolp val)
                      (and (listp val) (not (eq (car val) 'lambda))))
                  (setq args (plist-put args key (macroexp-quote val))))
-                ((setq args (plist-put args key val)))))))
+                ((setq args (plist-put args key val))))))
+      (when spec
+        (error "Need keyword, got %S" car)))
     (when-let* (((not (plist-get args :key)))
                 (shortarg (plist-get args :shortarg)))
       (setq args (plist-put args :key shortarg)))

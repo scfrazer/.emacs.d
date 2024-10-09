@@ -1,10 +1,10 @@
 ;; -*- no-byte-compile: t; lexical-binding: nil -*-
-(define-package "modus-themes" "20241004.748"
+(define-package "modus-themes" "20241007.1332"
   "Elegant, highly legible and customizable themes."
   '((emacs "27.1"))
   :url "https://github.com/protesilaos/modus-themes"
-  :commit "4932dfc3492ba4aaaca122f9abc37048ab7cc3d1"
-  :revdesc "4932dfc3492b"
+  :commit "817ff75d11599b65acf583e0f8b5d69163550299"
+  :revdesc "817ff75d1159"
   :keywords '("faces" "theme" "accessibility")
   :authors '(("Protesilaos Stavrou" . "info@protesilaos.com"))
   :maintainers '(("Protesilaos Stavrou" . "info@protesilaos.com")))
