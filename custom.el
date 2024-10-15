@@ -27,8 +27,10 @@
  '(citre-update-tags-file-when-no-definitions nil)
  '(clean-buffer-list-kill-buffer-names
    '("*Help*" "*Apropos*" "*Man " "*Buffer List*" "*Compile-Log*" "*vc*" "*vc-diff*"))
+ '(column-number-mode t)
  '(completion-category-overrides '((file (styles basic substring))))
  '(completion-ignore-case t t)
+ '(cua-mode t nil (cua-base))
  '(custom-safe-themes t)
  '(deft-new-file-format "Notes-%Y-%m-%d.md")
  '(desktop-lazy-verbose nil)
@@ -50,6 +52,7 @@
  '(eldoc-minor-mode-string " Doc")
  '(flyspell-mode-line-string " Sp")
  '(frame-background-mode 'dark)
+ '(global-display-line-numbers-mode t)
  '(highlight-indent-guides-auto-enabled nil)
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method 'character)
@@ -65,6 +68,7 @@
      (my-complete-recentf-file . file)))
  '(marginalia-margin-threshold 160)
  '(marginalia-separator-threshold 1000)
+ '(menu-bar-mode nil)
  '(midnight-mode t nil (midnight))
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
@@ -84,7 +88,9 @@
      (checkdoc-force-docstrings-flag)
      (folded-file . t)))
  '(set-mark-command-repeat-pop t)
+ '(show-paren-mode t)
  '(speedbar-indentation-width 4)
+ '(tool-bar-mode nil)
  '(transient-history-file "~/.emacs.d/.transient/history.el")
  '(transient-levels-file "~/.emacs.d/.transient/levels.el")
  '(transient-values-file "~/.emacs.d/.transient/values.el")
@@ -136,6 +142,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Cascadia Code NF" :foundry "SAJA" :slant normal :weight light :height 101 :width normal))))
  '(beacon-fallback-background ((t (:background "#ffffff"))))
  '(web-mode-block-control-face ((t (:inherit font-lock-keyword-face))))
  '(web-mode-block-delimiter-face ((t (:inherit font-lock-type-face :weight bold))))

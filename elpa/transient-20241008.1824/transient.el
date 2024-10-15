@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241008.1808
-;; Package-Revision: bbda5bb67eee
+;; Package-Version: 20241008.1824
+;; Package-Revision: 8873c300b2cf
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1139,8 +1139,8 @@ commands are aliases for."
       (when (stringp car)
         (setq args (plist-put args :description pop)))
       (while (keywordp car)
-        (let ((key pop)
-              (val pop))
+        (let* ((key pop)
+               (val (if spec pop (error "No value for `%s'" key))))
           (cond ((eq key :class)
                  (setq class (macroexp-quote val)))
                 ((or (symbolp val)
