@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241009.1745
-;; Package-Revision: 45a77c5c910a
+;; Package-Version: 20241018.1740
+;; Package-Revision: 05c011b847aa
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -40,6 +40,7 @@
 (require 'eieio)
 (require 'edmacro)
 (require 'format-spec)
+(require 'pcase)
 
 (eval-and-compile
   (when (and (featurep 'seq)
@@ -85,6 +86,15 @@ similar defect.") :emergency))
 
 (defvar Man-notify-method)
 (defvar pp-default-function) ; since Emacs 29.1
+
+(eval-and-compile
+  (when (< emacs-major-version 28)
+    (pcase-defmacro cl-type (type)
+      "Pcase pattern that matches objects of TYPE.
+TYPE is a type descriptor as accepted by `cl-typep', which see."
+      (static-if (< emacs-major-version 30)
+          `(pred (pcase--flip cl-typep ',type))
+        `(pred (cl-typep _ ',type))))))
 
 (defmacro transient--with-emergency-exit (id &rest body)
   (declare (indent defun))
@@ -659,6 +669,7 @@ If `transient-save-history' is nil, then do nothing."
    (transient-non-suffix :initarg :transient-non-suffix :initform nil)
    (transient-switch-frame :initarg :transient-switch-frame)
    (refresh-suffixes     :initarg :refresh-suffixes     :initform nil)
+   (environment          :initarg :environment          :initform nil)
    (incompatible         :initarg :incompatible         :initform nil)
    (suffix-description   :initarg :suffix-description)
    (variable-pitch       :initarg :variable-pitch       :initform nil)
@@ -1151,8 +1162,8 @@ commands are aliases for."
           (or level transient--default-child-level)
           (list 'quote
                 (cond (class)
-                      ((or (vectorp (car spec))
-                           (and (car spec) (symbolp (car spec))))
+                      ((cl-typep (car spec)
+                                 '(or vector (and symbol (not null))))
                        'transient-columns)
                       ('transient-column)))
           (and args (cons 'list args))
@@ -2065,14 +2076,16 @@ EDIT may be non-nil."
      (edit
       ;; Returning from help to edit.
       (setq transient--editp t)))
-    (transient--init-objects name layout params)
-    (transient--init-keymaps)
-    (transient--history-init transient--prefix)
-    (setq transient--original-window (selected-window))
-    (setq transient--original-buffer (current-buffer))
-    (setq transient--minibuffer-depth (minibuffer-depth))
-    (transient--redisplay)
-    (transient--init-transient)
+    (transient--env-apply
+     (lambda ()
+       (transient--init-transient name layout params)
+       (transient--history-init transient--prefix)
+       (setq transient--original-window (selected-window))
+       (setq transient--original-buffer (current-buffer))
+       (setq transient--minibuffer-depth (minibuffer-depth))
+       (transient--redisplay))
+     (get name 'transient--prefix))
+    (transient--setup-transient)
     (transient--suspend-which-key-mode)))
 
 (cl-defgeneric transient-setup-children (group children)
@@ -2083,6 +2096,23 @@ value.  Otherwise return CHILDREN as is."
   (if (slot-boundp group 'setup-children)
       (funcall (oref group setup-children) children)
     children))
+
+(defun transient--env-apply (fn &optional prefix)
+  (if-let ((env (oref (or prefix transient--prefix) environment)))
+      (funcall env fn)
+    (funcall fn)))
+
+(defun transient--init-transient (&optional name layout params)
+  (unless name
+    ;; Re-init.
+    (if (eq transient--refreshp 'updated-value)
+        ;; Preserve the prefix value this once, because the
+        ;; invoked suffix indicates that it has updated that.
+        (setq transient--refreshp (oref transient--prefix refresh-suffixes))
+      ;; Otherwise update the prefix value from suffix values.
+      (oset transient--prefix value (transient-get-value))))
+  (transient--init-objects name layout params)
+  (transient--init-keymaps))
 
 (defun transient--init-keymaps ()
   (setq transient--predicate-map (transient--make-predicate-map))
@@ -2279,8 +2309,8 @@ value.  Otherwise return CHILDREN as is."
 
 ;;; Flow-Control
 
-(defun transient--init-transient ()
-  (transient--debug 'init-transient)
+(defun transient--setup-transient ()
+  (transient--debug 'setup-transient)
   (transient--push-keymap 'transient--transient-map)
   (transient--push-keymap 'transient--redisplay-map)
   (add-hook 'pre-command-hook  #'transient--pre-command)
@@ -2297,14 +2327,7 @@ value.  Otherwise return CHILDREN as is."
   (transient--pop-keymap 'transient--predicate-map)
   (transient--pop-keymap 'transient--transient-map)
   (transient--pop-keymap 'transient--redisplay-map)
-  (if (eq transient--refreshp 'updated-value)
-      ;; Preserve the prefix value this once, because the
-      ;; invoked suffix indicates that it has updated that.
-      (setq transient--refreshp (oref transient--prefix refresh-suffixes))
-    ;; Otherwise update the prefix value from suffix values.
-    (oset transient--prefix value (transient-get-value)))
-  (transient--init-objects)
-  (transient--init-keymaps)
+  (transient--init-transient)
   (transient--push-keymap 'transient--transient-map)
   (transient--push-keymap 'transient--redisplay-map)
   (transient--redisplay))
@@ -2560,14 +2583,14 @@ value.  Otherwise return CHILDREN as is."
                   ;; argument is in effect.
                   (not prefix-arg)))
             (transient--refreshp
-             (transient--refresh-transient))
+             (transient--env-apply #'transient--refresh-transient))
             ((let ((old transient--redisplay-map)
                    (new (transient--make-redisplay-map)))
                (unless (equal old new)
                  (transient--pop-keymap 'transient--redisplay-map)
                  (setq transient--redisplay-map new)
                  (transient--push-keymap 'transient--redisplay-map))
-               (transient--redisplay)))))
+               (transient--env-apply #'transient--redisplay)))))
     (setq transient-current-prefix nil)
     (setq transient-current-command nil)
     (setq transient-current-suffixes nil)))

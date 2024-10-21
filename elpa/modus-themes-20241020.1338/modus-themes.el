@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20241007.1332
-;; Package-Revision: 817ff75d1159
+;; Package-Version: 20241020.1338
+;; Package-Revision: 613f95341246
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -288,10 +288,14 @@ set this variable to a nil value."
   "Alias of `modus-themes-items'.")
 
 (defconst modus-themes-items
-  '( modus-operandi modus-vivendi
-     modus-operandi-tinted modus-vivendi-tinted
-     modus-operandi-deuteranopia modus-vivendi-deuteranopia
-     modus-operandi-tritanopia modus-vivendi-tritanopia)
+  '( modus-operandi
+     modus-operandi-tinted
+     modus-operandi-deuteranopia
+     modus-operandi-tritanopia
+     modus-vivendi
+     modus-vivendi-tinted
+     modus-vivendi-deuteranopia
+     modus-vivendi-tritanopia)
   "Symbols of the Modus themes.")
 
 (defcustom modus-themes-to-toggle '(modus-operandi modus-vivendi)
@@ -319,8 +323,16 @@ the same as using the command `modus-themes-select'."
                                   modus-themes-items))))
   :package-version '(modus-themes . "4.0.0")
   :version "30.1"
-  :set #'modus-themes--set-option
-  :initialize #'custom-initialize-default
+  :group 'modus-themes)
+
+(defcustom modus-themes-to-rotate modus-themes-items
+  "List of Modus themes to rotate among, per `modus-themes-rotate'."
+  :type `(repeat (choice :tag "A theme among the `modus-themes-items'"
+                         ,@(mapcar (lambda (theme)
+                                     (list 'const theme))
+                                   modus-themes-items)))
+  :package-version '(modus-themes . "4.6.0")
+  :version "31.1"
   :group 'modus-themes)
 
 (defvaralias 'modus-themes-post-load-hook 'modus-themes-after-load-theme-hook)
@@ -331,8 +343,6 @@ This is used by the command `modus-themes-toggle'."
   :type 'hook
   :package-version '(modus-themes . "4.0.0")
   :version "30.1"
-  :set #'modus-themes--set-option
-  :initialize #'custom-initialize-default
   :group 'modus-themes)
 
 (defvaralias 'modus-themes-slanted-constructs 'modus-themes-italic-constructs)
@@ -1183,6 +1193,8 @@ symbol, which is safe when used as a face attribute's value."
 
 ;;;; Commands
 
+;;;;; Select a theme with completion
+
 (defvar modus-themes--select-theme-history nil
   "Minibuffer history of `modus-themes--select-prompt'.")
 
@@ -1223,6 +1235,8 @@ Disable other themes per `modus-themes-disable-other-themes'."
   (interactive (list (modus-themes--select-prompt)))
   (modus-themes-load-theme theme))
 
+;;;;; Toggle between two themes
+
 (defun modus-themes--toggle-theme-p ()
   "Return non-nil if `modus-themes-to-toggle' are valid."
   (mapc
@@ -1248,6 +1262,42 @@ Disable other themes per `modus-themes-disable-other-themes'."
             (two (cadr themes)))
       (modus-themes-load-theme (if (eq (car custom-enabled-themes) one) two one))
     (modus-themes-load-theme (modus-themes--select-prompt))))
+
+;;;;; Rotate through a list of themes
+
+(defun modus-themes--rotate (themes)
+  "Rotate THEMES rightward such that the car is moved to the end."
+  (if (consp themes)
+      (let* ((index (seq-position themes (modus-themes--current-theme)))
+             (offset (1+ index)))
+        (append (nthcdr offset themes) (take offset themes)))
+    (error "The `%s' is not a list" themes)))
+
+(defun modus-themes--rotate-p (themes)
+  "Return a new theme among THEMES if it is possible to rotate to it."
+  (if-let ((new-theme (car (modus-themes--rotate themes))))
+      (if (eq new-theme (modus-themes--current-theme))
+          (car (modus-themes--rotate-p (modus-themes--rotate themes)))
+        new-theme)
+    (error "Cannot determine a theme among `%s'" themes)))
+
+;;;###autoload
+(defun modus-themes-rotate (themes)
+  "Rotate to the next theme among THEMES.
+When called interactively THEMES is the value of `modus-themes-to-rotate'.
+
+If the current theme is already the next in line, then move to the one
+after.  Perform the rotation rightwards, such that the first element in
+the list becomes the last.  Do not modify THEMES in the process."
+  (interactive (list modus-themes-to-rotate))
+  (let ((candidate (modus-themes--rotate-p themes)))
+    (if (modus-themes--modus-p candidate)
+        (progn
+          (message "Rotating to `%s'" (propertize (symbol-name candidate) 'face 'success))
+          (modus-themes-load-theme candidate))
+      (user-error "`%s' is not part of the Modus collection" candidate))))
+
+;;;;; Preview a theme palette
 
 (defun modus-themes--list-colors-render (buffer theme &optional mappings &rest _)
   "Render colors in BUFFER from THEME for `modus-themes-list-colors'.
@@ -3301,7 +3351,7 @@ FG and BG are the main colors."
     `(org-headline-todo ((,c :inherit org-todo)))
     `(org-hide ((,c :foreground ,bg-main)))
     `(org-indent ((,c :inherit (fixed-pitch org-hide))))
-    `(org-imminent-deadline ((,c :inherit modus-themes-bold :foreground ,date-deadline)))
+    `(org-imminent-deadline ((,c :inherit bold :foreground ,date-deadline)))
     `(org-latex-and-related ((,c :foreground ,type)))
     `(org-level-1 ((,c :inherit modus-themes-heading-1)))
     `(org-level-2 ((,c :inherit modus-themes-heading-2)))
@@ -3320,9 +3370,9 @@ FG and BG are the main colors."
     `(org-priority ((,c :foreground ,prose-tag)))
     `(org-property-value ((,c :inherit modus-themes-fixed-pitch :foreground ,prose-metadata-value)))
     `(org-quote ((,c :inherit org-block)))
-    `(org-scheduled ((,c :foreground ,date-scheduled)))
-    `(org-scheduled-previously ((,c :inherit org-scheduled)))
-    `(org-scheduled-today ((,c :inherit (modus-themes-bold org-scheduled))))
+    `(org-scheduled ((,c :foreground ,date-scheduled-subtle)))
+    `(org-scheduled-previously ((,c :inherit (bold org-scheduled-today))))
+    `(org-scheduled-today ((,c :foreground ,date-scheduled)))
     `(org-sexp-date ((,c :foreground ,date-common)))
     `(org-special-keyword ((,c :inherit org-drawer)))
     `(org-table ((,c :inherit modus-themes-fixed-pitch :foreground ,prose-table)))
@@ -3332,8 +3382,8 @@ FG and BG are the main colors."
     `(org-target ((,c :underline t)))
     `(org-time-grid ((,c :foreground ,fg-dim)))
     `(org-todo ((,c :foreground ,prose-todo)))
-    `(org-upcoming-deadline ((,c :foreground ,date-deadline)))
-    `(org-upcoming-distant-deadline ((,c :inherit org-upcoming-deadline)))
+    `(org-upcoming-deadline ((,c :foreground ,date-deadline-subtle)))
+    `(org-upcoming-distant-deadline ((,c :foreground ,fg-main)))
     `(org-verbatim ((,c :inherit modus-themes-prose-verbatim)))
     `(org-verse ((,c :inherit org-block)))
     `(org-warning ((,c :inherit warning)))

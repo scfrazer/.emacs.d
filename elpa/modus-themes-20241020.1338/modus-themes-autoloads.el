@@ -31,6 +31,16 @@ practically the same as the `modus-themes-select' command).
 Run `modus-themes-after-load-theme-hook' after loading the theme.
 Disable other themes per `modus-themes-disable-other-themes'." t nil)
 
+(autoload 'modus-themes-rotate "modus-themes" "\
+Rotate to the next theme among THEMES.
+When called interactively THEMES is the value of `modus-themes-to-rotate'.
+
+If the current theme is already the next in line, then move to the one
+after.  Perform the rotation rightwards, such that the first element in
+the list becomes the last.  Do not modify THEMES in the process.
+
+\(fn THEMES)" t nil)
+
 (autoload 'modus-themes-theme "modus-themes" "\
 Bind NAME's color PALETTE around face specs and variables.
 Face specifications are passed to `custom-theme-set-faces'.

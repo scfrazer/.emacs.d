@@ -1,4 +1,4 @@
-;;; modus-vivendi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a black background -*- lexical-binding:t -*-
+;;; modus-operandi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2024  Free Software Foundation, Inc.
 
@@ -43,184 +43,184 @@
     (require 'modus-themes))
 
 ;;;###theme-autoload
-  (deftheme modus-vivendi-deuteranopia
-    "Deuteranopia-optimized theme with a black background.
+  (deftheme modus-operandi-deuteranopia
+    "Deuteranopia-optimized theme with a white background.
 This variant is optimized for users with red-green color
 deficiency (deuteranopia).  It conforms with the highest
 legibility standard for color contrast between background and
 foreground in any given piece of text, which corresponds to a
 minimum contrast in relative luminance of 7:1 (WCAG AAA
 standard)."
-    :background-mode 'dark
+    :background-mode 'light
     :kind 'color-scheme
     :family 'modus)
 
-  (defconst modus-vivendi-deuteranopia-palette
+  (defconst modus-operandi-deuteranopia-palette
     '(
 ;;; Basic values
 
-      (bg-main          "#000000")
-      (bg-dim           "#1e1e1e")
-      (fg-main          "#ffffff")
-      (fg-dim           "#989898")
-      (fg-alt           "#c6daff")
-      (bg-active        "#535353")
-      (bg-inactive      "#303030")
-      (border           "#646464")
+      (bg-main          "#ffffff")
+      (bg-dim           "#f2f2f2")
+      (fg-main          "#000000")
+      (fg-dim           "#595959")
+      (fg-alt           "#193668")
+      (bg-active        "#c4c4c4")
+      (bg-inactive      "#e0e0e0")
+      (border           "#9f9f9f")
 
 ;;; Common accent foregrounds
 
-      (red             "#ff5f59")
-      (red-warmer      "#ff6b55")
-      (red-cooler      "#ff7f9f")
-      (red-faint       "#ff9580")
-      (red-intense     "#ff5f5f")
-      (green           "#44bc44")
-      (green-warmer    "#70b900")
-      (green-cooler    "#00c06f")
-      (green-faint     "#88ca9f")
-      (green-intense   "#44df44")
-      (yellow          "#cabf00")
-      (yellow-warmer   "#ffa00f")
-      (yellow-cooler   "#d8af7a")
-      (yellow-faint    "#d2b580")
-      (yellow-intense  "#efef00")
-      (blue            "#2fafff")
-      (blue-warmer     "#79a8ff")
-      (blue-cooler     "#00bcff")
-      (blue-faint      "#82b0ec")
-      (blue-intense    "#338fff")
-      (magenta         "#feacd0")
-      (magenta-warmer  "#f78fe7")
-      (magenta-cooler  "#b6a0ff")
-      (magenta-faint   "#caa6df")
-      (magenta-intense "#ff66ff")
-      (cyan            "#00d3d0")
-      (cyan-warmer     "#4ae2f0")
-      (cyan-cooler     "#6ae4b9")
-      (cyan-faint      "#9ac8e0")
-      (cyan-intense    "#00eff0")
+      (red             "#a60000")
+      (red-warmer      "#972500")
+      (red-cooler      "#a0132f")
+      (red-faint       "#7f0000")
+      (red-intense     "#d00000")
+      (green           "#006800")
+      (green-warmer    "#316500")
+      (green-cooler    "#00663f")
+      (green-faint     "#2a5045")
+      (green-intense   "#008900")
+      (yellow          "#695500")
+      (yellow-warmer   "#973300")
+      (yellow-cooler   "#77492f")
+      (yellow-faint    "#624416")
+      (yellow-intense  "#808000")
+      (blue            "#0031a9")
+      (blue-warmer     "#3548cf")
+      (blue-cooler     "#0000b0")
+      (blue-faint      "#003497")
+      (blue-intense    "#0000ff")
+      (magenta         "#721045")
+      (magenta-warmer  "#8f0075")
+      (magenta-cooler  "#531ab6")
+      (magenta-faint   "#7c318f")
+      (magenta-intense "#dd22dd")
+      (cyan            "#005e8b")
+      (cyan-warmer     "#3f578f")
+      (cyan-cooler     "#005f5f")
+      (cyan-faint      "#005077")
+      (cyan-intense    "#008899")
 
 ;;; Uncommon accent foregrounds
 
-      (rust       "#db7b5f")
-      (gold       "#c0965b")
-      (olive      "#9cbd6f")
-      (slate      "#76afbf")
-      (indigo     "#9099d9")
-      (maroon     "#cf7fa7")
-      (pink       "#d09dc0")
+      (rust       "#8a290f")
+      (gold       "#80601f")
+      (olive      "#56692d")
+      (slate      "#2f3f83")
+      (indigo     "#4a3a8a")
+      (maroon     "#731c52")
+      (pink       "#7b435c")
 
 ;;; Common accent backgrounds
 
-      (bg-red-intense     "#9d1f1f")
-      (bg-green-intense   "#2f822f")
-      (bg-yellow-intense  "#7a6100")
-      (bg-blue-intense    "#1640b0")
-      (bg-magenta-intense "#7030af")
-      (bg-cyan-intense    "#2266ae")
+      (bg-red-intense     "#ff8f88")
+      (bg-green-intense   "#8adf80")
+      (bg-yellow-intense  "#f3d000")
+      (bg-blue-intense    "#bfc9ff")
+      (bg-magenta-intense "#dfa0f0")
+      (bg-cyan-intense    "#a4d5f9")
 
-      (bg-red-subtle      "#620f2a")
-      (bg-green-subtle    "#00422a")
-      (bg-yellow-subtle   "#4a4000")
-      (bg-blue-subtle     "#242679")
-      (bg-magenta-subtle  "#552f5f")
-      (bg-cyan-subtle     "#004065")
+      (bg-red-subtle      "#ffcfbf")
+      (bg-green-subtle    "#b3fabf")
+      (bg-yellow-subtle   "#fff576")
+      (bg-blue-subtle     "#ccdfff")
+      (bg-magenta-subtle  "#ffddff")
+      (bg-cyan-subtle     "#bfefff")
 
-      (bg-red-nuanced     "#3a0c14")
-      (bg-green-nuanced   "#092f1f")
-      (bg-yellow-nuanced  "#381d0f")
-      (bg-blue-nuanced    "#12154a")
-      (bg-magenta-nuanced "#2f0c3f")
-      (bg-cyan-nuanced    "#042837")
+      (bg-red-nuanced     "#ffe8e8")
+      (bg-green-nuanced   "#e0f6e0")
+      (bg-yellow-nuanced  "#f8f0d0")
+      (bg-blue-nuanced    "#ecedff")
+      (bg-magenta-nuanced "#f8e6f5")
+      (bg-cyan-nuanced    "#e0f2fa")
 
 ;;; Uncommon accent background and foreground pairs
 
-      (bg-clay     "#49191a")
-      (fg-clay     "#f1b090")
+      (bg-clay     "#f1c8b5")
+      (fg-clay     "#63192a")
 
-      (bg-ochre    "#462f20")
-      (fg-ochre    "#e0d09c")
+      (bg-ochre    "#f0e3c0")
+      (fg-ochre    "#573a30")
 
-      (bg-lavender "#38325c")
-      (fg-lavender "#dfc0f0")
+      (bg-lavender "#dfcdfa")
+      (fg-lavender "#443379")
 
-      (bg-sage     "#143e32")
-      (fg-sage     "#c3e7d4")
+      (bg-sage     "#c0e7d4")
+      (fg-sage     "#124b41")
 
 ;;; Graphs
 
-      (bg-graph-red-0     "#bf6000")
-      (bg-graph-red-1     "#733500")
-      (bg-graph-green-0   "#6fbf8f")
-      (bg-graph-green-1   "#2f5f4f")
-      (bg-graph-yellow-0  "#c1c00a")
-      (bg-graph-yellow-1  "#7f6640")
-      (bg-graph-blue-0    "#0f90ef")
-      (bg-graph-blue-1    "#1f2f8f")
-      (bg-graph-magenta-0 "#7f7f8e")
-      (bg-graph-magenta-1 "#4f4f5f")
-      (bg-graph-cyan-0    "#376f9a")
-      (bg-graph-cyan-1    "#00404f")
+      (bg-graph-red-0     "#d0b029")
+      (bg-graph-red-1     "#e0cab4")
+      (bg-graph-green-0   "#8ac050")
+      (bg-graph-green-1   "#afdfa5")
+      (bg-graph-yellow-0  "#ffcf00")
+      (bg-graph-yellow-1  "#f9ff00")
+      (bg-graph-blue-0    "#7f9fff")
+      (bg-graph-blue-1    "#afd0ff")
+      (bg-graph-magenta-0 "#b0b0d0")
+      (bg-graph-magenta-1 "#d0dfdf")
+      (bg-graph-cyan-0    "#6faad9")
+      (bg-graph-cyan-1    "#bfe0ff")
 
 ;;; Special purpose
 
-      (bg-completion       "#2f447f")
-      (bg-hover            "#45605e")
-      (bg-hover-secondary  "#654a39")
-      (bg-hl-line          "#2f3849")
-      (bg-region           "#5a5a5a")
-      (fg-region           "#ffffff")
+      (bg-completion       "#c0deff")
+      (bg-hover            "#b2e4dc")
+      (bg-hover-secondary  "#f5d0a0")
+      (bg-hl-line          "#dae5ec")
+      (bg-region           "#bdbdbd")
+      (fg-region           "#000000")
 
-      (bg-char-0 "#0050af")
-      (bg-char-1 "#7f1f7f")
-      (bg-char-2 "#625a00")
+      (bg-char-0 "#7feaff")
+      (bg-char-1 "#ffaaff")
+      (bg-char-2 "#dff000")
 
-      (bg-mode-line-active        "#2a2a6a")
-      (fg-mode-line-active        "#f0f0f0")
-      (border-mode-line-active    "#8080a7")
-      (bg-mode-line-inactive      "#2d2d2d")
-      (fg-mode-line-inactive      "#969696")
-      (border-mode-line-inactive  "#606060")
+      (bg-mode-line-active        "#d0d6ff")
+      (fg-mode-line-active        "#0f0f0f")
+      (border-mode-line-active    "#4f4f74")
+      (bg-mode-line-inactive      "#e6e6e6")
+      (fg-mode-line-inactive      "#585858")
+      (border-mode-line-inactive  "#a3a3a3")
 
-      (modeline-err     "#e5bf00")
-      (modeline-warning "#c0cf35")
-      (modeline-info    "#abeadf")
+      (modeline-err     "#603a00")
+      (modeline-warning "#454500")
+      (modeline-info    "#023d92")
 
-      (bg-tab-bar      "#313131")
-      (bg-tab-current  "#000000")
-      (bg-tab-other    "#545454")
+      (bg-tab-bar      "#dfdfdf")
+      (bg-tab-current  "#ffffff")
+      (bg-tab-other    "#c2c2c2")
 
 ;;; Diffs
 
-      (bg-added           "#003066")
-      (bg-added-faint     "#001a4f")
-      (bg-added-refine    "#0f4a77")
-      (bg-added-fringe    "#006fff")
-      (fg-added           "#c4d5ff")
-      (fg-added-intense   "#8080ff")
+      (bg-added           "#d5d7ff")
+      (bg-added-faint     "#e6e6ff")
+      (bg-added-refine    "#babcef")
+      (bg-added-fringe    "#275acc")
+      (fg-added           "#303099")
+      (fg-added-intense   "#0303cc")
 
-      (bg-changed         "#2f123f")
-      (bg-changed-faint   "#1f022f")
-      (bg-changed-refine  "#3f325f")
-      (bg-changed-fringe  "#7f55a0")
-      (fg-changed         "#e3cfff")
-      (fg-changed-intense "#cf9fe2")
+      (bg-changed         "#eecfdf")
+      (bg-changed-faint   "#f0dde5")
+      (bg-changed-refine  "#e0b0d0")
+      (bg-changed-fringe  "#9f6ab0")
+      (fg-changed         "#6f1343")
+      (fg-changed-intense "#7f0f9f")
 
-      (bg-removed         "#3d3d00")
-      (bg-removed-faint   "#281f00")
-      (bg-removed-refine  "#555500")
-      (bg-removed-fringe  "#d0c03f")
-      (fg-removed         "#d4d48f")
-      (fg-removed-intense "#d0b05f")
+      (bg-removed         "#f4f099")
+      (bg-removed-faint   "#f6f6b7")
+      (bg-removed-refine  "#ede06f")
+      (bg-removed-fringe  "#c0b200")
+      (fg-removed         "#553d00")
+      (fg-removed-intense "#7f6f00")
 
-      (bg-diff-context    "#1a1a1a")
+      (bg-diff-context    "#f3f3f3")
 
 ;;; Paren match
 
-      (bg-paren-match        "#2f7f9f")
+      (bg-paren-match        "#5fcfff")
       (fg-paren-match        fg-main)
-      (bg-paren-expression   "#453040")
+      (bg-paren-expression   "#efd3f5")
       (underline-paren-match unspecified)
 
 ;;; Mappings
@@ -228,7 +228,7 @@ standard)."
 ;;;; General mappings
 
       (fringe bg-dim)
-      (cursor yellow-intense)
+      (cursor blue-intense)
 
       (keybind blue-cooler)
       (name blue-cooler)
@@ -262,7 +262,7 @@ standard)."
       (constant blue-cooler)
       (delimiter fg-main)
       (docmarkup magenta-faint)
-      (docstring cyan-faint)
+      (docstring green-faint)
       (fnname magenta)
       (keyword magenta-cooler)
       (number fg-main)
@@ -277,10 +277,10 @@ standard)."
 
 ;;;; Accent mappings
 
-      (accent-0 blue-cooler)
-      (accent-1 yellow)
-      (accent-2 cyan-cooler)
-      (accent-3 magenta-warmer)
+      (accent-0 blue)
+      (accent-1 yellow-warmer)
+      (accent-2 cyan)
+      (accent-3 magenta-cooler)
 
 ;;;; Button mappings
 
@@ -291,10 +291,10 @@ standard)."
 
 ;;;; Completion mappings
 
-      (fg-completion-match-0 blue-cooler)
-      (fg-completion-match-1 yellow)
-      (fg-completion-match-2 cyan-cooler)
-      (fg-completion-match-3 magenta-warmer)
+      (fg-completion-match-0 blue)
+      (fg-completion-match-1 yellow-warmer)
+      (fg-completion-match-2 cyan)
+      (fg-completion-match-3 magenta-cooler)
       (bg-completion-match-0 unspecified)
       (bg-completion-match-1 unspecified)
       (bg-completion-match-2 unspecified)
@@ -304,14 +304,16 @@ standard)."
 
       (date-common cyan)
       (date-deadline yellow-warmer)
+      (date-deadline-subtle red-faint)
       (date-event fg-alt)
       (date-holiday yellow-warmer)
       (date-holiday-other blue)
       (date-now fg-main)
       (date-range fg-alt)
       (date-scheduled yellow-cooler)
+      (date-scheduled-subtle yellow-faint)
       (date-weekday cyan)
-      (date-weekend yellow-faint)
+      (date-weekend magenta)
 
 ;;;; Line number mappings
 
@@ -337,12 +339,12 @@ standard)."
 ;;;; Mail mappings
 
       (mail-cite-0 blue-warmer)
-      (mail-cite-1 yellow-cooler)
+      (mail-cite-1 yellow)
       (mail-cite-2 cyan-faint)
-      (mail-cite-3 yellow)
+      (mail-cite-3 yellow-faint)
       (mail-part blue)
       (mail-recipient blue)
-      (mail-subject yellow-warmer)
+      (mail-subject yellow-cooler)
       (mail-other cyan-faint)
 
 ;;;; Mark mappings
@@ -352,7 +354,7 @@ standard)."
       (bg-mark-select bg-cyan-subtle)
       (fg-mark-select cyan)
       (bg-mark-other bg-magenta-subtle)
-      (fg-mark-other magenta-warmer)
+      (fg-mark-other magenta)
 
 ;;;; Prompt mappings
 
@@ -387,15 +389,15 @@ standard)."
 
 ;;;; Rainbow mappings
 
-      (rainbow-0 yellow-warmer)
-      (rainbow-1 blue)
-      (rainbow-2 yellow-cooler)
-      (rainbow-3 blue-warmer)
-      (rainbow-4 yellow)
-      (rainbow-5 cyan-warmer)
-      (rainbow-6 yellow-faint)
-      (rainbow-7 blue-faint)
-      (rainbow-8 magenta-faint)
+      (rainbow-0 blue)
+      (rainbow-1 yellow)
+      (rainbow-2 blue-warmer)
+      (rainbow-3 yellow-cooler)
+      (rainbow-4 blue-cooler)
+      (rainbow-5 yellow-warmer)
+      (rainbow-6 blue-faint)
+      (rainbow-7 yellow-faint)
+      (rainbow-8 cyan)
 
 ;;;; Search mappings
 
@@ -461,11 +463,11 @@ standard)."
       (fg-heading-0 cyan-cooler)
       (fg-heading-1 fg-main)
       (fg-heading-2 yellow-faint)
-      (fg-heading-3 blue-faint)
+      (fg-heading-3 fg-alt)
       (fg-heading-4 magenta)
       (fg-heading-5 green-faint)
       (fg-heading-6 red-faint)
-      (fg-heading-7 cyan-faint)
+      (fg-heading-7 cyan-warmer)
       (fg-heading-8 fg-dim)
 
       (bg-heading-0 unspecified)
@@ -487,7 +489,7 @@ standard)."
       (overline-heading-6 unspecified)
       (overline-heading-7 unspecified)
       (overline-heading-8 unspecified))
-    "The entire palette of the `modus-vivendi-deuteranopia' theme.
+    "The entire palette of the `modus-operandi-deuteranopia' theme.
 
 Named colors have the form (COLOR-NAME HEX-VALUE) with the former
 as a symbol and the latter as a string.
@@ -496,12 +498,12 @@ Semantic color mappings have the form (MAPPING-NAME COLOR-NAME)
 with both as symbols.  The latter is a named color that already
 exists in the palette and is associated with a HEX-VALUE.")
 
-  (defcustom modus-vivendi-deuteranopia-palette-user nil
-    "Like the `modus-vivendi-deuteranopia-palette' for user-defined entries.
+  (defcustom modus-operandi-deuteranopia-palette-user nil
+    "Like the `modus-operandi-deuteranopia-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi-deuteranopia-palette-overrides')."
+`modus-operandi-deuteranopia-palette-overrides')."
     :group 'modus-themes
     :package-version '(modus-themes . "4.5.0")
     :type '(repeat (list symbol (choice symbol string)))
@@ -509,8 +511,8 @@ palette overrides (also see `modus-themes-common-palette-overrides' and
     :initialize #'custom-initialize-default
     :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-  (defcustom modus-vivendi-deuteranopia-palette-overrides nil
-    "Overrides for `modus-vivendi-deuteranopia-palette'.
+  (defcustom modus-operandi-deuteranopia-palette-overrides nil
+    "Overrides for `modus-operandi-deuteranopia-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -532,10 +534,10 @@ represents."
     :initialize #'custom-initialize-default
     :link '(info-link "(modus-themes) Palette overrides"))
 
-  (modus-themes-theme modus-vivendi-deuteranopia
-                      modus-vivendi-deuteranopia-palette
-                      modus-vivendi-deuteranopia-palette-overrides)
+  (modus-themes-theme modus-operandi-deuteranopia
+                      modus-operandi-deuteranopia-palette
+                      modus-operandi-deuteranopia-palette-overrides)
 
-  (provide-theme 'modus-vivendi-deuteranopia))
+  (provide-theme 'modus-operandi-deuteranopia))
 
-;;; modus-vivendi-deuteranopia-theme.el ends here
+;;; modus-operandi-deuteranopia-theme.el ends here
