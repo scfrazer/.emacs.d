@@ -559,7 +559,9 @@ Also see *note Common Suffix Commands::.
 
  -- User Option: transient-enable-popup-navigation
      This option controls whether navigation commands are enabled in the
-     transient popup buffer.
+     transient popup buffer.  If the value is ‘verbose’, additionally
+     show brief documentation about the command under point in the echo
+     area.
 
      While a transient is active the transient popup buffer is not the
      current buffer, making it necessary to use dedicated commands to
@@ -568,9 +570,14 @@ Also see *note Common Suffix Commands::.
 
         • ‘<UP>’ moves the cursor to the previous suffix.
         • ‘<DOWN>’ moves the cursor to the next suffix.
-        • ‘<RET>’ invokes the suffix the cursor is on.
+        • ‘M-<RET>’ invokes the suffix the cursor is on.
         • ‘mouse-1’ invokes the clicked on suffix.
         • ‘C-s’ and ‘C-r’ start isearch in the popup buffer.
+
+     By default ‘M-<RET>’ is bound to ‘transient-push-button’, instead
+     of ‘<RET>’, because if a transient allows the invocation of
+     non-suffixes, then it is likely, that you would want ‘<RET>’ to do
+     what it would do if no transient were active."
 
  -- User Option: transient-display-buffer-action
      This option specifies the action used to display the transient
@@ -1976,6 +1983,25 @@ File: transient.info,  Node: Suffix Format Methods,  Prev: Suffix Value Methods,
      window.  Select the help window, and make the help buffer current
      and return it.
 
+ -- Function: transient-show-summary obj &optional return
+     This generic function shows or, if optional RETURN is non-‘nil’,
+     returns a brief summary about the command at point or hovered with
+     the mouse.
+
+     This function is called when the mouse is moved over a command and
+     (if the value of ‘transient-enable-popup-navigation’ is ‘verbose’)
+     when the user navigates to a command using the keyboard.
+
+     If OBJ’s ‘summary’ slot is a string, that is used.  If ‘summary’ is
+     a function, that is called with OBJ as the only argument and the
+     returned string is used.  If ‘summary’ is or returns something
+     other than a string or nil, no summary is shown.  If ‘summary’ is
+     or returns ‘nil’, the first line of the documentation string is
+     used, if any.
+
+     If RETURN is non-‘nil’, this function returns the summary instead
+     of showing it.  This is used when a tooltip is needed.
+
 
 File: transient.info,  Node: Prefix Slots,  Next: Suffix Slots,  Prev: Suffix Methods,  Up: Classes and Methods
 
@@ -2088,6 +2114,11 @@ Slots of ‘transient-suffix’
    • ‘show-help’ A function used to display help for the suffix.  If
      unspecified, the prefix controls how help is displayed for its
      suffixes.  See also function ‘transient-show-help’.
+
+   • ‘summary’ The summary displayed in the echo area, or as a tooltip.
+     If this is ‘nil’, which it usually should be, the first line of the
+     documentation string is used instead.  See ‘transient-show-summary’
+     for details.
 
 Slots of ‘transient-infix’
 --------------------------
@@ -2443,6 +2474,8 @@ Appendix C Command and Function Index
 * transient-setup-children:              Group Methods.       (line   6)
 * transient-show-help:                   Suffix Format Methods.
                                                               (line  26)
+* transient-show-summary:                Suffix Format Methods.
+                                                              (line  51)
 * transient-suffix-put:                  Modifying Existing Transients.
                                                               (line  77)
 * transient-suffixes:                    Using Infix Arguments.
@@ -2465,7 +2498,7 @@ Appendix D Variable Index
  [index ]
 * Menu:
 
-* transient-align-variable-pitch:        Configuration.       (line 185)
+* transient-align-variable-pitch:        Configuration.       (line 192)
 * transient-current-command:             Using Infix Arguments.
                                                               (line  52)
 * transient-current-prefix:              Using Infix Arguments.
@@ -2474,25 +2507,25 @@ Appendix D Variable Index
                                                               (line  44)
 * transient-default-level:               Enabling and Disabling Suffixes.
                                                               (line  33)
-* transient-detect-key-conflicts:        Configuration.       (line 210)
-* transient-display-buffer-action:       Configuration.       (line  51)
+* transient-detect-key-conflicts:        Configuration.       (line 217)
+* transient-display-buffer-action:       Configuration.       (line  58)
 * transient-enable-popup-navigation:     Configuration.       (line  36)
-* transient-force-fixed-pitch:           Configuration.       (line 198)
-* transient-force-single-column:         Configuration.       (line  93)
-* transient-hide-during-minibuffer-read: Configuration.       (line 181)
-* transient-highlight-higher-levels:     Configuration.       (line 223)
-* transient-highlight-mismatched-keys:   Configuration.       (line 135)
+* transient-force-fixed-pitch:           Configuration.       (line 205)
+* transient-force-single-column:         Configuration.       (line 100)
+* transient-hide-during-minibuffer-read: Configuration.       (line 188)
+* transient-highlight-higher-levels:     Configuration.       (line 230)
+* transient-highlight-mismatched-keys:   Configuration.       (line 142)
 * transient-history-file:                Using History.       (line  33)
 * transient-history-limit:               Using History.       (line  37)
 * transient-levels-file:                 Enabling and Disabling Suffixes.
                                                               (line  38)
-* transient-mode-line-format:            Configuration.       (line 102)
-* transient-read-with-initial-input:     Configuration.       (line 174)
-* transient-semantic-coloring:           Configuration.       (line 126)
+* transient-mode-line-format:            Configuration.       (line 109)
+* transient-read-with-initial-input:     Configuration.       (line 181)
+* transient-semantic-coloring:           Configuration.       (line 133)
 * transient-show-common-commands:        Common Suffix Commands.
                                                               (line  23)
 * transient-show-popup:                  Configuration.       (line  15)
-* transient-substitute-key-function:     Configuration.       (line 153)
+* transient-substitute-key-function:     Configuration.       (line 160)
 * transient-values-file:                 Saving Values.       (line  31)
 
 
@@ -3276,52 +3309,52 @@ Node: Enabling and Disabling Suffixes17120
 Node: Other Commands20408
 Node: Configuration21384
 Ref: Essential Options21664
-Ref: Accessibility Options25325
-Ref: Auxiliary Options25648
-Ref: Developer Options30611
-Node: Modifying Existing Transients31859
-Node: Defining New Commands36051
-Node: Technical Introduction36414
-Node: Defining Transients42115
-Node: Binding Suffix and Infix Commands44582
-Node: Group Specifications45440
-Node: Suffix Specifications51968
-Node: Defining Suffix and Infix Commands56181
-Node: Using Infix Arguments59229
-Node: Transient State62866
-Ref: Pre-commands for Infixes67681
-Ref: Pre-commands for Suffixes68201
-Ref: Pre-commands for Non-Suffixes70655
-Ref: Special Pre-Commands71791
-Node: Classes and Methods72299
-Node: Group Classes74483
-Node: Group Methods76410
-Node: Prefix Classes77663
-Node: Suffix Classes78754
-Node: Suffix Methods81841
-Node: Suffix Value Methods82162
-Node: Suffix Format Methods84920
-Node: Prefix Slots86945
-Ref: Internal Prefix Slots89082
-Node: Suffix Slots90339
-Ref: Slots of transient-suffix90707
-Ref: Slots of transient-infix91890
-Ref: Slots of transient-variable95186
-Ref: Slots of transient-switches95288
-Node: Predicate Slots95651
-Node: FAQ97086
-Ref: Can I control how the popup buffer is displayed?97215
-Ref: How can I copy text from the popup buffer?97396
-Ref: How can I autoload prefix and suffix commands?97890
-Ref: How does Transient compare to prefix keys and universal arguments?98364
-Ref: How does Transient compare to Magit-Popup and Hydra?98607
-Ref: Why did some of the key bindings change?98801
-Ref: Why does q not quit popups anymore?101154
-Node: Keystroke Index102257
-Node: Command and Function Index104122
-Node: Variable Index110988
-Node: Concept Index113261
-Node: GNU General Public License115997
+Ref: Accessibility Options25732
+Ref: Auxiliary Options26055
+Ref: Developer Options31018
+Node: Modifying Existing Transients32266
+Node: Defining New Commands36458
+Node: Technical Introduction36821
+Node: Defining Transients42522
+Node: Binding Suffix and Infix Commands44989
+Node: Group Specifications45847
+Node: Suffix Specifications52375
+Node: Defining Suffix and Infix Commands56588
+Node: Using Infix Arguments59636
+Node: Transient State63273
+Ref: Pre-commands for Infixes68088
+Ref: Pre-commands for Suffixes68608
+Ref: Pre-commands for Non-Suffixes71062
+Ref: Special Pre-Commands72198
+Node: Classes and Methods72706
+Node: Group Classes74890
+Node: Group Methods76817
+Node: Prefix Classes78070
+Node: Suffix Classes79161
+Node: Suffix Methods82248
+Node: Suffix Value Methods82569
+Node: Suffix Format Methods85327
+Node: Prefix Slots88317
+Ref: Internal Prefix Slots90454
+Node: Suffix Slots91711
+Ref: Slots of transient-suffix92079
+Ref: Slots of transient-infix93513
+Ref: Slots of transient-variable96809
+Ref: Slots of transient-switches96911
+Node: Predicate Slots97274
+Node: FAQ98709
+Ref: Can I control how the popup buffer is displayed?98838
+Ref: How can I copy text from the popup buffer?99019
+Ref: How can I autoload prefix and suffix commands?99513
+Ref: How does Transient compare to prefix keys and universal arguments?99987
+Ref: How does Transient compare to Magit-Popup and Hydra?100230
+Ref: Why did some of the key bindings change?100424
+Ref: Why does q not quit popups anymore?102777
+Node: Keystroke Index103880
+Node: Command and Function Index105745
+Node: Variable Index112748
+Node: Concept Index115021
+Node: GNU General Public License117757
 
 End Tag Table
 
