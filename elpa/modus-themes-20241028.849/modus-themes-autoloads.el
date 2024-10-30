@@ -31,6 +31,8 @@ practically the same as the `modus-themes-select' command).
 Run `modus-themes-after-load-theme-hook' after loading the theme.
 Disable other themes per `modus-themes-disable-other-themes'." t nil)
 
+(function-put 'modus-themes-toggle 'interactive-only 't)
+
 (autoload 'modus-themes-rotate "modus-themes" "\
 Rotate to the next theme among THEMES.
 When called interactively THEMES is the value of `modus-themes-to-rotate'.

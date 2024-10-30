@@ -2293,10 +2293,10 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241020.1338/modus-themes-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241028.849/modus-themes-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20241020.1338/modus-themes-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/modus-themes-20241028.849/modus-themes-autoloads.el") (car load-path))))
 
 
 
@@ -2321,6 +2321,8 @@ practically the same as the `modus-themes-select' command).
 
 Run `modus-themes-after-load-theme-hook' after loading the theme.
 Disable other themes per `modus-themes-disable-other-themes'." t nil)
+
+(function-put 'modus-themes-toggle 'interactive-only 't)
 
 (autoload 'modus-themes-rotate "modus-themes" "\
 Rotate to the next theme among THEMES.
@@ -3605,7 +3607,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241020.1338" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241002.2036" "/home/scfrazer/.emacs.d/elpa/transient-20241023.1537" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241028.849" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241002.2036" "/home/scfrazer/.emacs.d/elpa/transient-20241023.1537" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
