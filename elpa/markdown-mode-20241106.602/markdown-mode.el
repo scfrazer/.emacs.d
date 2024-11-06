@@ -6,7 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Version: 2.7-alpha
+;; Package-Version: 20241106.602
+;; Package-Revision: 88d182cc5cf0
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3559,30 +3560,25 @@ SEQ may be an atom or a sequence."
                    (add-text-properties
                     (match-beginning 3) (match-end 3) rule-props)))
         ;; atx heading
-        (let ((header-end
+        (let ((fontified-start
+               (if (or markdown-hide-markup (not markdown-fontify-whole-heading-line))
+                   (match-beginning 5)
+                 (match-beginning 0)))
+              (fontified-end
                (if markdown-fontify-whole-heading-line
                    (min (point-max) (1+ (match-end 0)))
-                 (match-end 0))))
+                 (match-end 5))))
           (add-text-properties
            (match-beginning 4) (match-end 4) left-markup-props)
 
           ;; If closing tag is present
           (if (match-end 6)
               (progn
-                (if markdown-hide-markup
-                    (progn
-                      (add-text-properties
-                       (match-beginning 5) header-end heading-props)
-                      (add-text-properties
-                       (match-beginning 6) (match-end 6) right-markup-props))
-                  (add-text-properties
-                   (match-beginning 5) (match-end 5) heading-props)
-                  (add-text-properties
-                   (match-beginning 6) header-end right-markup-props)))
+                (add-text-properties fontified-start fontified-end heading-props)
+                (when (or markdown-hide-markup (not markdown-fontify-whole-heading-line))
+                  (add-text-properties (match-beginning 6) (match-end 6) right-markup-props)))
             ;; If closing tag is not present
-            (add-text-properties
-             (match-beginning 5) header-end heading-props))
-          )))
+            (add-text-properties fontified-start fontified-end heading-props)))))
     t))
 
 (defun markdown-fontify-tables (last)
@@ -9157,7 +9153,7 @@ position."
         (remove-text-properties start end '(face nil))
         (with-current-buffer
             (get-buffer-create
-             (concat " markdown-code-fontification:" (symbol-name lang-mode)))
+             (format " *markdown-code-fontification:%s*" (symbol-name lang-mode)))
           ;; Make sure that modification hooks are not inhibited in
           ;; the org-src-fontification buffer in case we're called
           ;; from `jit-lock-function' (Bug#25132).

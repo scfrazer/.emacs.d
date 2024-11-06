@@ -1226,10 +1226,10 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241023.1537/transient-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241104.2211/transient-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20241023.1537/transient-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20241104.2211/transient-autoloads.el") (car load-path))))
 
 
 
@@ -2356,10 +2356,10 @@ corresponding entries.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240829.324/markdown-mode-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20241106.602/markdown-mode-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20240829.324/markdown-mode-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/markdown-mode-20241106.602/markdown-mode-autoloads.el") (car load-path))))
 
 
 
@@ -3334,10 +3334,10 @@ it is disabled.
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20230420.404/avy-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/avy-20241101.1357/avy-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20230420.404/avy-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/avy-20241101.1357/avy-autoloads.el") (car load-path))))
 
 
 
@@ -3597,6 +3597,8 @@ Transpose lines in the active region." t nil)
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "avy" '("avy-")))
 
 
+
+
 )
 (setq package-activated-list
       (append
@@ -3607,7 +3609,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241028.849" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241002.2036" "/home/scfrazer/.emacs.d/elpa/transient-20241023.1537" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241028.849" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241002.2036" "/home/scfrazer/.emacs.d/elpa/transient-20241104.2211" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
