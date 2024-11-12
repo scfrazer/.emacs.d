@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241104.2211
-;; Package-Revision: 00fabc76eb3d
+;; Package-Version: 20241111.1438
+;; Package-Revision: d90d65b82200
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -231,15 +231,14 @@ If nil, then the buffer has no mode-line.  If the buffer is not
 displayed right above the echo area, then this probably is not
 a good value.
 
-If `line' (the default) or a natural number, then the buffer
-has no mode-line, but a line is drawn is drawn in its place.
-If a number is used, that specifies the thickness of the line.
-On termcap frames we cannot draw lines, so there `line' and
-numbers are synonyms for nil.
+If `line' (the default) or a natural number, then the buffer has no
+mode-line, but a line is drawn in its place.  If a number is used,
+that specifies the thickness of the line.  On termcap frames we
+cannot draw lines, so there `line' and numbers are synonyms for nil.
 
 The color of the line is used to indicate if non-suffixes are
 allowed and whether they exit the transient.  The foreground
-color of `transient-key-noop' (if non-suffix are disallowed),
+color of `transient-key-noop' (if non-suffixes are disallowed),
 `transient-key-stay' (if allowed and transient stays active), or
 `transient-key-exit' (if allowed and they exit the transient) is
 used to draw the line.
@@ -4460,11 +4459,14 @@ See `forward-button' for information about N."
     (when (re-search-forward (concat "^" (regexp-quote command)) nil t)
       (goto-char (match-beginning 0))))
    (command
-    (while (and (ignore-errors (forward-button 1))
-                (not (eq (button-get (button-at (point)) 'command) command))))
-    (unless (eq (button-get (button-at (point)) 'command) command)
-      (goto-char (point-min))
-      (forward-button 1)))))
+    (cl-flet ((found () (eq (button-get (button-at (point)) 'command) command)))
+      (while (and (ignore-errors (forward-button 1))
+                  (not (found))))
+      (unless (found)
+        (goto-char (point-min))
+        (ignore-errors (forward-button 1))
+        (unless (found)
+          (goto-char (point-min))))))))
 
 (defun transient--heading-at-point ()
   (and (eq (get-text-property (point) 'face) 'transient-heading)

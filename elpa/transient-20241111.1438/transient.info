@@ -639,14 +639,14 @@ Auxiliary Options
      good value.
 
      If ‘line’ (the default) or a natural number, then the buffer has no
-     mode-line, but a line is drawn is drawn in its place.  If a number
-     is used, that specifies the thickness of the line.  On termcap
-     frames we cannot draw lines, so there ‘line’ and numbers are
-     synonyms for ‘nil’.
+     mode-line, but a line is drawn in its place.  If a number is used,
+     that specifies the thickness of the line.  On termcap frames we
+     cannot draw lines, so there ‘line’ and numbers are synonyms for
+     ‘nil’.
 
      The color of the line is used to indicate if non-suffixes are
      allowed and whether they exit the transient.  The foreground color
-     of ‘transient-key-noop’ (if non-suffix are disallowed),
+     of ‘transient-key-noop’ (if non-suffixes are disallowed),
      ‘transient-key-stay’ (if allowed and transient stays active), or
      ‘transient-key-exit’ (if allowed and they exit the transient) is
      used to draw the line.
@@ -3311,50 +3311,50 @@ Node: Configuration21384
 Ref: Essential Options21664
 Ref: Accessibility Options25732
 Ref: Auxiliary Options26055
-Ref: Developer Options31018
-Node: Modifying Existing Transients32266
-Node: Defining New Commands36458
-Node: Technical Introduction36821
-Node: Defining Transients42522
-Node: Binding Suffix and Infix Commands44989
-Node: Group Specifications45847
-Node: Suffix Specifications52375
-Node: Defining Suffix and Infix Commands56588
-Node: Using Infix Arguments59636
-Node: Transient State63273
-Ref: Pre-commands for Infixes68088
-Ref: Pre-commands for Suffixes68608
-Ref: Pre-commands for Non-Suffixes71062
-Ref: Special Pre-Commands72198
-Node: Classes and Methods72706
-Node: Group Classes74890
-Node: Group Methods76817
-Node: Prefix Classes78070
-Node: Suffix Classes79161
-Node: Suffix Methods82248
-Node: Suffix Value Methods82569
-Node: Suffix Format Methods85327
-Node: Prefix Slots88317
-Ref: Internal Prefix Slots90454
-Node: Suffix Slots91711
-Ref: Slots of transient-suffix92079
-Ref: Slots of transient-infix93513
-Ref: Slots of transient-variable96809
-Ref: Slots of transient-switches96911
-Node: Predicate Slots97274
-Node: FAQ98709
-Ref: Can I control how the popup buffer is displayed?98838
-Ref: How can I copy text from the popup buffer?99019
-Ref: How can I autoload prefix and suffix commands?99513
-Ref: How does Transient compare to prefix keys and universal arguments?99987
-Ref: How does Transient compare to Magit-Popup and Hydra?100230
-Ref: Why did some of the key bindings change?100424
-Ref: Why does q not quit popups anymore?102777
-Node: Keystroke Index103880
-Node: Command and Function Index105745
-Node: Variable Index112748
-Node: Concept Index115021
-Node: GNU General Public License117757
+Ref: Developer Options31011
+Node: Modifying Existing Transients32259
+Node: Defining New Commands36451
+Node: Technical Introduction36814
+Node: Defining Transients42515
+Node: Binding Suffix and Infix Commands44982
+Node: Group Specifications45840
+Node: Suffix Specifications52368
+Node: Defining Suffix and Infix Commands56581
+Node: Using Infix Arguments59629
+Node: Transient State63266
+Ref: Pre-commands for Infixes68081
+Ref: Pre-commands for Suffixes68601
+Ref: Pre-commands for Non-Suffixes71055
+Ref: Special Pre-Commands72191
+Node: Classes and Methods72699
+Node: Group Classes74883
+Node: Group Methods76810
+Node: Prefix Classes78063
+Node: Suffix Classes79154
+Node: Suffix Methods82241
+Node: Suffix Value Methods82562
+Node: Suffix Format Methods85320
+Node: Prefix Slots88310
+Ref: Internal Prefix Slots90447
+Node: Suffix Slots91704
+Ref: Slots of transient-suffix92072
+Ref: Slots of transient-infix93506
+Ref: Slots of transient-variable96802
+Ref: Slots of transient-switches96904
+Node: Predicate Slots97267
+Node: FAQ98702
+Ref: Can I control how the popup buffer is displayed?98831
+Ref: How can I copy text from the popup buffer?99012
+Ref: How can I autoload prefix and suffix commands?99506
+Ref: How does Transient compare to prefix keys and universal arguments?99980
+Ref: How does Transient compare to Magit-Popup and Hydra?100223
+Ref: Why did some of the key bindings change?100417
+Ref: Why does q not quit popups anymore?102770
+Node: Keystroke Index103873
+Node: Command and Function Index105738
+Node: Variable Index112741
+Node: Concept Index115014
+Node: GNU General Public License117750
 
 End Tag Table
 
