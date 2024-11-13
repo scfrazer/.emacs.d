@@ -1336,10 +1336,10 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241110.1225/rg-autoloads.el"))
+(let ((load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353/rg-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20241110.1225/rg-autoloads.el") (car load-path))))
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353/rg-autoloads.el") (car load-path))))
 
 
 
@@ -3609,7 +3609,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241107.816" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241110.1225" "/home/scfrazer/.emacs.d/elpa/transient-20241111.1438" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241107.816" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353" "/home/scfrazer/.emacs.d/elpa/transient-20241111.1438" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20240831.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

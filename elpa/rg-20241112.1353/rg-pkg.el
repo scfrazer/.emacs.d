@@ -1,12 +1,12 @@
 ;; -*- no-byte-compile: t; lexical-binding: nil -*-
-(define-package "rg" "20241110.1225"
+(define-package "rg" "20241112.1353"
   "A search tool based on ripgrep."
   '((emacs     "26.1")
     (transient "0.3.0")
     (wgrep     "2.1.10"))
   :url "https://github.com/dajva/rg.el"
-  :commit "9ab1aefd8a835f41aa2d9518e01414d50680ddc2"
-  :revdesc "9ab1aefd8a83"
+  :commit "bd63cd3346fcabab0ff25e841e9d1ee56f5db705"
+  :revdesc "bd63cd3346fc"
   :keywords '("matching" "tools")
   :authors '(("David Landell" . "david.landell@sunnyhill.email")
              ("Roland McGrath" . "roland@gnu.org"))
