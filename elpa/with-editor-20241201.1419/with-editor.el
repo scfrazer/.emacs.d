@@ -6,7 +6,8 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 3.4.2
+;; Package-Version: 20241201.1419
+;; Package-Revision: ca902ae02972
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -111,6 +112,10 @@ Determining an Emacsclient executable suitable for the
 current Emacs instance failed.  For more information
 please see https://github.com/magit/magit/wiki/Emacsclient."))))
 
+(defvar with-editor-emacsclient-program-suffixes
+  (list "-snapshot" ".emacs-snapshot")
+  "Suffixes to append to append when looking for a Emacsclient executables.")
+
 (defun with-editor-locate-emacsclient-1 (path depth)
   (let* ((version-lst (cl-subseq (split-string emacs-version "\\.") 0 depth))
          (version-reg (concat "^" (string-join version-lst "\\."))))
@@ -120,15 +125,16 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))))
                ((bound-and-true-p emacsclient-program-name))
                ("emacsclient"))
          path
-         (cl-mapcan
-          (lambda (v) (cl-mapcar (lambda (e) (concat v e)) exec-suffixes))
-          (nconc (and (boundp 'debian-emacs-flavor)
-                      (list (format ".%s" debian-emacs-flavor)))
-                 (cl-mapcon (lambda (v)
-                              (setq v (string-join (reverse v) "."))
-                              (list v (concat "-" v) (concat ".emacs" v)))
-                            (reverse version-lst))
-                 (list "" "-snapshot" ".emacs-snapshot")))
+         (mapcan (lambda (v) (cl-mapcar (lambda (e) (concat v e)) exec-suffixes))
+                 (nconc (and (boundp 'debian-emacs-flavor)
+                             (list (format ".%s" debian-emacs-flavor)))
+                        (cl-mapcon (lambda (v)
+                                     (setq v (string-join (reverse v) "."))
+                                     (list v
+                                           (concat "-" v)
+                                           (concat ".emacs" v)))
+                                   (reverse version-lst))
+                        (cons "" with-editor-emacsclient-program-suffixes)))
          (lambda (exec)
            (ignore-errors
              (string-match-p version-reg

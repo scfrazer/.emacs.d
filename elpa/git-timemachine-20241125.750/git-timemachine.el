@@ -3,7 +3,8 @@
 ;; Copyright (C) 2014 Peter Stiernström
 
 ;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 4.16
+;; Package-Version: 20241125.750
+;; Package-Revision: 62ebb0c6588d
 ;; URL: https://codeberg.org/pidu/git-timemachine
 ;; Keywords: vc
 ;; Package-Requires: ((emacs "24.3") (transient "0.1.0"))
@@ -365,47 +366,69 @@ updated CURRENT-LINE."
     (kill-new revision)))
 
 (defun git-timemachine-show-commit ()
-  "Show commit for current revision."
-  (interactive)
-  (let ((rev (car git-timemachine-revision)))
-    (if (fboundp 'magit-show-commit)
-      (magit-show-commit rev)
-      (message "You need to install magit to show commit"))))
+ "Show commit for current revision."
+ (interactive)
+ (let ((rev (car git-timemachine-revision)))
+  (if (fboundp 'magit-show-commit)
+   (magit-show-commit rev)
+   (message "You need to install magit to show commit"))))
+
+(defun git-timemachine-show-revision-introducing (text)
+ "Show the revision introducing TEXT to the file."
+ (interactive "sShow revision introducing text: ")
+ (let ((has-text? (lambda ()
+                   (save-excursion
+                    (goto-char (point-min))
+                    (search-forward text nil t))))
+       (buffer-name (format "timemachine:%s" (buffer-name)))
+       (at-revision nil))
+  (if (not (funcall has-text?))
+   (message "Buffer does not contain: %s" text)
+   (progn
+    (setq at-revision (car git-timemachine-revision))
+    (while (funcall has-text?)
+     (git-timemachine-show-previous-revision)
+     (when (string= at-revision (car git-timemachine-revision))
+      (throw :not-found text))
+     (setq at-revision (car git-timemachine-revision)))
+    (git-timemachine-show-next-revision)))))
 
 (transient-define-prefix git-timemachine-help ()
-  "Show online help."
-  ["Navigate"
-    [("p" "show previous revision" git-timemachine-show-previous-revision)
-      ("n" "show next revision" git-timemachine-show-next-revision)
-      ("g" "show nth revision" git-timemachine-show-nth-revision)
-      ("h" "show nearest revision" git-timemachine-show-nearest-revision)
-      ("t" "show fuzzy revision" git-timemachine-show-revision-fuzzy)]]
-  ["Kill current revision"
-    [("w" "kill abbreviated revision" git-timemachine-kill-abbreviated-revision)
-      ("W" "kill revision" git-timemachine-kill-revision)]]
-  ["Misc"
-    [("b" "blame current revision" git-timemachine-blame)
-      ("c" "show commit" git-timemachine-show-commit)
-      ("?" "show help" git-timemachine-help)
-      ("q" "quit" git-timemachine-quit)]])
+ "Show online help."
+ ["Navigate"
+  [("p" "show previous revision" git-timemachine-show-previous-revision)
+   ("n" "show next revision" git-timemachine-show-next-revision)
+   ("g" "show nth revision" git-timemachine-show-nth-revision)
+   ("h" "show nearest revision" git-timemachine-show-nearest-revision)
+   ("t" "show fuzzy revision" git-timemachine-show-revision-fuzzy)
+   ("i" "show revision introducing" git-timemachine-show-revision-introducing)]]
+ ["Kill current revision"
+  [("w" "kill abbreviated revision" git-timemachine-kill-abbreviated-revision)
+   ("W" "kill revision" git-timemachine-kill-revision)]]
+ ["Misc"
+  [("b" "blame current revision" git-timemachine-blame)
+   ("c" "show commit" git-timemachine-show-commit)
+   ("?" "show help" git-timemachine-help)
+   ("q" "quit" git-timemachine-quit)]])
 
 (define-minor-mode git-timemachine-mode
-  "Git Timemachine, feel the wings of history."
-  :init-value nil
-  :lighter " Timemachine"
-  :keymap
-  '(("p" . git-timemachine-show-previous-revision)
-     ("n" . git-timemachine-show-next-revision)
-     ("g" . git-timemachine-show-nth-revision)
-     ("h" . git-timemachine-show-nearest-revision)
-     ("t" . git-timemachine-show-revision-fuzzy)
-     ("q" . git-timemachine-quit)
-     ("w" . git-timemachine-kill-abbreviated-revision)
-     ("W" . git-timemachine-kill-revision)
-     ("b" . git-timemachine-blame)
-     ("c" . git-timemachine-show-commit)
-     ("?" . git-timemachine-help))
-  :group 'git-timemachine)
+ "Git Timemachine, feel the wings of history."
+ :init-value nil
+ :lighter " Timemachine"
+ :keymap
+ '(("p" . git-timemachine-show-previous-revision)
+   ("n" . git-timemachine-show-next-revision)
+   ("g" . git-timemachine-show-nth-revision)
+   ("h" . git-timemachine-show-nearest-revision)
+   ("t" . git-timemachine-show-revision-fuzzy)
+   ("i" . git-timemachine-show-revision-introducing)
+   ("q" . git-timemachine-quit)
+   ("w" . git-timemachine-kill-abbreviated-revision)
+   ("W" . git-timemachine-kill-revision)
+   ("b" . git-timemachine-blame)
+   ("c" . git-timemachine-show-commit)
+   ("?" . git-timemachine-help))
+ :group 'git-timemachine)
 
 (defun git-timemachine-validate (file)
   "Validate that there is a FILE and that it belongs to a git repository.
@@ -416,31 +439,37 @@ Call with the value of 'buffer-file-name."
     (error "This file is not git tracked")))
 
 (defun git-timemachine--start (get-revision-fn)
-  "Setup a timemachine buffer and populate it from the result of GET-REVISION-FN."
-  (setq git-timemachine--revisions-cache nil)
-  (git-timemachine-validate (buffer-file-name))
-  (let ((git-directory (expand-file-name (vc-git-root (buffer-file-name))))
-         (file-name (buffer-file-name))
-         (timemachine-buffer (format "timemachine:%s" (buffer-name)))
-         (cur-line (line-number-at-pos))
-         (cursor-position (git-timemachine--get-cursor-position))
-         (new-line nil)
-         (mode major-mode)
-         (coding-system buffer-file-coding-system))
-    (with-current-buffer (get-buffer-create timemachine-buffer)
-      (switch-to-buffer timemachine-buffer)
-      (setq buffer-file-name file-name)
-      (setq buffer-file-coding-system coding-system)
-      (delay-mode-hooks (funcall mode))
-      (setq git-timemachine-directory git-directory
-        git-timemachine-file (file-relative-name file-name git-directory)
-        git-timemachine-revision nil)
-      (funcall get-revision-fn)
-      (setq new-line (git-timemachine--find-new-current-line git-timemachine-revision (list "HEAD" "" 0 "" "" "" "") cur-line)) ;; Allow to stay on the same line
-      (goto-char (point-min))
-      (forward-line (- new-line 1))
-      (git-timemachine--set-cursor-position cursor-position)
-      (git-timemachine-mode))))
+ "Setup a timemachine buffer and populate it from the result of GET-REVISION-FN."
+ (setq git-timemachine--revisions-cache nil)
+ (git-timemachine-validate (buffer-file-name))
+ (let ((git-directory (expand-file-name (vc-git-root (buffer-file-name))))
+       (file-name (buffer-file-name))
+       (timemachine-buffer (format "timemachine:%s" (buffer-name)))
+       (cur-line (line-number-at-pos))
+       (cursor-position (git-timemachine--get-cursor-position))
+       (new-line nil)
+       (mode major-mode)
+       (coding-system buffer-file-coding-system)
+       (font-lock-mode-enabled (bound-and-true-p font-lock-mode)))
+  (with-current-buffer (get-buffer-create timemachine-buffer)
+   (switch-to-buffer timemachine-buffer)
+   (setq buffer-file-name file-name)
+   (setq buffer-file-coding-system coding-system)
+   (delay-mode-hooks (funcall mode))
+   (setq git-timemachine-directory git-directory
+    git-timemachine-file (file-relative-name file-name git-directory)
+    git-timemachine-revision nil)
+   (funcall get-revision-fn)
+   (setq new-line (git-timemachine--find-new-current-line git-timemachine-revision (list "HEAD" "" 0 "" "" "" "") cur-line)) ;; Allow to stay on the same line
+   (goto-char (point-min))
+   (forward-line (- new-line 1))
+   (git-timemachine--set-cursor-position cursor-position)
+   (git-timemachine-mode)
+   (when font-lock-mode-enabled
+    (if (fboundp 'font-lock-update)
+     (font-lock-update)
+     (with-no-warnings
+      (font-lock-fontify-buffer)))))))
 
 ;;;###autoload
 (defun git-timemachine-toggle ()

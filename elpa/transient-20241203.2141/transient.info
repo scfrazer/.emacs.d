@@ -618,6 +618,9 @@ Also see *note Common Suffix Commands::.
      If you change the value of this option, then you might also want to
      change the value of ‘transient-mode-line-format’.
 
+     This user option may be overridden if ‘:display-action’ is passed
+     when creating a new prefix with ‘transient-define-prefix’.
+
 Accessibility Options
 ---------------------
 
@@ -650,6 +653,9 @@ Auxiliary Options
      ‘transient-key-stay’ (if allowed and transient stays active), or
      ‘transient-key-exit’ (if allowed and they exit the transient) is
      used to draw the line.
+
+     This user option may be overridden if ‘:mode-line-format’ is passed
+     when creating a new prefix with ‘transient-define-prefix’.
 
      Otherwise this can be any mode-line format.  See *note (elisp)Mode
      Line Format::, for details.
@@ -709,9 +715,42 @@ Auxiliary Options
      the first element has to be accessed the same way as the older
      elements.
 
- -- User Option: transient-hide-during-minibuffer-read
-     This option controls whether the transient buffer is hidden while
-     user input is being read in the minibuffer.
+ -- User Option: transient-show-during-minibuffer-read
+     This option controls whether the transient menu continues to be
+     displayed while the minibuffer is used to read user input.
+
+     This is only relevant to commands that do not close the menu, such
+     as commands that set infix arguments.  If a command exits the menu,
+     and uses the minibuffer, then the menu is always closed before the
+     minibuffer is entered, irrespective of the value of this option.
+
+     When ‘nil’ (the default), hide the menu while the minibuffer is in
+     use.  When ‘t’, keep showing the menu, but allow for the menu
+     window to be resized to ensure that completion candidates can be
+     displayed.
+
+     When ‘fixed’, keep showing the menu and prevent it from being
+     resized, which may make it impossible to display the completion
+     candidates.  If that ever happens for you, consider using ‘t’ or an
+     integer, as described below.
+
+     If the value is ‘fixed’ and the menu window uses the full height of
+     its frame, then the former is ignored and resizing is allowed
+     anyway.  This is necessary because individual menus may use unusual
+     display actions different from what
+     ‘transient-display-buffer-action’ specifies (likely to display that
+     menu in a side-window).
+
+     When using a third-party mode, which automatically resizes windows
+     (e.g., by calling ‘balance-windows’ on ‘post-command-hook’), then
+     ‘fixed’ (or ‘nil’) is likely a better choice than ‘t’.
+
+     The value can also be an integer, in which case the behavior
+     depends on whether at least that many lines are left to display
+     windows other than the menu window.  If that is the case, display
+     the menu and preserve the size of that window.  Otherwise, allow
+     resizing the menu window if the number is positive, or hide the
+     menu if it is negative.
 
  -- User Option: transient-align-variable-pitch
      This option controls whether columns are aligned pixel-wise in the
@@ -1085,9 +1124,9 @@ constructor of that class.
 
    • Likewise ‘:level’ is equivalent to LEVEL.
 
-   • Other important keywords include the ‘:if...’ keywords.  These
-     keywords control whether the group is available in a certain
-     situation.
+   • Other important keywords include the ‘:if...’ and ‘:inapt-if...’
+     keywords.  These keywords control whether the group is available in
+     a certain situation.
 
      For example, one group of the ‘magit-rebase’ transient uses ‘:if
      magit-rebase-in-progress-p’, which contains the suffixes that are
@@ -1844,9 +1883,10 @@ File: transient.info,  Node: Suffix Classes,  Next: Suffix Methods,  Prev: Prefi
      The ‘:info’ keyword argument replaces the ‘:description’ keyword
      used for other suffix classes.  Other keyword arguments that you
      might want to set, include ‘:face’, predicate keywords (such as
-     ‘:if’), and ‘:format’.  By default the value of ‘:format’ includes
-     ‘%k’, which for this class is replaced with the empty string or
-     spaces, if keys are being padded in the containing group.
+     ‘:if’ and ‘:inapt-if’), and ‘:format’.  By default the value of
+     ‘:format’ includes ‘%k’, which for this class is replaced with the
+     empty string or spaces, if keys are being padded in the containing
+     group.
 
    Magit defines additional classes, which can serve as examples for the
 fancy things you can do without modifying Transient.  Some of these
@@ -2040,6 +2080,13 @@ File: transient.info,  Node: Prefix Slots,  Next: Suffix Slots,  Prev: Suffix Me
      to match against a specific value, as returned by
      ‘transient-infix-value’, for example, ‘--option=one’.
 
+   • ‘display-action’ determines how this prefix is displayed,
+     overriding ‘transient-display-buffer-action’.  It should have the
+     same type.
+
+   • ‘mode-line-format’ is this prefix’s mode line format, overriding
+     ‘transient-mode-line-format’.  It should have the same type.
+
    • ‘scope’ For some transients it might be necessary to have a sort of
      secondary value, called a “scope”.  See ‘transient-define-prefix’.
 
@@ -2215,10 +2262,13 @@ File: transient.info,  Node: Predicate Slots,  Prev: Suffix Slots,  Up: Classes 
 5.8 Predicate Slots
 ===================
 
-Suffix and group objects share some predicate slots that control whether
-a group or suffix should be available depending on some state.  Only one
-of these slots can be used at the same time.  It is undefined what
-happens if you use more than one.
+Suffix and group objects share two sets of predicate slots that control
+whether a group or suffix should be available depending on some state.
+Only one slot from each set can be used at the same time.  It is
+undefined which slot is honored if you use more than one.
+
+   Predicates from the first group control whether the suffix is present
+in the menu at all.
 
    • ‘if’ Enable if predicate returns non-‘nil’.
    • ‘if-not’ Enable if predicate returns ‘nil’.
@@ -2228,6 +2278,21 @@ happens if you use more than one.
    • ‘if-not-mode’ Enable if major-mode does not match value.
    • ‘if-derived’ Enable if major-mode derives from value.
    • ‘if-not-derived’ Enable if major-mode does not derive from value.
+
+   Predicates from the second group control whether the suffix can be
+invoked.  The suffix is shown in the menu regardless, but when it is
+considered "inapt", then it is grayed out to indicated that it currently
+cannot be invoked.
+
+   • ‘inapt-if’ Inapt if predicate returns non-‘nil’.
+   • ‘inapt-if-not’ Inapt if predicate returns ‘nil’.
+   • ‘inapt-if-non-nil’ Inapt if variable’s value is non-‘nil’.
+   • ‘inapt-if-nil’ Inapt if variable’s value is ‘nil’.
+   • ‘inapt-if-mode’ Inapt if major-mode matches value.
+   • ‘inapt-if-not-mode’ Inapt if major-mode does not match value.
+   • ‘inapt-if-derived’ Inapt if major-mode derives from value.
+   • ‘inapt-if-not-derived’ Inapt if major-mode does not derive from
+     value.
 
    By default these predicates run when the prefix command is invoked,
 but this can be changes, using the ‘refresh-suffixes’ prefix slot.  See
@@ -2250,6 +2315,8 @@ A.1 Can I control how the popup buffer is displayed?
 ====================================================
 
 Yes, see ‘transient-display-buffer-action’ in *note Configuration::.
+You can also control how the popup buffer is displayed on a case-by-case
+basis by passing ‘:display-action’ to ‘transient-define-prefix’.
 
 A.2 How can I copy text from the popup buffer?
 ==============================================
@@ -2328,7 +2395,7 @@ potential prefix keys can be used for transient-specific commands
 particular is a prefix that I want to (and already do) use for Magit,
 and also using that for a common command would prevent me from doing so.
 
-   (Also see the next question.)
+   (See also the next question.)
 
 A.7 Why does ‘q’ not quit popups anymore?
 =========================================
@@ -2498,7 +2565,7 @@ Appendix D Variable Index
  [index ]
 * Menu:
 
-* transient-align-variable-pitch:        Configuration.       (line 192)
+* transient-align-variable-pitch:        Configuration.       (line 231)
 * transient-current-command:             Using Infix Arguments.
                                                               (line  52)
 * transient-current-prefix:              Using Infix Arguments.
@@ -2507,25 +2574,25 @@ Appendix D Variable Index
                                                               (line  44)
 * transient-default-level:               Enabling and Disabling Suffixes.
                                                               (line  33)
-* transient-detect-key-conflicts:        Configuration.       (line 217)
+* transient-detect-key-conflicts:        Configuration.       (line 256)
 * transient-display-buffer-action:       Configuration.       (line  58)
 * transient-enable-popup-navigation:     Configuration.       (line  36)
-* transient-force-fixed-pitch:           Configuration.       (line 205)
-* transient-force-single-column:         Configuration.       (line 100)
-* transient-hide-during-minibuffer-read: Configuration.       (line 188)
-* transient-highlight-higher-levels:     Configuration.       (line 230)
-* transient-highlight-mismatched-keys:   Configuration.       (line 142)
+* transient-force-fixed-pitch:           Configuration.       (line 244)
+* transient-force-single-column:         Configuration.       (line 103)
+* transient-highlight-higher-levels:     Configuration.       (line 269)
+* transient-highlight-mismatched-keys:   Configuration.       (line 148)
 * transient-history-file:                Using History.       (line  33)
 * transient-history-limit:               Using History.       (line  37)
 * transient-levels-file:                 Enabling and Disabling Suffixes.
                                                               (line  38)
-* transient-mode-line-format:            Configuration.       (line 109)
-* transient-read-with-initial-input:     Configuration.       (line 181)
-* transient-semantic-coloring:           Configuration.       (line 133)
+* transient-mode-line-format:            Configuration.       (line 112)
+* transient-read-with-initial-input:     Configuration.       (line 187)
+* transient-semantic-coloring:           Configuration.       (line 139)
 * transient-show-common-commands:        Common Suffix Commands.
                                                               (line  23)
+* transient-show-during-minibuffer-read: Configuration.       (line 194)
 * transient-show-popup:                  Configuration.       (line  15)
-* transient-substitute-key-function:     Configuration.       (line 160)
+* transient-substitute-key-function:     Configuration.       (line 166)
 * transient-values-file:                 Saving Values.       (line  31)
 
 
@@ -3309,52 +3376,52 @@ Node: Enabling and Disabling Suffixes17120
 Node: Other Commands20408
 Node: Configuration21384
 Ref: Essential Options21664
-Ref: Accessibility Options25732
-Ref: Auxiliary Options26055
-Ref: Developer Options31011
-Node: Modifying Existing Transients32259
-Node: Defining New Commands36451
-Node: Technical Introduction36814
-Node: Defining Transients42515
-Node: Binding Suffix and Infix Commands44982
-Node: Group Specifications45840
-Node: Suffix Specifications52368
-Node: Defining Suffix and Infix Commands56581
-Node: Using Infix Arguments59629
-Node: Transient State63266
-Ref: Pre-commands for Infixes68081
-Ref: Pre-commands for Suffixes68601
-Ref: Pre-commands for Non-Suffixes71055
-Ref: Special Pre-Commands72191
-Node: Classes and Methods72699
-Node: Group Classes74883
-Node: Group Methods76810
-Node: Prefix Classes78063
-Node: Suffix Classes79154
-Node: Suffix Methods82241
-Node: Suffix Value Methods82562
-Node: Suffix Format Methods85320
-Node: Prefix Slots88310
-Ref: Internal Prefix Slots90447
-Node: Suffix Slots91704
-Ref: Slots of transient-suffix92072
-Ref: Slots of transient-infix93506
-Ref: Slots of transient-variable96802
-Ref: Slots of transient-switches96904
-Node: Predicate Slots97267
-Node: FAQ98702
-Ref: Can I control how the popup buffer is displayed?98831
-Ref: How can I copy text from the popup buffer?99012
-Ref: How can I autoload prefix and suffix commands?99506
-Ref: How does Transient compare to prefix keys and universal arguments?99980
-Ref: How does Transient compare to Magit-Popup and Hydra?100223
-Ref: Why did some of the key bindings change?100417
-Ref: Why does q not quit popups anymore?102770
-Node: Keystroke Index103873
-Node: Command and Function Index105738
-Node: Variable Index112741
-Node: Concept Index115014
-Node: GNU General Public License117750
+Ref: Accessibility Options25876
+Ref: Auxiliary Options26199
+Ref: Developer Options33052
+Node: Modifying Existing Transients34300
+Node: Defining New Commands38492
+Node: Technical Introduction38855
+Node: Defining Transients44556
+Node: Binding Suffix and Infix Commands47023
+Node: Group Specifications47881
+Node: Suffix Specifications54432
+Node: Defining Suffix and Infix Commands58645
+Node: Using Infix Arguments61693
+Node: Transient State65330
+Ref: Pre-commands for Infixes70145
+Ref: Pre-commands for Suffixes70665
+Ref: Pre-commands for Non-Suffixes73119
+Ref: Special Pre-Commands74255
+Node: Classes and Methods74763
+Node: Group Classes76947
+Node: Group Methods78874
+Node: Prefix Classes80127
+Node: Suffix Classes81218
+Node: Suffix Methods84330
+Node: Suffix Value Methods84651
+Node: Suffix Format Methods87409
+Node: Prefix Slots90399
+Ref: Internal Prefix Slots92846
+Node: Suffix Slots94103
+Ref: Slots of transient-suffix94471
+Ref: Slots of transient-infix95905
+Ref: Slots of transient-variable99201
+Ref: Slots of transient-switches99303
+Node: Predicate Slots99666
+Node: FAQ102011
+Ref: Can I control how the popup buffer is displayed?102140
+Ref: How can I copy text from the popup buffer?102467
+Ref: How can I autoload prefix and suffix commands?102961
+Ref: How does Transient compare to prefix keys and universal arguments?103435
+Ref: How does Transient compare to Magit-Popup and Hydra?103678
+Ref: Why did some of the key bindings change?103872
+Ref: Why does q not quit popups anymore?106225
+Node: Keystroke Index107328
+Node: Command and Function Index109193
+Node: Variable Index116196
+Node: Concept Index118469
+Node: GNU General Public License121205
 
 End Tag Table
 

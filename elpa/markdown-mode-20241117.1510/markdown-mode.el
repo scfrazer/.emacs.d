@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20241107.349
-;; Package-Revision: 6f59f72ca040
+;; Package-Version: 20241117.1510
+;; Package-Revision: b8637bae0752
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -371,6 +371,7 @@ Math support can be enabled, disabled, or toggled later using
 (defcustom markdown-css-paths nil
   "List of URLs of CSS files to link to in the output XHTML."
   :group 'markdown
+  :safe (lambda (x) (and (listp x) (cl-every #'stringp x)))
   :type '(repeat (string :tag "CSS File Path")))
 
 (defcustom markdown-content-type "text/html"
@@ -7736,9 +7737,7 @@ Standalone XHTML output is identified by an occurrence of
 
 (defun markdown-stylesheet-link-string (stylesheet-path)
   (concat "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\""
-          (or (and (string-prefix-p "~" stylesheet-path)
-                   (expand-file-name stylesheet-path))
-              stylesheet-path)
+          (expand-file-name stylesheet-path)
           "\"  />"))
 
 (defun markdown-escape-title (title)
