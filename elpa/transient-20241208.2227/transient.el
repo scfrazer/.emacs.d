@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241203.2141
-;; Package-Revision: c9d46a40ee66
+;; Package-Version: 20241208.2227
+;; Package-Revision: dbe18e3f5e08
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -204,10 +204,8 @@ The default is:
     (inhibit-same-window . t))
 
 This displays the window at the bottom of the selected frame.
-Another useful FUNCTION is `display-buffer-below-selected', which
-is what `magit-popup' used by default.  For more alternatives see
-info node `(elisp)Display Action Functions' and info node
-`(elisp)Buffer Display Action Alists'.
+For alternatives see info node `(elisp)Display Action Functions'
+and info node `(elisp)Buffer Display Action Alists'.
 
 Note that the buffer that was current before the transient buffer
 is shown should remain the current buffer.  Many suffix commands
@@ -284,7 +282,7 @@ minibuffer is entered, irrespective of the value of this option.
 
 When nil (the default), hide the menu while the minibuffer is in use.
 When t, keep showing the menu, but allow for the menu window to be
-resized to ensure that completion candidates can be displayed.
+resized, to ensure that completion candidates can be displayed.
 
 When `fixed', keep showing the menu and prevent it from being resized,
 which may make it impossible to display the completion candidates.  If
@@ -1763,6 +1761,9 @@ probably use this instead:
           ;; impossible to disambiguate redundant bindings.
           (if command
               (car suffixes)
+            ;; TODO Decide whether it is legimate to use this function
+            ;; as a predicate, and also whether to return an object for
+            ;; suffixes common to all prefixes.  See #29 and #337.
             (error "BUG: Cannot determine suffix object")))))
    ((and-let* ((obj (transient--suffix-prototype (or command this-command)))
                (obj (clone obj)))
@@ -2153,7 +2154,9 @@ EDIT may be non-nil."
   "Setup the CHILDREN of GROUP.
 If the value of the `setup-children' slot is non-nil, then call
 that function with CHILDREN as the only argument and return the
-value.  Otherwise return CHILDREN as is."
+value.  Otherwise return CHILDREN as is.")
+
+(cl-defmethod transient-setup-children ((group transient-group) children)
   (if (slot-boundp group 'setup-children)
       (funcall (oref group setup-children) children)
     children))
@@ -2419,7 +2422,8 @@ value.  Otherwise return CHILDREN as is."
        ((not (transient--edebug-command-p))
         (setq this-command 'transient-undefined))))
      ((and transient--editp
-           (transient-suffix-object)
+           ;; See TODO in that function.
+           (ignore-errors (transient-suffix-object))
            (not (memq this-command '(transient-quit-one
                                      transient-quit-all
                                      transient-help))))
@@ -3327,9 +3331,8 @@ Use `transient-default-value' to determine the default value."
 
 ;;;; Default
 
-(cl-defgeneric transient-default-value (_)
-  "Return the default value."
-  nil)
+(cl-defgeneric transient-default-value (obj)
+  "Return the default value.")
 
 (cl-defmethod transient-default-value ((obj transient-prefix))
   "Return the default value as specified by the `default-value' slot.
@@ -3823,14 +3826,18 @@ If no prefix matches, return nil."
 ;;; History
 
 (cl-defgeneric transient--history-key (obj)
-  "Return OBJ's history key.
-If the value of the `history-key' slot is non-nil, then return
-that.  Otherwise return the value of the `command' slot."
+  "Return OBJ's history key.")
+
+(cl-defmethod transient--history-key ((obj transient-prefix))
+  "If the value of the `history-key' slot is non-nil, return that.
+Otherwise return the value of the `command' slot."
   (or (oref obj history-key)
       (oref obj command)))
 
 (cl-defgeneric transient--history-push (obj)
-  "Push the current value of OBJ to its entry in `transient-history'."
+  "Push the current value of OBJ to its entry in `transient-history'.")
+
+(cl-defmethod transient--history-push ((obj transient-prefix))
   (let ((key (transient--history-key obj)))
     (setf (alist-get key transient-history)
           (let ((args (transient-get-value)))
