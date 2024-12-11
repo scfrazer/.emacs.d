@@ -1844,7 +1844,7 @@ Prefix with C-u to resize the `next-window'."
 
 (defalias 'bre 'my-backward-regexp)
 (defalias 'colors 'list-colors-display)
-(defalias 'dark 'my-theme-dark)
+;; (defalias 'dark 'my-theme-dark)
 (defalias 'dos 'my-dos-coding-system)
 (defalias 'edbg 'edebug-defun)
 (defalias 'file 'my-put-file-name-on-clipboard)
@@ -1853,7 +1853,7 @@ Prefix with C-u to resize the `next-window'."
 (defalias 'fre 'my-forward-regexp)
 (defalias 'ind 'my-indent)
 (defalias 'init (lambda () (interactive) (require 'use-package) (find-file (concat user-emacs-directory "lisp/my-init.el"))))
-(defalias 'light 'my-theme-light)
+;; (defalias 'light 'my-theme-light)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'ren 'rename-buffer)
 (defalias 'rot 'my-rotate-window-buffers)
