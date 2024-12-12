@@ -28,5 +28,8 @@
   (setq modus-themes-bold-constructs 't)
   (load-theme 'modus-operandi t))
 
-;; Default
-(light)
+;; Choose based on terminal
+(let ((mode (getenv "TERM_MODE")))
+  (if (or (not mode) (equal mode "light"))
+      (light)
+    (dark)))
