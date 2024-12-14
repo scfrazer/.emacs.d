@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20241208.2227
-;; Package-Revision: dbe18e3f5e08
+;; Package-Version: 20241212.1226
+;; Package-Revision: e1126a6ffc25
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -230,6 +230,15 @@ want to change the value of `transient-mode-line-format'."
   :group 'transient
   :type '(cons (choice function (repeat :tag "Functions" function))
                alist))
+
+(defcustom transient-minimal-frame-width 83
+  "Minimal width of dedicated frame used to display transient menu.
+This is only used if the transient menu is actually displayed in a
+dedicated frame (see `transient-display-buffer-action').  The value
+is in characters."
+  :package-version '(transient . "0.8.1")
+  :group 'transient
+  :type 'natnum)
 
 (defcustom transient-mode-line-format 'line
   "The mode-line format for the transient popup buffer.
@@ -2471,7 +2480,9 @@ value.  Otherwise return CHILDREN as is.")
                               (window-parameter win 'prev--no-other-window))
         (set-window-parameter win 'prev--no-other-window nil))
        ((with-demoted-errors "Error while exiting transient: %S"
-          (delete-window win))))
+          (if (window-parent win)
+              (delete-window win)
+            (delete-frame (window-frame win) t)))))
       (when (buffer-live-p transient--buffer)
         (kill-buffer transient--buffer))
       (setq transient--buffer nil)
@@ -3925,11 +3936,12 @@ have a history of their own.")
     (unless (window-live-p transient--window)
       (setq transient--window
             (display-buffer transient--buffer
-                            (transient--display-action))))
-    (when (window-live-p transient--window)
+                            (transient--display-action)))
       (with-selected-window transient--window
         (set-window-parameter nil 'prev--no-other-window
-                              (window-parameter nil 'no-other-window))
+                              (window-parameter nil 'no-other-window))))
+    (when (window-live-p transient--window)
+      (with-selected-window transient--window
         (set-window-parameter nil 'no-other-window t)
         (goto-char (point-min))
         (when transient-enable-popup-navigation
@@ -3937,21 +3949,37 @@ have a history of their own.")
         (transient--fit-window-to-buffer transient--window)))))
 
 (defun transient--display-action ()
-  (let ((action (or (oref transient--prefix display-action)
-                    transient-display-buffer-action)))
-    (when (eq (car action) 'display-buffer-full-frame)
-      (user-error "Invalid value for `transient-display-buffer-action'"))
+  (let ((action
+         (cond ((oref transient--prefix display-action))
+               ((memq 'display-buffer-full-frame
+                      (ensure-list (car transient-display-buffer-action)))
+                (user-error "%s disallowed in %s"
+                            'display-buffer-full-frame
+                            'transient-display-buffer-action))
+               (transient-display-buffer-action))))
+    (when (and (assq 'pop-up-frame-parameters (cdr action))
+               (fboundp 'buffer-line-statistics)) ; Emacs >= 28.1
+      (setq action (copy-tree action))
+      (pcase-let ((`(,height ,width)
+                   (buffer-line-statistics transient--buffer))
+                  (params (assq 'pop-up-frame-parameters (cdr action))))
+        (setf (alist-get 'height params) height)
+        (setf (alist-get 'width params)
+              (max width (or transient-minimal-frame-width 0)))))
     action))
 
 (defun transient--fit-window-to-buffer (window)
   (set-window-parameter window 'window-preserved-size nil)
   (let ((window-resize-pixelwise t)
         (window-size-fixed nil))
-    (if (eq (car (window-parameter window 'quit-restore)) 'other)
-        ;; Grow but never shrink window that previously displayed
-        ;; another buffer and is going to display that again.
-        (fit-window-to-buffer window nil (window-height window))
-      (fit-window-to-buffer window nil 1)))
+    (cond ((not (window-parent window))
+           (fit-frame-to-buffer (window-frame window) nil nil nil
+                                transient-minimal-frame-width))
+          ((eq (car (window-parameter window 'quit-restore)) 'other)
+           ;; Grow but never shrink window that previously displayed
+           ;; another buffer and is going to display that again.
+           (fit-window-to-buffer window nil (window-height window)))
+          ((fit-window-to-buffer window nil 1))))
   (set-window-parameter window 'window-preserved-size
                         (list (window-buffer window)
                               (window-body-width window t)
@@ -3968,12 +3996,12 @@ have a history of their own.")
                            ((natnump format) format)
                            ((eq format 'line) 1)))
              (face `(,@(and (>= emacs-major-version 27) '(:extend t))
-                     :background
-                     ,(or (face-foreground (transient--key-face nil 'non-suffix)
-                                           nil t)
-                          "#gray60"))))
+                     :background ,(transient--prefix-color))))
     (concat (propertize "__" 'face face 'display `(space :height (,height)))
             (propertize "\n" 'face face 'line-height t))))
+
+(defun transient--prefix-color ()
+  (or (face-foreground (transient--key-face nil 'non-suffix) nil t) "#gray60"))
 
 (defmacro transient-with-shadowed-buffer (&rest body)
   "While in the transient buffer, temporarily make the shadowed buffer current."

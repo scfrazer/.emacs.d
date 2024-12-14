@@ -1255,10 +1255,12 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241208.2227/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241208.2227/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226/transient-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/transient-20241208.2227/transient-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -1274,10 +1276,8 @@ Remove a conflicting binding unless optional KEEP-OTHER is
   non-nil.
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)" nil nil)
-
+(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)")
 (function-put 'transient-insert-suffix 'lisp-indent-function 'defun)
-
 (autoload 'transient-append-suffix "transient" "\
 Insert a SUFFIX into PREFIX after LOC.
 PREFIX is a prefix command, a symbol.
@@ -1290,10 +1290,8 @@ Remove a conflicting binding unless optional KEEP-OTHER is
   non-nil.
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)" nil nil)
-
+(fn PREFIX LOC SUFFIX &optional KEEP-OTHER)")
 (function-put 'transient-append-suffix 'lisp-indent-function 'defun)
-
 (autoload 'transient-replace-suffix "transient" "\
 Replace the suffix at LOC in PREFIX with SUFFIX.
 PREFIX is a prefix command, a symbol.
@@ -1304,10 +1302,8 @@ LOC is a command, a key vector, a key description (a string
   (whose last element may also be a command or key).
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC SUFFIX)" nil nil)
-
+(fn PREFIX LOC SUFFIX)")
 (function-put 'transient-replace-suffix 'lisp-indent-function 'defun)
-
 (autoload 'transient-remove-suffix "transient" "\
 Remove the suffix or group at LOC in PREFIX.
 PREFIX is a prefix command, a symbol.
@@ -1316,15 +1312,14 @@ LOC is a command, a key vector, a key description (a string
   (whose last element may also be a command or key).
 See info node `(transient)Modifying Existing Transients'.
 
-\(fn PREFIX LOC)" nil nil)
-
+(fn PREFIX LOC)")
 (function-put 'transient-remove-suffix 'lisp-indent-function 'defun)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "transient" '("find-function-advised-original" "transient")))
-
+(register-definition-prefixes "transient" '("find-function-advised-original" "transient"))
 
 
-
+(provide 'transient-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el"))
 
@@ -3600,7 +3595,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241120.542" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353" "/home/scfrazer/.emacs.d/elpa/transient-20241208.2227" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241120.542" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353" "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
