@@ -154,10 +154,12 @@ to control which program to use when looking for matches.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.0/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.0/xr-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.1/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.1/xr-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/xr-2.0/xr-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -171,8 +173,7 @@ and is one of:
 `brief'         -- short keywords
 `terse'         -- very short keywords
 
-\(fn RE-STRING &optional DIALECT)" nil nil)
-
+(fn RE-STRING &optional DIALECT)")
 (autoload 'xr-skip-set "xr" "\
 Convert a skip set string argument to rx notation.
 SKIP-SET-STRING is interpreted according to the syntax of
@@ -182,8 +183,7 @@ If desired, `rx' can then be used to convert the result to an
 ordinary regexp.
 See `xr' for a description of the DIALECT argument.
 
-\(fn SKIP-SET-STRING &optional DIALECT)" nil nil)
-
+(fn SKIP-SET-STRING &optional DIALECT)")
 (autoload 'xr-lint "xr" "\
 Detect dubious practices and possible mistakes in RE-STRING.
 This includes uses of tolerated but discouraged constructs, as well
@@ -201,8 +201,7 @@ applies at offsets BEG..END inclusive in RE-STRING, and SEVERITY is
 `error', `warning' or `info'. The middle list level groups diagnostics
 about the same problem.
 
-\(fn RE-STRING &optional PURPOSE CHECKS)" nil nil)
-
+(fn RE-STRING &optional PURPOSE CHECKS)")
 (autoload 'xr-skip-set-lint "xr" "\
 Detect dubious practices and possible mistakes in SKIP-SET-STRING.
 This includes uses of tolerated but discouraged constructs, as well
@@ -215,16 +214,14 @@ applies at offsets BEG..END inclusive in SKIP-SET-STRING, and SEVERITY is
 `error', `warning' or `info'. The middle list level groups diagnostics
 about the same problem.
 
-\(fn SKIP-SET-STRING)" nil nil)
-
+(fn SKIP-SET-STRING)")
 (autoload 'xr-pp "xr" "\
 Convert to `rx' notation and output the pretty-printed result.
 This function uses `xr' to translate RE-STRING into DIALECT.
 It is intended for use from an interactive elisp session.
 See `xr' for a description of the DIALECT argument.
 
-\(fn RE-STRING &optional DIALECT)" nil nil)
-
+(fn RE-STRING &optional DIALECT)")
 (autoload 'xr-skip-set-pp "xr" "\
 Convert a skip set string to `rx' notation and pretty-print.
 This function uses `xr-skip-set' to translate SKIP-SET-STRING
@@ -232,30 +229,33 @@ into DIALECT.
 It is intended for use from an interactive elisp session.
 See `xr' for a description of the DIALECT argument.
 
-\(fn SKIP-SET-STRING &optional DIALECT)" nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xr" '("xr-")))
-
+(fn SKIP-SET-STRING &optional DIALECT)")
+(register-definition-prefixes "xr" '("xr-"))
 
 
-
+(provide 'xr-autoloads)
+
+
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.0.1.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.0.1.0/compat-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0/compat-autoloads.el") (car load-path))))
 
-
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "compat" '("compat-")))
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "compat-macs" '("compat-")))
+(register-definition-prefixes "compat" '("compat-"))
 
 
 
+(register-definition-prefixes "compat-macs" '("compat-"))
 
+
+(provide 'compat-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419/with-editor-autoloads.el"))
 
@@ -556,37 +556,32 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240804.821/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20240804.821/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20241227.530/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20241227.530/web-mode-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/web-mode-20240804.821/web-mode-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (put 'web-mode-attr-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
-
 (put 'web-mode-attr-value-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
-
 (put 'web-mode-markup-indent-offset 'safe-local-variable #'integerp)
-
 (put 'web-mode-markup-comment-indent-offset 'safe-local-variable #'integerp)
-
 (put 'web-mode-css-indent-offset 'safe-local-variable #'integerp)
-
 (put 'web-mode-code-indent-offset 'safe-local-variable #'integerp)
-
 (put 'web-mode-sql-indent-offset 'safe-local-variable #'integerp)
-
 (autoload 'web-mode "web-mode" "\
 Major mode for editing web templates.
 
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "web-mode" '("web-mode-")))
-
+(fn)" t)
+(register-definition-prefixes "web-mode" '("web-mode-"))
 
 
-
+(provide 'web-mode-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-beautify-20161115.2247/web-beautify-autoloads.el"))
 
@@ -623,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20241208.2233/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20241208.2233/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250101.928/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250101.928/vertico-autoloads.el"))
 
 
 
@@ -1255,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250101.1744/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250101.1744/transient-autoloads.el"))
 
 
 
@@ -1360,24 +1355,23 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420/rg-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353/rg-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (defvar rg-keymap-prefix "\3s" "\
 Prefix for global `rg' keymap.")
-
 (custom-autoload 'rg-keymap-prefix "rg" t)
-
 (defvar rg-command-line-flags-function 'identity "\
 Function to modify command line flags of a search.
 The argument of the function is an optional list of search specific
 command line flags and the function shall return a list of command
 line flags to use.")
-
 (autoload 'rg-define-toggle "rg" "\
 Define a command line flag that can be toggled from the rg result buffer.
 
@@ -1391,17 +1385,14 @@ value that will be excluded from the function name.
 Optional KEY is a key binding that is added to `rg-mode-map'.  If the
 optional DEFAULT parameter is non nil the flag will be enabled by default.
 
-\(fn FLAG &optional KEY DEFAULT)" nil t)
-
+(fn FLAG &optional KEY DEFAULT)" nil t)
 (autoload 'rg-enable-default-bindings "rg" "\
 Enable the global `rg' default key bindings under PREFIX key.
 If prefix is not supplied `rg-keymap-prefix' is used.
 
-\(fn &optional PREFIX)" t nil)
-
+(fn &optional PREFIX)" t)
 (autoload 'rg-use-old-defaults "rg" "\
-Restore default settings pre version 2.0.0." nil nil)
-
+Restore default settings pre version 2.0.0.")
 (autoload 'rg-define-search "rg" "\
 Define an rg search functions named NAME.
 ARGS is a search specification that defines parameters of a search.
@@ -1444,7 +1435,7 @@ specified default if left out.
             description of the command that will appear in the menu.
 
 Example:
-\(rg-define-search search-home-dir-in-elisp
+(rg-define-search search-home-dir-in-elisp
   \"Doc string.\"
   :query ask
   :format literal
@@ -1452,14 +1443,12 @@ Example:
   :dir (getenv \"HOME\"))
   :menu (\"Custom\" \"H\" \"Home dir\")
 
-\(fn NAME &rest ARGS)" nil t)
-
+(fn NAME &rest ARGS)" nil t)
 (function-put 'rg-define-search 'lisp-indent-function 'defun)
  (autoload 'rg-project "rg.el" "" t)
  (autoload 'rg-dwim-project-dir "rg.el" "" t)
  (autoload 'rg-dwim-current-dir "rg.el" "" t)
  (autoload 'rg-dwim-current-file "rg.el" "" t)
-
 (autoload 'rg-dwim "rg" "\
 Run ripgrep without user interaction figuring out the intention by magic(!).
 The default magic searches for thing at point in files matching
@@ -1473,88 +1462,83 @@ the current dir and using the current variable `buffer-file-name'
 as a pattern.  Subdirectories are still searched, so different
 files with the same name pattern still will be searched.
 
-\(fn &optional CURDIR)" t nil)
+(fn &optional CURDIR)" t)
  (autoload 'rg-literal "rg.el" "" t)
  (autoload 'rg "rg.el" "" t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg" '("kill-rg" "rg-")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-header" '("rg-")))
+(register-definition-prefixes "rg" '("kill-rg" "rg-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-history" '("rg-history-")))
+(register-definition-prefixes "rg-header" '("rg-"))
+
+
+
+(register-definition-prefixes "rg-history" '("rg-history-"))
 
 
 
 (autoload 'rg-list-searches "rg-ibuffer" "\
-List all `rg-mode' buffers in `ibuffer'." t nil)
+List all `rg-mode' buffers in `ibuffer'." t)
+(register-definition-prefixes "rg-ibuffer" '("rg-"))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-ibuffer" '("rg-")))
+
+
+(register-definition-prefixes "rg-info-hack" '("info-insert-file-contents"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-info-hack" '("info-insert-file-contents")))
-
-
  (autoload 'rg-isearch-current-file "rg-isearch.el" "" t)
  (autoload 'rg-isearch-current-dir "rg-isearch.el" "" t)
  (autoload 'rg-isearch-project "rg-isearch.el" "" t)
  (autoload 'rg-isearch-menu "rg-isearch.el" "" t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-isearch" '("rg-get-isearch-string")))
+(register-definition-prefixes "rg-isearch" '("rg-get-isearch-string"))
 
 
- (autoload 'rg-menu "rg-menu.el" "" t)
 
+ (autoload 'rg-menu "rg-menu.el" "" t)
 (autoload 'rg-enable-menu "rg-menu" "\
 Bind `rg-menu' to PREFIX key.
 If prefix is not supplied `rg-keymap-prefix' is used.
 
-\(fn &optional PREFIX)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-menu" '("rg-menu-")))
+(fn &optional PREFIX)" t)
+(register-definition-prefixes "rg-menu" '("rg-menu-"))
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rg-result" '("rg-")))
+(register-definition-prefixes "rg-result" '("rg-"))
 
 
 
 (autoload 'wgrep-rg-setup "wgrep-rg" "\
-Setup wgrep rg support." nil nil)
-
+Setup wgrep rg support.")
 (add-hook 'rg-mode-hook 'wgrep-rg-setup)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "wgrep-rg" '("wgrep-rg-")))
-
+(register-definition-prefixes "wgrep-rg" '("wgrep-rg-"))
 
 
-
+(provide 'rg-autoloads)
+
+
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.0/relint-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.0/relint-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.1/relint-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.1/relint-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/relint-2.0/relint-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (autoload 'relint-file "relint" "\
 Scan FILE, an elisp file, for regexp-related errors.
 
-\(fn FILE)" t nil)
-
+(fn FILE)" t)
 (autoload 'relint-directory "relint" "\
 Scan all *.el files in DIR for regexp-related errors.
 
-\(fn DIR)" t nil)
-
+(fn DIR)" t)
 (autoload 'relint-current-buffer "relint" "\
 Scan the current buffer for regexp errors.
-The buffer must be in emacs-lisp-mode." t nil)
-
+The buffer must be in emacs-lisp-mode." t)
 (autoload 'relint-buffer "relint" "\
 Scan BUFFER for regexp mistakes. Return list of diagnostics.
 Each element in the returned list is an object with the slots
@@ -1576,13 +1560,13 @@ the message of object D.
 BEG-POS..END-POS is the range of interest in the buffer, and may
 correspond to the range BEG-IDX..END-IDX in STRING but not necessarily so.
 
-\(fn BUFFER)" nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "relint" '("relint-")))
-
+(fn BUFFER)")
+(register-definition-prefixes "relint" '("relint-"))
 
 
-
+(provide 'relint-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.1/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.1/project-autoloads.el"))
 
@@ -1886,23 +1870,28 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20240101.830/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20240101.830/popup-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/popup-20240101.830/popup-autoloads.el") (car load-path))))
 
-
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "popup" '("popup-")))
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
+(register-definition-prefixes "popup" '("popup-"))
 
+
+(provide 'popup-autoloads)
+
+
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922/orderless-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921/orderless-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -1912,8 +1901,7 @@ The predicate PRED is used to constrain the entries in TABLE.  The
 matching portions of each candidate are highlighted.
 This function is part of the `orderless' completion style.
 
-\(fn STRING TABLE PRED POINT)" nil nil)
-
+(fn STRING TABLE PRED POINT)")
 (autoload 'orderless-try-completion "orderless" "\
 Complete STRING to unique matching entry in TABLE.
 This uses `orderless-all-completions' to find matches for STRING
@@ -1923,31 +1911,28 @@ returns nil.  In any other case it \"completes\" STRING to
 itself, without moving POINT.
 This function is part of the `orderless' completion style.
 
-\(fn STRING TABLE PRED POINT)" nil nil)
-
+(fn STRING TABLE PRED POINT)")
 (add-to-list 'completion-styles-alist '(orderless orderless-try-completion orderless-all-completions "Completion of multiple components, in any order."))
-
 (autoload 'orderless-ivy-re-builder "orderless" "\
 Convert STR into regexps for use with ivy.
 This function is for integration of orderless with ivy, use it as
 a value in `ivy-re-builders-alist'.
 
-\(fn STR)" nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless" '("orderless-")))
+(fn STR)")
+(register-definition-prefixes "orderless" '("orderless-"))
 
 
 
 (autoload 'orderless-kwd-dispatch "orderless-kwd" "\
 Match COMPONENT against the keywords in `orderless-kwd-alist'.
 
-\(fn COMPONENT INDEX TOTAL)" nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "orderless-kwd" '("orderless-kwd-")))
-
+(fn COMPONENT INDEX TOTAL)")
+(register-definition-prefixes "orderless-kwd" '("orderless-kwd-"))
 
 
-
+(provide 'orderless-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20241201.1841/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20241201.1841/multiple-cursors-autoloads.el"))
 
@@ -2273,7 +2258,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241120.542/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241120.542/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241228.1050/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20241228.1050/modus-themes-autoloads.el"))
 
 
 
@@ -2376,7 +2361,7 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20241124.1138/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20241124.1138/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250101.920/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250101.920/marginalia-autoloads.el"))
 
 
 
@@ -2613,34 +2598,47 @@ result of `defhydra'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20200820.2328/highlight-indent-guides-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
-
-(autoload 'highlight-indent-guides-auto-set-faces "highlight-indent-guides" "\
-Automatically calculate indent guide faces.
-If this feature is enabled, calculate reasonable values for the indent guide
-colors based on the current theme's colorscheme, and set them appropriately.
-This runs whenever a theme is loaded, but it can also be run interactively." t nil)
 
 (autoload 'highlight-indent-guides-mode "highlight-indent-guides" "\
 Display indent guides in a buffer.
 
-If called interactively, enable Highlight-Indent-Guides mode if
-ARG is positive, and disable it if ARG is zero or negative.  If
-called from Lisp, also enable the mode if ARG is omitted or nil,
-and toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Highlight-Indent-Guides mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
 
-\(fn &optional ARG)" t nil)
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "highlight-indent-guides" '("highlight-indent-guides-")))
+To check whether the minor mode is enabled in the current buffer,
+evaluate `highlight-indent-guides-mode'.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(autoload 'highlight-indent-guides-auto-set-faces "highlight-indent-guides" "\
+Automatically calculate indent guide faces.
+If this feature is enabled, calculate reasonable values for the indent guide
+colors based on the current theme's colorscheme, and set them appropriately.
+This runs whenever a theme is loaded, but it can also be run interactively.
+
+(fn &rest _)" t)
+(register-definition-prefixes "highlight-indent-guides" '("highlight-indent-guides-"))
 
 
-
+(provide 'highlight-indent-guides-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/goto-last-change-20150109.1823/goto-last-change-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/goto-last-change-20150109.1823/goto-last-change-autoloads.el"))
 
@@ -3595,7 +3593,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241120.542" "/home/scfrazer/.emacs.d/elpa/orderless-20240926.921" "/home/scfrazer/.emacs.d/elpa/rg-20241112.1353" "/home/scfrazer/.emacs.d/elpa/transient-20241212.1226" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20241228.1050" "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250101.1744" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.1.0")
          Info-directory-list)))
 
 ;; Local Variables:
