@@ -2282,8 +2282,9 @@ Appearance
    • ‘mode-line-format’ is this prefix’s mode line format, overriding
      ‘transient-mode-line-format’.  It should have the same type.
 
-   • ‘column-width’ is only respected inside ‘transient-columns’ groups
-     and allows aligning columns across separate instances of that.
+   • ‘column-widths’ is only respected inside ‘transient-columns’ groups
+     and allows aligning columns across separate instances of that.  A
+     list of integers.
 
    • ‘variable-pitch’ controls whether alignment is done pixel-wise to
      account for use of variable-pitch characters, which is useful,
@@ -3642,28 +3643,28 @@ Node: Prefix Slots98450
 Ref: Value and Scope98600
 Ref: Behavior100079
 Ref: Appearance101420
-Ref: Documentation102079
-Ref: Internal102699
-Node: Suffix Slots104054
-Ref: Slots of transient-child104422
-Ref: Slots of transient-suffix104797
-Ref: Slots of transient-infix106370
-Ref: Slots of transient-variable109666
-Ref: Slots of transient-switches109768
-Node: Predicate Slots110131
-Node: FAQ112476
-Ref: Can I control how the popup buffer is displayed?112605
-Ref: How can I copy text from the popup buffer?112932
-Ref: How can I autoload prefix and suffix commands?113426
-Ref: How does Transient compare to prefix keys and universal arguments?113900
-Ref: How does Transient compare to Magit-Popup and Hydra?114143
-Ref: Why did some of the key bindings change?114337
-Ref: Why does q not quit popups anymore?116690
-Node: Keystroke Index117793
-Node: Command and Function Index119658
-Node: Variable Index126687
-Node: Concept Index129255
-Node: GNU General Public License132079
+Ref: Documentation102106
+Ref: Internal102726
+Node: Suffix Slots104081
+Ref: Slots of transient-child104449
+Ref: Slots of transient-suffix104824
+Ref: Slots of transient-infix106397
+Ref: Slots of transient-variable109693
+Ref: Slots of transient-switches109795
+Node: Predicate Slots110158
+Node: FAQ112503
+Ref: Can I control how the popup buffer is displayed?112632
+Ref: How can I copy text from the popup buffer?112959
+Ref: How can I autoload prefix and suffix commands?113453
+Ref: How does Transient compare to prefix keys and universal arguments?113927
+Ref: How does Transient compare to Magit-Popup and Hydra?114170
+Ref: Why did some of the key bindings change?114364
+Ref: Why does q not quit popups anymore?116717
+Node: Keystroke Index117820
+Node: Command and Function Index119685
+Node: Variable Index126714
+Node: Concept Index129282
+Node: GNU General Public License132106
 
 End Tag Table
 
