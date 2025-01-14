@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250101.928
-;; Package-Revision: 7f36ecf5a550
+;; Package-Version: 20250112.915
+;; Package-Revision: c033c7149de5
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -141,7 +141,8 @@ The value should lie between 0 and vertico-count/2."
   "<remap> <exit-minibuffer>" #'vertico-exit
   "<remap> <kill-ring-save>" #'vertico-save
   "M-RET" #'vertico-exit-input
-  "TAB" #'vertico-insert)
+  "TAB" #'vertico-insert
+  "<touchscreen-begin>" #'ignore)
 
 (defvar-local vertico--hilit #'identity
   "Lazy candidate highlighting function.")
@@ -627,6 +628,8 @@ The function is configured by BY, BSIZE, BINDEX, BPRED and PRED."
 
 (cl-defgeneric vertico--setup ()
   "Setup completion UI."
+  (when (boundp 'pixel-scroll-precision-mode)
+    (setq-local pixel-scroll-precision-mode nil))
   (setq-local scroll-margin 0
               vertico--input t
               completion-auto-help nil
@@ -719,7 +722,7 @@ When the prefix argument is 0, the group order is reset."
   (interactive)
   (if (or (use-region-p) (not transient-mark-mode))
       (call-interactively #'kill-ring-save)
-    (kill-new (vertico--candidate))))
+    (kill-new (substring-no-properties (vertico--candidate)))))
 
 (defun vertico-insert ()
   "Insert current candidate in minibuffer."
