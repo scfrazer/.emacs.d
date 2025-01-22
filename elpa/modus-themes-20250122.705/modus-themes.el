@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250110.756
-;; Package-Revision: 3bef1fae4b81
+;; Package-Version: 20250122.705
+;; Package-Revision: 75791f5efc49
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -1318,7 +1318,8 @@ PALETTE is the value of a variable like `modus-operandi-palette'."
                            (color (modus-themes-get-color-value name mappings theme))) ; resolve a semantic mapping
                 (list name
                       (vector
-                       (if (symbolp value)
+                       (if (and (symbolp value)
+                                (not (eq value 'unspecified)))
                            "Yes"
                          "")
                        name-string
@@ -3329,7 +3330,7 @@ FG and BG are the main colors."
     `(org-clock-overlay ((,c :inherit secondary-selection)))
     `(org-code ((,c :inherit modus-themes-prose-code)))
     `(org-column ((,c :inherit default :background ,bg-dim)))
-    `(org-column-title ((,c :inherit (bold default) :underline t :background ,bg-dim)))
+    `(org-column-title ((,c :inherit (modus-themes-fixed-pitch bold default) :underline t :background ,bg-dim)))
     `(org-date ((,c :inherit modus-themes-fixed-pitch :foreground ,date-common)))
     `(org-date-selected ((,c :foreground ,date-common :inverse-video t)))
     ;; NOTE 2024-03-17: Normally we do not want to add this padding

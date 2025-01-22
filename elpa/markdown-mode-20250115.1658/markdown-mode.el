@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250109.323
-;; Package-Revision: e1007785947a
+;; Package-Version: 20250115.1658
+;; Package-Revision: 7659bc470d09
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -287,6 +287,13 @@ cause lag when typing on slower machines."
   :type 'boolean
   :safe 'booleanp
   :package-version '(markdown-mode . "2.2"))
+
+(defcustom markdown-wiki-link-retain-case nil
+  "When non-nil, wiki link file names do not have their case changed."
+  :group 'markdown
+  :type 'boolean
+  :safe 'booleanp
+  :package-version '(markdown-mode . "2.7"))
 
 (defcustom markdown-uri-types
   '("acap" "cid" "data" "dav" "fax" "file" "ftp"
@@ -5182,6 +5189,7 @@ list simply adds a blank line)."
    (markdown-indent-on-enter
     (let (bounds)
       (if (and (memq markdown-indent-on-enter '(indent-and-new-item))
+               (not (markdown-code-block-at-point-p))
                (setq bounds (markdown-cur-list-item-bounds)))
           (let ((beg (cl-first bounds))
                 (end (cl-second bounds))
@@ -8375,7 +8383,7 @@ in parent directories if
     ;; This function must not overwrite match data(PR #590)
     (let* ((basename (replace-regexp-in-string
                       "[[:space:]\n]" markdown-link-space-sub-char name))
-           (basename (if (derived-mode-p 'gfm-mode)
+           (basename (if (and (derived-mode-p 'gfm-mode) (not markdown-wiki-link-retain-case))
                          (concat (upcase (substring basename 0 1))
                                  (downcase (substring basename 1 nil)))
                        basename))
@@ -9093,6 +9101,10 @@ LANG is a string, and the returned major mode is a symbol."
   (and mode
        (fboundp mode)
        (or
+        (not (string-match-p "ts-mode\\'" (symbol-name mode)))
+        ;; Don't load tree-sitter mode if the mode is in neither auto-mode-alist nor major-mode-remap-alist
+        ;; Because some ts-mode overwrites auto-mode-alist and it might break user configurations
+
         ;; https://github.com/jrblevin/markdown-mode/issues/787
         ;; major-mode-remap-alist was introduced at Emacs 29.1
         (cl-loop for pair in (bound-and-true-p major-mode-remap-alist)

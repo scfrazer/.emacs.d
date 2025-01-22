@@ -81,6 +81,7 @@ Defining New Commands
 * Binding Suffix and Infix Commands::
 * Defining Suffix and Infix Commands::
 * Using Infix Arguments::
+* Using Prefix Scope::
 * Current Suffix Command::
 * Current Prefix Command::
 * Transient State::
@@ -930,6 +931,7 @@ File: transient.info,  Node: Defining New Commands,  Next: Classes and Methods, 
 * Binding Suffix and Infix Commands::
 * Defining Suffix and Infix Commands::
 * Using Infix Arguments::
+* Using Prefix Scope::
 * Current Suffix Command::
 * Current Prefix Command::
 * Transient State::
@@ -1223,6 +1225,13 @@ constructor of that class.
      suffixes contained in a group are right padded, effectively
      aligning the descriptions.
 
+   • If a keyword argument accepts a function as value, you an use a
+     ‘lambda’ expression.  As a special case, the ‘##’ macro (which
+     returns a ‘lambda’ expression and is implemented in the ‘llama’
+     package) is also supported.  Inside group specifications, the use
+     of ‘##’ is not supported anywhere but directly following a keyword
+     symbol.
+
    The ELEMENTs are either all subgroups, or all suffixes and strings.
 (At least currently no group type exists that would allow mixing
 subgroups with commands at the same level, though in principle there is
@@ -1332,6 +1341,12 @@ Each keyword has to be a keyword symbol, either ‘:class’ or a keyword
 argument supported by the constructor of that class.  See *note Suffix
 Slots::.
 
+   If a keyword argument accepts a function as value, you an use a
+‘lambda’ expression.  As a special case, the ‘##’ macro (which returns a
+‘lambda’ expression and is implemented in the ‘llama’ package) is also
+supported.  Inside suffix bindings, the use of ‘##’ is not supported
+anywhere but directly following a keyword symbol.
+
 
 File: transient.info,  Node: Defining Suffix and Infix Commands,  Next: Using Infix Arguments,  Prev: Binding Suffix and Infix Commands,  Up: Defining New Commands
 
@@ -1399,7 +1414,7 @@ Note that an infix is a special kind of suffix.  Depending on context
      ‘transient-define-infix’ instead.
 
 
-File: transient.info,  Node: Using Infix Arguments,  Next: Current Suffix Command,  Prev: Defining Suffix and Infix Commands,  Up: Defining New Commands
+File: transient.info,  Node: Using Infix Arguments,  Next: Using Prefix Scope,  Prev: Defining Suffix and Infix Commands,  Up: Defining New Commands
 
 4.5 Using Infix Arguments
 =========================
@@ -1451,9 +1466,56 @@ same purpose as ‘prefix-arg’ serves for prefix arguments.
      if the current command is not being invoked from PREFIX.
 
 
-File: transient.info,  Node: Current Suffix Command,  Next: Current Prefix Command,  Prev: Using Infix Arguments,  Up: Defining New Commands
+File: transient.info,  Node: Using Prefix Scope,  Next: Current Suffix Command,  Prev: Using Infix Arguments,  Up: Defining New Commands
 
-4.6 Current Suffix Command
+4.6 Using Prefix Scope
+======================
+
+Some transients have a sort of secondary value, called a scope.  A
+prefix’s scope can be accessed using ‘transient-scope’; similar to how
+its value can be accessed using ‘transient-args’.
+
+ -- Function: transient-scope prefixes classes
+     This function returns the scope of the active or current transient
+     prefix command.
+
+     If optional PREFIXES and CLASSES are both nil, return the scope of
+     the prefix currently being setup, making this variation useful,
+     e.g., in ‘:if*’ predicates.  If no prefix is being setup, but the
+     current command was invoked from some prefix, then return the scope
+     of that.
+
+     If PREFIXES is non-nil, it must be a prefix command or a list of
+     such commands.  If CLASSES is non-nil, it must be a prefix class or
+     a list of such classes.  When this function is called from the body
+     or the ‘interactive’ form of a suffix command, PREFIXES and/or
+     CLASSES should be non-nil.  If either is non-nil, try the following
+     in order:
+
+        • If the current suffix command was invoked from a prefix, which
+          appears in PREFIXES, return the scope of that prefix.
+
+        • If the current suffix command was invoked from a prefix, and
+          its class derives from one of the CLASSES, return the scope of
+          that prefix.
+
+        • If a prefix is being setup and it appears in PREFIXES, return
+          its scope.
+
+        • If a prefix is being setup and its class derives from one of
+          the CLASSES, return its scope.
+
+        • Finally try to return the default scope of the first command
+          in PREFIXES.  This only works if that slot is set in the
+          respective class definition or using its
+          ‘transient-init-scope’ method.
+
+     If no prefix matches, return nil.
+
+
+File: transient.info,  Node: Current Suffix Command,  Next: Current Prefix Command,  Prev: Using Prefix Scope,  Up: Defining New Commands
+
+4.7 Current Suffix Command
 ==========================
 
  -- Function: transient-suffix-object command
@@ -1506,7 +1568,7 @@ File: transient.info,  Node: Current Suffix Command,  Next: Current Prefix Comma
 
 File: transient.info,  Node: Current Prefix Command,  Next: Transient State,  Prev: Current Suffix Command,  Up: Defining New Commands
 
-4.7 Current Prefix Command
+4.8 Current Prefix Command
 ==========================
 
  -- Function: transient-prefix-object
@@ -1561,7 +1623,7 @@ File: transient.info,  Node: Current Prefix Command,  Next: Transient State,  Pr
 
 File: transient.info,  Node: Transient State,  Prev: Current Prefix Command,  Up: Defining New Commands
 
-4.8 Transient State
+4.9 Transient State
 ===================
 
 Invoking a transient prefix command “activates” the respective
@@ -2353,8 +2415,9 @@ Slots of ‘transient-child’
 
 This is the abstract superclass of ‘transient-suffix’ and
 ‘transient-group’.  This is where the shared ‘if*’ and ‘inapt-if*’ slots
-(see *note Predicate Slots::) and the ‘level’ slot (see *note Enabling
-and Disabling Suffixes::) are defined.
+(see *note Predicate Slots::), the ‘level’ slot (see *note Enabling and
+Disabling Suffixes::), and the ‘advice’ and ‘advice*’ slots (see *note
+Slots of transient-suffix::) are defined.
 
    • ‘parent’ The object for the parent group.
 
@@ -2396,6 +2459,21 @@ Slots of ‘transient-suffix’
 
    • ‘definition’ A command, which is used if the body is omitted when
      defining a command using ‘transient-define-suffix’.
+
+   The following two slots are experimental.  They can also be set for a
+group, in which case they apply to all suffixes in that group, except
+for suffixes that set the same slot to a non-nil value.
+
+   • ‘advice’ A function used to advise the command.  The advise is
+     called using ‘(apply advice command args)’, i.e., it behaves like
+     an "around" advice.
+
+   • ‘advice*’ A function used to advise the command.  Unlike ‘advice’,
+     this advises not only the command body but also its ‘interactive’
+     spec.  If both slots are non-nil, ‘advice’ is used for the body and
+     ‘advice*’ is used for the ‘interactive’ form.  When advising the
+     ‘interactive’ spec, called using ‘(funcall advice
+     #'advice-eval-interactive-spec spec)’.
 
 Slots of ‘transient-infix’
 --------------------------
@@ -2762,6 +2840,7 @@ Appendix C Command and Function Index
 * transient-resume:                      Aborting and Resuming Transients.
                                                               (line  53)
 * transient-save:                        Saving Values.       (line  25)
+* transient-scope:                       Using Prefix Scope.  (line  10)
 * transient-scroll-down:                 Other Commands.      (line  17)
 * transient-scroll-up:                   Other Commands.      (line  12)
 * transient-set:                         Saving Values.       (line  21)
@@ -2868,7 +2947,7 @@ Appendix E Concept Index
 * saving values of arguments:            Saving Values.       (line   6)
 * scope of a transient:                  Defining Transients. (line  43)
 * suffix specifications:                 Binding Suffix and Infix Commands.
-                                                              (line 155)
+                                                              (line 162)
 * transient state:                       Transient State.     (line   6)
 * transient-level:                       Enabling and Disabling Suffixes.
                                                               (line  15)
@@ -3594,77 +3673,78 @@ please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 Tag Table:
 Node: Top763
-Node: Introduction2892
-Ref: Some things that Transient can do3420
-Ref: Complexity in CLI programs3773
-Ref: Using Transient for composing interactive commands4374
-Node: Usage6616
-Node: Invoking Transients6984
-Node: Aborting and Resuming Transients8153
-Node: Common Suffix Commands10774
-Node: Saving Values12481
-Ref: Saving Values-Footnote-113885
-Node: Using History14078
-Node: Getting Help for Suffix Commands15784
-Node: Enabling and Disabling Suffixes17162
-Node: Other Commands20450
-Node: Configuration22127
-Ref: Essential Options22407
-Ref: Accessibility Options29237
-Ref: Auxiliary Options29560
-Ref: Developer Options34138
-Ref: Hook Variables35386
-Node: Modifying Existing Transients35673
-Node: Defining New Commands39865
-Node: Technical Introduction40282
-Node: Defining Transients45982
-Node: Binding Suffix and Infix Commands48449
-Ref: Group Specifications49246
-Ref: Suffix Specifications55674
-Node: Defining Suffix and Infix Commands59764
-Node: Using Infix Arguments62812
-Node: Current Suffix Command65205
-Node: Current Prefix Command67565
-Node: Transient State70121
-Ref: Pre-commands for Infixes74937
-Ref: Pre-commands for Suffixes75457
-Ref: Pre-commands for Non-Suffixes77911
-Ref: Special Pre-Commands79047
-Node: Classes and Methods79555
-Node: Group Classes81642
-Node: Group Methods83569
-Node: Prefix Classes84829
-Node: Suffix Classes85674
-Node: Prefix Methods89654
-Node: Suffix Methods92047
-Ref: Suffix Value Methods92307
-Ref: Suffix Format Methods95552
-Node: Prefix Slots98450
-Ref: Value and Scope98600
-Ref: Behavior100079
-Ref: Appearance101420
-Ref: Documentation102106
-Ref: Internal102726
-Node: Suffix Slots104081
-Ref: Slots of transient-child104449
-Ref: Slots of transient-suffix104824
-Ref: Slots of transient-infix106397
-Ref: Slots of transient-variable109693
-Ref: Slots of transient-switches109795
-Node: Predicate Slots110158
-Node: FAQ112503
-Ref: Can I control how the popup buffer is displayed?112632
-Ref: How can I copy text from the popup buffer?112959
-Ref: How can I autoload prefix and suffix commands?113453
-Ref: How does Transient compare to prefix keys and universal arguments?113927
-Ref: How does Transient compare to Magit-Popup and Hydra?114170
-Ref: Why did some of the key bindings change?114364
-Ref: Why does q not quit popups anymore?116717
-Node: Keystroke Index117820
-Node: Command and Function Index119685
-Node: Variable Index126714
-Node: Concept Index129282
-Node: GNU General Public License132106
+Node: Introduction2915
+Ref: Some things that Transient can do3443
+Ref: Complexity in CLI programs3796
+Ref: Using Transient for composing interactive commands4397
+Node: Usage6639
+Node: Invoking Transients7007
+Node: Aborting and Resuming Transients8176
+Node: Common Suffix Commands10797
+Node: Saving Values12504
+Ref: Saving Values-Footnote-113908
+Node: Using History14101
+Node: Getting Help for Suffix Commands15807
+Node: Enabling and Disabling Suffixes17185
+Node: Other Commands20473
+Node: Configuration22150
+Ref: Essential Options22430
+Ref: Accessibility Options29260
+Ref: Auxiliary Options29583
+Ref: Developer Options34161
+Ref: Hook Variables35409
+Node: Modifying Existing Transients35696
+Node: Defining New Commands39888
+Node: Technical Introduction40328
+Node: Defining Transients46028
+Node: Binding Suffix and Infix Commands48495
+Ref: Group Specifications49292
+Ref: Suffix Specifications56105
+Node: Defining Suffix and Infix Commands60546
+Node: Using Infix Arguments63594
+Node: Using Prefix Scope65983
+Node: Current Suffix Command67989
+Node: Current Prefix Command70346
+Node: Transient State72902
+Ref: Pre-commands for Infixes77718
+Ref: Pre-commands for Suffixes78238
+Ref: Pre-commands for Non-Suffixes80692
+Ref: Special Pre-Commands81828
+Node: Classes and Methods82336
+Node: Group Classes84423
+Node: Group Methods86350
+Node: Prefix Classes87610
+Node: Suffix Classes88455
+Node: Prefix Methods92435
+Node: Suffix Methods94828
+Ref: Suffix Value Methods95088
+Ref: Suffix Format Methods98333
+Node: Prefix Slots101231
+Ref: Value and Scope101381
+Ref: Behavior102860
+Ref: Appearance104201
+Ref: Documentation104887
+Ref: Internal105507
+Node: Suffix Slots106862
+Ref: Slots of transient-child107230
+Ref: Slots of transient-suffix107688
+Ref: Slots of transient-infix110056
+Ref: Slots of transient-variable113352
+Ref: Slots of transient-switches113454
+Node: Predicate Slots113817
+Node: FAQ116162
+Ref: Can I control how the popup buffer is displayed?116291
+Ref: How can I copy text from the popup buffer?116618
+Ref: How can I autoload prefix and suffix commands?117112
+Ref: How does Transient compare to prefix keys and universal arguments?117586
+Ref: How does Transient compare to Magit-Popup and Hydra?117829
+Ref: Why did some of the key bindings change?118023
+Ref: Why does q not quit popups anymore?120376
+Node: Keystroke Index121479
+Node: Command and Function Index123344
+Node: Variable Index130446
+Node: Concept Index133014
+Node: GNU General Public License135838
 
 End Tag Table
 

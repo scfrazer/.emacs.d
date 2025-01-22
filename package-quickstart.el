@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250112.915/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250112.915/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250117.1814/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250117.1814/vertico-autoloads.el"))
 
 
 
@@ -1250,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250108.1351/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250108.1351/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250121.2012/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250121.2012/transient-autoloads.el"))
 
 
 
@@ -2258,7 +2258,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250110.756/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250110.756/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250122.705/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250122.705/modus-themes-autoloads.el"))
 
 
 
@@ -2316,7 +2316,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250109.323/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250109.323/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250115.1658/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250115.1658/markdown-mode-autoloads.el"))
 
 
 
@@ -3600,7 +3600,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250110.756" "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250108.1351" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250122.705" "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250121.2012" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
