@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250121.2012
-;; Package-Revision: 10bb393a2958
+;; Package-Version: 20250122.1219
+;; Package-Revision: 680f079b5e2b
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -568,7 +568,7 @@ give you as many additional suffixes as you hoped.)"
   "Face used for suffixes unreachable from the current prefix sequence."
   :group 'transient-faces)
 
-(defface transient-inapt-suffix '((t :inherit shadow :italic t))
+(defface transient-inapt-suffix '((t :inherit shadow :slant italic))
   "Face used for suffixes that are inapt at this time."
   :group 'transient-faces)
 
