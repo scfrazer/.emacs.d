@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250117.1814/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250117.1814/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250203.1055/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250203.1055/vertico-autoloads.el"))
 
 
 
@@ -699,11 +699,11 @@ Delete N names before point.
 (autoload 'vertico-directory-delete-char "vertico-directory" "\
 Delete N directories or chars before point.
 
-(fn &optional N)" t)
+(fn N)" t)
 (autoload 'vertico-directory-delete-word "vertico-directory" "\
 Delete N directories or words before point.
 
-(fn &optional N)" t)
+(fn N)" t)
 (autoload 'vertico-directory-tidy "vertico-directory" "\
 Tidy shadowed file name, see `rfn-eshadow-overlay'.")
 
@@ -1250,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250122.1219/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250122.1219/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314/transient-autoloads.el"))
 
 
 
@@ -1886,7 +1886,7 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341/orderless-autoloads.el"))
 
 
 
@@ -2368,7 +2368,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250101.920/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250101.920/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250203.1018/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250203.1018/marginalia-autoloads.el"))
 
 
 
@@ -2666,29 +2666,29 @@ will return point to the current position.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20241125.750/git-timemachine-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20241125.750/git-timemachine-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20250128.940/git-timemachine-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/git-timemachine-20250128.940/git-timemachine-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/git-timemachine-20241125.750/git-timemachine-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (autoload 'git-timemachine-toggle "git-timemachine" "\
-Toggle git timemachine mode." t nil)
-
+Toggle git timemachine mode." t)
 (autoload 'git-timemachine "git-timemachine" "\
-Enable git timemachine for file of current buffer." t nil)
-
+Enable git timemachine for file of current buffer." t)
 (autoload 'git-timemachine-switch-branch "git-timemachine" "\
 Enable git timemachine for current buffer, switching to GIT-BRANCH.
 
-\(fn GIT-BRANCH)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-timemachine" '("git-timemachine-")))
-
+(fn GIT-BRANCH)" t)
+(register-definition-prefixes "git-timemachine" '("git-timemachine-"))
 
 
-
+(provide 'git-timemachine-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el"))
 
@@ -3600,7 +3600,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856" "/home/scfrazer/.emacs.d/elpa/orderless-20250101.922" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250122.1219" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
