@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250201.1314
-;; Package-Revision: e5cb1fd7e8d3
+;; Package-Version: 20250205.2244
+;; Package-Revision: 32a7e256aab2
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -3018,7 +3018,7 @@ If there is no parent prefix, then just call the command."
         (when (memq (if (slot-boundp suffix-obj 'transient)
                         (oref suffix-obj transient)
                       (oref transient-current-prefix transient-suffix))
-                    (list t #'transient--do-recurse))
+                    (list t 'recurse #'transient--do-recurse))
           (oset prefix-obj transient-suffix t))))))
 
 (defun transient--do-stack ()

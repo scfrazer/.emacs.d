@@ -1250,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250205.2244/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250205.2244/transient-autoloads.el"))
 
 
 
@@ -3600,7 +3600,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250201.1314" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250205.2244" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
