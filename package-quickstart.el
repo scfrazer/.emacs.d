@@ -1934,14 +1934,16 @@ Match COMPONENT against the keywords in `orderless-kwd-alist'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20241201.1841/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20241201.1841/multiple-cursors-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20250210.1813/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20250210.1813/multiple-cursors-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20241201.1841/multiple-cursors-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-cycle-cursors" '("mc/")))
+(register-definition-prefixes "mc-cycle-cursors" '("mc/"))
 
 
 
@@ -1957,33 +1959,40 @@ that symbol is used instead of `mc/edit-lines-empty-lines'.
 Otherwise, if ARG negative, short lines will be ignored.  Any
 other non-nil value will cause short lines to be padded.
 
-\(fn &optional ARG)" t nil)
-
+(fn &optional ARG)" t)
 (autoload 'mc/edit-ends-of-lines "mc-edit-lines" "\
-Add one cursor to the end of each line in the active region." t nil)
-
+Add one cursor to the end of each line in the active region." t)
 (autoload 'mc/edit-beginnings-of-lines "mc-edit-lines" "\
-Add one cursor to the beginning of each line in the active region." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-edit-lines" '("mc/edit-lines-empty-lines")))
+Add one cursor to the beginning of each line in the active region." t)
+(register-definition-prefixes "mc-edit-lines" '("mc/edit-lines-empty-lines"))
 
 
 
 (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-lines-mode" "\
 Minor mode when enabled hides all lines where no cursors (and
+
 also hum/lines-to-expand below and above) To make use of this
 mode press \"C-'\" while multiple-cursor-mode is active. You can
 still edit lines while you are in mc-hide-unmatched-lines
 mode. To leave this mode press <return> or \"C-g\"
 
-If called interactively, enable Mc-Hide-Unmatched-Lines mode if
-ARG is positive, and disable it if ARG is zero or negative.  If
-called from Lisp, also enable the mode if ARG is omitted or nil,
-and toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Mc-Hide-Unmatched-Lines mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
 
-\(fn &optional ARG)" t nil)
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-hide-unmatched-lines-mode" '("hum/")))
+To check whether the minor mode is enabled in the current buffer,
+evaluate `mc-hide-unmatched-lines-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "mc-hide-unmatched-lines-mode" '("hum/"))
 
 
 
@@ -1993,16 +2002,14 @@ If no region is active add a cursor on the next line
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-next-like-this-word "mc-mark-more" "\
 Find and mark the next part of the buffer matching the currently active region
 If no region is active, mark the word at the point and find the next match
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-next-word-like-this "mc-mark-more" "\
 Find and mark the next word of the buffer matching the currently active region
 The matching region must be a whole word to be a match
@@ -2010,8 +2017,7 @@ If no region is active add a cursor on the next line
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-next-symbol-like-this "mc-mark-more" "\
 Find and mark the next symbol of the buffer matching the currently active region
 The matching region must be a whole symbol to be a match
@@ -2019,8 +2025,7 @@ If no region is active add a cursor on the next line
 With negative ARG, delete the last one instead.
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-previous-like-this "mc-mark-more" "\
 Find and mark the previous part of the buffer matching the
 currently active region.
@@ -2031,8 +2036,7 @@ With negative ARG, delete the last one instead.
 
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-previous-like-this-word "mc-mark-more" "\
 Find and mark the previous part of the buffer matching the
 currently active region.
@@ -2044,8 +2048,7 @@ With negative ARG, delete the last one instead.
 
 With zero ARG, skip the last one and mark previous.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-previous-word-like-this "mc-mark-more" "\
 Find and mark the previous part of the buffer matching the
 currently active region.
@@ -2058,8 +2061,7 @@ With negative ARG, delete the last one instead.
 
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-previous-symbol-like-this "mc-mark-more" "\
 Find and mark the previous part of the buffer matching
 the currently active region.
@@ -2072,49 +2074,37 @@ With negative ARG, delete the last one instead.
 
 With zero ARG, skip the last one and mark next.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-next-lines "mc-mark-more" "\
 
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-previous-lines "mc-mark-more" "\
 
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/unmark-next-like-this "mc-mark-more" "\
-Deselect next part of the buffer matching the currently active region." t nil)
-
+Deselect next part of the buffer matching the currently active region." t)
 (autoload 'mc/unmark-previous-like-this "mc-mark-more" "\
-Deselect prev part of the buffer matching the currently active region." t nil)
-
+Deselect prev part of the buffer matching the currently active region." t)
 (autoload 'mc/skip-to-next-like-this "mc-mark-more" "\
 Skip the current one and select the next part of the buffer
-matching the currently active region." t nil)
-
+matching the currently active region." t)
 (autoload 'mc/skip-to-previous-like-this "mc-mark-more" "\
 Skip the current one and select the prev part of the buffer
-matching the currently active region." t nil)
-
+matching the currently active region." t)
 (autoload 'mc/mark-all-like-this "mc-mark-more" "\
-Find and mark all the parts of the buffer matching the currently active region" t nil)
-
-(autoload 'mc/mark-all-words-like-this "mc-mark-more" nil t nil)
-
-(autoload 'mc/mark-all-symbols-like-this "mc-mark-more" nil t nil)
-
+Find and mark all the parts of the buffer matching the currently active region" t)
+(autoload 'mc/mark-all-words-like-this "mc-mark-more" nil t)
+(autoload 'mc/mark-all-symbols-like-this "mc-mark-more" nil t)
 (autoload 'mc/mark-all-in-region "mc-mark-more" "\
 Find and mark all the parts in the region matching the given search
 
-\(fn BEG END &optional SEARCH)" t nil)
-
+(fn BEG END &optional SEARCH)" t)
 (autoload 'mc/mark-all-in-region-regexp "mc-mark-more" "\
 Find and mark all the parts in the region matching the given regexp.
 
-\(fn BEG END)" t nil)
-
+(fn BEG END)" t)
 (autoload 'mc/mark-more-like-this-extended "mc-mark-more" "\
 Like mark-more-like-this, but then lets you adjust with arrow keys.
 The adjustments work like this:
@@ -2133,16 +2123,14 @@ If direction is \\='down:
    <right> Skip past the cursor furthest down
 
 The bindings for these commands can be changed.
-See `mc/mark-more-like-this-extended-keymap'." t nil)
-
+See `mc/mark-more-like-this-extended-keymap'." t)
 (autoload 'mc/mark-all-like-this-dwim "mc-mark-more" "\
 Tries to guess what you want to mark all of.
 Can be pressed multiple times to increase selection.
 
 With prefix, it behaves the same as original `mc/mark-all-like-this'
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-all-dwim "mc-mark-more" "\
 Tries even harder to guess what you want to mark all of.
 
@@ -2153,35 +2141,28 @@ as if `mc/mark-all-in-region'. With the prefix ARG, it will call
 If the region is inactive or on a single line, it will behave like
 `mc/mark-all-like-this-dwim'.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/mark-all-like-this-in-defun "mc-mark-more" "\
-Mark all like this in defun." t nil)
-
+Mark all like this in defun." t)
 (autoload 'mc/mark-all-words-like-this-in-defun "mc-mark-more" "\
-Mark all words like this in defun." t nil)
-
+Mark all words like this in defun." t)
 (autoload 'mc/mark-all-symbols-like-this-in-defun "mc-mark-more" "\
-Mark all symbols like this in defun." t nil)
-
+Mark all symbols like this in defun." t)
 (autoload 'mc/toggle-cursor-on-click "mc-mark-more" "\
 Add a cursor where you click, or remove a fake cursor that is
 already there.
 
-\(fn EVENT)" t nil)
-
+(fn EVENT)" t)
 (defalias 'mc/add-cursor-on-click 'mc/toggle-cursor-on-click)
-
 (autoload 'mc/mark-sgml-tag-pair "mc-mark-more" "\
-Mark the tag we're in and its pair for renaming." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-mark-more" '("mc--" "mc/")))
+Mark the tag we're in and its pair for renaming." t)
+(register-definition-prefixes "mc-mark-more" '("mc--" "mc/"))
 
 
 
 (autoload 'mc/mark-pop "mc-mark-pop" "\
 Add a cursor at the current point, pop off mark ring and jump
-to the popped mark." t nil)
+to the popped mark." t)
 
 
 
@@ -2189,29 +2170,23 @@ to the popped mark." t nil)
 Insert increasing numbers for each cursor, starting at
 `mc/insert-numbers-default' or ARG.
 
-\(fn ARG)" t nil)
-
+(fn ARG)" t)
 (autoload 'mc/insert-letters "mc-separate-operations" "\
 Insert increasing letters for each cursor, starting at 0 or ARG.
      Where letter[0]=a letter[2]=c letter[26]=aa
 
-\(fn ARG)" t nil)
-
-(autoload 'mc/reverse-regions "mc-separate-operations" nil t nil)
-
-(autoload 'mc/sort-regions "mc-separate-operations" nil t nil)
-
+(fn ARG)" t)
+(autoload 'mc/reverse-regions "mc-separate-operations" nil t)
+(autoload 'mc/sort-regions "mc-separate-operations" nil t)
 (autoload 'mc/vertical-align "mc-separate-operations" "\
 Aligns all cursors vertically with a given CHARACTER to the one with the
 highest column number (the rightest).
 Might not behave as intended if more than one cursors are on the same line.
 
-\(fn CHARACTER)" t nil)
-
+(fn CHARACTER)" t)
 (autoload 'mc/vertical-align-with-space "mc-separate-operations" "\
-Aligns all cursors with whitespace like `mc/vertical-align' does" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "mc-separate-operations" '("mc--" "mc/insert-numbers-default")))
+Aligns all cursors with whitespace like `mc/vertical-align' does" t)
+(register-definition-prefixes "mc-separate-operations" '("mc--" "mc/insert-numbers-default"))
 
 
 
@@ -2219,19 +2194,27 @@ Aligns all cursors with whitespace like `mc/vertical-align' does" t nil)
 Called when undoing to temporarily activate the fake cursor
 which action is being undone.
 
-\(fn ID)" nil nil)
-
+(fn ID)")
 (autoload 'multiple-cursors-mode "multiple-cursors-core" "\
 Mode while multiple cursors are active.
 
-If called interactively, enable Multiple-Cursors mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Multiple-Cursors mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
 
-\(fn &optional ARG)" t nil)
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "multiple-cursors-core" '("deactivate-cursor-after-undo" "mc--" "mc/" "unsupported-cmd")))
+To check whether the minor mode is enabled in the current buffer,
+evaluate `multiple-cursors-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "multiple-cursors-core" '("deactivate-cursor-after-undo" "mc--" "mc/" "unsupported-cmd"))
 
 
 
@@ -2240,25 +2223,34 @@ Anchors the rectangular region at point.
 
 Think of this one as `set-mark' except you're marking a
 rectangular region. It is an exceedingly quick way of adding
-multiple cursors to multiple lines." t nil)
-
+multiple cursors to multiple lines." t)
 (autoload 'rectangular-region-mode "rectangular-region-mode" "\
 A mode for creating a rectangular region to edit
 
-If called interactively, enable Rectangular-Region mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Rectangular-Region mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
 
-\(fn &optional ARG)" t nil)
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rectangular-region-mode" '("rectangular-region-mode" "rrm/")))
+To check whether the minor mode is enabled in the current buffer,
+evaluate `rectangular-region-mode'.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "rectangular-region-mode" '("rectangular-region-mode" "rrm/"))
 
 
-
+(provide 'multiple-cursors-autoloads)
+
+
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250212.626/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250212.626/modus-themes-autoloads.el"))
 
 
 
@@ -2316,7 +2308,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250115.1658/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250115.1658/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250212.259/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250212.259/markdown-mode-autoloads.el"))
 
 
 
@@ -3600,7 +3592,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250127.856" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250205.2244" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250212.626" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250205.2244" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:

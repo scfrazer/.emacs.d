@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250127.856
-;; Package-Revision: 4b10426687d2
+;; Package-Version: 20250212.626
+;; Package-Revision: 13ff52a8eb82
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -1155,7 +1155,7 @@ This function is used in the macros `modus-themes-theme',
           (eq value 'unspecified))
       value)
      ((and (symbolp value)
-           (memq value (mapcar #'car palette)))
+           value)
       (modus-themes--retrieve-palette-value value palette))
      (t
       'unspecified))))
@@ -2926,8 +2926,8 @@ FG and BG are the main colors."
     `(magit-diff-base-highlight ((,c :background ,bg-changed :foreground ,fg-changed)))
     `(magit-diff-context ((,c :inherit shadow)))
     `(magit-diff-context-highlight ((,c :background ,bg-diff-context)))
-    `(magit-diff-file-heading ((,c :inherit bold :foreground ,accent-0)))
-    `(magit-diff-file-heading-highlight ((,c :inherit magit-diff-file-heading :background ,bg-inactive)))
+    `(magit-diff-file-heading (( )))
+    `(magit-diff-file-heading-highlight ((,c :inherit (bold magit-diff-file-heading) :background ,bg-inactive)))
     `(magit-diff-file-heading-selection ((,c :inherit bold :background ,bg-hover-secondary)))
     `(magit-diff-hunk-heading ((,c :background ,bg-inactive)))
     `(magit-diff-hunk-heading-highlight ((,c :inherit bold :background ,bg-active)))
