@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250212.626
-;; Package-Revision: 13ff52a8eb82
+;; Package-Version: 20250220.647
+;; Package-Revision: f3cd4d698356
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -1673,6 +1673,7 @@ FG and BG are the main colors."
     `(tool-bar ((,c :background ,bg-dim :foreground ,fg-main)))
     `(vertical-border ((,c :foreground ,border)))
 ;;;;; basic and/or ungrouped styles
+    `(abbrev-table-name ((,c :inherit bold)))
     `(appt-notification ((,c :inherit bold :foreground ,modeline-err)))
     `(blink-matching-paren-offscreen ((,c :background ,bg-paren-match)))
     `(bold ((,c :weight bold)))
@@ -2686,6 +2687,30 @@ FG and BG are the main colors."
     `(hl-fill-column-face ((,c :background ,bg-active)))
 ;;;;; hl-todo
     `(hl-todo ((,c :inherit (bold font-lock-comment-face) :foreground ,err)))
+;;;;; howm
+    `(action-lock-face ((,c :inherit button)))
+    `(howm-mode-keyword-face (( )))
+    `(howm-mode-ref-face ((,c :inherit link)))
+    `(howm-mode-title-face ((,c :inherit modus-themes-heading-0)))
+    `(howm-mode-wiki-face ((,c :inherit link)))
+    `(howm-reminder-deadline-face ((,c :foreground ,date-deadline)))
+    `(howm-reminder-late-deadline-face ((,c :inherit bold :foreground ,date-deadline)))
+    `(howm-reminder-defer-face ((,c :foreground ,date-scheduled)))
+    `(howm-reminder-scheduled-face ((,c :foreground ,date-scheduled)))
+    `(howm-reminder-done-face ((,c :foreground ,prose-done)))
+    `(howm-reminder-todo-face ((,c :foreground ,prose-todo)))
+    `(howm-reminder-normal-face ((,c :foreground ,date-common)))
+    `(howm-reminder-today-face ((,c :inherit bold :foreground ,date-common)))
+    `(howm-reminder-tomorrow-face ((,c :inherit bold :foreground ,date-scheduled)))
+    `(howm-simulate-todo-mode-line-face ((,c :inherit bold)))
+    `(howm-view-empty-face (( )))
+    `(howm-view-hilit-face ((,c :inherit match)))
+    `(howm-view-name-face ((,c :inherit bold)))
+    `(iigrep-counts-face1 ((,c :foreground ,rainbow-1)))
+    `(iigrep-counts-face2 ((,c :foreground ,rainbow-2)))
+    `(iigrep-counts-face3 ((,c :foreground ,rainbow-3)))
+    `(iigrep-counts-face4 ((,c :foreground ,rainbow-4)))
+    `(iigrep-counts-face5 ((,c :foreground ,rainbow-5)))
 ;;;;; hydra
     `(hydra-face-amaranth ((,c :inherit bold :foreground ,yellow-warmer)))
     `(hydra-face-blue ((,c :inherit bold :foreground ,blue)))
@@ -2926,8 +2951,8 @@ FG and BG are the main colors."
     `(magit-diff-base-highlight ((,c :background ,bg-changed :foreground ,fg-changed)))
     `(magit-diff-context ((,c :inherit shadow)))
     `(magit-diff-context-highlight ((,c :background ,bg-diff-context)))
-    `(magit-diff-file-heading (( )))
-    `(magit-diff-file-heading-highlight ((,c :inherit (bold magit-diff-file-heading) :background ,bg-inactive)))
+    `(magit-diff-file-heading ((,c :inherit bold :foreground ,accent-0)))
+    `(magit-diff-file-heading-highlight ((,c :inherit magit-diff-file-heading :background ,bg-inactive)))
     `(magit-diff-file-heading-selection ((,c :inherit bold :background ,bg-hover-secondary)))
     `(magit-diff-hunk-heading ((,c :background ,bg-inactive)))
     `(magit-diff-hunk-heading-highlight ((,c :inherit bold :background ,bg-active)))
@@ -3848,7 +3873,9 @@ FG and BG are the main colors."
     `(transient-key ((,c :inherit modus-themes-key-binding)))
     `(transient-key-exit ((,c :inherit modus-themes-key-binding)))
     `(transient-key-noop ((,c :inherit (shadow modus-themes-key-binding))))
+    `(transient-key-recurse ((,c :inherit modus-themes-key-binding)))
     `(transient-key-return ((,c :inherit modus-themes-key-binding)))
+    `(transient-key-stack ((,c :inherit modus-themes-key-binding)))
     `(transient-key-stay ((,c :inherit modus-themes-key-binding)))
     `(transient-mismatched-key ((,c :underline t)))
     `(transient-nonstandard-key ((,c :underline t)))

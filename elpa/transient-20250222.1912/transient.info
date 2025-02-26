@@ -930,8 +930,11 @@ PLIST should set at least ‘:key’, ‘:description’ and ‘:command’.
      Predicate Slots::.
 
      Unfortunately both false-positives and false-negatives are
-     possible.  To deal with the former use non-‘nil’ KEEP-OTHER.  To
-     deal with the latter remove the conflicting binding explicitly.
+     possible.  To deal with the former use non-‘nil’ KEEP-OTHER.  The
+     symbol ‘always’ prevents the removal of a false-positive in some
+     cases where other non-‘nil’ values would fail.  To deal with
+     false-negatives remove the conflicting binding separately, using
+     ‘transient-remove-suffix’.
 
  -- Function: transient-replace-suffix prefix loc suffix
      This function replaces the suffix or group at LOC in PREFIX with
@@ -1745,15 +1748,8 @@ call ‘transient-export’, ‘transient--stack-zap’ or
    • While a sub-prefix is active we nearly always want ‘C-g’ to take
      the user back to the “super-prefix”, even when the other suffixes
      don’t do that.  However, in rare cases this may not be desirable,
-     and that makes the following complication necessary:
-
-     For ‘transient-suffix’ objects the ‘transient’ slot is unbound.  We
-     can ignore that for the most part because ‘nil’ and the slot being
-     unbound are treated as equivalent, and mean “do exit”.  That isn’t
-     actually true for suffixes that are sub-prefixes though.  For such
-     suffixes unbound means “do exit but allow going back”, which is the
-     default, while ‘nil’ means “do exit permanently”, which requires
-     that slot to be explicitly set to that value.
+     in which case ‘replace’ can be used as the value of the
+     sub-prefix’s ‘transient’ slot.
 
 Pre-commands for Infixes
 ------------------------
@@ -1793,7 +1789,7 @@ predicate is automatically picked based on the value of the ‘transient’
 slot for the sub-prefix itself.
 
  -- Function: transient--do-recurse
-     Call the transient prefix command, preparing for return to active
+     Call the transient prefix command, preparing for return to outer
      transient.
 
      Whether we actually return to the parent transient is ultimately
@@ -2807,20 +2803,20 @@ Appendix C Command and Function Index
  [index ]
 * Menu:
 
-* transient--do-call:                    Transient State.     (line 125)
-* transient--do-exit:                    Transient State.     (line 117)
-* transient--do-leave:                   Transient State.     (line 193)
-* transient--do-quit-all:                Transient State.     (line 205)
-* transient--do-quit-one:                Transient State.     (line 200)
-* transient--do-recurse:                 Transient State.     (line 133)
-* transient--do-replace:                 Transient State.     (line 153)
-* transient--do-return:                  Transient State.     (line 120)
-* transient--do-stack:                   Transient State.     (line 145)
-* transient--do-stay:                    Transient State.     (line 105)
-* transient--do-stay <1>:                Transient State.     (line 190)
-* transient--do-suspend:                 Transient State.     (line 161)
-* transient--do-suspend <1>:             Transient State.     (line 210)
-* transient--do-warn:                    Transient State.     (line 187)
+* transient--do-call:                    Transient State.     (line 118)
+* transient--do-exit:                    Transient State.     (line 110)
+* transient--do-leave:                   Transient State.     (line 186)
+* transient--do-quit-all:                Transient State.     (line 198)
+* transient--do-quit-one:                Transient State.     (line 193)
+* transient--do-recurse:                 Transient State.     (line 126)
+* transient--do-replace:                 Transient State.     (line 146)
+* transient--do-return:                  Transient State.     (line 113)
+* transient--do-stack:                   Transient State.     (line 138)
+* transient--do-stay:                    Transient State.     (line  98)
+* transient--do-stay <1>:                Transient State.     (line 183)
+* transient--do-suspend:                 Transient State.     (line 154)
+* transient--do-suspend <1>:             Transient State.     (line 203)
+* transient--do-warn:                    Transient State.     (line 180)
 * transient--insert-group:               Group Methods.       (line  19)
 * transient-active-prefix:               Current Prefix Command.
                                                               (line  39)
@@ -2845,7 +2841,7 @@ Appendix C Command and Function Index
 * transient-format-key:                  Suffix Methods.      (line  95)
 * transient-format-value:                Suffix Methods.      (line 103)
 * transient-get-suffix:                  Modifying Existing Transients.
-                                                              (line  73)
+                                                              (line  76)
 * transient-get-value:                   Using Infix Arguments.
                                                               (line  31)
 * transient-help:                        Getting Help for Suffix Commands.
@@ -2872,9 +2868,9 @@ Appendix C Command and Function Index
 * transient-quit-seq:                    Aborting and Resuming Transients.
                                                               (line  27)
 * transient-remove-suffix:               Modifying Existing Transients.
-                                                              (line  70)
+                                                              (line  73)
 * transient-replace-suffix:              Modifying Existing Transients.
-                                                              (line  66)
+                                                              (line  69)
 * transient-reset:                       Saving Values.       (line  29)
 * transient-resume:                      Aborting and Resuming Transients.
                                                               (line  53)
@@ -2893,7 +2889,7 @@ Appendix C Command and Function Index
 * transient-suffix-object:               Current Suffix Command.
                                                               (line   6)
 * transient-suffix-put:                  Modifying Existing Transients.
-                                                              (line  77)
+                                                              (line  80)
 * transient-suffixes:                    Using Infix Arguments.
                                                               (line  46)
 * transient-suspend:                     Aborting and Resuming Transients.
@@ -3735,57 +3731,57 @@ Ref: Auxiliary Options31469
 Ref: Developer Options36047
 Ref: Hook Variables37295
 Node: Modifying Existing Transients37582
-Node: Defining New Commands41774
-Node: Technical Introduction42214
-Node: Defining Transients47914
-Node: Binding Suffix and Infix Commands50381
-Ref: Group Specifications51178
-Ref: Suffix Specifications57991
-Node: Defining Suffix and Infix Commands62432
-Node: Using Infix Arguments65480
-Node: Using Prefix Scope67869
-Node: Current Suffix Command69875
-Node: Current Prefix Command72232
-Node: Transient State74788
-Ref: Pre-commands for Infixes79604
-Ref: Pre-commands for Suffixes80124
-Ref: Pre-commands for Non-Suffixes82578
-Ref: Special Pre-Commands83714
-Node: Classes and Methods84222
-Node: Group Classes86309
-Node: Group Methods88236
-Node: Prefix Classes89496
-Node: Suffix Classes90341
-Node: Prefix Methods94321
-Node: Suffix Methods96714
-Ref: Suffix Value Methods96974
-Ref: Suffix Format Methods100219
-Node: Prefix Slots103117
-Ref: Value and Scope103267
-Ref: Behavior104746
-Ref: Appearance106087
-Ref: Documentation106773
-Ref: Internal107393
-Node: Suffix Slots108748
-Ref: Slots of transient-child109116
-Ref: Slots of transient-suffix109574
-Ref: Slots of transient-infix111942
-Ref: Slots of transient-variable115238
-Ref: Slots of transient-switches115340
-Node: Predicate Slots115703
-Node: FAQ118048
-Ref: Can I control how the popup buffer is displayed?118177
-Ref: How can I copy text from the popup buffer?118504
-Ref: How can I autoload prefix and suffix commands?118998
-Ref: How does Transient compare to prefix keys and universal arguments?119472
-Ref: How does Transient compare to Magit-Popup and Hydra?119715
-Ref: Why did some of the key bindings change?119909
-Ref: Why does q not quit popups anymore?122262
-Node: Keystroke Index123365
-Node: Command and Function Index125230
-Node: Variable Index132479
-Node: Concept Index135047
-Node: GNU General Public License137871
+Node: Defining New Commands41956
+Node: Technical Introduction42396
+Node: Defining Transients48096
+Node: Binding Suffix and Infix Commands50563
+Ref: Group Specifications51360
+Ref: Suffix Specifications58173
+Node: Defining Suffix and Infix Commands62614
+Node: Using Infix Arguments65662
+Node: Using Prefix Scope68051
+Node: Current Suffix Command70057
+Node: Current Prefix Command72414
+Node: Transient State74970
+Ref: Pre-commands for Infixes79321
+Ref: Pre-commands for Suffixes79841
+Ref: Pre-commands for Non-Suffixes82294
+Ref: Special Pre-Commands83430
+Node: Classes and Methods83938
+Node: Group Classes86025
+Node: Group Methods87952
+Node: Prefix Classes89212
+Node: Suffix Classes90057
+Node: Prefix Methods94037
+Node: Suffix Methods96430
+Ref: Suffix Value Methods96690
+Ref: Suffix Format Methods99935
+Node: Prefix Slots102833
+Ref: Value and Scope102983
+Ref: Behavior104462
+Ref: Appearance105803
+Ref: Documentation106489
+Ref: Internal107109
+Node: Suffix Slots108464
+Ref: Slots of transient-child108832
+Ref: Slots of transient-suffix109290
+Ref: Slots of transient-infix111658
+Ref: Slots of transient-variable114954
+Ref: Slots of transient-switches115056
+Node: Predicate Slots115419
+Node: FAQ117764
+Ref: Can I control how the popup buffer is displayed?117893
+Ref: How can I copy text from the popup buffer?118220
+Ref: How can I autoload prefix and suffix commands?118714
+Ref: How does Transient compare to prefix keys and universal arguments?119188
+Ref: How does Transient compare to Magit-Popup and Hydra?119431
+Ref: Why did some of the key bindings change?119625
+Ref: Why does q not quit popups anymore?121978
+Node: Keystroke Index123081
+Node: Command and Function Index124946
+Node: Variable Index132195
+Node: Concept Index134763
+Node: GNU General Public License137587
 
 End Tag Table
 
