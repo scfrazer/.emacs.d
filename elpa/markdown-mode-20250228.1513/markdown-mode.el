@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250226.231
-;; Package-Revision: f945f12d517e
+;; Package-Version: 20250228.1513
+;; Package-Revision: 0a522bf682c9
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -10133,6 +10133,15 @@ rows and columns and the column alignment."
         (markdown-insert-inline-image link-text file)
       (markdown-insert-inline-link link-text file))))
 
+(defun markdown--dnd-multi-local-file-handler (urls action)
+  (let ((multile-urls-p (> (length urls) 1)))
+    (dolist (url urls)
+      (markdown--dnd-local-file-handler url action)
+      (when multile-urls-p
+        (insert " ")))))
+
+(put 'markdown--dnd-multi-local-file-handler 'dnd-multiple-handler t)
+
 
 ;;; Mode Definition  ==========================================================
 
@@ -10262,8 +10271,14 @@ rows and columns and the column alignment."
             #'markdown--inhibit-electric-quote nil :local)
 
   ;; drag and drop handler
-  (setq-local dnd-protocol-alist  (cons '("^file:///" . markdown--dnd-local-file-handler)
-                                        dnd-protocol-alist))
+  (let ((dnd-handler (if (>= emacs-major-version 30)
+                         #'markdown--dnd-multi-local-file-handler
+                       #'markdown--dnd-local-file-handler)))
+    (setq-local dnd-protocol-alist (append
+                                    (list (cons "^file:///" dnd-handler)
+                                          (cons "^file:/[^/]" dnd-handler)
+                                          (cons "^file:[^/]" dnd-handler))
+                                    dnd-protocol-alist)))
 
   ;; media handler
   (when (version< "29" emacs-version)
