@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250228.1901
-;; Package-Revision: ea315bdb88ee
+;; Package-Version: 20250305.1333
+;; Package-Revision: 24d4283e20a9
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.8.4")
+(defconst transient-version "0.8.5")
 
 (require 'cl-lib)
 (require 'compat)
@@ -2490,7 +2490,7 @@ value.  Otherwise return CHILDREN as is.")
   (transient--debug 'setup-transient)
   (transient--push-keymap 'transient--transient-map)
   (transient--push-keymap 'transient--redisplay-map)
-  (add-hook 'pre-command-hook  #'transient--pre-command)
+  (add-hook 'pre-command-hook  #'transient--pre-command 99)
   (add-hook 'post-command-hook #'transient--post-command)
   (advice-add 'recursive-edit :around #'transient--recursive-edit)
   (when transient--exitp
@@ -2654,9 +2654,12 @@ value.  Otherwise return CHILDREN as is.")
        ,@body)))
 
 (defun transient--wrap-command ()
+  (when (autoloadp this-command)
+    (autoload-do-load this-command))
   (static-if (>= emacs-major-version 30)
       (letrec
-          ((cmd this-command)
+          ((command this-command)
+           (suffix (transient-suffix-object this-command))
            (prefix transient--prefix)
            (advice
             (lambda (fn &rest args)
@@ -2665,7 +2668,7 @@ value.  Otherwise return CHILDREN as is.")
                  (let ((abort t))
                    (unwind-protect
                        (prog1 (let ((debugger #'transient--exit-and-debug))
-                                (if-let* ((obj (transient-suffix-object cmd))
+                                (if-let* ((obj suffix)
                                           (grp (oref obj parent))
                                           (adv (or (oref obj advice*)
                                                    (oref grp advice*))))
@@ -2676,13 +2679,13 @@ value.  Otherwise return CHILDREN as is.")
                      (when abort
                        (when-let ((unwind (oref prefix unwind-suffix)))
                          (transient--debug 'unwind-interactive)
-                         (funcall unwind cmd))
-                       (remove-function
-                        (if (symbolp cmd) (symbol-function cmd) cmd) advice)
+                         (funcall unwind command))
+                       (when (symbolp command)
+                         (remove-function (symbol-function command) advice))
                        (oset prefix unwind-suffix nil))))))
               (unwind-protect
                   (let ((debugger #'transient--exit-and-debug))
-                    (if-let* ((obj (transient-suffix-object cmd))
+                    (if-let* ((obj suffix)
                               (grp (oref obj parent))
                               (adv (or (oref obj advice)
                                        (oref obj advice*)
@@ -2692,17 +2695,20 @@ value.  Otherwise return CHILDREN as is.")
                       (apply fn args)))
                 (when-let ((unwind (oref prefix unwind-suffix)))
                   (transient--debug 'unwind-command)
-                  (funcall unwind cmd))
-                (remove-function
-                 (if (symbolp cmd) (symbol-function cmd) cmd) advice)
+                  (funcall unwind command))
+                (when (symbolp command)
+                  (remove-function (symbol-function command) advice))
                 (oset prefix unwind-suffix nil)))))
-        (add-function :around (if (symbolp cmd) (symbol-function cmd) cmd)
+        (add-function :around (if (symbolp this-command)
+                                  (symbol-function this-command)
+                                this-command)
                       advice '((depth . -99)))
         (cl-assert
          (>= emacs-major-version 30) nil
          "Emacs was downgraded, making it necessary to recompile Transient"))
     ;; (< emacs-major-version 30)
-    (let* ((cmd this-command)
+    (let* ((command this-command)
+           (suffix (transient-suffix-object this-command))
            (prefix transient--prefix)
            (advice nil)
            (advice-interactive
@@ -2710,7 +2716,7 @@ value.  Otherwise return CHILDREN as is.")
               (let ((abort t))
                 (unwind-protect
                     (prog1 (let ((debugger #'transient--exit-and-debug))
-                             (if-let* ((obj (transient-suffix-object cmd))
+                             (if-let* ((obj suffix)
                                        (grp (oref obj parent))
                                        (adv (or (oref obj advice*)
                                                 (oref grp advice*))))
@@ -2721,15 +2727,15 @@ value.  Otherwise return CHILDREN as is.")
                   (when abort
                     (when-let ((unwind (oref prefix unwind-suffix)))
                       (transient--debug 'unwind-interactive)
-                      (funcall unwind cmd))
-                    (remove-function
-                     (if (symbolp cmd) (symbol-function cmd) cmd) advice)
+                      (funcall unwind command))
+                    (when (symbolp command)
+                      (remove-function (symbol-function command) advice))
                     (oset prefix unwind-suffix nil))))))
            (advice-body
             (lambda (fn &rest args)
               (unwind-protect
                   (let ((debugger #'transient--exit-and-debug))
-                    (if-let* ((obj (transient-suffix-object cmd))
+                    (if-let* ((obj suffix)
                               (grp (oref obj parent))
                               (adv (or (oref obj advice)
                                        (oref obj advice*)
@@ -2739,14 +2745,16 @@ value.  Otherwise return CHILDREN as is.")
                       (apply fn args)))
                 (when-let ((unwind (oref prefix unwind-suffix)))
                   (transient--debug 'unwind-command)
-                  (funcall unwind cmd))
-                (remove-function
-                 (if (symbolp cmd) (symbol-function cmd) cmd) advice)
+                  (funcall unwind command))
+                (when (symbolp command)
+                  (remove-function (symbol-function command) advice))
                 (oset prefix unwind-suffix nil)))))
       (setq advice `(lambda (fn &rest args)
                       (interactive ,advice-interactive)
                       (apply ',advice-body fn args)))
-      (add-function :around (if (symbolp cmd) (symbol-function cmd) cmd)
+      (add-function :around (if (symbolp this-command)
+                                (symbol-function this-command)
+                              this-command)
                     advice '((depth . -99))))))
 
 (defun transient--premature-post-command ()
@@ -4489,6 +4497,7 @@ apply the face `transient-unreachable' to the complete string."
                        (funcall (oref transient--prefix suffix-description)
                                 obj)))))
     (when-let* ((transient--docsp)
+                ((slot-boundp obj 'command))
                 (cmd (oref obj command))
                 ((not (memq 'transient--default-infix-command
                             (function-alias-p cmd))))
@@ -4867,7 +4876,8 @@ This is used when a tooltip is needed.")
         ((doc (cond ((functionp summary)
                      (funcall summary obj))
                     (summary)
-                    ((car (split-string (documentation command) "\n")))))
+                    ((documentation command)
+                     (car (split-string (documentation command) "\n")))))
          ((stringp doc))
          ((not (equal doc
                       (car (split-string (documentation

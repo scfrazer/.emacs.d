@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250203.1055/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250203.1055/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250305.1619/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250305.1619/vertico-autoloads.el"))
 
 
 
@@ -1250,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250228.1901/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250228.1901/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250305.1333/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250305.1333/transient-autoloads.el"))
 
 
 
@@ -1873,6 +1873,273 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el") (car load-path))))
+
+
+
+(defvar eldoc-minor-mode-string (purecopy " ElDoc") "\
+String to display in mode line when ElDoc Mode is enabled; nil for none.")
+
+(custom-autoload 'eldoc-minor-mode-string "eldoc" t)
+
+(autoload 'eldoc-mode "eldoc" "\
+Toggle echo area display of Lisp objects at point (ElDoc mode).
+
+If called interactively, enable Eldoc mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
+
+ElDoc mode is a buffer-local minor mode.  When enabled, the echo
+area displays information about a function or variable in the
+text where point is.  If point is on a documented variable, it
+displays the first line of that variable's doc string.  Otherwise
+it displays the argument list of the function called in the
+expression point is on.
+
+\(fn &optional ARG)" t nil)
+
+(put 'global-eldoc-mode 'globalized-minor-mode t)
+
+(defvar global-eldoc-mode t "\
+Non-nil if Global Eldoc mode is enabled.
+See the `global-eldoc-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `global-eldoc-mode'.")
+
+(custom-autoload 'global-eldoc-mode "eldoc" nil)
+
+(autoload 'global-eldoc-mode "eldoc" "\
+Toggle Eldoc mode in all buffers.
+With prefix ARG, enable Global Eldoc mode if ARG is positive;
+otherwise, disable it.  If called from Lisp, enable the mode if
+ARG is omitted or nil.
+
+Eldoc mode is enabled in all buffers where
+`turn-on-eldoc-mode' would do it.
+See `eldoc-mode' for more information on Eldoc mode.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'turn-on-eldoc-mode "eldoc" "\
+Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
+See `eldoc-documentation-strategy' for more detail." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
+
+
+
+
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el"))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el") (car load-path))))
+
+
+
+(autoload 'flymake-log "flymake" "\
+Log, at level LEVEL, the message MSG formatted with ARGS.
+LEVEL is passed to `display-warning', which is used to display
+the warning.  If this form is included in a file,
+the generated warning contains an indication of the file that
+generated it.
+
+\(fn LEVEL MSG &rest ARGS)" nil t)
+
+(autoload 'flymake-make-diagnostic "flymake" "\
+Make a Flymake diagnostic for LOCUS's region from BEG to END.
+LOCUS is a buffer object or a string designating a file name.
+
+TYPE is a diagnostic symbol and TEXT is string describing the
+problem detected in this region.  DATA is any object that the
+caller wishes to attach to the created diagnostic for later
+retrieval with `flymake-diagnostic-data'.
+
+If LOCUS is a buffer BEG and END should be buffer positions
+inside it.  If LOCUS designates a file, BEG and END should be a
+cons (LINE . COL) indicating a file position.  In this second
+case, END may be omitted in which case the region is computed
+using `flymake-diag-region' if the diagnostic is appended to an
+actual buffer.
+
+OVERLAY-PROPERTIES is an alist of properties attached to the
+created diagnostic, overriding the default properties and any
+properties listed in the `flymake-overlay-control' property of
+the diagnostic's type symbol.
+
+\(fn LOCUS BEG END TYPE TEXT &optional DATA OVERLAY-PROPERTIES)" nil nil)
+
+(autoload 'flymake-diagnostics "flymake" "\
+Get Flymake diagnostics in region determined by BEG and END.
+
+If neither BEG or END is supplied, use whole accessible buffer,
+otherwise if BEG is non-nil and END is nil, consider only
+diagnostics at BEG.
+
+\(fn &optional BEG END)" nil nil)
+
+(autoload 'flymake-diag-region "flymake" "\
+Compute BUFFER's region (BEG . END) corresponding to LINE and COL.
+If COL is nil, return a region just for LINE.  Return nil if the
+region is invalid.  This function saves match data.
+
+\(fn BUFFER LINE &optional COL)" nil nil)
+
+(autoload 'flymake-mode "flymake" "\
+Toggle Flymake mode on or off.
+
+If called interactively, enable Flymake mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
+
+Flymake is an Emacs minor mode for on-the-fly syntax checking.
+Flymake collects diagnostic information from multiple sources,
+called backends, and visually annotates the buffer with the
+results.
+
+Flymake performs these checks while the user is editing.
+The customization variables `flymake-start-on-flymake-mode',
+`flymake-no-changes-timeout' determine the exact circumstances
+whereupon Flymake decides to initiate a check of the buffer.
+
+The commands `flymake-goto-next-error' and
+`flymake-goto-prev-error' can be used to navigate among Flymake
+diagnostics annotated in the buffer.
+
+By default, `flymake-mode' doesn't override the \\[next-error] command, but
+if you're using Flymake a lot (and don't use the regular compilation
+mechanisms that often), it can be useful to put something like
+the following in your init file:
+
+  (setq next-error-function \\='flymake-goto-next-error)
+
+The visual appearance of each type of diagnostic can be changed
+by setting properties `flymake-overlay-control', `flymake-bitmap'
+and `flymake-severity' on the symbols of diagnostic types (like
+`:error', `:warning' and `:note').
+
+Activation or deactivation of backends used by Flymake in each
+buffer happens via the special hook
+`flymake-diagnostic-functions'.
+
+Some backends may take longer than others to respond or complete,
+and some may decide to disable themselves if they are not
+suitable for the current buffer.  The commands
+`flymake-running-backends', `flymake-disabled-backends' and
+`flymake-reporting-backends' summarize the situation, as does the
+special *Flymake log* buffer.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'flymake-mode-on "flymake" "\
+Turn Flymake mode on." nil nil)
+
+(autoload 'flymake-mode-off "flymake" "\
+Turn Flymake mode off." nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake" '("flymake-")))
+
+
+
+
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/python-0.29/python-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.29/python-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(defconst python--auto-mode-alist-regexp "\\(?:\\.\\(?:p\\(?:th\\|y[iw]?\\)\\)\\|/\\(?:SCons\\(?:\\(?:crip\\|truc\\)t\\)\\)\\)\\'")
+(add-to-list 'auto-mode-alist (cons python--auto-mode-alist-regexp 'python-mode))
+(add-to-list 'interpreter-mode-alist '("python[0-9.]*" . python-mode))
+(autoload 'run-python "python" "\
+Run an inferior Python process.
+
+Argument CMD defaults to `python-shell-calculate-command' return
+value.  When called interactively with `prefix-arg', it allows
+the user to edit such value and choose whether the interpreter
+should be DEDICATED to the current buffer or project.  When
+numeric prefix arg is other than 0 or 4 do not SHOW.
+
+For a given buffer and same values of DEDICATED, if a process is
+already running for it, it will do nothing.  This means that if
+the current buffer is using a global process, the user is still
+able to switch it to use a dedicated one.
+
+Runs the hook `inferior-python-mode-hook' after
+`comint-mode-hook' is run.  (Type \\[describe-mode] in the
+process buffer for a list of commands.)
+
+(fn &optional CMD DEDICATED SHOW)" t)
+(autoload 'python-add-import "python" "\
+Add an import statement to the current buffer.
+
+Interactively, ask for an import statement using all imports
+found in the current project as suggestions.  With a prefix
+argument, restrict the suggestions to imports defining the symbol
+at point.  If there is only one such suggestion, act without
+asking.
+
+When calling from Lisp, use a non-nil NAME to restrict the
+suggestions to imports defining NAME.
+
+(fn NAME)" t)
+(autoload 'python-import-symbol-at-point "python" "\
+Add an import statement for the symbol at point to the current buffer.
+This works like `python-add-import', but with the opposite
+behavior regarding the prefix argument." t)
+(autoload 'python-remove-import "python" "\
+Remove an import statement from the current buffer.
+
+Interactively, ask for an import statement to remove, displaying
+the imports of the current buffer as suggestions.  With a prefix
+argument, restrict the suggestions to imports defining the symbol
+at point.  If there is only one such suggestion, act without
+asking.
+
+(fn NAME)" t)
+(autoload 'python-sort-imports "python" "\
+Sort Python imports in the current buffer." t)
+(autoload 'python-fix-imports "python" "\
+Add missing imports and remove unused ones from the current buffer." t)
+(autoload 'python-base-mode "python" "\
+Generic major mode for editing Python files.
+
+This is a generic major mode intended to be inherited by
+concrete implementations.  Currently there are two concrete
+implementations: `python-mode' and `python-ts-mode'.
+
+(fn)" t)
+(autoload 'python-mode "python" "\
+Major mode for editing Python files.
+
+\\{python-mode-map}
+
+(fn)" t)
+(autoload 'python-ts-mode "python" "\
+Major mode for editing Python files, using tree-sitter library.
+
+\\{python-ts-mode-map}
+
+(fn)" t)
+(add-to-list 'auto-mode-alist '("/\\(?:Pipfile\\|\\.?flake8\\)\\'" . conf-mode))
+(register-definition-prefixes "python" '("inferior-python-mode" "python-" "run-python-internal" "subword-mode"))
+
+
+(provide 'python-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el"))
 
@@ -2686,183 +2953,6 @@ Enable git timemachine for current buffer, switching to GIT-BRANCH.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el") (car load-path))))
-
-
-
-(defvar eldoc-minor-mode-string (purecopy " ElDoc") "\
-String to display in mode line when ElDoc Mode is enabled; nil for none.")
-
-(custom-autoload 'eldoc-minor-mode-string "eldoc" t)
-
-(autoload 'eldoc-mode "eldoc" "\
-Toggle echo area display of Lisp objects at point (ElDoc mode).
-
-If called interactively, enable Eldoc mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
-
-ElDoc mode is a buffer-local minor mode.  When enabled, the echo
-area displays information about a function or variable in the
-text where point is.  If point is on a documented variable, it
-displays the first line of that variable's doc string.  Otherwise
-it displays the argument list of the function called in the
-expression point is on.
-
-\(fn &optional ARG)" t nil)
-
-(put 'global-eldoc-mode 'globalized-minor-mode t)
-
-(defvar global-eldoc-mode t "\
-Non-nil if Global Eldoc mode is enabled.
-See the `global-eldoc-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `global-eldoc-mode'.")
-
-(custom-autoload 'global-eldoc-mode "eldoc" nil)
-
-(autoload 'global-eldoc-mode "eldoc" "\
-Toggle Eldoc mode in all buffers.
-With prefix ARG, enable Global Eldoc mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
-
-Eldoc mode is enabled in all buffers where
-`turn-on-eldoc-mode' would do it.
-See `eldoc-mode' for more information on Eldoc mode.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'turn-on-eldoc-mode "eldoc" "\
-Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
-See `eldoc-documentation-strategy' for more detail." nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
-
-
-
-
-)
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el"))
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el") (car load-path))))
-
-
-
-(autoload 'flymake-log "flymake" "\
-Log, at level LEVEL, the message MSG formatted with ARGS.
-LEVEL is passed to `display-warning', which is used to display
-the warning.  If this form is included in a file,
-the generated warning contains an indication of the file that
-generated it.
-
-\(fn LEVEL MSG &rest ARGS)" nil t)
-
-(autoload 'flymake-make-diagnostic "flymake" "\
-Make a Flymake diagnostic for LOCUS's region from BEG to END.
-LOCUS is a buffer object or a string designating a file name.
-
-TYPE is a diagnostic symbol and TEXT is string describing the
-problem detected in this region.  DATA is any object that the
-caller wishes to attach to the created diagnostic for later
-retrieval with `flymake-diagnostic-data'.
-
-If LOCUS is a buffer BEG and END should be buffer positions
-inside it.  If LOCUS designates a file, BEG and END should be a
-cons (LINE . COL) indicating a file position.  In this second
-case, END may be omitted in which case the region is computed
-using `flymake-diag-region' if the diagnostic is appended to an
-actual buffer.
-
-OVERLAY-PROPERTIES is an alist of properties attached to the
-created diagnostic, overriding the default properties and any
-properties listed in the `flymake-overlay-control' property of
-the diagnostic's type symbol.
-
-\(fn LOCUS BEG END TYPE TEXT &optional DATA OVERLAY-PROPERTIES)" nil nil)
-
-(autoload 'flymake-diagnostics "flymake" "\
-Get Flymake diagnostics in region determined by BEG and END.
-
-If neither BEG or END is supplied, use whole accessible buffer,
-otherwise if BEG is non-nil and END is nil, consider only
-diagnostics at BEG.
-
-\(fn &optional BEG END)" nil nil)
-
-(autoload 'flymake-diag-region "flymake" "\
-Compute BUFFER's region (BEG . END) corresponding to LINE and COL.
-If COL is nil, return a region just for LINE.  Return nil if the
-region is invalid.  This function saves match data.
-
-\(fn BUFFER LINE &optional COL)" nil nil)
-
-(autoload 'flymake-mode "flymake" "\
-Toggle Flymake mode on or off.
-
-If called interactively, enable Flymake mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
-
-Flymake is an Emacs minor mode for on-the-fly syntax checking.
-Flymake collects diagnostic information from multiple sources,
-called backends, and visually annotates the buffer with the
-results.
-
-Flymake performs these checks while the user is editing.
-The customization variables `flymake-start-on-flymake-mode',
-`flymake-no-changes-timeout' determine the exact circumstances
-whereupon Flymake decides to initiate a check of the buffer.
-
-The commands `flymake-goto-next-error' and
-`flymake-goto-prev-error' can be used to navigate among Flymake
-diagnostics annotated in the buffer.
-
-By default, `flymake-mode' doesn't override the \\[next-error] command, but
-if you're using Flymake a lot (and don't use the regular compilation
-mechanisms that often), it can be useful to put something like
-the following in your init file:
-
-  (setq next-error-function \\='flymake-goto-next-error)
-
-The visual appearance of each type of diagnostic can be changed
-by setting properties `flymake-overlay-control', `flymake-bitmap'
-and `flymake-severity' on the symbols of diagnostic types (like
-`:error', `:warning' and `:note').
-
-Activation or deactivation of backends used by Flymake in each
-buffer happens via the special hook
-`flymake-diagnostic-functions'.
-
-Some backends may take longer than others to respond or complete,
-and some may decide to disable themselves if they are not
-suitable for the current buffer.  The commands
-`flymake-running-backends', `flymake-disabled-backends' and
-`flymake-reporting-backends' summarize the situation, as does the
-special *Flymake log* buffer.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'flymake-mode-on "flymake" "\
-Turn Flymake mode on." nil nil)
-
-(autoload 'flymake-mode-off "flymake" "\
-Turn Flymake mode off." nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake" '("flymake-")))
-
-
-
-
-)
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/filladapt-2.12.2/filladapt-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/filladapt-2.12.2/filladapt-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3589,14 +3679,14 @@ Transpose lines in the active region." t nil)
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine eldoc flymake filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
         package-activated-list)))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250220.647" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250228.1901" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250220.647" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250305.1333" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
