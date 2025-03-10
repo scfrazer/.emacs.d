@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250305.1333
-;; Package-Revision: 24d4283e20a9
+;; Package-Version: 20250306.1916
+;; Package-Revision: 403086239613
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -2362,11 +2362,7 @@ value.  Otherwise return CHILDREN as is.")
                           level
                           (and proto (oref proto level))
                           transient--default-child-level)))
-    (let ((fn (and (symbolp cmd)
-                   (symbol-function cmd))))
-      (when (autoloadp fn)
-        (transient--debug "   autoload %s" cmd)
-        (autoload-do-load fn)))
+    (transient--load-command-if-autoload cmd)
     (when (transient--use-level-p level)
       (let ((obj (if (child-of-class-p class 'transient-information)
                      (apply class :parent parent :level level args)
@@ -2483,6 +2479,13 @@ value.  Otherwise return CHILDREN as is.")
                  :inapt-if-nil :inapt-if-non-nil
                  :inapt-if-mode :inapt-if-not-mode
                  :inapt-if-derived :inapt-if-not-derived))))
+
+(defun transient--load-command-if-autoload (cmd)
+  (when-let* (((symbolp cmd))
+              (fn (symbol-function cmd))
+              ((autoloadp fn)))
+    (transient--debug "   autoload %s" cmd)
+    (autoload-do-load fn)))
 
 ;;; Flow-Control
 
@@ -2654,8 +2657,7 @@ value.  Otherwise return CHILDREN as is.")
        ,@body)))
 
 (defun transient--wrap-command ()
-  (when (autoloadp this-command)
-    (autoload-do-load this-command))
+  (transient--load-command-if-autoload this-command)
   (static-if (>= emacs-major-version 30)
       (letrec
           ((command this-command)

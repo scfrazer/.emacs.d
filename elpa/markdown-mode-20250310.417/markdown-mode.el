@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250228.1513
-;; Package-Revision: 0a522bf682c9
+;; Package-Version: 20250310.417
+;; Package-Revision: dd2cb2cdcd65
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -54,6 +54,7 @@
 (declare-function sh-set-shell "sh-script")
 (declare-function mailcap-file-name-to-mime-type "mailcap")
 (declare-function dnd-get-local-file-name "dnd")
+(declare-function dnd-open-local-file "dnd")
 
 ;; for older emacs<29
 (declare-function mailcap-mime-type-to-extension "mailcap")
@@ -109,7 +110,7 @@ Any changes to the output buffer made by this hook will be saved.")
   :group 'text
   :link '(url-link "https://jblevins.org/projects/markdown-mode/"))
 
-(defcustom markdown-command (let ((command (cl-loop for cmd in '("markdown" "pandoc" "markdown_py")
+(defcustom markdown-command (let ((command (cl-loop for cmd in '("markdown" "pandoc" "markdown_py" "cmark" "cmark-gfm")
                                                     when (executable-find cmd)
                                                     return (file-name-nondirectory it))))
                               (or command "markdown"))
@@ -706,6 +707,20 @@ This may also be a cons cell where the behavior for `C-a' and
                         (const :tag "on: before closing tags first" t)
                         (const :tag "reversed: after closing tags first" reversed))))
   :package-version '(markdown-mode . "2.7"))
+
+(defcustom markdown-yank-dnd-method 'file-link
+  "Action to perform on the dropped files.
+When the value is the symbol,
+  - `copy-and-insert' -- copy file in current directory and insert its link
+  - `open' -- open dropped file in Emacs
+  - `insert-link' -- insert link of dropped/pasted file
+  - `ask' -- ask what to do out of the above."
+  :group 'markdown
+  :package-version '(markdown-mode "2.8")
+  :type '(choice (const :tag "Copy and insert" copy-and-insert)
+                 (const :tag "Open file" open)
+                 (const :tag "Insert file link" file-link)
+                 (const :tag "Ask what to do" ask)))
 
 ;;; Markdown-Specific `rx' Macro ==============================================
 
@@ -9899,12 +9914,8 @@ indicate that sorting should be done in reverse order."
                         (t 1))))
         (sorting-type
          (or sorting-type
-             (progn
-               ;; workaround #641
-               ;; Emacs < 28 hides prompt message by another message. This erases it.
-               (message "")
-               (read-char-exclusive
-                "Sort type: [a]lpha [n]umeric (A/N means reversed): ")))))
+             (read-char-exclusive
+              "Sort type: [a]lpha [n]umeric (A/N means reversed): "))))
     (save-restriction
       ;; Narrow buffer to appropriate sorting area
       (if (region-active-p)
@@ -10120,18 +10131,41 @@ rows and columns and the column alignment."
           (insert " "))
         (setq files (cdr files))))))
 
-(defun markdown--dnd-local-file-handler (url _action)
+(defun markdown--dnd-read-method ()
+  (let ((choice (read-multiple-choice "What to do with file?"
+                                      '((?c "copy and insert")
+                                        (?o "open")
+                                        (?i "insert link")))))
+    (cl-case (car choice)
+      (?c 'copy-and-insert)
+      (?o 'open)
+      (?i 'insert)
+      (otherwise (markdown--dnd-read-method)))))
+
+(defun markdown--dnd-insert-path (filename)
+  (let ((mimetype (mailcap-file-name-to-mime-type filename))
+        (link-text "link text"))
+    (when (string-match-p "\\s-" filename)
+      (setq filename (concat "<" filename ">")))
+    (if (string-prefix-p "image/" mimetype)
+        (markdown-insert-inline-image link-text filename)
+      (markdown-insert-inline-link link-text filename))))
+
+(defun markdown--dnd-local-file-handler (url action)
   (require 'mailcap)
   (require 'dnd)
   (let* ((filename (dnd-get-local-file-name url))
-         (mimetype (mailcap-file-name-to-mime-type filename))
-         (file (file-relative-name filename))
-         (link-text "link text"))
-    (when (string-match-p "\\s-" file)
-      (setq file (concat "<" file ">")))
-    (if (string-prefix-p "image/" mimetype)
-        (markdown-insert-inline-image link-text file)
-      (markdown-insert-inline-link link-text file))))
+         (method (if (eq markdown-yank-dnd-method 'ask)
+                     (markdown--dnd-read-method)
+                   markdown-yank-dnd-method)))
+    (cl-case method
+      (copy-and-insert
+       (let ((copied (expand-file-name (file-name-nondirectory filename))))
+         (copy-file filename copied)
+         (markdown--dnd-insert-path (file-relative-name copied))))
+      (open
+       (dnd-open-local-file url action))
+      (insert (markdown--dnd-insert-path (file-relative-name filename))))))
 
 (defun markdown--dnd-multi-local-file-handler (urls action)
   (let ((multile-urls-p (> (length urls) 1)))
@@ -10198,10 +10232,10 @@ rows and columns and the column alignment."
   ;; Add a buffer-local hook to reload after file-local variables are read
   (add-hook 'hack-local-variables-hook #'markdown-handle-local-variables nil t)
   ;; For imenu support
-  (setq imenu-create-index-function
-        (if markdown-nested-imenu-heading-index
-            #'markdown-imenu-create-nested-index
-          #'markdown-imenu-create-flat-index))
+  (setq-local imenu-create-index-function (if markdown-nested-imenu-heading-index
+                                              #'markdown-imenu-create-nested-index
+                                            #'markdown-imenu-create-flat-index)
+              imenu-submenus-on-top nil)
 
   ;; Defun movement
   (setq-local beginning-of-defun-function #'markdown-beginning-of-defun)
