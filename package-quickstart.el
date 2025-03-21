@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250309.1959/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250309.1959/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250318.1630/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250318.1630/vertico-autoloads.el"))
 
 
 
@@ -1250,7 +1250,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250306.1916/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250306.1916/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250320.1937/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250320.1937/transient-autoloads.el"))
 
 
 
@@ -2051,7 +2051,7 @@ Turn Flymake mode off." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/python-0.29/python-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.29/python-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/python-0.30/python-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.30/python-autoloads.el"))
 
 
 
@@ -2091,6 +2091,12 @@ argument, restrict the suggestions to imports defining the symbol
 at point.  If there is only one such suggestion, act without
 asking.
 
+If the buffer does not belong to a project, the import statement is
+searched under the buffer's default directory.  For example, if the file
+is located directly under the home directory, all files under the home
+directory will be searched.  Please note that this can take a long time
+and may appear to hang.
+
 When calling from Lisp, use a non-nil NAME to restrict the
 suggestions to imports defining NAME.
 
@@ -2112,7 +2118,17 @@ asking.
 (autoload 'python-sort-imports "python" "\
 Sort Python imports in the current buffer." t)
 (autoload 'python-fix-imports "python" "\
-Add missing imports and remove unused ones from the current buffer." t)
+Add missing imports and remove unused ones from the current buffer.
+
+If there are missing imports, ask for an import statement using all
+imports found in the current project as suggestions.  If there is only
+one such suggestion, act without asking.
+
+If the buffer does not belong to a project, the import statement is
+searched under the buffer's default directory.  For example, if the file
+is located directly under the home directory, all files under the home
+directory will be searched.  Please note that this can take a long time
+and may appear to hang." t)
 (autoload 'python-base-mode "python" "\
 Generic major mode for editing Python files.
 
@@ -2157,7 +2173,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046/orderless-autoloads.el"))
 
 
 
@@ -2579,7 +2595,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250310.417/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250310.417/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250314.311/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250314.311/markdown-mode-autoloads.el"))
 
 
 
@@ -2631,7 +2647,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250203.1018/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250203.1018/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250317.1632/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250317.1632/marginalia-autoloads.el"))
 
 
 
@@ -2789,10 +2805,12 @@ Same as `kill-buffer' but keep the iflipb buffer list state." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20250316.1254/hydra-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/hydra-20250316.1254/hydra-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/hydra-20220910.1206/hydra-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -2848,12 +2866,9 @@ want to bind anything.  In that case, typically you will bind the
 generated NAME/body command.  This command is also the return
 result of `defhydra'.
 
-\(fn NAME BODY &optional DOCSTRING &rest HEADS)" nil t)
-
+(fn NAME BODY &optional DOCSTRING &rest HEADS)" nil t)
 (function-put 'defhydra 'lisp-indent-function 'defun)
-
-(function-put 'defhydra 'doc-string-elt '3)
-
+(function-put 'defhydra 'doc-string-elt 3)
 (register-definition-prefixes "hydra" '("defhydra" "hydra-"))
 
 
@@ -2863,10 +2878,11 @@ result of `defhydra'.
 
 
 (register-definition-prefixes "hydra-ox" '("hydra-ox"))
-
 
 
-
+(provide 'hydra-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el"))
 
@@ -3047,20 +3063,17 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20240510.1327/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20240510.1327/dash-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/dash-20240510.1327/dash-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (autoload 'dash-fontify-mode "dash" "\
 Toggle fontification of Dash special variables.
-
-If called interactively, enable Dash-Fontify mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
 
 Dash-Fontify mode is a buffer-local minor mode intended for Emacs
 Lisp buffers.  Enabling it causes the special variables bound in
@@ -3072,10 +3085,22 @@ additionally fontifies Dash macro calls.
 See also `dash-fontify-mode-lighter' and
 `global-dash-fontify-mode'.
 
-\(fn &optional ARG)" t nil)
+This is a minor mode.  If called interactively, toggle the
+`Dash-Fontify mode' mode.  If the prefix argument is positive,
+enable the mode, and if it is zero or negative, disable the mode.
 
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `dash-fontify-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
 (put 'global-dash-fontify-mode 'globalized-minor-mode t)
-
 (defvar global-dash-fontify-mode nil "\
 Non-nil if Global Dash-Fontify mode is enabled.
 See the `global-dash-fontify-mode' command
@@ -3083,30 +3108,31 @@ for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `global-dash-fontify-mode'.")
-
 (custom-autoload 'global-dash-fontify-mode "dash" nil)
-
 (autoload 'global-dash-fontify-mode "dash" "\
 Toggle Dash-Fontify mode in all buffers.
 With prefix ARG, enable Global Dash-Fontify mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+otherwise, disable it.
 
-Dash-Fontify mode is enabled in all buffers where
-`dash--turn-on-fontify-mode' would do it.
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+Dash-Fontify mode is enabled in all buffers where `dash--turn-on-fontify-mode'
+would do it.
+
 See `dash-fontify-mode' for more information on Dash-Fontify mode.
 
-\(fn &optional ARG)" t nil)
-
+(fn &optional ARG)" t)
 (autoload 'dash-register-info-lookup "dash" "\
 Register the Dash Info manual with `info-lookup-symbol'.
-This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-juxt" "-keep" "-l" "-m" "-no" "-o" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-")))
-
+This allows Dash symbols to be looked up with \\[info-lookup-symbol]." t)
+(register-definition-prefixes "dash" '("!cdr" "!cons" "--" "->" "-a" "-butlast" "-c" "-d" "-e" "-f" "-gr" "-i" "-juxt" "-keep" "-l" "-m" "-no" "-o" "-p" "-r" "-s" "-t" "-u" "-value-to-list" "-when-let" "-zip" "dash-"))
 
 
-
+(provide 'dash-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20240629.1906/dired-hacks-utils-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dired-hacks-utils-20240629.1906/dired-hacks-utils-autoloads.el"))
 
@@ -3305,61 +3331,54 @@ Display items in the `kill-ring' in another buffer." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bm-20231008.2005/bm-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20231008.2005/bm-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250318.2308/bm-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250318.2308/bm-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/bm-20231008.2005/bm-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (autoload 'bm-toggle "bm" "\
-Toggle bookmark at point." t nil)
-
+Toggle bookmark at point." t)
 (autoload 'bm-toggle-mouse "bm" "\
 Toggle a bookmark with a mouse click.
 EV is the mouse event.
 
-\(fn EV)" t nil)
-
+(fn EV)" t)
 (autoload 'bm-lifo-previous "bm" "\
 Goto previous bookmark in LIFO order . (that is, most
-recently set ones come first, oldest ones come last)" t nil)
-
+recently set ones come first, oldest ones come last)" t)
 (autoload 'bm-lifo-next "bm" "\
 Goto next bookmark in LIFO order .(that is, most
-recently set ones come first, oldest ones come last)" t nil)
-
-(autoload 'bm-next "bm" nil t nil)
-
+recently set ones come first, oldest ones come last)" t)
+(autoload 'bm-next "bm" nil t)
 (autoload 'bm-common-next "bm" "\
-Goto next bookmark." t nil)
-
+Goto next bookmark." t)
 (autoload 'bm-next-mouse "bm" "\
 Go to the next bookmark with the scroll wheel.
 EV is the mouse event.
 
-\(fn EV)" t nil)
-
-(autoload 'bm-previous "bm" nil t nil)
-
+(fn EV)" t)
+(autoload 'bm-previous "bm" nil t)
 (autoload 'bm-common-previous "bm" "\
-Goto previous bookmark." t nil)
-
+Goto previous bookmark." t)
 (autoload 'bm-previous-mouse "bm" "\
 Go to the previous bookmark with the scroll wheel.
 EV is the mouse event.
 
-\(fn EV)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bm" '("bm-" "temporary-bookmark-p")))
-
-
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bm-sync" '("bm-bookmark-")))
+(fn EV)" t)
+(register-definition-prefixes "bm" '("bm-" "temporary-bookmark-p"))
 
 
 
+(register-definition-prefixes "bm-sync" '("bm-bookmark-"))
 
+
+(provide 'bm-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20220730.100/beacon-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/beacon-20220730.100/beacon-autoloads.el"))
 
@@ -3686,7 +3705,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20240510.1327" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250220.647" "/home/scfrazer/.emacs.d/elpa/orderless-20250201.2341" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250306.1916" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250220.647" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250320.1937" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.0.2.0")
          Info-directory-list)))
 
 ;; Local Variables:
