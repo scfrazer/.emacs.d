@@ -6,9 +6,9 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250322.1727
-;; Package-Revision: 14b39ff70609
-;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24"))
+;; Package-Version: 20250401.1655
+;; Package-Revision: afc88b24e4fa
+;; Package-Requires: ((emacs "26.1") (compat "30.0.2.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.8.6")
+(defconst transient-version "0.8.7")
 
 (require 'cl-lib)
 (require 'compat)
@@ -1456,14 +1456,14 @@ Intended for use in a group's `:setup-children' function."
     (setq suf (eval suf t))
     (cond
      ((not mem)
-      (message "Cannot insert %S into %s; %s not found"
-               suffix prefix loc))
+      (error "Cannot insert %S into %s; %s not found"
+             suffix prefix loc))
      ((or (and (vectorp suffix) (not (vectorp elt)))
           (and (listp   suffix) (vectorp elt))
           (and (stringp suffix) (vectorp elt)))
-      (message "Cannot place %S into %s at %s; %s"
-               suffix prefix loc
-               "suffixes and groups cannot be siblings"))
+      (error "Cannot place %S into %s at %s; %s"
+             suffix prefix loc
+             "suffixes and groups cannot be siblings"))
      (t
       (when-let* (((not (eq keep-other 'always)))
                   (bindingp (listp suf))
@@ -2370,6 +2370,7 @@ value.  Otherwise return CHILDREN as is.")
 (defun transient--init-suffix (levels spec parent)
   (pcase-let* ((`(,level ,class ,args) spec)
                (cmd (plist-get args :command))
+               (_ (transient--load-command-if-autoload cmd))
                (key (transient--kbd (plist-get args :key)))
                (proto (and cmd (transient--suffix-prototype cmd)))
                (level (or (alist-get (cons cmd key) levels nil nil #'equal)
@@ -2377,7 +2378,6 @@ value.  Otherwise return CHILDREN as is.")
                           level
                           (and proto (oref proto level))
                           transient--default-child-level)))
-    (transient--load-command-if-autoload cmd)
     (when (transient--use-level-p level)
       (let ((obj (if (child-of-class-p class 'transient-information)
                      (apply class :parent parent :level level args)
