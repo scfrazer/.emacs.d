@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250318.1630/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250318.1630/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250406.1754/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250406.1754/vertico-autoloads.el"))
 
 
 
@@ -919,6 +919,14 @@ it is disabled.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "vertico-reverse" '("vertico-reverse-map"))
+
+
+
+ (autoload 'vertico-sort-history-length-alpha "vertico-sort")
+ (autoload 'vertico-sort-history-alpha "vertico-sort")
+ (autoload 'vertico-sort-length-alpha "vertico-sort")
+ (autoload 'vertico-sort-alpha "vertico-sort")
+(register-definition-prefixes "vertico-sort" '("vertico-sort-"))
 
 
 
@@ -2537,7 +2545,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250327.843/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250327.843/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250409.1220/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250409.1220/modus-themes-autoloads.el"))
 
 
 
@@ -2595,7 +2603,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250402.452/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250402.452/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250403.1127/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250403.1127/markdown-mode-autoloads.el"))
 
 
 
@@ -3705,7 +3713,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250327.843" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250401.1655" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250409.1220" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250401.1655" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
