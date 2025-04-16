@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250406.1754/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250406.1754/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250415.609/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250415.609/vertico-autoloads.el"))
 
 
 
@@ -1258,7 +1258,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250401.1655/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250401.1655/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720/transient-autoloads.el"))
 
 
 
@@ -2545,7 +2545,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250410.1000/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250410.1000/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111/modus-themes-autoloads.el"))
 
 
 
@@ -3317,6 +3317,50 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250304.1338/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250304.1338/cmake-mode-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(autoload 'cmake-mode "cmake-mode" "\
+Major mode for editing CMake source files.
+
+(fn)" t)
+(autoload 'cmake-command-run "cmake-mode" "\
+Runs the command cmake with the arguments specified.  The
+optional argument topic will be appended to the argument list.
+
+(fn TYPE &optional TOPIC BUFFER)" t)
+(autoload 'cmake-command-run-help "cmake-mode" "\
+`cmake-command-run' but rendered in `rst-mode'.
+
+(fn TYPE &optional TOPIC BUFFER)" t)
+(autoload 'cmake-help-list-commands "cmake-mode" "\
+Prints out a list of the cmake commands." t)
+(autoload 'cmake-help-command "cmake-mode" "\
+Prints out the help message for the command the cursor is on." t)
+(autoload 'cmake-help-module "cmake-mode" "\
+Prints out the help message for the module the cursor is on." t)
+(autoload 'cmake-help-variable "cmake-mode" "\
+Prints out the help message for the variable the cursor is on." t)
+(autoload 'cmake-help-property "cmake-mode" "\
+Prints out the help message for the property the cursor is on." t)
+(autoload 'cmake-help "cmake-mode" "\
+Queries for any of the four available help topics and prints out the
+appropriate page." t)
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+(register-definition-prefixes "cmake-mode" '("cmake-"))
+
+
+(provide 'cmake-mode-autoloads)
+
+
+)
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -3706,14 +3750,14 @@ Transpose lines in the active region." t nil)
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft browse-kill-ring bm beacon avy)
+        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy)
         package-activated-list)))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250410.1000" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250401.1655" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250406.1754
-;; Package-Revision: edee5c68972b
+;; Package-Version: 20250415.609
+;; Package-Revision: 000a415630c4
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -307,6 +307,12 @@ The value should lie between 0 and vertico-count/2."
                                           (test-completion content table pred)))
                                  -1 0))))))
 
+(defun vertico--hilit (cand)
+  "Highlight CAND string with lazy highlighting."
+  ;; bug#77754: Highlight unquoted string.
+  (funcall vertico--hilit (substring (or (get-text-property
+                                          0 'completion--unquoted cand) cand))))
+
 (defun vertico--cycle (list n)
   "Rotate LIST to position N."
   (nconc (copy-sequence (nthcdr n list)) (seq-take list n)))
@@ -420,11 +426,12 @@ The value should lie between 0 and vertico-count/2."
 
 (defun vertico--format-group-title (title cand)
   "Format group TITLE given the current CAND."
+  ;; Copy candidate highlighting if title is a prefix of the candidate.
   (when (string-prefix-p title cand)
-    ;; Highlight title if title is a prefix of the candidate
-    (setq cand (propertize cand 'face 'vertico-group-title)
-          title (substring (funcall vertico--hilit cand) 0 (length title)))
+    (setq title (substring cand 0 (length title)))
     (vertico--remove-face 0 (length title) 'completions-first-difference title))
+  (setq title (substring title))
+  (add-face-text-property 0 (length title) 'vertico-group-title t title)
   (format (concat vertico-group-format "\n") title))
 
 (defun vertico--format-count ()
@@ -475,7 +482,7 @@ The value should lie between 0 and vertico-count/2."
 
 (defun vertico--candidate (&optional hl)
   "Return current candidate string with optional highlighting if HL is non-nil."
-  (let ((content (substring (or (car-safe vertico--input) (minibuffer-contents-no-properties)))))
+  (let ((content (or (car-safe vertico--input) (minibuffer-contents-no-properties))))
     (cond
      ((>= vertico--index 0)
       (let ((cand (substring (nth vertico--index vertico--candidates))))
@@ -483,7 +490,7 @@ The value should lie between 0 and vertico-count/2."
         ;; `completion--twq-all' hack.  This should better be fixed in Emacs
         ;; itself, the corresponding code is already marked as fixme.
         (vertico--remove-face 0 (length cand) 'completions-common-part cand)
-        (concat vertico--base (if hl (funcall vertico--hilit cand) cand))))
+        (concat vertico--base (if hl (vertico--hilit cand) cand))))
      ((and (equal content "") (or (car-safe minibuffer-default) minibuffer-default)))
      (t content))))
 
@@ -514,7 +521,7 @@ The value should lie between 0 and vertico-count/2."
            (candidates
             (vertico--affixate
              (cl-loop repeat vertico-count for c in (nthcdr index vertico--candidates)
-                      collect (funcall vertico--hilit (substring c))))))
+                      collect (vertico--hilit c)))))
       (pcase-dolist ((and cand `(,str . ,_)) candidates)
         (when-let ((new-title (and group-fun (funcall group-fun str nil))))
           (unless (equal title new-title)
