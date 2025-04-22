@@ -618,7 +618,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250415.609/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250415.609/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250419.816/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250419.816/vertico-autoloads.el"))
 
 
 
@@ -1258,7 +1258,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149/transient-autoloads.el"))
 
 
 
@@ -1945,10 +1945,12 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.0/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.0/flymake-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/flymake-1.3.7/flymake-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -1959,31 +1961,33 @@ the warning.  If this form is included in a file,
 the generated warning contains an indication of the file that
 generated it.
 
-\(fn LEVEL MSG &rest ARGS)" nil t)
-
+(fn LEVEL MSG &rest ARGS)" nil t)
 (autoload 'flymake-make-diagnostic "flymake" "\
 Make a Flymake diagnostic for LOCUS's region from BEG to END.
 LOCUS is a buffer object or a string designating a file name.
 
-TYPE is a diagnostic symbol and TEXT is string describing the
-problem detected in this region.  DATA is any object that the
-caller wishes to attach to the created diagnostic for later
-retrieval with `flymake-diagnostic-data'.
+TYPE is a diagnostic symbol (see Info Node `(Flymake)Flymake error
+types')
 
-If LOCUS is a buffer BEG and END should be buffer positions
-inside it.  If LOCUS designates a file, BEG and END should be a
-cons (LINE . COL) indicating a file position.  In this second
-case, END may be omitted in which case the region is computed
-using `flymake-diag-region' if the diagnostic is appended to an
-actual buffer.
+INFO is a description of the problem detected.  It may be a string, or
+list of three strings (ORIGIN CODE MESSAGE) appropriately categorizing
+and describing the diagnostic.
 
-OVERLAY-PROPERTIES is an alist of properties attached to the
-created diagnostic, overriding the default properties and any
-properties listed in the `flymake-overlay-control' property of
-the diagnostic's type symbol.
+DATA is any object that the caller wishes to attach to the created
+diagnostic for later retrieval with `flymake-diagnostic-data'.
 
-\(fn LOCUS BEG END TYPE TEXT &optional DATA OVERLAY-PROPERTIES)" nil nil)
+If LOCUS is a buffer, BEG and END should be buffer positions inside it.
+If LOCUS designates a file, BEG and END should be a cons (LINE . COL)
+indicating a file position.  In this second case, END may be omitted in
+which case the region is computed using `flymake-diag-region' if the
+diagnostic is appended to an actual buffer.
 
+OVERLAY-PROPERTIES is an alist of properties attached to the created
+diagnostic, overriding the default properties and any properties listed
+in the `flymake-overlay-control' property of the diagnostic's type
+symbol.
+
+(fn LOCUS BEG END TYPE INFO &optional DATA OVERLAY-PROPERTIES)")
 (autoload 'flymake-diagnostics "flymake" "\
 Get Flymake diagnostics in region determined by BEG and END.
 
@@ -1991,22 +1995,15 @@ If neither BEG or END is supplied, use whole accessible buffer,
 otherwise if BEG is non-nil and END is nil, consider only
 diagnostics at BEG.
 
-\(fn &optional BEG END)" nil nil)
-
+(fn &optional BEG END)")
 (autoload 'flymake-diag-region "flymake" "\
 Compute BUFFER's region (BEG . END) corresponding to LINE and COL.
 If COL is nil, return a region just for LINE.  Return nil if the
 region is invalid.  This function saves match data.
 
-\(fn BUFFER LINE &optional COL)" nil nil)
-
+(fn BUFFER LINE &optional COL)")
 (autoload 'flymake-mode "flymake" "\
 Toggle Flymake mode on or off.
-
-If called interactively, enable Flymake mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
 
 Flymake is an Emacs minor mode for on-the-fly syntax checking.
 Flymake collects diagnostic information from multiple sources,
@@ -2045,19 +2042,31 @@ suitable for the current buffer.  The commands
 `flymake-reporting-backends' summarize the situation, as does the
 special *Flymake log* buffer.
 
-\(fn &optional ARG)" t nil)
+This is a minor mode.  If called interactively, toggle the
+`Flymake mode' mode.  If the prefix argument is positive, enable
+the mode, and if it is zero or negative, disable the mode.
 
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `flymake-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
 (autoload 'flymake-mode-on "flymake" "\
-Turn Flymake mode on." nil nil)
-
+Turn Flymake mode on.")
 (autoload 'flymake-mode-off "flymake" "\
-Turn Flymake mode off." nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flymake" '("flymake-")))
-
+Turn Flymake mode off.")
+(register-definition-prefixes "flymake" '("flymake-"))
 
 
-
+(provide 'flymake-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/python-0.30/python-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/python-0.30/python-autoloads.el"))
 
@@ -2545,7 +2554,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923/modus-themes-autoloads.el"))
 
 
 
@@ -3757,7 +3766,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250416.1111" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250415.1720" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
