@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250418.2149
-;; Package-Revision: 16e47e577354
+;; Package-Version: 20250423.1314
+;; Package-Revision: c7845bfd9f3b
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.2.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1229,6 +1229,8 @@ commands are aliases for."
     ;; ARGLIST and FORM are only optional for backward compatibility.
     ;; This is necessary because "emoji.el" from Emacs 29 calls this
     ;; function directly, with just one argument.
+    (declare (advertised-calling-convention
+              (args arglist form &optional nobody) "0.7.1"))
     (unless (listp arglist)
       (error "Mandatory ARGLIST is missing"))
     (let (class keys suffixes docstr declare (interactive-only t))

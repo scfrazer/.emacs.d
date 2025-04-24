@@ -27,8 +27,9 @@ TYPE is a diagnostic symbol (see Info Node `(Flymake)Flymake error
 types')
 
 INFO is a description of the problem detected.  It may be a string, or
-list of three strings (ORIGIN CODE MESSAGE) appropriately categorizing
-and describing the diagnostic.
+list (ORIGIN CODE MESSAGE) appropriately categorizing and describing the
+diagnostic.  ORIGIN may be a string or nil.  CODE maybe be a string, a
+number or nil.  MESSAGE must be a string.
 
 DATA is any object that the caller wishes to attach to the created
 diagnostic for later retrieval with `flymake-diagnostic-data'.

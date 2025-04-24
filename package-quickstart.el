@@ -1258,7 +1258,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250423.1314/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250423.1314/transient-autoloads.el"))
 
 
 
@@ -1945,7 +1945,7 @@ See `eldoc-documentation-strategy' for more detail." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.0/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.0/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.1/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.1/flymake-autoloads.el"))
 
 
 
@@ -1970,8 +1970,9 @@ TYPE is a diagnostic symbol (see Info Node `(Flymake)Flymake error
 types')
 
 INFO is a description of the problem detected.  It may be a string, or
-list of three strings (ORIGIN CODE MESSAGE) appropriately categorizing
-and describing the diagnostic.
+list (ORIGIN CODE MESSAGE) appropriately categorizing and describing the
+diagnostic.  ORIGIN may be a string or nil.  CODE maybe be a string, a
+number or nil.  MESSAGE must be a string.
 
 DATA is any object that the caller wishes to attach to the created
 diagnostic for later retrieval with `flymake-diagnostic-data'.
@@ -2554,7 +2555,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250424.454/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250424.454/modus-themes-autoloads.el"))
 
 
 
@@ -3766,7 +3767,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250419.923" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250418.2149" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250424.454" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250423.1314" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20241201.1419" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
