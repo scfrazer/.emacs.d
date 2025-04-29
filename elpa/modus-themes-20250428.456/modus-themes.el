@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250424.454
-;; Package-Revision: 792ebec01a07
+;; Package-Version: 20250428.456
+;; Package-Revision: 847311bf740a
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -2505,6 +2505,7 @@ FG and BG are the main colors."
     `(font-lock-number-face ((,c :foreground ,number)))
     `(font-lock-operator-face ((,c :foreground ,operator)))
     `(font-lock-preprocessor-face ((,c :foreground ,preprocessor)))
+    `(font-lock-property-name-face ((,c :foreground ,property)))
     `(font-lock-punctuation-face ((,c :foreground ,punctuation)))
     `(font-lock-regexp-grouping-backslash ((,c :inherit modus-themes-bold :foreground ,rx-backslash)))
     `(font-lock-regexp-grouping-construct ((,c :inherit modus-themes-bold :foreground ,rx-construct)))
@@ -2636,7 +2637,7 @@ FG and BG are the main colors."
     `(gnus-summary-low-ticked ((,c :inherit italic :foreground ,err)))
     `(gnus-summary-low-undownloaded ((,c :inherit italic :foreground ,warning)))
     `(gnus-summary-low-unread ((,c :inherit italic)))
-    `(gnus-summary-normal-ancient (( )))
+    `(gnus-summary-normal-ancient ((,c :inherit shadow)))
     `(gnus-summary-normal-read ((,c :inherit shadow)))
     `(gnus-summary-normal-ticked ((,c :foreground ,err)))
     `(gnus-summary-normal-undownloaded ((,c :foreground ,warning)))
@@ -3873,6 +3874,14 @@ FG and BG are the main colors."
     `(tldr-description ((,c :inherit font-lock-doc-face)))
     `(tldr-introduction ((,c :inherit font-lock-comment-face)))
     `(tldr-title ((,c :inherit bold)))
+;;;;; tmr
+    `(tmr-mode-line-active ((,c :inherit bold :foreground ,modeline-info)))
+    `(tmr-mode-line-soon ((,c :inherit bold :foreground ,modeline-warning)))
+    `(tmr-mode-line-urgent ((,c :inherit bold :foreground ,modeline-err)))
+    `(tmr-tabulated-description ((,c :foreground ,docstring)))
+    `(tmr-tabulated-end-time ((,c :foreground ,date-deadline)))
+    `(tmr-tabulated-remaining-time ((,c :foreground ,date-scheduled)))
+    `(tmr-tabulated-start-time ((,c :foreground ,date-common)))
 ;;;;; transient
     `(transient-active-infix ((,c :inherit highlight)))
     `(transient-amaranth ((,c :inherit bold :foreground ,yellow-warmer)))
