@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250428.1643
-;; Package-Revision: 5f33dfe21b4d
+;; Package-Version: 20250429.904
+;; Package-Revision: 5a54f6d72bd7
 ;; Package-Requires: ((emacs "26.1") (compat "30.0.2.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -2323,8 +2323,8 @@ EDIT may be non-nil."
        (setq transient--minibuffer-depth (minibuffer-depth))
        (transient--redisplay))
      (get name 'transient--prefix))
-    (transient--setup-transient)
     (transient--suspend-text-conversion-style)
+    (transient--setup-transient)
     (transient--suspend-which-key-mode)))
 
 (cl-defgeneric transient-setup-children (group children)
