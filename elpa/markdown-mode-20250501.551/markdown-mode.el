@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250403.1127
-;; Package-Revision: 258313ef2b49
+;; Package-Version: 20250501.551
+;; Package-Revision: 90ad4af79a8b
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3722,6 +3722,18 @@ SEQ may be an atom or a sequence."
 (defvar markdown-mode-syntax-table
   (let ((tab (make-syntax-table text-mode-syntax-table)))
     (modify-syntax-entry ?\" "." tab)
+    (modify-syntax-entry ?$ "." tab)  ; Might appear in inline content
+    (modify-syntax-entry ?% "." tab)  ; Could appear in URLs
+    (modify-syntax-entry ?* "." tab)  ; Emphasis (bold/italic)
+    (modify-syntax-entry ?+ "." tab)  ; Used in lists
+    (modify-syntax-entry ?/ "." tab)  ; Might appear in inline content or URLs
+    (modify-syntax-entry ?< "." tab)  ; For autolinks and embedded HTML
+    (modify-syntax-entry ?= "." tab)  ; Underlining in setext headers
+    (modify-syntax-entry ?> "." tab)  ; Blockquotes and HTML
+    (modify-syntax-entry ?_ "." tab)  ; Used for emphasis/bold
+    (modify-syntax-entry ?| "." tab)  ; Used in tables
+    (modify-syntax-entry ?& "." tab)  ; HTML entities
+    (modify-syntax-entry ?' "." tab)  ; Apostrophe as punctuation
     tab)
   "Syntax table for `markdown-mode'.")
 
