@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250501.846
-;; Package-Revision: 25b994a565ce
+;; Package-Version: 20250511.1808
+;; Package-Revision: c37d694ccbdf
 ;; Package-Requires: ((emacs "26.1") (compat "30.1.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1906,7 +1906,7 @@ probably use this instead:
        ;; If COMMAND is nil, then failure to disambiguate likely means
        ;; that there is a bug somewhere.
        ((length> suffixes 1)
-        (error "BUG: Cannot unambigiously determine suffix object"))
+        (error "BUG: Cannot unambiguously determine suffix object"))
        ;; It is legimate to use this function as a predicate of sorts.
        ;; `transient--pre-command' and `transient-help' are examples.
        (t nil))))
@@ -5113,7 +5113,7 @@ search instead."
             lisp-imenu-generic-expression :test #'equal)
 
 (defun transient--suspend-text-conversion-style ()
-  (static-if (boundp 'overriding-text-conversion-style) ; since Emasc 30.1
+  (static-if (boundp 'overriding-text-conversion-style) ; since Emacs 30.1
       (when text-conversion-style
         (letrec ((suspended overriding-text-conversion-style)
                  (fn (lambda ()

@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250419.816
-;; Package-Revision: 3e1e55319fb3
+;; Package-Version: 20250511.1903
+;; Package-Revision: b0c0a2eebeac
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -464,14 +464,42 @@ The value should lie between 0 and vertico-count/2."
         (put-text-property beg next 'face (remq face (ensure-list val)) obj))
       (setq beg next))))
 
+(defun vertico--debug (&rest _)
+  "Debugger used by `vertico--guard'."
+  (require 'backtrace)
+  (declare-function backtrace-to-string "backtrace")
+  (declare-function backtrace-get-frames "backtrace")
+  (let ((inhibit-message t))
+    (message "Vertico detected an error:\n%s"
+             (backtrace-to-string (backtrace-get-frames #'vertico--debug))))
+  (let (message-log-max)
+    (message "%s %s"
+             (propertize "Vertico detected an error:" 'face 'error)
+             (substitute-command-keys "Press \\[view-echo-area-messages] to see the stack trace")))
+  nil)
+
+(defmacro vertico--guard (&rest body)
+  "Guard BODY such that errors are caught.
+If an error occurs, the BODY is retried with `debug-on-error' enabled
+and the stack trace is shown in the *Messages* buffer."
+  `(let ((body (lambda ()
+                 (condition-case nil
+                     (progn ,@body nil)
+                   ((debug error) t)))))
+     (when (or debug-on-error (funcall body))
+       (let ((debug-on-error t)
+             (debugger #'vertico--debug))
+         (funcall body)))))
+
 (defun vertico--exhibit ()
   "Exhibit completion UI."
-  (let ((buffer-undo-list t)) ;; Overlays affect point position and undo list!
-    (vertico--update 'interruptible)
-    (vertico--prompt-selection)
-    (vertico--display-count)
-    (vertico--display-candidates (vertico--arrange-candidates))
-    (vertico--resize)))
+  (vertico--guard
+   (let ((buffer-undo-list t)) ;; Overlays affect point position and undo list!
+     (vertico--update 'interruptible)
+     (vertico--prompt-selection)
+     (vertico--display-count)
+     (vertico--display-candidates (vertico--arrange-candidates))
+     (vertico--resize))))
 
 (defun vertico--goto (index)
   "Go to candidate with INDEX."
