@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250428.456
-;; Package-Revision: 847311bf740a
+;; Package-Version: 20250519.604
+;; Package-Revision: 6880f3a7d99d
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -2928,7 +2928,8 @@ FG and BG are the main colors."
     `(keycast-command ((,c :inherit bold)))
     `(keycast-key ((,c :inherit modus-themes-bold :background ,keybind :foreground ,bg-main)))
 ;;;;; kmacro-menu
-    `(kmacro-menu-mark ((,c :inherit bold)))
+    ;; Use `list' here to avoid a spurious warning about `kmacro-menu-mark'.
+    (list 'kmacro-menu-mark `((,c :inherit bold)))
     `(kmacro-menu-marked ((,c :inherit modus-themes-mark-sel)))
     `(kmacro-menu-flagged ((,c :inherit modus-themes-mark-del)))
 ;;;;; ledger-mode

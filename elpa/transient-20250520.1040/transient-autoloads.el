@@ -55,6 +55,13 @@ See info node `(transient)Modifying Existing Transients'.
 
 (fn PREFIX LOC SUFFIX)")
 (function-put 'transient-replace-suffix 'lisp-indent-function 'defun)
+(autoload 'transient-inline-group "transient" "\
+Inline the included GROUP into PREFIX.
+Replace the symbol GROUP with its expanded layout in the
+layout of PREFIX.
+
+(fn PREFIX GROUP)")
+(function-put 'transient-inline-group 'lisp-indent-function 'defun)
 (autoload 'transient-remove-suffix "transient" "\
 Remove the suffix or group at LOC in PREFIX.
 PREFIX is a prefix command, a symbol.

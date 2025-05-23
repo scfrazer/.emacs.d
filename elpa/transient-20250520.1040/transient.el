@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250511.1808
-;; Package-Revision: c37d694ccbdf
+;; Package-Version: 20250520.1040
+;; Package-Revision: cb6550d5b111
 ;; Package-Requires: ((emacs "26.1") (compat "30.1.0.0") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -1067,7 +1067,7 @@ to the setup function:
            (indent defun)
            (doc-string 3))
   (pcase-let
-      ((`(,class ,slots ,suffixes ,docstr ,body ,interactive-only)
+      ((`(,class ,slots ,groups ,docstr ,body ,interactive-only)
         (transient--expand-define-args args arglist 'transient-define-prefix)))
     `(progn
        (defalias ',name
@@ -1080,9 +1080,22 @@ to the setup function:
        (put ',name 'function-documentation ,docstr)
        (put ',name 'transient--prefix
             (,(or class 'transient-prefix) :command ',name ,@slots))
-       (put ',name 'transient--layout
-            (list ,@(mapcan (lambda (s) (transient--parse-child name s))
-                            suffixes))))))
+       (transient--set-layout
+        ',name
+        (list ,@(mapcan (lambda (s) (transient--parse-child name s)) groups))))))
+
+(defmacro transient-define-group (name &rest groups)
+  "Define one or more groups and store them in symbol NAME.
+
+Groups defined using this macro, can be used inside the
+definition of transient prefix commands, by using the symbol
+NAME where a group vector is expected.  GROUPS has the same
+form as for `transient-define-prefix'."
+  (declare (debug (&define name [&rest vectorp]))
+           (indent defun))
+  `(transient--set-layout
+    ',name
+    (list ,@(mapcan (lambda (s) (transient--parse-child name s)) groups))))
 
 (defmacro transient-define-suffix (name arglist &rest args)
   "Define NAME as a transient suffix command.
@@ -1243,10 +1256,19 @@ commands are aliases for."
               (setq class v)
             (push k keys)
             (push v keys))))
-      (while (let ((arg (car args)))
-               (or (vectorp arg)
-                   (and arg (symbolp arg))))
-        (push (pop args) suffixes))
+      (while-let
+          ((arg (car args))
+           (arg (cond
+                 ;; Inline group definition.
+                 ((vectorp arg)
+                  (pop args))
+                 ;; Quoted include, as one would expect.
+                 ((eq (car-safe arg) 'quote)
+                  (cadr (pop args)))
+                 ;; Unquoted include, for compatibility.
+                 ((and arg (symbolp arg))
+                  (pop args)))))
+        (push arg suffixes))
       (when (eq (car-safe (car args)) 'declare)
         (setq declare (car args))
         (setq args (cdr args))
@@ -1273,34 +1295,19 @@ commands are aliases for."
 (defun transient--parse-child (prefix spec)
   (cl-typecase spec
     (null    (error "Invalid transient--parse-child spec: %s" spec))
-    (symbol  (let ((value (symbol-value spec)))
-               (if (and (listp value)
-                        (or (listp (car value))
-                            (vectorp (car value))))
-                   (mapcan (lambda (s) (transient--parse-child prefix s)) value)
-                 (transient--parse-child prefix value))))
+    (symbol  (list `',spec))
     (vector  (and-let* ((c (transient--parse-group  prefix spec))) (list c)))
     (list    (and-let* ((c (transient--parse-suffix prefix spec))) (list c)))
     (string  (list spec))
     (t       (error "Invalid transient--parse-child spec: %s" spec))))
 
 (defun transient--parse-group (prefix spec)
-  (let ((spec (append spec nil))
-        level class args)
+  (let (class args)
+    (setq spec (append spec nil))
     (when (integerp (car spec))
-      (setq level (pop spec)))
+      (setq args (plist-put args :level (pop spec))))
     (when (stringp (car spec))
       (setq args (plist-put args :description (pop spec))))
-    ;; Merge value of [... GROUP-VARIABLE], if any.
-    (let ((spec* spec))
-      (while (keywordp (car spec*))
-        (setq spec* (cddr spec*)))
-      (when (and (length= spec* 1) (symbolp (car spec*)))
-        (let ((rest (append (symbol-value (car spec*)) nil))
-              (args nil))
-          (while (keywordp (car rest))
-            (setq args (nconc (list (pop rest) (pop rest)) args)))
-          (setq spec (nconc args (butlast spec) rest)))))
     (while (keywordp (car spec))
       (let* ((key (pop spec))
              (val (if spec (pop spec) (error "No value for `%s'" key))))
@@ -1315,7 +1322,6 @@ commands are aliases for."
       (message "WARNING: %s: When %s is used, %s must also be specified"
                'transient-define-prefix :setup-children :class))
     (list 'vector
-          level
           (list 'quote
                 (cond (class)
                       ((cl-typep (car spec)
@@ -1327,12 +1333,12 @@ commands are aliases for."
                 (mapcan (lambda (s) (transient--parse-child prefix s)) spec)))))
 
 (defun transient--parse-suffix (prefix spec)
-  (let (level class args)
+  (let (class args)
     (cl-flet ((use (prop value)
                 (setq args (plist-put args prop value))))
       (pcase (car spec)
         ((cl-type integer)
-         (setq level (pop spec))))
+         (use :level (pop spec))))
       (pcase (car spec)
         ((cl-type (or string vector))
          (use :key (pop spec))))
@@ -1398,7 +1404,6 @@ commands are aliases for."
                (val (if spec (pop spec) (error "No value for `%s'" key))))
           (pcase key
             (:class (setq class val))
-            (:level (setq level val))
             (:info  (setq class 'transient-information)
                     (use :description val))
             (:info* (setq class 'transient-information*)
@@ -1418,8 +1423,7 @@ commands are aliases for."
                  (replace-match transient-common-command-prefix t t key 1)))
         (when-let ((shortarg (plist-get args :shortarg)))
           (use :key shortarg))))
-    (list 'list
-          level
+    (list 'cons
           (macroexp-quote (or class 'transient-suffix))
           (cons 'list args))))
 
@@ -1448,36 +1452,91 @@ symbol property.")
   (setq read-extended-command-predicate
         #'transient-command-completion-not-suffix-only-p))
 
+(defun transient--set-layout (prefix layout)
+  (put prefix 'transient--layout (vector 2 nil layout)))
+
+(defun transient--get-layout (prefix)
+  (if-let*
+      ((layout
+        (or (get prefix 'transient--layout)
+            ;; Migrate unparsed legacy group definition.
+            (condition-case-unless-debug err
+                (and-let* ((value (symbol-value prefix)))
+                  (transient--set-layout
+                   prefix
+                   (if (and (listp value)
+                            (or (listp (car value))
+                                (vectorp (car value))))
+                       (transient-parse-suffixes prefix value)
+                     (list (transient-parse-suffix prefix value)))))
+              (error
+               (message "Not a legacy group definition: %s: %S" prefix err)
+               nil)))))
+      (if (vectorp layout)
+          (let ((version (aref layout 0)))
+            (if (= version 2)
+                layout
+              (error "Unsupported layout version %s for %s" version prefix)))
+        ;; Upgrade from version 1.
+        (cl-labels
+            ((upgrade (spec)
+               (cond
+                ((vectorp spec)
+                 (pcase-let ((`[,level ,class ,args ,children] spec))
+                   (when level
+                     (setq args (plist-put args :level level)))
+                   (vector class args (mapcar #'upgrade children))))
+                ((and (listp spec)
+                      (length= spec 3)
+                      (or (null (car spec))
+                          (natnump (car spec)))
+                      (symbolp (cadr spec)))
+                 (pcase-let ((`(,level ,class ,args) spec))
+                   (when level
+                     (setq args (plist-put args :level level)))
+                   (cons class args)))
+                ((listp spec)
+                 (mapcar #'upgrade spec))
+                (t spec))))
+          (transient--set-layout prefix (upgrade layout))))
+    (error "Not a transient prefix command or group definition: %s" prefix)))
+
+(defun transient--get-children (prefix)
+  (aref (transient--get-layout prefix) 2))
+
 (defun transient-parse-suffix (prefix suffix)
   "Parse SUFFIX, to be added to PREFIX.
-PREFIX is a prefix command, a symbol.
+PREFIX is a prefix command symbol or object.
 SUFFIX is a suffix command or a group specification (of
   the same forms as expected by `transient-define-prefix').
 Intended for use in a group's `:setup-children' function."
-  (cl-assert (and prefix (symbolp prefix)))
+  (if (cl-typep prefix 'transient-prefix)
+      (setq prefix (oref prefix command))
+    (transient--get-layout prefix)) ; validate
   (eval (car (transient--parse-child prefix suffix)) t))
 
 (defun transient-parse-suffixes (prefix suffixes)
   "Parse SUFFIXES, to be added to PREFIX.
-PREFIX is a prefix command, a symbol.
+PREFIX is a prefix command symbol or object.
 SUFFIXES is a list of suffix command or a group specification
   (of the same forms as expected by `transient-define-prefix').
 Intended for use in a group's `:setup-children' function."
-  (cl-assert (and prefix (symbolp prefix)))
+  (if (cl-typep prefix 'transient-prefix)
+      (setq prefix (oref prefix command))
+    (transient--get-layout prefix)) ; validate
   (mapcar (apply-partially #'transient-parse-suffix prefix) suffixes))
 
 ;;; Edit
 
 (defun transient--insert-suffix (prefix loc suffix action &optional keep-other)
-  (let* ((suf (cl-etypecase suffix
-                (vector (transient--parse-group  prefix suffix))
-                (list   (transient--parse-suffix prefix suffix))
-                (string suffix)))
-         (mem (transient--layout-member loc prefix))
-         (elt (car mem)))
-    (setq suf (eval suf t))
+  (pcase-let* ((suf (cl-etypecase suffix
+                      (vector (eval (transient--parse-group  prefix suffix) t))
+                      (list   (eval (transient--parse-suffix prefix suffix) t))
+                      (string suffix)
+                      (symbol suffix)))
+               (`(,elt ,group) (transient--locate-child prefix loc)))
     (cond
-     ((not mem)
+     ((not elt)
       (funcall (if transient-error-on-insert-failure #'error #'message)
                "Cannot insert %S into %s; %s not found"
                suffix prefix loc))
@@ -1492,21 +1551,24 @@ Intended for use in a group's `:setup-children' function."
       (when-let* (((not (eq keep-other 'always)))
                   (bindingp (listp suf))
                   (key (transient--spec-key suf))
-                  (conflict (car (transient--layout-member key prefix)))
+                  (conflict (car (transient--locate-child prefix key)))
                   (conflictp
                    (and (not (and (eq action 'replace)
                                   (eq conflict elt)))
                         (or (not keep-other)
-                            (eq (plist-get (nth 2 suf) :command)
-                                (plist-get (nth 2 conflict) :command)))
+                            (eq (plist-get (transient--suffix-props suf)
+                                           :command)
+                                (plist-get (transient--suffix-props conflict)
+                                           :command)))
                         (equal (transient--suffix-predicate suf)
                                (transient--suffix-predicate conflict)))))
         (transient-remove-suffix prefix key))
-      (pcase-exhaustive action
-        ('insert  (setcdr mem (cons elt (cdr mem)))
-                  (setcar mem suf))
-        ('append  (setcdr mem (cons suf (cdr mem))))
-        ('replace (setcar mem suf)))))))
+      (let ((mem (memq elt (aref group 2))))
+        (pcase-exhaustive action
+          ('insert  (setcdr mem (cons elt (cdr mem)))
+                    (setcar mem suf))
+          ('append  (setcdr mem (cons suf (cdr mem))))
+          ('replace (setcar mem suf))))))))
 
 ;;;###autoload
 (defun transient-insert-suffix (prefix loc suffix &optional keep-other)
@@ -1556,6 +1618,22 @@ See info node `(transient)Modifying Existing Transients'."
   (transient--insert-suffix prefix loc suffix 'replace))
 
 ;;;###autoload
+(defun transient-inline-group (prefix group)
+  "Inline the included GROUP into PREFIX.
+Replace the symbol GROUP with its expanded layout in the
+layout of PREFIX."
+  (declare (indent defun))
+  (cl-assert (symbolp group))
+  (pcase-let ((`(,suffix ,parent) (transient--locate-child prefix group)))
+    (when suffix
+      (let* ((siblings (aref parent 2))
+             (pos (cl-position group siblings)))
+        (aset parent 2
+              (nconc (seq-take siblings pos)
+                     (transient--get-children group)
+                     (seq-drop siblings (1+ pos))))))))
+
+;;;###autoload
 (defun transient-remove-suffix (prefix loc)
   "Remove the suffix or group at LOC in PREFIX.
 PREFIX is a prefix command, a symbol.
@@ -1564,18 +1642,9 @@ LOC is a command, a key vector, a key description (a string
   (whose last element may also be a command or key).
 See info node `(transient)Modifying Existing Transients'."
   (declare (indent defun))
-  (transient--layout-member loc prefix 'remove))
-
-(defun transient-get-suffix (prefix loc)
-  "Return the suffix or group at LOC in PREFIX.
-PREFIX is a prefix command, a symbol.
-LOC is a command, a key vector, a key description (a string
-  as returned by `key-description'), or a coordination list
-  (whose last element may also be a command or key).
-See info node `(transient)Modifying Existing Transients'."
-  (if-let ((mem (transient--layout-member loc prefix)))
-      (car mem)
-    (error "%s not found in %s" loc prefix)))
+  (pcase-let ((`(,suffix ,group) (transient--locate-child prefix loc)))
+    (when suffix
+      (aset group 2 (delq suffix (aref group 2))))))
 
 (defun transient-suffix-put (prefix loc prop value)
   "Edit the suffix at LOC in PREFIX, setting PROP to VALUE.
@@ -1586,68 +1655,71 @@ LOC is a command, a key vector, a key description (a string
   as returned by `key-description'), or a coordination list
   (whose last element may also be a command or key).
 See info node `(transient)Modifying Existing Transients'."
-  (let ((suf (transient-get-suffix prefix loc)))
-    (setf (elt suf 2)
-          (plist-put (elt suf 2) prop value))))
+  (let ((child (transient-get-suffix prefix loc)))
+    (if (vectorp child)
+        (aset child 1 (plist-put (aref child 1) prop value))
+      (setcdr child (plist-put (transient--suffix-props child) prop value)))))
 
-(defun transient--layout-member (loc prefix &optional remove)
-  (let ((val (or (get prefix 'transient--layout)
-                 (error "%s is not a transient command" prefix))))
-    (when (listp loc)
-      (while (integerp (car loc))
-        (let* ((children (if (vectorp val) (aref val 3) val))
-               (mem (transient--nthcdr (pop loc) children)))
-          (if (and remove (not loc))
-              (let ((rest (delq (car mem) children)))
-                (if (vectorp val)
-                    (aset val 3 rest)
-                  (put prefix 'transient--layout rest))
-                (setq val nil))
-            (setq val (if loc (car mem) mem)))))
-      (setq loc (car loc)))
-    (if loc
-        (transient--layout-member-1 (transient--kbd loc) val remove)
-      val)))
+(defalias 'transient--suffix-props #'cdr)
 
-(defun transient--layout-member-1 (loc layout remove)
-  (cond ((listp layout)
-         (seq-some (lambda (elt) (transient--layout-member-1 loc elt remove))
-                   layout))
-        ((vectorp (car (aref layout 3)))
-         (seq-some (lambda (elt) (transient--layout-member-1 loc elt remove))
-                   (aref layout 3)))
-        (remove
-         (aset layout 3
-               (delq (car (transient--group-member loc layout))
-                     (aref layout 3)))
-         nil)
-        ((transient--group-member loc layout))))
+(defun transient-get-suffix (prefix loc)
+  "Return the suffix or group at LOC in PREFIX.
+PREFIX is a prefix command, a symbol.
+LOC is a command, a key vector, a key description (a string
+  as returned by `key-description'), or a coordination list
+  (whose last element may also be a command or key).
+See info node `(transient)Modifying Existing Transients'."
+  (or (car (transient--locate-child prefix loc))
+      (error "%s not found in %s" loc prefix)))
 
-(defun transient--group-member (loc group)
-  (cl-member-if (lambda (suffix)
-                  (and (listp suffix)
-                       (let* ((def (nth 2 suffix))
-                              (cmd (plist-get def :command)))
-                         (if (symbolp loc)
-                             (eq cmd loc)
-                           (equal (transient--kbd
-                                   (or (plist-get def :key)
-                                       (transient--command-key cmd)))
-                                  loc)))))
-                (aref group 3)))
+(defun transient--locate-child (group loc)
+  (when (symbolp group)
+    (setq group (transient--get-layout group)))
+  (when (vectorp loc)
+    (setq loc (append loc nil)))
+  (if (listp loc)
+      (and-let* ((match (transient--nth (pop loc) (aref group 2))))
+        (if loc
+            (transient--locate-child
+             match (cond ((or (stringp (car loc))
+                              (symbolp (car loc)))
+                          (car loc))
+                         ((symbolp match)
+                          (vconcat (cons 0 loc)))
+                         ((vconcat loc))))
+          (list match group)))
+    (seq-some (lambda (child)
+                (transient--match-child group loc child))
+              (aref group 2))))
 
-(defun transient--kbd (keys)
-  (when (vectorp keys)
-    (setq keys (key-description keys)))
-  (when (stringp keys)
-    (setq keys (kbd keys)))
-  keys)
+(defun transient--match-child (group loc child)
+  (cl-etypecase child
+    (string nil)
+    (symbol (if (symbolp loc)
+                (and (eq child loc)
+                     (list child group))
+              (and-let* ((include (transient--get-layout child)))
+                (transient--locate-child include loc))))
+    (vector (seq-some (lambda (subgroup)
+                        (transient--locate-child subgroup loc))
+                      (aref group 2)))
+    (list   (let* ((props (transient--suffix-props child))
+                   (cmd (plist-get props :command)))
+              (and (if (symbolp loc)
+                       (eq cmd loc)
+                     (equal (kbd (or (plist-get props :key)
+                                     (transient--command-key cmd)))
+                            (kbd loc)))
+                   (list child group))))))
+
+(defun transient--nth (n list)
+  (nth (if (< n 0) (- (length list) (abs n)) n) list))
 
 (defun transient--spec-key (spec)
-  (let ((plist (nth 2 spec)))
-    (or (plist-get plist :key)
+  (let ((props (transient--suffix-props spec)))
+    (or (plist-get props :key)
         (transient--command-key
-         (plist-get plist :command)))))
+         (plist-get props :command)))))
 
 (defun transient--command-key (cmd)
   (and-let* ((obj (transient--suffix-prototype cmd)))
@@ -1657,9 +1729,6 @@ See info node `(transient)Modifying Existing Transients'."
            (if (slot-boundp obj 'shortarg)
                (oref obj shortarg)
              (transient--derive-shortarg (oref obj argument)))))))
-
-(defun transient--nthcdr (n list)
-  (nthcdr (if (< n 0) (- (length list) (abs n)) n) list))
 
 (defun transient-set-default-level (command level)
   "Set the default level of suffix COMMAND to LEVEL.
@@ -1895,9 +1964,8 @@ probably use this instead:
        ((length= suffixes 1)
         (car suffixes))
        ((cl-find-if (lambda (obj)
-                      (equal
-                       (listify-key-sequence (transient--kbd (oref obj key)))
-                       (listify-key-sequence (this-command-keys))))
+                      (equal (listify-key-sequence (kbd (oref obj key)))
+                             (listify-key-sequence (this-command-keys))))
                     suffixes))
        ;; COMMAND is only provided if `this-command' is meaningless, in
        ;; which case `this-command-keys' is also meaningless, making it
@@ -2002,18 +2070,21 @@ to `transient-predicate-map'.  See also `transient-base-map'.")
     ("{p} l" "Show/hide suffixes" transient-set-level)
     ("{p} a" transient-toggle-level-limit)]]
   "Commands available in all transient menus.
-The same functions that are used to change bindings in transient prefix
-commands, can be used to modify these bindings as well, but note that
-customizing `transient-common-command-prefix' resets these bindings and
-that the special meaning of \"{p}\" does not apply when modifying these
-bindings.")
+
+The same functions, that are used to change bindings in transient prefix
+commands and transient groups (defined using `transient-define-group'),
+should be used to modify these bindings as well.  The actual layout is
+stored in the symbol's `transient--layout' property.  The variable value
+is only used when customizing `transient-common-command-prefix', which
+resets the value of `transient--layout' based on the values of that
+option and this variable.")
 
 (defun transient--init-common-commands ()
-  (put 'transient-common-commands
-       'transient--layout
-       (list (eval (car (transient--parse-child 'transient-common-commands
-                                                transient-common-commands))
-                   t)))
+  (transient--set-layout
+   'transient-common-commands
+   (list (eval (car (transient--parse-child 'transient-common-commands
+                                            transient-common-commands))
+               t)))
   (defvar transient-common-command-prefix)
   (defvar transient--docstr-hint-1)
   (defvar transient--docstr-hint-2)
@@ -2384,10 +2455,9 @@ value.  Otherwise return CHILDREN as is.")
 (defun transient--init-suffixes (name)
   (let ((levels (alist-get name transient-levels)))
     (mapcan (lambda (c) (transient--init-child levels c nil))
-            (append (get name 'transient--layout)
+            (append (transient--get-children name)
                     (and (not transient--editp)
-                         (get 'transient-common-commands
-                              'transient--layout))))))
+                         (transient--get-children 'transient-common-commands))))))
 
 (defun transient--flatten-suffixes (layout)
   (cl-labels ((s (def)
@@ -2403,13 +2473,16 @@ value.  Otherwise return CHILDREN as is.")
 
 (defun transient--init-child (levels spec parent)
   (cl-etypecase spec
+    (symbol (mapcan (lambda (c) (transient--init-child levels c parent))
+                    (transient--get-children spec)))
     (vector  (transient--init-group  levels spec parent))
     (list    (transient--init-suffix levels spec parent))
     (string  (list spec))))
 
 (defun transient--init-group (levels spec parent)
-  (pcase-let* ((`(,level ,class ,args ,children) (append spec nil))
-               (level (or level transient--default-child-level)))
+  (pcase-let* ((`[,class ,args ,children] spec)
+               (level (or (plist-get args :level)
+                          transient--default-child-level)))
     (and-let* (((transient--use-level-p level))
                (obj (apply class :parent parent :level level args))
                ((transient--use-suffix-p obj))
@@ -2423,14 +2496,15 @@ value.  Otherwise return CHILDREN as is.")
         (list obj)))))
 
 (defun transient--init-suffix (levels spec parent)
-  (pcase-let* ((`(,level ,class ,args) spec)
+  (pcase-let* ((`(,class . ,args) spec)
                (cmd (plist-get args :command))
                (_ (transient--load-command-if-autoload cmd))
-               (key (transient--kbd (plist-get args :key)))
+               (key (plist-get args :key))
+               (key (and key (kbd key)))
                (proto (and cmd (transient--suffix-prototype cmd)))
                (level (or (alist-get (cons cmd key) levels nil nil #'equal)
                           (alist-get cmd levels)
-                          level
+                          (plist-get args :level)
                           (and proto (oref proto level))
                           transient--default-child-level)))
     (when (transient--use-level-p level)
@@ -2537,9 +2611,9 @@ value.  Otherwise return CHILDREN as is.")
    (default)))
 
 (defun transient--suffix-predicate (spec)
-  (let ((plist (nth 2 spec)))
+  (let ((props (transient--suffix-props spec)))
     (seq-some (lambda (prop)
-                (and-let* ((pred (plist-get plist prop)))
+                (and-let* ((pred (plist-get props prop)))
                   (list prop pred)))
               '( :if :if-not
                  :if-nil :if-non-nil
@@ -5195,6 +5269,7 @@ as stand-in for elements of exhausted lists."
   (eval-when-compile
     `((,(concat "("
                 (regexp-opt (list "transient-define-prefix"
+                                  "transient-define-group"
                                   "transient-define-infix"
                                   "transient-define-argument"
                                   "transient-define-suffix")

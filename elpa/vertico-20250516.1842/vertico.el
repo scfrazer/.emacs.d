@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250511.1903
-;; Package-Revision: b0c0a2eebeac
+;; Package-Version: 20250516.1842
+;; Package-Revision: 54829f61034c
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -465,41 +465,44 @@ The value should lie between 0 and vertico-count/2."
       (setq beg next))))
 
 (defun vertico--debug (&rest _)
-  "Debugger used by `vertico--guard'."
-  (require 'backtrace)
-  (declare-function backtrace-to-string "backtrace")
-  (declare-function backtrace-get-frames "backtrace")
+  "Debugger used by `vertico--protect'."
   (let ((inhibit-message t))
-    (message "Vertico detected an error:\n%s"
-             (backtrace-to-string (backtrace-get-frames #'vertico--debug))))
+    (require 'backtrace)
+    (declare-function backtrace-to-string "backtrace")
+    (message "Vertico detected an error:\n%s" (backtrace-to-string)))
   (let (message-log-max)
     (message "%s %s"
              (propertize "Vertico detected an error:" 'face 'error)
              (substitute-command-keys "Press \\[view-echo-area-messages] to see the stack trace")))
   nil)
 
-(defmacro vertico--guard (&rest body)
-  "Guard BODY such that errors are caught.
-If an error occurs, the BODY is retried with `debug-on-error' enabled
-and the stack trace is shown in the *Messages* buffer."
-  `(let ((body (lambda ()
-                 (condition-case nil
-                     (progn ,@body nil)
-                   ((debug error) t)))))
-     (when (or debug-on-error (funcall body))
-       (let ((debug-on-error t)
-             (debugger #'vertico--debug))
-         (funcall body)))))
+(defun vertico--protect (fun)
+  "Protect FUN such that errors are caught.
+If an error occurs, the FUN is retried with `debug-on-error' enabled and
+the stack trace is shown in the *Messages* buffer."
+  (static-if (>= emacs-major-version 30)
+      (ignore-errors
+        (handler-bind ((error #'vertico--debug))
+          (funcall fun)))
+    (when (or debug-on-error (condition-case nil
+                                 (progn (funcall fun) nil)
+                               (error t)))
+      (let ((debug-on-error t)
+            (debugger #'vertico--debug))
+        (condition-case nil
+            (funcall fun)
+          ((debug error) nil))))))
 
 (defun vertico--exhibit ()
   "Exhibit completion UI."
-  (vertico--guard
-   (let ((buffer-undo-list t)) ;; Overlays affect point position and undo list!
-     (vertico--update 'interruptible)
-     (vertico--prompt-selection)
-     (vertico--display-count)
-     (vertico--display-candidates (vertico--arrange-candidates))
-     (vertico--resize))))
+  (vertico--protect
+   (lambda ()
+     (let ((buffer-undo-list t)) ;; Overlays affect point position and undo list!
+       (vertico--update 'interruptible)
+       (vertico--prompt-selection)
+       (vertico--display-count)
+       (vertico--display-candidates (vertico--arrange-candidates))
+       (vertico--resize)))))
 
 (defun vertico--goto (index)
   "Go to candidate with INDEX."
