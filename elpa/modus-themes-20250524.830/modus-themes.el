@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250519.604
-;; Package-Revision: 6880f3a7d99d
+;; Package-Version: 20250524.830
+;; Package-Revision: 01b78e587d3a
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -334,7 +334,9 @@ the same as using the command `modus-themes-select'."
 
 (defcustom modus-themes-after-load-theme-hook nil
   "Hook that runs after loading a Modus theme.
-This is used by the command `modus-themes-toggle'."
+This is used by the commands `modus-themes-toggle',
+`modus-themes-rotate', `modus-themes-select', as well as the function
+`modus-themes-load-theme'."
   :type 'hook
   :package-version '(modus-themes . "4.0.0")
   :version "30.1"
