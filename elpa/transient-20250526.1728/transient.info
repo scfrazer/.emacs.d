@@ -2161,8 +2161,8 @@ File: transient.info,  Node: Suffix Classes,  Next: Prefix Methods,  Prev: Prefi
      that anywhere a suffix can appear.  Display-only suffix
      specifications take these form:
 
-          ([LEVEL] :info DESCRIPTION [KEYWORD VALUE]...)
-          ([LEVEL] :info* DESCRIPTION [KEYWORD VALUE]...)
+          (:info DESCRIPTION [KEYWORD VALUE]...)
+          (:info* DESCRIPTION [KEYWORD VALUE]...)
 
      The ‘:info’ and ‘:info*’ keyword arguments replaces the
      ‘:description’ keyword used for other suffix classes.  Other
@@ -2181,6 +2181,23 @@ File: transient.info,  Node: Suffix Classes,  Next: Prefix Methods,  Prev: Prefi
      the value of lisp variables.  This class is not fully featured yet
      and it is somewhat likely that future improvements won’t be fully
      backward compatible.
+
+   • The ‘transient-cons-option’ class is intended for situations where
+     ‘transient-args’ should return an alist, instead of a list of
+     strings (arguments).  Such suffixes can be specified in prefix
+     definitions like so:
+
+          (:cons OPTION :key KEY [KEYWORD VALUE]...)
+
+     OPTION may be something other than a string, likely a keyword or
+     some other symbol, it is used as the ‘car’ of the cons-cell.  When
+     using such an inline definition ‘:key’ has to be specified.  In
+     most cases ‘:reader’ should also be specified.  When defining such
+     a suffix separately, the "alist key" has to be specified using the
+     ‘:variable’ keyword argument.
+
+     This class is still experimental it is somewhat likely that future
+     improvements won’t be fully backward compatible.
 
    • The ‘transient-describe-target’ class is used by the command
      ‘transient-describe’.
@@ -3815,35 +3832,35 @@ Node: Group Classes90891
 Node: Group Methods92818
 Node: Prefix Classes94077
 Node: Suffix Classes94922
-Node: Prefix Methods98902
-Node: Suffix Methods101295
-Ref: Suffix Value Methods101555
-Ref: Suffix Format Methods104800
-Node: Prefix Slots107698
-Ref: Value and Scope107848
-Ref: Behavior109327
-Ref: Appearance110668
-Ref: Documentation111354
-Ref: Internal111974
-Node: Suffix Slots113329
-Ref: Slots of transient-child113697
-Ref: Slots of transient-suffix114155
-Ref: Slots of transient-infix117008
-Ref: Slots of transient-variable120304
-Ref: Slots of transient-switches120406
-Node: Predicate Slots120769
-Node: FAQ123114
-Ref: Can I control how the menu buffer is displayed?123243
-Ref: How can I copy text from the menu buffer?123567
-Ref: How can I autoload prefix and suffix commands?124057
-Ref: How does Transient compare to prefix keys and universal arguments?124531
-Ref: How does Transient compare to Magit-Popup and Hydra?124774
-Ref: Why does q not quit popups anymore?124968
-Node: Keystroke Index126071
-Node: Command and Function Index127936
-Node: Variable Index135403
-Node: Concept Index138182
-Node: GNU General Public License141006
+Node: Prefix Methods99720
+Node: Suffix Methods102113
+Ref: Suffix Value Methods102373
+Ref: Suffix Format Methods105618
+Node: Prefix Slots108516
+Ref: Value and Scope108666
+Ref: Behavior110145
+Ref: Appearance111486
+Ref: Documentation112172
+Ref: Internal112792
+Node: Suffix Slots114147
+Ref: Slots of transient-child114515
+Ref: Slots of transient-suffix114973
+Ref: Slots of transient-infix117826
+Ref: Slots of transient-variable121122
+Ref: Slots of transient-switches121224
+Node: Predicate Slots121587
+Node: FAQ123932
+Ref: Can I control how the menu buffer is displayed?124061
+Ref: How can I copy text from the menu buffer?124385
+Ref: How can I autoload prefix and suffix commands?124875
+Ref: How does Transient compare to prefix keys and universal arguments?125349
+Ref: How does Transient compare to Magit-Popup and Hydra?125592
+Ref: Why does q not quit popups anymore?125786
+Node: Keystroke Index126889
+Node: Command and Function Index128754
+Node: Variable Index136221
+Node: Concept Index139000
+Node: GNU General Public License141824
 
 End Tag Table
 

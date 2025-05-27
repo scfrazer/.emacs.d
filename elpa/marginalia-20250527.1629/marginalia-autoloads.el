@@ -38,7 +38,7 @@ it is disabled.
 
 (fn &optional ARG)" t)
 (autoload 'marginalia-cycle "marginalia" "\
-Cycle between annotators in `marginalia-annotator-registry'." t)
+Cycle between annotators in `marginalia-annotators'." t)
 (function-put 'marginalia-cycle 'completion-predicate #'(lambda (&rest _) (> (minibuffer-depth) 1)))
 (register-definition-prefixes "marginalia" '("marginalia-"))
 

@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250526.336/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250526.336/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250527.1813/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250527.1813/vertico-autoloads.el"))
 
 
 
@@ -1263,7 +1263,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250520.1040/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250520.1040/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250526.1728/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250526.1728/transient-autoloads.el"))
 
 
 
@@ -2567,7 +2567,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250524.830/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250524.830/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250527.1039/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250527.1039/modus-themes-autoloads.el"))
 
 
 
@@ -2598,13 +2598,16 @@ Disable other themes per `modus-themes-disable-other-themes'." t)
 (function-put 'modus-themes-toggle 'interactive-only 't)
 (autoload 'modus-themes-rotate "modus-themes" "\
 Rotate to the next theme among THEMES.
-When called interactively THEMES is the value of `modus-themes-to-rotate'.
+When called interactively THEMES is the value of `modus-themes-to-rotate'
+and REVERSE is the prefix argument.
 
 If the current theme is already the next in line, then move to the one
-after.  Perform the rotation rightwards, such that the first element in
-the list becomes the last.  Do not modify THEMES in the process.
+after.  The rotation is performed rightwards if REVERSE is nil (the
+default), and leftwards if REVERSE is non-nil.  Perform the rotation
+such that the current element in the list becomes the last.  Do not
+modify THEMES in the process.
 
-(fn THEMES)" t)
+(fn THEMES &optional REVERSE)" t)
 (autoload 'modus-themes-theme "modus-themes" "\
 Bind NAME's color PALETTE around face specs and variables.
 Face specifications are passed to `custom-theme-set-faces'.
@@ -2677,7 +2680,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250317.1632/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250317.1632/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250527.1629/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250527.1629/marginalia-autoloads.el"))
 
 
 
@@ -2713,7 +2716,7 @@ it is disabled.
 
 (fn &optional ARG)" t)
 (autoload 'marginalia-cycle "marginalia" "\
-Cycle between annotators in `marginalia-annotator-registry'." t)
+Cycle between annotators in `marginalia-annotators'." t)
 (function-put 'marginalia-cycle 'completion-predicate #'(lambda (&rest _) (> (minibuffer-depth) 1)))
 (register-definition-prefixes "marginalia" '("marginalia-"))
 
@@ -3779,7 +3782,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250524.830" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250520.1040" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250521.1531" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250527.1039" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20241221.1420" "/home/scfrazer/.emacs.d/elpa/transient-20250526.1728" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250521.1531" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

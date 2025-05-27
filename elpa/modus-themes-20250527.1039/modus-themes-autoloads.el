@@ -33,13 +33,16 @@ Disable other themes per `modus-themes-disable-other-themes'." t)
 (function-put 'modus-themes-toggle 'interactive-only 't)
 (autoload 'modus-themes-rotate "modus-themes" "\
 Rotate to the next theme among THEMES.
-When called interactively THEMES is the value of `modus-themes-to-rotate'.
+When called interactively THEMES is the value of `modus-themes-to-rotate'
+and REVERSE is the prefix argument.
 
 If the current theme is already the next in line, then move to the one
-after.  Perform the rotation rightwards, such that the first element in
-the list becomes the last.  Do not modify THEMES in the process.
+after.  The rotation is performed rightwards if REVERSE is nil (the
+default), and leftwards if REVERSE is non-nil.  Perform the rotation
+such that the current element in the list becomes the last.  Do not
+modify THEMES in the process.
 
-(fn THEMES)" t)
+(fn THEMES &optional REVERSE)" t)
 (autoload 'modus-themes-theme "modus-themes" "\
 Bind NAME's color PALETTE around face specs and variables.
 Face specifications are passed to `custom-theme-set-faces'.

@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250526.336
-;; Package-Revision: bb6abf63cc43
+;; Package-Version: 20250527.1813
+;; Package-Revision: f104ac4e2ae8
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -480,7 +480,7 @@ The value should lie between 0 and vertico-count/2."
   "Protect FUN such that errors are caught.
 If an error occurs, the FUN is retried with `debug-on-error' enabled and
 the stack trace is shown in the *Messages* buffer."
-  (static-if (>= emacs-major-version 30)
+  (static-if (fboundp 'handler-bind) ;; Available on Emacs 30
       (ignore-errors
         (handler-bind ((error #'vertico--debug))
           (funcall fun)))
