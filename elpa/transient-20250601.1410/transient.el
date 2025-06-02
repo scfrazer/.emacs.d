@@ -6,9 +6,9 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250526.1728
-;; Package-Revision: df5856bb9609
-;; Package-Requires: ((emacs "26.1") (compat "30.1.0.0") (seq "2.24"))
+;; Package-Version: 20250601.1410
+;; Package-Revision: b326421f93bb
+;; Package-Requires: ((emacs "26.1") (compat "30.1") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.8.8")
+(defconst transient-version "0.9.0")
 
 (require 'cl-lib)
 (require 'compat)
@@ -2650,6 +2650,7 @@ value.  Otherwise return CHILDREN as is.")
   (add-hook 'pre-command-hook  #'transient--pre-command 99)
   (add-hook 'post-command-hook #'transient--post-command)
   (advice-add 'recursive-edit :around #'transient--recursive-edit)
+  (set-default-toplevel-value 'inhibit-quit t)
   (when transient--exitp
     ;; This prefix command was invoked as the suffix of another.
     ;; Prevent `transient--post-command' from removing the hooks
@@ -2997,6 +2998,8 @@ value.  Otherwise return CHILDREN as is.")
       (setq transient--current-suffix nil))
     (cond (resume (transient--stack-pop))
           ((not replace)
+           (setq quit-flag nil)
+           (set-default-toplevel-value 'inhibit-quit nil)
            (run-hooks 'transient-post-exit-hook)))))
 
 (defun transient--stack-push ()
@@ -3076,9 +3079,10 @@ value.  Otherwise return CHILDREN as is.")
 (defun transient--emergency-exit (&optional id)
   "Exit the current transient command after an error occurred.
 When no transient is active (i.e., when `transient--prefix' is
-nil) then do nothing.  Optional ID is a keyword identifying the
-exit."
+nil) then only reset `inhibit-quit'.  Optional ID is a keyword
+identifying the exit."
   (transient--debug 'emergency-exit id)
+  (set-default-toplevel-value 'inhibit-quit nil)
   (when transient--prefix
     (setq transient--stack nil)
     (setq transient--exitp t)
