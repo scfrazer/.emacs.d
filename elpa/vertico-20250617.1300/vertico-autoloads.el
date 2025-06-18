@@ -92,6 +92,8 @@ Delete N directories or words before point.
 (fn N)" t)
 (autoload 'vertico-directory-tidy "vertico-directory" "\
 Tidy shadowed file name, see `rfn-eshadow-overlay'.")
+ (autoload 'vertico-directory-map "vertico-directory" nil t 'keymap)
+(register-definition-prefixes "vertico-directory" '("vertico-directory-map"))
 
 
 ;;; Generated autoloads from vertico-flat.el
@@ -321,6 +323,10 @@ it is disabled.
  (autoload 'vertico-sort-history-alpha "vertico-sort")
  (autoload 'vertico-sort-length-alpha "vertico-sort")
  (autoload 'vertico-sort-alpha "vertico-sort")
+(autoload 'vertico-sort-directories-first "vertico-sort" "\
+Sort directories before files in LIST.
+
+(fn LIST)")
 (register-definition-prefixes "vertico-sort" '("vertico-sort-"))
 
 

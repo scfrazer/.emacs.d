@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250609.1609
-;; Package-Revision: f3f498aa155f
+;; Package-Version: 20250616.1830
+;; Package-Revision: 415f74bf97f6
 ;; Package-Requires: ((emacs "26.1") (compat "30.1") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -2648,7 +2648,7 @@ value.  Otherwise return CHILDREN as is.")
   (add-hook 'pre-command-hook  #'transient--pre-command 99)
   (add-hook 'post-command-hook #'transient--post-command)
   (advice-add 'recursive-edit :around #'transient--recursive-edit)
-  (set-default-toplevel-value 'inhibit-quit t)
+  (transient--quit-kludge 'enable)
   (when transient--exitp
     ;; This prefix command was invoked as the suffix of another.
     ;; Prevent `transient--post-command' from removing the hooks
@@ -2996,8 +2996,7 @@ value.  Otherwise return CHILDREN as is.")
       (setq transient--current-suffix nil))
     (cond (resume (transient--stack-pop))
           ((not replace)
-           (setq quit-flag nil)
-           (set-default-toplevel-value 'inhibit-quit nil)
+           (transient--quit-kludge 'disable)
            (run-hooks 'transient-post-exit-hook)))))
 
 (defun transient--stack-push ()
@@ -3080,12 +3079,34 @@ When no transient is active (i.e., when `transient--prefix' is
 nil) then only reset `inhibit-quit'.  Optional ID is a keyword
 identifying the exit."
   (transient--debug 'emergency-exit id)
-  (set-default-toplevel-value 'inhibit-quit nil)
+  (transient--quit-kludge 'disable)
   (when transient--prefix
     (setq transient--stack nil)
     (setq transient--exitp t)
     (transient--pre-exit)
     (transient--post-exit this-command)))
+
+(defun transient--quit-kludge (action)
+  (static-if (boundp 'redisplay-can-quit) ;Emacs 31
+      action
+    (pcase-exhaustive action
+      ('enable
+       (add-function
+        :around command-error-function
+        (let (unreadp)
+          (lambda (orig data context fn)
+            (cond ((not (eq (car data) 'quit))
+                   (funcall orig data context fn)
+                   (setq unreadp nil))
+                  (unreadp
+                   (remove-function command-error-function "inhibit-quit")
+                   (funcall orig data context fn))
+                  (t
+                   (push ?\C-g unread-command-events)
+                   (setq unreadp t)))))
+        '((name . "inhibit-quit"))))
+      ('disable
+       (remove-function command-error-function "inhibit-quit")))))
 
 ;;; Pre-Commands
 
