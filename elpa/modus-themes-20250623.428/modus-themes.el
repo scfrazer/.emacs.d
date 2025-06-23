@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250617.1034
-;; Package-Revision: fd5800c3954e
+;; Package-Version: 20250623.428
+;; Package-Revision: 3550360e88b3
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -3487,6 +3487,8 @@ FG and BG are the main colors."
 ;;;;; package (M-x list-packages)
     `(package-description ((,c :foreground ,docstring)))
     `(package-help-section-name ((,c :inherit bold)))
+    `(package-mark-delete-line ((,c :inherit modus-themes-mark-del)))
+    `(package-mark-install-line ((,c :inherit modus-themes-mark-sel)))
     `(package-name ((,c :inherit link)))
     `(package-status-available ((,c :foreground ,date-common)))
     `(package-status-avail-obso ((,c :inherit error)))
