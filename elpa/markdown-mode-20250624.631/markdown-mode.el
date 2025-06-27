@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250606.314
-;; Package-Revision: 7c20685df615
+;; Package-Version: 20250624.631
+;; Package-Revision: 7c51a2167c5a
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -2613,7 +2613,11 @@ Return the point at the end when a list item was found at the
 original point.  If the point is not in a list item, do nothing."
   (let (indent)
     (forward-line)
-    (setq indent (current-indentation))
+    ;; #904 consider a space indentation and tab indentation case
+    (save-excursion
+      (let ((pos (point)))
+        (back-to-indentation)
+        (setq indent (- (point) pos))))
     (while
         (cond
          ;; Stop at end of the buffer.

@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250616.1830
-;; Package-Revision: 415f74bf97f6
+;; Package-Version: 20250624.2110
+;; Package-Revision: 51915436f76f
 ;; Package-Requires: ((emacs "26.1") (compat "30.1") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -2759,10 +2759,8 @@ value.  Otherwise return CHILDREN as is.")
 
 (defun transient--resume-override (&optional _ignore)
   (transient--debug 'resume-override)
-  (cond ((and transient--showp (not (window-live-p transient--window)))
-         (transient--show))
-        ((window-live-p transient--window)
-         (transient--fit-window-to-buffer transient--window)))
+  (when (window-live-p transient--window)
+    (transient--fit-window-to-buffer transient--window))
   (transient--push-keymap 'transient--transient-map)
   (transient--push-keymap 'transient--redisplay-map)
   (add-hook 'pre-command-hook  #'transient--pre-command)
@@ -5124,7 +5122,9 @@ See `forward-button' for information about N."
     (when (re-search-forward (concat "^" (regexp-quote command)) nil t)
       (goto-char (match-beginning 0))))
    (command
-    (cl-flet ((found () (eq (button-get (button-at (point)) 'command) command)))
+    (cl-flet ((found ()
+                (and-let* ((button (button-at (point))))
+                  (eq (button-get button 'command) command))))
       (while (and (ignore-errors (forward-button 1))
                   (not (found))))
       (unless (found)
