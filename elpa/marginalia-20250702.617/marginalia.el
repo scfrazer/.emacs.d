@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20250604.1545
-;; Package-Revision: 0e7097051cbc
+;; Package-Version: 20250702.617
+;; Package-Revision: aa8e48b86f66
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -907,7 +907,10 @@ The string is transformed according to `marginalia--bookmark-type-transforms'."
 
 (defun marginalia-annotate-buffer (cand)
   "Annotate buffer CAND with modification status, file name and major mode."
-  (when-let ((buffer (get-buffer cand)))
+  ;; Emacs 31: `project--read-project-buffer' uses `uniquify-get-unique-names'
+  (when-let ((buffer (or (and (stringp cand)
+                              (get-text-property 0 'uniquify-orig-buffer cand))
+                         (get-buffer cand))))
     (if (buffer-live-p buffer)
         (marginalia--fields
          ((marginalia--buffer-status buffer))
