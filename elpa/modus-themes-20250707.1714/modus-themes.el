@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250623.428
-;; Package-Revision: 3550360e88b3
+;; Package-Version: 20250707.1714
+;; Package-Revision: 6639604271fc
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -2955,6 +2955,43 @@ FG and BG are the main colors."
     `(line-number-current-line ((,c :inherit (bold line-number) :background ,bg-line-number-active :foreground ,fg-line-number-active)))
     `(line-number-major-tick ((,c :inherit line-number :foreground ,err)))
     `(line-number-minor-tick ((,c :inherit line-number :foreground ,fg-alt)))
+;;;;; lsp
+    `(lsp-details-face ((t :height 0.9 :inherit shadow)))
+    `(lsp-face-rename ((t :inherit modus-themes-search-replace)))
+    `(lsp-headerline-breadcrumb-separator-face ((t :inherit shadow)))
+    `(lsp-headerline-breadcrumb-path-face ((t :inherit font-lock-string-face)))
+    `(lsp-headerline-breadcrumb-path-error-face ((,c :inherit (lsp-headerline-breadcrumb-path-face modus-themes-lang-error))))
+    `(lsp-headerline-breadcrumb-path-warning-face ((,c :inherit (lsp-headerline-breadcrumb-path-face modus-themes-lang-warning))))
+    `(lsp-headerline-breadcrumb-path-info-face ((,c :inherit (lsp-headerline-breadcrumb-path-face modus-themes-lang-note))))
+    `(lsp-headerline-breadcrumb-path-hint-face ((,c :inherit (lsp-headerline-breadcrumb-path-face modus-themes-lang-note))))
+    `(lsp-headerline-breadcrumb-project-prefix-face ((t :inherit bold :foreground ,name)))
+    `(lsp-headerline-breadcrumb-unknown-project-prefix-face ((t :inherit (shadow bold))))
+    `(lsp-headerline-breadcrumb-symbols-face ((t :inherit (bold font-lock-doc-face))))
+    `(lsp-headerline-breadcrumb-symbols-error-face ((,c :inherit (lsp-headerline-breadcrumb-symbols-face modus-themes-lang-error))))
+    `(lsp-headerline-breadcrumb-symbols-warning-face ((,c :inherit (lsp-headerline-breadcrumb-symbols-face modus-themes-lang-warning))))
+    `(lsp-headerline-breadcrumb-symbols-info-face ((,c :inherit (lsp-headerline-breadcrumb-symbols-face modus-themes-lang-note))))
+    `(lsp-headerline-breadcrumb-symbols-hint-face ((,c :inherit (lsp-headerline-breadcrumb-symbols-face modus-themes-lang-note))))
+    `(lsp-installation-buffer-face ((,c :foreground ,info)))
+    `(lsp-installation-finished-buffer-face ((,c :foreground ,info)))
+    `(lsp-lens-mouse-face ((t :height 0.9 :inherit link)))
+    `(lsp-modeline-code-actions-face ((,c :foreground ,modeline-warning)))
+    `(lsp-modeline-code-actions-preferred-face ((,c :foreground ,modeline-warning)))
+    `(lsp-signature-posframe ((,c :background ,bg-dim :foreground ,fg-main)))
+    (list 'lsp-signature-highlight-function-argument `((,c :inherit bold :background ,bg-active-argument :foreground ,fg-active-argument)))
+;;;;; lsp-ui
+    `(lsp-ui-doc-background ((,c :background ,bg-dim)))
+    `(lsp-ui-doc-header ((t :inherit bold)))
+    `(lsp-ui-peek-peek ((,c :background ,bg-dim)))
+    `(lsp-ui-peek-list ((,c :background ,bg-dim)))
+    `(lsp-ui-peek-filename ((,c :inherit bold :foreground ,name)))
+    `(lsp-ui-peek-line-number ((t :inherit line-number)))
+    `(lsp-ui-peek-highlight ((,c :background ,bg-dim :box (:line-width -1 :color ,border))))
+    `(lsp-ui-peek-header ((t :inherit bold)))
+    `(lsp-ui-peek-selection ((t :inherit region)))
+    `(lsp-ui-sideline-symbol ((,c :foreground ,fg-dim :box (:line-width -1 :color ,border))))
+    `(lsp-ui-sideline-current-symbol ((,c :inherit bold :foreground ,fg-main :box (:line-width -1 :color ,border))))
+    `(lsp-ui-sideline-code-action ((t :inherit lsp-modeline-code-actions-face)))
+    `(lsp-ui-sideline-symbol-info ((,c :inherit modus-themes-slant)))
 ;;;;; magit
     `(magit-bisect-bad ((,c :inherit error)))
     `(magit-bisect-good ((,c :inherit success)))

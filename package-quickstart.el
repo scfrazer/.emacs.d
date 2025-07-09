@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250627.2119/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250627.2119/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250702.1403/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250702.1403/vertico-autoloads.el"))
 
 
 
@@ -2209,7 +2209,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250705.2023/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250705.2023/orderless-autoloads.el"))
 
 
 
@@ -2573,7 +2573,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250623.428/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250623.428/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714/modus-themes-autoloads.el"))
 
 
 
@@ -3788,7 +3788,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250623.428" "/home/scfrazer/.emacs.d/elpa/orderless-20250316.2046" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250701.1223" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250531.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714" "/home/scfrazer/.emacs.d/elpa/orderless-20250705.2023" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250701.1223" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250531.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
