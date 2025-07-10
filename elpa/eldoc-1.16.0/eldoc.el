@@ -1,11 +1,11 @@
 ;;; eldoc.el --- Show function arglist or variable docstring in echo area  -*- lexical-binding:t; -*-
 
-;; Copyright (C) 1996-2023 Free Software Foundation, Inc.
+;; Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
 ;; Author: Noah Friedman <friedman@splode.com>
 ;; Keywords: extensions
 ;; Created: 1995-10-06
-;; Version: 1.15.0
+;; Version: 1.16.0
 ;; Package-Requires: ((emacs "26.3"))
 
 ;; This is a GNU ELPA :core package.  Avoid functionality that is not
@@ -78,7 +78,7 @@ If nil, truncated messages will just have \"...\" to indicate truncation."
   :version "28.1")
 
 ;;;###autoload
-(defcustom eldoc-minor-mode-string (purecopy " ElDoc")
+(defcustom eldoc-minor-mode-string " ElDoc"
   "String to display in mode line when ElDoc Mode is enabled; nil for none."
   :type '(choice string (const :tag "None" nil)))
 
@@ -138,6 +138,14 @@ is only skipped if the documentation needs to be truncated there."
                  (const :tag "Skip echo area if truncating" maybe))
   :version "28.1")
 
+(defcustom eldoc-help-at-pt nil
+  "If non-nil, show `help-at-pt-kbd-string' at point via Eldoc.
+This setting is an alternative to `help-at-pt-display-when-idle'.  If
+the value is non-nil, `eldoc-show-help-at-pt' will show help-at-point
+via Eldoc."
+  :type 'boolean
+  :version "31.1")
+
 (defface eldoc-highlight-function-argument
   '((t (:inherit bold)))
   "Face used for the argument at point in a function's argument list.
@@ -154,8 +162,7 @@ this file since the obarray is initialized at load time.
 Remember to keep it a prime number to improve hash performance.")
 
 (defvar eldoc-message-commands
-  ;; Don't define as `defconst' since it would then go to (read-only) purespace.
-  (make-vector eldoc-message-commands-table-size 0)
+  (obarray-make eldoc-message-commands-table-size)
   "Commands after which it is appropriate to print in the echo area.
 ElDoc does not try to print function arglists, etc., after just any command,
 because some commands print their own messages in the echo area and these
@@ -166,7 +173,6 @@ directly.  Instead, use `eldoc-add-command' and `eldoc-remove-command'.")
 
 ;; Not a constant.
 (defvar eldoc-last-data (make-vector 3 nil)
-  ;; Don't define as `defconst' since it would then go to (read-only) purespace.
   "Bookkeeping; elements are as follows:
   0 - contains the last symbol read from the buffer.
   1 - contains the string last displayed in the echo area for variables,
@@ -191,7 +197,7 @@ It should receive the same arguments as `message'.")
 
 When `eldoc-print-after-edit' is non-nil, ElDoc messages are only
 printed after commands contained in this obarray."
-  (let ((cmds (make-vector 31 0))
+  (let ((cmds (obarray-make 31))
 	(re (regexp-opt '("delete" "insert" "edit" "electric" "newline"))))
     (mapatoms (lambda (s)
 		(and (commandp s)
@@ -269,6 +275,14 @@ See `eldoc-documentation-strategy' for more detail."
     (eldoc-mode 1)))
 
 
+(defun eldoc--update ()
+  (when (or eldoc-mode
+            (and global-eldoc-mode
+                 (eldoc--supported-p)))
+    ;; Don't ignore, but also don't full-on signal errors
+    (with-demoted-errors "eldoc error: %s"
+      (eldoc-print-current-symbol-info)) ))
+
 (defun eldoc-schedule-timer ()
   "Ensure `eldoc-timer' is running.
 
@@ -279,13 +293,7 @@ reflect the change."
       (setq eldoc-timer
             (run-with-idle-timer
 	     eldoc-idle-delay nil
-	     (lambda ()
-               (when (or eldoc-mode
-                         (and global-eldoc-mode
-                              (eldoc--supported-p)))
-                 ;; Don't ignore, but also don't full-on signal errors
-                 (with-demoted-errors "eldoc error: %s"
-                   (eldoc-print-current-symbol-info)) )))))
+             #'eldoc--update)))
 
   ;; If user has changed the idle delay, update the timer.
   (cond ((not (= eldoc-idle-delay eldoc-current-idle-delay))
@@ -312,9 +320,11 @@ Otherwise, it displays the message like `message' would."
                      (not (and (listp mode-line-format)
                                (assq 'eldoc-mode-line-string mode-line-format))))
 	    (setq mode-line-format
-		  (list "" '(eldoc-mode-line-string
-			     (" " eldoc-mode-line-string " "))
-			mode-line-format)))
+                  (funcall
+                   (if (listp mode-line-format) #'append #'list)
+                   (list "" '(eldoc-mode-line-string
+			      (" " eldoc-mode-line-string " ")))
+                   mode-line-format)))
           (setq eldoc-mode-line-string
                 (when (stringp format-string)
                   (apply #'format-message format-string args)))
@@ -408,7 +418,7 @@ Also store it in `eldoc-last-message' and return that value."
                       (overlay-end show-paren--overlay)))))))
 
 
-(defvar eldoc-documentation-functions nil
+(defvar eldoc-documentation-functions (list #'eldoc-show-help-at-pt)
   "Hook of functions that produce doc strings.
 
 A doc string is typically relevant if point is on a function-like
@@ -460,7 +470,7 @@ documentation-displaying frontends.  For example, KEY can be:
 
 The additional KEY `:origin' is always added by ElDoc, its VALUE
 being the member of `eldoc-documentation-functions' where
-DOCSTRING originated. `eldoc-display-functions' may use this
+DOCSTRING originated.  `eldoc-display-functions' may use this
 information to organize display of multiple docstrings.
 
 Finally, major modes should modify this hook locally, for
@@ -482,7 +492,11 @@ documentation.  For commonly recognized properties, see
 `eldoc-documentation-functions'.
 
 INTERACTIVE says if the request to display doc strings came
-directly from the user or from ElDoc's automatic mechanisms'.")
+directly from the user or from ElDoc's automatic mechanisms'.
+
+The display functions always run in the source buffer which initiated
+the documentation request.  If the source buffer is killed, the display
+functions just won't run.")
 
 (defvar eldoc--doc-buffer nil "Buffer displaying latest ElDoc-produced docs.")
 
@@ -607,7 +621,7 @@ known to be truncated."
 
 (defun eldoc-display-in-echo-area (docs interactive)
   "Display DOCS in echo area.
-INTERACTIVE is non-nil if user explictly invoked ElDoc.  Honor
+INTERACTIVE is non-nil if user explicitly invoked ElDoc.  Honor
 `eldoc-echo-area-use-multiline-p' and
 `eldoc-echo-area-prefer-doc-buffer'."
   (cond
@@ -886,7 +900,8 @@ the docstrings eventually produced, using
          (want 0)
          ;; The doc strings and corresponding options registered so
          ;; far.
-         (docs-registered '()))
+         (docs-registered '())
+         (orig-buffer (current-buffer)))
     (cl-labels
         ((register-doc
           (pos string plist origin)
@@ -894,13 +909,15 @@ the docstrings eventually produced, using
             (push (cons pos (cons string `(:origin ,origin ,@plist)))
                   docs-registered)))
          (display-doc
-          ()
-          (run-hook-with-args
-           'eldoc-display-functions (mapcar #'cdr
-                                            (setq docs-registered
-                                                  (sort docs-registered
-                                                        (lambda (a b) (< (car a) (car b))))))
-           interactive))
+           ()
+           (when (buffer-live-p orig-buffer)
+             (with-current-buffer orig-buffer
+               (run-hook-with-args
+                'eldoc-display-functions (mapcar #'cdr
+                                                 (setq docs-registered
+                                                       (sort docs-registered
+                                                             (lambda (a b) (< (car a) (car b))))))
+                interactive))))
          (make-callback
           (method origin)
           (let ((pos (prog1 howmany (cl-incf howmany))))
@@ -933,7 +950,7 @@ the docstrings eventually produced, using
       (let* ((eldoc--make-callback #'make-callback)
              (res (funcall eldoc-documentation-strategy)))
         ;; Observe the old and the new protocol:
-        (cond (;; Old protocol: got string, e-d-strategy is iself the
+        (cond (;; Old protocol: got string, e-d-strategy is itself the
                ;; origin function, and we output immediately;
                (stringp res)
                (register-doc 0 res nil eldoc-documentation-strategy)
@@ -954,6 +971,12 @@ the docstrings eventually produced, using
            (let ((non-essential t))
              (setq eldoc--last-request-state token)
              (eldoc--invoke-strategy nil))))))
+
+(defun eldoc-show-help-at-pt (&rest _)
+  "Show help at point via Eldoc if `eldoc-help-at-pt' is non-nil.
+Intended for `eldoc-documentation-functions' (which see)."
+  (when-let* ((help (and eldoc-help-at-pt (help-at-pt-kbd-string))))
+    (format "Help: %s" (substitute-command-keys help))))
 
 
 ;; This section only affects ElDoc output to the echo area, as in
@@ -992,7 +1015,7 @@ the docstrings eventually produced, using
 
 ;; Prime the command list.
 (eldoc-add-command-completions
- "back-to-indentation"
+ "comment-indent-new-line" "delete-char" "back-to-indentation"
  "backward-" "beginning-of-" "delete-other-windows" "delete-window"
  "down-list" "end-of-" "exchange-point-and-mark" "forward-" "goto-"
  "handle-select-window" "indent-for-tab-command" "left-" "mark-page"

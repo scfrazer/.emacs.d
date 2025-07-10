@@ -1900,25 +1900,20 @@ is part of the default mode line beginning with Emacs 30.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.16.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.16.0/eldoc-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/eldoc-1.15.0/eldoc-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
-(defvar eldoc-minor-mode-string (purecopy " ElDoc") "\
+(defvar eldoc-minor-mode-string " ElDoc" "\
 String to display in mode line when ElDoc Mode is enabled; nil for none.")
-
 (custom-autoload 'eldoc-minor-mode-string "eldoc" t)
-
 (autoload 'eldoc-mode "eldoc" "\
 Toggle echo area display of Lisp objects at point (ElDoc mode).
-
-If called interactively, enable Eldoc mode if ARG is positive,
-and disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it if
-ARG is `toggle'; disable the mode otherwise.
 
 ElDoc mode is a buffer-local minor mode.  When enabled, the echo
 area displays information about a function or variable in the
@@ -1927,41 +1922,53 @@ displays the first line of that variable's doc string.  Otherwise
 it displays the argument list of the function called in the
 expression point is on.
 
-\(fn &optional ARG)" t nil)
+This is a minor mode.  If called interactively, toggle the `Eldoc
+mode' mode.  If the prefix argument is positive, enable the mode,
+and if it is zero or negative, disable the mode.
 
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `eldoc-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
 (put 'global-eldoc-mode 'globalized-minor-mode t)
-
-(defvar global-eldoc-mode t "\
+(defcustom global-eldoc-mode t "\
 Non-nil if Global Eldoc mode is enabled.
 See the `global-eldoc-mode' command
 for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
-or call the function `global-eldoc-mode'.")
-
+or call the function `global-eldoc-mode'." :set #'custom-set-minor-mode :initialize 'custom-initialize-delay :type 'boolean)
 (custom-autoload 'global-eldoc-mode "eldoc" nil)
-
 (autoload 'global-eldoc-mode "eldoc" "\
 Toggle Eldoc mode in all buffers.
-With prefix ARG, enable Global Eldoc mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+With prefix ARG, enable Global Eldoc mode if ARG is positive; otherwise,
+disable it.
 
-Eldoc mode is enabled in all buffers where
-`turn-on-eldoc-mode' would do it.
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+Eldoc mode is enabled in all buffers where `turn-on-eldoc-mode' would do it.
+
 See `eldoc-mode' for more information on Eldoc mode.
 
-\(fn &optional ARG)" t nil)
-
+(fn &optional ARG)" t)
 (autoload 'turn-on-eldoc-mode "eldoc" "\
 Turn on `eldoc-mode' if the buffer has ElDoc support enabled.
-See `eldoc-documentation-strategy' for more detail." nil nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eldoc" '("eldoc")))
-
+See `eldoc-documentation-strategy' for more detail.")
+(register-definition-prefixes "eldoc" '("eldoc"))
 
 
-
+(provide 'eldoc-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.1/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.1/flymake-autoloads.el"))
 
@@ -2573,7 +2580,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250709.1959/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250709.1959/modus-themes-autoloads.el"))
 
 
 
@@ -3788,7 +3795,7 @@ Transpose lines in the active region." t nil)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250707.1714" "/home/scfrazer/.emacs.d/elpa/orderless-20250705.2023" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250701.1223" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250531.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250709.1959" "/home/scfrazer/.emacs.d/elpa/orderless-20250705.2023" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250701.1223" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250531.2230" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

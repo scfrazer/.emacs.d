@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250707.1714
-;; Package-Revision: 6639604271fc
+;; Package-Version: 20250709.1959
+;; Package-Revision: 5f9dc6685112
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -2480,7 +2480,7 @@ FG and BG are the main colors."
     `(flymake-note-echo-at-eol ((,c :inherit flymake-end-of-line-diagnostics-face :foreground ,info)))
     `(flymake-warning ((,c :inherit modus-themes-lang-warning)))
     `(flymake-warning-echo ((,c :inherit warning)))
-    `(flymake-note-echo-at-eol ((,c :inherit flymake-end-of-line-diagnostics-face :foreground ,warning)))
+    `(flymake-warning-echo-at-eol ((,c :inherit flymake-end-of-line-diagnostics-face :foreground ,warning)))
 ;;;;; flyspell
     `(flyspell-duplicate ((,c :inherit modus-themes-lang-warning)))
     `(flyspell-incorrect ((,c :inherit modus-themes-lang-error)))
