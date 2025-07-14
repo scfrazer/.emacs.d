@@ -2,8 +2,8 @@
 
 ;; Copyright 2011-2024 François-Xavier Bois
 
-;; Package-Version: 20250619.1334
-;; Package-Revision: 994cb350bcee
+;; Package-Version: 20250714.657
+;; Package-Revision: f1f22bc9ce8c
 ;; Author: François-Xavier Bois
 ;; Maintainer: François-Xavier Bois <fxbois@gmail.com>
 ;; Package-Requires: ((emacs "23.1"))
@@ -3831,7 +3831,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
 
           ((string= web-mode-engine "vue")
            (cond
-             ((string-match-p "[:@][-[:alpha:]]+=\"" tagopen)
+             ((string-match-p "[:@][-[:alpha:].]+=\"" tagopen)
               (setq closing-string "\""
                     delim-open tagopen
                     delim-close "\""))

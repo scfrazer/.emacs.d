@@ -5,9 +5,9 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250709.1959
-;; Package-Revision: 5f9dc6685112
-;; Package-Requires: ((emacs "28.1"))
+;; Package-Version: 20250712.443
+;; Package-Revision: b55d84a5cb86
+;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: faces, theme, accessibility
 
 ;; This file is part of GNU Emacs.
@@ -1314,7 +1314,7 @@ PALETTE is the value of a variable like `modus-operandi-palette'."
               (pcase-let* ((`(,name ,value) cell)
                            (name-string (format "%s" name))
                            (value-string (format "%s" value))
-                           (value-string-padded (string-pad value-string 30))
+                           (value-string-padded (format "%-30s" value-string))
                            (color (modus-themes-get-color-value name mappings theme))) ; resolve a semantic mapping
                 (list name
                       (vector
@@ -3857,6 +3857,7 @@ FG and BG are the main colors."
     `(tab-bar-tab-group-current ((,c :inherit bold :background ,bg-tab-current :box (:line-width -2 :color ,bg-tab-current) :foreground ,fg-alt)))
     `(tab-bar-tab-group-inactive ((,c :background ,bg-tab-bar :box (:line-width -2 :color ,bg-tab-bar) :foreground ,fg-alt)))
     `(tab-bar-tab ((,c :inherit bold :box (:line-width -2 :color ,bg-tab-current) :background ,bg-tab-current)))
+    `(tab-bar-tab-highlight ((,c :inherit highlight :box t)))
     `(tab-bar-tab-inactive ((,c :box (:line-width -2 :color ,bg-tab-other) :background ,bg-tab-other)))
     `(tab-bar-tab-ungrouped ((,c :inherit tab-bar-tab-inactive)))
 ;;;;; tab-line-mode

@@ -7,10 +7,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#ffffff" "#183691" "#969896" "#a71d5d" "#969896" "#969896" "#795da3" "#969896"])
  '(auto-save-list-file-prefix "~/.emacs.d/.auto-save-list/.saves-")
  '(beacon-blink-delay 0.25)
  '(beacon-blink-duration 0.1)
@@ -57,7 +53,6 @@
  '(highlight-indent-guides-delay 0.5)
  '(highlight-indent-guides-method 'character)
  '(highlight-tail-colors ((("#354440") . 0) (("#2f434b") . 20)))
- '(ibuffer-title-face 'default)
  '(icomplete-compute-delay 0)
  '(icomplete-delay-completions-threshold 10000)
  '(icomplete-max-delay-chars 0)
@@ -117,7 +112,7 @@
     (cons 340 "#65737E")
     (cons 360 "#65737E")) t)
  '(vc-annotate-very-old-color nil t)
- '(warning-suppress-types '((use-package) (comp) (undo discard-info)) t)
+ '(warning-suppress-types '((use-package) (comp) (undo discard-info)))
  '(web-mode-enable-control-block-indentation nil)
  '(web-mode-indent-style 1)
  '(which-key-add-column-padding 3)
@@ -142,9 +137,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Cascadia Code NF" :foundry "SAJA" :slant normal :weight light :height 101 :width normal))))
- '(beacon-fallback-background ((t (:background "#ffffff"))))
- '(web-mode-block-control-face ((t (:inherit font-lock-keyword-face))))
- '(web-mode-block-delimiter-face ((t (:inherit font-lock-type-face :weight bold))))
- '(which-key-highlighted-command-face ((t (:inherit font-lock-variable-name-face :underline t))))
- '(which-key-local-map-description-face ((t (:inherit font-lock-builtin-face)))))
+ '(beacon-fallback-background ((t (:background "#ffffff")))))
