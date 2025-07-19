@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250716.1228
-;; Package-Revision: 7eb83053e46a
+;; Package-Version: 20250718.1535
+;; Package-Revision: c6ac7447694e
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -9325,6 +9325,37 @@ position."
 (require 'edit-indirect nil t)
 (defvar edit-indirect-guess-mode-function)
 (defvar edit-indirect-after-commit-functions)
+(defvar edit-indirect--overlay)
+(declare-function edit-indirect-commit "edit-indirect")
+(declare-function edit-indirect--commit "edit-indirect")
+
+(defvar-local markdown--edit-indirect-committed-position nil)
+
+(defun markdown--edit-indirect-save-committed-position ()
+  "Set where editing is committed to a local variable in the parent buffer."
+  (if-let* ((parent-buffer (overlay-buffer edit-indirect--overlay))
+            ((with-current-buffer parent-buffer
+               (derived-mode-p 'markdown-mode)))
+            (pos (cons (line-number-at-pos) (current-column))))
+    (with-current-buffer parent-buffer
+      (setq markdown--edit-indirect-committed-position pos))))
+
+(with-eval-after-load 'edit-indirect
+  (advice-add #'edit-indirect--commit :after #'markdown--edit-indirect-save-committed-position))
+
+(defun markdown--edit-indirect-move-to-committed-position ()
+  "Move the point in the code block corresponding to the saved committed position'."
+  (when-let* ((pos markdown--edit-indirect-committed-position)
+              (bounds (markdown-get-enclosing-fenced-block-construct))
+              (fence-begin (nth 0 bounds)))
+    (goto-char fence-begin)
+    (let ((block-indentation (current-indentation)))
+      (forward-line (car pos))
+      (move-to-column (+ block-indentation (cdr pos)))))
+  (setq markdown--edit-indirect-committed-position nil))
+
+(with-eval-after-load 'edit-indirect
+  (advice-add #'edit-indirect-commit :after #'markdown--edit-indirect-move-to-committed-position))
 
 (defun markdown--edit-indirect-after-commit-function (beg end)
   "Corrective logic run on code block content from lines BEG to END.
@@ -9346,18 +9377,23 @@ at the END of code blocks."
   (interactive)
   (save-excursion
     (if (fboundp 'edit-indirect-region)
-        (let* ((bounds (markdown-get-enclosing-fenced-block-construct))
-               (begin (and bounds (not (null (nth 0 bounds))) (goto-char (nth 0 bounds)) (line-beginning-position 2)))
-               (end (and bounds(not (null (nth 1 bounds)))  (goto-char (nth 1 bounds)) (line-beginning-position 1))))
-          (if (and begin end)
-              (let* ((indentation (and (goto-char (nth 0 bounds)) (current-indentation)))
-                     (lang (markdown-code-block-lang))
-                     (mode (or (and lang (markdown-get-lang-mode lang))
-                               markdown-edit-code-block-default-mode))
-                     (edit-indirect-guess-mode-function
-                      (lambda (_parent-buffer _beg _end)
-                        (funcall mode)))
-                     (indirect-buf (edit-indirect-region begin end 'display-buffer)))
+        (if-let* ((bounds (markdown-get-enclosing-fenced-block-construct))
+                  (fence-begin (nth 0 bounds))
+                  (fence-end (nth 1 bounds))
+                  (original-point (point))
+                  (original-column (current-column))
+                  (begin (progn (goto-char fence-begin) (line-beginning-position 2)))
+                  (end (progn (goto-char fence-end) (line-beginning-position 1)))
+                  (original-line (- (line-number-at-pos original-point) (line-number-at-pos begin))))
+            (let* ((indentation (progn (goto-char fence-begin) (current-indentation)))
+                   (lang (markdown-code-block-lang))
+                   (mode (or (and lang (markdown-get-lang-mode lang))
+                             markdown-edit-code-block-default-mode))
+                   (edit-indirect-guess-mode-function
+                    (lambda (_parent-buffer _beg _end)
+                      (funcall mode)))
+                   (indirect-buf (edit-indirect-region begin end 'display-buffer)))
+              (with-current-buffer indirect-buf
                 ;; reset `sh-shell' when indirect buffer
                 (when (and (not (member system-type '(ms-dos windows-nt)))
                            (member mode '(shell-script-mode sh-mode))
@@ -9365,16 +9401,17 @@ at the END of code blocks."
                                          (mapcar (lambda (e) (symbol-name (car e)))
                                                  sh-ancestor-alist)
                                          '("csh" "rc" "sh"))))
-                  (with-current-buffer indirect-buf
-                    (sh-set-shell lang)))
+                  (sh-set-shell lang))
                 (when (> indentation 0) ;; un-indent in edit-indirect buffer
-                  (with-current-buffer indirect-buf
-                    (indent-rigidly (point-min) (point-max) (- indentation)))))
-            (user-error "Not inside a GFM or tilde fenced code block")))
+                  (indent-rigidly (point-min) (point-max) (- indentation)))
+                (goto-char (point-min))
+                (forward-line (max 0 original-line))
+                (move-to-column (max 0 (- original-column indentation)))))
+          (user-error "Not inside a GFM or tilde fenced code block"))
       (when (y-or-n-p "Package edit-indirect needed to edit code blocks. Install it now? ")
-        (progn (package-refresh-contents)
-               (package-install 'edit-indirect)
-               (markdown-edit-code-block))))))
+        (package-refresh-contents)
+        (package-install 'edit-indirect)
+        (markdown-edit-code-block)))))
 
 
 ;;; Table Editing =============================================================
