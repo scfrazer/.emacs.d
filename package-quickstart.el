@@ -2641,7 +2641,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250718.1535/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250718.1535/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250720.1156/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250720.1156/markdown-mode-autoloads.el"))
 
 
 
@@ -3784,11 +3784,54 @@ Transpose lines in the active region." t nil)
 
 
 )
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/0blayout-20190703.527/0blayout-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/0blayout-20190703.527/0blayout-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(autoload '0blayout-add-keybindings-with-prefix "0blayout" "\
+Add 0blayout keybindings using the prefix PREFIX.
+
+(fn PREFIX)")
+(defvar 0blayout-mode nil "\
+Non-nil if 0bLayout mode is enabled.
+See the `0blayout-mode' command
+for a description of this minor mode.")
+(custom-autoload '0blayout-mode "0blayout" nil)
+(autoload '0blayout-mode "0blayout" "\
+Handle layouts with ease
+
+This is a global minor mode.  If called interactively, toggle the
+`0bLayout mode' mode.  If the prefix argument is positive, enable
+the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `(default-value \\='0blayout-mode)'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "0blayout" '("0blayout-"))
+
+
+(provide '0blayout-autoloads)
+
+
+)
 (defvar package-activated-list)
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy)
+        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
         package-activated-list)))
 (progn
   (require 'info)
