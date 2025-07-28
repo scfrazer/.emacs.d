@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 20250531.2230
-;; Package-Revision: f32cd7b09d51
+;; Package-Version: 20250724.843
+;; Package-Revision: 8fab93143cf1
 ;; Package-Requires: ((emacs "26.1") (compat "30.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -781,7 +781,7 @@ This works in `shell-mode', `term-mode', `eshell-mode' and
           (when-let ((v (getenv "EMACS_SERVER_FILE")))
             (vterm-send-string (format " export EMACS_SERVER_FILE=%S" v))
             (vterm-send-return))
-          (vterm-send-string "clear")
+          (vterm-send-string " clear")
           (vterm-send-return))
       (error "Cannot use sleeping editor in this buffer")))
    (t
