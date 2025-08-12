@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20250720.1156
-;; Package-Revision: fc4fff89bae9
+;; Package-Version: 20250812.423
+;; Package-Revision: d51c469133d2
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -3283,11 +3283,18 @@ processed elements."
                              (markdown-end-of-text-block)
                              (point))))
            ;; Move over balanced expressions to closing right bracket.
-           ;; Catch unbalanced expression errors and return nil.
+           ;; Catch unbalanced expression errors, then try to search right bracket manually.
            (first-end (condition-case nil
                           (and (goto-char first-begin)
                                (scan-sexps (point) 1))
-                        (error nil)))
+                        (error
+                         (save-match-data
+                           (let ((last (match-end 4))
+                                 ok end-pos)
+                             (while (and (not ok) (search-forward "]" last t))
+                               (unless (= (char-before (1- (point))) ?\\)
+                                 (setq ok t end-pos (point))))
+                             end-pos)))))
            ;; Continue with point at CONT-POINT upon failure.
            (cont-point (min (1+ first-begin) last))
            second-begin second-end url-begin url-end
@@ -8184,7 +8191,9 @@ Value is a list of elements describing the link:
               url (match-string-no-properties 6))
         ;; consider nested parentheses
         ;; if link target contains parentheses, (match-end 0) isn't correct end position of the link
-        (let* ((close-pos (scan-sexps (match-beginning 5) 1))
+        (let* ((close-pos (condition-case nil
+                              (scan-sexps (match-beginning 5) 1)
+                            (error (match-end 0))))
                (destination-part (string-trim (buffer-substring-no-properties (1+ (match-beginning 5)) (1- close-pos)))))
           (setq end close-pos)
           ;; A link can contain spaces if it is wrapped with angle brackets

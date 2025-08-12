@@ -257,7 +257,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20250724.843/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20250724.843/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20250801.1152/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20250801.1152/with-editor-autoloads.el"))
 
 
 
@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250702.1403/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250702.1403/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250806.523/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250806.523/vertico-autoloads.el"))
 
 
 
@@ -1269,7 +1269,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250724.1634/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250724.1634/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250806.2313/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250806.2313/transient-autoloads.el"))
 
 
 
@@ -2641,7 +2641,7 @@ corresponding entries.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250720.1156/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250720.1156/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250812.423/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20250812.423/markdown-mode-autoloads.el"))
 
 
 
@@ -3355,7 +3355,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250304.1338/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250304.1338/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250805.1455/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250805.1455/cmake-mode-autoloads.el"))
 
 
 
@@ -3838,7 +3838,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250718.410" "/home/scfrazer/.emacs.d/elpa/orderless-20250728.243" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250724.1634" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250724.843" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250718.410" "/home/scfrazer/.emacs.d/elpa/orderless-20250728.243" "/home/scfrazer/.emacs.d/elpa/rg-20250625.2009" "/home/scfrazer/.emacs.d/elpa/transient-20250806.2313" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250801.1152" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250724.1634
-;; Package-Revision: e9a636d3c7cb
+;; Package-Version: 20250806.2313
+;; Package-Revision: 91febebcc837
 ;; Package-Requires: ((emacs "26.1") (compat "30.1") (seq "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.9.3")
+(defconst transient-version "0.9.4")
 
 (require 'cl-lib)
 (require 'compat)
@@ -102,6 +102,19 @@ TYPE is a type descriptor as accepted by `cl-typep', which see."
       (static-if (< emacs-major-version 30)
           `(pred (pcase--flip cl-typep ',type))
         `(pred (cl-typep _ ',type))))))
+
+(static-if (< emacs-major-version 30)
+    (progn
+      (defun internal--build-binding@backport-e680827e814 (fn binding prev-var)
+        "Backport not warning about `_' not being left unused.
+Backport fix for https://debbugs.gnu.org/cgi/bugreport.cgi?bug=69108,
+from Emacs commit e680827e814e155cf79175d87ff7c6ee3a08b69a."
+        (let ((binding (funcall fn binding prev-var)))
+          (if (eq (car binding) '_)
+              (cons (make-symbol "s") (cdr binding))
+            binding)))
+      (advice-add 'internal--build-binding :around
+                  #'internal--build-binding@backport-e680827e814)))
 
 (make-obsolete-variable 'transient-hide-during-minibuffer-read
                         'transient-show-during-minibuffer-read "0.8.0")
@@ -1556,7 +1569,7 @@ Intended for use in a group's `:setup-children' function."
                suffix prefix loc
                "suffixes and groups cannot be siblings"))
      (t
-      (when-let* (((not (eq keep-other 'always)))
+      (when-let* ((_(not (eq keep-other 'always)))
                   (bindingp (listp suf))
                   (key (transient--suffix-key suf))
                   (conflict (car (transient--locate-child prefix key)))
@@ -2491,12 +2504,12 @@ value.  Otherwise return CHILDREN as is.")
   (pcase-let* ((`[,class ,args ,children] spec)
                (level (or (plist-get args :level)
                           transient--default-child-level)))
-    (and-let* (((transient--use-level-p level))
+    (and-let* ((_(transient--use-level-p level))
                (obj (apply class :parent parent :level level args))
-               ((transient--use-suffix-p obj))
-               ((prog1 t
-                  (when (transient--inapt-suffix-p obj)
-                    (oset obj inapt t))))
+               (_(transient--use-suffix-p obj))
+               (_(prog1 t
+                   (when (transient--inapt-suffix-p obj)
+                     (oset obj inapt t))))
                (suffixes (mapcan (lambda (c) (transient--init-child levels c obj))
                                  (transient-setup-children obj children))))
       (progn
@@ -2550,9 +2563,9 @@ value.  Otherwise return CHILDREN as is.")
 (cl-defmethod transient--init-suffix-key ((obj transient-argument))
   (if (transient-switches--eieio-childp obj)
       (cl-call-next-method obj)
-    (when-let* (((not (slot-boundp obj 'shortarg)))
+    (when-let* ((_(not (slot-boundp obj 'shortarg)))
                 (argument (oref obj argument))
-                ((stringp argument))
+                (_(stringp argument))
                 (shortarg (transient--derive-shortarg argument)))
       (oset obj shortarg shortarg))
     (unless (slot-boundp obj 'key)
@@ -2635,9 +2648,9 @@ value.  Otherwise return CHILDREN as is.")
                  :inapt-if-derived :inapt-if-not-derived))))
 
 (defun transient--load-command-if-autoload (cmd)
-  (when-let* (((symbolp cmd))
+  (when-let* ((_(symbolp cmd))
               (fn (symbol-function cmd))
-              ((autoloadp fn)))
+              (_(autoloadp fn)))
     (transient--debug "   autoload %s" cmd)
     (autoload-do-load fn)))
 
@@ -3921,7 +3934,7 @@ prompt."
 
 (cl-defmethod transient-infix-set :after ((obj transient-argument) value)
   "Unset incompatible infix arguments."
-  (when-let* ((value)
+  (when-let* ((_ value)
               (val (transient-infix-value obj))
               (arg (if (slot-boundp obj 'argument)
                        (oref obj argument)
@@ -3935,15 +3948,15 @@ prompt."
                        (and (not (equal val arg))
                             (mapcan (apply-partially filter val) spec)))))
     (dolist (obj transient--suffixes)
-      (when-let* (((cl-typep obj 'transient-argument))
+      (when-let* ((_(cl-typep obj 'transient-argument))
                   (val (transient-infix-value obj))
                   (arg (if (slot-boundp obj 'argument)
                            (oref obj argument)
                          (oref obj argument-format)))
-                  ((if (equal val arg)
-                       (member arg incomp)
-                     (or (member val incomp)
-                         (member arg incomp)))))
+                  (_(if (equal val arg)
+                        (member arg incomp)
+                      (or (member val incomp)
+                          (member arg incomp)))))
         (transient-infix-set obj nil)))))
 
 (defun transient-prefix-set (value)
@@ -4130,13 +4143,13 @@ Append \"=\ to ARG to indicate that it is an option."
 ;;; Return
 
 (defun transient-init-return (obj)
-  (when-let* ((transient--stack)
+  (when-let* ((_ transient--stack)
               (command (oref obj command))
               (suffix-obj (transient-suffix-object command))
-              ((memq (if (slot-boundp suffix-obj 'transient)
-                         (oref suffix-obj transient)
-                       (oref transient-current-prefix transient-suffix))
-                     (list t 'recurse #'transient--do-recurse))))
+              (_(memq (if (slot-boundp suffix-obj 'transient)
+                          (oref suffix-obj transient)
+                        (oref transient-current-prefix transient-suffix))
+                      (list t 'recurse #'transient--do-recurse))))
     (oset obj return t)))
 
 ;;; Scope
@@ -4678,15 +4691,15 @@ apply the face `transient-unreachable' to the complete string."
                   (and (slot-boundp transient--prefix 'suffix-description)
                        (funcall (oref transient--prefix suffix-description)
                                 obj)))))
-    (when-let* ((transient--docsp)
-                ((slot-boundp obj 'command))
+    (when-let* ((_ transient--docsp)
+                (_(slot-boundp obj 'command))
                 (cmd (oref obj command))
-                ((not (memq 'transient--default-infix-command
-                            (function-alias-p cmd))))
+                (_(not (memq 'transient--default-infix-command
+                             (function-alias-p cmd))))
                 (docstr (ignore-errors (documentation cmd)))
                 (docstr (string-trim
                          (substring docstr 0 (string-match "\\.?\n" docstr))))
-                ((not (equal docstr ""))))
+                (_(not (equal docstr ""))))
       (setq desc (format-spec transient-show-docstring-format
                               `((?c . ,desc)
                                 (?s . ,docstr)))))
@@ -4764,7 +4777,7 @@ apply the face `transient-unreachable' to the complete string."
       desc)))
 
 (cl-defmethod transient--get-face ((obj transient-suffix) slot)
-  (and-let* (((slot-boundp obj slot))
+  (and-let* ((_(slot-boundp obj slot))
              (face (slot-value obj slot)))
     (if (and (not (facep face))
              (functionp face))
@@ -5061,11 +5074,11 @@ This is used when a tooltip is needed.")
                     (summary)
                     ((documentation command)
                      (car (split-string (documentation command) "\n")))))
-         ((stringp doc))
-         ((not (equal doc
-                      (car (split-string (documentation
-                                          'transient--default-infix-command)
-                                         "\n"))))))
+         (_(stringp doc))
+         (_(not (equal doc
+                       (car (split-string (documentation
+                                           'transient--default-infix-command)
+                                          "\n"))))))
       (when (string-suffix-p "." doc)
         (setq doc (substring doc 0 -1)))
       (if return
