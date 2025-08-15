@@ -1,11 +1,12 @@
-;;; tango-plus-theme.el --- A color theme based on the tango palette
+;;; tango-plus-theme.el --- A color theme based on the tango palette  -*- lexical-binding: nil; -*-
 
 ;; Copyright (C) 2013 Titus von der Malsburg <malsburg@posteo.de>
 
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/tango-plus-theme
-;; Version: 2.0.0
+;; Package-Version: 20250813.1242
+;; Package-Revision: 6c57ae3745ab
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -271,8 +272,8 @@ Semantic, and Ansi-Color faces are included.")
    `(org-level-8                    ((,class (:inherit font-lock-keyword-face))))
    `(org-document-title             ((,class (:inherit font-lock-keyword-face :height 1.5 :weight bold))))
    `(org-document-info              ((,class (:inherit font-lock-keyword-face))))
-   `(org-document-info-keyword      ((,class (:inherit shadow))))
-   `(org-meta-line                  ((,class (:inherit shadow))))
+   `(org-document-info-keyword      ((,class (:inherit font-lock-builtin-face))))
+   `(org-meta-line                  ((,class (:inherit font-lock-builtin-face))))
    `(org-todo                       ((,class (:foreground ,red-2 :weight bold))))
    `(org-done                       ((,class (:foreground ,cham-3))))
    `(org-headline-done              ((,class (:inherit font-lock-keyword-face))))
@@ -344,6 +345,8 @@ Semantic, and Ansi-Color faces are included.")
 
    ;; Magit et al:
    `(diff-context                   ((,class (:inherit highlight))))
+   `(diff-refine-removed            ((,class (:inherit magit-diff-removed :underline t))))
+   `(diff-refine-added              ((,class (:inherit magit-diff-added :underline t))))
    `(magit-diff-hunk-header         ((,class (:inherit header-line))))
    `(magit-diff-file-header         ((,class (:inherit header-line))))
    `(git-commit-summary-face        ((,class (:inherit default))))
@@ -359,7 +362,7 @@ Semantic, and Ansi-Color faces are included.")
    `(helm-match-item                ((,class (:inherit lazy-highlight))))
    `(helm-grep-match                ((,class (:inherit lazy-highlight))))
    `(helm-grep-file                 ((,class (:inherit default))))
-   `(helm-grep-lineno               ((,class (:inherit default))))
+   `(helm-grep-lineno               ((,class (:inherit tango-plus-deemphasized))))
    `(helm-grep-cmd-line             ((,class (:inherit warning))))
    `(helm-action                    ((,class ())))
    `(helm-candidate-number          ((,class (:inherit mode-line))))

@@ -1346,20 +1346,22 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20250813.1242/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20250813.1242/tango-plus-theme-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20240703.1443/tango-plus-theme-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tango-plus-theme" '("tango-plus")))
-
+(register-definition-prefixes "tango-plus-theme" '("tango-plus"))
 
 
-
+(provide 'tango-plus-theme-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20220705.1231/sr-speedbar-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/sr-speedbar-20220705.1231/sr-speedbar-autoloads.el"))
 
