@@ -1577,13 +1577,26 @@ same purpose as ‘prefix-arg’ serves for prefix arguments.
      current command was not invoked from PREFIX, then it returns the
      set, saved or default value for PREFIX.
 
- -- Function: transient-get-value
-     This function returns the value of the current prefix.
+     PREFIX may also be a list of prefixes.  If no prefix is active, the
+     fallback value of the first of these prefixes is used.
 
-     This is mostly intended for internal use, but may also be of use in
-     ‘transient-set-value’ and ‘transient-save-value’ methods.  Unlike
-     ‘transient-args’, this does not include the values of suffixes
-     whose ‘unsavable’ slot is non-‘nil’.
+     The generic function ‘transient-prefix-value’ is used to determine
+     the returned value.
+
+     This function is intended to be used by suffix commands, whether
+     they are invoked from a menu or not.  It is not intended to be used
+     when setting up a menu and its suffixes, in which case
+     ‘transient-get-value’ should be used.
+
+ -- Function: transient-get-value
+     This function returns the value of the erant prefix.
+
+     This function is intended to be used when setting up a menu and its
+     suffixes.  It is not intended to be used when a suffix command is
+     invoked, whether from a menu or not, in which case ‘transient-args’
+     should be used.  In other words, use this, e.g., in a suffixes
+     ‘:if*’ or ‘:inapt-if*’ predicate and ‘:description’ function, but
+     never in its ‘interactive’ form or function body.
 
  -- Function: transient-arg-value arg args
      This function returns the value of ARG as it appears in ARGS.
@@ -2244,6 +2257,21 @@ functions use ‘describe-function’.
 
  -- Function: transient-prefix-value obj
      This generic function returns the value of the prefix object OBJ.
+
+     OBJ is a prototype object and is only used to select the
+     appropriate method of this generic function.  This function does
+     not return the value of that object.  Instead it extracts the name
+     of the respective command from the object and uses that to collect
+     the current values from the suffixes of the prefix from which the
+     current command was invoked.  If the current command was not
+     invoked from the identified prefix, then this method returns the
+     set, save or default value, as described for ‘transient-args’.
+
+     This function is only intended to be used by ‘transient-args’.  It
+     is not defined as an internal function because third-party packages
+     may define their own methods.  That does not mean that it would be
+     a good idea to call it for any other purpose.
+
      The respective generic function for infix and suffix objects is
      named ‘transient-infix-value’.
 
@@ -2437,6 +2465,40 @@ Value and Scope
    • ‘history-key’ If multiple prefix commands should share a single
      value, then this slot has to be set to the same value for all of
      them.  You probably don’t want that.
+
+   • ‘remember-value’ When a suffix command is invoked, which can
+     consume the prefix’s value (which depends on the suffix slot
+     ‘transient’ and the prefix slots ‘transient-suffix’ and
+     ‘transient-non-suffix’), then the value is automatically pushed to
+     the prefix’s value history.
+
+     This slot allows additionally setting or even saving the value, so
+     that it becomes the initial value when the menu is invoked again.
+
+     Beside ‘nil’, the value can be one of these symbols:
+
+        • ‘export’ Set the value when it is exported.  That is the time
+          when the value would ordinarily just be pushed to the history
+          stack.
+
+        • ‘exit’ Set the value when the menu is exited, except when that
+          is done using a command whose sole purpose is to quit the
+          menu.
+
+        • ‘quit’ Set the value when the menu is quit, using a command
+          whose sole purpose is to do so.
+
+     The value can also be a list of one or more of these symbols and
+     optionally also the symbol ‘save’.
+
+        • ‘save’ Instead of merely setting the value, save it, so that
+          it will be used in future Emacs sessions.  At least one other
+          symbol has to be used together with this.
+
+     The value can also be a (quoted) variable, whose value is a list of
+     symbols as described above.  Ideally an option should be used,
+     since not all users will find the automatic saving of the value
+     desirable.
 
    • ‘incompatible’ A list of lists.  Each sub-list specifies a set of
      mutually exclusive arguments.  Enabling one of these arguments
@@ -2903,7 +2965,7 @@ Appendix C Command and Function Index
 * transient-append-suffix:               Modifying Existing Transients.
                                                               (line  63)
 * transient-arg-value:                   Using Infix Arguments.
-                                                              (line  39)
+                                                              (line  52)
 * transient-args:                        Using Infix Arguments.
                                                               (line  22)
 * transient-copy-menu-text:              Other Commands.      (line  25)
@@ -2924,7 +2986,7 @@ Appendix C Command and Function Index
 * transient-get-suffix:                  Modifying Existing Transients.
                                                               (line  88)
 * transient-get-value:                   Using Infix Arguments.
-                                                              (line  31)
+                                                              (line  42)
 * transient-help:                        Getting Help for Suffix Commands.
                                                               (line  11)
 * transient-history-next:                Using History.       (line  22)
@@ -2932,7 +2994,7 @@ Appendix C Command and Function Index
 * transient-infix-read:                  Suffix Methods.      (line  34)
 * transient-infix-set:                   Suffix Methods.      (line  54)
 * transient-infix-value:                 Suffix Methods.      (line  57)
-* transient-init-scope:                  Prefix Methods.      (line  37)
+* transient-init-scope:                  Prefix Methods.      (line  52)
 * transient-init-scope <1>:              Suffix Methods.      (line  70)
 * transient-init-value:                  Prefix Methods.      (line   9)
 * transient-init-value <1>:              Suffix Methods.      (line  12)
@@ -2974,7 +3036,7 @@ Appendix C Command and Function Index
 * transient-suffix-put:                  Modifying Existing Transients.
                                                               (line  92)
 * transient-suffixes:                    Using Infix Arguments.
-                                                              (line  46)
+                                                              (line  59)
 * transient-suspend:                     Aborting and Resuming Transients.
                                                               (line  41)
 * transient-toggle-common:               Common Suffix Commands.
@@ -3825,48 +3887,48 @@ Ref: Group Specifications55753
 Ref: Suffix Specifications62566
 Node: Defining Suffix and Infix Commands67480
 Node: Using Infix Arguments70528
-Node: Using Prefix Scope72917
-Node: Current Suffix Command74923
-Node: Current Prefix Command77280
-Node: Transient State79836
-Ref: Pre-commands for Infixes84187
-Ref: Pre-commands for Suffixes84707
-Ref: Pre-commands for Non-Suffixes87160
-Ref: Special Pre-Commands88296
-Node: Classes and Methods88804
-Node: Group Classes90891
-Node: Group Methods92818
-Node: Prefix Classes94077
-Node: Suffix Classes94922
-Node: Prefix Methods99720
-Node: Suffix Methods102113
-Ref: Suffix Value Methods102373
-Ref: Suffix Format Methods105618
-Node: Prefix Slots108516
-Ref: Value and Scope108666
-Ref: Behavior110145
-Ref: Appearance111486
-Ref: Documentation112172
-Ref: Internal112792
-Node: Suffix Slots114147
-Ref: Slots of transient-child114515
-Ref: Slots of transient-suffix114973
-Ref: Slots of transient-infix117826
-Ref: Slots of transient-variable121122
-Ref: Slots of transient-switches121224
-Node: Predicate Slots121587
-Node: FAQ123932
-Ref: Can I control how the menu buffer is displayed?124061
-Ref: How can I copy text from the menu buffer?124385
-Ref: How can I autoload prefix and suffix commands?125148
-Ref: How does Transient compare to prefix keys and universal arguments?125622
-Ref: How does Transient compare to Magit-Popup and Hydra?125865
-Ref: Why does q not quit popups anymore?126059
-Node: Keystroke Index127162
-Node: Command and Function Index129027
-Node: Variable Index136494
-Node: Concept Index139273
-Node: GNU General Public License142097
+Node: Using Prefix Scope73559
+Node: Current Suffix Command75565
+Node: Current Prefix Command77922
+Node: Transient State80478
+Ref: Pre-commands for Infixes84829
+Ref: Pre-commands for Suffixes85349
+Ref: Pre-commands for Non-Suffixes87802
+Ref: Special Pre-Commands88938
+Node: Classes and Methods89446
+Node: Group Classes91533
+Node: Group Methods93460
+Node: Prefix Classes94719
+Node: Suffix Classes95564
+Node: Prefix Methods100362
+Node: Suffix Methods103585
+Ref: Suffix Value Methods103845
+Ref: Suffix Format Methods107090
+Node: Prefix Slots109988
+Ref: Value and Scope110138
+Ref: Behavior113140
+Ref: Appearance114481
+Ref: Documentation115167
+Ref: Internal115787
+Node: Suffix Slots117142
+Ref: Slots of transient-child117510
+Ref: Slots of transient-suffix117968
+Ref: Slots of transient-infix120821
+Ref: Slots of transient-variable124117
+Ref: Slots of transient-switches124219
+Node: Predicate Slots124582
+Node: FAQ126927
+Ref: Can I control how the menu buffer is displayed?127056
+Ref: How can I copy text from the menu buffer?127380
+Ref: How can I autoload prefix and suffix commands?128143
+Ref: How does Transient compare to prefix keys and universal arguments?128617
+Ref: How does Transient compare to Magit-Popup and Hydra?128860
+Ref: Why does q not quit popups anymore?129054
+Node: Keystroke Index130157
+Node: Command and Function Index132022
+Node: Variable Index139489
+Node: Concept Index142268
+Node: GNU General Public License145092
 
 End Tag Table
 

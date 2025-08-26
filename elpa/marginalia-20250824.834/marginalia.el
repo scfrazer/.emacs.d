@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20250728.240
-;; Package-Revision: 6e3412ce57b9
+;; Package-Version: 20250824.834
+;; Package-Revision: 30e6813c8142
 ;; Package-Requires: ((emacs "28.1") (compat "30"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -110,6 +110,7 @@ displayed instead."
      (bookmark ,#'marginalia-annotate-bookmark)
      (file ,#'marginalia-annotate-file)
      (project-file ,#'marginalia-annotate-project-file)
+     (project-buffer ,#'marginalia-annotate-buffer)
      (buffer ,#'marginalia-annotate-buffer)
      (library ,#'marginalia-annotate-library)
      (theme ,#'marginalia-annotate-theme)
