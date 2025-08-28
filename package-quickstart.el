@@ -561,7 +561,7 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250714.657/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250714.657/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250827.1315/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250827.1315/web-mode-autoloads.el"))
 
 
 
@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250824.1017/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250824.1017/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250827.1341/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20250827.1341/vertico-autoloads.el"))
 
 
 
@@ -3357,7 +3357,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250805.1455/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250805.1455/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250827.1633/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250827.1633/cmake-mode-autoloads.el"))
 
 
 

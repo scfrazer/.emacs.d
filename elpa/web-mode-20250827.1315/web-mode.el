@@ -1,9 +1,9 @@
 ;;; web-mode.el --- major mode for editing web templates -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright 2011-2024 François-Xavier Bois
+;; Copyright 2011-2025 François-Xavier Bois
 
-;; Package-Version: 20250714.657
-;; Package-Revision: f1f22bc9ce8c
+;; Package-Version: 20250827.1315
+;; Package-Revision: 1eb0abb1a9bf
 ;; Author: François-Xavier Bois
 ;; Maintainer: François-Xavier Bois <fxbois@gmail.com>
 ;; Package-Requires: ((emacs "23.1"))
@@ -24,7 +24,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "17.3.21"
+(defconst web-mode-version "17.3.22"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -6337,7 +6337,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
  (defun web-mode-jsx-skip (reg-end) ;; #1299
    (let ((continue t) (pos nil) (i 0) (tag nil) (regexp nil) (regexp0 nil)
          (regexp1 nil) (counter 0) (ret nil) (match nil) (inside t))
-     (looking-at "<\\([[:alpha:]][[:alnum:]:-]*\\)")
+     (looking-at "<\\([[:alpha:]][[:alnum:].:-]*\\)") ;; #1327
      (setq tag (match-string-no-properties 1))
      (if (null tag)
          (progn
@@ -9650,9 +9650,14 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
                                                               language
                                                               reg-beg))))
 
+          ((member language '("django"))
+           (when debug (message "I430(%S) django-indentation" pos))
+           (setq offset nil)
+           )
+
           (t
            (when debug
-             (message "I430(%S) bracket-indentation" pos)
+             (message "I440(%S) generic bracket-indentation" pos)
              ;;(message "reg-col=%S curr-ind=%S lang=%S reg-beg=%S" reg-col curr-indentation language reg-beg)
              )
            (setq offset (car (web-mode-bracket-indentation pos
