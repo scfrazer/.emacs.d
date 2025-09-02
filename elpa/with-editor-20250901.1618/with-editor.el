@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 20250801.1152
-;; Package-Revision: 0a2df46e2831
+;; Package-Version: 20250901.1618
+;; Package-Revision: 87a384a0e592
 ;; Package-Requires: ((emacs "26.1") (compat "30.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
