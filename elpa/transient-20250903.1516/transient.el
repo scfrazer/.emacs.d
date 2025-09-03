@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250901.2116
-;; Package-Revision: 1d109f34b7c6
+;; Package-Version: 20250903.1516
+;; Package-Revision: 17f8d9f247b0
 ;; Package-Requires: (
 ;;     (emacs  "26.1")
 ;;     (compat "30.1")
@@ -3941,8 +3941,8 @@ prompt."
         (if (stringp prompt)
             prompt
           "[BUG: invalid prompt]: "))
-    (if-let* ((name (or (and (slot-boundp obj 'argument) (oref obj argument))
-                        (and (slot-boundp obj 'variable) (oref obj variable)))))
+    (if-let ((name (or (and (slot-boundp obj 'argument) (oref obj argument))
+                       (and (slot-boundp obj 'variable) (oref obj variable)))))
         (if (and (stringp name)
                  (string-suffix-p "=" name))
             name
