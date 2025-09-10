@@ -5,7 +5,11 @@
 ;; Theme
 
 ;; Dark
-(setq modus-vivendi-tinted-palette-overrides '((fg-main "#cccccc")))
+(setq modus-vivendi-tinted-palette-overrides 
+      '(
+        (fg-main "#dddddd")
+        (comment "#888888")
+        ))
 
 (defun dark ()
   "Load dark theme."
