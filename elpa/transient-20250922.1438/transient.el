@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20250914.1143
-;; Package-Revision: f3b2176a7f8e
+;; Package-Version: 20250922.1438
+;; Package-Revision: c9aa876b4cc6
 ;; Package-Requires: (
 ;;     (emacs  "26.1")
 ;;     (compat "30.1")
@@ -795,7 +795,8 @@ If `transient-save-history' is nil, then do nothing."
 ;;;; Prefix
 
 (defclass transient-prefix ()
-  ((prototype   :initarg :prototype)
+  ((docstring   :allocation :class :initform nil)
+   (prototype   :initarg :prototype)
    (command     :initarg :command)
    (level       :initarg :level)
    (init-value  :initarg :init-value)
@@ -929,6 +930,7 @@ predicate slots or more than one `inapt-if*' slots are non-nil."
 
 (defclass transient-suffix (transient-child)
   ((definition  :allocation :class    :initform nil)
+   (docstring   :allocation :class    :initform nil)
    (key         :initarg :key)
    (command     :initarg :command)
    (transient   :initarg :transient)
@@ -1301,20 +1303,38 @@ commands are aliases for."
           (delq int declare))
         (unless (cdr declare)
           (setq declare nil)))
+      (when (eq (car-safe class) 'quote)
+        (setq class (cadr class)))
+      (setq keys (nreverse keys))
+      (when (and (not docstr) class)
+        (setq docstr (transient--generate-docstring class keys)))
       (cond
        ((not args))
        (nobody
         (error "%s: No function body allowed" form))
        ((not (eq (car-safe (nth (if declare 1 0) args)) 'interactive))
         (error "%s: Interactive form missing" form)))
-      (list (if (eq (car-safe class) 'quote)
-                (cadr class)
-              class)
-            (nreverse keys)
+      (list class
+            keys
             (nreverse suffixes)
             docstr
             (if declare (cons declare args) args)
             interactive-only))))
+
+(eval-and-compile ;transient--generate-docstring
+  (defun transient--generate-docstring (class args)
+    (and-let* ((class (cl--find-class class))
+               (docstr (oref-default class docstring)))
+      (if (functionp docstr)
+          (funcall docstr args)
+        (replace-regexp-in-string
+         "\\({:[^}]+}\\)"
+         (lambda (s)
+           (let ((v (plist-get args (intern (substring s 1 -1)))))
+             (when (eq (car-safe v) 'quote)
+               (setq v (cadr v)))
+             (format "%s" v)))
+         docstr t t 1)))))
 
 (defun transient--parse-child (prefix spec)
   (cl-typecase spec

@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Keywords: matching, completion
-;; Package-Version: 20250728.243
-;; Package-Revision: 31812d9252c6
+;; Package-Version: 20250922.1344
+;; Package-Revision: 9cf1c90e2501
 ;; URL: https://github.com/oantolin/orderless
 ;; Package-Requires: ((emacs "27.1") (compat "30"))
 
@@ -125,7 +125,7 @@ The returned regexps can be either strings or s-expressions in
 the entire match is highlighted, otherwise just the captured
 groups are.  Several are provided with this package: try
 customizing this variable to see a list of them."
-  :type 'hook
+  :type '(repeat function)
   :options (list #'orderless-regexp
                  #'orderless-literal
                  #'orderless-initialism
@@ -200,7 +200,7 @@ the component in the `orderless-flex' style.  See
 `orderless-affix-dispatch' and `orderless-affix-dispatch-alist'
 for such a configuration.  For more information on how this
 variable is used, see `orderless-compile'."
-  :type 'hook)
+  :type '(repeat function))
 
 (defcustom orderless-smart-case t
   "Whether to use smart case.

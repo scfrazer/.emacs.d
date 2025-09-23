@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20250909.655
-;; Package-Revision: 161792b1b0b7
+;; Package-Version: 20250923.942
+;; Package-Revision: 2c4e1dc7ce08
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -1654,10 +1654,11 @@ FG and BG are the main colors."
     `(modus-themes-slant ((,c ,@(modus-themes--slant))))
     `(modus-themes-ui-variable-pitch ((,c ,@(modus-themes--variable-pitch-ui))))
 ;;;;; other custom faces
-    `(modus-themes-button ((,c :inherit variable-pitch
-                               :box (:line-width 1 :color ,border :style released-button)
-                               :background ,bg-button-active
-                               :foreground ,fg-button-active)))
+    `(modus-themes-button
+      ((default :inherit variable-pitch :background ,bg-button-active :foreground ,fg-button-active)
+       (((supports :box t))
+        :box (:line-width 1 :color ,border :style released-button))
+       (t :underline ,border)))
     `(modus-themes-key-binding ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
     `(modus-themes-prompt ((,c ,@(modus-themes--prompt fg-prompt bg-prompt))))
     `(modus-themes-reset-soft ((,c :background ,bg-main :foreground ,fg-main
@@ -1703,6 +1704,7 @@ FG and BG are the main colors."
     `(nobreak-space ((,c :foreground ,err :underline t)))
     `(menu ((,c :inverse-video unspecified :background ,bg-active :foreground ,fg-main)))
     `(minibuffer-prompt ((,c :inherit modus-themes-prompt)))
+    `(minibuffer-nonselected ((,c :inverse-video t)))
     `(mm-command-output ((,c :foreground ,mail-part)))
     `(mm-uu-extract ((,c :foreground ,mail-part)))
     `(next-error ((,c :inherit modus-themes-prominent-error :extend t)))
@@ -2083,8 +2085,16 @@ FG and BG are the main colors."
     `(ctrlf-highlight-passive ((,c :inherit modus-themes-search-lazy)))
 ;;;;; custom (M-x customize)
     `(custom-button ((,c :inherit modus-themes-button)))
-    `(custom-button-mouse ((,c :inherit (highlight custom-button))))
-    `(custom-button-pressed ((,c :inherit (secondary-selection custom-button))))
+    `(custom-button-mouse
+      ((default :inherit variable-pitch :background ,bg-hover :foreground ,fg-main)
+       (((supports :box t))
+        :box (:line-width 1 :color ,border :style released-button))
+       (t :underline ,border)))
+    `(custom-button-pressed
+      ((default :inherit variable-pitch :background ,bg-main :foreground ,fg-main)
+       (((supports :box t))
+        :box (:line-width 1 :color ,border :style pressed-button))
+       (t :underline ,border)))
     `(custom-changed ((,c :background ,bg-changed)))
     `(custom-comment ((,c :inherit shadow)))
     `(custom-comment-tag ((,c :inherit (bold shadow))))
