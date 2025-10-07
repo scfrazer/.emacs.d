@@ -1269,7 +1269,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250922.1438/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20250922.1438/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815/transient-autoloads.el"))
 
 
 
@@ -1387,7 +1387,7 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20250914.716/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20250914.716/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013/rg-autoloads.el"))
 
 
 
@@ -2266,7 +2266,7 @@ Match COMPONENT against the keywords in `orderless-kwd-alist'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20250210.1813/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20250210.1813/multiple-cursors-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20251006.2038/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20251006.2038/multiple-cursors-autoloads.el"))
 
 
 
@@ -2582,7 +2582,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250923.942/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20250923.942/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251007.415/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251007.415/modus-themes-autoloads.el"))
 
 
 
@@ -2623,18 +2623,72 @@ such that the current element in the list becomes the last.  Do not
 modify THEMES in the process.
 
 (fn THEMES &optional REVERSE)" t)
+(autoload 'modus-themes-load-random "modus-themes" "\
+Load a Modus theme at random, excluding the current one.
+
+With optional BACKGROUND-MODE as a prefix argument, prompt to limit the set of
+themes to either dark or light variants.  When called from Lisp, BACKGROUND-MODE
+is either the `dark' or `light' symbol.
+
+Run `modus-themes-after-load-theme-hook' after loading a theme.
+
+(fn &optional BACKGROUND-MODE)" t)
+(autoload 'modus-themes-load-random-dark "modus-themes" "\
+Load a random dark theme." t)
+(function-put 'modus-themes-load-random-dark 'interactive-only 't)
+(autoload 'modus-themes-load-random-light "modus-themes" "\
+Load a random light theme." t)
+(function-put 'modus-themes-load-random-light 'interactive-only 't)
 (autoload 'modus-themes-theme "modus-themes" "\
-Bind NAME's color PALETTE around face specs and variables.
-Face specifications are passed to `custom-theme-set-faces'.
-While variables are handled by `custom-theme-set-variables'.
-Those are stored in `modus-themes-faces' and
-`modus-themes-custom-variables' respectively.
+Define a Modus theme or derivative thereof.
+NAME is the name of the new theme.  FAMILY is the collection of themes
+it belongs to.  DESCRIPTION is its documentation string.
+BACKGROUND-MODE is either `dark' or `light', in reference to the theme's
+background color.  The CORE-PALETTE, USER-PALETTE, and OVERRIDES-PALETTE
+are symbols of variables which define palettes commensurate with
+`modus-themes-operandi-palette'.
 
-Optional OVERRIDES are appended to PALETTE, overriding
-corresponding entries.
+The optional CUSTOM-FACES and CUSTOM-VARIABLES are joined together with
+the `modus-themes-faces' and `modus-themes-custom-variables',
+respectively.  A derivative theme defining those is thus overriding what
+the Modus themess have by default.
 
-(fn NAME PALETTE &optional OVERRIDES)" nil t)
+Consult the manual for details on how to build a theme on top of the
+`modus-themes': Info node `(modus-themes) Build on top of the Modus themes'.
+
+(fn NAME FAMILY DESCRIPTION BACKGROUND-MODE CORE-PALETTE USER-PALETTE OVERRIDES-PALETTE &optional CUSTOM-FACES CUSTOM-VARIABLES)" nil t)
 (function-put 'modus-themes-theme 'lisp-indent-function 0)
+(defvar modus-themes-include-derivatives-mode nil "\
+Non-nil if Modus-Themes-Include-Derivatives mode is enabled.
+See the `modus-themes-include-derivatives-mode' command
+for a description of this minor mode.")
+(custom-autoload 'modus-themes-include-derivatives-mode "modus-themes" nil)
+(autoload 'modus-themes-include-derivatives-mode "modus-themes" "\
+When enabled, all Modus themes commands cover derivatives as well.
+
+Otherwise, they only consider the `modus-themes-items'.
+
+Derivative theme projects can implement the equivalent of this minor
+mode plus a method for `modus-themes-get-themes' to filter themes
+accordingly.
+
+This is a global minor mode.  If called interactively, toggle the
+`Modus-Themes-Include-Derivatives mode' mode.  If the prefix
+argument is positive, enable the mode, and if it is zero or
+negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `(default-value
+\\='modus-themes-include-derivatives-mode)'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
 (when load-file-name (let ((dir (file-name-directory load-file-name))) (unless (equal dir (expand-file-name "themes/" data-directory)) (add-to-list 'custom-theme-load-path dir))))
 (register-definition-prefixes "modus-themes" '("modus-themes-"))
 
@@ -2695,7 +2749,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250920.852/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20250920.852/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251006.1126/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251006.1126/marginalia-autoloads.el"))
 
 
 
@@ -3357,7 +3411,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250827.1633/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250827.1633/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250930.1448/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250930.1448/cmake-mode-autoloads.el"))
 
 
 
@@ -3840,7 +3894,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20250923.942" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/rg-20250914.716" "/home/scfrazer/.emacs.d/elpa/transient-20250922.1438" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250901.1618" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251007.415" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013" "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250901.1618" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
