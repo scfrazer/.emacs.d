@@ -5,9 +5,9 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20250908.1638
-;; Package-Revision: 488685badfdf
-;; Package-Requires: ((emacs "28.1") (compat "30"))
+;; Package-Version: 20251010.657
+;; Package-Revision: 17c629087ea2
+;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
 
@@ -536,7 +536,7 @@ the stack trace is shown in the *Messages* buffer."
   (let ((rm minibuffer--require-match))
     (or (memq rm '(nil confirm-after-completion))
         (equal "" input) ;; Null completion, returns default value
-        (if (functionp rm) (funcall rm input) ;; Emacs 29 supports functions
+        (if (functionp rm) (funcall rm input) ;; require-match can be a function
           (test-completion input minibuffer-completion-table minibuffer-completion-predicate))
         (if (eq rm 'confirm) (eq (ignore-errors (read-char "Confirm")) 13)
           (minibuffer-message "Match required") nil))))

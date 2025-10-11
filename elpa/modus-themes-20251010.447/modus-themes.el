@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20251007.415
-;; Package-Revision: cfa35451719e
+;; Package-Version: 20251010.447
+;; Package-Revision: a391efc0f8e9
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -5925,12 +5925,12 @@ FG and BG are the main colors."
     `(magit-process-ng ((,c :inherit error)))
     `(magit-process-ok ((,c :inherit success)))
     `(magit-reflog-amend ((,c :inherit warning)))
-    `(magit-reflog-checkout ((,c :inherit bold :foreground ,blue)))
+    `(magit-reflog-checkout ((,c :inherit bold)))
     `(magit-reflog-cherry-pick ((,c :inherit success)))
     `(magit-reflog-commit ((,c :inherit bold)))
     `(magit-reflog-merge ((,c :inherit success)))
-    `(magit-reflog-other ((,c :inherit bold :foreground ,cyan)))
-    `(magit-reflog-rebase ((,c :inherit bold :foreground ,magenta)))
+    `(magit-reflog-other ((,c :inherit bold :foreground ,accent-3)))
+    `(magit-reflog-rebase ((,c :inherit bold :foreground ,accent-2)))
     `(magit-reflog-remote ((,c :inherit (bold magit-branch-remote))))
     `(magit-reflog-reset ((,c :inherit error)))
     `(magit-refname ((,c :inherit shadow)))
@@ -5944,8 +5944,8 @@ FG and BG are the main colors."
     `(magit-section-secondary-heading ((,c :inherit bold)))
     `(magit-sequence-done ((,c :inherit success)))
     `(magit-sequence-drop ((,c :inherit error)))
-    `(magit-sequence-exec ((,c :inherit bold :foreground ,magenta)))
-    `(magit-sequence-head ((,c :inherit bold :foreground ,cyan)))
+    `(magit-sequence-exec ((,c :inherit bold)))
+    `(magit-sequence-head ((,c :inherit bold :foreground ,accent-0)))
     `(magit-sequence-onto ((,c :inherit (bold shadow))))
     `(magit-sequence-part ((,c :inherit warning)))
     `(magit-sequence-pick ((,c :inherit bold)))
@@ -7136,7 +7136,7 @@ FG and BG are the main colors."
     `(widget-button ((,c :inherit bold :foreground ,fg-link)))
     `(widget-button-pressed ((,c :inherit widget-button :foreground ,fg-link-visited)))
     `(widget-documentation ((,c :inherit font-lock-doc-face)))
-    `(widget-field ((,c :background ,bg-inactive :foreground ,fg-main :extend nil)))
+    `(widget-field ((,c :background ,bg-button-inactive :foreground ,fg-button-active :extend nil :underline (:position t))))
     `(widget-inactive ((,c :background ,bg-button-inactive :foreground ,fg-button-inactive)))
     `(widget-single-line-field ((,c :inherit widget-field)))
 ;;;;; writegood-mode
