@@ -1269,7 +1269,23 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20251019.2020/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20251019.2020/cond-let-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(register-definition-prefixes "cond-let" '("cond-let"))
+
+
+(provide 'cond-let-autoloads)
+
+
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251020.1535/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251020.1535/transient-autoloads.el"))
 
 
 
@@ -1387,7 +1403,7 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251022.457/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20251022.457/rg-autoloads.el"))
 
 
 
@@ -2582,12 +2598,28 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251013.512/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251013.512/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251022.534/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251022.534/modus-themes-autoloads.el"))
 
 
 
 (add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
 
+
+
+
+(register-definition-prefixes "modus-operandi-deuteranopia-theme" '("modus-operandi-deuteranopia-palette-"))
+
+
+
+(register-definition-prefixes "modus-operandi-theme" '("modus-operandi-palette-"))
+
+
+
+(register-definition-prefixes "modus-operandi-tinted-theme" '("modus-operandi-tinted-palette-"))
+
+
+
+(register-definition-prefixes "modus-operandi-tritanopia-theme" '("modus-operandi-tritanopia-palette-"))
 
 
 
@@ -2656,8 +2688,7 @@ the Modus themess have by default.
 Consult the manual for details on how to build a theme on top of the
 `modus-themes': Info node `(modus-themes) Build on top of the Modus themes'.
 
-(fn NAME FAMILY DESCRIPTION BACKGROUND-MODE CORE-PALETTE USER-PALETTE OVERRIDES-PALETTE &optional CUSTOM-FACES CUSTOM-VARIABLES)" nil t)
-(function-put 'modus-themes-theme 'lisp-indent-function 0)
+(fn NAME FAMILY DESCRIPTION BACKGROUND-MODE CORE-PALETTE USER-PALETTE OVERRIDES-PALETTE &optional CUSTOM-FACES CUSTOM-VARIABLES)")
 (defvar modus-themes-include-derivatives-mode nil "\
 Non-nil if Modus-Themes-Include-Derivatives mode is enabled.
 See the `modus-themes-include-derivatives-mode' command
@@ -2691,6 +2722,22 @@ it is disabled.
 (fn &optional ARG)" t)
 (when load-file-name (let ((dir (file-name-directory load-file-name))) (unless (equal dir (expand-file-name "themes/" data-directory)) (add-to-list 'custom-theme-load-path dir))))
 (register-definition-prefixes "modus-themes" '("modus-themes-"))
+
+
+
+(register-definition-prefixes "modus-vivendi-deuteranopia-theme" '("modus-vivendi-deuteranopia-palette-"))
+
+
+
+(register-definition-prefixes "modus-vivendi-theme" '("modus-vivendi-palette-"))
+
+
+
+(register-definition-prefixes "modus-vivendi-tinted-theme" '("modus-vivendi-tinted-palette-"))
+
+
+
+(register-definition-prefixes "modus-vivendi-tritanopia-theme" '("modus-vivendi-tritanopia-palette-"))
 
 
 (provide 'modus-themes-autoloads)
@@ -3887,14 +3934,14 @@ it is disabled.
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
+        '(yaml-mode xref xr compat with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package cond-let transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
         package-activated-list)))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251013.512" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/rg-20251004.2013" "/home/scfrazer/.emacs.d/elpa/transient-20251006.1815" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250901.1618" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251022.534" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251020.1535" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20250901.1618" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
