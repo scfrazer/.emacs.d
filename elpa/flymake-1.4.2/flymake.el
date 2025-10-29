@@ -4,7 +4,7 @@
 
 ;; Author: Pavel Kobyakov <pk_at_work@yahoo.com>
 ;; Maintainer: Spencer Baugh <sbaugh@janestreet.com>
-;; Version: 1.4.1
+;; Version: 1.4.2
 ;; Keywords: c languages tools
 ;; Package-Requires: ((emacs "26.1") (eldoc "1.14.0") (project "0.7.1"))
 
@@ -185,27 +185,28 @@ See `flymake-error-bitmap' and `flymake-warning-bitmap'."
 		 (const right-fringe)
 		 (const :tag "No fringe indicators" nil)))
 
-(defcustom flymake-indicator-type 'fringes
+(defcustom flymake-indicator-type 'auto
   "Indicate which indicator type to use for display errors.
 
 The value can be nil (don't indicate errors but just highlight them),
-the symbol `fringes' (use fringes) or the symbol `margins' (use
-margins).
+the symbol `fringes' (use fringes), the symbol `margins' (use margins),
+or the symbol `auto' to automatically guess.
 
 Difference between fringes and margin is that fringes support displaying
 bitmaps on graphical displays and margins display text in a blank area
 from current buffer that works in both graphical and text displays.
-Thus, even when `fringes' is selected, margins will still be used on
-text displays and also when fringes are disabled.
+When margins are selected, Flymake may need to resize them for each
+buffer.  See `flymake-autoresize-margins'.
 
 See Info node `Fringes' and Info node `(elisp)Display Margins'."
   :version "31.1"
   :type '(choice (const :tag "Use Fringes" fringes)
                  (const :tag "Use Margins" margins)
+                 (const :tag "Use fringes if possible, otherwise margins" auto)
                  (const :tag "No indicators" nil)))
 
 (defcustom flymake-margin-indicators-string
-  '((error "!!" compilation-error)
+  '((error "‼" compilation-error)
     (warning "!" compilation-warning)
     (note "!" compilation-info))
   "Strings used for margins indicators.
@@ -215,7 +216,11 @@ or a list of 2 elements specifying only the error type and
 the corresponding string.
 
 The option `flymake-margin-indicator-position' controls how and where
-this is used."
+this is used.
+
+Note that the default value \"DOUBLE EXCLAMATION MARK\" for the
+indicator of the \\+`error' type will be silently replaced by the
+ASCII equivalent if that character is not displayable by the terminal."
   :version "30.1"
   :type '(repeat :tag "Error types lists"
                  (list :tag "String and face for error types"
@@ -224,9 +229,9 @@ this is used."
                        (face :tag "Face"))))
 
 (defcustom flymake-autoresize-margins t
-  "If non-nil, automatically resize margin-width calling `flymake--resize-margins'.
+  "If non-nil, automatically resize margin-width.
 
-Only relevant if `flymake-indicator-type' is set to margins."
+Only relevant if `flymake-indicator-type' is set to `margins' or `auto'."
   :version "30.1"
   :type 'boolean)
 
@@ -586,7 +591,7 @@ verify FILTER, a function, and sort them by COMPARE (using KEY)."
   :package-version '(Flymake . "1.3.4"))
 
 (defface flymake-end-of-line-diagnostics-face
-  '((t :height 0.85 :box (:line-width -1)))
+  '((t :height 0.85))
   "Face used for end-of-line diagnostics.
 See variable `flymake-show-diagnostics-at-end-of-line'."
   :package-version '(Flymake . "1.3.5"))
@@ -616,10 +621,14 @@ See variable `flymake-show-diagnostics-at-end-of-line'."
 (defcustom flymake-show-diagnostics-at-end-of-line nil
   "If non-nil, add diagnostic summary messages at end-of-line.
 The value `short' means that only the most severe diagnostic
-shall be shown.  Any other non-nil value means show all
-diagnostic summaries at end-of-line."
+shall be shown.
+The value `fancy' means to layout diagnostic summary information
+below the affected line with Unicode graphics.
+Any other non-nil value means show all diagnostic summaries at
+end-of-line."
   :type '(choice (const :tag "Display most severe diagnostic" short)
                  (const :tag "Display all diagnostics" t)
+                 (const :tag "Display all diagnostics using Unicode" fancy)
                  (const :tag "Don't display diagnostics at end-of-line" nil))
   :package-version '(Flymake . "1.3.6"))
 
@@ -830,14 +839,21 @@ associated `flymake-category' return DEFAULT."
   (flymake--lookup-type-property type 'severity
                                  (warning-numeric-level :error)))
 
-(defun flymake--indicator-overlay-spec (type)
-  "Return INDICATOR as propertized string to use in error indicators."
+(defun flymake--suitably-fringed-p (&optional window)
+  "Tell if WINDOW is suitably fringed-up fro Flymake."
+  (cl-case flymake-fringe-indicator-position
+    (left-fringe (< 0 (nth 0 (window-fringes window))))
+    (right-fringe (< 0 (nth 1 (window-fringes window))))))
+
+(defun flymake--bs-display (type where)
+  "Return a `display' spec for an overlay's `before-string'.
+The overlay will represent a diagnostic of type TYPE.  WHERE is the
+symbol `fringes' or the symbol `margins'."
   (let* ((indicator (flymake--lookup-type-property
                      type
-                     (cond ((eq flymake-indicator-type 'fringes)
-                            'flymake-bitmap)
-                           ((eq flymake-indicator-type 'margins)
-                            'flymake-margin-string))
+                     (cl-case where
+                       (fringes 'flymake-bitmap)
+                       (margins 'flymake-margin-string))
                      (alist-get 'bitmap (alist-get type ; backward compat
                                                    flymake-diagnostic-types-alist))))
          (value (if (symbolp indicator)
@@ -847,47 +863,48 @@ associated `flymake-category' return DEFAULT."
                         value
                       (list value)))
          (indicator-car (car valuelist)))
+    (cond ((and (symbolp indicator-car)
+                flymake-fringe-indicator-position)
+           (cons flymake-fringe-indicator-position valuelist))
+          ((and (stringp indicator-car)
+                flymake-margin-indicator-position)
+           `((margin ,flymake-margin-indicator-position)
+             ,(propertize
+               indicator-car
+               'face `(:inherit (,(cdr valuelist) default))
+               'mouse-face 'highlight
+               'help-echo "Open Flymake diagnostics"
+               'keymap (let ((map (make-sparse-keymap)))
+                         (define-key
+                          map `[,flymake-margin-indicator-position mouse-1]
+                          #'flymake-show-buffer-diagnostics)
+                         map)))))))
 
-    (cond
-     ((and (symbolp indicator-car)
-           flymake-fringe-indicator-position)
-      (propertize "!" 'display
-                  (cons flymake-fringe-indicator-position valuelist)))
-     ((and (stringp indicator-car)
-           flymake-margin-indicator-position)
-      (propertize "!"
-                  'display
-                  `((margin ,flymake-margin-indicator-position)
-                    ,(propertize indicator-car
-                                 'face `(:inherit (,(cdr valuelist) default))
-                                 'mouse-face 'highlight
-                                 'help-echo "Open Flymake diagnostics"
-                                 'keymap (let ((map (make-sparse-keymap)))
-                                           (define-key
-                                            map `[,flymake-margin-indicator-position mouse-1]
-                                            #'flymake-show-buffer-diagnostics)
-                                           map))))))))
+(defun flymake--restore-margins ()
+  (when flymake--original-margin-width
+    (if (eq flymake-margin-indicator-position 'left-margin)
+        (setq left-margin-width flymake--original-margin-width)
+      (setq right-margin-width flymake--original-margin-width))))
 
-(defun flymake--resize-margins (&optional orig-width)
-  "Resize current window margins according to `flymake-margin-indicator-position'.
-Return to original margin width if ORIG-WIDTH is non-nil."
-  (when (and (eq flymake-indicator-type 'margins)
-             flymake-autoresize-margins)
-    (cond
-     ((and orig-width flymake--original-margin-width)
-      (if (eq flymake-margin-indicator-position 'left-margin)
-          (setq left-margin-width flymake--original-margin-width)
-        (setq right-margin-width flymake--original-margin-width)))
-     (t
-      (if (eq flymake-margin-indicator-position 'left-margin)
-          (setq flymake--original-margin-width left-margin-width
-		left-margin-width 2)
-        (setq flymake--original-margin-width right-margin-width
-	      right-margin-width 2))))
-    ;; Apply margin to all windows available.
-    (mapc (lambda (x)
-            (set-window-buffer x (window-buffer x)))
-          (get-buffer-window-list nil nil 'visible))))
+(defun flymake--resize-margins ()
+  (let* ((indicators
+          (mapcar (lambda (sym)
+                    (let ((ind (get sym 'flymake-margin-string)))
+                      (when (and (equal (car ind) "‼")
+                                 (not (char-displayable-p ?‼)))
+                        (setq ind (cons "!!" (cdr ind)))
+                        (put sym 'flymake-margin-string ind))
+                      (car ind)))
+                  '(flymake-error flymake-warning flymake-note)))
+         (width (apply #'max (mapcar #'string-width indicators))))
+    (if (eq flymake-margin-indicator-position 'left-margin)
+        (setq flymake--original-margin-width left-margin-width
+              left-margin-width width)
+      (setq flymake--original-margin-width right-margin-width
+            right-margin-width width)))
+  (mapc (lambda (x)
+          (set-window-buffer x (window-buffer x)))
+        (get-buffer-window-list nil nil 'visible)))
 
 (defun flymake--equal-diagnostic-p (a b)
   "Tell if A and B are equivalent `flymake--diag' objects."
@@ -903,47 +920,11 @@ Return to original margin width if ORIG-WIDTH is non-nil."
 
 (defun flymake--delete-overlay (ov)
   "Like `delete-overlay', delete OV, but do some more stuff."
-  (let ((eolov (overlay-get ov 'eol-ov)))
+  (let ((eolov (overlay-get ov 'flymake--eol-ov)))
     (when eolov
       (let ((src-ovs (delq ov (overlay-get eolov 'flymake-eol-source-overlays))))
         (overlay-put eolov 'flymake-eol-source-overlays src-ovs)))
     (delete-overlay ov)))
-
-(defun flymake--eol-overlay-summary (src-ovs)
-  "Helper function for `flymake--update-eol-overlays'."
-  (cl-flet ((summarize (d)
-              (flymake--format-diagnostic d :eol 'eol-face)))
-    (let* ((diags
-            (cl-sort
-             (mapcar (lambda (o) (overlay-get o 'flymake-diagnostic)) src-ovs)
-             #'>
-             :key (lambda (d) (flymake--severity (flymake-diagnostic-type d)))))
-           (summary
-            (concat
-             "  "
-             (cond ((eq flymake-show-diagnostics-at-end-of-line 'short)
-                    (concat
-                     (summarize (car diags))
-                     (and (cdr diags)
-                          (concat
-                           " "
-                           (propertize (format "and %s more"
-                                               (1- (length diags)))
-                                       'face 'flymake-eol-information-face)))))
-                   (t
-                    (mapconcat #'summarize diags " "))))))
-      (put-text-property 0 1 'cursor t summary)
-      summary)))
-
-(defun flymake--update-eol-overlays ()
-  "Update the `before-string' property of end-of-line overlays."
-  (save-restriction
-    (widen)
-    (dolist (o (overlays-in (point-min) (point-max)))
-      (when (overlay-get o 'flymake--eol-overlay)
-        (if-let* ((src-ovs (overlay-get o 'flymake-eol-source-overlays)))
-            (overlay-put o 'before-string (flymake--eol-overlay-summary src-ovs))
-          (delete-overlay o))))))
 
 (cl-defun flymake--highlight-line (diagnostic &optional foreign)
   "Attempt to overlay DIAGNOSTIC in current buffer.
@@ -1032,9 +1013,16 @@ Return nil or the overlay created."
                   (overlay-put ov prop (flymake--lookup-type-property
                                         type prop value)))))
       (default-maybe 'face 'flymake-error)
-      (default-maybe 'before-string (flymake--indicator-overlay-spec type))
-      ;; (default-maybe 'after-string
-      ;;                (flymake--diag-text diagnostic))
+      (default-maybe
+       'before-string
+       (propertize
+        "!" 'display
+        (if (eq flymake-indicator-type 'auto)
+            `((when (flymake--suitably-fringed-p) .
+                    ,(flymake--bs-display type 'fringes))
+              (when (not (flymake--suitably-fringed-p)) .
+                    ,(flymake--bs-display type 'margins)))
+          (flymake--bs-display type flymake-indicator-type))))
       (default-maybe 'help-echo
         (lambda (window _ov pos)
           (with-selected-window window
@@ -1051,6 +1039,11 @@ Return nil or the overlay created."
     ;;
     (overlay-put ov 'evaporate t)
     (overlay-put ov 'flymake-overlay t)
+    (overlay-put ov 'modification-hooks
+                 `(,(lambda (ov after &rest _)
+                      (when-let* ((eolov
+                                   (and (null after) (overlay-get ov 'flymake--eol-ov))))
+                        (delete-overlay eolov)))))
     (overlay-put ov 'flymake-diagnostic diagnostic)
     ;; Handle `flymake-show-diagnostics-at-end-of-line'
     ;;
@@ -1072,7 +1065,7 @@ Return nil or the overlay created."
             (overlay-put eolov 'flymake--eol-overlay t)
             (overlay-put eolov 'flymake-eol-source-overlays (list ov))
             (overlay-put eolov 'evaporate (not (= start end)))) ; FIXME: fishy
-          (overlay-put ov 'eol-ov eolov))))
+          (overlay-put ov 'flymake--eol-ov eolov))))
     ov))
 
 ;; Nothing in Flymake uses this at all any more, so this is just for
@@ -1199,6 +1192,13 @@ report applies to that region."
            (flymake--state-foreign-diags state))
   (clrhash (flymake--state-foreign-diags state)))
 
+(defun flymake--clear-state (state)
+  (cl-loop for diag in (flymake--state-diags state)
+           for ov = (flymake--diag-overlay diag)
+           when ov do (flymake--delete-overlay ov))
+  (setf (flymake--state-diags state) nil)
+  (flymake--clear-foreign-diags state))
+
 (defvar-local flymake-mode nil)
 
 (defvar-local flymake--mode-line-counter-cache nil
@@ -1216,7 +1216,7 @@ and other buffers."
     ;;
     (cond
      (;; If there is a `region' arg, only affect the diagnostics whose
-      ;; overlays are in a certain region.  Discard "foreign"
+      ;; overlays are in a certain region.  Ignore "foreign"
       ;; diagnostics.
       region
       (cl-loop for diag in (flymake--state-diags state)
@@ -1229,16 +1229,9 @@ and other buffers."
                else collect diag into surviving
                finally (setf (flymake--state-diags state)
                              surviving)))
-     (;; Else, if this is the first report, zero all lists and delete
-      ;; all associated overlays.
+     (;; Else, if this is the first report, fully clear this state.
       (not (flymake--state-reported-p state))
-      (cl-loop for diag in (flymake--state-diags state)
-               for ov = (flymake--diag-overlay diag)
-               when ov do (flymake--delete-overlay ov))
-      (setf (flymake--state-diags state) nil)
-      ;; Also clear all overlays for `foreign-diags' in all other
-      ;; buffers.
-      (flymake--clear-foreign-diags state))
+      (flymake--clear-state state))
      (;; If this is not the first report, do no cleanup.
        t))
 
@@ -1395,8 +1388,11 @@ Interactively, with a prefix arg, FORCE is t."
                     deferred))
         (buffer (current-buffer)))
     (cl-labels
-        ((start-post-command
-          ()
+        ((visible-buffer-window ()
+           (and (or (not (daemonp))
+                    (not (null (frame-parameter nil 'client))))
+                (get-buffer-window (current-buffer))))
+         (start-post-command ()
           (remove-hook 'post-command-hook #'start-post-command
                        nil)
           ;; The buffer may have disappeared already, e.g. because of
@@ -1404,22 +1400,30 @@ Interactively, with a prefix arg, FORCE is t."
           (when (buffer-live-p buffer)
             (with-current-buffer buffer
               (flymake-start (remove 'post-command deferred) force))))
-         (start-on-display
-          ()
+         (start-on-display ()
           (remove-hook 'window-configuration-change-hook #'start-on-display
                        'local)
-          (flymake-start (remove 'on-display deferred) force)))
+          ;; Double check that buffer is actually visible (bug#77313)
+          (if (visible-buffer-window)
+              (setq deferred (remove 'on-display deferred)))
+          (flymake-start deferred force)))
       (cond ((and (memq 'post-command deferred)
                   this-command)
              (add-hook 'post-command-hook
                        #'start-post-command
                        'append nil))
             ((and (memq 'on-display deferred)
-                  (not (get-buffer-window (current-buffer))))
+                  (not (visible-buffer-window)))
              (add-hook 'window-configuration-change-hook
                        #'start-on-display
                        'append 'local))
             (flymake-mode
+             ;; The buffer about to be annotated is visible.  Check
+             ;; necessary conditions to auto-set margins here (bug#77313)
+             (let* ((w (and (eq flymake-indicator-type 'auto)
+                            flymake-autoresize-margins
+                            (visible-buffer-window))))
+               (unless (flymake--suitably-fringed-p w) (flymake--resize-margins)))
              (setq flymake-check-start-time (float-time))
              (let ((backend-args
                     (and
@@ -1433,6 +1437,17 @@ Interactively, with a prefix arg, FORCE is t."
                            (cl-reduce
                             #'max (mapcar #'cadr flymake--recent-changes))))))
                (setq flymake--recent-changes nil)
+               ;; Delete all overlays that didn't come from one of the
+               ;; current diagnostic functions.
+               ;; Sometimes diagnostic functions are removed from
+               ;; `flymake-diagnostic-functions' (e.g. by eglot).  This
+               ;; leaves overlays in the buffer which otherwise won't be
+               ;; cleaned up until `flymake-mode' is restarted.
+               ;; See bug#78862
+               (maphash (lambda (backend state)
+                          (unless (memq backend flymake-diagnostic-functions)
+                            (flymake--clear-state state)))
+                        flymake--state)
                (run-hook-wrapped
                 'flymake-diagnostic-functions
                 (lambda (backend)
@@ -1459,6 +1474,9 @@ Interactively, with a prefix arg, FORCE is t."
                 #'flymake-show-buffer-diagnostics)
     map)
   "Keymap for `flymake-mode'")
+
+(defvar-local flymake-current-diagnostic-line 0
+  "The line of the most recently focused diagnostic in a diagnostics buffer.")
 
 ;;;###autoload
 (define-minor-mode flymake-mode
@@ -1509,15 +1527,9 @@ special *Flymake log* buffer."  :group 'flymake :lighter
     (add-hook 'kill-buffer-hook 'flymake-kill-buffer-hook nil t)
     (add-hook 'eldoc-documentation-functions 'flymake-eldoc-function t t)
 
-    (when (and (eq flymake-indicator-type 'fringes)
-               (not (cl-case flymake-fringe-indicator-position
-                      (left-fringe (< 0 (nth 0 (window-fringes))))
-                      (right-fringe (< 0 (nth 1 (window-fringes)))))))
-      ;; There are no fringes in the buffer, fallback to margins.
-      (setq-local flymake-indicator-type 'margins))
-
-    ;; AutoResize margins.
-    (flymake--resize-margins)
+    ;; Maybe auto-resize margins
+    (when (and (eq flymake-indicator-type 'margins) flymake-autoresize-margins)
+      (flymake--resize-margins))
 
     ;; We can't just `clrhash' `flymake--state': there may be in
     ;; in-transit requests from other backends if `flymake-mode' was
@@ -1535,8 +1547,8 @@ special *Flymake log* buffer."  :group 'flymake :lighter
     ;;+(remove-hook 'find-file-hook (function flymake-find-file-hook) t)
     (remove-hook 'eldoc-documentation-functions 'flymake-eldoc-function t)
 
-    ;; return margin to original size
-    (flymake--resize-margins t)
+    ;; return any resized margin to original size
+    (flymake--restore-margins)
 
     (when flymake-timer
       (cancel-timer flymake-timer)
@@ -1915,12 +1927,17 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") 'flymake-goto-diagnostic)
     (define-key map (kbd "SPC") 'flymake-show-diagnostic)
+    (keymap-set map "C-o" #'flymake-show-diagnostic)
+    (keymap-set map "C-m" #'flymake-goto-diagnostic)
+    (keymap-set map "n" #'next-error-this-buffer-no-select)
+    (keymap-set map "p" #'previous-error-this-buffer-no-select)
     map))
 
 (defun flymake-show-diagnostic (pos &optional other-window)
   "From Flymake diagnostics buffer, show source of diagnostic at POS."
   (interactive (list (point) t))
-  (let* ((id (or (tabulated-list-get-id pos)
+  (let* ((diagnostics-buffer (current-buffer))
+         (id (or (tabulated-list-get-id pos)
                  (user-error "Nothing at point")))
          (diag (plist-get id :diagnostic))
          (locus (flymake--diag-locus diag))
@@ -1930,6 +1947,7 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
                   (goto-char b)
                   (pulse-momentary-highlight-region
                    b (or e (line-end-position))))))
+    (setq flymake-current-diagnostic-line (line-number-at-pos pos))
     (with-current-buffer (cond ((bufferp locus) locus)
                                (t (find-file-noselect locus)))
       (with-selected-window
@@ -1945,6 +1963,8 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
                                                  (car beg)
                                                  (cdr beg))))
                  (funcall visit bbeg bend)))))
+      ;; Emacs < 27
+      (setq next-error-last-buffer diagnostics-buffer)
       (current-buffer))))
 
 (defun flymake-goto-diagnostic (pos)
@@ -1956,16 +1976,16 @@ POS can be a buffer position or a button"
 
 (defvar flymake--tabulated-list-format-base
   `[("File" 15)
-    ("Line" 5 ,(lambda (l1 l2)
+    ("Line" 4 ,(lambda (l1 l2)
                  (< (plist-get (car l1) :line)
                     (plist-get (car l2) :line)))
      :right-align t)
     ("Col" 3 nil :right-align t)
-    ("Type" 8 ,(lambda (l1 l2)
+    ("Type" 4 ,(lambda (l1 l2)
                  (< (plist-get (car l1) :severity)
                     (plist-get (car l2) :severity))))
-    ("Origin" 8 t)
-    ("Code" 8 t)
+    ("Origin" 6 t)
+    ("Code" 4 t)
     ("Message" 0 t)])
 
 (defun flymake--tabulated-setup-1 (diags project-root)
@@ -2058,6 +2078,7 @@ resizing columns and ommiting redudant columns."
 (defun flymake--tabulated-setup (use-project)
   "Helper for `flymake-diagnostics-buffer-mode'.
 And also `flymake-project-diagnostics-mode'."
+  (setq-local next-error-function #'flymake--diagnostics-next-error)
   (let ((saved-r-b-f revert-buffer-function)
         (refresh
          (lambda ()
@@ -2086,6 +2107,23 @@ And also `flymake-project-diagnostics-mode'."
           (lambda (&rest args)
             (funcall refresh)
             (apply saved-r-b-f args)))))
+
+(defun flymake--diagnostics-next-error (n &optional reset)
+  "`next-error-function' for flymake diagnostics buffers.
+N is an integer representing how many errors to move.
+If RESET is non-nil, return to the beginning of the errors before
+moving."
+  (let ((line (if reset 1 flymake-current-diagnostic-line))
+        (total-lines (count-lines (point-min) (point-max))))
+    (goto-char (point-min))
+    (unless (zerop total-lines)
+      (let ((target-line (+ line n)))
+        (setq target-line (max 1 target-line))
+        (setq target-line (min target-line total-lines))
+        (forward-line (1- target-line))))
+    (when-let* ((win (get-buffer-window nil t)))
+      (set-window-point win (point)))
+    (flymake-goto-diagnostic (point))))
 
 (define-derived-mode flymake-diagnostics-buffer-mode tabulated-list-mode
   "Flymake diagnostics"
@@ -2143,6 +2181,7 @@ This function doesn't move point"
          window)
     (with-current-buffer target
       (setq flymake--diagnostics-buffer-source source)
+      (setq next-error-last-buffer (current-buffer))
       (revert-buffer)
       (setq window
             (display-buffer (current-buffer)
@@ -2187,6 +2226,11 @@ Commands such as `flymake-show-project-diagnostics' will include
 some of this variable's contents the diagnostic listings.")
 
 (defvar-local flymake--project-diagnostic-list-project nil)
+
+(defvar flymake-project-diagnostics-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map flymake-diagnostics-buffer-mode-map)
+    map))
 
 (define-derived-mode flymake-project-diagnostics-mode tabulated-list-mode
   "Flymake diagnostics"
@@ -2249,6 +2293,7 @@ some of this variable's contents the diagnostic listings.")
     (with-current-buffer buffer
       (flymake-project-diagnostics-mode)
       (setq-local flymake--project-diagnostic-list-project prj)
+      (setq next-error-last-buffer (current-buffer))
       (revert-buffer)
       (display-buffer (current-buffer)
                       `((display-buffer-reuse-window
@@ -2267,6 +2312,130 @@ some of this variable's contents the diagnostic listings.")
                 (and (eq major-mode 'flymake-diagnostics-buffer-mode)
                      (eq flymake--diagnostics-buffer-source buffer)))
         (revert-buffer)))))
+
+
+;;; Eol overlay helpers
+;;;
+(defun flymake--update-eol-overlays ()
+  "Update the `display' property of end-of-line overlays."
+  (save-restriction
+    (widen)
+    (dolist (o (overlays-in (point-min) (point-max)))
+      (when (overlay-get o 'flymake--eol-overlay)
+        (if-let* ((src-ovs (overlay-get o 'flymake-eol-source-overlays)))
+            (overlay-put o 'display (flymake--eol-overlay-summary src-ovs))
+          (delete-overlay o))))))
+
+(defun flymake--eol-overlay-summary (src-ovs)
+  "Helper function for `flymake--update-eol-overlays'."
+  (cl-flet ((summarize (d)
+              (flymake--format-diagnostic d :eol 'eol-face)))
+    (let* ((diags
+            (cl-sort
+             (mapcar (lambda (o) (overlay-get o 'flymake-diagnostic)) src-ovs)
+             #'>
+             :key (lambda (d) (flymake--severity (flymake-diagnostic-type d)))))
+           (summary
+            (concat
+             "  "
+             (cond ((eq flymake-show-diagnostics-at-end-of-line 'short)
+                    (concat
+                     (summarize (car diags))
+                     (and (cdr diags)
+                          (concat
+                           " "
+                           (propertize (format "and %s more"
+                                               (1- (length diags)))
+                                       'face 'flymake-eol-information-face)))))
+                   ((eq flymake-show-diagnostics-at-end-of-line 'fancy)
+                    (flymake--eol-draw-fancy diags #'summarize))
+                   (t
+                    (mapconcat #'summarize diags " ")))
+             "\n")))
+      (put-text-property 0 1 'cursor t summary)
+      summary)))
+
+(defun flymake--eol-draw-fancy-1 (text boxdraw-face line-beg-col
+                                       height-to-clear
+                                       text-beg-col
+                                       text-end-col)
+  (cl-flet ((move (cl)
+              (let* ((lep (line-end-position))
+                     (target (+ (point) cl))
+                     (diff (- target lep)))
+                (cond ((> diff 0)
+                       (goto-char lep)
+                       (insert (make-string diff ? )))
+                      (t
+                       (goto-char target)))))
+            (onward ()
+              (let ((rem (forward-line 1)))
+                (unless (and (not (eobp)) (zerop rem))
+                  (goto-char (point-max))
+                  (insert "\n")))))
+    (goto-char (point-min))
+    (cl-loop
+     with fork = (propertize "├" 'face boxdraw-face)
+     with pipe = (propertize "│" 'face boxdraw-face)
+     with inhibit-field-text-motion = t
+     for i from 0
+     repeat height-to-clear
+     do (move line-beg-col)
+     (let ((c (char-before)))
+       (delete-char -1)
+       (insert
+        (propertize
+         (cond ;; ((zerop i) "┬")
+          ((memq c '(?└ ?├)) fork)
+          (t         pipe))
+         'face boxdraw-face)))
+     (onward))
+    (move line-beg-col)
+    (delete-char -1)
+    (insert (propertize "└" 'face boxdraw-face))
+    (insert (propertize (make-string (- text-beg-col line-beg-col 1)
+                                     ?─)
+                        'face boxdraw-face))
+    (insert " ")
+    (let ((rect (with-temp-buffer
+                  (insert text)
+                  (let ((fill-column (- text-end-col text-beg-col)))
+                    (fill-paragraph)
+                    (forward-line 0)
+                    (move fill-column)
+                    (extract-rectangle (point-min) (point-max))))))
+      (insert-rectangle rect)
+      (+ height-to-clear (length rect)))))
+
+(defun flymake--eol-draw-fancy (diags summarize-fn)
+  (with-temp-buffer
+    (cl-loop
+     with sorted = (cl-sort diags #'> :key #'flymake-diagnostic-beg)
+     for diag in sorted
+     for text = (funcall summarize-fn diag)
+     for line-beg-col =
+     (with-current-buffer (flymake-diagnostic-buffer diag)
+       (save-excursion
+         (goto-char (flymake-diagnostic-beg diag))
+         (1+ (current-column))))
+     for height-to-clear = 0 then ret
+     for i from 0
+     for adjust = (* i 2)
+     for face = `(:foreground
+                  ,(face-attribute
+                    (or (get-text-property 0 'face text)
+                        'flymake-error)
+                    :foreground nil t))
+     for text-beg-col = (max (- (max 30 (+ line-beg-col 5)) adjust) (+ line-beg-col 1))
+     for text-end-col = (max 100 (+ text-beg-col 40))
+     for ret = (flymake--eol-draw-fancy-1
+                text
+                face
+                line-beg-col
+                height-to-clear
+                text-beg-col
+                text-end-col))
+    (concat " \n" (buffer-string))))
 
 (provide 'flymake)
 

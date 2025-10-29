@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20251020.1535
-;; Package-Revision: 7b8f01dff1a3
+;; Package-Version: 20251024.1106
+;; Package-Revision: 1d2710c7f8bb
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "30.1")
@@ -2273,9 +2273,9 @@ of the corresponding object."
                  (error "Cannot bind %S to %s and also %s"
                         (string-trim key) cmd alt))
                 ((define-key map kbd cmd))))))
-    (when$ (keymap-lookup map "-") (keymap-set map "<kp-subtract>" $))
-    (when$ (keymap-lookup map "=") (keymap-set map "<kp-equal>" $))
-    (when$ (keymap-lookup map "+") (keymap-set map "<kp-add>" $))
+    (when-let ((b (keymap-lookup map "-"))) (keymap-set map "<kp-subtract>" b))
+    (when-let ((b (keymap-lookup map "="))) (keymap-set map "<kp-equal>" b))
+    (when-let ((b (keymap-lookup map "+"))) (keymap-set map "<kp-add>" b))
     (when transient-enable-popup-navigation
       ;; `transient--make-redisplay-map' maps only over bindings that are
       ;; directly in the base keymap, so that cannot be a composed keymap.
@@ -5480,7 +5480,6 @@ as stand-in for elements of exhausted lists."
 ;;   ("and$"         . "cond-let--and$")
 ;;   ("and-let"      . "cond-let--and-let")
 ;;   ("if-let"       . "cond-let--if-let")
-;;   ("when$"        . "cond-let--when$")
 ;;   ("when-let"     . "cond-let--when-let")
 ;;   ("while-let"    . "cond-let--while-let"))
 ;; indent-tabs-mode: nil

@@ -1,4 +1,4 @@
-;;; modus-vivendi-tinted-theme.el --- Elegant, highly legible theme with a night sky background -*- lexical-binding:t -*-
+;;; modus-operandi-tritanopia-theme.el --- Tritanopia-optimized theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2025  Free Software Foundation, Inc.
 
@@ -26,9 +26,10 @@
 ;;
 ;; The Modus themes conform with the highest standard for
 ;; color-contrast accessibility between background and foreground
-;; values (WCAG AAA).  Please refer to the official Info manual for
-;; further documentation (distributed with the themes, or available
-;; at: <https://protesilaos.com/emacs/modus-themes>).
+;; values (WCAG AAA).  They are also highly customizable and can even
+;; be used as a basis for other themes.  Please refer to the official
+;; Info manual for further documentation (distributed with the themes,
+;; or available at: <https://protesilaos.com/emacs/modus-themes>).
 
 ;;; Code:
 
@@ -41,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-vivendi-tinted-palette-user nil
-  "Like the `modus-vivendi-tinted-palette' for user-defined entries.
+(defcustom modus-operandi-tritanopia-palette-user nil
+  "Like the `modus-operandi-tritanopia-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi-tinted-palette-overrides')."
+`modus-operandi-tritanopia-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-vivendi-tinted-palette-overrides nil
-  "Overrides for `modus-vivendi-tinted-palette'.
+(defcustom modus-operandi-tritanopia-palette-overrides nil
+  "Overrides for `modus-operandi-tritanopia-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -74,16 +75,18 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-vivendi-tinted
+ 'modus-operandi-tritanopia
  'modus-themes
- "Elegant, highly legible theme with a night sky background.
-Conforms with the highest legibility standard for color contrast
-between background and foreground in any given piece of text,
-which corresponds to a minimum contrast in relative luminance of
-7:1 (WCAG AAA standard)."
- 'dark
- 'modus-themes-vivendi-tinted-palette
- 'modus-vivendi-tinted-palette-user
- 'modus-vivendi-tinted-palette-overrides)
+ "Tritanopia-optimized theme with a white background.
+This variant is optimized for users with blue-yellow color
+deficiency (tritanopia).  It conforms with the highest
+legibility standard for color contrast between background and
+foreground in any given piece of text, which corresponds to a
+minimum contrast in relative luminance of 7:1 (WCAG AAA
+standard)."
+ 'light
+ 'modus-themes-operandi-tritanopia-palette
+ 'modus-operandi-tritanopia-palette-user
+ 'modus-operandi-tritanopia-palette-overrides)
 
-;;; modus-vivendi-tinted-theme.el ends here
+;;; modus-operandi-tritanopia-theme.el ends here
