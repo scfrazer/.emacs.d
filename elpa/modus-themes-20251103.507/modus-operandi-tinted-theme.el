@@ -1,4 +1,4 @@
-;;; modus-vivendi-theme.el --- Elegant, highly legible theme with a black background -*- lexical-binding:t -*-
+;;; modus-operandi-tinted-theme.el --- Elegant, highly legible theme with a light ochre background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2025  Free Software Foundation, Inc.
 
@@ -27,7 +27,7 @@
 ;; The Modus themes conform with the highest standard for
 ;; color-contrast accessibility between background and foreground
 ;; values (WCAG AAA).  They are also highly customizable and can even
-;; be used as a basis for other themes.  Please refer to the official
+;; be used as the basis for other themes.  Please refer to the official
 ;; Info manual for further documentation (distributed with the themes,
 ;; or available at: <https://protesilaos.com/emacs/modus-themes>).
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-vivendi-palette-user nil
-  "Like the `modus-vivendi--palette' for user-defined entries.
+(defcustom modus-operandi-tinted-palette-user nil
+  "Like the `modus-operandi-tinted-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi--palette-overrides')."
+`modus-operandi-tinted-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-vivendi-palette-overrides nil
-  "Overrides for `modus-vivendi-palette'.
+(defcustom modus-operandi-tinted-palette-overrides nil
+  "Overrides for `modus-operandi-tinted-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,16 +75,16 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-vivendi
+ 'modus-operandi-tinted
  'modus-themes
- "Elegant, highly legible theme with a black background.
+ "Elegant, highly legible theme with a light ochre background.
 Conforms with the highest legibility standard for color contrast
 between background and foreground in any given piece of text,
 which corresponds to a minimum contrast in relative luminance of
 7:1 (WCAG AAA standard)."
- 'dark
- 'modus-themes-vivendi-palette
- 'modus-vivendi-palette-user
- 'modus-vivendi-palette-overrides)
+ 'light
+ 'modus-themes-operandi-tinted-palette
+ 'modus-operandi-tinted-palette-user
+ 'modus-operandi-tinted-palette-overrides)
 
-;;; modus-vivendi-theme.el ends here
+;;; modus-operandi-tinted-theme.el ends here

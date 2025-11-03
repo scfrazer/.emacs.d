@@ -9,8 +9,8 @@
 ;; Homepage: https://github.com/tarsius/cond-let
 ;; Keywords: extensions
 
-;; Package-Version: 20251019.2020
-;; Package-Revision: 09ebf1caa81c
+;; Package-Version: 20251101.1942
+;; Package-Revision: 288b7d365632
 ;; Package-Requires: ((emacs "28.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later

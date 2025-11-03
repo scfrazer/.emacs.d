@@ -1,4 +1,4 @@
-;;; modus-vivendi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a black background -*- lexical-binding:t -*-
+;;; modus-operandi-theme.el --- Elegant, highly legible theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2025  Free Software Foundation, Inc.
 
@@ -27,7 +27,7 @@
 ;; The Modus themes conform with the highest standard for
 ;; color-contrast accessibility between background and foreground
 ;; values (WCAG AAA).  They are also highly customizable and can even
-;; be used as a basis for other themes.  Please refer to the official
+;; be used as the basis for other themes.  Please refer to the official
 ;; Info manual for further documentation (distributed with the themes,
 ;; or available at: <https://protesilaos.com/emacs/modus-themes>).
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-vivendi-deuteranopia-palette-user nil
-  "Like the `modus-vivendi-deuteranopia-palette' for user-defined entries.
+(defcustom modus-operandi-palette-user nil
+  "Like the `modus-operandi-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi-deuteranopia-palette-overrides')."
+`modus-operandi-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-vivendi-deuteranopia-palette-overrides nil
-  "Overrides for `modus-vivendi-deuteranopia-palette'.
+(defcustom modus-operandi-palette-overrides nil
+  "Overrides for `modus-operandi-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,18 +75,16 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-vivendi-deuteranopia
+ 'modus-operandi
  'modus-themes
- "Deuteranopia-optimized theme with a black background.
-This variant is optimized for users with red-green color
-deficiency (deuteranopia).  It conforms with the highest
-legibility standard for color contrast between background and
-foreground in any given piece of text, which corresponds to a
-minimum contrast in relative luminance of 7:1 (WCAG AAA
-standard)."
- 'dark
- 'modus-themes-vivendi-deuteranopia-palette
- 'modus-vivendi-deuteranopia-palette-user
- 'modus-vivendi-deuteranopia-palette-overrides)
+ "Elegant, highly legible theme with a white background.
+Conforms with the highest legibility standard for color contrast
+between background and foreground in any given piece of text,
+which corresponds to a minimum contrast in relative luminance of
+7:1 (WCAG AAA standard)."
+ 'light
+ 'modus-themes-operandi-palette
+ 'modus-operandi-palette-user
+ 'modus-operandi-palette-overrides)
 
-;;; modus-vivendi-deuteranopia-theme.el ends here
+;;; modus-operandi-theme.el ends here
