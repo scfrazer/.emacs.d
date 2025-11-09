@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20251013.932
-;; Package-Revision: 8a07e869577e
+;; Package-Version: 20251108.1822
+;; Package-Revision: 8761b68a700f
 ;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -801,7 +801,9 @@ keybinding since CAND includes it."
 (defun marginalia-annotate-package (cand)
   "Annotate package CAND with its description summary."
   (when-let ((pkg-alist (bound-and-true-p package-alist))
-             (name (replace-regexp-in-string "-[0-9\\.-]+\\'" "" cand))
+             ;; See `package-get-version'.
+             (name (replace-regexp-in-string
+                    "-[0-9]\\(?:[0-9.]\\|pre\\|beta\\|alpha\\|snapshot\\)+\\'" "" cand))
              (pkg (intern-soft name))
              (desc (or (unless (equal name cand)
                          (cl-loop with version = (substring cand (1+ (length name)))

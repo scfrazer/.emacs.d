@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20251024.1106
-;; Package-Revision: 1d2710c7f8bb
+;; Package-Version: 20251108.1336
+;; Package-Revision: c04d1dc76611
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "30.1")
