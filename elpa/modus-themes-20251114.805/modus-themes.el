@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20251109.957
-;; Package-Revision: 4c6a73dc717c
+;; Package-Version: 20251114.805
+;; Package-Revision: b9eb16d1a12f
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -6187,7 +6187,7 @@ FG and BG are the main colors."
     `(neo-vc-missing-face ((,c :foreground ,err)))
     `(neo-vc-needs-merge-face ((,c :inherit modus-themes-slant)))
     `(neo-vc-needs-update-face ((,c :inherit underline)))
-    `(neo-vc-removed-face ((,c :strike-through t)))
+    `(neo-vc-removed-face ((,c :underline (:style wave :color ,underline-err) :foreground ,err)))
     `(neo-vc-unlocked-changes-face ((,c :foreground ,info)))
     `(neo-vc-up-to-date-face (( )))
     `(neo-vc-user-face ((,c :foreground ,warning)))
@@ -6210,8 +6210,8 @@ FG and BG are the main colors."
     `(notmuch-search-non-matching-authors ((,c :foreground ,fg-dim)))
     `(notmuch-search-subject ((,c :foreground ,fg-main)))
     `(notmuch-search-unread-face ((,c :inherit bold)))
-    `(notmuch-tag-added ((,c :underline ,info)))
-    `(notmuch-tag-deleted ((,c :strike-through ,err)))
+    `(notmuch-tag-added ((,c :underline (:style wave :color ,underline-note) :foreground ,info)))
+    `(notmuch-tag-deleted ((,c :underline (:style wave :color ,underline-err) :foreground ,err)))
     `(notmuch-tag-face ((,c :foreground ,accent-0)))
     `(notmuch-tag-flagged ((,c :foreground ,keyword)))
     `(notmuch-tag-unread ((,c :foreground ,accent-1)))
@@ -6355,15 +6355,19 @@ FG and BG are the main colors."
     `(org-verse ((,c :inherit modus-themes-fixed-pitch :background ,bg-prose-block-contents :extend t)))
     `(org-warning ((,c :foreground ,warning)))
 ;;;;; org-habit
-    ;; NOTE 2025-10-24: All foregrounds here are a special case.
-    `(org-habit-alert-face ((,c :background ,bg-graph-yellow-0 :foreground ,(readable-foreground-color bg-graph-yellow-0))))
-    `(org-habit-alert-future-face ((,c :background ,bg-graph-yellow-1 :foreground ,(readable-foreground-color bg-graph-yellow-1))))
-    `(org-habit-clear-face ((,c :background ,bg-graph-blue-0 :foreground ,(readable-foreground-color bg-graph-blue-0))))
-    `(org-habit-clear-future-face ((,c :background ,bg-graph-blue-1 :foreground ,(readable-foreground-color bg-graph-blue-1))))
-    `(org-habit-overdue-face ((,c :background ,bg-graph-red-0 :foreground ,(readable-foreground-color bg-graph-red-0))))
-    `(org-habit-overdue-future-face ((,c :background ,bg-graph-red-1 :foreground ,(readable-foreground-color bg-graph-red-1))))
-    `(org-habit-ready-face ((,c :background ,bg-graph-green-0 :foreground ,(readable-foreground-color bg-graph-green-0))))
-    `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1 :foreground ,(readable-foreground-color bg-graph-green-1))))
+    ;; NOTE 2025-11-12: We used to have `readable-foreground-color'
+    ;; for the foreground values of these faces, but that function
+    ;; breaks the theme if it is loaded in the early-init.el.  Maybe
+    ;; we can find a better solution.  I do not want to introduce new
+    ;; palette entries or a new function just for these faces though.
+    `(org-habit-alert-face ((,c :background ,bg-graph-yellow-0)))
+    `(org-habit-alert-future-face ((,c :background ,bg-graph-yellow-1)))
+    `(org-habit-clear-face ((,c :background ,bg-graph-blue-0)))
+    `(org-habit-clear-future-face ((,c :background ,bg-graph-blue-1)))
+    `(org-habit-overdue-face ((,c :background ,bg-graph-red-0)))
+    `(org-habit-overdue-future-face ((,c :background ,bg-graph-red-1)))
+    `(org-habit-ready-face ((,c :background ,bg-graph-green-0)))
+    `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1)))
 ;;;;; org-journal
     `(org-journal-calendar-entry-face ((,c :inherit modus-themes-slant :foreground ,date-common)))
     `(org-journal-calendar-scheduled-face ((,c :inherit modus-themes-slant :foreground ,date-scheduled-subtle)))
@@ -6741,11 +6745,11 @@ FG and BG are the main colors."
     `(symbol-overlay-face-1 ((,c :background ,bg-blue-intense :foreground ,fg-main)))
     `(symbol-overlay-face-2 ((,c :background ,bg-magenta-intense :foreground ,fg-main)))
     `(symbol-overlay-face-3 ((,c :background ,bg-yellow-intense :foreground ,fg-main)))
-    `(symbol-overlay-face-4 ((,c :background ,bg-magenta-intense :foreground ,fg-main)))
+    `(symbol-overlay-face-4 ((,c :background ,bg-cyan-intense :foreground ,fg-main)))
     `(symbol-overlay-face-5 ((,c :background ,bg-red-intense :foreground ,fg-main)))
-    `(symbol-overlay-face-6 ((,c :background ,bg-red-intense :foreground ,fg-main)))
-    `(symbol-overlay-face-7 ((,c :background ,bg-cyan-intense :foreground ,fg-main)))
-    `(symbol-overlay-face-8 ((,c :background ,bg-cyan-intense :foreground ,fg-main)))
+    `(symbol-overlay-face-6 ((,c :background ,bg-green-intense :foreground ,fg-main)))
+    `(symbol-overlay-face-7 ((,c :background ,bg-red-subtle :foreground ,fg-main)))
+    `(symbol-overlay-face-8 ((,c :background ,bg-cyan-subtle :foreground ,fg-main)))
 ;;;;; syslog-mode
     `(syslog-debug ((,c :inherit modus-themes-slant)))
     `(syslog-error ((,c :foreground ,err)))
@@ -6843,6 +6847,8 @@ FG and BG are the main colors."
     `(transient-heading ((,c :inherit bold :foreground ,fg-main)))
     `(transient-inactive-argument ((,c :foreground ,fg-dim)))
     `(transient-inactive-value ((,c :foreground ,fg-dim)))
+    `(transient-inapt-argument ((,c :inherit bold :foreground ,fg-dim)))
+    `(transient-inapt-suffix ((,c :inherit italic :foreground ,fg-dim)))
     ;; NOTE 2023-12-09 10:30:09 +0200: The new user option
     ;; `transient-semantic-coloring' is enabled by default.  This is
     ;; not good for us, because we are making it harder for users who
@@ -6852,7 +6858,7 @@ FG and BG are the main colors."
     ;; Those who want semantic coloring can modify these faces.
     `(transient-key ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
     `(transient-key-exit ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
-    `(transient-key-noop ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind :strike-through t)))
+    `(transient-key-noop ((,c :inherit modus-themes-fixed-pitch :foreground ,fg-dim)))
     `(transient-key-recurse ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
     `(transient-key-return ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
     `(transient-key-stack ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
@@ -6864,7 +6870,7 @@ FG and BG are the main colors."
     `(transient-red ((,c :inherit bold :foreground ,red-faint)))
     `(transient-teal ((,c :inherit bold :foreground ,cyan-cooler)))
     `(transient-unreachable ((,c :foreground ,fg-dim)))
-    `(transient-unreachable-key ((,c :foreground ,fg-dim)))
+    `(transient-unreachable-key ((,c :inherit modus-themes-fixed-pitch :foreground ,fg-dim)))
     `(transient-value ((,c :inherit modus-themes-bold :background ,bg-active-value :foreground ,fg-active-value)))
 ;;;;; trashed
     `(trashed-deleted ((,c :inherit bold :background ,bg-mark-delete :foreground ,fg-mark-delete)))
@@ -6951,16 +6957,16 @@ FG and BG are the main colors."
     `(vc-dir-status-edited ((,c :inherit modus-themes-slant)))
     `(vc-dir-status-ignored ((,c :foreground ,fg-dim)))
     `(vc-dir-status-up-to-date ((,c :foreground ,info)))
-    `(vc-dir-status-warning ((,c :foreground ,err)))
+    `(vc-dir-status-warning ((,c :foreground ,warning)))
     `(vc-conflict-state ((,c :foreground ,err)))
     `(vc-edited-state ((,c :inherit modus-themes-slant)))
     `(vc-git-log-edit-summary-max-warning ((,c :foreground ,err)))
     `(vc-git-log-edit-summary-target-warning ((,c :foreground ,warning)))
     `(vc-locally-added-state ((,c :inherit modus-themes-slant)))
     `(vc-locked-state ((,c :foreground ,info)))
-    `(vc-missing-state ((,c :foreground ,err)))
+    `(vc-missing-state ((,c :underline (:style wave :color ,underline-warning) :foreground ,warning)))
     `(vc-needs-update-state ((,c :foreground ,err)))
-    `(vc-removed-state ((,c :foreground ,err)))
+    `(vc-removed-state ((,c :underline (:style wave :color ,underline-err) :foreground ,err)))
     `(vc-state-base (( )))
     `(vc-up-to-date-state (( )))
 ;;;;; vertico

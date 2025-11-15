@@ -806,6 +806,9 @@ Auxiliary Options
      not match the respective command-line argument should be
      highlighted.  For other infix commands this option has no effect.
 
+     This is mostly indended for autors of transient menus and disabled
+     by default.
+
      When this option is non-‘nil’, the key binding for an infix
      argument is highlighted when only a long argument (e.g.,
      ‘--verbose’) is specified but no shorthand (e.g., ‘-v’).  In the
@@ -3055,7 +3058,7 @@ Appendix D Variable Index
  [index ]
 * Menu:
 
-* transient-align-variable-pitch:        Configuration.       (line 235)
+* transient-align-variable-pitch:        Configuration.       (line 238)
 * transient-common-command-prefix:       Common Suffix Commands.
                                                               (line  23)
 * transient-current-command:             Current Prefix Command.
@@ -3066,30 +3069,30 @@ Appendix D Variable Index
                                                               (line  45)
 * transient-default-level:               Enabling and Disabling Suffixes.
                                                               (line  33)
-* transient-detect-key-conflicts:        Configuration.       (line 260)
+* transient-detect-key-conflicts:        Configuration.       (line 263)
 * transient-display-buffer-action:       Configuration.       (line 103)
 * transient-enable-popup-navigation:     Configuration.       (line  81)
-* transient-error-on-insert-failure:     Configuration.       (line 273)
-* transient-exit-hook:                   Configuration.       (line 292)
-* transient-force-fixed-pitch:           Configuration.       (line 248)
+* transient-error-on-insert-failure:     Configuration.       (line 276)
+* transient-exit-hook:                   Configuration.       (line 295)
+* transient-force-fixed-pitch:           Configuration.       (line 251)
 * transient-force-single-column:         Configuration.       (line 151)
-* transient-highlight-higher-levels:     Configuration.       (line 279)
+* transient-highlight-higher-levels:     Configuration.       (line 282)
 * transient-highlight-mismatched-keys:   Configuration.       (line 196)
 * transient-history-file:                Using History.       (line  41)
 * transient-history-limit:               Using History.       (line  45)
 * transient-levels-file:                 Enabling and Disabling Suffixes.
                                                               (line  38)
 * transient-mode-line-format:            Configuration.       (line 160)
-* transient-post-exit-hook:              Configuration.       (line 296)
+* transient-post-exit-hook:              Configuration.       (line 299)
 * transient-read-with-initial-input:     Configuration.       (line  74)
 * transient-save-history:                Using History.       (line  37)
 * transient-semantic-coloring:           Configuration.       (line 187)
-* transient-setup-buffer-hook:           Configuration.       (line 300)
+* transient-setup-buffer-hook:           Configuration.       (line 303)
 * transient-show-common-commands:        Common Suffix Commands.
                                                               (line  11)
 * transient-show-during-minibuffer-read: Configuration.       (line  37)
 * transient-show-popup:                  Configuration.       (line  16)
-* transient-substitute-key-function:     Configuration.       (line 214)
+* transient-substitute-key-function:     Configuration.       (line 217)
 * transient-values-file:                 Saving Values.       (line  36)
 
 
@@ -3876,59 +3879,59 @@ Node: Configuration25834
 Ref: Essential Options26114
 Ref: Accessibility Options32656
 Ref: Auxiliary Options32979
-Ref: Developer Options37543
-Ref: Hook Variables39070
-Node: Modifying Existing Transients39598
-Node: Defining New Commands45479
-Node: Technical Introduction45919
-Node: Defining Transients51628
-Node: Binding Suffix and Infix Commands54981
-Ref: Group Specifications55778
-Ref: Suffix Specifications62591
-Node: Defining Suffix and Infix Commands67505
-Node: Using Infix Arguments70553
-Node: Using Prefix Scope73584
-Node: Current Suffix Command75626
-Node: Current Prefix Command77983
-Node: Transient State80539
-Ref: Pre-commands for Infixes84890
-Ref: Pre-commands for Suffixes85410
-Ref: Pre-commands for Non-Suffixes87863
-Ref: Special Pre-Commands88999
-Node: Classes and Methods89507
-Node: Group Classes91594
-Node: Group Methods93521
-Node: Prefix Classes94780
-Node: Suffix Classes95625
-Node: Prefix Methods100423
-Node: Suffix Methods103646
-Ref: Suffix Value Methods103906
-Ref: Suffix Format Methods107151
-Node: Prefix Slots110049
-Ref: Value and Scope110199
-Ref: Behavior113201
-Ref: Appearance114542
-Ref: Documentation115228
-Ref: Internal115848
-Node: Suffix Slots117203
-Ref: Slots of transient-child117571
-Ref: Slots of transient-suffix118029
-Ref: Slots of transient-infix120894
-Ref: Slots of transient-variable124190
-Ref: Slots of transient-switches124292
-Node: Predicate Slots124655
-Node: FAQ127000
-Ref: Can I control how the menu buffer is displayed?127129
-Ref: How can I copy text from the menu buffer?127453
-Ref: How can I autoload prefix and suffix commands?128216
-Ref: How does Transient compare to prefix keys and universal arguments?128690
-Ref: How does Transient compare to Magit-Popup and Hydra?128933
-Ref: Why does q not quit popups anymore?129127
-Node: Keystroke Index130230
-Node: Command and Function Index132095
-Node: Variable Index139562
-Node: Concept Index142341
-Node: GNU General Public License145165
+Ref: Developer Options37633
+Ref: Hook Variables39160
+Node: Modifying Existing Transients39688
+Node: Defining New Commands45569
+Node: Technical Introduction46009
+Node: Defining Transients51718
+Node: Binding Suffix and Infix Commands55071
+Ref: Group Specifications55868
+Ref: Suffix Specifications62681
+Node: Defining Suffix and Infix Commands67595
+Node: Using Infix Arguments70643
+Node: Using Prefix Scope73674
+Node: Current Suffix Command75716
+Node: Current Prefix Command78073
+Node: Transient State80629
+Ref: Pre-commands for Infixes84980
+Ref: Pre-commands for Suffixes85500
+Ref: Pre-commands for Non-Suffixes87953
+Ref: Special Pre-Commands89089
+Node: Classes and Methods89597
+Node: Group Classes91684
+Node: Group Methods93611
+Node: Prefix Classes94870
+Node: Suffix Classes95715
+Node: Prefix Methods100513
+Node: Suffix Methods103736
+Ref: Suffix Value Methods103996
+Ref: Suffix Format Methods107241
+Node: Prefix Slots110139
+Ref: Value and Scope110289
+Ref: Behavior113291
+Ref: Appearance114632
+Ref: Documentation115318
+Ref: Internal115938
+Node: Suffix Slots117293
+Ref: Slots of transient-child117661
+Ref: Slots of transient-suffix118119
+Ref: Slots of transient-infix120984
+Ref: Slots of transient-variable124280
+Ref: Slots of transient-switches124382
+Node: Predicate Slots124745
+Node: FAQ127090
+Ref: Can I control how the menu buffer is displayed?127219
+Ref: How can I copy text from the menu buffer?127543
+Ref: How can I autoload prefix and suffix commands?128306
+Ref: How does Transient compare to prefix keys and universal arguments?128780
+Ref: How does Transient compare to Magit-Popup and Hydra?129023
+Ref: Why does q not quit popups anymore?129217
+Node: Keystroke Index130320
+Node: Command and Function Index132185
+Node: Variable Index139652
+Node: Concept Index142431
+Node: GNU General Public License145255
 
 End Tag Table
 

@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251108.1336/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251108.1336/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423/transient-autoloads.el"))
 
 
 
@@ -1988,7 +1988,7 @@ See `eldoc-documentation-strategy' for more detail.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.2/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.2/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3/flymake-autoloads.el"))
 
 
 
@@ -2598,7 +2598,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251109.957/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251109.957/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805/modus-themes-autoloads.el"))
 
 
 
@@ -2796,7 +2796,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251108.1822/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251108.1822/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251112.2350/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251112.2350/marginalia-autoloads.el"))
 
 
 
@@ -3941,7 +3941,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251109.957" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.2" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251108.1336" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
