@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251108.1318/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251108.1318/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251115.1826/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251115.1826/vertico-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844/transient-autoloads.el"))
 
 
 
@@ -2234,7 +2234,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028/orderless-autoloads.el"))
 
 
 
@@ -2598,7 +2598,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513/modus-themes-autoloads.el"))
 
 
 
@@ -2628,10 +2628,25 @@ Measure WCAG contrast ratio between C1 and C2.
 C1 and C2 are color values written in hexadecimal RGB.
 
 (fn C1 C2)")
+(autoload 'modus-themes-activate "modus-themes" "\
+Load THEME if neeeded, so that it can be used by other commands.
+
+(fn THEME)")
 (autoload 'modus-themes-select "modus-themes" "\
 Load a Modus THEME using minibuffer completion.
+With optional prefix argument, prompt to limit the set of themes to
+either dark or light variants.
+
 Run `modus-themes-after-load-theme-hook' after loading the theme.
 Disable other themes per `modus-themes-disable-other-themes'.
+
+(fn THEME)" t)
+(autoload 'modus-themes-select-dark "modus-themes" "\
+Like `modus-themes-select' for a dark THEME.
+
+(fn THEME)" t)
+(autoload 'modus-themes-select-light "modus-themes" "\
+Like `modus-themes-select' for a light THEME.
 
 (fn THEME)" t)
 (autoload 'modus-themes-toggle "modus-themes" "\
@@ -2658,9 +2673,9 @@ modify THEMES in the process.
 (autoload 'modus-themes-load-random "modus-themes" "\
 Load a Modus theme at random, excluding the current one.
 
-With optional BACKGROUND-MODE as a prefix argument, prompt to limit the set of
-themes to either dark or light variants.  When called from Lisp, BACKGROUND-MODE
-is either the `dark' or `light' symbol.
+With optional BACKGROUND-MODE as a prefix argument, prompt to limit the
+set of themes to either dark or light variants.  When called from Lisp,
+BACKGROUND-MODE is either the `dark' or `light' symbol.
 
 Run `modus-themes-after-load-theme-hook' after loading a theme.
 
@@ -2720,6 +2735,47 @@ The mode's hook is called both when the mode is enabled and when
 it is disabled.
 
 (fn &optional ARG)" t)
+(autoload 'modus-themes-generate-palette "modus-themes" "\
+Generate a palette given the BASE-COLORS.
+BASE-COLORS consists of lists in the form (NAME VALUE).  NAME is at
+least a symbol of `bg-main' or `fg-main', while VALUE is a string
+representing a color either by name like in `list-colors-display' or
+hexadecimal RGB of the form #123456.  See the value of a core Modus
+palette, like `modus-themes-operandi-palette' for all current NAME
+symbols.
+
+BASE-COLORS is used to derive a palette.  Any entry whose name is
+already present in BASE-COLORS is not derived but taken as-is.  The rest
+are generated automatically.  The generated palette can be used as-is by
+a derivative theme (per `modus-themes-theme') or as a starting point for
+further refinements.
+
+With optional COOL-OR-WARM-PREFERENCE as a symbol of either `cool' or
+`warm' make relevant color choices for derivative values.  If
+COOL-OR-WARM-PREFERENCE is nil, derive the implied preference from the
+value of the `bg-main' color in BASE-COLORS.  If the value of `bg-main'
+satisfies `color-gray-p', then fall back to `cool'.  For our purposes,
+`cool' means that the color is closer to pure blue than pure red, while
+`warm' is the opposite.
+
+With optional CORE-PALETTE use it to fill in any of the remaining
+entries.  This can be a symbol like `modus-themes-operandi-palette'.  Do
+not try to enforce a core palette among those defined in modus-themes.el
+and let the user assume responsibility for any incompatibilities.  If
+CORE-PALETTE is nil, then infer a suitable palette based on whether the
+`bg-main' value in BASE-COLORS is light or dark and then the
+COOL-OR-WARM-PREFERENCE.  This inferred palette will be
+`modus-themes-operandi-palette' for a light `bg-main' and
+`modus-themes-vivendi-palette' for a dark `bg-main'.  The `cool' or
+`warm' shall yield the tinted variants of those palettes, namely,
+`modus-themes-operandi-tinted-palette' and
+`modus-themes-vivendi-tinted-palette'.
+
+With optional MAPPINGS use them instead of trying to derive new ones.
+If MAPPINGS is nil, generate some essential color mappings and let the
+rest come from CORE-PALETTE.
+
+(fn BASE-COLORS &optional COOL-OR-WARM-PREFERENCE CORE-PALETTE MAPPINGS)")
 (when load-file-name (let ((dir (file-name-directory load-file-name))) (unless (equal dir (expand-file-name "themes/" data-directory)) (add-to-list 'custom-theme-load-path dir))))
 (register-definition-prefixes "modus-themes" '("modus-themes-"))
 
@@ -2796,7 +2852,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251112.2350/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251112.2350/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251123.1133/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251123.1133/marginalia-autoloads.el"))
 
 
 
@@ -3458,7 +3514,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250930.1448/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20250930.1448/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251119.1357/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251119.1357/cmake-mode-autoloads.el"))
 
 
 
@@ -3941,7 +3997,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251114.805" "/home/scfrazer/.emacs.d/elpa/orderless-20250922.1344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251114.1423" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513" "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
