@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155/transient-autoloads.el"))
 
 
 
@@ -2598,7 +2598,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644/modus-themes-autoloads.el"))
 
 
 
@@ -2698,7 +2698,7 @@ are symbols of variables which define palettes commensurate with
 The optional CUSTOM-FACES and CUSTOM-VARIABLES are joined together with
 the `modus-themes-faces' and `modus-themes-custom-variables',
 respectively.  A derivative theme defining those is thus overriding what
-the Modus themess have by default.
+the Modus themes have by default.
 
 Consult the manual for details on how to build a theme on top of the
 `modus-themes': Info node `(modus-themes) Build on top of the Modus themes'.
@@ -2800,7 +2800,7 @@ rest come from CORE-PALETTE.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251028.412/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251028.412/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251204.852/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251204.852/markdown-mode-autoloads.el"))
 
 
 
@@ -3514,7 +3514,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251119.1357/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251119.1357/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251208.1833/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20251208.1833/cmake-mode-autoloads.el"))
 
 
 
@@ -3558,10 +3558,12 @@ appropriate page." t)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20251208.1041/browse-kill-ring-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20251208.1041/browse-kill-ring-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20231104.1450/browse-kill-ring-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -3569,16 +3571,15 @@ appropriate page." t)
 Set up M-y (`yank-pop') so that it can invoke `browse-kill-ring'.
 Normally, if M-y was not preceeded by C-y, then it has no useful
 behavior.  This function sets things up so that M-y will invoke
-`browse-kill-ring'." t nil)
-
+`browse-kill-ring'." t)
 (autoload 'browse-kill-ring "browse-kill-ring" "\
-Display items in the `kill-ring' in another buffer." t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "browse-kill-ring" '("browse-kill-ring-")))
-
+Display items in the `kill-ring' in another buffer." t)
+(register-definition-prefixes "browse-kill-ring" '("browse-kill-ring-"))
 
 
-
+(provide 'browse-kill-ring-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250603.2137/bm-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250603.2137/bm-autoloads.el"))
 
@@ -3997,7 +3998,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251129.513" "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251130.1844" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644" "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

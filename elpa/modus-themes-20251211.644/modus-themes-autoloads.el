@@ -106,7 +106,7 @@ are symbols of variables which define palettes commensurate with
 The optional CUSTOM-FACES and CUSTOM-VARIABLES are joined together with
 the `modus-themes-faces' and `modus-themes-custom-variables',
 respectively.  A derivative theme defining those is thus overriding what
-the Modus themess have by default.
+the Modus themes have by default.
 
 Consult the manual for details on how to build a theme on top of the
 `modus-themes': Info node `(modus-themes) Build on top of the Modus themes'.
