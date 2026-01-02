@@ -561,7 +561,7 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250827.1315/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20250827.1315/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20251214.1728/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20251214.1728/web-mode-autoloads.el"))
 
 
 
@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251115.1826/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20251115.1826/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260101.1336/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260101.1336/vertico-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209/transient-autoloads.el"))
 
 
 
@@ -2218,7 +2218,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20250101.843/popup-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/popup-20251231.1622/popup-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/popup-20251231.1622/popup-autoloads.el"))
 
 
 
@@ -2234,7 +2234,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341/orderless-autoloads.el"))
 
 
 
@@ -2598,7 +2598,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933/modus-themes-autoloads.el"))
 
 
 
@@ -2852,7 +2852,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251123.1133/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20251123.1133/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260101.1344/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260101.1344/marginalia-autoloads.el"))
 
 
 
@@ -3998,7 +3998,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20251211.644" "/home/scfrazer/.emacs.d/elpa/orderless-20251128.2028" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251210.2155" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933" "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
