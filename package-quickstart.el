@@ -257,7 +257,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848/with-editor-autoloads.el"))
 
 
 
@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260101.1336/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260101.1336/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260105.1514/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260105.1514/vertico-autoloads.el"))
 
 
 
@@ -1269,7 +1269,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20251101.1942/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20251101.1942/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260101.1828/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260101.1828/cond-let-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260113.1549/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260113.1549/transient-autoloads.el"))
 
 
 
@@ -1616,10 +1616,12 @@ correspond to the range BEG-IDX..END-IDX in STRING but not necessarily so.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.1/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.1/project-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.2/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.2/project-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/project-0.11.1/project-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -1632,7 +1634,8 @@ else prompt the user for the project to use.  To prompt for a
 project, call the function specified by `project-prompter', which
 returns the directory in which to look for the project.  If no
 project is found in that directory, return a \"transient\"
-project instance.
+project instance.  When MAYBE-PROMPT is a string, it's passed to the
+prompter function as an argument.
 
 The \"transient\" project instance is a special kind of value
 which denotes a project rooted in that directory and includes all
@@ -1642,44 +1645,38 @@ in `vc-directory-exclusion-list' or `grep-find-ignored-files'.
 See the doc string of `project-find-functions' for the general form
 of the project instance object.
 
-\(fn &optional MAYBE-PROMPT DIRECTORY)" nil nil)
+(fn &optional MAYBE-PROMPT DIRECTORY)")
 (put 'project-vc-ignores 'safe-local-variable (lambda (val) (and (listp val) (not (memq nil (mapcar #'stringp val))))))
 (put 'project-vc-merge-submodules 'safe-local-variable #'booleanp)
 (put 'project-vc-include-untracked 'safe-local-variable #'booleanp)
 (put 'project-vc-name 'safe-local-variable #'stringp)
 (put 'project-vc-extra-root-markers 'safe-local-variable (lambda (val) (and (listp val) (not (memq nil (mapcar #'stringp val))))))
-
-(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "o" 'project-any-command) (define-key map "\2" 'project-list-buffers) map) "\
+(defvar project-prefix-map (let ((map (make-sparse-keymap))) (define-key map "!" 'project-shell-command) (define-key map "&" 'project-async-shell-command) (define-key map "f" 'project-find-file) (define-key map "F" 'project-or-external-find-file) (define-key map "b" 'project-switch-to-buffer) (define-key map "s" 'project-shell) (define-key map "d" 'project-find-dir) (define-key map "D" 'project-dired) (define-key map "v" 'project-vc-dir) (define-key map "c" 'project-compile) (define-key map "e" 'project-eshell) (define-key map "k" 'project-kill-buffers) (define-key map "p" 'project-switch-project) (define-key map "g" 'project-find-regexp) (define-key map "G" 'project-or-external-find-regexp) (define-key map "r" 'project-query-replace-regexp) (define-key map "x" 'project-execute-extended-command) (define-key map "o" 'project-any-command) (define-key map "\2" 'project-list-buffers) (define-key map "\30s" 'project-save-some-buffers) map) "\
 Keymap for project commands.")
  (define-key ctl-x-map "p" project-prefix-map)
-
 (autoload 'project-other-window-command "project" "\
 Run project command, displaying resultant buffer in another window.
 
 The following commands are available:
 
 \\{project-prefix-map}
-\\{project-other-window-map}" t nil)
+\\{project-other-window-map}" t)
  (define-key ctl-x-4-map "p" #'project-other-window-command)
-
 (autoload 'project-other-frame-command "project" "\
 Run project command, displaying resultant buffer in another frame.
 
 The following commands are available:
 
 \\{project-prefix-map}
-\\{project-other-frame-map}" t nil)
+\\{project-other-frame-map}" t)
  (define-key ctl-x-5-map "p" #'project-other-frame-command)
-
 (autoload 'project-other-tab-command "project" "\
 Run project command, displaying resultant buffer in a new tab.
 
 The following commands are available:
 
-\\{project-prefix-map}" t nil)
-
+\\{project-prefix-map}" t)
 (when (bound-and-true-p tab-prefix-map) (define-key tab-prefix-map "p" #'project-other-tab-command))
-
 (autoload 'project-find-regexp "project" "\
 Find all matches for REGEXP in the current project's roots.
 With \\[universal-argument] prefix, you can specify the directory
@@ -1689,13 +1686,19 @@ e.g. entering `ch' is equivalent to `*.[ch]'.  As whitespace
 triggers completion when entering a pattern, including it
 requires quoting, e.g. `\\[quoted-insert]<space>'.
 
-\(fn REGEXP)" t nil)
-
+(fn REGEXP)" t)
 (autoload 'project-or-external-find-regexp "project" "\
 Find all matches for REGEXP in the project roots or external roots.
 
-\(fn REGEXP)" t nil)
+(fn REGEXP)" t)
+(autoload 'project-root-find-file "project" "\
+Edit file FILENAME.
 
+Interactively, prompt for FILENAME, defaulting to the root directory of
+the current project.
+
+(fn FILENAME)" t)
+(function-put 'project-root-find-file 'interactive-only 'find-file)
 (autoload 'project-find-file "project" "\
 Visit a file (with completion) in the current project.
 
@@ -1707,8 +1710,7 @@ If INCLUDE-ALL is non-nil, or with prefix argument when called
 interactively, include all files under the project root, except
 for VCS directories listed in `vc-directory-exclusion-list'.
 
-\(fn &optional INCLUDE-ALL)" t nil)
-
+(fn &optional INCLUDE-ALL)" t)
 (autoload 'project-or-external-find-file "project" "\
 Visit a file (with completion) in the current project or external roots.
 
@@ -1720,52 +1722,60 @@ If INCLUDE-ALL is non-nil, or with prefix argument when called
 interactively, include all files under the project root, except
 for VCS directories listed in `vc-directory-exclusion-list'.
 
-\(fn &optional INCLUDE-ALL)" t nil)
+(fn &optional INCLUDE-ALL)" t)
+(autoload 'project-find-matching-buffer "project" "\
+Switch to a matching buffer in another project.
+For most file-visiting buffers, the matching buffer is one visiting a
+file in the other project which has the same file name relative to the
+project root.  See `project-find-matching-file' for details.
+Non-file-visiting major modes may configure a different notion of
+matching buffer; see `project-find-matching-buffer-function'.
 
+When called during switching to another project, this command will
+detect that, and use the override.  Otherwise, it prompts for the
+project to use from the list of known projects.
+When calling from Lisp, bind `project-current-directory-override' to a
+directory under the target project to preempt this prompting." t)
 (autoload 'project-find-dir "project" "\
 Start Dired in a directory inside the current project.
 
 The current buffer's `default-directory' is available as part of
-\"future history\"." t nil)
-
+\"future history\"." t)
 (autoload 'project-dired "project" "\
-Start Dired in the current project's root." t nil)
-
+Start Dired in the current project's root." t)
 (autoload 'project-vc-dir "project" "\
-Run VC-Dir in the current project's root." t nil)
-
+Run VC-Dir in the current project's root." t)
+(autoload 'project-customize-dirlocals "project" "\
+Run `customize-dirlocals' in current project's root." t)
 (autoload 'project-shell "project" "\
 Start an inferior shell in the current project's root directory.
 If a buffer already exists for running a shell in the project's root,
 switch to it.  Otherwise, create a new shell buffer.
 With \\[universal-argument] prefix arg, create a new inferior shell buffer even
-if one already exists." t nil)
-
+if one already exists.
+With numeric prefix arg, switch to the session with that number, or
+create it if it doesn't already exist." t)
 (autoload 'project-eshell "project" "\
 Start Eshell in the current project's root directory.
 If a buffer already exists for running Eshell in the project's root,
 switch to it.  Otherwise, create a new Eshell buffer.
 With \\[universal-argument] prefix arg, create a new Eshell buffer even
-if one already exists." t nil)
-
+if one already exists.
+With numeric prefix arg, switch to the session with that number, or
+create it if it doesn't already exist." t)
 (autoload 'project-async-shell-command "project" "\
-Run `async-shell-command' in the current project's root directory." t nil)
-
+Run `async-shell-command' in the current project's root directory." t)
 (function-put 'project-async-shell-command 'interactive-only 'async-shell-command)
-
 (autoload 'project-shell-command "project" "\
-Run `shell-command' in the current project's root directory." t nil)
-
+Run `shell-command' in the current project's root directory." t)
 (function-put 'project-shell-command 'interactive-only 'shell-command)
-
 (autoload 'project-search "project" "\
 Search for REGEXP in all the files of the project.
 Stops when a match is found.
 To continue searching for the next match, use the
 command \\[fileloop-continue].
 
-\(fn REGEXP)" t nil)
-
+(fn REGEXP)" t)
 (autoload 'project-query-replace-regexp "project" "\
 Query-replace REGEXP in all the files of the project.
 Stops when a match is found and prompts for whether to replace it.
@@ -1776,13 +1786,15 @@ type \\[help-command] at that time.
 If you exit the `query-replace', you can later continue the
 `query-replace' loop using the command \\[fileloop-continue].
 
-\(fn FROM TO)" t nil)
-
+(fn FROM TO)" t)
 (autoload 'project-compile "project" "\
-Run `compile' in the project root." t nil)
-
+Run `compile' in the project root." t)
 (function-put 'project-compile 'interactive-only 'compile)
+(autoload 'project-recompile "project" "\
+Run `recompile' in the project root with an appropriate buffer.
 
+(fn &optional EDIT-COMMAND)" t)
+(function-put 'project-recompile 'interactive-only 'recompile)
 (autoload 'project-switch-to-buffer "project" "\
 Display buffer BUFFER-OR-NAME in the selected window.
 When called interactively, prompts for a buffer belonging to the
@@ -1790,8 +1802,7 @@ current project.  Two buffers belong to the same project if their
 project instances, as reported by `project-current' in each
 buffer, are identical.
 
-\(fn BUFFER-OR-NAME)" t nil)
-
+(fn BUFFER-OR-NAME)" t)
 (autoload 'project-display-buffer "project" "\
 Display BUFFER-OR-NAME in some window, without selecting it.
 When called interactively, prompts for a buffer belonging to the
@@ -1802,8 +1813,7 @@ buffer, are identical.
 This function uses `display-buffer' as a subroutine, which see
 for how it is determined where the buffer will be displayed.
 
-\(fn BUFFER-OR-NAME)" t nil)
-
+(fn BUFFER-OR-NAME)" t)
 (autoload 'project-display-buffer-other-frame "project" "\
 Display BUFFER-OR-NAME preferably in another frame.
 When called interactively, prompts for a buffer belonging to the
@@ -1815,8 +1825,7 @@ This function uses `display-buffer-other-frame' as a subroutine,
 which see for how it is determined where the buffer will be
 displayed.
 
-\(fn BUFFER-OR-NAME)" t nil)
-
+(fn BUFFER-OR-NAME)" t)
 (autoload 'project-list-buffers "project" "\
 Display a list of project buffers.
 The list is displayed in a buffer named \"*Buffer List*\".
@@ -1825,9 +1834,8 @@ By default, all project buffers are listed except those whose names
 start with a space (which are for internal use).  With prefix argument
 ARG, show only buffers that are visiting files.
 
-\(fn &optional ARG)" t nil)
+(fn &optional ARG)" t)
 (put 'project-kill-buffers-display-buffer-list 'safe-local-variable #'booleanp)
-
 (autoload 'project-kill-buffers "project" "\
 Kill the buffers belonging to the current project.
 Two buffers belong to the same project if their project
@@ -1838,32 +1846,37 @@ is non-nil, the command will not ask the user for confirmation.
 NO-CONFIRM is always nil when the command is invoked
 interactively.
 
+If PROJECT is non-nil, kill buffers for that project instead.
+
 Also see the `project-kill-buffers-display-buffer-list' variable.
 
-\(fn &optional NO-CONFIRM)" t nil)
+(fn &optional NO-CONFIRM PROJECT)" t)
+(autoload 'project-save-some-buffers "project" "\
+Like `save-some-buffers', but only for this project's buffers.
 
+(fn ARG)" t)
 (autoload 'project-remember-project "project" "\
 Add project PR to the front of the project list.
+If project PR satisfies `project-list-exclude', then nothing is done.
 Save the result in `project-list-file' if the list of projects
-has changed, and NO-WRITE is nil.
+has changed.
+When called from Lisp, optional argument NO-WRITE non-nil means to
+suppress saving `project-list-file'.
+Optional argument STABLE means don't move PR to the front of the project
+list if it's already present further down the project list.
 
-\(fn PR &optional NO-WRITE)" nil nil)
-
+(fn PR &optional NO-WRITE STABLE)" t)
 (autoload 'project-forget-project "project" "\
 Remove directory PROJECT-ROOT from the project list.
 PROJECT-ROOT is the root directory of a known project listed in
 the project list.
 
-\(fn PROJECT-ROOT)" t nil)
-
+(fn PROJECT-ROOT)" t)
 (autoload 'project-known-project-roots "project" "\
-Return the list of root directories of all known projects." nil nil)
-
+Return the list of root directories of all known projects.")
 (autoload 'project-execute-extended-command "project" "\
-Execute an extended command in project root." t nil)
-
+Execute an extended command in project root." t)
 (function-put 'project-execute-extended-command 'interactive-only 'command-execute)
-
 (autoload 'project-any-command "project" "\
 Run the next command in the current project.
 
@@ -1877,13 +1890,11 @@ If OVERRIDING-MAP is non-nil, it will be used as
 `overriding-terminal-local-map' to provide shorter bindings
 from that map which will take priority over the global ones.
 
-\(fn &optional OVERRIDING-MAP PROMPT-FORMAT)" t nil)
-
+(fn &optional OVERRIDING-MAP PROMPT-FORMAT)" t)
 (autoload 'project-prefix-or-any-command "project" "\
 Run the next command in the current project.
 Works like `project-any-command', but also mixes in the shorter
-bindings from `project-prefix-map'." t nil)
-
+bindings from `project-prefix-map'." t)
 (autoload 'project-switch-project "project" "\
 \"Switch\" to another project by running an Emacs command.
 The available commands are presented as a dispatch menu
@@ -1892,8 +1903,7 @@ made from `project-switch-commands'.
 When called in a program, it will use the project corresponding
 to directory DIR.
 
-\(fn DIR)" t nil)
-
+(fn DIR)" t)
 (autoload 'project-uniquify-dirname-transform "project" "\
 Uniquify name of directory DIRNAME using `project-name', if in a project.
 
@@ -1902,21 +1912,19 @@ slash-separated components from `project-name' will be appended to
 the buffer's directory name when buffers from two different projects
 would otherwise have the same name.
 
-\(fn DIRNAME)" nil nil)
-
+(fn DIRNAME)")
 (defvar project-mode-line nil "\
 Whether to show current project name and Project menu on the mode line.
 This feature requires the presence of the following item in
 `mode-line-format': `(project-mode-line project-mode-line-format)'; it
 is part of the default mode line beginning with Emacs 30.")
-
 (custom-autoload 'project-mode-line "project" t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "project" '("project-")))
-
+(register-definition-prefixes "project" '("project-" "vc-"))
 
 
-
+(provide 'project-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.16.0/eldoc-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/eldoc-1.16.0/eldoc-autoloads.el"))
 
@@ -2234,7 +2242,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260104.1108/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260104.1108/orderless-autoloads.el"))
 
 
 
@@ -2282,7 +2290,7 @@ Match COMPONENT against the keywords in `orderless-kwd-alist'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20251006.2038/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20251006.2038/multiple-cursors-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20260108.909/multiple-cursors-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/multiple-cursors-20260108.909/multiple-cursors-autoloads.el"))
 
 
 
@@ -2598,7 +2606,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260113.431/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260113.431/modus-themes-autoloads.el"))
 
 
 
@@ -2852,7 +2860,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260101.1344/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260101.1344/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260104.1119/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260104.1119/marginalia-autoloads.el"))
 
 
 
@@ -3228,10 +3236,12 @@ otherwise call `fill-function-arguments-to-single-line'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210723.549/fd-dired-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20210723.549/fd-dired-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20260104.335/fd-dired-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/fd-dired-20260104.335/fd-dired-autoloads.el"))
 
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory "/home/scfrazer/.emacs.d/elpa/fd-dired-20210723.549/fd-dired-autoloads.el") (car load-path))))
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
 
 
 
@@ -3244,8 +3254,7 @@ The command run (after changing into DIR) is essentially
 except that the car of the variable `fd-dired-ls-option' specifies what to
 use in place of \"-ls\" as the final argument.
 
-\(fn DIR ARGS)" t nil)
-
+(fn DIR ARGS)" t)
 (autoload 'fd-name-dired "fd-dired" "\
 Search DIR recursively for files matching the globbing pattern PATTERN,
 and run Dired on those files.
@@ -3254,19 +3263,20 @@ The default command run (after changing into DIR) is
 
     fd . ARGS \\='PATTERN\\=' | fd-dired-ls-option
 
-\(fn DIR PATTERN)" t nil)
-
+(fn DIR PATTERN)" t)
 (autoload 'fd-grep-dired "fd-dired" "\
 Find files in DIR that contain matches for REGEXP and start Dired on output.
 The command run (after changing into DIR) is
 
   fd . ARGS --exec rg --regexp REGEXP -0 -ls | fd-dired-ls-option
 
-\(fn DIR REGEXP)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fd-dired" '("fd-")))
-
+(fn DIR REGEXP)" t)
+(register-definition-prefixes "fd-dired" '("fd-"))
 
+
+(provide 'fd-dired-autoloads)
+
+
 )
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el"))
 
@@ -3998,7 +4008,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260102.933" "/home/scfrazer/.emacs.d/elpa/orderless-20260101.1341" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20251215.2209" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20251101.2100" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260113.431" "/home/scfrazer/.emacs.d/elpa/orderless-20260104.1108" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260113.1549" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
