@@ -7,6 +7,11 @@
               whitespace-style '(face tabs trailing empty))
 (global-font-lock-mode t)
 
+(set-face-foreground 'error "#ffffff")
+(set-face-background 'error "red3")
+(set-face-foreground 'warning "black")
+(set-face-background 'warning "yellow")
+
 ;; Extra font-lock faces
 
 (defface my-debug-face
@@ -15,12 +20,12 @@
   :group 'faces)
 
 (defface my-todo-face
-  '((t :inherit warning))
+  '((t (:foreground "black" :background "yellow")))
   "todo/fixme highlighting."
   :group 'faces)
 
 (defface my-fixme-face
-  '((t :inherit error))
+  '((t (:foreground "#ffffff" :background "red3")))
   "todo/fixme highlighting."
   :group 'faces)
 
@@ -60,13 +65,13 @@
 (defun my-font-lock-mode-hook ()
   "Font-lock mode hook."
   (my-font-lock-whitespace-hook)
-  (when (or (and comment-start font-lock-keywords
-                 (not (member major-mode (list 'gfm-mode 'markdown-mode 'org-mode))))
-            (eq major-mode 'dired-mode))
-    (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
-    (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
-    (font-lock-add-keywords nil (list (cons "\\_<\\(XXX\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
-    (font-lock-add-keywords nil (list (cons "\\_<\\([Ff][Ii][Xx]\\([Mm][Ee]\\)?\\)\\_>" (list '(1 'my-fixme-face t)))) 'add-to-end)))
+  ;; (when (or (and comment-start font-lock-keywords
+  ;;                (not (member major-mode (list 'gfm-mode 'markdown-mode 'org-mode))))
+  ;;           (eq major-mode 'dired-mode))
+  (font-lock-add-keywords nil (list (cons "\\<\\(DEBUG\\)\\>" (list '(1 'my-debug-face t)))) 'add-to-end)
+  (font-lock-add-keywords nil (list (cons "\\_<\\([Tt][Oo][Dd][Oo]\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
+  (font-lock-add-keywords nil (list (cons "\\_<\\(XXX\\)\\_>" (list '(1 'my-todo-face t)))) 'add-to-end)
+  (font-lock-add-keywords nil (list (cons "\\_<\\([Ff][Ii][Xx]\\([Mm][Ee]\\)?\\)\\_>" (list '(1 'my-fixme-face t)))) 'add-to-end))
 
 (add-hook 'font-lock-mode-hook 'my-font-lock-mode-hook)
 

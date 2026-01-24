@@ -16,7 +16,10 @@
   (interactive)
   (my-theme-disable-all)
   (setq modus-themes-bold-constructs nil)
-  (load-theme 'modus-vivendi-tinted t))
+  (load-theme 'modus-vivendi-tinted t)
+  (set-face-foreground 'bm-face nil)
+  (set-face-background 'bm-face "#47284a")
+  )
 
 ;; Light
 (setq modus-operandi-palette-overrides
@@ -30,7 +33,10 @@
   (interactive)
   (my-theme-disable-all)
   (setq modus-themes-bold-constructs 't)
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-operandi t)
+  (set-face-foreground 'bm-face nil)
+  (set-face-background 'bm-face "#e9e0ee")
+  )
 
 ;; Choose based on terminal
 (let ((mode (getenv "TERM_MODE")))
