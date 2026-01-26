@@ -23,7 +23,8 @@
 
 ;; Light
 (setq modus-operandi-palette-overrides
-      '((comment "#c4c4c4")
+      '((bg-main "#e6e7ed")
+        (comment "#c4c4c4")
         (constant magenta-faint)
         (variable cyan-intense)
         (string green-intense)))
