@@ -1,6 +1,10 @@
                           xr version history
                           ==================
 
+Version 2.2
+
+- Detect [:CLASS] (missing colon) in regexps and skip-sets.
+
 Version 2.1
 
 - Elide useless empty strings in translation to xr. For example,
@@ -122,9 +126,5 @@ Version 1.5
 
 Version 1.4
 - Detect overlap in character alternatives
-
-Version 1.3
-- Improved xr-lint warnings
-
-Version 1.2
-- `xr-lint' added
+...
+...

@@ -154,7 +154,7 @@ to control which program to use when looking for matches.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.1/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.1/xr-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.2/xr-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/xr-2.2/xr-autoloads.el"))
 
 
 
@@ -1567,7 +1567,7 @@ Setup wgrep rg support.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.1/relint-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.1/relint-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.2/relint-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/relint-2.2/relint-autoloads.el"))
 
 
 
@@ -3097,7 +3097,7 @@ result of `defhydra'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20241229.2012/highlight-indent-guides-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260127.1811/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260127.1811/highlight-indent-guides-autoloads.el"))
 
 
 
@@ -3524,7 +3524,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260120.1446/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260120.1446/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260127.1603/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260127.1603/cmake-mode-autoloads.el"))
 
 
 

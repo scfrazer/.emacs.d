@@ -21,8 +21,9 @@
 ;; SOFTWARE.
 ;;
 ;; Author: DarthFennec <darthfennec@derpymail.org>
-;; Package-Version: 20241229.2012
-;; Package-Revision: 3205abe27210
+;; Maintainer: Jen-Chieh Shen <jcs090218@gmail.com>
+;; Package-Version: 20260127.1811
+;; Package-Revision: 03bddeba65ec
 ;; Package-Requires: ((emacs "26.1"))
 ;; URL: https://github.com/DarthFennec/highlight-indent-guides
 ;; Keywords: convenience
