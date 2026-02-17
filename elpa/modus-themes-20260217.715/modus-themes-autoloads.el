@@ -32,10 +32,10 @@
 ;;; Generated autoloads from modus-themes.el
 
 (autoload 'modus-themes-contrast "modus-themes" "\
-Measure WCAG contrast ratio between C1 and C2.
-C1 and C2 are color values written in hexadecimal RGB.
+Measure WCAG contrast ratio between HEX-COLOR-1 and HEX-COLOR-2.
+HEX-COLOR-1 and HEX-COLOR-2 are color values written in hexadecimal RGB.
 
-(fn C1 C2)")
+(fn HEX-COLOR-1 HEX-COLOR-2)")
 (autoload 'modus-themes-activate "modus-themes" "\
 Load THEME if neeeded, so that it can be used by other commands.
 

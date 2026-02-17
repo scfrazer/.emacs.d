@@ -6,8 +6,8 @@
 ;; Author: Jason R. Blevins <jblevins@xbeta.org>
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
-;; Package-Version: 20251204.852
-;; Package-Revision: 92802fae9ebb
+;; Package-Version: 20260209.459
+;; Package-Revision: 9de2df5a9f2f
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -2255,6 +2255,9 @@ Depending on your font, some reasonable choices are:
                                        (2 'markdown-markup-face)
                                        (3 'markdown-metadata-value-face)))
     (markdown-fontify-hrs)
+    (,markdown-regex-strike-through . ((3 markdown-markup-properties)
+                                       (4 'markdown-strike-through-face)
+                                       (5 markdown-markup-properties)))
     (markdown-match-code . ((1 markdown-markup-properties prepend)
                             (2 'markdown-inline-code-face prepend)
                             (3 markdown-markup-properties prepend)))
@@ -2320,9 +2323,6 @@ Depending on your font, some reasonable choices are:
     (markdown-match-italic . ((1 markdown-markup-properties prepend)
                               (2 'markdown-italic-face append)
                               (3 markdown-markup-properties prepend)))
-    (,markdown-regex-strike-through . ((3 markdown-markup-properties)
-                                       (4 'markdown-strike-through-face)
-                                       (5 markdown-markup-properties)))
     (markdown--match-highlighting . ((3 markdown-markup-properties)
                                      (4 'markdown-highlighting-face)
                                      (5 markdown-markup-properties)))

@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260118.743/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260118.743/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260210.1021/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260210.1021/vertico-autoloads.el"))
 
 
 
@@ -1269,7 +1269,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260118.1332/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260118.1332/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260201.1500/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260201.1500/cond-let-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260118.1322/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260118.1322/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237/transient-autoloads.el"))
 
 
 
@@ -2606,7 +2606,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260125.659/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260125.659/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715/modus-themes-autoloads.el"))
 
 
 
@@ -2632,10 +2632,10 @@ it is disabled.
 
 
 (autoload 'modus-themes-contrast "modus-themes" "\
-Measure WCAG contrast ratio between C1 and C2.
-C1 and C2 are color values written in hexadecimal RGB.
+Measure WCAG contrast ratio between HEX-COLOR-1 and HEX-COLOR-2.
+HEX-COLOR-1 and HEX-COLOR-2 are color values written in hexadecimal RGB.
 
-(fn C1 C2)")
+(fn HEX-COLOR-1 HEX-COLOR-2)")
 (autoload 'modus-themes-activate "modus-themes" "\
 Load THEME if neeeded, so that it can be used by other commands.
 
@@ -2808,7 +2808,7 @@ rest come from CORE-PALETTE.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251204.852/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20251204.852/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260209.459/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260209.459/markdown-mode-autoloads.el"))
 
 
 
@@ -3097,7 +3097,7 @@ result of `defhydra'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260127.1811/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260127.1811/highlight-indent-guides-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260202.1243/highlight-indent-guides-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/highlight-indent-guides-20260202.1243/highlight-indent-guides-autoloads.el"))
 
 
 
@@ -4008,7 +4008,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260125.659" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260118.1322" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

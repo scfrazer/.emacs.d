@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260125.659
-;; Package-Revision: ba747a245f43
+;; Package-Version: 20260217.715
+;; Package-Revision: 9dd3b9074b31
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -3749,6 +3749,16 @@ Info node `(modus-themes) Option for palette overrides'.")
 
 ;;;; Helper functions for theme setup
 
+(defun modus-themes--hex-to-rgb (hex-color)
+  "Convert HEX-COLOR to a list of normalized RGB values.
+Use `color-values-from-color-spec' (a C built-in since Emacs 28.1)
+instead of `color-name-to-rgb' to avoid dependence on a display
+connection.  This matters when loading a theme during early init on
+GUI Emacs, where `color-values' returns nil before the display is
+ready (per issue #198)."
+  (mapcar (lambda (x) (/ x 65535.0))
+          (color-values-from-color-spec hex-color)))
+
 ;; This is the WCAG formula: https://www.w3.org/TR/WCAG20-TECHS/G18.html
 (defun modus-themes--wcag-contribution (channel weight)
   "Return the CHANNEL contribution to overall luminance given WEIGHT."
@@ -3757,22 +3767,22 @@ Info node `(modus-themes) Option for palette overrides'.")
          (/ channel 12.92)
        (expt (/ (+ channel 0.055) 1.055) 2.4))))
 
-(defun modus-themes-wcag-formula (hex)
-  "Get WCAG value of color value HEX.
+(defun modus-themes-wcag-formula (hex-color)
+  "Get WCAG value of color value HEX-COLOR.
 The value is defined in hexadecimal RGB notation, such #123456."
-  (let ((channels (color-name-to-rgb hex))
+  (let ((channels (modus-themes--hex-to-rgb hex-color))
         (weights '(0.2126 0.7152 0.0722))
-        contribution)
+        (contribution nil))
     (while channels
       (push (modus-themes--wcag-contribution (pop channels) (pop weights)) contribution))
     (apply #'+ contribution)))
 
 ;;;###autoload
-(defun modus-themes-contrast (c1 c2)
-  "Measure WCAG contrast ratio between C1 and C2.
-C1 and C2 are color values written in hexadecimal RGB."
-  (let ((ct (/ (+ (modus-themes-wcag-formula c1) 0.05)
-               (+ (modus-themes-wcag-formula c2) 0.05))))
+(defun modus-themes-contrast (hex-color-1 hex-color-2)
+  "Measure WCAG contrast ratio between HEX-COLOR-1 and HEX-COLOR-2.
+HEX-COLOR-1 and HEX-COLOR-2 are color values written in hexadecimal RGB."
+  (let ((ct (/ (+ (modus-themes-wcag-formula hex-color-1) 0.05)
+               (+ (modus-themes-wcag-formula hex-color-2) 0.05))))
     (max ct (/ ct))))
 
 (defvar modus-themes-registered-items nil
@@ -4206,6 +4216,18 @@ Run `modus-themes-after-load-theme-hook' after loading a theme."
 
 ;;;;; Preview a theme palette
 
+(defun modus-themes-color-dark-p (hex-color)
+  "Return non-nil if hexadecimal RGB HEX-COLOR is dark.
+Test that HEX-COLOR has more contrast against white than black."
+  (> (modus-themes-contrast hex-color "#ffffff")
+     (modus-themes-contrast hex-color "#000000")))
+
+(defun modus-themes-get-readable-foreground (hex-color)
+  "Get readable foreground for background hexadecimal RGB HEX-COLOR."
+  (if (modus-themes-color-dark-p hex-color)
+      "#ffffff"
+    "#000000"))
+
 (defun modus-themes--list-colors-get-mappings (palette)
   "Get the semantic palette entries in PALETTE.
 PALETTE is the value of a variable like `modus-operandi-palette'."
@@ -4238,8 +4260,8 @@ PALETTE is the value of a variable like `modus-operandi-palette'."
            (propertize value-string 'face `( :foreground ,color))
            (propertize value-string-padded 'face `( :background ,color
                                                     :foreground ,(if (string= color "unspecified")
-                                                                     (readable-foreground-color (modus-themes-get-color-value 'bg-main nil theme))
-                                                                   (readable-foreground-color color))))))))
+                                                                     (modus-themes-get-readable-foreground (modus-themes-get-color-value 'bg-main nil theme))
+                                                                   (modus-themes-get-readable-foreground color))))))))
      palette)))
 
 (defvar modus-themes-current-preview nil)
@@ -6482,19 +6504,14 @@ If COLOR is unspecified, then return :box unspecified."
     `(org-verse ((,c :inherit modus-themes-fixed-pitch :background ,bg-prose-block-contents :extend t)))
     `(org-warning ((,c :foreground ,warning)))
 ;;;;; org-habit
-    ;; NOTE 2025-11-12: We used to have `readable-foreground-color'
-    ;; for the foreground values of these faces, but that function
-    ;; breaks the theme if it is loaded in the early-init.el.  Maybe
-    ;; we can find a better solution.  I do not want to introduce new
-    ;; palette entries or a new function just for these faces though.
-    `(org-habit-alert-face ((,c :background ,bg-graph-yellow-0)))
-    `(org-habit-alert-future-face ((,c :background ,bg-graph-yellow-1)))
-    `(org-habit-clear-face ((,c :background ,bg-graph-blue-0)))
-    `(org-habit-clear-future-face ((,c :background ,bg-graph-blue-1)))
-    `(org-habit-overdue-face ((,c :background ,bg-graph-red-0)))
-    `(org-habit-overdue-future-face ((,c :background ,bg-graph-red-1)))
-    `(org-habit-ready-face ((,c :background ,bg-graph-green-0)))
-    `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1)))
+    `(org-habit-alert-face ((,c :background ,bg-graph-yellow-0 :foreground ,(modus-themes-get-readable-foreground bg-graph-yellow-0))))
+    `(org-habit-alert-future-face ((,c :background ,bg-graph-yellow-1 :foreground ,(modus-themes-get-readable-foreground bg-graph-yellow-1))))
+    `(org-habit-clear-face ((,c :background ,bg-graph-blue-0 :foreground ,(modus-themes-get-readable-foreground bg-graph-blue-0))))
+    `(org-habit-clear-future-face ((,c :background ,bg-graph-blue-1 :foreground ,(modus-themes-get-readable-foreground bg-graph-blue-1))))
+    `(org-habit-overdue-face ((,c :background ,bg-graph-red-0 :foreground ,(modus-themes-get-readable-foreground bg-graph-red-0))))
+    `(org-habit-overdue-future-face ((,c :background ,bg-graph-red-1 :foreground ,(modus-themes-get-readable-foreground bg-graph-red-1))))
+    `(org-habit-ready-face ((,c :background ,bg-graph-green-0 :foreground ,(modus-themes-get-readable-foreground bg-graph-green-0))))
+    `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1 :foreground ,(modus-themes-get-readable-foreground bg-graph-green-1))))
 ;;;;; org-journal
     `(org-journal-calendar-entry-face ((,c :inherit modus-themes-slant :foreground ,date-common)))
     `(org-journal-calendar-scheduled-face ((,c :inherit modus-themes-slant :foreground ,date-scheduled-subtle)))
@@ -7596,11 +7613,11 @@ For instance:
       (push (+ (* (nth i a) alpha) (* (nth i b) (- 1 alpha))) blend))
     (nreverse blend)))
 
-(defun modus-themes--color-six-digits (color)
-  "Reduce representation of hexadecimal RGB COLOR to six digits."
-  (let ((color-no-hash (substring color 1)))
+(defun modus-themes--color-six-digits (hex-color)
+  "Reduce representation of hexadecimal RGB HEX-COLOR to six digits."
+  (let ((color-no-hash (substring hex-color 1)))
     (if (= (length color-no-hash) 6)
-        color
+        hex-color
       (let* ((triplets (seq-split color-no-hash 4))
              (triplets-shortened (mapcar
                                   (lambda (string)
@@ -7608,11 +7625,14 @@ For instance:
                                   triplets)))
         (concat "#" (string-join triplets-shortened))))))
 
-(defun modus-themes-generate-color-blend (color blended-with alpha)
-  "Return hexadecimal RGB of COLOR with BLENDED-WITH given ALPHA.
-BLENDED-WITH is commensurate with COLOR.  ALPHA is between 0.0 and 1.0,
+(defun modus-themes-generate-color-blend (hex-color blended-with-hex alpha)
+  "Return hexadecimal RGB of HEX-COLOR with BLENDED-WITH-HEX given ALPHA.
+BLENDED-WITH-HEX is commensurate with COLOR.  ALPHA is between 0.0 and 1.0,
 inclusive."
-  (let* ((blend-rgb (modus-themes-blend (color-name-to-rgb color) (color-name-to-rgb blended-with) alpha))
+  (let* ((blend-rgb (modus-themes-blend
+                     (modus-themes--hex-to-rgb hex-color)
+                     (modus-themes--hex-to-rgb blended-with-hex)
+                     alpha))
          (blend-hex (apply #'color-rgb-to-hex blend-rgb)))
     (modus-themes--color-six-digits blend-hex)))
 
@@ -7640,7 +7660,7 @@ inclusive."
   "Return non-nil if COLOR is warm.
 A warm color has more contribution from the red channel of light than
 the blue one."
-  (pcase-let ((`(,r ,_ ,b) (color-name-to-rgb color)))
+  (pcase-let ((`(,r ,_ ,b) (modus-themes--hex-to-rgb color)))
     (> r b)))
 
 (defun modus-themes-color-is-warm-or-cool-p (color)
@@ -7717,7 +7737,7 @@ rest come from CORE-PALETTE."
     (unless (and bg-main fg-main)
       (error "The palette must define at least a bg-main and fg-main entry with their values"))
     (let* ((bg-main (car bg-main))
-           (bg-main-dark-p (color-dark-p (color-name-to-rgb bg-main)))
+           (bg-main-dark-p (modus-themes-color-dark-p bg-main))
            (fg-main (car fg-main))
            (six-colors (seq-filter
                         (lambda (color)

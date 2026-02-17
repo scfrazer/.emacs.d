@@ -56,7 +56,7 @@
 ;; Mode hook
 
 (defun my-yaml-mode-hook ()
-  (highlight-indent-guides-mode 1)
+  ;; (highlight-indent-guides-mode 1)
   (add-hook 'flymake-diagnostic-functions 'my-yaml-flymake nil t)
   (flymake-mode 1))
 (add-hook 'yaml-mode-hook 'my-yaml-mode-hook)
