@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343/transient-autoloads.el"))
 
 
 
@@ -2606,7 +2606,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643/modus-themes-autoloads.el"))
 
 
 
@@ -2808,7 +2808,7 @@ rest come from CORE-PALETTE.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260209.459/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260209.459/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260226.609/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260226.609/markdown-mode-autoloads.el"))
 
 
 
@@ -2821,7 +2821,7 @@ rest come from CORE-PALETTE.
 Major mode for editing Markdown files.
 
 (fn)" t)
-(add-to-list 'auto-mode-alist '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\|mdx\\)\\'" . markdown-mode))
 (autoload 'gfm-mode "markdown-mode" "\
 Major mode for editing GitHub Flavored Markdown files.
 
@@ -2860,7 +2860,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260125.1205/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260125.1205/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260220.1149/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260220.1149/marginalia-autoloads.el"))
 
 
 
@@ -3278,7 +3278,7 @@ The command run (after changing into DIR) is
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20250312.1307/dash-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/dash-20260221.1346/dash-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/dash-20260221.1346/dash-autoloads.el"))
 
 
 
@@ -4008,7 +4008,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20250312.1307" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260217.715" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260208.2237" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
