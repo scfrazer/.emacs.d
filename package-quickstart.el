@@ -257,7 +257,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260301.1317/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260301.1317/with-editor-autoloads.el"))
 
 
 
@@ -623,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260210.1021/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260210.1021/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260309.1549/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260309.1549/vertico-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304/transient-autoloads.el"))
 
 
 
@@ -1996,7 +1996,7 @@ See `eldoc-documentation-strategy' for more detail.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5/flymake-autoloads.el"))
 
 
 
@@ -2606,7 +2606,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260325.809/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260325.809/modus-themes-autoloads.el"))
 
 
 
@@ -2808,7 +2808,7 @@ rest come from CORE-PALETTE.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260226.609/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260226.609/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260321.143/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260321.143/markdown-mode-autoloads.el"))
 
 
 
@@ -2860,7 +2860,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260220.1149/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260220.1149/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260309.1545/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260309.1545/marginalia-autoloads.el"))
 
 
 
@@ -3524,7 +3524,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260127.1603/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260127.1603/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260317.1329/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260317.1329/cmake-mode-autoloads.el"))
 
 
 
@@ -3591,7 +3591,7 @@ Display items in the `kill-ring' in another buffer." t)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250603.2137/bm-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20250603.2137/bm-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/bm-20260325.2238/bm-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/bm-20260325.2238/bm-autoloads.el"))
 
 
 
@@ -3629,7 +3629,17 @@ Go to the previous bookmark with the scroll wheel.
 EV is the mouse event.
 
 (fn EV)" t)
-(register-definition-prefixes "bm" '("bm-" "temporary-bookmark-p"))
+(autoload 'bm-remove-all-all-buffers "bm" "\
+Delete all visible bookmarks in all open buffers." t)
+(autoload 'bm-remove-all-current-buffer "bm" "\
+Delete all visible bookmarks in current buffer." t)
+(autoload 'bm-bookmark-regexp "bm" "\
+Set bookmark on lines that match regexp." t)
+(autoload 'bm-show-all "bm" "\
+Show bookmarked lines in all buffers." t)
+(autoload 'bm-show "bm" "\
+Show bookmarked lines in current buffer." t)
+(register-definition-prefixes "bm" '("bm-"))
 
 
 
@@ -4008,7 +4018,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260222.643" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.3" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260227.1343" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260101.1848" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260325.809" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260301.1317" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
