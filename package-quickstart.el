@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260327.915/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260327.915/transient-autoloads.el"))
 
 
 
@@ -3524,7 +3524,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260317.1329/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260317.1329/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260327.1308/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260327.1308/cmake-mode-autoloads.el"))
 
 
 
@@ -4018,7 +4018,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260325.809" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260324.1304" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260301.1317" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260325.809" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260327.915" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260301.1317" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

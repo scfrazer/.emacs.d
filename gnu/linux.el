@@ -23,7 +23,7 @@
 
 ;; Light
 (setq modus-operandi-palette-overrides
-      '((bg-main "#e6e7ed")
+      '((bg-main "#faf9f5")
         (comment "#c4c4c4")
         (constant magenta-faint)
         (variable cyan-intense)
@@ -36,7 +36,7 @@
   (setq modus-themes-bold-constructs 't)
   (load-theme 'modus-operandi t)
   (set-face-foreground 'bm-face nil)
-  (set-face-background 'bm-face "#e9e0ee")
+  (set-face-background 'bm-face "#fae3f9")
   )
 
 ;; Choose based on terminal
