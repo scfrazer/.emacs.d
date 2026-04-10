@@ -1,4 +1,4 @@
-;;; modus-operandi-tritanopia-theme.el --- Tritanopia-optimized theme with a white background -*- lexical-binding:t -*-
+;;; modus-operandi-theme.el --- Elegant, highly legible theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-operandi-tritanopia-palette-user nil
-  "Like the `modus-operandi-tritanopia-palette' for user-defined entries.
+(defcustom modus-operandi-palette-user nil
+  "Like the `modus-operandi-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-operandi-tritanopia-palette-overrides')."
+`modus-operandi-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-operandi-tritanopia-palette-overrides nil
-  "Overrides for `modus-operandi-tritanopia-palette'.
+(defcustom modus-operandi-palette-overrides nil
+  "Overrides for `modus-operandi-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,19 +75,18 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-operandi-tritanopia
+ 'modus-operandi
  'modus-themes
- "Tritanopia-optimized theme with a white background.
-This variant is optimized for users with blue-yellow color
-deficiency (tritanopia).  It conforms with the highest
-legibility standard for color contrast between background and
-foreground in any given piece of text, which corresponds to a
-minimum contrast in relative luminance of 7:1 (WCAG AAA
-standard)."
+ "Elegant, highly legible theme with a white background.
+Conforms with the highest legibility standard for color contrast
+between background and foreground in any given piece of text,
+which corresponds to a minimum contrast in relative luminance of
+7:1 (WCAG AAA standard)."
  'light
- 'modus-themes-operandi-tritanopia-palette
- 'modus-operandi-tritanopia-palette-user
- 'modus-operandi-tritanopia-palette-overrides
- 'modus-themes-faces-tritanopia)
+ 'modus-themes-operandi-palette
+ 'modus-operandi-palette-user
+ 'modus-operandi-palette-overrides)
 
-;;; modus-operandi-tritanopia-theme.el ends here
+(provide 'modus-operandi-theme)
+
+;;; modus-operandi-theme.el ends here

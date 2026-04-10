@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260327.915
-;; Package-Revision: 79c49830a80f
+;; Package-Version: 20260401.2145
+;; Package-Revision: 8b1420310795
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "30.1")
@@ -1643,7 +1643,7 @@ symbol property.")
     [[layout (or (get prefix 'transient--layout)
                  ;; Migrate unparsed legacy group definition.
                  (condition-case-unless-debug err
-                     (and-let* ((value (symbol-value prefix)))
+                     (and-let ((value (symbol-value prefix)))
                        (transient--set-layout
                         prefix
                         (if (and (listp value)
@@ -1904,7 +1904,7 @@ See info node `(transient)Modifying Existing Transients'."
          (plist-get props :command)))))
 
 (defun transient--command-key (cmd)
-  (and-let* ((obj (transient--suffix-prototype cmd)))
+  (and-let ((obj (transient--suffix-prototype cmd)))
     (cond ((slot-boundp obj 'key)
            (oref obj key))
           ((slot-exists-p obj 'shortarg)
@@ -2431,7 +2431,7 @@ of the corresponding object."
                 ((eq alt cmd))
                 ((oref obj inactive))
                 ((oref obj inapt))
-                ((and-let* ((alt (transient-suffix-object alt)))
+                ((and-let ((alt (transient-suffix-object alt)))
                    (or (oref alt inactive)
                        (oref alt inapt)))
                  (define-key map kbd cmd))
@@ -2533,7 +2533,7 @@ of the corresponding object."
      (if transient--redisplay-key
          (let ((key (vconcat transient--redisplay-key)))
            (or (lookup-key transient--transient-map key)
-               (and-let* ((regular (lookup-key local-function-key-map key)))
+               (and-let ((regular (lookup-key local-function-key-map key)))
                  (lookup-key transient--transient-map (vconcat regular)))))
        transient--transient-map))
     topmap))
@@ -3652,7 +3652,7 @@ transient is active."
   "From a transient menu, describe something in another buffer.
 
 This command can be bound multiple times to describe different targets.
-Each binding must specify the thing it describes, be setting the value
+Each binding must specify the thing it describes, by setting the value
 of its `target' slot, using the keyword argument `:='.
 
 The `helper' slot specifies the low-level function used to describe the
@@ -4376,7 +4376,7 @@ slot, but callers of `transient-args' wish to treat the values of
 certain suffixes as multiple values.  That translation is handled
 here.  The object's `multi-value' slot specifies whether and how
 to interpret the `value' as multiple values."
-  (and-let* ((value (transient-infix-value obj)))
+  (and-let ((value (transient-infix-value obj)))
     (pcase-exhaustive (and (slot-exists-p obj 'multi-value)
                            (oref obj multi-value))
       ('nil          (list value))
@@ -4414,7 +4414,7 @@ does nothing." nil)
 
 (cl-defmethod transient-infix-value ((obj transient-option))
   "Return ARGUMENT and VALUE as a unit or nil if the latter is nil."
-  (and-let* ((value (oref obj value)))
+  (and-let ((value (oref obj value)))
     (let ((arg (oref obj argument)))
       (pcase-exhaustive (oref obj multi-value)
         ('nil          (concat arg value))
@@ -4664,10 +4664,12 @@ have a history of their own.")
            (if (window-parent win)
                (delete-window win)
              (delete-frame (window-frame win) t)))))
-      (when remain-in-minibuffer-window
-        (select-window remain-in-minibuffer-window))))
-  (when (buffer-live-p transient--buffer)
-    (kill-buffer transient--buffer))
+      (with-demoted-errors "Error while exiting transient [1]: %S"
+        (when remain-in-minibuffer-window
+          (select-window remain-in-minibuffer-window)))))
+  (with-demoted-errors "Error while exiting transient [2]: %S"
+    (when (buffer-live-p transient--buffer)
+      (kill-buffer transient--buffer)))
   (setq transient--buffer nil))
 
 (defun transient--preserve-window-p (&optional nohide)
@@ -4836,7 +4838,7 @@ have a history of their own.")
              (lambda (column)
                (transient--maybe-pad-keys column group)
                (transient-with-shadowed-buffer
-                 `(,@(and-let* ((desc (transient-format-description column)))
+                 `(,@(and-let ((desc (transient-format-description column)))
                        (list desc))
                    ,@(let ((transient--pending-group column))
                        (mapcar #'transient-format

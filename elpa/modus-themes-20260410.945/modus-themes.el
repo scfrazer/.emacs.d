@@ -5,8 +5,8 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260325.809
-;; Package-Revision: e0f42f274045
+;; Package-Version: 20260410.945
+;; Package-Revision: 937ee8047bf5
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -3749,8 +3749,10 @@ instead of `color-name-to-rgb' to avoid dependence on a display
 connection.  This matters when loading a theme during early init on
 GUI Emacs, where `color-values' returns nil before the display is
 ready (per issue #198)."
-  (mapcar (lambda (x) (/ x 65535.0))
-          (color-values-from-color-spec hex-color)))
+  (mapcar
+   (lambda (x)
+     (/ x 65535.0))
+   (color-values-from-color-spec hex-color)))
 
 ;; This is the WCAG formula: https://www.w3.org/TR/WCAG20-TECHS/G18.html
 (defun modus-themes--wcag-contribution (channel weight)
@@ -4683,7 +4685,7 @@ If COLOR is unspecified, then return :box unspecified."
 ;;;;; basic and/or ungrouped styles
     `(abbrev-table-name ((,c :inherit modus-themes-heading-1)))
     `(appt-notification ((,c :inherit modus-themes-bold :foreground ,modeline-err)))
-    `(blink-matching-paren-offscreen ((,c :background ,bg-paren-match)))
+    `(blink-matching-paren-offscreen ((,c :background ,bg-paren-match :foreground ,fg-paren-match :underline ,underline-paren-match)))
     `(buffer-menu-buffer ((,c :foreground ,name)))
     `(child-frame-border ((,c :background ,border)))
     `(comint-highlight-input ((,c :inherit modus-themes-bold)))
@@ -4828,7 +4830,7 @@ If COLOR is unspecified, then return :box unspecified."
     `(font-latex-doctex-preprocessor-face ((,c :foreground ,preprocessor)))
     `(font-latex-italic-face ((,c :inherit italic)))
     `(font-latex-math-face ((,c :foreground ,constant)))
-    `(font-latex-script-char-face ((,c :inherit modus-themes-bold :foreground ,builtin)))
+    `(font-latex-script-char-face ((,c :inherit modus-themes-bold :foreground ,keybind)))
     `(font-latex-sectioning-5-face ((,c :inherit modus-themes-bold :foreground ,fg-alt)))
     `(font-latex-sedate-face ((,c :inherit modus-themes-bold :foreground ,keyword)))
     `(font-latex-slide-title-face ((,c :inherit modus-themes-heading-1)))
@@ -7110,6 +7112,12 @@ If COLOR is unspecified, then return :box unspecified."
     `(typescript-jsdoc-tag ((,c :inherit modus-themes-slant :foreground ,builtin)))
     `(typescript-jsdoc-type ((,c :inherit modus-themes-slant :foreground ,type)))
     `(typescript-jsdoc-value ((,c :inherit modus-themes-slant :foreground ,string)))
+;;;;; typst-ts-mode
+    `(typst-ts-error-face ((,c :foreground ,err)))
+    `(typst-ts-markup-label-face ((,c :inherit ,(if modus-themes-mixed-fonts '(fixed-pitch default) 'default) :foreground ,builtin)))
+    `(typst-ts-markup-linebreak-face ((,c :foreground ,warning)))
+    `(typst-ts-markup-reference-face ((,c :background ,bg-link-symbolic :foreground ,fg-link-symbolic :underline ,underline-link-symbolic)))
+    `(typst-ts-script-char-face ((,c :inherit modus-themes-bold :foreground ,keybind)))
 ;;;;; undo-tree
     `(undo-tree-visualizer-active-branch-face ((,c :inherit modus-themes-bold :foreground ,fg-main)))
     `(undo-tree-visualizer-current-face ((,c :foreground ,err)))

@@ -1,4 +1,4 @@
-;;; modus-vivendi-theme.el --- Elegant, highly legible theme with a black background -*- lexical-binding:t -*-
+;;; modus-vivendi-tritanopia-theme.el --- Tritanopia-optimized theme with a black background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-vivendi-palette-user nil
-  "Like the `modus-vivendi--palette' for user-defined entries.
+(defcustom modus-vivendi-tritanopia-palette-user nil
+  "Like the `modus-vivendi-tritanopia-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi--palette-overrides')."
+`modus-vivendi-tritanopia-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-vivendi-palette-overrides nil
-  "Overrides for `modus-vivendi-palette'.
+(defcustom modus-vivendi-tritanopia-palette-overrides nil
+  "Overrides for `modus-vivendi-tritanopia-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,16 +75,21 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-vivendi
+ 'modus-vivendi-tritanopia
  'modus-themes
- "Elegant, highly legible theme with a black background.
-Conforms with the highest legibility standard for color contrast
-between background and foreground in any given piece of text,
-which corresponds to a minimum contrast in relative luminance of
-7:1 (WCAG AAA standard)."
+ "Tritanopia-optimized theme with a black background.
+This variant is optimized for users with blue-yellow color
+deficiency (tritanopia).  It conforms with the highest
+legibility standard for color contrast between background and
+foreground in any given piece of text, which corresponds to a
+minimum contrast in relative luminance of 7:1 (WCAG AAA
+standard)."
  'dark
- 'modus-themes-vivendi-palette
- 'modus-vivendi-palette-user
- 'modus-vivendi-palette-overrides)
+ 'modus-themes-vivendi-tritanopia-palette
+ 'modus-vivendi-tritanopia-palette-user
+ 'modus-vivendi-tritanopia-palette-overrides
+ 'modus-themes-faces-tritanopia)
 
-;;; modus-vivendi-theme.el ends here
+(provide 'modus-vivendi-tritanopia-theme)
+
+;;; modus-vivendi-tritanopia-theme.el ends here

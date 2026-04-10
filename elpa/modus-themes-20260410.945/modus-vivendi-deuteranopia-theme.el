@@ -1,4 +1,4 @@
-;;; modus-operandi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a white background -*- lexical-binding:t -*-
+;;; modus-vivendi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a black background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-operandi-deuteranopia-palette-user nil
-  "Like the `modus-operandi-deuteranopia-palette' for user-defined entries.
+(defcustom modus-vivendi-deuteranopia-palette-user nil
+  "Like the `modus-vivendi-deuteranopia-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-operandi-deuteranopia-palette-overrides')."
+`modus-vivendi-deuteranopia-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-operandi-deuteranopia-palette-overrides nil
-  "Overrides for `modus-operandi-deuteranopia-palette'.
+(defcustom modus-vivendi-deuteranopia-palette-overrides nil
+  "Overrides for `modus-vivendi-deuteranopia-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,19 +75,21 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-operandi-deuteranopia
+ 'modus-vivendi-deuteranopia
  'modus-themes
- "Deuteranopia-optimized theme with a white background.
+ "Deuteranopia-optimized theme with a black background.
 This variant is optimized for users with red-green color
 deficiency (deuteranopia).  It conforms with the highest
 legibility standard for color contrast between background and
 foreground in any given piece of text, which corresponds to a
 minimum contrast in relative luminance of 7:1 (WCAG AAA
 standard)."
- 'light
- 'modus-themes-operandi-deuteranopia-palette
- 'modus-operandi-deuteranopia-palette-user
- 'modus-operandi-deuteranopia-palette-overrides
+ 'dark
+ 'modus-themes-vivendi-deuteranopia-palette
+ 'modus-vivendi-deuteranopia-palette-user
+ 'modus-vivendi-deuteranopia-palette-overrides
  'modus-themes-faces-deuteranopia)
 
-;;; modus-operandi-deuteranopia-theme.el ends here
+(provide 'modus-vivendi-deuteranopia-theme)
+
+;;; modus-vivendi-deuteranopia-theme.el ends here
