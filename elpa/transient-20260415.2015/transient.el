@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260401.2145
-;; Package-Revision: 8b1420310795
+;; Package-Version: 20260415.2015
+;; Package-Revision: 2e78a937413a
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "30.1")
@@ -100,19 +100,6 @@ similar defect.") :emergency))
 
 (defvar Man-notify-method)
 (defvar pp-default-function) ; since Emacs 29.1
-
-(static-if (< emacs-major-version 30)
-    (progn
-      (defun internal--build-binding@backport-e680827e814 (fn binding prev-var)
-        "Backport not warning about `_' not being left unused.
-Backport fix for https://debbugs.gnu.org/cgi/bugreport.cgi?bug=69108,
-from Emacs commit e680827e814e155cf79175d87ff7c6ee3a08b69a."
-        (let ((binding (funcall fn binding prev-var)))
-          (if (eq (car binding) '_)
-              (cons (make-symbol "s") (cdr binding))
-            binding)))
-      (advice-add 'internal--build-binding :around
-                  #'internal--build-binding@backport-e680827e814)))
 
 (define-obsolete-variable-alias
   'transient-show-popup
@@ -1666,7 +1653,12 @@ symbol property.")
      (transient--set-layout
       prefix
       (named-let upgrade ((spec layout))
-        (cond ((vectorp spec)
+        (cond ((and (vectorp spec)
+                    (length= spec 3))
+               ;; This format is used by emoji.el from Emacs <= 29.4.
+               (pcase-let ((`[,class ,args ,children] spec))
+                 (vector class args (mapcar #'upgrade children))))
+              ((vectorp spec)
                (pcase-let ((`[,level ,class ,args ,children] spec))
                  (when level
                    (setq args (plist-put args :level level)))
@@ -5202,26 +5194,31 @@ apply the face `transient-unreachable' to the complete string."
                                   (length (oref suffix key))))
                            (oref group suffixes))))))
 
-(defun transient--pixel-width (string)
-  (save-window-excursion
+(static-if (fboundp 'string-pixel-width) ; since Emacs 29.1
+    (defalias 'transient--string-pixel-width #'string-pixel-width)
+  ;; c22b735f0c6 and 61c254cafc9 cannot be backported.  Some later
+  ;; commits could be ported, but users should instead update Emacs.
+  (defun transient--string-pixel-width (string)
     (with-temp-buffer
       (insert string)
-      (set-window-dedicated-p nil nil)
-      (set-window-buffer nil (current-buffer))
-      (car (window-text-pixel-size
-            nil (line-beginning-position) (point))))))
+      (save-window-excursion
+        (set-window-dedicated-p nil nil)
+        (set-window-buffer nil (current-buffer))
+        (car (window-text-pixel-size
+              nil (line-beginning-position) (point)))))))
 
 (defun transient--column-stops (columns)
   (let* ((var-pitch (or transient-align-variable-pitch
                         (oref transient--prefix variable-pitch)))
-         (char-width (and var-pitch (transient--pixel-width " "))))
+         (char-width (and var-pitch (transient--string-pixel-width " "))))
     (transient--seq-reductions-from
      (apply-partially #'+ (* 2 (if var-pitch char-width 1)))
      (transient--mapn
       (lambda (cells min)
         (apply #'max
                (if min (if var-pitch (* min char-width) min) 0)
-               (mapcar (if var-pitch #'transient--pixel-width #'length) cells)))
+               (mapcar (if var-pitch #'transient--string-pixel-width #'length)
+                       cells)))
       columns
       (oref transient--prefix column-widths))
      0)))

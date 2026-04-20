@@ -3,8 +3,8 @@
 ;; Copyright (C) 2012-2016 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
-;; Package-Version: 20260117.1733
-;; Package-Revision: ddd677091afc
+;; Package-Version: 20260419.931
+;; Package-Revision: 94b8b07a4bab
 ;; Package-Requires: ((emacs "24.4") (cl-lib "0.5"))
 ;; Keywords: editing cursors
 ;; Homepage: https://github.com/magnars/multiple-cursors.el

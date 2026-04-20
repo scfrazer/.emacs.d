@@ -56,7 +56,7 @@
     beg))
 
 (defun mc/furthest-cursor-before-point ()
-  (let ((beg (if mark-active (min (mark) (point)) (point)))
+  (let ((beg (or (use-region-beginning) (point)))
         furthest)
     (mc/for-each-fake-cursor
      (when (< (mc/cursor-beg cursor) beg)
@@ -65,7 +65,7 @@
     furthest))
 
 (defun mc/furthest-cursor-after-point ()
-  (let ((end (if mark-active (max (mark) (point)) (point)))
+  (let ((end (or (use-region-end) (point)))
         furthest)
     (mc/for-each-fake-cursor
      (when (> (mc/cursor-end cursor) end)

@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20260309.1549
-;; Package-Revision: 0b96e8f16965
+;; Package-Version: 20260419.1808
+;; Package-Revision: daa0dddeb5bc
 ;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -208,9 +208,10 @@ The value should lie between 0 and vertico-count/2."
       (cl-loop for cand in cands collect (list cand "" "")))))
 
 (defun vertico--move-to-front (elem list)
-  "Move ELEM to front of LIST."
-  (if-let* ((found (member elem list))) ;; No duplicates, compare with Corfu.
-      (nconc (list (car found)) (delq (setcar found nil) list))
+  "Move all ELEM (also duplicates) to front of LIST."
+  (if (member elem list)
+      (nconc (cl-loop for x in list if (equal x elem) collect x)
+             (delete elem list))
     list))
 
 (defun vertico--filter-completions (&rest args)
@@ -279,13 +280,13 @@ The value should lie between 0 and vertico-count/2."
     ;; and `file-directory-p'.
     (when completing-file (setq all (completion-pcm--filename-try-filter all)))
     ;; Sort using the `display-sort-function' or the Vertico sort functions
-    (setq all (delete-consecutive-dups (funcall (or (vertico--sort-function) #'identity) all)))
+    (setq all (funcall (or (vertico--sort-function) #'identity) all))
     ;; Move special candidates: "field" appears at the top, before "field/", before default value
     (when (stringp def)
       (setq all (vertico--move-to-front def all)))
     (when (and completing-file (not (string-suffix-p "/" field)))
       (setq all (vertico--move-to-front (concat field "/") all)))
-    (setq all (vertico--move-to-front field all))
+    (setq all (delete-consecutive-dups (vertico--move-to-front field all)))
     (when-let* ((fun (and all (vertico--metadata-get 'group-function))))
       (setq groups (vertico--group-by fun all) all (car groups)))
     (setq def-missing (and def (equal str "") (not (member def all)))
