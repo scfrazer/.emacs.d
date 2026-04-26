@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260415.2015
-;; Package-Revision: 2e78a937413a
+;; Package-Version: 20260422.1646
+;; Package-Revision: cd97319a851d
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "30.1")
@@ -45,7 +45,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.12.0")
+(defconst transient-version "0.13.0")
 
 (require 'cl-lib)
 (require 'compat)
@@ -5195,7 +5195,8 @@ apply the face `transient-unreachable' to the complete string."
                            (oref group suffixes))))))
 
 (static-if (fboundp 'string-pixel-width) ; since Emacs 29.1
-    (defalias 'transient--string-pixel-width #'string-pixel-width)
+    (progn ; See https://github.com/magit/magit/issues/5557.
+      (defalias 'transient--string-pixel-width #'string-pixel-width))
   ;; c22b735f0c6 and 61c254cafc9 cannot be backported.  Some later
   ;; commits could be ported, but users should instead update Emacs.
   (defun transient--string-pixel-width (string)

@@ -1,9 +1,9 @@
-;;; modus-operandi-theme.el --- Elegant, highly legible theme with a white background -*- lexical-binding:t -*-
+;;; modus-vivendi-tinted-theme.el --- Elegant, highly legible theme with a night sky background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
-;; Author: Protesilaos Stavrou <info@protesilaos.com>
-;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
+;; Author: Protesilaos <info@protesilaos.com>
+;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
 ;; Keywords: faces, theme, accessibility
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-operandi-palette-user nil
-  "Like the `modus-operandi-palette' for user-defined entries.
+(defcustom modus-vivendi-tinted-palette-user nil
+  "Like the `modus-vivendi-tinted-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-operandi-palette-overrides')."
+`modus-vivendi-tinted-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-operandi-palette-overrides nil
-  "Overrides for `modus-operandi-palette'.
+(defcustom modus-vivendi-tinted-palette-overrides nil
+  "Overrides for `modus-vivendi-tinted-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,18 +75,18 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-operandi
+ 'modus-vivendi-tinted
  'modus-themes
- "Elegant, highly legible theme with a white background.
+ "Elegant, highly legible theme with a night sky background.
 Conforms with the highest legibility standard for color contrast
 between background and foreground in any given piece of text,
 which corresponds to a minimum contrast in relative luminance of
 7:1 (WCAG AAA standard)."
- 'light
- 'modus-themes-operandi-palette
- 'modus-operandi-palette-user
- 'modus-operandi-palette-overrides)
+ 'dark
+ 'modus-themes-vivendi-tinted-palette
+ 'modus-vivendi-tinted-palette-user
+ 'modus-vivendi-tinted-palette-overrides)
 
-(provide 'modus-operandi-theme)
+(provide 'modus-vivendi-tinted-theme)
 
-;;; modus-operandi-theme.el ends here
+;;; modus-vivendi-tinted-theme.el ends here

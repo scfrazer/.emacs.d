@@ -1,9 +1,9 @@
-;;; modus-operandi-tinted-theme.el --- Elegant, highly legible theme with a light ochre background -*- lexical-binding:t -*-
+;;; modus-operandi-theme.el --- Elegant, highly legible theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
-;; Author: Protesilaos Stavrou <info@protesilaos.com>
-;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
+;; Author: Protesilaos <info@protesilaos.com>
+;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
 ;; Keywords: faces, theme, accessibility
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-operandi-tinted-palette-user nil
-  "Like the `modus-operandi-tinted-palette' for user-defined entries.
+(defcustom modus-operandi-palette-user nil
+  "Like the `modus-operandi-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-operandi-tinted-palette-overrides')."
+`modus-operandi-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-operandi-tinted-palette-overrides nil
-  "Overrides for `modus-operandi-tinted-palette'.
+(defcustom modus-operandi-palette-overrides nil
+  "Overrides for `modus-operandi-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,18 +75,18 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-operandi-tinted
+ 'modus-operandi
  'modus-themes
- "Elegant, highly legible theme with a light ochre background.
+ "Elegant, highly legible theme with a white background.
 Conforms with the highest legibility standard for color contrast
 between background and foreground in any given piece of text,
 which corresponds to a minimum contrast in relative luminance of
 7:1 (WCAG AAA standard)."
  'light
- 'modus-themes-operandi-tinted-palette
- 'modus-operandi-tinted-palette-user
- 'modus-operandi-tinted-palette-overrides)
+ 'modus-themes-operandi-palette
+ 'modus-operandi-palette-user
+ 'modus-operandi-palette-overrides)
 
-(provide 'modus-operandi-tinted-theme)
+(provide 'modus-operandi-theme)
 
-;;; modus-operandi-tinted-theme.el ends here
+;;; modus-operandi-theme.el ends here

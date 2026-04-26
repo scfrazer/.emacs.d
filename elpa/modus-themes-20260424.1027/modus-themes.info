@@ -38,7 +38,7 @@ Copyright (C) 2020-2026 Free Software Foundation, Inc.
      (a) The FSF’s Back-Cover Text is: “You have the freedom to copy and
      modify this GNU manual.”
 
-   This manual, written by Protesilaos Stavrou, describes the
+   This manual, written by Protesilaos, describes the
 customization options for the Modus themes, and provides every other
 piece of information pertinent to them.
 
@@ -3131,7 +3131,7 @@ Preview theme colors.):
 
      ! Theme: modus-operandi
      ! Description: XTerm port of modus-operandi (Modus themes for GNU Emacs)
-     ! Author: Protesilaos Stavrou, <https://protesilaos.com>
+     ! Author: Protesilaos, <https://protesilaos.com>
      xterm*background: #ffffff
      xterm*foreground: #000000
      xterm*color0:     #000000
@@ -3153,7 +3153,7 @@ Preview theme colors.):
 
      ! Theme: modus-vivendi
      ! Description: XTerm port of modus-vivendi (Modus themes for GNU Emacs)
-     ! Author: Protesilaos Stavrou, <https://protesilaos.com>
+     ! Author: Protesilaos, <https://protesilaos.com>
      xterm*background: #000000
      xterm*foreground: #ffffff
      xterm*color0:     #000000

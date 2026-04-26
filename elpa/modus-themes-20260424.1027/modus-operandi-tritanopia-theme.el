@@ -1,9 +1,9 @@
-;;; modus-vivendi-deuteranopia-theme.el --- Deuteranopia-optimized theme with a black background -*- lexical-binding:t -*-
+;;; modus-operandi-tritanopia-theme.el --- Tritanopia-optimized theme with a white background -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2019-2026  Free Software Foundation, Inc.
 
-;; Author: Protesilaos Stavrou <info@protesilaos.com>
-;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
+;; Author: Protesilaos <info@protesilaos.com>
+;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
 ;; Keywords: faces, theme, accessibility
 
@@ -42,19 +42,19 @@
              (require-theme 'modus-themes t))
   (require 'modus-themes))
 
-(defcustom modus-vivendi-deuteranopia-palette-user nil
-  "Like the `modus-vivendi-deuteranopia-palette' for user-defined entries.
+(defcustom modus-operandi-tritanopia-palette-user nil
+  "Like the `modus-operandi-tritanopia-palette' for user-defined entries.
 This is meant to extend the palette with custom named colors and/or
 semantic palette mappings.  Those may then be used in combination with
 palette overrides (also see `modus-themes-common-palette-overrides' and
-`modus-vivendi-deuteranopia-palette-overrides')."
+`modus-operandi-tritanopia-palette-overrides')."
   :group 'modus-themes
   :package-version '(modus-themes . "4.5.0")
   :type '(repeat (list symbol (choice symbol string)))
   :link '(info-link "(modus-themes) Option to extend the palette for use with overrides"))
 
-(defcustom modus-vivendi-deuteranopia-palette-overrides nil
-  "Overrides for `modus-vivendi-deuteranopia-palette'.
+(defcustom modus-operandi-tritanopia-palette-overrides nil
+  "Overrides for `modus-operandi-tritanopia-palette'.
 
 Mirror the elements of the aforementioned palette, overriding
 their value.
@@ -75,21 +75,21 @@ represents."
   :link '(info-link "(modus-themes) Palette overrides"))
 
 (modus-themes-theme
- 'modus-vivendi-deuteranopia
+ 'modus-operandi-tritanopia
  'modus-themes
- "Deuteranopia-optimized theme with a black background.
-This variant is optimized for users with red-green color
-deficiency (deuteranopia).  It conforms with the highest
+ "Tritanopia-optimized theme with a white background.
+This variant is optimized for users with blue-yellow color
+deficiency (tritanopia).  It conforms with the highest
 legibility standard for color contrast between background and
 foreground in any given piece of text, which corresponds to a
 minimum contrast in relative luminance of 7:1 (WCAG AAA
 standard)."
- 'dark
- 'modus-themes-vivendi-deuteranopia-palette
- 'modus-vivendi-deuteranopia-palette-user
- 'modus-vivendi-deuteranopia-palette-overrides
- 'modus-themes-faces-deuteranopia)
+ 'light
+ 'modus-themes-operandi-tritanopia-palette
+ 'modus-operandi-tritanopia-palette-user
+ 'modus-operandi-tritanopia-palette-overrides
+ 'modus-themes-faces-tritanopia)
 
-(provide 'modus-vivendi-deuteranopia-theme)
+(provide 'modus-operandi-tritanopia-theme)
 
-;;; modus-vivendi-deuteranopia-theme.el ends here
+;;; modus-operandi-tritanopia-theme.el ends here
