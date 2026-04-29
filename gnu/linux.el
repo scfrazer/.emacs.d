@@ -8,7 +8,7 @@
 (setq modus-vivendi-tinted-palette-overrides 
       '(
         (fg-main "#dddddd")
-        (bg-main "#15171d")
+        (bg-main "#222730")
         (comment "#888888")
         ))
 
