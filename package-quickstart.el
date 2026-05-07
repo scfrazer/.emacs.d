@@ -236,7 +236,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1/compat-autoloads.el"))
 
 
 
@@ -250,13 +250,14 @@ See `xr' for a description of the DIALECT argument.
 
 
 (register-definition-prefixes "compat-macs" '("compat-"))
+
 
 
 (provide 'compat-autoloads)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260417.751/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260417.751/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260504.1750/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260504.1750/with-editor-autoloads.el"))
 
 
 
@@ -622,7 +623,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260419.1808/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260419.1808/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260502.948/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260502.948/vertico-autoloads.el"))
 
 
 
@@ -1268,7 +1269,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260201.1500/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260201.1500/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260430.2236/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260430.2236/cond-let-autoloads.el"))
 
 
 
@@ -1284,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260427.1537/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260427.1537/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260506.643/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260506.643/transient-autoloads.el"))
 
 
 
@@ -2241,7 +2242,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260504.1718/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260504.1718/orderless-autoloads.el"))
 
 
 
@@ -2605,7 +2606,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260424.1027/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260424.1027/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260506.527/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260506.527/modus-themes-autoloads.el"))
 
 
 
@@ -2631,10 +2632,10 @@ it is disabled.
 
 
 (autoload 'modus-themes-contrast "modus-themes" "\
-Measure WCAG contrast ratio between HEX-COLOR-1 and HEX-COLOR-2.
-HEX-COLOR-1 and HEX-COLOR-2 are color values written in hexadecimal RGB.
+Measure WCAG contrast ratio between COLOR-1 and COLOR-2.
+Color values are of the form accepted by `modus-themes-wcag-formula'.
 
-(fn HEX-COLOR-1 HEX-COLOR-2)")
+(fn COLOR-1 COLOR-2)")
 (autoload 'modus-themes-activate "modus-themes" "\
 Load THEME if neeeded, so that it can be used by other commands.
 
@@ -2859,7 +2860,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260426.650/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260426.650/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260502.950/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260502.950/marginalia-autoloads.el"))
 
 
 
@@ -3567,7 +3568,7 @@ appropriate page." t)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20251208.1041/browse-kill-ring-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20251208.1041/browse-kill-ring-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20260503.1620/browse-kill-ring-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/browse-kill-ring-20260503.1620/browse-kill-ring-autoloads.el"))
 
 
 
@@ -3577,10 +3578,10 @@ appropriate page." t)
 
 
 (autoload 'browse-kill-ring-default-keybindings "browse-kill-ring" "\
-Set up M-y (`yank-pop') so that it can invoke `browse-kill-ring'.
-Normally, if M-y was not preceeded by C-y, then it has no useful
-behavior.  This function sets things up so that M-y will invoke
-`browse-kill-ring'." t)
+Make `yank-pop' invoke `browse-kill-ring' when appropriate.
+Normally, `yank-pop' is only useful after `yank'.  This installs
+advice so that invoking `yank-pop' otherwise runs `browse-kill-ring'
+instead." t)
 (autoload 'browse-kill-ring "browse-kill-ring" "\
 Display items in the `kill-ring' in another buffer." t)
 (register-definition-prefixes "browse-kill-ring" '("browse-kill-ring-"))
@@ -4017,7 +4018,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260424.1027" "/home/scfrazer/.emacs.d/elpa/orderless-20260124.1000" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260427.1537" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260417.751" "/home/scfrazer/.emacs.d/elpa/compat-30.1.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260506.527" "/home/scfrazer/.emacs.d/elpa/orderless-20260504.1718" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20251022.457" "/home/scfrazer/.emacs.d/elpa/transient-20260506.643" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260504.1750" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
