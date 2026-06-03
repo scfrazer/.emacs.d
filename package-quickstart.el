@@ -257,7 +257,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260511.1710/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260511.1710/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260601.1457/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260601.1457/cond-let-autoloads.el"))
 
 
 
@@ -273,7 +273,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260518.948/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260518.948/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526/with-editor-autoloads.el"))
 
 
 
@@ -1285,7 +1285,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260518.1413/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260518.1413/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529/transient-autoloads.el"))
 
 
 
@@ -2916,6 +2916,35 @@ Cycle between annotators in `marginalia-annotators'." t)
 
 
 )
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20221027/lua-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20221027/lua-mode-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(autoload 'lua-mode "lua-mode" "\
+Major mode for editing Lua code.
+
+(fn)" t)
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+(defalias 'run-lua #'lua-start-process)
+(autoload 'lua-start-process "lua-mode" "\
+Start a Lua process named NAME, running PROGRAM.
+PROGRAM defaults to NAME, which defaults to `lua-default-application'.
+When called interactively, switch to the process buffer.
+
+(fn &optional NAME PROGRAM STARTFILE &rest SWITCHES)" t)
+(register-definition-prefixes "lua-mode" '("lua-"))
+
+
+(provide 'lua-mode-autoloads)
+
+
+)
 (let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/json-snatcher-20200916.1717/json-snatcher-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/json-snatcher-20200916.1717/json-snatcher-autoloads.el"))
 
 (add-to-list 'load-path (directory-file-name
@@ -4011,14 +4040,14 @@ it is disabled.
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat cond-let with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
+        '(yaml-mode xref xr compat cond-let with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv lua-mode json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
         package-activated-list)))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260522.720" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260518.1413" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260518.948" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260522.720" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
          Info-directory-list)))
 
 ;; Local Variables:
