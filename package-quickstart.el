@@ -639,7 +639,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260521.2003/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260521.2003/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260605.1903/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260605.1903/vertico-autoloads.el"))
 
 
 
@@ -2916,7 +2916,7 @@ Cycle between annotators in `marginalia-annotators'." t)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20221027/lua-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20221027/lua-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20250310.1150/lua-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/lua-mode-20250310.1150/lua-mode-autoloads.el"))
 
 
 
