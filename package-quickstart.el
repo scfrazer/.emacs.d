@@ -1362,7 +1362,7 @@ See info node `(transient)Modifying Existing Transients'.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20250813.1242/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20250813.1242/tango-plus-theme-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20260615.1520/tango-plus-theme-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/tango-plus-theme-20260615.1520/tango-plus-theme-autoloads.el"))
 
 
 

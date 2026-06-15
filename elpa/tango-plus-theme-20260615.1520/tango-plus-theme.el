@@ -5,8 +5,8 @@
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/tango-plus-theme
-;; Package-Version: 20250813.1242
-;; Package-Revision: 6c57ae3745ab
+;; Package-Version: 20260615.1520
+;; Package-Revision: e9be23b05e39
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -345,8 +345,6 @@ Semantic, and Ansi-Color faces are included.")
 
    ;; Magit et al:
    `(diff-context                   ((,class (:inherit highlight))))
-   `(diff-refine-removed            ((,class (:inherit magit-diff-removed :underline t))))
-   `(diff-refine-added              ((,class (:inherit magit-diff-added :underline t))))
    `(magit-diff-hunk-header         ((,class (:inherit header-line))))
    `(magit-diff-file-header         ((,class (:inherit header-line))))
    `(git-commit-summary-face        ((,class (:inherit default))))
