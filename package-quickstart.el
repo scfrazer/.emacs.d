@@ -273,7 +273,107 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260601.1455/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260601.1455/llama-autoloads.el"))
+
+
+
+(add-to-list 'load-path (or (and load-file-name (directory-file-name (file-name-directory load-file-name))) (car load-path)))
+
+
+
+
+(autoload 'llama "llama" "\
+Expand to a `lambda' expression that wraps around FN and BODY.
+
+This macro provides a compact way to write short `lambda' expressions.
+It expands to a `lambda' expression, which calls the function FN with
+arguments BODY and returns its value.  The arguments of the `lambda'
+expression are derived from symbols found in BODY.
+
+Each symbol from `%1' through `%9', which appears in an unquoted part
+of BODY, specifies a mandatory argument.  Each symbol from `&1' through
+`&9', which appears in an unquoted part of BODY, specifies an optional
+argument.  The symbol `&*' specifies extra (`&rest') arguments.
+
+The shorter symbol `%' can be used instead of `%1', but using both in
+the same expression is not allowed.  Likewise `&' can be used instead
+of `&1'.  These shorthands are not recognized in function position.
+
+To support binding forms that use a vector as VARLIST (such as `-let'
+from the `dash' package), argument symbols are also detected inside of
+vectors.
+
+The space between `##' and FN can be omitted because `##' is read-syntax
+for the symbol whose name is the empty string.  If you prefer you can
+place a space there anyway, and if you prefer to not use this somewhat
+magical symbol at all, you can instead use the alternative name `llama'.
+
+Instead of:
+
+  (lambda (a &optional _ c &rest d)
+    (foo a (bar c) d))
+
+you can use this macro and write:
+
+  (##foo %1 (bar &3) &*)
+
+which expands to:
+
+  (lambda (%1 &optional _&2 &3 &rest &*)
+    (foo %1 (bar &3) &*))
+
+Unused trailing arguments and mandatory unused arguments at the border
+between mandatory and optional arguments are also supported:
+
+  (##list %1 _%3 &5 _&6)
+
+becomes:
+
+  (lambda (%1 _%2 _%3 &optional _&4 &5 _&6)
+    (list %1 &5))
+
+Note how `_%3' and `_&6' are removed from the body, because their names
+begin with an underscore.  Also note that `_&4' is optional, unlike the
+explicitly specified `_%3'.
+
+Consider enabling `llama-fontify-mode' to highlight `##' and its
+special arguments.
+
+(fn FN &rest BODY)" nil t)
+(defvar llama-fontify-mode nil "\
+Non-nil if Llama-Fontify mode is enabled.
+See the `llama-fontify-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `llama-fontify-mode'.")
+(custom-autoload 'llama-fontify-mode "llama" nil)
+(autoload 'llama-fontify-mode "llama" "\
+In Emacs Lisp mode, highlight the `##' macro and its special arguments.
+
+This is a global minor mode.  If called interactively, toggle the
+`Llama-Fontify mode' mode.  If the prefix argument is positive,
+enable the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `(default-value \\='llama-fontify-mode)'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "llama" '("\\#\\#" "all-completions" "elisp-" "intern" "lisp--el-match-keyword@llama" "llama-"))
+
+
+(provide 'llama-autoloads)
+
+
+)
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260625.855/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260625.855/with-editor-autoloads.el"))
 
 
 
@@ -577,7 +677,7 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260331.1441/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260331.1441/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260623.932/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260623.932/web-mode-autoloads.el"))
 
 
 
@@ -1285,7 +1385,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260617.1137/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260617.1137/transient-autoloads.el"))
 
 
 
@@ -2606,7 +2706,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260522.720/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260522.720/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260628.1042/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260628.1042/modus-themes-autoloads.el"))
 
 
 
@@ -3553,7 +3653,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260521.1832/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260521.1832/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260617.1353/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260617.1353/cmake-mode-autoloads.el"))
 
 
 
@@ -4040,14 +4140,14 @@ it is disabled.
 (setq package-activated-list
       (delete-dups
        (append
-        '(yaml-mode xref xr compat cond-let with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv lua-mode json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
+        '(yaml-mode xref xr compat cond-let llama with-editor which-key wgrep web-mode web-beautify vertico bind-key use-package transient tango-plus-theme sr-speedbar rg relint project eldoc flymake python popup orderless multiple-cursors modus-themes markdown-mode marginalia lv lua-mode json-snatcher json-mode iflipb hydra highlight-indent-guides goto-last-change git-timemachine filladapt fill-function-arguments fd-dired dash dired-hacks-utils dired-subtree diffview deft cmake-mode browse-kill-ring bm beacon avy 0blayout)
         package-activated-list)))
 (progn
   (require 'info)
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260522.720" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260601.1529" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260601.1526" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260628.1042" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260617.1137" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260625.855" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
          Info-directory-list)))
 
 ;; Local Variables:

@@ -5,8 +5,8 @@
 ;; Author: Protesilaos <info@protesilaos.com>
 ;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260522.720
-;; Package-Revision: ef2fa82b1294
+;; Package-Version: 20260628.1042
+;; Package-Revision: 9172a0e8efda
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -7001,6 +7001,7 @@ If COLOR is unspecified, then return :box unspecified."
     `(vc-dir-file ((,c :foreground ,name)))
     `(vc-dir-header ((,c :inherit modus-themes-bold)))
     `(vc-dir-header-value ((,c :foreground ,string)))
+    `(vc-dir-key-binding-hint-label ((,c :inherit modus-themes-bold)))
     `(vc-dir-mark-indicator (( )))
     `(vc-dir-status-edited ((,c :inherit modus-themes-slant)))
     `(vc-dir-status-ignored ((,c :foreground ,fg-dim)))

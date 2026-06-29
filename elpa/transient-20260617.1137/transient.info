@@ -1,7 +1,7 @@
-This is transient.info, produced by makeinfo version 6.8 from
+This is transient.info, produced by makeinfo version 7.1.1 from
 transient.texi.
 
-     Copyright (C) 2018–2026 Free Software Foundation, Inc.
+     Copyright (C) 2018-2026 Free Software Foundation, Inc.
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
@@ -24,17 +24,17 @@ File: transient.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Transient User and Developer Manual
 ***********************************
 
-Transient is the library used to implement the keyboard-driven “menus”
+Transient is the library used to implement the keyboard-driven "menus"
 in Magit.  It is distributed as a separate package, so that it can be
 used to implement similar menus in other packages.
 
    This manual can be bit hard to digest when getting started.  A useful
-resource to get over that hurdle is Psionic K’s interactive tutorial,
+resource to get over that hurdle is Psionic K's interactive tutorial,
 available at <https://github.com/positron-solutions/transient-showcase>.
 
 This manual is for Transient version 0.13.4.
 
-     Copyright (C) 2018–2026 Free Software Foundation, Inc.
+     Copyright (C) 2018-2026 Free Software Foundation, Inc.
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
@@ -60,7 +60,7 @@ This manual is for Transient version 0.13.4.
 * Concept Index::
 * GNU General Public License::
 
-— The Detailed Node Listing —
+-- The Detailed Node Listing --
 
 Usage
 
@@ -110,7 +110,7 @@ in Magit.  It is distributed as a separate package, so that it can be
 used to implement similar menus in other packages.
 
    This manual can be bit hard to digest when getting started.  A useful
-resource to get over that hurdle is Psionic K’s interactive tutorial,
+resource to get over that hurdle is Psionic K's interactive tutorial,
 available at <https://github.com/positron-solutions/transient-showcase>.
 
 Some things that Transient can do
@@ -140,7 +140,7 @@ Using Transient for composing interactive commands
 
 What about Emacs commands used interactively?  How do these handle
 options?  One solution is to make many versions of the same command, so
-you don’t need to!  Consider: ‘delete-other-windows’ vs.
+you don't need to!  Consider: ‘delete-other-windows’ vs.
 ‘delete-other-windows-vertically’ (among many similar examples).
 
    Some Emacs commands will simply prompt you for the next "argument"
@@ -149,13 +149,13 @@ arguments which usually start with ‘C-u’.  Sometimes these are sensibly
 numerical in nature (‘C-u 4 M-x forward-paragraph’ to move forward 4
 paragraphs).  But sometimes they function instead as boolean "switches"
 (‘C-u C-SPACE’ to jump to the last mark instead of just setting it, ‘C-u
-C-u C-SPACE’ to unconditionally set the mark).  Since there aren’t many
-standards for the use of prefix options, you have to read the command’s
+C-u C-SPACE’ to unconditionally set the mark).  Since there aren't many
+standards for the use of prefix options, you have to read the command's
 documentation to find out what the possibilities are.
 
    But when an Emacs command grows to have a truly large set of options
 and arguments, with dependencies between them, lots of option values,
-etc., these simple approaches just don’t scale.  Transient is designed
+etc., these simple approaches just don't scale.  Transient is designed
 to solve this issue.  Think of it as the humble prefix argument ‘C-u’,
 _raised to the power of 10_.  Like ‘C-u’, it is key driven.  Like the
 shell, it supports boolean "flag" options, options that take arguments,
@@ -169,7 +169,7 @@ there is only one way to "execute" (hit ‘Return’!), transients can
 self-documenting _actions_ (imagine having 5 different colored return
 keys on your keyboard!).  Transients make navigating and setting large,
 complex groups of command options and arguments easy.  Fun even.  Once
-you’ve tried it, it’s hard to go back to the ‘C-u what can I do here
+you've tried it, it's hard to go back to the ‘C-u what can I do here
 again?’ way.
 
 
@@ -199,7 +199,7 @@ File: transient.info,  Node: Invoking Transients,  Next: Aborting and Resuming T
 A transient prefix command is invoked like any other command by pressing
 the key that is bound to that command.  The main difference to other
 commands is that a transient prefix command activates a transient
-keymap, which temporarily binds the transient’s infix and suffix
+keymap, which temporarily binds the transient's infix and suffix
 commands, and that those bindings are shown in menu buffer, which is
 displayed in a new window, until the menu is exited.  Bindings from
 other keymaps may, or may not, be disabled while the transient state is
@@ -247,9 +247,9 @@ use the latter, then you can later resume the stack of transients using
      any, or else the current transient.  When quitting the current
      transient, it returns to the previous transient, if any.
 
-   Transient’s predecessor bound ‘q’ instead of ‘C-g’ to the quit
+   Transient's predecessor bound ‘q’ instead of ‘C-g’ to the quit
 command.  To learn how to get that binding back see
-‘transient-bind-q-to-quit’’s documentation string.
+‘transient-bind-q-to-quit’'s documentation string.
 
 ‘C-q’ (‘transient-quit-all’)
      This command quits the currently active incomplete key sequence, if
@@ -260,7 +260,7 @@ command.  To learn how to get that binding back see
      Like ‘transient-quit-all’, this command quits an incomplete key
      sequence, if any, and all transients.  Additionally, it saves the
      stack of transients so that it can easily be resumed (which is
-     particularly useful if you quickly need to do “something else” and
+     particularly useful if you quickly need to do "something else" and
      the stack is deeper than a single transient, and/or you have
      already changed the values of some infix arguments).
 
@@ -316,7 +316,7 @@ causes the common commands to be temporarily shown in the active menu.
      invoke ‘save-buffer’, if that binding is shadowed by the menu
      binding for ‘transient-save’.
 
-     Which key is most suitable depends on the user’s preferences, but
+     Which key is most suitable depends on the user's preferences, but
      good choices may include function keys and ‘C-z’ (for many keyboard
      layouts ‘z’ is right next to ‘x’, and invoking ‘suspend-frame’,
      while a transient menu is active, would not be a good idea anyway).
@@ -346,12 +346,12 @@ buffer-local value of some variable.  Invoking such a transient again
 uses the buffer-local value.  (1)
 
    If the user does not save the value and just exits using a regular
-suffix command, then the value is merely saved to the transient’s
-history.  That value won’t be used when the transient is next invoked,
+suffix command, then the value is merely saved to the transient's
+history.  That value won't be used when the transient is next invoked,
 but it is easily accessible (see *note Using History::).
 
    Option ‘transient-common-command-prefix’ controls the prefix key used
-in the following bindings.  For simplicity’s sake the default, ‘C-x’, is
+in the following bindings.  For simplicity's sake the default, ‘C-x’, is
 shown below.
 
 ‘C-x s’ (‘transient-set’)
@@ -382,13 +382,13 @@ File: transient.info,  Node: Using History,  Next: Getting Help for Suffix Comma
 2.5 Using History
 =================
 
-Every time the user invokes a suffix command the transient’s current
+Every time the user invokes a suffix command the transient's current
 value is saved to its history.  These values can be cycled through, the
 same way one can cycle through the history of commands that read
 user-input in the minibuffer.
 
    Option ‘transient-common-command-prefix’ controls the prefix key used
-in the following bindings.  For simplicity’s sake the default, ‘C-x’, is
+in the following bindings.  For simplicity's sake the default, ‘C-x’, is
 shown below.
 
 ‘C-M-p’ (‘transient-history-prev’)
@@ -450,7 +450,7 @@ provides access to the documentation directly from the active transient.
 defined.  For infix commands that represent command-line arguments this
 ideally shows the appropriate manpage.  ‘transient-help’ then tries to
 jump to the correct location within that.  Info manuals are also
-supported.  The fallback is to show the command’s documentation string,
+supported.  The fallback is to show the command's documentation string,
 for non-infix suffixes this is usually appropriate.
 
 
@@ -464,7 +464,7 @@ This is certainly the case for Magit; some users have been using it and
 Git for a decade, while others are just getting started now.
 
    For that reason a mechanism is needed that authors can use to
-classify a transient’s infixes and suffixes along the
+classify a transient's infixes and suffixes along the
 essentials...everything spectrum.  We use the term “levels” to describe
 that mechanism.
 
@@ -476,13 +476,13 @@ at any level.
 
    The levels of individual transients and/or their individual suffixes
 can be changed interactively, by invoking the menu and entering its
-“edit” mode using the command ‘transient-set-level’, as described below.
+"edit" mode using the command ‘transient-set-level’, as described below.
 
    The default level for both transients and their suffixes is 4.  The
 ‘transient-default-level’ option only controls the default for
 transients.  The default suffix level is always 4.  The authors of
 transients should place certain suffixes on a higher level, if they
-expect that it won’t be of use to most users, and they should place very
+expect that it won't be of use to most users, and they should place very
 important suffixes on a lower level, so that they remain available even
 if the user lowers the transient level.
 
@@ -496,7 +496,7 @@ if the user lowers the transient level.
      transients and their suffixes between Emacs sessions.
 
    Option ‘transient-common-command-prefix’ controls the prefix key used
-in the following bindings.  For simplicity’s sake the default, ‘C-x’, is
+in the following bindings.  For simplicity's sake the default, ‘C-x’, is
 shown below.
 
 ‘C-x l’ (‘transient-set-level’)
@@ -536,7 +536,7 @@ shown below.
      If a suffix command appears in multiple menus, it may make sense to
      consistently change its level in all those menus at once.  For
      example, the ‘--gpg-sign’ argument (which is implemented using the
-     command ‘magit:--gpg-sign’), is bound in all of Magit’s menu which
+     command ‘magit:--gpg-sign’), is bound in all of Magit's menu which
      create commits.  Users who sometimes sign their commits would want
      that argument to be available in all of these menus, while for
      users who never sign it is just unnecessary noise in any menus.
@@ -581,12 +581,12 @@ window, and the key bindings are the same as for ‘scroll-up-command’ and
 ‘scroll-down-command’ in other buffers.
 
  -- Command: transient-scroll-up arg
-     This command scrolls text of transient’s menu window upward ARG
+     This command scrolls text of transient's menu window upward ARG
      lines.  If ARG is ‘nil’, then it scrolls near full screen.  This is
      a wrapper around ‘scroll-up-command’ (which see).
 
  -- Command: transient-scroll-down arg
-     This command scrolls text of transient’s menu window down ARG
+     This command scrolls text of transient's menu window down ARG
      lines.  If ARG is ‘nil’, then it scrolls near full screen.  This is
      a wrapper around ‘scroll-down-command’ (which see).
 
@@ -601,7 +601,7 @@ like to use them for all menus, bind them in ‘transient-map’.
      This command toggle between showing suffix descriptions in the menu
      (as usual) or showing the first lines of the respective docstrings
      in their place.  For commands that do not have a docstring, always
-     display the suffix description.  Because there likely isn’t enough
+     display the suffix description.  Because there likely isn't enough
      room to display multiple docstrings side-by-side, a single column
      is used when displaying docstrings.
 
@@ -622,7 +622,7 @@ Two more essential options are documented in *note Common Suffix
 Commands::.
 
  -- User Option: transient-show-menu
-     This option controls whether and when transient’s menu buffer is
+     This option controls whether and when transient's menu buffer is
      shown.
 
         • If ‘t’ (the default), then the buffer is shown as soon as a
@@ -719,7 +719,7 @@ Commands::.
      former do what it would do if no transient were active.
 
  -- User Option: transient-display-buffer-action
-     This option specifies the action used to display the transient’s
+     This option specifies the action used to display the transient's
      menu buffer.  The menu buffer is displayed in a window using
      ‘(display-buffer BUFFER transient-display-buffer-action)’.
 
@@ -768,7 +768,7 @@ Accessibility Options
 
 For visually impaired users I recommend the following configuration.  If
 you need more guidance or would like to share your experience, please
-don’t hesitate to contact me.
+don't hesitate to contact me.
 
      (setopt transient-enable-menu-navigation 'force-verbose)
      (setopt transient-navigate-to-group-descriptions t)
@@ -813,7 +813,7 @@ text at point, to be run when a transient menu is active, for example:
      description.  Ideally this is a string written exactly for that
      purpose, but because this is a new feature, most menu commands do
      not provide that yet.  In that case the first line of the prefix
-     command’s docstring is used as fallback.  If the value is
+     command's docstring is used as fallback.  If the value is
      ‘docstring’, then the docstring is used even if a description is
      available.
 
@@ -872,7 +872,7 @@ text at point, to be run when a transient menu is active, for example:
      communicated depends on the type of the infix command.
 
      Note that packages, which use Transient, can define their own infix
-     command types, which may or may not involve overriding Transient’s
+     command types, which may or may not involve overriding Transient's
      code, which honors this new option.  I.e., it will take some time
      until everything respects this setting.
 
@@ -885,13 +885,13 @@ text at point, to be run when a transient menu is active, for example:
      default.  Please provide feedback, so that we can together work on
      improving this.
 
-     By default the format specified by an element’s ‘format’ slot is
+     By default the format specified by an element's ‘format’ slot is
      used.  When this is non-‘nil’, then the ‘accessible-format’ slot is
      used instead.  One change implemented in the latter is that for an
      element representing a command-line argument, the argument and its
      value are moved before the description, giving quicker access to
      the current state, while still allowing users to read the
-     description, in case they don’t know yet what the argument in
+     description, in case they don't know yet what the argument in
      question does.
 
      Enabling this also causes the string "inapt" to be added at the
@@ -900,7 +900,7 @@ text at point, to be run when a transient menu is active, for example:
      clue that a command is inapt, is that the complete text
      representing it is grayed out.  (As an example of such an inapt
      command, consider the case of a commands that can only act on the
-     file at point, when there currently isn’t a file at point.)
+     file at point, when there currently isn't a file at point.)
      Placing the string "inapt" at the very beginning gives users the
      opportunity to immediately skip over unusable commands, while still
      giving them the opportunity to read on.
@@ -909,7 +909,7 @@ Auxiliary Options
 -----------------
 
  -- User Option: transient-mode-line-format
-     This option controls whether transient’s menu buffer has a
+     This option controls whether transient's menu buffer has a
      mode-line, separator line, or neither.
 
      If ‘nil’, then the buffer has no mode-line.  If the buffer is not
@@ -959,7 +959,7 @@ Auxiliary Options
      not match, then it is highlighted differently.
 
      Highlighting mismatched key bindings is useful when learning the
-     arguments of the underlying command-line tool; you wouldn’t want to
+     arguments of the underlying command-line tool; you wouldn't want to
      learn any short-hands that do not actually exist.
 
      The highlighting is done using one of the faces
@@ -1037,7 +1037,7 @@ These options are mainly intended for developers.
      When non-‘nil’ then the descriptions of suffixes are highlighted if
      their level is above 4, the default of ‘transient-default-level’.
      Assuming you have set that variable to 7, this highlights all
-     suffixes that won’t be available to users without them making the
+     suffixes that won't be available to users without them making the
      same customization.
 
 Hook Variables
@@ -1063,7 +1063,7 @@ File: transient.info,  Node: Modifying Existing Transients,  Next: Defining New 
 
 To an extent, transients can be customized interactively, see *note
 Enabling and Disabling Suffixes::.  This section explains how existing
-transients can be further modified non-interactively.  Let’s begin with
+transients can be further modified non-interactively.  Let's begin with
 an example:
 
      (transient-append-suffix 'magit-patch-apply "-3"
@@ -1081,8 +1081,8 @@ after the infix argument that is bound to ‘-3’ in ‘magit-patch-apply’.
 
    • SUFFIX is a transient infix or suffix specification in the same
      form as expected by ‘transient-define-prefix’.  Note that an infix
-     is a special kind of suffix.  Depending on context “suffixes” means
-     “suffixes (including infixes)” or “non-infix suffixes”.  Here it
+     is a special kind of suffix.  Depending on context "suffixes" means
+     "suffixes (including infixes)" or "non-infix suffixes".  Here it
      means the former.  See *note Suffix Specifications::.
 
      SUFFIX may also be a group in the same form as expected by
@@ -1202,7 +1202,7 @@ implements a similar abstraction involving a prefix command, infix
 arguments and suffix commands.
 
    When the user calls a transient prefix command, a transient
-(temporary) keymap is activated, which binds the transient’s infix and
+(temporary) keymap is activated, which binds the transient's infix and
 suffix commands, and functions that control the transient state are
 added to ‘pre-command-hook’ and ‘post-command-hook’.  The available
 suffix and infix commands and their state are shown in a menu buffer
@@ -1230,12 +1230,12 @@ serve about the same purpose as the variables ‘prefix-arg’ and
 ‘current-prefix-arg’ do for any command that was called after the prefix
 arguments have been set using a command such as ‘universal-argument’.
 
-   Transient can be used to implement simple “command dispatchers”.  The
+   Transient can be used to implement simple "command dispatchers".  The
 main benefit then is that the user can see all the available commands in
-a temporarily shown buffer, which can be thought of as a “menu”.  That
+a temporarily shown buffer, which can be thought of as a "menu".  That
 is useful by itself because it frees the user from having to remember
 all the keys that are valid after a certain prefix key or command.
-Magit’s ‘magit-dispatch’ (on ‘C-x M-g’) command is an example of using
+Magit's ‘magit-dispatch’ (on ‘C-x M-g’) command is an example of using
 Transient to merely implement a command dispatcher.
 
    In addition to that, Transient also allows users to interactively
@@ -1255,9 +1255,9 @@ complex as when calling the same function non-interactively from Lisp.
    Invoking a transient suffix command with arguments is similar to
 invoking a command in a shell with command-line completion and history
 enabled.  One benefit of the Transient interface is that it remembers
-history not only on a global level (“this command was invoked using
+history not only on a global level ("this command was invoked using
 these arguments, and previously it was invoked using those other
-arguments”), but also remembers the values of individual arguments
+arguments"), but also remembers the values of individual arguments
 independently.  See *note Using History::.
 
    After a transient prefix command is invoked, ‘C-h KEY’ can be used to
@@ -1271,7 +1271,7 @@ See *note Enabling and Disabling Suffixes::.
 infix commands.  A command that sets a command line option, for example,
 has different needs than a command that merely toggles a boolean flag.
 Additionally, Transient provides abstractions for defining new types,
-which the author of Transient did not anticipate (or didn’t get around
+which the author of Transient did not anticipate (or didn't get around
 to implementing yet).
 
    Note that suffix commands also support regular prefix arguments.  A
@@ -1300,14 +1300,14 @@ File: transient.info,  Node: Defining Transients,  Next: Binding Suffix and Infi
 A transient consists of a prefix command and at least one suffix
 command, though usually a transient has several infix and suffix
 commands.  The below macro defines the transient prefix command *and*
-binds the transient’s infix and suffix commands.  In other words, it
+binds the transient's infix and suffix commands.  In other words, it
 defines the complete transient, not just the transient prefix command
 that is used to invoke that transient.
 
  -- Macro: transient-define-prefix name arglist [docstring] [keyword
           value]... group... [body...]
      This macro defines NAME as a transient prefix command and binds the
-     transient’s infix and suffix commands.
+     transient's infix and suffix commands.
 
      ARGLIST are the arguments that the prefix command takes.  DOCSTRING
      is the documentation string and is optional.
@@ -1337,8 +1337,8 @@ that is used to invoke that transient.
      All transients have a (possibly ‘nil’) value, which is exported
      when suffix commands are called, so that they can consume that
      value.  For some transients it might be necessary to have a sort of
-     secondary value, called a “scope”.  Such a scope would usually be
-     set in the command’s ‘interactive’ form and has to be passed to the
+     secondary value, called a "scope".  Such a scope would usually be
+     set in the command's ‘interactive’ form and has to be passed to the
      setup function:
 
           (transient-setup 'NAME nil nil :scope SCOPE)
@@ -1369,12 +1369,12 @@ File: transient.info,  Node: Binding Suffix and Infix Commands,  Next: Defining 
 
 The macro ‘transient-define-prefix’ is used to define a transient.  This
 defines the actual transient prefix command (see *note Defining
-Transients::) and adds the transient’s infix and suffix bindings, as
+Transients::) and adds the transient's infix and suffix bindings, as
 described below.
 
    Users and third-party packages can add additional bindings using
 functions such as ‘transient-insert-suffix’ (see *note Modifying
-Existing Transients::).  These functions take a “suffix specification”
+Existing Transients::).  These functions take a "suffix specification"
 as one of their arguments, which has the same form as the specifications
 used in ‘transient-define-prefix’.
 
@@ -1443,17 +1443,17 @@ constructor of that class.
    • The value of ‘:setup-children’, if non-‘nil’, is a function that
      takes one argument, a potentially list of children, and must return
      a list of children or an empty list.  This can either be used to
-     somehow transform the group’s children that were defined the normal
+     somehow transform the group's children that were defined the normal
      way, or to dynamically create the children from scratch.
 
      The returned children must have the same form as stored in the
-     prefix’s ‘transient--layout’ property, but it is often more
+     prefix's ‘transient--layout’ property, but it is often more
      convenient to use the same form as understood by
      ‘transient-define-prefix’, described below.  If you use the latter
      approach, you can use the ‘transient-parse-suffixes’ and
      ‘transient-parse-suffix’ functions to transform them from the
      convenient to the expected form.  Depending on the used group
-     class, ‘transient-parse-suffixes’’s SUFFIXES must be a list of
+     class, ‘transient-parse-suffixes’'s SUFFIXES must be a list of
      group vectors (for ‘transient-columns’) or a list of suffix lists
      (for all other group classes).
 
@@ -1523,7 +1523,7 @@ This feature is experimental and should be avoided.
 4.3.2 Suffix Specifications
 ---------------------------
 
-A transient’s suffix and infix commands are bound when the transient
+A transient's suffix and infix commands are bound when the transient
 prefix command is defined using ‘transient-define-prefix’, see *note
 Defining Transients::.  The commands are organized into groups, see
 *note Group Specifications::.  Here we describe the form used to bind an
@@ -1534,7 +1534,7 @@ using functions such as ‘transient-insert-suffix’, see *note Modifying
 Existing Transients::.
 
    Note that an infix is a special kind of suffix.  Depending on context
-“suffixes” means “suffixes (including infixes)” or “non-infix suffixes”.
+"suffixes" means "suffixes (including infixes)" or "non-infix suffixes".
 Here it means the former.
 
    Suffix specifications have this form:
@@ -1545,7 +1545,7 @@ Here it means the former.
 ‘:level’, ‘:key’ and ‘:description’.  If the object that is associated
 with COMMAND sets these properties, then they do not have to be
 specified here.  You can however specify them here anyway, possibly
-overriding the object’s values just for the binding inside this
+overriding the object's values just for the binding inside this
 transient.
 
    • LEVEL is the suffix level, an integer between 1 and 7.  See *note
@@ -1633,7 +1633,7 @@ File: transient.info,  Node: Defining Suffix and Infix Commands,  Next: Using In
 ======================================
 
 Note that an infix is a special kind of suffix.  Depending on context
-“suffixes” means “suffixes (including infixes)” or “non-infix suffixes”.
+"suffixes" means "suffixes (including infixes)" or "non-infix suffixes".
 
  -- Macro: transient-define-suffix name arglist [docstring] [keyword
           value]... body...
@@ -1708,8 +1708,8 @@ calling the command.
 the arguments are reset to ‘nil’ (which causes the function to return
 ‘nil’ too).
 
-   Like for Emacs’s prefix arguments, it is advisable, but not
-mandatory, to access the infix arguments inside the command’s
+   Like for Emacs's prefix arguments, it is advisable, but not
+mandatory, to access the infix arguments inside the command's
 ‘interactive’ form.  The preferred way of doing that is to call the
 ‘transient-args’ function, which for infix arguments serves about the
 same purpose as ‘prefix-arg’ serves for prefix arguments.
@@ -1764,7 +1764,7 @@ File: transient.info,  Node: Using Prefix Scope,  Next: Current Suffix Command, 
 ======================
 
 Some transients have a sort of secondary value, called a scope.  A
-prefix’s scope can be accessed using ‘transient-scope’; similar to how
+prefix's scope can be accessed using ‘transient-scope’; similar to how
 its value can be accessed using ‘transient-args’.
 
  -- Function: transient-scope prefixes classes
@@ -1800,7 +1800,7 @@ its value can be accessed using ‘transient-args’.
         • Finally try to return the default scope of the first command
           in PREFIXES.  This only works if that slot is set in the
           respective class definition or using its
-          ‘transient-init-scope’ method.
+          'transient-init-scope' method.
 
      If no prefix matches, return ‘nil’.
 
@@ -1899,13 +1899,13 @@ File: transient.info,  Node: Current Prefix Command,  Next: Transient State,  Pr
  -- Function: transient-active-prefix &optional prefixes
      This function returns the active transient object.  It returns
      ‘nil’ if there is no active transient, if the transient buffer
-     isn’t shown, and while the active transient is suspended (e.g.,
+     isn't shown, and while the active transient is suspended (e.g.,
      while the minibuffer is in use).
 
      Unlike ‘transient-current-prefix’, which is only ever non-‘nil’ in
      code that is run directly by a command that is invoked while a
      transient is current, this function is also suitable for use in
-     asynchronous code, such as timers and callbacks (this function’s
+     asynchronous code, such as timers and callbacks (this function's
      main use-case).
 
      If optional PREFIXES is non-‘nil’, it must be a prefix command
@@ -1918,26 +1918,26 @@ File: transient.info,  Node: Transient State,  Prev: Current Prefix Command,  Up
 4.9 Transient State
 ===================
 
-Invoking a transient prefix command “activates” the respective
+Invoking a transient prefix command "activates" the respective
 transient, i.e., it puts a transient keymap into effect, which binds the
-transient’s infix and suffix commands.
+transient's infix and suffix commands.
 
    The default behavior while a transient is active is as follows:
 
    • Invoking an infix command does not affect the transient state; the
      transient remains active.
 
-   • Invoking a (non-infix) suffix command “deactivates” the transient
+   • Invoking a (non-infix) suffix command "deactivates" the transient
      state by removing the transient keymap and performing some
      additional cleanup.
 
    • Invoking a command that is bound in a keymap other than the
      transient keymap is disallowed and trying to do so results in a
-     warning.  This does not “deactivate” the transient.
+     warning.  This does not "deactivate" the transient.
 
    The behavior can be changed for all suffixes of a particular prefix
 and/or for individual suffixes.  The values should nearly always be
-booleans, but certain functions, called “pre-commands”, can also be
+booleans, but certain functions, called "pre-commands", can also be
 used.  These functions are named ‘transient--do-VERB’, and the symbol
 ‘VERB’ can be used as a shorthand.
 
@@ -1946,19 +1946,19 @@ transient stay active, when this command is invoked?"  ‘t’ means that
 the transient stays active, while ‘nil’ means that invoking the command
 exits the transient.
 
-   Note that when the suffix is a “sub-prefix”, invoking that command
+   Note that when the suffix is a "sub-prefix", invoking that command
 always activates that sub-prefix, causing the outer prefix to no longer
 be active and displayed.  Here ‘t’ means that when you exit the inner
 prefix, then the outer prefix becomes active again, while ‘nil’ means
 that all outer prefixes are exited at once.
 
    • The behavior for non-suffixes can be set for a particular prefix,
-     by the prefix’s ‘transient-non-suffix’ slot to a boolean, a
+     by the prefix's ‘transient-non-suffix’ slot to a boolean, a
      suitable pre-command function, or a shorthand for such a function.
      See *note Pre-commands for Non-Suffixes::.
 
    • The common behavior for the suffixes of a particular prefix can be
-     set using the prefix’s ‘transient-suffixes’ slot.
+     set using the prefix's ‘transient-suffixes’ slot.
 
      The value specified in this slot does *not* affect infixes.
      Because it affects both regular suffixes as well as sub-prefixes,
@@ -1978,8 +1978,8 @@ that all outer prefixes are exited at once.
 sub-sections.  They are called by ‘transient--pre-command’, a function
 on ‘pre-command-hook’, and the value that they return determines whether
 the transient is exited.  To do so the value of one of the constants
-‘transient--exit’ or ‘transient--stay’ is used (that way we don’t have
-to remember if ‘t’ means “exit” or “stay”).
+‘transient--exit’ or ‘transient--stay’ is used (that way we don't have
+to remember if ‘t’ means "exit" or "stay").
 
    Additionally, these functions may change the value of ‘this-command’
 (which explains why they have to be called using ‘pre-command-hook’),
@@ -1992,23 +1992,23 @@ call ‘transient-export’, ‘transient--stack-zap’ or
    • The transient-ness of certain built-in suffix commands is specified
      using ‘transient-predicate-map’.  This is a special keymap, which
      binds commands to pre-commands (as opposed to keys to commands) and
-     takes precedence over the prefix’s ‘transient-suffix’ slot, but not
-     the suffix’s ‘transient’ slot.
+     takes precedence over the prefix's ‘transient-suffix’ slot, but not
+     the suffix's ‘transient’ slot.
 
    • While a sub-prefix is active we nearly always want ‘C-g’ to take
-     the user back to the “super-prefix”, even when the other suffixes
-     don’t do that.  However, in rare cases this may not be desirable,
+     the user back to the "super-prefix", even when the other suffixes
+     don't do that.  However, in rare cases this may not be desirable,
      in which case ‘replace’ can be used as the value of the
-     sub-prefix’s ‘transient’ slot.
+     sub-prefix's ‘transient’ slot.
 
 Pre-commands for Infixes
 ------------------------
 
 The default for infixes is ‘transient--do-stay’.  This is also the only
 function that makes sense for infixes, which is why this predicate is
-used even if the value of the prefix’s ‘transient-suffix’ slot is ‘t’.
+used even if the value of the prefix's ‘transient-suffix’ slot is ‘t’.
 In extremely rare cases, one might want to use something else, which can
-be done by setting the infix’s ‘transient’ slot directly.
+be done by setting the infix's ‘transient’ slot directly.
 
  -- Function: transient--do-stay
      Call the command without exporting variables and stay transient.
@@ -2070,7 +2070,7 @@ slot for the sub-prefix itself.
      Suspend the active transient, saving the transient stack.
 
      This is used by the command ‘transient-suspend’ and optionally also
-     by “external events” such as ‘handle-switch-frame’.  Such bindings
+     by "external events" such as ‘handle-switch-frame’.  Such bindings
      should be added to ‘transient-predicate-map’.
 
 Pre-commands for Non-Suffixes
@@ -2187,7 +2187,7 @@ beginning of the class specification, e.g., ‘[:class transient-columns
      ‘transient-group’ (and therefore all groups) as well as of
      ‘transient-suffix’ (and therefore all suffix and infix commands).
 
-     This class exists because the elements (or “children”) of certain
+     This class exists because the elements (or "children") of certain
      groups can be other groups instead of suffix and infix commands.
 
    • The abstract ‘transient-group’ class is the superclass of all other
@@ -2195,7 +2195,7 @@ beginning of the class specification, e.g., ‘[:class transient-columns
 
    • The ‘transient-column’ class is the simplest group.
 
-     This is the default “flat” group.  If the class is not specified
+     This is the default "flat" group.  If the class is not specified
      explicitly and the first element is not a vector (i.e., not a
      group), then this class is used.
 
@@ -2208,9 +2208,9 @@ beginning of the class specification, e.g., ‘[:class transient-columns
 
      Direct elements have to be groups whose elements have to be
      commands or strings.  Each subgroup represents a column.  This
-     class takes care of inserting the subgroups’ elements.
+     class takes care of inserting the subgroups' elements.
 
-     This is the default “nested” group.  If the class is not specified
+     This is the default "nested" group.  If the class is not specified
      explicitly and the first element is a vector (i.e., a group), then
      this class is used.
 
@@ -2263,11 +2263,11 @@ classes.  Doing so makes it possible to change the behavior of the set
 of prefix commands that use that class, by implementing specialized
 methods for certain generic functions (see *note Prefix Methods::).
 
-   A transient prefix command’s object is stored in the
+   A transient prefix command's object is stored in the
 ‘transient--prefix’ property of the command symbol.  While a transient
 is active, a clone of that object is stored in the variable
 ‘transient--prefix’.  A clone is used because some changes that are made
-to the active transient’s object should not affect later invocations.
+to the active transient's object should not affect later invocations.
 
 
 File: transient.info,  Node: Suffix Classes,  Next: Prefix Methods,  Prev: Prefix Classes,  Up: Classes and Methods
@@ -2338,7 +2338,7 @@ File: transient.info,  Node: Suffix Classes,  Next: Prefix Methods,  Prev: Prefi
 
    • The ‘transient-lisp-variable’ class can be used to show and change
      the value of lisp variables.  This class is not fully featured yet
-     and it is somewhat likely that future improvements won’t be fully
+     and it is somewhat likely that future improvements won't be fully
      backward compatible.
 
    • The ‘transient-cons-option’ class is intended for situations where
@@ -2356,7 +2356,7 @@ File: transient.info,  Node: Suffix Classes,  Next: Prefix Methods,  Prev: Prefi
      ‘:variable’ keyword argument.
 
      This class is still experimental it is somewhat likely that future
-     improvements won’t be fully backward compatible.
+     improvements won't be fully backward compatible.
 
    • The ‘transient-describe-target’ class is used by the command
      ‘transient-describe’.
@@ -2382,7 +2382,7 @@ functions use ‘describe-function’.
      This generic function sets the initial value of the object OBJ.
      Methods exist for both prefix and suffix objects.
 
-     The default method for prefix objects sets the value of OBJ’s
+     The default method for prefix objects sets the value of OBJ's
      ‘value’ slot to the set, saved or default value.  The value that is
      set for the current session is preferred over the saved value,
      which is preferred over the default value.
@@ -2491,7 +2491,7 @@ functions use ‘describe-function’.
 
  -- Function: transient-prompt obj
      This generic function returns the prompt to be used to read infix
-     object OBJ’s value.
+     object OBJ's value.
 
  -- Function: transient-infix-set obj value
      This generic function sets the value of infix object OBJ to VALUE.
@@ -2504,7 +2504,7 @@ functions use ‘describe-function’.
      the invoked suffix command can use it.
 
      Currently most values are strings, but that is not set in stone.
-     ‘nil’ is not a value, it means “no value”.
+     ‘nil’ is not a value, it means "no value".
 
      Usually only infixes have a value, but see the method for
      ‘transient-suffix’.
@@ -2535,22 +2535,22 @@ functions use ‘describe-function’.
      ‘transient--source-buffer’ current.
 
  -- Function: transient-format-key obj
-     This generic function formats OBJ’s ‘key’ for display and returns
+     This generic function formats OBJ's ‘key’ for display and returns
      the result.
 
  -- Function: transient-format-description obj
-     This generic function formats OBJ’s ‘description’ for display and
+     This generic function formats OBJ's ‘description’ for display and
      returns the result.
 
  -- Function: transient-format-value obj
-     This generic function formats OBJ’s value for display and returns
+     This generic function formats OBJ's value for display and returns
      the result.
 
  -- Function: transient-show-help obj
      Show help for the prefix, infix or suffix command represented by
      OBJ.
 
-     Regardless of OBJ’s type, if its ‘show-help’ slot is non-‘nil’,
+     Regardless of OBJ's type, if its ‘show-help’ slot is non-‘nil’,
      that must be a function, which takes OBJ is its only argument.  It
      must prepare, display and return a buffer, and select the window
      used to display it.  The ‘transient-show-help-window’ macro is
@@ -2558,13 +2558,13 @@ functions use ‘describe-function’.
 
      For prefixes, show the info manual, if that is specified using the
      ‘info-manual’ slot.  Otherwise, show the manpage if that is
-     specified using the ‘man-page’ slot.  Otherwise, show the command’s
+     specified using the ‘man-page’ slot.  Otherwise, show the command's
      documentation string.
 
-     For suffixes, show the command’s documentation string.
+     For suffixes, show the command's documentation string.
 
      For infixes, show the manpage if that is specified.  Otherwise show
-     the command’s documentation string.
+     the command's documentation string.
 
  -- Macro: transient-with-help-window &rest body
      Evaluate BODY, send output to ‘*Help*’ buffer, and display it in a
@@ -2580,7 +2580,7 @@ functions use ‘describe-function’.
      (if the value of ‘transient-enable-menu-navigation’ is ‘verbose’)
      when the user navigates to a command using the keyboard.
 
-     If OBJ’s ‘summary’ slot is a string, that is used.  If ‘summary’ is
+     If OBJ's ‘summary’ slot is a string, that is used.  If ‘summary’ is
      a function, that is called with OBJ as the only argument and the
      returned string is used.  If ‘summary’ is or returns something
      other than a string or ‘nil’, no summary is shown.  If ‘summary’ is
@@ -2604,19 +2604,19 @@ Value and Scope
      prefix.
 
    • ‘init-value’ A function that is responsible for setting the
-     object’s value.  If bound, then this is called with the object as
+     object's value.  If bound, then this is called with the object as
      the only argument.  Usually this is not bound, in which case the
-     object’s primary ‘transient-init-value’ method is called instead.
+     object's primary ‘transient-init-value’ method is called instead.
 
    • ‘history-key’ If multiple prefix commands should share a single
      value, then this slot has to be set to the same value for all of
-     them.  You probably don’t want that.
+     them.  You probably don't want that.
 
    • ‘remember-value’ When a suffix command is invoked, which can
-     consume the prefix’s value (which depends on the suffix slot
+     consume the prefix's value (which depends on the suffix slot
      ‘transient’ and the prefix slots ‘transient-suffix’ and
      ‘transient-non-suffix’), then the value is automatically pushed to
-     the prefix’s value history.
+     the prefix's value history.
 
      This slot allows additionally setting or even saving the value, so
      that it becomes the initial value when the menu is invoked again.
@@ -2657,7 +2657,7 @@ Value and Scope
      ‘transient-infix-value’, for example, ‘--option=one’.
 
    • ‘scope’ For some transients it might be necessary to have a sort of
-     secondary value, called a “scope”.  See ‘transient-define-prefix’.
+     secondary value, called a "scope".  See ‘transient-define-prefix’.
 
 Behavior
 --------
@@ -2692,7 +2692,7 @@ Appearance
      overriding ‘transient-display-buffer-action’.  It should have the
      same type.
 
-   • ‘mode-line-format’ is this prefix’s mode line format, overriding
+   • ‘mode-line-format’ is this prefix's mode line format, overriding
      ‘transient-mode-line-format’.  It should have the same type.
 
    • ‘column-widths’ is only respected inside ‘transient-columns’ groups
@@ -2730,11 +2730,11 @@ set in calls to ‘transient-define-prefix’.
 
    • ‘prototype’ When a transient prefix command is invoked, then a
      clone of that object is stored in the global variable
-     ‘transient--prefix’ and the prototype is stored in the clone’s
+     ‘transient--prefix’ and the prototype is stored in the clone's
      ‘prototype’ slot.
 
    • ‘command’ The command, a symbol.  Each transient prefix command
-     consists of a command, which is stored in a symbol’s function slot
+     consists of a command, which is stored in a symbol's function slot
      and an object, which is stored in the ‘transient--prefix’ property
      of the same symbol.
 
@@ -2824,7 +2824,7 @@ Slots of ‘transient-suffix’
 
         • ‘%k’ For the key.
         • ‘%d’ For the description.
-        • ‘%v’ For the infix value.  Non-infix suffixes don’t have a
+        • ‘%v’ For the infix value.  Non-infix suffixes don't have a
           value.
 
    • ‘description’ The description, either a string or a function, which
@@ -2868,9 +2868,9 @@ They are defined here anyway to allow sharing certain methods.
 
    • ‘value’ The value.  Should not be accessed directly.
 
-   • ‘init-value’ Function that is responsible for setting the object’s
+   • ‘init-value’ Function that is responsible for setting the object's
      value.  If bound, then this is called with the object as the only
-     argument.  Usually this is not bound, in which case the object’s
+     argument.  Usually this is not bound, in which case the object's
      primary ‘transient-init-value’ method is called instead.
 
    • ‘unsavable’ Whether the value of the suffix is not saved as part of
@@ -2901,7 +2901,7 @@ They are defined here anyway to allow sharing certain methods.
           example: ‘("--another-argument" "--option=first"
           "--option=second")’.
 
-     In both cases the option’s values have to be specified in the
+     In both cases the option's values have to be specified in the
      default value of a prefix using the same format as returned by
      ‘transient-args’, e.g., ‘("--other" "--o=1" "--o=2" ("--" "f1"
      "f2"))’.
@@ -2928,7 +2928,7 @@ They are defined here anyway to allow sharing certain methods.
 
    • ‘choices’ A list of valid values, or a function that returns such a
      list.  The latter is not implemented for ‘transient-switches’,
-     because I couldn’t think of a use-case.  How exactly the choices
+     because I couldn't think of a use-case.  How exactly the choices
      are used varies depending on the class of the suffix.
 
 Slots of ‘transient-variable’
@@ -2961,8 +2961,8 @@ in the menu at all.
 
    • ‘if’ Enable if predicate returns non-‘nil’.
    • ‘if-not’ Enable if predicate returns ‘nil’.
-   • ‘if-non-nil’ Enable if variable’s value is non-‘nil’.
-   • ‘if-nil’ Enable if variable’s value is ‘nil’.
+   • ‘if-non-nil’ Enable if variable's value is non-‘nil’.
+   • ‘if-nil’ Enable if variable's value is ‘nil’.
    • ‘if-mode’ Enable if major-mode matches value.
    • ‘if-not-mode’ Enable if major-mode does not match value.
    • ‘if-derived’ Enable if major-mode derives from value.
@@ -2975,8 +2975,8 @@ cannot be invoked.
 
    • ‘inapt-if’ Inapt if predicate returns non-‘nil’.
    • ‘inapt-if-not’ Inapt if predicate returns ‘nil’.
-   • ‘inapt-if-non-nil’ Inapt if variable’s value is non-‘nil’.
-   • ‘inapt-if-nil’ Inapt if variable’s value is ‘nil’.
+   • ‘inapt-if-non-nil’ Inapt if variable's value is non-‘nil’.
+   • ‘inapt-if-nil’ Inapt if variable's value is ‘nil’.
    • ‘inapt-if-mode’ Inapt if major-mode matches value.
    • ‘inapt-if-not-mode’ Inapt if major-mode does not match value.
    • ‘inapt-if-derived’ Inapt if major-mode derives from value.
@@ -3015,7 +3015,7 @@ other buffers, by clicking ‘mouse-1’ and keeping it pressed while
 dragging.
 
    (Before v0.13.0, the above required additional configuration and the
-region was not visualized while dragging.  This isn’t the case anymore,
+region was not visualized while dragging.  This isn't the case anymore,
 but explains why the following was once deemed necessary.)
 
    Alternatively the command ‘transient-copy-menu-text’ can be used to
@@ -3064,7 +3064,7 @@ sense for them.  Because all other letters are already reserved for use
 by individual transients, I have decided to no longer make an exception
 for ‘q’.
 
-   If you want to get ‘q’’s old binding back then you can do so.  Doing
+   If you want to get ‘q’'s old binding back then you can do so.  Doing
 that is a bit more complicated than changing a single key binding, so I
 have implemented a function, ‘transient-bind-q-to-quit’ that makes the
 necessary changes.  See its documentation string for more information.
@@ -3333,7 +3333,7 @@ and other kinds of works.
    The licenses for most software and other practical works are designed
 to take away your freedom to share and change the works.  By contrast,
 the GNU General Public License is intended to guarantee your freedom to
-share and change all versions of a program—to make sure it remains free
+share and change all versions of a program--to make sure it remains free
 software for all its users.  We, the Free Software Foundation, use the
 GNU General Public License for most of our software; it applies also to
 any other work released this way by its authors.  You can apply it to
@@ -3361,16 +3361,16 @@ know their rights.
 (1) assert copyright on the software, and (2) offer you this License
 giving you legal permission to copy, distribute and/or modify it.
 
-   For the developers’ and authors’ protection, the GPL clearly explains
-that there is no warranty for this free software.  For both users’ and
-authors’ sake, the GPL requires that modified versions be marked as
+   For the developers' and authors' protection, the GPL clearly explains
+that there is no warranty for this free software.  For both users' and
+authors' sake, the GPL requires that modified versions be marked as
 changed, so that their problems will not be attributed erroneously to
 authors of previous versions.
 
    Some devices are designed to deny users access to install or run
 modified versions of the software inside them, although the manufacturer
 can do so.  This is fundamentally incompatible with the aim of
-protecting users’ freedom to change the software.  The systematic
+protecting users' freedom to change the software.  The systematic
 pattern of such abuse occurs in the area of products for individuals to
 use, which is precisely where it is most unacceptable.  Therefore, we
 have designed this version of the GPL to prohibit the practice for those
@@ -3393,25 +3393,25 @@ TERMS AND CONDITIONS
 
   0. Definitions.
 
-     “This License” refers to version 3 of the GNU General Public
+     "This License" refers to version 3 of the GNU General Public
      License.
 
-     “Copyright” also means copyright-like laws that apply to other
+     "Copyright" also means copyright-like laws that apply to other
      kinds of works, such as semiconductor masks.
 
-     “The Program” refers to any copyrightable work licensed under this
-     License.  Each licensee is addressed as “you”.  “Licensees” and
-     “recipients” may be individuals or organizations.
+     "The Program" refers to any copyrightable work licensed under this
+     License.  Each licensee is addressed as "you".  "Licensees" and
+     "recipients" may be individuals or organizations.
 
-     To “modify” a work means to copy from or adapt all or part of the
+     To "modify" a work means to copy from or adapt all or part of the
      work in a fashion requiring copyright permission, other than the
-     making of an exact copy.  The resulting work is called a “modified
-     version” of the earlier work or a work “based on” the earlier work.
+     making of an exact copy.  The resulting work is called a "modified
+     version" of the earlier work or a work "based on" the earlier work.
 
-     A “covered work” means either the unmodified Program or a work
+     A "covered work" means either the unmodified Program or a work
      based on the Program.
 
-     To “propagate” a work means to do anything with it that, without
+     To "propagate" a work means to do anything with it that, without
      permission, would make you directly or secondarily liable for
      infringement under applicable copyright law, except executing it on
      a computer or modifying a private copy.  Propagation includes
@@ -3419,12 +3419,12 @@ TERMS AND CONDITIONS
      available to the public, and in some countries other activities as
      well.
 
-     To “convey” a work means any kind of propagation that enables other
+     To "convey" a work means any kind of propagation that enables other
      parties to make or receive copies.  Mere interaction with a user
      through a computer network, with no transfer of a copy, is not
      conveying.
 
-     An interactive user interface displays “Appropriate Legal Notices”
+     An interactive user interface displays "Appropriate Legal Notices"
      to the extent that it includes a convenient and prominently visible
      feature that (1) displays an appropriate copyright notice, and (2)
      tells the user that there is no warranty for the work (except to
@@ -3436,33 +3436,33 @@ TERMS AND CONDITIONS
 
   1. Source Code.
 
-     The “source code” for a work means the preferred form of the work
-     for making modifications to it.  “Object code” means any non-source
+     The "source code" for a work means the preferred form of the work
+     for making modifications to it.  "Object code" means any non-source
      form of a work.
 
-     A “Standard Interface” means an interface that either is an
+     A "Standard Interface" means an interface that either is an
      official standard defined by a recognized standards body, or, in
      the case of interfaces specified for a particular programming
      language, one that is widely used among developers working in that
      language.
 
-     The “System Libraries” of an executable work include anything,
+     The "System Libraries" of an executable work include anything,
      other than the work as a whole, that (a) is included in the normal
      form of packaging a Major Component, but which is not part of that
      Major Component, and (b) serves only to enable use of the work with
      that Major Component, or to implement a Standard Interface for
      which an implementation is available to the public in source code
-     form.  A “Major Component”, in this context, means a major
+     form.  A "Major Component", in this context, means a major
      essential component (kernel, window system, and so on) of the
      specific operating system (if any) on which the executable work
      runs, or a compiler used to produce the work, or an object code
      interpreter used to run it.
 
-     The “Corresponding Source” for a work in object code form means all
+     The "Corresponding Source" for a work in object code form means all
      the source code needed to generate, install, and (for an executable
      work) run the object code and to modify the work, including scripts
      to control those activities.  However, it does not include the
-     work’s System Libraries, or general-purpose tools or generally
+     work's System Libraries, or general-purpose tools or generally
      available free programs which are used unmodified in performing
      those activities but which are not part of the work.  For example,
      Corresponding Source includes interface definition files associated
@@ -3506,7 +3506,7 @@ TERMS AND CONDITIONS
      the conditions stated below.  Sublicensing is not allowed; section
      10 makes it unnecessary.
 
-  3. Protecting Users’ Legal Rights From Anti-Circumvention Law.
+  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
 
      No covered work shall be deemed part of an effective technological
      measure under any applicable law fulfilling obligations under
@@ -3519,12 +3519,12 @@ TERMS AND CONDITIONS
      circumvention is effected by exercising rights under this License
      with respect to the covered work, and you disclaim any intention to
      limit operation or modification of the work as a means of
-     enforcing, against the work’s users, your or third parties’ legal
+     enforcing, against the work's users, your or third parties' legal
      rights to forbid circumvention of technological measures.
 
   4. Conveying Verbatim Copies.
 
-     You may convey verbatim copies of the Program’s source code as you
+     You may convey verbatim copies of the Program's source code as you
      receive it, in any medium, provided that you conspicuously and
      appropriately publish on each copy an appropriate copyright notice;
      keep intact all notices stating that this License and any
@@ -3548,7 +3548,7 @@ TERMS AND CONDITIONS
        b. The work must carry prominent notices stating that it is
           released under this License and any conditions added under
           section 7.  This requirement modifies the requirement in
-          section 4 to “keep intact all notices”.
+          section 4 to "keep intact all notices".
 
        c. You must license the entire work, as a whole, under this
           License to anyone who comes into possession of a copy.  This
@@ -3568,9 +3568,9 @@ TERMS AND CONDITIONS
      works, which are not by their nature extensions of the covered
      work, and which are not combined with it such as to form a larger
      program, in or on a volume of a storage or distribution medium, is
-     called an “aggregate” if the compilation and its resulting
+     called an "aggregate" if the compilation and its resulting
      copyright are not used to limit the access or legal rights of the
-     compilation’s users beyond what the individual works permit.
+     compilation's users beyond what the individual works permit.
      Inclusion of a covered work in an aggregate does not cause this
      License to apply to the other parts of the aggregate.
 
@@ -3628,13 +3628,13 @@ TERMS AND CONDITIONS
      excluded from the Corresponding Source as a System Library, need
      not be included in conveying the object code work.
 
-     A “User Product” is either (1) a “consumer product”, which means
+     A "User Product" is either (1) a "consumer product", which means
      any tangible personal property which is normally used for personal,
      family, or household purposes, or (2) anything designed or sold for
      incorporation into a dwelling.  In determining whether a product is
      a consumer product, doubtful cases shall be resolved in favor of
      coverage.  For a particular product received by a particular user,
-     “normally used” refers to a typical or common use of that class of
+     "normally used" refers to a typical or common use of that class of
      product, regardless of the status of the particular user or of the
      way in which the particular user actually uses, or expects or is
      expected to use, the product.  A product is a consumer product
@@ -3642,7 +3642,7 @@ TERMS AND CONDITIONS
      industrial or non-consumer uses, unless such uses represent the
      only significant mode of use of the product.
 
-     “Installation Information” for a User Product means any methods,
+     "Installation Information" for a User Product means any methods,
      procedures, authorization keys, or other information required to
      install and execute modified versions of a covered work in that
      User Product from a modified version of its Corresponding Source.
@@ -3678,7 +3678,7 @@ TERMS AND CONDITIONS
 
   7. Additional Terms.
 
-     “Additional permissions” are terms that supplement the terms of
+     "Additional permissions" are terms that supplement the terms of
      this License by making exceptions from one or more of its
      conditions.  Additional permissions that are applicable to the
      entire Program shall be treated as though they were included in
@@ -3723,8 +3723,8 @@ TERMS AND CONDITIONS
           the recipient, for any liability that these contractual
           assumptions directly impose on those licensors and authors.
 
-     All other non-permissive additional terms are considered “further
-     restrictions” within the meaning of section 10.  If the Program as
+     All other non-permissive additional terms are considered "further
+     restrictions" within the meaning of section 10.  If the Program as
      you received it, or any part of it, contains a notice stating that
      it is governed by this License along with a term that is a further
      restriction, you may remove that term.  If a license document
@@ -3790,12 +3790,12 @@ TERMS AND CONDITIONS
      responsible for enforcing compliance by third parties with this
      License.
 
-     An “entity transaction” is a transaction transferring control of an
+     An "entity transaction" is a transaction transferring control of an
      organization, or substantially all assets of one, or subdividing an
      organization, or merging organizations.  If propagation of a
      covered work results from an entity transaction, each party to that
      transaction who receives a copy of the work also receives whatever
-     licenses to the work the party’s predecessor in interest had or
+     licenses to the work the party's predecessor in interest had or
      could give under the previous paragraph, plus a right to possession
      of the Corresponding Source of the work from the predecessor in
      interest, if the predecessor has it or can get it with reasonable
@@ -3812,31 +3812,31 @@ TERMS AND CONDITIONS
 
   11. Patents.
 
-     A “contributor” is a copyright holder who authorizes use under this
+     A "contributor" is a copyright holder who authorizes use under this
      License of the Program or a work on which the Program is based.
-     The work thus licensed is called the contributor’s “contributor
-     version”.
+     The work thus licensed is called the contributor's "contributor
+     version".
 
-     A contributor’s “essential patent claims” are all patent claims
+     A contributor's "essential patent claims" are all patent claims
      owned or controlled by the contributor, whether already acquired or
      hereafter acquired, that would be infringed by some manner,
      permitted by this License, of making, using, or selling its
      contributor version, but do not include claims that would be
      infringed only as a consequence of further modification of the
-     contributor version.  For purposes of this definition, “control”
+     contributor version.  For purposes of this definition, "control"
      includes the right to grant patent sublicenses in a manner
      consistent with the requirements of this License.
 
      Each contributor grants you a non-exclusive, worldwide,
-     royalty-free patent license under the contributor’s essential
+     royalty-free patent license under the contributor's essential
      patent claims, to make, use, sell, offer for sale, import and
      otherwise run, modify and propagate the contents of its contributor
      version.
 
-     In the following three paragraphs, a “patent license” is any
+     In the following three paragraphs, a "patent license" is any
      express agreement or commitment, however denominated, not to
      enforce a patent (such as an express permission to practice a
-     patent or covenant not to sue for patent infringement).  To “grant”
+     patent or covenant not to sue for patent infringement).  To "grant"
      such a patent license to a party means to make such an agreement or
      commitment not to enforce a patent against the party.
 
@@ -3849,9 +3849,9 @@ TERMS AND CONDITIONS
      yourself of the benefit of the patent license for this particular
      work, or (3) arrange, in a manner consistent with the requirements
      of this License, to extend the patent license to downstream
-     recipients.  “Knowingly relying” means you have actual knowledge
+     recipients.  "Knowingly relying" means you have actual knowledge
      that, but for the patent license, your conveying the covered work
-     in a country, or your recipient’s use of the covered work in a
+     in a country, or your recipient's use of the covered work in a
      country, would infringe one or more identifiable patents in that
      country that you have reason to believe are valid.
 
@@ -3863,7 +3863,7 @@ TERMS AND CONDITIONS
      patent license you grant is automatically extended to all
      recipients of the covered work and works based on it.
 
-     A patent license is “discriminatory” if it does not include within
+     A patent license is "discriminatory" if it does not include within
      the scope of its coverage, prohibits the exercise of, or is
      conditioned on the non-exercise of one or more of the rights that
      are specifically granted under this License.  You may not convey a
@@ -3883,7 +3883,7 @@ TERMS AND CONDITIONS
      any implied license or other defenses to infringement that may
      otherwise be available to you under applicable patent law.
 
-  12. No Surrender of Others’ Freedom.
+  12. No Surrender of Others' Freedom.
 
      If conditions are imposed on you (whether by court order, agreement
      or otherwise) that contradict the conditions of this License, they
@@ -3916,7 +3916,7 @@ TERMS AND CONDITIONS
 
      Each version is given a distinguishing version number.  If the
      Program specifies that a certain numbered version of the GNU
-     General Public License “or any later version” applies to it, you
+     General Public License "or any later version" applies to it, you
      have the option of following the terms and conditions either of
      that numbered version or of any later version published by the Free
      Software Foundation.  If the Program does not specify a version
@@ -3925,7 +3925,7 @@ TERMS AND CONDITIONS
 
      If the Program specifies that a proxy can decide which future
      versions of the GNU General Public License can be used, that
-     proxy’s public statement of acceptance of a version permanently
+     proxy's public statement of acceptance of a version permanently
      authorizes you to choose that version for the Program.
 
      Later license versions may give you additional or different
@@ -3937,7 +3937,7 @@ TERMS AND CONDITIONS
 
      THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
      APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE
-     COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS”
+     COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS"
      WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
      INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
      MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE
@@ -3981,7 +3981,7 @@ terms.
    To do so, attach the following notices to the program.  It is safest
 to attach them to the start of each source file to most effectively
 state the exclusion of warranty; and each file should have at least the
-“copyright” line and a pointer to where the full notice is found.
+"copyright" line and a pointer to where the full notice is found.
 
      ONE LINE TO GIVE THE PROGRAM'S NAME AND A BRIEF IDEA OF WHAT IT DOES.
      Copyright (C) YEAR NAME OF AUTHOR
@@ -4012,11 +4012,11 @@ notice like this when it starts in an interactive mode:
 
    The hypothetical commands ‘show w’ and ‘show c’ should show the
 appropriate parts of the General Public License.  Of course, your
-program’s commands might be different; for a GUI interface, you would
-use an “about box”.
+program's commands might be different; for a GUI interface, you would
+use an "about box".
 
    You should also get your employer (if you work as a programmer) or
-school, if any, to sign a “copyright disclaimer” for the program, if
+school, if any, to sign a "copyright disclaimer" for the program, if
 necessary.  For more information on this, and how to apply and follow
 the GNU GPL, see <https://www.gnu.org/licenses/>.
 
@@ -4031,77 +4031,77 @@ please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 Tag Table:
 Node: Top763
-Node: Introduction2916
-Ref: Some things that Transient can do3444
-Ref: Complexity in CLI programs3797
-Ref: Using Transient for composing interactive commands4398
-Node: Usage6640
-Node: Invoking Transients7008
-Node: Aborting and Resuming Transients8200
-Node: Common Suffix Commands10820
-Node: Saving Values13763
-Ref: Saving Values-Footnote-115337
-Node: Using History15530
-Node: Getting Help for Suffix Commands17406
-Node: Enabling and Disabling Suffixes18784
-Node: Other Commands24150
-Node: Configuration25834
-Ref: Essential Options26114
-Ref: Accessibility Options33244
-Ref: Auxiliary Options40497
-Ref: Developer Options45152
-Ref: Hook Variables46679
-Node: Modifying Existing Transients47207
-Node: Defining New Commands53088
-Node: Technical Introduction53528
-Node: Defining Transients59237
-Node: Binding Suffix and Infix Commands62590
-Ref: Group Specifications63387
-Ref: Suffix Specifications70200
-Node: Defining Suffix and Infix Commands75114
-Node: Using Infix Arguments78162
-Node: Using Prefix Scope81194
-Node: Current Suffix Command83236
-Node: Current Prefix Command85593
-Node: Transient State88149
-Ref: Pre-commands for Infixes92500
-Ref: Pre-commands for Suffixes93020
-Ref: Pre-commands for Non-Suffixes95473
-Ref: Special Pre-Commands96609
-Node: Classes and Methods97117
-Node: Group Classes99204
-Node: Group Methods101131
-Node: Prefix Classes102390
-Node: Suffix Classes103235
-Node: Prefix Methods108033
-Node: Suffix Methods111256
-Ref: Suffix Value Methods111516
-Ref: Suffix Format Methods114761
-Node: Prefix Slots117658
-Ref: Value and Scope117808
-Ref: Behavior120810
-Ref: Appearance122151
-Ref: Documentation122837
-Ref: Internal123732
-Node: Suffix Slots125087
-Ref: Slots of transient-child125455
-Ref: Slots of transient-suffix127170
-Ref: Slots of transient-infix129613
-Ref: Slots of transient-variable132909
-Ref: Slots of transient-switches133011
-Node: Predicate Slots133374
-Node: FAQ135719
-Ref: Can I control how the menu buffer is displayed?135848
-Ref: How can I copy text from the menu buffer?136172
-Ref: How can I autoload prefix and suffix commands?136881
-Ref: How does Transient compare to prefix keys and universal arguments?137349
-Ref: How does Transient compare to Magit-Popup and Hydra?137592
-Ref: Why does q not quit popups anymore?137786
-Node: Keystroke Index138889
-Node: Command and Function Index140754
-Node: Variable Index148221
-Node: Concept Index151511
-Node: GNU General Public License154335
+Node: Introduction2906
+Ref: Some things that Transient can do3432
+Ref: Complexity in CLI programs3785
+Ref: Using Transient for composing interactive commands4386
+Node: Usage6616
+Node: Invoking Transients6984
+Node: Aborting and Resuming Transients8174
+Node: Common Suffix Commands10786
+Node: Saving Values13727
+Ref: Saving Values-Footnote-115295
+Node: Using History15488
+Node: Getting Help for Suffix Commands17360
+Node: Enabling and Disabling Suffixes18736
+Node: Other Commands24090
+Node: Configuration25768
+Ref: Essential Options26048
+Ref: Accessibility Options33174
+Ref: Auxiliary Options40415
+Ref: Developer Options45066
+Ref: Hook Variables46591
+Node: Modifying Existing Transients47119
+Node: Defining New Commands52986
+Node: Technical Introduction53426
+Node: Defining Transients59117
+Node: Binding Suffix and Infix Commands62460
+Ref: Group Specifications63251
+Ref: Suffix Specifications70058
+Node: Defining Suffix and Infix Commands74956
+Node: Using Infix Arguments77992
+Node: Using Prefix Scope81020
+Node: Current Suffix Command83056
+Node: Current Prefix Command85413
+Node: Transient State87965
+Ref: Pre-commands for Infixes92268
+Ref: Pre-commands for Suffixes92784
+Ref: Pre-commands for Non-Suffixes95233
+Ref: Special Pre-Commands96369
+Node: Classes and Methods96877
+Node: Group Classes98964
+Node: Group Methods100877
+Node: Prefix Classes102136
+Node: Suffix Classes102977
+Node: Prefix Methods107771
+Node: Suffix Methods110992
+Ref: Suffix Value Methods111252
+Ref: Suffix Format Methods114491
+Node: Prefix Slots117372
+Ref: Value and Scope117522
+Ref: Behavior120510
+Ref: Appearance121851
+Ref: Documentation122535
+Ref: Internal123430
+Node: Suffix Slots124781
+Ref: Slots of transient-child125149
+Ref: Slots of transient-suffix126864
+Ref: Slots of transient-infix129305
+Ref: Slots of transient-variable132593
+Ref: Slots of transient-switches132695
+Node: Predicate Slots133058
+Node: FAQ135395
+Ref: Can I control how the menu buffer is displayed?135524
+Ref: How can I copy text from the menu buffer?135848
+Ref: How can I autoload prefix and suffix commands?136555
+Ref: How does Transient compare to prefix keys and universal arguments?137023
+Ref: How does Transient compare to Magit-Popup and Hydra?137266
+Ref: Why does q not quit popups anymore?137460
+Node: Keystroke Index138561
+Node: Command and Function Index140426
+Node: Variable Index147893
+Node: Concept Index151183
+Node: GNU General Public License154007
 
 End Tag Table
 

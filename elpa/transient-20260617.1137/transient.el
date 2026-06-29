@@ -6,12 +6,13 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260601.1529
-;; Package-Revision: 1856230dc181
+;; Package-Version: 20260617.1137
+;; Package-Revision: 9d103f338fb9
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
 ;;     (cond-let "1.1")
+;;     (llama    "1.0")
 ;;     (seq      "2.24"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -53,6 +54,7 @@
 (require 'eieio)
 (require 'edmacro)
 (require 'format-spec)
+(require 'llama)
 (require 'pcase)
 (require 'pp)
 
@@ -1242,7 +1244,7 @@ to the setup function:
             (,(or class 'transient-prefix) :command ',name ,@slots))
        (transient--set-layout
         ',name
-        (list ,@(mapcan (lambda (s) (transient--parse-child name s)) groups))))))
+        (list ,@(mapcan (##transient--parse-child name %) groups))))))
 (put 'transient-define-prefix 'autoload-macro 'expand)
 
 (defmacro transient-define-group (name &rest groups)
@@ -1256,7 +1258,7 @@ form as for `transient-define-prefix'."
            (indent defun))
   `(transient--set-layout
     ',name
-    (list ,@(mapcan (lambda (s) (transient--parse-child name s)) groups))))
+    (list ,@(mapcan (##transient--parse-child name %) groups))))
 
 (defmacro transient-define-suffix (name arglist &rest args)
   "Define NAME as a transient suffix command.
@@ -1495,7 +1497,7 @@ commands are aliases for."
                       ('transient-column)))
           (and args (cons 'list args))
           (cons 'list
-                (mapcan (lambda (s) (transient--parse-child prefix s)) spec)))))
+                (mapcan (##transient--parse-child prefix %) spec)))))
 
 (defun transient--parse-suffix (prefix spec)
   (let (class args)
@@ -2168,7 +2170,7 @@ probably use this instead:
 
 (defun transient--suffix-prototype (command)
   (or (get command 'transient--suffix)
-      (seq-some (lambda (cmd) (get cmd 'transient--suffix))
+      (seq-some (##get % 'transient--suffix)
                 (function-alias-p command))))
 
 ;;; Keymaps
@@ -2506,7 +2508,7 @@ of the corresponding object."
           ('transient-update
            (setq transient--showp t)
            (let ((keys (listify-key-sequence (this-single-command-keys))))
-             (setq unread-command-events (mapcar (lambda (key) (cons t key)) keys))
+             (setq unread-command-events (mapcar (##cons t %) keys))
              keys))
           ('transient-quit-seq
            (setq unread-command-events
@@ -2637,7 +2639,7 @@ value.  Otherwise return CHILDREN as is.")
 
 (defun transient--init-suffixes (name)
   (let ((levels (alist-get name transient-levels)))
-    (mapcan (lambda (c) (transient--init-child levels c nil))
+    (mapcan (##transient--init-child levels % nil)
             (append (transient--get-children name)
                     (and (not transient--editp)
                          (transient--get-children
@@ -2656,7 +2658,7 @@ value.  Otherwise return CHILDREN as is.")
 
 (defun transient--init-child (levels spec parent)
   (cl-etypecase spec
-    (symbol (mapcan (lambda (c) (transient--init-child levels c parent))
+    (symbol (mapcan (##transient--init-child levels % parent)
                     (transient--get-children spec)))
     (vector (transient--init-group  levels spec parent))
     (list   (transient--init-suffix levels spec parent))
@@ -2672,7 +2674,7 @@ value.  Otherwise return CHILDREN as is.")
                (_(prog1 t
                    (when (transient--inapt-suffix-p obj)
                      (oset obj inapt t))))
-               (suffixes (mapcan (lambda (c) (transient--init-child levels c obj))
+               (suffixes (mapcan (##transient--init-child levels % obj)
                                  (transient-setup-children obj children))))
       (progn
         (oset obj suffixes suffixes)
@@ -3695,8 +3697,7 @@ For example:
               (setq akey t))
              (t
               (oset (transient-suffix-object command) level level)
-              (when (cdr (cl-remove-if-not (lambda (obj)
-                                             (eq (oref obj command) command))
+              (when (cdr (cl-remove-if-not (##eq (oref % command) command)
                                            transient--suffixes))
                 (setq akey (cons command (this-command-keys))))))
        (setf (alist-get akey alist) level)
@@ -4413,7 +4414,7 @@ does nothing." nil)
       (pcase-exhaustive (oref obj multi-value)
         ('nil          (concat arg value))
         ((or 't 'rest) (cons arg value))
-        ('repeat       (mapcar (lambda (v) (concat arg v)) value))))))
+        ('repeat       (mapcar (##concat arg %) value))))))
 
 (cl-defmethod transient-infix-value ((_   transient-variable))
   "Return nil, which means \"no value\".
@@ -4440,9 +4441,8 @@ Append \"=\ to ARG to indicate that it is an option."
        [match (let ((case-fold-search nil)
                     (re (format "\\`%s\\(?:=\\(.+\\)\\)?\\'"
                                 (substring arg 0 -1))))
-                (cl-find-if (lambda (a)
-                              (and (stringp a)
-                                   (string-match re a)))
+                (cl-find-if (##and (stringp %)
+                                   (string-match re %))
                             args))]
        (match-string 1 match)))))
 
@@ -5701,7 +5701,7 @@ Like `cl-mapcar' but while that stops when the shortest list
 is exhausted, continue until the longest list is, using nil
 as stand-in for elements of exhausted lists."
   (let (result)
-    (while (catch 'more (mapc (lambda (l) (and l (throw 'more t))) lists) nil)
+    (while (catch 'more (mapc (##and % (throw 'more t)) lists) nil)
       (push (apply function (mapcar #'car-safe lists)) result)
       (setq lists (mapcar #'cdr lists)))
     (nreverse result)))

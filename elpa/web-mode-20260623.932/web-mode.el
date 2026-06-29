@@ -1,9 +1,9 @@
 ;;; web-mode.el --- major mode for editing web templates -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright 2011-2025 François-Xavier Bois
+;; Copyright 2011-2026 François-Xavier Bois
 
-;; Package-Version: 20260331.1441
-;; Package-Revision: e93b3fb89fd6
+;; Package-Version: 20260623.932
+;; Package-Revision: aeee2d4c82a7
 ;; Author: François-Xavier Bois
 ;; Maintainer: François-Xavier Bois <fxbois@gmail.com>
 ;; Package-Requires: ((emacs "24.3.1"))
@@ -24,7 +24,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "17.3.22"
+(defconst web-mode-version "17.3.24"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -9591,7 +9591,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
           ((and is-js (member ?\, chars))
            (when debug (message "I400(%S) part-args" pos))
            (cond
-             ((not (web-mode-part-args-beginning pos reg-beg))
+             ((not (web-mode-javascript-args-beginning pos reg-beg)) ;; #1337
               ;;(message "ici")
               )
              ((cdr (assoc "lineup-args" web-mode-indentation-params))
