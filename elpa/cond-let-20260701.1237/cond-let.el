@@ -9,8 +9,8 @@
 ;; Homepage: https://github.com/tarsius/cond-let
 ;; Keywords: extensions
 
-;; Package-Version: 20260601.1457
-;; Package-Revision: 21b9e9835756
+;; Package-Version: 20260701.1237
+;; Package-Revision: c48600dfab63
 ;; Package-Requires: ((emacs "28.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -74,7 +74,7 @@
 ;; libraries, which continue to use the built-in implementations.
 
 ;; Due to limitations of the shorthand implementation this has to be
-;; done for each individual library.  "dir-locals.el" cannot be used.
+;; done for each individual library.  ".dir-locals.el" cannot be used.
 
 ;; If you use `when$', `and$' and `thread$', you might want to add
 ;; this to your configuration:

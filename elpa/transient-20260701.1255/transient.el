@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260617.1137
-;; Package-Revision: 9d103f338fb9
+;; Package-Version: 20260701.1255
+;; Package-Revision: 3d20a780605f
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -46,7 +46,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.13.4")
+(defconst transient-version "0.13.5")
 
 (require 'cl-lib)
 (require 'compat)
