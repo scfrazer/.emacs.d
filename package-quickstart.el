@@ -236,7 +236,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2/compat-autoloads.el"))
 
 
 
@@ -250,7 +250,6 @@ See `xr' for a description of the DIALECT argument.
 
 
 (register-definition-prefixes "compat-macs" '("compat-"))
-
 
 
 (provide 'compat-autoloads)
@@ -739,7 +738,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260605.1903/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260605.1903/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260709.1303/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260709.1303/vertico-autoloads.el"))
 
 
 
@@ -2706,7 +2705,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260702.851/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260702.851/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260707.2008/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260707.2008/modus-themes-autoloads.el"))
 
 
 
@@ -3653,7 +3652,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260617.1353/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260617.1353/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260709.1724/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260709.1724/cmake-mode-autoloads.el"))
 
 
 
@@ -4147,7 +4146,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260702.851" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260701.1255" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260701.1252" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.1")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260707.2008" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260701.1255" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260701.1252" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
          Info-directory-list)))
 
 ;; Local Variables:

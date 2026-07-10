@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20260605.1903
-;; Package-Revision: 6028bd3d32c9
+;; Package-Version: 20260709.1303
+;; Package-Revision: 99b9ef78e653
 ;; Package-Requires: ((emacs "29.1") (compat "31"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
@@ -613,6 +613,7 @@ the stack trace is shown in the *Messages* buffer."
 
 (cl-defgeneric vertico--setup ()
   "Setup completion UI."
+  (remove-hook 'minibuffer-setup-hook #'vertico--setup)
   (dolist (var vertico--locals)
     (set-local (car var) (cdr var)))
   (setq-local vertico--input t
@@ -625,8 +626,11 @@ the stack trace is shown in the *Messages* buffer."
 
 (cl-defgeneric vertico--advice (&rest app)
   "Advice for completion function, apply APP."
-  (dlet ((completion-eager-display nil)) ;; Available on Emacs 31
-    (minibuffer-with-setup-hook #'vertico--setup (apply app))))
+  (unwind-protect ;; Do not use `minibuffer-setup-hook' for idempotency.
+      (dlet ((completion-eager-display nil)) ;; Available on Emacs 31
+        (add-hook 'minibuffer-setup-hook #'vertico--setup)
+        (apply app))
+    (remove-hook 'minibuffer-setup-hook #'vertico--setup)))
 
 (defun vertico-first ()
   "Go to first candidate, or to the prompt when the first candidate is selected."
