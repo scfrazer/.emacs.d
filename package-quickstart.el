@@ -1715,7 +1715,7 @@ correspond to the range BEG-IDX..END-IDX in STRING but not necessarily so.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.2/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.11.2/project-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/project-0.12.0/project-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/project-0.12.0/project-autoloads.el"))
 
 
 
@@ -2016,7 +2016,8 @@ would otherwise have the same name.
 Whether to show current project name and Project menu on the mode line.
 This feature requires the presence of the following item in
 `mode-line-format': `(project-mode-line project-mode-line-format)'; it
-is part of the default mode line beginning with Emacs 30.")
+is part of the default mode line beginning with Emacs 30.  When the
+value is `non-remote', show the project name only for local files.")
 (custom-autoload 'project-mode-line "project" t)
 (register-definition-prefixes "project" '("project-" "vc-"))
 

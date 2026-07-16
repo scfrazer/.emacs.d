@@ -303,7 +303,8 @@ would otherwise have the same name.
 Whether to show current project name and Project menu on the mode line.
 This feature requires the presence of the following item in
 `mode-line-format': `(project-mode-line project-mode-line-format)'; it
-is part of the default mode line beginning with Emacs 30.")
+is part of the default mode line beginning with Emacs 30.  When the
+value is `non-remote', show the project name only for local files.")
 (custom-autoload 'project-mode-line "project" t)
 (register-definition-prefixes "project" '("project-" "vc-"))
 

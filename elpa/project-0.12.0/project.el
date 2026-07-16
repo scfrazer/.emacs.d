@@ -1,7 +1,7 @@
 ;;; project.el --- Operations on the current project  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2026 Free Software Foundation, Inc.
-;; Version: 0.11.2
+;; Version: 0.12.0
 ;; Package-Requires: ((emacs "26.1") (xref "1.7.0"))
 
 ;; This is a GNU ELPA :core package.  Avoid functionality that is not
@@ -84,6 +84,12 @@
 ;; This project type can also be used for non-VCS controlled
 ;; directories, see the variable `project-vc-extra-root-markers'.
 ;;
+;; Some of the methods on this backend cache their computations.
+;; Cache invalidation is done inside the `project-current' call, with
+;; duration determined either by variable `project-vc-cache-timeout' or
+;; `project-vc-non-essential-cache-timeout', depending on whether the
+;; argument MAYBE-PROMPT is non-nil.
+;;
 ;; Utils:
 ;;
 ;; `project-combine-directories' and `project-subtract-directories',
@@ -151,11 +157,9 @@
 ;;   force every project backend to be aware of the build tool(s) the
 ;;   project is using.
 ;;
-;; * Command to (re)build the tag files in all project roots.  To that
-;;   end, we might need to add a way to provide file whitelist
-;;   wildcards for each root to limit etags to certain files (in
-;;   addition to the blacklist provided by ignores), and/or allow
-;;   specifying additional tag regexps.
+;; * Minor mode to (re)build the tags across the current project:
+;;   `etags-regen-mode'.  It would be straightforward to add support for
+;;   multiple roots, if someone works with a project organized this way.
 ;;
 ;; * UI for the user to be able to pick the current project for the
 ;;   whole Emacs session, independent of the current directory.  Or,
@@ -177,6 +181,7 @@
 (require 'cl-generic)
 (require 'cl-lib)
 (require 'seq)
+(eval-when-compile (require 'generator))
 (eval-when-compile (require 'subr-x))
 
 (defgroup project nil
@@ -205,8 +210,8 @@ When it is non-nil, `project-current' will always skip prompting too.")
 
 (defcustom project-prompter #'project-prompt-project-dir
   "Function to call to prompt for a project.
-The function is called either with no arguments or with up to four
-optional arguments: (&optional PROMPT PREDICATE REQUIRE-KNOWN ALLOW-EMPTY).
+The function is called either with no arguments or with up to three
+optional arguments: (&optional PROMPT PREDICATE REQUIRE-KNOWN).
 
 PROMPT is the prompt string to use.
 
@@ -224,12 +229,14 @@ may allow the user to input arbitrary directories.  If PREDICATE and
 REQUIRE-KNOWN are both non-nil, the value of `project-prompter' should
 not return any project root directory for which PREDICATE returns nil.
 
-If ALLOW-EMPTY is non-nil, then irrespective of REQUIRE-KNOWN, the user
-may enter nothing (i.e., just type RET).
-In this case the function should return \"\".  Conventionally this is
-used to allow the user to select the current project.
-Callers should append something like \" (empty for current project)\" to
-PROMPT when passing ALLOW-EMPTY non-nil."
+The function must always return a valid project.
+
+If there is a current project, it satisfies PREDICATE (or PREDICATE is
+nil), and the method of prompting involves a default selection, then
+this default selection should be the current project root.  For example
+if the function uses `completing-read' then the current project, if any,
+should be passed as the DEF argument to `completing-read', and returned
+in the case that the user replies with empty input."
   :type '(choice (const :tag "Prompt for a project directory"
                         project-prompt-project-dir)
                  (const :tag "Prompt for a project name"
@@ -274,7 +281,8 @@ of the project instance object."
       (if pr
           (project-remember-project pr)
         (project--remove-from-project-list
-         directory "Project `%s' not found; removed from list")
+         (abbreviate-file-name directory)
+         "Project `%s' not found; removed from list")
         (setq pr (cons 'transient directory))))
     pr))
 
@@ -396,7 +404,7 @@ to find the list of ignores for each directory."
          ;; expanded and not left for the shell command
          ;; to interpret.
          (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
-         (command (format "%s -H . %s -type f %s -print0"
+         (command (format "%s -L . %s -type f %s -print0"
                           find-program
                           (xref--find-ignores-arguments ignores "./")
                           (if files
@@ -455,9 +463,9 @@ the buffer's value of `default-directory'."
   (let ((root (expand-file-name (file-name-as-directory (project-root project))))
         bufs)
     (dolist (buf (buffer-list))
-      (when (string-prefix-p root (expand-file-name
-                                   (buffer-local-value 'default-directory buf)))
-        (push buf bufs)))
+      (let ((dir (buffer-local-value 'default-directory buf)))
+        (when (and dir (string-prefix-p root (expand-file-name dir)))
+          (push buf bufs))))
     (nreverse bufs)))
 
 (defgroup project-vc nil
@@ -585,18 +593,75 @@ project backend implementation of `project-external-roots'.")
 
 See `project-vc-extra-root-markers' for the marker value format.")
 
-;; FIXME: Should perhaps use `vc--repo-*prop' functions
-;;        (after promoting those to public).  --spwhitton
-(defun project-try-vc (dir)
-  ;; FIXME: Learn to invalidate when the value changes:
-  ;; `project-vc-merge-submodules' or `project-vc-extra-root-markers'.
-  (or (vc-file-getprop dir 'project-vc)
-      ;; FIXME: Cache for a shorter time.
-      (let ((res (project-try-vc--search dir)))
-        (and res (vc-file-setprop dir 'project-vc res))
-        res)))
+(defvar project-vc-cache-timeout '((file-remote-p . nil)
+                                   (always . 2))
+  "Number of seconds to cache a value in VC-aware project methods.
+It can be nil, a number, or an alist where
+the key is a predicate, and the value is a number.
+A predicate function should take a directory string and if it returns
+non-nil, the corresponding value will be used as the timeout.
+Set to nil to disable time-based expiration.")
 
-(defun project-try-vc--search (dir)
+(defvar project-vc-non-essential-cache-timeout '((file-remote-p . nil)
+                                                 (always . 300))
+  "Number of seconds to cache non-essential information.
+The format of the value is same as `project-vc-cache-timeout', but while
+the former is intended for interactive commands, this variable uses
+higher numbers, intended for \"background\" things like
+`project-mode-line' indicators and `project-uniquify-dirname-transform'.
+It is used when `non-essential' is non-nil.")
+
+(defun project--get-cached (dir key timeout)
+  (let ((cached (vc-file-getprop dir key))
+        (current-time (float-time)))
+    (when (and (numberp (cdr cached))
+               ;; Support package upgrade mid-session.
+               (let* ((timeout
+                       (cond
+                        ((numberp timeout)
+                         timeout)
+                        ((listp timeout)
+                         (cdr
+                          (seq-find (lambda (pair)
+                                      (and (functionp (car pair))
+                                           (funcall (car pair) dir)))
+                                    timeout)))
+                        (t nil))))
+                 (or (null timeout)
+                     (< (- current-time (cdr cached)) timeout))))
+      (car cached))))
+
+(defun project--set-cached (dir key value)
+  (vc-file-setprop dir key (cons value (float-time))))
+
+;; TODO: We can have our own, separate obarray.
+(defun project--clear-cache ()
+  (obarray-map
+   (lambda (sym)
+     (if (get sym 'project-vc)
+         (put sym 'project-vc nil))
+     (if (get sym 'project-vc-dir-locals)
+         (put sym 'project-vc-dir-locals nil)))
+   vc-file-prop-obarray))
+
+(defun project-try-vc (dir)
+  "Returns a project value corresponding to DIR from the VC-aware backend.
+
+The value is cached, and depending on whether MAYBE-PROMPT was non-nil
+in the `project-current' call, the timeout is determined by
+`project-vc-cache-timeout' or `project-vc-non-essential-cache-timeout'."
+  (let* ((timeout (if non-essential
+                      project-vc-non-essential-cache-timeout
+                    project-vc-cache-timeout))
+         (cached (project--get-cached dir 'project-vc timeout)))
+    (if (eq cached 'none)
+        nil
+      (or cached
+          (let ((res (project-try-vc--search dir timeout)))
+            (project--set-cached dir 'project-vc (or res 'none))
+            res)))))
+
+(defun project-try-vc--search (dir timeout)
   (let* ((backend-markers
           (delete
            nil
@@ -609,7 +674,7 @@ See `project-vc-extra-root-markers' for the marker value format.")
            (mapconcat
             (lambda (m) (format "\\(%s\\)" (wildcard-to-regexp m)))
             (append backend-markers
-                    (project--value-in-dir 'project-vc-extra-root-markers dir))
+                    (project--value-in-dir 'project-vc-extra-root-markers dir timeout))
             "\\|")
            "\\'"))
          (locate-dominating-stop-dir-regexp
@@ -632,8 +697,9 @@ See `project-vc-extra-root-markers' for the marker value format.")
            vc-handled-backends))
          project)
     (while (and
+            root
             (eq backend 'Git)
-            (project--vc-merge-submodules-p root)
+            (project--vc-merge-submodules-p root timeout)
             (project--submodule-p root))
       (let* ((parent (file-name-directory (directory-file-name root))))
         (setq root (vc-call-backend 'Git 'root parent))))
@@ -644,7 +710,7 @@ See `project-vc-extra-root-markers' for the marker value format.")
         (let* ((project-vc-extra-root-markers nil)
                ;; Avoid submodules scan.
                (enable-dir-local-variables nil)
-               (parent (project-try-vc--search root)))
+               (parent (project-try-vc--search root timeout)))
           (and parent (setq backend (nth 1 parent)))))
       (setq project (list 'vc backend root))
       project)))
@@ -693,14 +759,12 @@ See `project-vc-extra-root-markers' for the marker value format.")
 (cl-defmethod project-files ((project (head vc)) &optional dirs)
   (mapcan
    (lambda (dir)
-     (let ((ignores (project--value-in-dir 'project-vc-ignores dir))
+     (let ((ignores (project--value-in-dir 'project-vc-ignores dir nil))
            (backend (project-vc--backend project dir)))
        (if backend
            (vc-call-backend backend 'project-list-files dir ignores)
          (project--files-in-directory
-          dir (append ignores (append
-                               (project-ignores nil nil)
-                               ignores))))))
+          dir (append ignores (project-ignores nil nil))))))
    (or dirs
        (list (project-root project)))))
 
@@ -720,18 +784,21 @@ See `project-vc-extra-root-markers' for the marker value format.")
       ;; Need newer Git to use negative pathspec like we do".
       (vc-default-project-list-files 'Git dir extra-ignores)
     (let* ((default-directory (expand-file-name (file-name-as-directory dir)))
-           (args '("-z" "-c" "--exclude-standard"))
            (vc-git-use-literal-pathspecs nil)
            (include-untracked (project--value-in-dir
                                'project-vc-include-untracked
-                               dir))
+                               dir
+                               nil))
            (submodules (project--git-submodules))
-           files)
-      (setq args (append args
+           (gitver (vc-git--program-version))
+           (dedup (and (version<= "2.31" gitver) '("--deduplicate")))
+           (args (append '("-z" "-c" "--exclude-standard")
                          (and (<= 31 emacs-major-version)
-                              (version<= "2.35" (vc-git--program-version))
+                              (version<= "2.35" gitver)
                               '("--sparse"))
-                         (and include-untracked '("-o"))))
+                         (and include-untracked '("-o"))
+                         dedup))
+           files)
       (when extra-ignores
         (setq args (append args
                            (cons "--"
@@ -739,13 +806,13 @@ See `project-vc-extra-root-markers' for the marker value format.")
                                   (lambda (i)
                                     (format
                                      ":(exclude,glob,top)%s"
-                                     (if (string-match "\\*\\*" i)
+                                     (if (string-match-p "\\*\\*" i)
                                          ;; Looks like pathspec glob
                                          ;; format already.
                                          i
-                                       (if (string-match "\\./" i)
+                                       (if (string-prefix-p "./" i)
                                            ;; ./abc -> abc
-                                           (setq i (substring i 2))
+                                           (substring i 2)
                                          ;; abc -> **/abc
                                          (setq i (concat "**/" i))
                                          ;; FIXME: '**/abc' should also
@@ -753,10 +820,10 @@ See `project-vc-extra-root-markers' for the marker value format.")
                                          ;; name, but doesn't (git 2.25.1).
                                          ;; Maybe we should replace
                                          ;; such entries with two.
-                                         (if (string-match "/\\'" i)
+                                         (if (string-suffix-p "/" i)
                                              ;; abc/ -> abc/**
-                                             (setq i (concat i "**"))))
-                                       i)))
+                                             (concat i "**")
+                                           i)))))
                                   extra-ignores)))))
       (setq files
             (delq nil
@@ -773,7 +840,7 @@ See `project-vc-extra-root-markers' for the marker value format.")
                     (with-output-to-string
                       (apply #'vc-git-command standard-output 0 nil "ls-files" args))
                     "\0" t))))
-      (when (project--vc-merge-submodules-p default-directory)
+      (when (project--vc-merge-submodules-p default-directory nil)
         ;; Unfortunately, 'ls-files --recurse-submodules' conflicts with '-o'.
         (let ((sub-files
                (mapcar
@@ -792,14 +859,14 @@ See `project-vc-extra-root-markers' for the marker value format.")
           (setq files
                 (apply #'nconc files sub-files))))
       ;; 'git ls-files' returns duplicate entries for merge conflicts.
-      ;; XXX: Better solutions welcome, but this seems cheap enough.
-      (delete-consecutive-dups files))))
+      (if dedup files (delete-consecutive-dups files)))))
 
 (defun vc-hg-project-list-files (dir extra-ignores)
   (let* ((default-directory (expand-file-name (file-name-as-directory dir)))
          (include-untracked (project--value-in-dir
                              'project-vc-include-untracked
-                             dir))
+                             dir
+                             nil))
          (args (list (concat "-mcard" (and include-untracked "u"))
                      "--no-status"
                      "-0"))
@@ -819,10 +886,11 @@ See `project-vc-extra-root-markers' for the marker value format.")
                      files)))
       files)))
 
-(defun project--vc-merge-submodules-p (dir)
+(defun project--vc-merge-submodules-p (dir timeout)
   (project--value-in-dir
    'project-vc-merge-submodules
-   dir))
+   dir
+   timeout))
 
 (defun project--git-submodules ()
   ;; 'git submodule foreach' is much slower.
@@ -839,9 +907,10 @@ See `project-vc-extra-root-markers' for the marker value format.")
 (cl-defmethod project-ignores ((project (head vc)) dir)
   (project--vc-ignores dir
                        (project-vc--backend project dir)
-                       (project--value-in-dir 'project-vc-ignores dir)))
+                       (project--value-in-dir 'project-vc-ignores dir nil)))
 
 (defun project--vc-ignores (dir backend extra-ignores)
+  (require 'vc)             ; Can be removed when we require Emacs 31.1.
   (append
    (when backend
      (delq
@@ -895,18 +964,33 @@ DIRS must contain directory names."
   ;; Sidestep the issue of expanded/abbreviated file names here.
   (cl-set-difference files dirs :test #'file-in-directory-p))
 
-(defun project--value-in-dir (var dir)
+(defun project--value-in-dir (var dir timeout)
+  "Look up variable VAR's value in DIR, with cache duration TIMEOUT.
+If TIMEOUT is nil, the cache is not invalidated."
+  (alist-get
+   var
+   (and
+    enable-dir-local-variables
+    (let ((cached (project--get-cached dir 'project-vc-dir-locals timeout)))
+      (if (eq cached 'none)
+          nil
+        (or cached
+            (let ((res (project--read-dir-locals dir)))
+              (project--set-cached dir 'project-vc-dir-locals (or res 'none))
+              res)))))
+   (default-value var)))
+
+(defun project--read-dir-locals (dir)
   (with-temp-buffer
     (setq default-directory (file-name-as-directory dir))
+    ;; Don't use `hack-local-variables-apply' to avoid setting modes.
     (let ((enable-local-variables :all))
       (hack-dir-local-variables))
-    ;; Don't use `hack-local-variables-apply' to avoid setting modes.
-    (alist-get var file-local-variables-alist
-               (symbol-value var))))
+    file-local-variables-alist))
 
 (cl-defmethod project-buffers ((project (head vc)))
   (let* ((root (expand-file-name (file-name-as-directory (project-root project))))
-         (modules (unless (or (project--vc-merge-submodules-p root)
+         (modules (unless (or (project--vc-merge-submodules-p root nil)
                               (condition-case nil
                                   (project--submodule-p root)
                                 (file-missing nil)))
@@ -924,7 +1008,8 @@ DIRS must contain directory names."
     (nreverse bufs)))
 
 (cl-defmethod project-name ((project (head vc)))
-  (or (project--value-in-dir 'project-vc-name (project-root project))
+  "Returns the name of this VC-aware type PROJECT."
+  (or (project--value-in-dir 'project-vc-name (project-root project) nil)
       (cl-call-next-method)))
 
 
@@ -1289,6 +1374,8 @@ by the user at will."
 
 Depending on `project-file-history-behavior', entries are made
 project-relative where possible."
+  (unless all-files
+    (user-error "Empty file list"))
   (let ((file
          (cl-letf ((history-add-new-input nil)
                    ((symbol-value hist)
@@ -1317,7 +1404,8 @@ directories listed in `vc-directory-exclusion-list'."
   (let* ((vc-dirs-ignores (mapcar
                            (lambda (dir)
                              (concat dir "/"))
-                           vc-directory-exclusion-list))
+                           (and include-all
+                                vc-directory-exclusion-list)))
          (all-files
           (if include-all
               (mapcan
@@ -1330,7 +1418,7 @@ directories listed in `vc-directory-exclusion-list'."
                 project "Find file"
                 all-files nil 'file-name-history
                 suggested-filename)))
-    (if (string= file "")
+    (if (string-empty-p file)
         (user-error "You didn't specify the file")
       (find-file file))))
 
@@ -1522,6 +1610,10 @@ The current buffer's `default-directory' is available as part of
 ;;;###autoload
 (defun project-vc-dir ()
   "Run VC-Dir in the current project's root."
+  ;; This is unfortunately inconsistent with `vc-dir' which calls
+  ;; `file-truename' on the directory.  But following symlink results in
+  ;; "mismatched" project for that buffer and any visited from it.  See
+  ;; <https://lists.gnu.org/archive/html/emacs-devel/2026-06/msg00196.html>.
   (interactive)
   (vc-dir (project-root (project-current t))))
 
@@ -1595,6 +1687,11 @@ create it if it doesn't already exist."
 
 (declare-function fileloop-continue "fileloop" ())
 
+(iter-defun project--files-safe ()
+  (dolist (file (project-files (project-current t)))
+    (when (file-regular-p file)
+      (iter-yield file))))
+
 ;;;###autoload
 (defun project-search (regexp)
   "Search for REGEXP in all the files of the project.
@@ -1604,7 +1701,7 @@ command \\[fileloop-continue]."
   (interactive "sSearch (regexp): ")
   (fileloop-initialize-search
    regexp
-   (project-files (project-current t))
+   (project--files-safe)
    'default)
   (fileloop-continue))
 
@@ -1625,13 +1722,9 @@ If you exit the `query-replace', you can later continue the
        (list from to))))
   (fileloop-initialize-replace
    from to
-   (project-files (project-current t))
+   (project--files-safe)
    'default)
   (fileloop-continue))
-
-(defvar compilation-read-command)
-(declare-function compilation-read-command "compile")
-(declare-function recompile "compile")
 
 (defun project-prefixed-buffer-name (mode)
   (concat "*"
@@ -1681,15 +1774,21 @@ If non-nil, it overrides `compilation-buffer-name-function' for
         (with-current-buffer orig-current-buffer
           (setq-local compile-command orig-compile-command))))))
 
+;; Autoloaded since Emacs 31.
+(autoload 'recompile "compile" nil t)
+
 ;;;###autoload
 (defun project-recompile (&optional edit-command)
   "Run `recompile' in the project root with an appropriate buffer."
   (declare (interactive-only recompile))
   (interactive "P")
-  (let ((default-directory (project-root (project-current t)))
-        (compilation-buffer-name-function
-         (or project-compilation-buffer-name-function
-             compilation-buffer-name-function)))
+  (defvar compilation-directory)
+  (let* ((default-directory (project-root (project-current t)))
+         ;; The former overrides the latter in `recompile'.
+         (compilation-directory default-directory)
+         (compilation-buffer-name-function
+          (or project-compilation-buffer-name-function
+              compilation-buffer-name-function)))
     (recompile edit-command)))
 
 (defcustom project-ignore-buffer-conditions nil
@@ -1752,7 +1851,7 @@ Return non-nil if PROJECT is not a remote project."
       '(metadata . ((category . project-buffer)
                     (cycle-sort-function . identity))))
      ((and (eq action t)
-           (equal string ""))           ;Pcm completion or empty prefix.
+           (string-empty-p string))     ;Pcm completion or empty prefix.
       (let* ((all (complete-with-action action buffers string pred))
              (non-internal (cl-remove-if (lambda (b) (= (aref b 0) ?\s)) all)))
         (if (null non-internal)
@@ -1775,10 +1874,10 @@ Return non-nil if PROJECT is not a remote project."
          (predicate
           (lambda (buffer)
             ;; BUFFER is an entry (BUF-NAME . BUF-OBJ) of Vbuffer_alist.
-            (and (memq (cdr buffer) buffers)
-                 (not
-                  (project--buffer-check
-                   buffer project-ignore-buffer-conditions)))))
+            (setq buffer (cdr buffer))
+            (and (memq buffer buffers)
+                 (not (project--buffer-check
+                       buffer project-ignore-buffer-conditions)))))
          (completion-ignore-case read-buffer-completion-ignore-case)
          (buffers-alist
           (if (and (fboundp 'uniquify-get-unique-names)
@@ -2053,17 +2152,18 @@ Also see the `project-kill-buffers-display-buffer-list' variable."
                    (get-buffer-create "*Buffer List*")
                    `(display-buffer--maybe-at-bottom
                      (dedicated . t)
-                     (window-height . (fit-window-to-buffer))
+                     ;; Rely on `temp-buffer-resize-mode' instead?
+                     (window-height . fit-window-to-buffer)
                      (preserve-size . (nil . t))
                      (body-function
-                      . ,#'(lambda (_window)
-                             (list-buffers-noselect nil bufs))))
-                   #'(lambda (window _value)
-                       (with-selected-window window
-                         (unwind-protect
-                             (funcall query-user)
-                           (when (window-live-p window)
-                             (quit-restore-window window 'kill))))))
+                      . ,(lambda (_window)
+                           (list-buffers-noselect nil bufs))))
+                   (lambda (window _value)
+                     (with-selected-window window
+                       (unwind-protect
+                           (funcall query-user)
+                         (when (window-live-p window)
+                           (quit-restore-window window 'kill))))))
              (mapc #'kill-buffer bufs)))
           ((funcall query-user)
            (mapc #'kill-buffer bufs)))))
@@ -2128,10 +2228,10 @@ With some possible metadata (to be decided).")
   "Initialize `project--list' if it isn't already initialized."
   (when (eq project--list 'unset)
     (project--read-project-list)
-    (if-let* ((pred (alist-get 'list-first-read project-prune-zombie-projects))
-              ((consp project--list))
-              (inhibit-message t))
-        (project--delete-zombie-projects pred))))
+    (when-let* ((pred (alist-get 'list-first-read project-prune-zombie-projects))
+                ((consp project--list))
+                (inhibit-message t))
+      (project--delete-zombie-projects pred))))
 
 (defun project--write-project-list ()
   "Save `project--list' in `project-list-file'."
@@ -2140,10 +2240,10 @@ With some possible metadata (to be decided).")
       (insert ";;; -*- lisp-data -*-\n")
       (let ((print-length nil)
             (print-level nil))
-        (if-let* ((pred (alist-get 'list-write project-prune-zombie-projects))
-                  ((consp project--list))
-                  (inhibit-message t))
-            (project--delete-zombie-projects pred))
+        (when-let* ((pred (alist-get 'list-write project-prune-zombie-projects))
+                    ((consp project--list))
+                    (inhibit-message t))
+          (project--delete-zombie-projects pred))
         (pp (mapcar (lambda (elem)
                       (let ((name (car elem)))
                         (list (if (file-remote-p name) name
@@ -2201,7 +2301,7 @@ result in `project-list-file'.  Announce the project's removal
 from the list using REPORT-MESSAGE, which is a format string
 passed to `message' as its first argument."
   (project--ensure-read-project-list)
-  (when-let* ((ent (assoc (abbreviate-file-name project-root) project--list)))
+  (when-let* ((ent (assoc project-root project--list)))
     (setq project--list (delq ent project--list))
     (message report-message project-root)
     (project--write-project-list)))
@@ -2217,8 +2317,7 @@ the project list."
 
 (defvar project--dir-history)
 
-(defun project-prompt-project-dir
-    (&optional prompt predicate require-known allow-empty)
+(defun project-prompt-project-dir (&optional prompt predicate require-known)
   "Prompt the user for a directory that is one of the known project roots.
 The project is chosen among projects known from the project list,
 see `project-list-file'.
@@ -2226,13 +2325,17 @@ If PROMPT is non-nil, use it as the prompt string.
 If PREDICATE is non-nil, filter possible project choices using this
 function; see `project-prompter' for more details.
 Unless REQUIRE-KNOWN is non-nil, it's also possible to enter an
-arbitrary directory not in the list of known projects.
-If ALLOW-EMPTY is non-nil, it is possible to exit with no input."
+arbitrary directory not in the list of known projects."
   (project--ensure-read-project-list)
-  (if-let* ((pred (alist-get 'prompt project-prune-zombie-projects))
-            (inhibit-message t))
-      (project--delete-zombie-projects pred))
+  (when-let* ((pred (alist-get 'prompt project-prune-zombie-projects))
+              (inhibit-message t))
+    (project--delete-zombie-projects pred))
   (let* ((dir-choice "... (choose a dir)")
+         (current (and-let* ((p (project-current))
+                             (_ (or (null predicate)
+                                    (funcall predicate
+                                             (project-root p)))))
+                    (project-root p)))
          (choices
           ;; XXX: Just using this for the category (for the substring
           ;; completion style).
@@ -2240,30 +2343,29 @@ If ALLOW-EMPTY is non-nil, it is possible to exit with no input."
            (if require-known project--list
              (append project--list `(,dir-choice)))))
          (project--dir-history (project-known-project-roots))
-         pr-dir)
-    (cl-loop
-     do (setq pr-dir
-              (let (history-add-new-input)
-                (completing-read (if prompt
-                                     ;; TODO: Use `format-prompt' (Emacs 28.1+)
-                                     (format "%s: " (substitute-command-keys prompt))
-                                   "Select project: ")
-                                 choices
-                                 (and predicate
-                                      (lambda (choice)
-                                        (or (equal choice dir-choice)
-                                            (funcall predicate choice))))
-                                 t nil 'project--dir-history)))
-     ;; If the user simply pressed RET, do this again until they don't.
-     while (and (not allow-empty) (equal pr-dir "")))
+         (pr-dir ""))
+    (while (string-empty-p pr-dir)
+      ;; If the user simply pressed RET (and CURRENT is nil), do this
+      ;; again until they don't.
+      (setq pr-dir
+            (let (history-add-new-input)
+              (completing-read
+               ;; Emacs 28.1+: Use `format-prompt'.
+               (cond (prompt (format "%s: " prompt))
+                     (current "Select project (default current project): ")
+                     (t "Select project: "))
+               choices (and predicate
+                            (lambda (choice)
+                              (or (equal choice dir-choice)
+                                  (funcall predicate choice))))
+               t nil 'project--dir-history current))))
     (if (equal pr-dir dir-choice)
         (read-directory-name "Select directory: " default-directory nil t)
       pr-dir)))
 
 (defvar project--name-history)
 
-(defun project-prompt-project-name
-    (&optional prompt predicate require-known allow-empty)
+(defun project-prompt-project-name (&optional prompt predicate require-known)
   "Prompt the user for a project, by name, that is one of the known project roots.
 The project is chosen among projects known from the project list,
 see `project-list-file'.
@@ -2271,13 +2373,17 @@ If PROMPT is non-nil, use it as the prompt string.
 If PREDICATE is non-nil, filter possible project choices using this
 function; see `project-prompter' for more details.
 Unless REQUIRE-KNOWN is non-nil, it's also possible to enter an
-arbitrary directory not in the list of known projects.
-If ALLOW-EMPTY is non-nil, it is possible to exit with no input."
-  (if-let* ((pred (alist-get 'prompt project-prune-zombie-projects))
-            (inhibit-message t))
-      (project--delete-zombie-projects pred))
+arbitrary directory not in the list of known projects."
+  (when-let* ((pred (alist-get 'prompt project-prune-zombie-projects))
+              (inhibit-message t))
+    (project--delete-zombie-projects pred))
   (let* ((dir-choice "... (choose a dir)")
          project--name-history
+         (current (and-let* ((p (project-current))
+                             (_ (or (null predicate)
+                                    (funcall predicate
+                                             (project-root p)))))
+                    (project-name p)))
          (choices
           (let (ret)
             ;; Iterate in reverse order so project--name-history is in
@@ -2296,22 +2402,22 @@ If ALLOW-EMPTY is non-nil, it is possible to exit with no input."
          (table (project--file-completion-table
                  (reverse (if require-known choices
                             (cons dir-choice choices)))))
-         pr-name)
-    (cl-loop
-     do (setq pr-name
-              (let (history-add-new-input)
-                (completing-read (if prompt
-                                     (format "%s: " prompt)
-                                   "Select project: ")
-                                 table nil t nil 'project--name-history)))
-     ;; If the user simply pressed RET, do this again until they don't.
-     while (and (not allow-empty) (equal pr-name "")))
-    (pcase pr-name
-      ("" "")
-      ((pred (equal dir-choice)) (read-directory-name "Select directory: "
-                                                      default-directory nil t))
-      (_ (let ((proj (assoc pr-name choices)))
-           (if (stringp proj) proj (project-root (cdr proj))))))))
+         (pr-name ""))
+    (while (string-empty-p pr-name)
+      ;; If the user simply pressed RET (and CURRENT is nil), do this
+      ;; again until they don't.
+      (setq pr-name
+            (let (history-add-new-input)
+              (completing-read
+               ;; Emacs 28.1+: Use `format-prompt'.
+               (cond (prompt (format "%s: " prompt))
+                     (current "Select project (default current project): ")
+                     (t "Select project: "))
+               table nil t nil 'project--name-history current))))
+    (if (equal pr-name dir-choice)
+        (read-directory-name "Select directory: " default-directory nil t)
+      (let ((proj (assoc pr-name choices)))
+        (if (stringp proj) proj (project-root (cdr proj)))))))
 
 ;;;###autoload
 (defun project-known-project-roots ()
@@ -2380,6 +2486,7 @@ projects.
 Display a message at the end summarizing what was found.
 Return the number of detected projects."
   (interactive "DDirectory: \nP")
+  (project--clear-cache)
   (project--ensure-read-project-list)
   (let ((dirs (if recursive
                   (directory-files-recursively dir "" t)
@@ -2410,14 +2517,22 @@ Return the number of detected projects."
   "Helper function used by `project-forget-zombie-projects'.
 PREDICATE can be a function with 1 argument which determines which
 projects should be deleted."
-  (dolist (proj (project-known-project-roots))
-    (when (and (funcall (or predicate #'identity) proj)
-               (not (file-exists-p proj)))
-      (project-forget-project proj))))
+  (defvar tramp-error-show-message-timeout)
+  (let (tramp-error-show-message-timeout)
+    (dolist (proj (project-known-project-roots))
+      (when (and (funcall (or predicate #'identity) proj)
+                 (condition-case-unless-debug nil
+                     (not (file-exists-p proj))
+                   (file-error
+                    (yes-or-no-p
+                     (format "Forget unreachable project `%s'? "
+                             proj)))))
+        (project-forget-project proj)))))
 
 (defun project-forget-zombie-projects (&optional interactive)
   "Forget all known projects that don't exist any more."
   (interactive (list t))
+  (project--clear-cache)
   (let ((pred (when interactive (alist-get 'interactively project-prune-zombie-projects))))
     (project--delete-zombie-projects pred)))
 
@@ -2430,6 +2545,7 @@ to remove those projects from the index.
 Display a message at the end summarizing what was forgotten.
 Return the number of forgotten projects."
   (interactive "DDirectory: \nP")
+  (project--clear-cache)
   (let ((count 0))
     (if recursive
         (dolist (proj (project-known-project-roots))
@@ -2634,8 +2750,11 @@ would otherwise have the same name."
   "Whether to show current project name and Project menu on the mode line.
 This feature requires the presence of the following item in
 `mode-line-format': `(project-mode-line project-mode-line-format)'; it
-is part of the default mode line beginning with Emacs 30."
-  :type 'boolean
+is part of the default mode line beginning with Emacs 30.  When the
+value is `non-remote', show the project name only for local files."
+  :type '(choice (const :tag "Don't show project on mode line" nil)
+                 (const :tag "Show project only for local files" non-remote)
+                 (const :tag "Always show project on mode line" t))
   :group 'project
   :version "30.1")
 
@@ -2653,18 +2772,21 @@ is part of the default mode line beginning with Emacs 30."
 
 (defun project-mode-line-format ()
   "Compose the project mode-line."
-  (when-let* ((project (project-current)))
+  (unless (and (eq project-mode-line 'non-remote)
+               (file-remote-p default-directory))
     ;; Preserve the global value of 'last-coding-system-used'
     ;; that 'write-region' needs to set for 'basic-save-buffer',
     ;; but updating the mode line might occur at the same time
     ;; during saving the buffer and 'project-name' can change
     ;; 'last-coding-system-used' when reading the project name
     ;; from .dir-locals.el also enables flyspell-mode (bug#66825).
-    (let ((last-coding-system-used last-coding-system-used))
+    (when-let* ((last-coding-system-used last-coding-system-used)
+                (project (project-current))
+                (project-name (project-name project)))
       (concat
        " "
        (propertize
-        (project-name project)
+        project-name
         'face project-mode-line-face
         'mouse-face 'mode-line-highlight
         'help-echo "mouse-1: Project menu"
