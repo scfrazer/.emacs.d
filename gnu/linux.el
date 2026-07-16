@@ -7,7 +7,7 @@
 ;; Dark
 (setq modus-vivendi-tinted-palette-overrides 
       '(
-        (fg-main "#dddddd")
+        (fg-main "#ffffff")
         (bg-main "#222730")
         (comment "#888888")
         ))
