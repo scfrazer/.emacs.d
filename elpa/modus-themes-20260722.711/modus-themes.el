@@ -5,8 +5,8 @@
 ;; Author: Protesilaos <info@protesilaos.com>
 ;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260714.716
-;; Package-Revision: 9a46f896071f
+;; Package-Version: 20260722.711
+;; Package-Revision: 7d53a6959c92
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -4875,8 +4875,6 @@ If COLOR is unspecified, then return :box unspecified."
     `(company-preview ((,c :foreground ,fg-dim)))
     `(company-preview-common ((,c :inherit modus-themes-completion-match-0)))
     `(company-preview-search ((,c :background ,bg-yellow-intense)))
-    `(company-scrollbar-bg ((,c :background ,bg-active)))
-    `(company-scrollbar-fg ((,c :background ,fg-main)))
     `(company-template-field ((,c :background ,bg-active)))
     `(company-tooltip ((,c :inherit modus-themes-fixed-pitch :background ,bg-popup)))
     `(company-tooltip-annotation ((,c :inherit modus-themes-slant :foreground ,docstring)))
@@ -5941,8 +5939,10 @@ If COLOR is unspecified, then return :box unspecified."
     `(magit-cherry-unmatched ((,c :foreground ,err)))
     `(magit-diff-added ((,c :background ,bg-added-faint :foreground ,fg-added)))
     `(magit-diff-added-highlight ((,c :background ,bg-added :foreground ,fg-added)))
+    `(magit-diff-added-indicator ((,c :background ,bg-added-refine :foreground ,fg-added)))
     `(magit-diff-base ((,c :background ,bg-changed-faint :foreground ,fg-changed)))
     `(magit-diff-base-highlight ((,c :background ,bg-changed :foreground ,fg-changed)))
+    `(magit-diff-base-indicator ((,c :background ,bg-changed-refine :foreground ,fg-changed)))
     `(magit-diff-context ((,c :foreground ,fg-dim)))
     `(magit-diff-context-highlight ((,c :background ,bg-diff-context)))
     `(magit-diff-file-heading ((,c :inherit modus-themes-bold :foreground ,accent-0)))
@@ -5956,6 +5956,7 @@ If COLOR is unspecified, then return :box unspecified."
     `(magit-diff-lines-heading ((,c :background ,fg-dim :foreground ,bg-main)))
     `(magit-diff-removed ((,c :background ,bg-removed-faint :foreground ,fg-removed)))
     `(magit-diff-removed-highlight ((,c :background ,bg-removed :foreground ,fg-removed)))
+    `(magit-diff-removed-indicator ((,c :background ,bg-removed-refine :foreground ,fg-removed)))
     `(magit-diffstat-added ((,c :foreground ,fg-added-intense)))
     `(magit-diffstat-removed ((,c :foreground ,fg-removed-intense)))
     `(magit-dimmed ((,c :foreground ,fg-dim)))

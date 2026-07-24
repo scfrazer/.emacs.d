@@ -5,7 +5,7 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Requires: ((emacs "29.1") (compat "31") (vertico "2.10"))
+;; Package-Requires: ((emacs "29.1") (compat "31") (vertico "2.11"))
 ;; URL: https://github.com/minad/vertico
 
 ;; This file is part of GNU Emacs.
@@ -56,16 +56,12 @@
   :doc "Additional keymap activated in mouse mode."
   "<mouse-1>" (vertico-mouse--click "RET")
   "<mouse-2>" (vertico-mouse--click "TAB")
-  "<mouse-3>" (vertico-mouse--click "TAB"))
+  "<mouse-3>" (vertico-mouse--click "TAB")
+  "<wheel-up>" #'vertico-previous
+  "<wheel-down>" #'vertico-next
+  "<wheel-left>" #'ignore
+  "<wheel-right>" #'ignore)
 (fset 'vertico-mouse-map vertico-mouse-map)
-
-(defun vertico-mouse--scroll-up (n)
-  "Scroll up by N lines."
-  (vertico--goto (max 0 (+ vertico--index n))))
-
-(defun vertico-mouse--scroll-down (n)
-  "Scroll down by N lines."
-  (vertico-mouse--scroll-up (- n)))
 
 ;;;###autoload
 (define-minor-mode vertico-mouse-mode
@@ -84,13 +80,7 @@
   cand)
 
 (cl-defmethod vertico--setup :after (&context (vertico-mouse-mode (eql t)))
-  (when (boundp 'mwheel-coalesce-scroll-events)
-    (setq-local mwheel-coalesce-scroll-events t))
-  (if (bound-and-true-p vertico-reverse-mode)
-      (setq-local mwheel-scroll-up-function #'vertico-mouse--scroll-down
-                  mwheel-scroll-down-function #'vertico-mouse--scroll-up)
-    (setq-local mwheel-scroll-up-function #'vertico-mouse--scroll-up
-                mwheel-scroll-down-function #'vertico-mouse--scroll-down)))
+  (setq-local mwheel-coalesce-scroll-events t))
 
 (provide 'vertico-mouse)
 ;;; vertico-mouse.el ends here

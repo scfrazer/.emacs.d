@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20260519.1044
-;; Package-Revision: feb66c02bbd8
+;; Package-Version: 20260724.810
+;; Package-Revision: 10b170ad8006
 ;; Package-Requires: ((emacs "29.1") (compat "31"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -1059,7 +1059,7 @@ These annotations are skipped for remote paths."
   "Format TIME as an absolute age."
   (let ((system-time-locale "C"))
     (format-time-string
-     (if (> (decoded-time-year (decode-time (current-time)))
+     (if (> (decoded-time-year (decode-time))
             (decoded-time-year (decode-time time)))
          " %Y %b %d"
        "%b %d %H:%M")
