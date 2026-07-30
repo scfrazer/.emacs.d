@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260701.1255
-;; Package-Revision: 3d20a780605f
+;; Package-Version: 20260725.1105
+;; Package-Revision: 91c254969725
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -1704,7 +1704,7 @@ SUFFIXES is a list of suffix command or a group specification
 Intended for use in a group's `:setup-children' function."
   (when (cl-typep prefix 'transient-prefix)
     (setq prefix (oref prefix command)))
-  (mapcar (apply-partially #'transient-parse-suffix prefix) suffixes))
+  (mapcar (##transient-parse-suffix prefix %) suffixes))
 
 ;;; Edit
 
@@ -3905,7 +3905,7 @@ Call `transient-default-value' but because that is a noop for
                                 (string-match regexp v)
                                 (match-string 1 v)))))
               (if multi-value
-                  (seq-filter match value)
+                  (seq-keep match value)
                 (seq-some match value)))))))
 
 (cl-defmethod transient-init-value ((obj transient-switch))
@@ -4348,7 +4348,7 @@ Unlike `transient-get-value' also include the values of inactive and
 inapt arguments.  This function is mainly intended for internal use.
 It is used to preserve the full value when a menu is being refreshed,
 including the presently ineffective parts."
-  (transient--with-emergency-exit :get-value
+  (transient--with-emergency-exit :get-extended-value
     (mapcan #'transient--get-wrapped-value transient--suffixes)))
 
 (defun transient--get-savable-value ()
@@ -4779,9 +4779,10 @@ have a history of their own.")
                                  (list group))))
                         transient--layout)))
     (while-let ((group (pop groups)))
-      (transient--insert-group group)
-      (when groups
-        (insert ?\n)))))
+      (when (transient--active-suffixes group)
+        (transient--insert-group group)
+        (when groups
+          (insert ?\n))))))
 
 (defun transient--active-suffixes (group)
   (seq-remove (lambda (suffix)
@@ -5212,9 +5213,10 @@ apply the face `transient-unreachable' to the complete string."
 (defun transient--column-stops (columns)
   (let* ((var-pitch (or transient-align-variable-pitch
                         (oref transient--prefix variable-pitch)))
-         (char-width (and var-pitch (transient--string-pixel-width " "))))
+         (char-width (and var-pitch (transient--string-pixel-width " ")))
+         (gap (* 2 (if var-pitch char-width 1))))
     (transient--seq-reductions-from
-     (apply-partially #'+ (* 2 (if var-pitch char-width 1)))
+     (lambda (acc elt) (+ acc gap elt))
      (transient--mapn
       (lambda (cells min)
         (apply #'max

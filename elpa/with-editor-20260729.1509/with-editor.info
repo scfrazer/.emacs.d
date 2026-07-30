@@ -60,6 +60,7 @@ This manual is for With-Editor version 3.5.2.
 * Using the With-Editor package::
 * Using With-Editor as a library::
 * Debugging::
+* FAQ::
 * Function and Command Index::
 * Variable Index::
 
@@ -69,6 +70,10 @@ Using the With-Editor package
 
 * Configuring With-Editor::
 * Using With-Editor commands::
+
+FAQ
+
+* I am unable to commit with Magit::
 
 
 
@@ -302,7 +307,7 @@ package::.
      NO-STANDARD-FILTER.
 
 
-File: with-editor.info,  Node: Debugging,  Next: Function and Command Index,  Prev: Using With-Editor as a library,  Up: Top
+File: with-editor.info,  Node: Debugging,  Next: FAQ,  Prev: Using With-Editor as a library,  Up: Top
 
 3 Debugging
 ***********
@@ -321,9 +326,27 @@ about your Emacs installation.  Most importantly how did you install
 Emacs and what is the output of ‘M-x with-editor-debug RET’.
 
 
-File: with-editor.info,  Node: Function and Command Index,  Next: Variable Index,  Prev: Debugging,  Up: Top
+File: with-editor.info,  Node: FAQ,  Next: Function and Command Index,  Prev: Debugging,  Up: Top
 
-Appendix A Function and Command Index
+Appendix A FAQ
+**************
+
+* Menu:
+
+* I am unable to commit with Magit::
+
+
+File: with-editor.info,  Node: I am unable to commit with Magit,  Up: FAQ
+
+A.1 I am unable to commit with Magit
+====================================
+
+See *note Debugging::.
+
+
+File: with-editor.info,  Node: Function and Command Index,  Next: Variable Index,  Prev: FAQ,  Up: Top
+
+Appendix B Function and Command Index
 *************************************
 
  [index ]
@@ -351,7 +374,7 @@ Appendix A Function and Command Index
 
 File: with-editor.info,  Node: Variable Index,  Prev: Function and Command Index,  Up: Top
 
-Appendix B Variable Index
+Appendix C Variable Index
 *************************
 
  [index ]
@@ -368,13 +391,15 @@ Appendix B Variable Index
 
 Tag Table:
 Node: Top801
-Node: Using the With-Editor package2611
-Node: Configuring With-Editor3196
-Node: Using With-Editor commands7751
-Node: Using With-Editor as a library11051
-Node: Debugging13079
-Node: Function and Command Index13971
-Node: Variable Index15469
+Node: Using the With-Editor package2662
+Node: Configuring With-Editor3247
+Node: Using With-Editor commands7802
+Node: Using With-Editor as a library11102
+Node: Debugging13130
+Node: FAQ13999
+Node: I am unable to commit with Magit14178
+Node: Function and Command Index14354
+Node: Variable Index15846
 
 End Tag Table
 

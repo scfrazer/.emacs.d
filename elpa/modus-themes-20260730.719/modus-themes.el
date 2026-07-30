@@ -5,8 +5,8 @@
 ;; Author: Protesilaos <info@protesilaos.com>
 ;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260722.711
-;; Package-Revision: 7d53a6959c92
+;; Package-Version: 20260730.719
+;; Package-Revision: 75aa3fa79efd
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -5386,7 +5386,20 @@ If COLOR is unspecified, then return :box unspecified."
 ;;;;; eyebrowse
     `(eyebrowse-mode-line-active ((,c :inherit italic :foreground ,modeline-info)))
 ;;;;; flycheck
+    `(flycheck-annotate-connector ((,c :foreground ,border)))
+    `(flycheck-annotate-error ((,c :inherit modus-themes-slant :foreground ,err :underline ,border)))
+    `(flycheck-annotate-error-background ((,c :background ,bg-dim :foreground ,err)))
+    `(flycheck-annotate-warning ((,c :inherit modus-themes-slant :foreground ,warning :underline ,border)))
+    `(flycheck-annotate-warning-background ((,c :background ,bg-dim :foreground ,warning)))
+    `(flycheck-annotate-info ((,c :inherit modus-themes-slant :foreground ,info :underline ,border)))
+    `(flycheck-annotate-info-background ((,c :background ,bg-dim :foreground ,info)))
     `(flycheck-error ((,c :underline (:style wave :color ,underline-err))))
+    `(flycheck-error-list-checker-name ((,c :foreground ,name)))
+    `(flycheck-error-list-error-message ((,c :foreground ,fg-alt)))
+    `(flycheck-error-list-filename ((,c :foreground ,name)))
+    `(flycheck-error-list-group-header ((,c :inherit (bold flycheck-error-list-filename))))
+    `(flycheck-error-list-id ((,c :foreground ,identifier)))
+    `(flycheck-error-list-line-number ((,c :foreground ,fg-line-number-inactive)))
     `(flycheck-fringe-error ((,c :background ,bg-prominent-err :foreground ,fg-prominent-err)))
     `(flycheck-fringe-info ((,c :background ,bg-prominent-note :foreground ,fg-prominent-note)))
     `(flycheck-fringe-warning ((,c :background ,bg-prominent-warning :foreground ,fg-prominent-warning)))
@@ -5405,18 +5418,18 @@ If COLOR is unspecified, then return :box unspecified."
     `(flycheck-indicator-success ((,c :foreground ,info)))
     `(flycheck-indicator-warning ((,c :foreground ,warning)))
 ;;;;; flymake
-    `(flymake-end-of-line-diagnostics-face ((,c :inherit modus-themes-slant :height 0.85 :box ,border)))
+    `(flymake-end-of-line-diagnostics-face ((,c :inherit modus-themes-slant :underline ,border)))
     `(flymake-error ((,c :underline (:style wave :color ,underline-err))))
     `(flymake-error-echo ((,c :foreground ,err)))
-    `(flymake-error-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,err :height 0.85 :box ,border)))
+    `(flymake-error-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,err :underline ,border)))
     `(flymake-error-fringe ((,c :background ,bg-prominent-err :foreground ,fg-prominent-err)))
     `(flymake-note ((,c :underline (:style wave :color ,underline-note))))
     `(flymake-note-echo ((,c :foreground ,info)))
-    `(flymake-note-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,info :height 0.85 :box ,border)))
+    `(flymake-note-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,info :underline ,border)))
     `(flymake-note-fringe ((,c :background ,bg-prominent-note :foreground ,fg-prominent-note)))
     `(flymake-warning ((,c :underline (:style wave :color ,underline-warning))))
     `(flymake-warning-echo ((,c :foreground ,warning)))
-    `(flymake-warning-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,warning :height 0.85 :box ,border)))
+    `(flymake-warning-echo-at-eol ((,c :inherit modus-themes-slant :foreground ,warning :height 0.9 :underline ,border)))
     `(flymake-warning-fringe ((,c :background ,bg-prominent-warning :foreground ,fg-prominent-warning)))
 ;;;;; flyspell
     `(flyspell-duplicate ((,c :underline (:style wave :color ,underline-warning))))
