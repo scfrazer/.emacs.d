@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 20260729.1509
-;; Package-Revision: 249f872ffd68
+;; Package-Version: 20260731.2234
+;; Package-Revision: a1f92a26e530
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -57,15 +57,16 @@
 
 ;; The command `with-editor-export-editor' exports `$EDITOR' or
 ;; another such environment variable in `shell-mode', `eshell-mode',
-;; `term-mode' and `vterm-mode' buffers.  Use this Emacs command
-;; before executing a shell command which needs the editor set, or
-;; always arrange for the current Emacs instance to be used as editor
-;; by adding it to the appropriate mode hooks:
+;; `term-mode', `vterm-mode' and `eat-mode' buffers.  Use this Emacs
+;; command before executing a shell command which needs the editor
+;; set, or always arrange for the current Emacs instance to be used
+;; as editor by adding it to the appropriate mode hooks:
 ;;
 ;;   (add-hook 'shell-mode-hook  #'with-editor-export-editor)
 ;;   (add-hook 'eshell-mode-hook #'with-editor-export-editor)
 ;;   (add-hook 'term-exec-hook   #'with-editor-export-editor)
 ;;   (add-hook 'vterm-mode-hook  #'with-editor-export-editor)
+;;   (add-hook 'eat-exec-hook    #'with-editor-export-editor)
 
 ;; Some variants of this function exist, these two forms are
 ;; equivalent:
@@ -93,6 +94,7 @@
 (declare-function dired-get-filename "dired"
                   (&optional localp no-error-if-not-filep))
 (declare-function term-emulate-terminal "term" (proc str))
+(defvar eat-terminal)
 (defvar eshell-preoutput-filter-functions)
 (defvar git-commit-post-finish-hook)
 (defvar vterm--process)
@@ -748,16 +750,21 @@ are prevented from being added to that list."
 ;;; Augmentations
 
 ;;;###autoload
-(cl-defun with-editor-export-editor (&optional (envvar "EDITOR"))
+(cl-defun with-editor-export-editor
+    (&optional (envvar "EDITOR") process interactive)
   "Teach subsequent commands to use current Emacs instance as editor.
 
-Set and export the environment variable ENVVAR, by default
-\"EDITOR\".  The value is automatically generated to teach
-commands to use the current Emacs instance as \"the editor\".
+Set and export the environment variable ENVVAR, by default \"EDITOR\".
+The value is automatically generated to teach commands to use the
+current Emacs instance as \"the editor\".
 
-This works in `shell-mode', `term-mode', `eshell-mode' and
-`vterm'."
-  (interactive (list (with-editor-read-envvar)))
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\" (only relevant in `vterm-mode' and `eat-mode').
+
+This command can be used in `shell-mode', `term-mode', `eshell-mode',
+`vterm-mode' and `eat-mode'."
+  (interactive (list (with-editor-read-envvar) nil t))
   (cond
     ((derived-mode-p 'comint-mode 'term-mode)
      (when-let ((process (get-buffer-process (current-buffer))))
@@ -774,38 +781,76 @@ This works in `shell-mode', `term-mode', `eshell-mode' and
      (add-to-list 'eshell-preoutput-filter-functions
                   #'with-editor-output-filter)
      (setenv envvar with-editor-sleeping-editor))
+    ((not with-editor-emacsclient-executable)
+     (if (derived-mode-p 'vterm-mode 'eat-mode)
+         (error "Cannot use sleeping editor in this buffer")
+       (error "Cannot export environment variables in this buffer")))
     ((and (derived-mode-p 'vterm-mode)
           (fboundp 'vterm-send-return)
           (fboundp 'vterm-send-string))
-     (if with-editor-emacsclient-executable
-         (let ((with-editor--envvar envvar)
-               (process-environment process-environment))
-           (with-editor--setup)
-           (while (accept-process-output vterm--process 1 nil t))
-           (when$ (getenv envvar)
-             (vterm-send-string (format " export %s=%S" envvar $))
-             (vterm-send-return))
-           (when$ (getenv "EMACS_SERVER_FILE")
-             (vterm-send-string (format " export EMACS_SERVER_FILE=%S" $))
-             (vterm-send-return))
-           (vterm-send-string " clear")
-           (vterm-send-return))
-       (error "Cannot use sleeping editor in this buffer")))
-    (t
-     (error "Cannot export environment variables in this buffer")))
+     (let ((process-environment process-environment)
+           (with-editor--envvar envvar))
+       (with-editor--setup)
+       (while (accept-process-output vterm--process 1 nil t))
+       (when$ (getenv envvar)
+         (vterm-send-string (format " export %s=%S" envvar $))
+         (vterm-send-return))
+       (when$ (getenv "EMACS_SERVER_FILE")
+         (vterm-send-string (format " export EMACS_SERVER_FILE=%S" $))
+         (vterm-send-return))
+       (unless interactive
+         (vterm-send-string " clear")
+         (vterm-send-return))))
+    ((and (derived-mode-p 'eat-mode)
+          (fboundp 'eat-self-input)
+          (fboundp 'eat-term-parameter)
+          (fboundp 'eat-term-send-string))
+     (let* ((process-environment process-environment)
+            ;; `eat-exec-hook' calls this function with one argument.  If
+            ;; (apply-partially #'with-editor-export-editor "SOMEEDITOR"))
+            ;; was added to that hook, we receive that as the PROCESS
+            ;; argument.  However, if this function is called via one of
+            ;; the commands below, then ENVVAR actually is an envvar, and
+            ;; the process has to be determined by other means.
+            (process (cond ((processp envvar)
+                            (prog1 envvar (setq envvar "EDITOR")))
+                           ((processp process) process)
+                           ((eat-term-parameter eat-terminal 'eat--process))))
+            (with-editor--envvar envvar))
+       (with-editor--setup)
+       (while (accept-process-output process 1 nil t))
+       (when$ (getenv envvar)
+         (eat-term-send-string eat-terminal
+                               (format " export %s=%S" envvar $))
+         (eat-self-input 1 'return))
+       (when$ (getenv "EMACS_SERVER_FILE")
+         (eat-term-send-string eat-terminal
+                               (format " export EMACS_SERVER_FILE=%S" $))
+         (eat-self-input 1 'return))
+       (unless interactive
+         (eat-term-send-string eat-terminal "clear")
+         (eat-self-input 1 'return)))))
   (message "Successfully exported %s" envvar))
 
 ;;;###autoload
-(defun with-editor-export-git-editor ()
-  "Like `with-editor-export-editor' but always set `$GIT_EDITOR'."
-  (interactive)
-  (with-editor-export-editor "GIT_EDITOR"))
+(defun with-editor-export-git-editor (&optional process interactive)
+  "Like `with-editor-export-editor' but always set `$GIT_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\"."
+  (interactive (list nil t))
+  (with-editor-export-editor "GIT_EDITOR" process interactive))
 
 ;;;###autoload
-(defun with-editor-export-hg-editor ()
-  "Like `with-editor-export-editor' but always set `$HG_EDITOR'."
-  (interactive)
-  (with-editor-export-editor "HG_EDITOR"))
+(defun with-editor-export-hg-editor (&optional process interactive)
+  "Like `with-editor-export-editor' but always set `$HG_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\"."
+  (interactive (list nil t))
+  (with-editor-export-editor "HG_EDITOR" process interactive))
 
 (defun with-editor-output-filter (string)
   "Handle edit requests on behalf of `comint-mode' and `eshell-mode'."

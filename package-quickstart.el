@@ -372,7 +372,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260729.1509/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260729.1509/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234/with-editor-autoloads.el"))
 
 
 
@@ -384,18 +384,34 @@ it is disabled.
 (autoload 'with-editor-export-editor "with-editor" "\
 Teach subsequent commands to use current Emacs instance as editor.
 
-Set and export the environment variable ENVVAR, by default
-\"EDITOR\".  The value is automatically generated to teach
-commands to use the current Emacs instance as \"the editor\".
+Set and export the environment variable ENVVAR, by default \"EDITOR\".
+The value is automatically generated to teach commands to use the
+current Emacs instance as \"the editor\".
 
-This works in `shell-mode', `term-mode', `eshell-mode' and
-`vterm'.
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\" (only relevant in `vterm-mode' and `eat-mode').
 
-(fn &optional (ENVVAR \"EDITOR\"))" t)
+This command can be used in `shell-mode', `term-mode', `eshell-mode',
+`vterm-mode' and `eat-mode'.
+
+(fn &optional (ENVVAR \"EDITOR\") PROCESS INTERACTIVE)" t)
 (autoload 'with-editor-export-git-editor "with-editor" "\
-Like `with-editor-export-editor' but always set `$GIT_EDITOR'." t)
+Like `with-editor-export-editor' but always set `$GIT_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\".
+
+(fn &optional PROCESS INTERACTIVE)" t)
 (autoload 'with-editor-export-hg-editor "with-editor" "\
-Like `with-editor-export-editor' but always set `$HG_EDITOR'." t)
+Like `with-editor-export-editor' but always set `$HG_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\".
+
+(fn &optional PROCESS INTERACTIVE)" t)
 (defvar shell-command-with-editor-mode nil "\
 Non-nil if Shell-Command-With-Editor mode is enabled.
 See the `shell-command-with-editor-mode' command
@@ -738,7 +754,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260723.1358/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260723.1358/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260802.842/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260802.842/vertico-autoloads.el"))
 
 
 
@@ -1384,7 +1400,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260725.1105/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260725.1105/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260731.2243/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260731.2243/transient-autoloads.el"))
 
 
 
@@ -3653,7 +3669,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260728.1426/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260728.1426/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260731.1301/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260731.1301/cmake-mode-autoloads.el"))
 
 
 
@@ -4147,7 +4163,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260730.719" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260725.1105" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260729.1509" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260730.719" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260731.2243" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
          Info-directory-list)))
 
 ;; Local Variables:

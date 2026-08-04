@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260725.1105
-;; Package-Revision: 91c254969725
+;; Package-Version: 20260731.2243
+;; Package-Revision: 9ba468bcbc7f
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -46,7 +46,7 @@
 
 ;;; Code:
 
-(defconst transient-version "0.13.5")
+(defconst transient-version "0.13.6")
 
 (require 'cl-lib)
 (require 'compat)
@@ -1089,6 +1089,8 @@ Technically a suffix object with no associated command.")
   ((transient                         :initform t)
    (argument    :initarg :argument)
    (shortarg    :initarg :shortarg)
+   (claim-argument
+    :initarg :claim-argument          :initform nil)
    (value                             :initform nil)
    (init-value  :initarg :init-value)
    (unsavable   :initarg :unsavable   :initform nil)
@@ -3887,32 +3889,38 @@ Call `transient-default-value' but because that is a noop for
     (unless (eq value eieio--unbound)
       (oset obj value value))))
 
-(cl-defmethod transient-init-value ((obj transient-argument))
-  "Extract OBJ's value from the value of the prefix object."
-  (oset obj value
-        (let ((value (oref transient--prefix value))
-              (argument (and (slot-boundp obj 'argument)
-                             (oref obj argument)))
-              (multi-value (oref obj multi-value))
-              (case-fold-search nil)
-              (regexp (if (slot-exists-p obj 'argument-regexp)
-                          (oref obj argument-regexp)
-                        (format "\\`%s\\([^z-a]*\\)\\'" (oref obj argument)))))
-          (if (memq multi-value '(t rest))
-              (cdr (assoc argument value))
-            (let ((match (lambda (v)
-                           (and (stringp v)
-                                (string-match regexp v)
-                                (match-string 1 v)))))
-              (if multi-value
-                  (seq-keep match value)
-                (seq-some match value)))))))
-
 (cl-defmethod transient-init-value ((obj transient-switch))
   "Extract OBJ's value from the value of the prefix object."
   (oset obj value
         (car (member (oref obj argument)
                      (oref transient--prefix value)))))
+
+(cl-defmethod transient-init-value ((obj transient-argument))
+  "Extract OBJ's value from the value of the prefix object."
+  (let* ((args (oref transient--prefix value))
+         (value
+          (pcase-exhaustive (oref obj multi-value)
+            ((or 't 'rest) (cdr (assoc (oref obj argument) args)))
+            ('repeat       (seq-keep (transient--extract-value obj) args))
+            ('nil          (seq-some (transient--extract-value obj) args)))))
+    (oset obj value value)
+    (when (and value (oref obj claim-argument))
+      (oset transient--prefix value
+            (seq-difference args (transient--get-wrapped-value obj))))))
+
+(defun transient--extract-value (obj)
+  (cond-let*
+    ([_(slot-exists-p obj 'argument-regexp)]
+     [regexp (oref obj argument-regexp)]
+     (lambda (arg)
+       (and (stringp arg)
+            (let ((case-fold-search nil))
+              (string-match regexp arg))
+            (match-string 1 arg))))
+    ([argument (oref obj argument)]
+     (lambda (arg)
+       (and (string-prefix-p argument arg)
+            (substring arg (length argument)))))))
 
 ;;;; Default
 
@@ -4178,14 +4186,12 @@ prompt."
               (arg (if (slot-boundp obj 'argument)
                        (oref obj argument)
                      (oref obj argument-format)))
-              (spec (oref transient--prefix incompatible))
-              (filter (lambda (x rule)
-                        (and (member x rule)
-                             (remove x rule))))
-              (incomp (nconc
-                       (mapcan (apply-partially filter arg) spec)
-                       (and (not (equal val arg))
-                            (mapcan (apply-partially filter val) spec)))))
+              (incomp (oref transient--prefix incompatible))
+              (incomp
+               (nconc
+                (mapcan (##and (member arg %) (remove arg %)) incomp)
+                (and (not (equal val arg))
+                     (mapcan (##and (member val %) (remove val %)) incomp)))))
     (dolist (obj transient--suffixes)
       (when-let* ((_(cl-typep obj 'transient-argument))
                   (val (transient-infix-value obj))

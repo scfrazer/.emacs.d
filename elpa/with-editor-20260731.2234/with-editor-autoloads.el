@@ -14,18 +14,34 @@
 (autoload 'with-editor-export-editor "with-editor" "\
 Teach subsequent commands to use current Emacs instance as editor.
 
-Set and export the environment variable ENVVAR, by default
-\"EDITOR\".  The value is automatically generated to teach
-commands to use the current Emacs instance as \"the editor\".
+Set and export the environment variable ENVVAR, by default \"EDITOR\".
+The value is automatically generated to teach commands to use the
+current Emacs instance as \"the editor\".
 
-This works in `shell-mode', `term-mode', `eshell-mode' and
-`vterm'.
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\" (only relevant in `vterm-mode' and `eat-mode').
 
-(fn &optional (ENVVAR \"EDITOR\"))" t)
+This command can be used in `shell-mode', `term-mode', `eshell-mode',
+`vterm-mode' and `eat-mode'.
+
+(fn &optional (ENVVAR \"EDITOR\") PROCESS INTERACTIVE)" t)
 (autoload 'with-editor-export-git-editor "with-editor" "\
-Like `with-editor-export-editor' but always set `$GIT_EDITOR'." t)
+Like `with-editor-export-editor' but always set `$GIT_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\".
+
+(fn &optional PROCESS INTERACTIVE)" t)
 (autoload 'with-editor-export-hg-editor "with-editor" "\
-Like `with-editor-export-editor' but always set `$HG_EDITOR'." t)
+Like `with-editor-export-editor' but always set `$HG_EDITOR'.
+
+PROCESS is only intended for use by `eat-exec-hook'.  When invoked
+interactively, INTERACTIVE is non-nil, which supresses the call to
+\"clear\".
+
+(fn &optional PROCESS INTERACTIVE)" t)
 (defvar shell-command-with-editor-mode nil "\
 Non-nil if Shell-Command-With-Editor mode is enabled.
 See the `shell-command-with-editor-mode' command
