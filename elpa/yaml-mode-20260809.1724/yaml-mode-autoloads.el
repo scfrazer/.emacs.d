@@ -15,8 +15,6 @@
 (autoload 'yaml-mode "yaml-mode" "\
 Simple mode to edit YAML.
 
-\\{yaml-mode-map}
-
 (fn)" t)
 (add-to-list 'auto-mode-alist '("\\.\\(e?ya?\\|ra\\)ml\\'" . yaml-mode))
 (add-to-list 'magic-mode-alist '("^%YAML\\s-+[0-9]+\\.[0-9]+\\(\\s-+#\\|\\s-*$\\)" . yaml-mode))

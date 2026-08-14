@@ -8,8 +8,8 @@
 ;; URL: https://github.com/yoshiki/yaml-mode
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: data yaml
-;; Package-Version: 20260420.156
-;; Package-Revision: 62cbd8050776
+;; Package-Version: 20260809.1724
+;; Package-Revision: 5d7347519c94
 
 ;; This file is not part of Emacs
 
@@ -79,7 +79,7 @@
 (defcustom yaml-indent-offset 2
   "*Amount of offset per level of indentation."
   :type 'integer
-  :safe 'natnump
+  :safe #'natnump
   :group 'yaml)
 
 (defcustom yaml-backspace-function 'backward-delete-char-untabify
@@ -187,11 +187,11 @@ that key is pressed to begin a block literal."
 
 (defvar yaml-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "|" 'yaml-electric-bar-and-angle)
-    (define-key map ">" 'yaml-electric-bar-and-angle)
-    (define-key map "-" 'yaml-electric-dash-and-dot)
-    (define-key map "." 'yaml-electric-dash-and-dot)
-    (define-key map (kbd "DEL") 'yaml-electric-backspace)
+    (define-key map "|" #'yaml-electric-bar-and-angle)
+    (define-key map ">" #'yaml-electric-bar-and-angle)
+    (define-key map "-" #'yaml-electric-dash-and-dot)
+    (define-key map "." #'yaml-electric-dash-and-dot)
+    (define-key map (kbd "DEL") #'yaml-electric-backspace)
     map)
   "Keymap used in `yaml-mode' buffers.")
 
@@ -217,20 +217,18 @@ that key is pressed to begin a block literal."
 
 ;;;###autoload
 (define-derived-mode yaml-mode text-mode "YAML"
-  "Simple mode to edit YAML.
-
-\\{yaml-mode-map}"
-  :syntax-table yaml-mode-syntax-table
+  "Simple mode to edit YAML."
+  (setq-local electric-indent-inhibit t) ;We can't *re*indent reliably.
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-start-skip) "#+ *")
   (set (make-local-variable 'comment-end) "")
-  (set (make-local-variable 'indent-line-function) 'yaml-indent-line)
+  (set (make-local-variable 'indent-line-function) #'yaml-indent-line)
   (set (make-local-variable 'indent-tabs-mode) nil)
-  (set (make-local-variable 'fill-paragraph-function) 'yaml-fill-paragraph)
+  (set (make-local-variable 'fill-paragraph-function) #'yaml-fill-paragraph)
   (set (make-local-variable 'page-delimiter) "^---\\([ \t].*\\)*\n")
 
   (set (make-local-variable 'syntax-propertize-function)
-       'yaml-mode-syntax-propertize-function)
+       #'yaml-mode-syntax-propertize-function)
   (setq font-lock-defaults '(yaml-font-lock-keywords)))
 
 
@@ -460,6 +458,7 @@ Outside of comments, this behaves as `fill-paragraph' except that
 filling does not cross boundaries of block literals.  Inside comments,
 this will do usual adaptive fill behaviors."
   (interactive "*P")
+  ;; FIXME: Can we get away with setting only `fill-forward-paragraph-function'?
   (save-restriction
     (yaml-narrow-to-block-literal)
     (let ((fill-paragraph-function nil))
@@ -467,12 +466,13 @@ this will do usual adaptive fill behaviors."
           (fill-paragraph justify region)))))
 
 (defun yaml-set-imenu-generic-expression ()
-  (make-local-variable 'imenu-generic-expression)
-  (make-local-variable 'imenu-create-index-function)
-  (setq imenu-create-index-function 'imenu-default-create-index-function)
-  (setq imenu-generic-expression yaml-imenu-generic-expression))
+  ;; FIXME: Why set this var to its default value?
+  (setq-local imenu-create-index-function #'imenu-default-create-index-function)
+  (setq-local imenu-generic-expression yaml-imenu-generic-expression))
 
-(add-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
+;; FIXME: Why not inline `yaml-set-imenu-generic-expression' into the
+;; major mode function?
+(add-hook 'yaml-mode-hook #'yaml-set-imenu-generic-expression)
 
 
 (defun yaml-mode-version ()
