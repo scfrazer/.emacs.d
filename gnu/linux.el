@@ -9,7 +9,7 @@
       '(
         (fg-main "#ffffff")
         (bg-main "#222730")
-        (comment "#888888")
+        (comment "#d7ff00")
         ))
 
 (defun dark ()
