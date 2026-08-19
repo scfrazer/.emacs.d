@@ -5,8 +5,8 @@
 ;; Author: Protesilaos <info@protesilaos.com>
 ;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260730.719
-;; Package-Revision: 75aa3fa79efd
+;; Package-Version: 20260816.1054
+;; Package-Revision: 8ebcedea65c2
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -5769,6 +5769,7 @@ If COLOR is unspecified, then return :box unspecified."
     `(lazy-highlight ((,c :inherit modus-themes-search-lazy)))
     `(match ((,c :inherit modus-themes-search-static)))
     `(query-replace ((,c :inherit modus-themes-search-replace)))
+    `(query-replace-preview ((,c :inherit (bold modus-themes-search-replace))))
 ;;;;; ivy
     `(ivy-action ((,c :inherit (bold modus-themes-fixed-pitch) :foreground ,keybind)))
     `(ivy-confirm-face ((,c :foreground ,info)))

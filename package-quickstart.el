@@ -254,7 +254,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260701.1237/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260701.1237/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260817.452/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260817.452/cond-let-autoloads.el"))
 
 
 
@@ -263,6 +263,33 @@ See `xr' for a description of the DIALECT argument.
 
 
 
+(defvar cond-let-fontify-mode nil "\
+Non-nil if Cond-Let-Fontify mode is enabled.
+See the `cond-let-fontify-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `cond-let-fontify-mode'.")
+(custom-autoload 'cond-let-fontify-mode "cond-let" nil)
+(autoload 'cond-let-fontify-mode "cond-let" "\
+In Emacs Lisp mode, highlight `$' using `font-lock-variable-name-face'.
+
+This is a global minor mode.  If called interactively, toggle the
+`Cond-Let-Fontify mode' mode.  If the prefix argument is
+positive, enable the mode, and if it is zero or negative, disable
+the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `(default-value \\='cond-let-fontify-mode)'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
+(fn &optional ARG)" t)
 (register-definition-prefixes "cond-let" '("cond-let"))
 
 
@@ -2113,7 +2140,7 @@ See `eldoc-documentation-strategy' for more detail.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6/flymake-autoloads.el"))
 
 
 
@@ -2723,7 +2750,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260730.719/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260730.719/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054/modus-themes-autoloads.el"))
 
 
 
@@ -4204,7 +4231,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260730.719" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.5" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260806.1211" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260806.1211" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
          Info-directory-list)))
 
 ;; Local Variables:

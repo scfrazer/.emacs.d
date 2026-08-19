@@ -4,7 +4,7 @@
 
 ;; Author: Pavel Kobyakov <pk_at_work@yahoo.com>
 ;; Maintainer: Spencer Baugh <sbaugh@janestreet.com>
-;; Version: 1.4.5
+;; Version: 1.4.6
 ;; Keywords: c languages tools
 ;; Package-Requires: ((emacs "26.1") (eldoc "1.14.0") (project "0.11.1"))
 
@@ -1330,6 +1330,8 @@ Interactively, with a prefix arg, FORCE is t."
         (buffer (current-buffer)))
     (cl-labels
         ((visible-buffer-window ()
+           ;; This can use `frame-initial-p' once
+           ;; we can assume Emacs 31 or later.
            (and (or (not (daemonp))
                     (not (eq (selected-frame) terminal-frame)))
                 (get-buffer-window (current-buffer))))
@@ -1625,7 +1627,7 @@ default) no filter is applied."
                         (cl-sort retval (if (cl-plusp n) #'< #'>)
                                  :key #'overlay-start))))
          (tail ;; For compatibility with older Emacs.
-               (with-suppressed-warnings ((obsolete cl-member-if))
+               (with-no-warnings
                  (cl-member-if (lambda (ov)
                                  (if (cl-plusp n)
                                      (> (overlay-start ov)
@@ -2426,7 +2428,10 @@ symbol `fringes' or the symbol `margins'."
            `((margin ,flymake-margin-indicator-position)
              ,(propertize
                indicator-car
-               'face `(:inherit (,(cdr valuelist) default))
+               'face `(:inherit (,(cdr valuelist)
+                                 ,(if (facep 'margin)
+                                      'margin
+                                    'default)))
                'mouse-face 'highlight
                'help-echo "Open Flymake diagnostics"
                'keymap (let ((map (make-sparse-keymap)))
