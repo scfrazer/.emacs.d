@@ -717,7 +717,7 @@ Setup wgrep preparation." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260623.932/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260623.932/web-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260824.1135/web-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/web-mode-20260824.1135/web-mode-autoloads.el"))
 
 
 
@@ -726,8 +726,8 @@ Setup wgrep preparation." nil nil)
 
 
 
-(put 'web-mode-attr-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
-(put 'web-mode-attr-value-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (booleanp v))))
+(put 'web-mode-attr-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (null v))))
+(put 'web-mode-attr-value-indent-offset 'safe-local-variable #'(lambda (v) (or (integerp v) (null v))))
 (put 'web-mode-markup-indent-offset 'safe-local-variable #'integerp)
 (put 'web-mode-markup-comment-indent-offset 'safe-local-variable #'integerp)
 (put 'web-mode-css-indent-offset 'safe-local-variable #'integerp)
@@ -779,7 +779,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260811.1003/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260811.1003/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260821.1200/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260821.1200/vertico-autoloads.el"))
 
 
 
@@ -1428,7 +1428,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260806.1211/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260806.1211/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260825.819/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260825.819/transient-autoloads.el"))
 
 
 
@@ -1546,7 +1546,7 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828/rg-autoloads.el"))
 
 
 
@@ -2750,7 +2750,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260825.724/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260825.724/modus-themes-autoloads.el"))
 
 
 
@@ -2952,7 +2952,7 @@ rest come from CORE-PALETTE.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260722.40/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260722.40/markdown-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260821.11/markdown-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/markdown-mode-20260821.11/markdown-mode-autoloads.el"))
 
 
 
@@ -3004,7 +3004,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260724.810/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260724.810/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260821.1231/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260821.1231/marginalia-autoloads.el"))
 
 
 
@@ -4231,7 +4231,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260816.1054" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6" "/home/scfrazer/.emacs.d/elpa/rg-20260517.1310" "/home/scfrazer/.emacs.d/elpa/transient-20260806.1211" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260825.724" "/home/scfrazer/.emacs.d/elpa/orderless-20260519.1029" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260825.819" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
          Info-directory-list)))
 
 ;; Local Variables:
