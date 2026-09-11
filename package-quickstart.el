@@ -254,7 +254,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260817.452/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260817.452/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260901.1107/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260901.1107/cond-let-autoloads.el"))
 
 
 
@@ -297,7 +297,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260601.1455/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260601.1455/llama-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260909.859/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260909.859/llama-autoloads.el"))
 
 
 
@@ -397,7 +397,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260901.1435/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260901.1435/with-editor-autoloads.el"))
 
 
 
@@ -779,7 +779,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260830.123/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260830.123/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260907.519/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260907.519/vertico-autoloads.el"))
 
 
 
@@ -1428,7 +1428,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260825.819/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260825.819/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260909.901/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260909.901/transient-autoloads.el"))
 
 
 
@@ -2140,7 +2140,7 @@ See `eldoc-documentation-strategy' for more detail.")
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6/flymake-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7/flymake-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7/flymake-autoloads.el"))
 
 
 
@@ -2386,7 +2386,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260830.1156/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260830.1156/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506/orderless-autoloads.el"))
 
 
 
@@ -2750,7 +2750,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260829.1926/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260829.1926/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443/modus-themes-autoloads.el"))
 
 
 
@@ -2822,6 +2822,16 @@ such that the current element in the list becomes the last.  Do not
 modify THEMES in the process.
 
 (fn THEMES &optional REVERSE)" t)
+(autoload 'modus-themes-rotate-dark "modus-themes" "\
+Like `modus-themes-rotate' with optional REVERSE argument for dark themes only.
+
+(fn &optional REVERSE)" t)
+(function-put 'modus-themes-rotate-dark 'interactive-only 't)
+(autoload 'modus-themes-rotate-light "modus-themes" "\
+Like `modus-themes-rotate' with optional REVERSE argument for light themes only.
+
+(fn &optional REVERSE)" t)
+(function-put 'modus-themes-rotate-light 'interactive-only 't)
 (autoload 'modus-themes-load-random "modus-themes" "\
 Load a Modus theme at random, excluding the current one.
 
@@ -2833,10 +2843,10 @@ Run `modus-themes-after-load-theme-hook' after loading a theme.
 
 (fn &optional BACKGROUND-MODE)" t)
 (autoload 'modus-themes-load-random-dark "modus-themes" "\
-Load a random dark theme." t)
+Like `modus-themes-load-random' but only for dark themes." t)
 (function-put 'modus-themes-load-random-dark 'interactive-only 't)
 (autoload 'modus-themes-load-random-light "modus-themes" "\
-Load a random light theme." t)
+Like `modus-themes-load-random' but only for light themes." t)
 (function-put 'modus-themes-load-random-light 'interactive-only 't)
 (autoload 'modus-themes-theme "modus-themes" "\
 Define a Modus theme or derivative thereof.
@@ -3004,7 +3014,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260831.1055/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260831.1055/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260907.511/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260907.511/marginalia-autoloads.el"))
 
 
 
@@ -4231,7 +4241,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260829.1926" "/home/scfrazer/.emacs.d/elpa/orderless-20260830.1156" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.6" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260825.819" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260731.2234" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443" "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260909.901" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260901.1435" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
          Info-directory-list)))
 
 ;; Local Variables:
