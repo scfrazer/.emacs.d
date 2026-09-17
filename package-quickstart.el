@@ -234,7 +234,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2/compat-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0/compat-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0/compat-autoloads.el"))
 
 
 
@@ -779,7 +779,7 @@ Format the current buffer according to the js-beautify command." nil nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260907.519/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260907.519/vertico-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260913.1525/vertico-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/vertico-20260913.1525/vertico-autoloads.el"))
 
 
 
@@ -2750,7 +2750,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443/modus-themes-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260915.1808/modus-themes-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/modus-themes-20260915.1808/modus-themes-autoloads.el"))
 
 
 
@@ -4241,7 +4241,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260911.443" "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260909.901" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260901.1435" "/home/scfrazer/.emacs.d/elpa/compat-31.0.0.2")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260915.1808" "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260909.901" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260901.1435" "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

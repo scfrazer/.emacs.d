@@ -5,8 +5,8 @@
 ;; Author: Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2021
-;; Package-Version: 20260907.519
-;; Package-Revision: 8581ed12e919
+;; Package-Version: 20260913.1525
+;; Package-Revision: a9998a777f1d
 ;; Package-Requires: ((emacs "29.1") (compat "31"))
 ;; URL: https://github.com/minad/vertico
 ;; Keywords: convenience, files, matching, completion
