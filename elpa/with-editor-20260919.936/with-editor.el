@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/with-editor
 ;; Keywords: processes terminals
 
-;; Package-Version: 20260901.1435
-;; Package-Revision: 5021ef688538
+;; Package-Version: 20260919.936
+;; Package-Revision: 53115f978576
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -759,7 +759,7 @@ The value is automatically generated to teach commands to use the
 current Emacs instance as \"the editor\".
 
 PROCESS is only intended for use by `eat-exec-hook'.  When invoked
-interactively, INTERACTIVE is non-nil, which supresses the call to
+interactively, INTERACTIVE is non-nil, which suppresses the call to
 \"clear\" (only relevant in `vterm-mode' and `eat-mode').
 
 This command can be used in `shell-mode', `term-mode', `eshell-mode',
@@ -837,7 +837,7 @@ This command can be used in `shell-mode', `term-mode', `eshell-mode',
   "Like `with-editor-export-editor' but always set `$GIT_EDITOR'.
 
 PROCESS is only intended for use by `eat-exec-hook'.  When invoked
-interactively, INTERACTIVE is non-nil, which supresses the call to
+interactively, INTERACTIVE is non-nil, which suppresses the call to
 \"clear\"."
   (interactive (list nil t))
   (with-editor-export-editor "GIT_EDITOR" process interactive))
@@ -847,7 +847,7 @@ interactively, INTERACTIVE is non-nil, which supresses the call to
   "Like `with-editor-export-editor' but always set `$HG_EDITOR'.
 
 PROCESS is only intended for use by `eat-exec-hook'.  When invoked
-interactively, INTERACTIVE is non-nil, which supresses the call to
+interactively, INTERACTIVE is non-nil, which suppresses the call to
 \"clear\"."
   (interactive (list nil t))
   (with-editor-export-editor "HG_EDITOR" process interactive))

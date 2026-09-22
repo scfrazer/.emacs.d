@@ -5,8 +5,8 @@
 ;; Author: Protesilaos <info@protesilaos.com>
 ;; Maintainer: Protesilaos <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/modus-themes
-;; Package-Version: 20260915.1808
-;; Package-Revision: 7d739dba4739
+;; Package-Version: 20260921.912
+;; Package-Revision: 4fcc8d00540a
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: faces, theme, accessibility
 
@@ -3948,8 +3948,8 @@ Run the `modus-themes-after-load-theme-hook' as the final step
 after loading the THEME.  If HOOK, then call that instead.
 
 Return THEME."
-  (load-theme theme :no-confirm)
   (modus-themes--disable-themes (remq theme (modus-themes--get-color-schemes)))
+  (load-theme theme :no-confirm)
   (run-hooks (or hook 'modus-themes-after-load-theme-hook))
   theme)
 
@@ -6025,6 +6025,7 @@ If COLOR is unspecified, then return :box unspecified."
     `(magit-diff-added-highlight ((,c :background ,bg-added :foreground ,fg-added)))
     `(magit-diff-added-indicator ((,c :background ,bg-added-refine :foreground ,fg-added)))
     `(magit-diff-base ((,c :background ,bg-changed-faint :foreground ,fg-changed)))
+    `(magit-diff-base-heading ((,c ,@(modus-themes--heading 'section-other fg-changed-intense))))
     `(magit-diff-base-highlight ((,c :background ,bg-changed :foreground ,fg-changed)))
     `(magit-diff-base-indicator ((,c :background ,bg-changed-refine :foreground ,fg-changed)))
     `(magit-diff-context ((,c :foreground ,fg-dim)))
@@ -6038,9 +6039,11 @@ If COLOR is unspecified, then return :box unspecified."
     `(magit-diff-hunk-region ((,c :inherit modus-themes-bold)))
     `(magit-diff-lines-boundary ((,c :background ,fg-main)))
     `(magit-diff-lines-heading ((,c :background ,fg-dim :foreground ,bg-main)))
+    `(magit-diff-our-heading ((,c ,@(modus-themes--heading 'section-other fg-removed-intense))))
     `(magit-diff-removed ((,c :background ,bg-removed-faint :foreground ,fg-removed)))
     `(magit-diff-removed-highlight ((,c :background ,bg-removed :foreground ,fg-removed)))
     `(magit-diff-removed-indicator ((,c :background ,bg-removed-refine :foreground ,fg-removed)))
+    `(magit-diff-their-heading ((,c ,@(modus-themes--heading 'section-other fg-added-intense))))
     `(magit-diffstat-added ((,c :foreground ,fg-added-intense)))
     `(magit-diffstat-removed ((,c :foreground ,fg-removed-intense)))
     `(magit-dimmed ((,c :foreground ,fg-dim)))

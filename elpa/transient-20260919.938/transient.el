@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260909.901
-;; Package-Revision: 03c8ccc6aab2
+;; Package-Version: 20260919.938
+;; Package-Revision: c713048f3708
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -2600,14 +2600,11 @@ value.  Otherwise return CHILDREN as is.")
     (funcall fn)))
 
 (defun transient--init-transient (&optional name layout params)
-  (unless name
-    ;; Re-init.
-    (if (eq transient--refreshp 'updated-value)
-        ;; Preserve the prefix value this once, because the
-        ;; invoked suffix indicates that it has updated that.
-        (setq transient--refreshp (oref transient--prefix refresh-suffixes))
-      ;; Otherwise update the prefix value from suffix values.
-      (oset transient--prefix value (transient--get-extended-value))))
+  ;; Set the prefix's value from suffix values, except during
+  ;; initial setup (when NAME is non-nil) or when the invoked
+  ;; suffix indicated that it just updated the prefix's value.
+  (unless (or name (eq transient--refreshp 'updated-value))
+    (oset transient--prefix value (transient--get-extended-value)))
   (transient--init-objects name layout params)
   (transient--init-keymaps))
 
@@ -2650,13 +2647,12 @@ value.  Otherwise return CHILDREN as is.")
 (defun transient--flatten-suffixes (layout)
   (nreverse
    (named-let flatten ((def layout))
-     (cond ((stringp def) nil)
-           ((cl-typep def 'transient-information) nil)
-           ((listp def) (mapcan #'flatten def))
-           ((cl-typep def 'transient-group)
-            (mapcan #'flatten (oref def suffixes)))
-           ((cl-typep def 'transient-suffix)
-            (list def))))))
+     (cl-typecase def
+       (string                nil)
+       (transient-information nil)
+       (list                  (mapcan #'flatten def))
+       (transient-group       (mapcan #'flatten (oref def suffixes)))
+       (transient-suffix      (list def))))))
 
 (defun transient--init-child (levels spec parent)
   (cl-etypecase spec
@@ -3855,7 +3851,7 @@ Third-party subclasses of `transient-infix' must implement a primary
 method.")
 
 (cl-defmethod transient-init-value :around ((obj transient-prefix))
-  "If bound, use the value returned by OBJ' `init-value' function.
+  "If bound, use OBJ's `init-value' function to set the value.
 If the value of OBJ's `init-value' is non-nil, call that function to
 determine the value.  Otherwise call the primary method according to
 OBJ's class."
@@ -3864,10 +3860,10 @@ OBJ's class."
     (cl-call-next-method obj)))
 
 (cl-defmethod transient-init-value :around ((obj transient-infix))
-  "If bound, use the value returned by OBJ's `init-value' function.
-If the value of OBJ's `init-value' is non-nil, call that function to
-determine the value.  Otherwise call the primary method according to
-OBJ's class."
+  "If bound, use OBJ's `init-value' function to set the value.
+If the value of OBJ's `init-value' slot is non-nil, call that function
+to set the value.  Otherwise call the primary method according to OBJ's
+class."
   (if (slot-boundp obj 'init-value)
       (funcall (oref obj init-value) obj)
     (cl-call-next-method obj)))
