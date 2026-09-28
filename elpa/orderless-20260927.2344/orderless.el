@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Keywords: matching, completion
-;; Package-Version: 20260909.1506
-;; Package-Revision: 5806e3f94016
+;; Package-Version: 20260927.2344
+;; Package-Revision: 3d2c2e6468dd
 ;; URL: https://github.com/oantolin/orderless
 ;; Package-Requires: ((emacs "27.1") (compat "31"))
 

@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260919.938
-;; Package-Revision: c713048f3708
+;; Package-Version: 20260926.1400
+;; Package-Revision: a789ecb54850
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -53,7 +53,6 @@
 (require 'cond-let)
 (require 'eieio)
 (require 'edmacro)
-(require 'format-spec)
 (require 'llama)
 (require 'pcase)
 (require 'pp)
@@ -92,8 +91,6 @@ being undefined while using Transient.
 If you don't use the `package' package manager but still get
 this warning, then your chosen package manager likely has a
 similar defect.") :emergency))
-
-(eval-when-compile (require 'subr-x))
 
 (declare-function info "info" (&optional file-or-node buffer))
 (declare-function Man-find-section "man" (section))
@@ -2289,6 +2286,8 @@ For historic reasons \\`C-x' is used by default, but users are
 encouraged to pick another key, preferably one that is not commonly used
 in Emacs but is still convenient to them.  See info node `(transient)
 Common Suffix Commands'."
+  :package-version '(transient . "0.8.8")
+  :group 'transient
   :type 'key
   :initialize (lambda (symbol exp)
                 (custom-initialize-default symbol exp)
@@ -4618,8 +4617,7 @@ have a history of their own.")
                             'display-buffer-full-frame
                             'transient-display-buffer-action))
                (transient-display-buffer-action))))
-    (when (and (assq 'pop-up-frame-parameters (cdr action))
-               (fboundp 'buffer-line-statistics)) ; since Emacs 28.1
+    (when (assq 'pop-up-frame-parameters (cdr action))
       (setq action (copy-tree action))
       (pcase-let ((`(,height ,width)
                    (buffer-line-statistics transient--buffer))
@@ -5793,7 +5791,24 @@ as stand-in for elements of exhausted lists."
       "unset")))
 
 ;;; _
+
+(add-to-list 'customize-package-emacs-version-alist
+             '(transient
+               ("0.1.0"  . "28.1")
+               ("0.2.0"  . "28.1")
+               ("0.3.6"  . "28.1")
+               ("0.4.0"  . "29.1")
+               ("0.5.0"  . "30.1")
+               ("0.7.5"  . "31.1")
+               ("0.7.8"  . "31.1")
+               ("0.8.0"  . "31.1")
+               ("0.8.1"  . "31.1")
+               ("0.8.4"  . "31.1")
+               ("0.8.8"  . "31.1")
+               ("0.13.0" . "31.1")))
+
 (provide 'transient)
+
 ;; Local Variables:
 ;; checkdoc-symbol-words: ("command-line" "edit-mode" "help-mode")
 ;; indent-tabs-mode: nil

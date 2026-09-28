@@ -1,11 +1,11 @@
 ;; -*- no-byte-compile: t; lexical-binding: nil -*-
-(define-package "orderless" "20260909.1506"
+(define-package "orderless" "20260927.2344"
   "Completion style for matching regexps in any order."
   '((emacs  "27.1")
     (compat "31"))
   :url "https://github.com/oantolin/orderless"
-  :commit "5806e3f9401606d16962cffae68188c92deb1272"
-  :revdesc "5806e3f94016"
+  :commit "3d2c2e6468ddf51e69c78e8212e5fd9006d2ce8a"
+  :revdesc "3d2c2e6468dd"
   :keywords '("matching" "completion")
   :authors '(("Omar Antolín Camarena" . "omar@matem.unam.mx"))
   :maintainers '(("Omar Antolín Camarena" . "omar@matem.unam.mx")

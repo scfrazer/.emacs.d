@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20260907.511
-;; Package-Revision: c5d0139012d2
+;; Package-Version: 20260926.1228
+;; Package-Revision: 42eafcfddbe8
 ;; Package-Requires: ((emacs "29.1") (compat "31"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion

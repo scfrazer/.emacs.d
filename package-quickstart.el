@@ -297,7 +297,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260909.859/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260909.859/llama-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260925.1854/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260925.1854/llama-autoloads.el"))
 
 
 
@@ -397,7 +397,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260919.936/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260919.936/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502/with-editor-autoloads.el"))
 
 
 
@@ -1428,7 +1428,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260919.938/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260919.938/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400/transient-autoloads.el"))
 
 
 
@@ -2386,7 +2386,7 @@ Major mode for editing Python files, using tree-sitter library.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506/orderless-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260927.2344/orderless-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/orderless-20260927.2344/orderless-autoloads.el"))
 
 
 
@@ -3014,7 +3014,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260907.511/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260907.511/marginalia-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260926.1228/marginalia-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/marginalia-20260926.1228/marginalia-autoloads.el"))
 
 
 
@@ -4241,7 +4241,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260921.912" "/home/scfrazer/.emacs.d/elpa/orderless-20260909.1506" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260919.938" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260919.936" "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260921.912" "/home/scfrazer/.emacs.d/elpa/orderless-20260927.2344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502" "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:

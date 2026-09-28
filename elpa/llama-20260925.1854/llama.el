@@ -6,11 +6,11 @@
 ;; Homepage: https://github.com/tarsius/llama
 ;; Keywords: extensions
 
-;; Package-Version: 20260909.859
-;; Package-Revision: cfea618f14bc
+;; Package-Version: 20260925.1854
+;; Package-Revision: 8e4aeb81824a
 ;; Package-Requires: (
-;;     (emacs  "26.1")
-;;     (compat "31.0"))
+;;     (emacs  "28.1")
+;;     (compat "31.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -304,10 +304,8 @@ that is used as TABLE."
   "Face used for optional arguments `&1' through `&9', `&' and `&*'.")
 
 (defface llama-deleted-argument
-  `((((supports :box t))
-     :box ( :line-width ,(if (>= emacs-major-version 28) (cons -1 -1) -1)
-            :color "red"
-            :style nil))
+  '((((supports :box t))
+     :box (:line-width (-1 . -1) :color "red" :style nil))
     (((supports :underline t))
      :underline "red")
     (t
@@ -469,10 +467,7 @@ expansion, and the looks of this face should hint at that.")
                        (macrop sym)
                        (get sym 'font-lock-keyword)) ;~= 32.0.50 and morlock
                    (not (get sym 'no-font-lock-keyword))
-                   (static-if (fboundp 'lisp--el-funcall-position-p) ;>= 28.1
-                       (lisp--el-funcall-position-p (match-beginning 0))
-                     (not (lisp--el-non-funcall-position-p
-                           (match-beginning 0)))))
+                   (lisp--el-funcall-position-p (match-beginning 0)))
           (throw 'found t))))))
 
 (defun elisp-mode-syntax-propertize@llama (start end)
@@ -525,8 +520,8 @@ N arguments.
 
 These functions are intended to be used using the names `partial' and
 `rpartial'.  To be able to use these shorthands in a file, you must set
-the file-local value of `read-symbols-shorthands', which was added in
-Emacs 28.1.  For an example see the end of file \"llama.el\".
+the file-local value of `read-symbols-shorthands'.  For an example see
+the end of file \"llama.el\".
 
 This is an alternative to `apply-partially', whose name is too long."
   (declare (pure t) (side-effect-free error-free))
@@ -545,8 +540,8 @@ N arguments.
 
 These functions are intended to be used using the names `rpartial' and
 `partial'.  To be able to use these shorthands in a file, you must set
-the file-local value of `read-symbols-shorthands', which was added in
-Emacs 28.1.  For an example see the end of file \"llama.el\"."
+the file-local value of `read-symbols-shorthands'.  For an example see
+the end of file \"llama.el\"."
   (declare (pure t) (side-effect-free error-free))
   (lambda (&rest args2)
     (apply fn (append args2 args))))
