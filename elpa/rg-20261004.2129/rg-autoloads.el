@@ -146,6 +146,11 @@ List all `rg-mode' buffers in `ibuffer'." t)
 (register-definition-prefixes "rg-isearch" '("rg-get-isearch-string"))
 
 
+;;; Generated autoloads from rg-json.el
+
+(register-definition-prefixes "rg-json" '("rg-json-"))
+
+
 ;;; Generated autoloads from rg-menu.el
 
  (autoload 'rg-menu "rg-menu.el" "" t)

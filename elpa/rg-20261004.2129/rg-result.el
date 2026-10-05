@@ -29,6 +29,7 @@
 (require 'cl-lib)
 (require 'grep)
 (require 'mouse)
+(require 'rg-json)
 (require 'rg-header)
 (require 'rg-history)
 (require 'subr-x)
@@ -100,6 +101,13 @@ Default is ':'."
   :type 'string
   :group 'rg
   :package-version '(rg . "2.0.0"))
+
+
+(defcustom rg-use-json-output (version<= "27.1" emacs-version)
+  "Use json ouput from ripgrep to create the content of the result buffer."
+  :type 'boolean
+  :group 'rg
+  :package-version '(rg . "2.5.0"))
 
 (defvar rg-filter-hook nil
   "Hook for new content in the rg buffer.
@@ -312,6 +320,7 @@ Each element is consists by (match-beginning-marker . match-string-length).")
 Each function is called with two arguments: the compilation buffer,
 and a string describing how the process finished.")
 
+
 
 ;; Defuns
 
@@ -396,9 +405,6 @@ Set up `compilation-exit-message-function'."
   "Return aligned LINE-NUMBER, COLUMN-NUMBER and CONTEXT-MARKER."
   (let* ((line-col-separator (or rg-align-line-column-separator ":"))
          (pos-content-separator (or rg-align-position-content-separator ":"))
-         (pos-content-separator (if rg-show-columns
-                                    pos-content-separator
-                                  (propertize pos-content-separator 'invisible t)))
          (line-number-width
           (if (and rg-show-columns context-marker)
               ;; Context lines should be aligned to column numbers
@@ -417,14 +423,14 @@ Set up `compilation-exit-message-function'."
                           pos-content-separator)
                         (rg-prepend-space column-number
                                           rg-align-column-number-field-length)
-                        pos-content-separator)
+                        (if rg-show-columns pos-content-separator))
               context-marker))))
 
 (defun rg-format-line-and-column-numbers (beg end)
   "Align numbers in region defined by BEG and END."
   (goto-char beg)
   (while (re-search-forward
-          "^\033\\[[0]*m\033\\[32m\\([0-9]*?\\)\033\\[[0]*m\\(:\\|-\\)\\(?:\033\\[[0]*m\\([0-9]*?\\)\033\\[[0]*m:\\)?"
+          "^\\([0-9]*?\\)\\(:\\|-\\)\\(?:\\([0-9]*?\\):\\)?"
           end 1)
     (let* ((line-match (match-string 1))
            (col-separator-match (match-string 2))
@@ -442,12 +448,46 @@ Set up `compilation-exit-message-function'."
        (propertize col-separator-match 'invisible t) t t nil 2)
       (replace-match (propertize column-match 'invisible t) t t nil 3))))))
 
+(defun rg-filter-raw-output (beg end)
+  "Filter raw ripgrep output between BEG and END in buffer."
+  ;; Add File: in front of filename
+  (let (temp-positions)
+    (when rg-group-result
+      (while (re-search-forward "^\033\\[[0]*m\033\\[35m\\(.*?\\)\033\\[[0]*m$" end 1)
+        (replace-match (concat (propertize "File:"
+                                           'rg-file-message t
+                                           'face nil
+                                           'font-lock-face 'rg-file-tag-face)
+                               " "
+                               (propertize (match-string 1)
+                                           'face nil
+                                           'font-lock-face 'rg-filename-face))
+                       t t))
+      (goto-char beg))
+    ;; Highlight rg matches and delete marking sequences.
+    (while (re-search-forward "\033\\[[0]*m\033\\[[3]*1m\033\\[[3]*1m\\(.*?\\)\033\\[[0]*m" end 1)
+      (replace-match (propertize (match-string 1)
+                                 'face nil 'font-lock-face 'rg-match-face)
+                     t t)
+      (push (cons (copy-marker (match-beginning 0))
+                  (length (match-string 0)))
+            temp-positions)
+      (cl-incf rg-hit-count))
+    ;; Delete all remaining escape sequences
+    (goto-char beg)
+    (while (re-search-forward "\033\\[[0-9;]*[0mK]" end 1)
+      (replace-match "" t t))
+
+    (setq rg-match-positions (nconc rg-match-positions (nreverse temp-positions))))
+
+  (rg-format-line-and-column-numbers beg end))
+
 (defun rg-filter ()
   "Handle match highlighting escape sequences inserted by the rg process.
 This function is called from `compilation-filter-hook'."
   (save-excursion
     (forward-line 0)
-    (let ((end (point)) beg temp-positions)
+    (let ((end (point)) beg)
       (goto-char compilation-filter-start)
       (forward-line 0)
       (setq beg (point))
@@ -457,41 +497,11 @@ This function is called from `compilation-filter-hook'."
       ;; escape sequence in one chunk and the rest in another.
       (when (< (point) end)
         (setq end (copy-marker end))
-        ;; Add File: in front of filename
-        (when rg-group-result
-          (while (re-search-forward "^\033\\[[0]*m\033\\[35m\\(.*?\\)\033\\[[0]*m$" end 1)
-            (replace-match (concat (propertize "File:"
-                                               'rg-file-message t
-                                               'face nil
-                                               'font-lock-face 'rg-file-tag-face)
-                                   " "
-                                   (propertize (match-string 1)
-                                               'face nil
-                                               'font-lock-face 'rg-filename-face))
-                           t t))
-          (goto-char beg))
-
-        ;; Highlight rg matches and delete marking sequences.
-        (while (re-search-forward "\033\\[[0]*m\033\\[[3]*1m\033\\[[3]*1m\\(.*?\\)\033\\[[0]*m" end 1)
-          (replace-match (propertize (match-string 1)
-                                     'face nil 'font-lock-face 'rg-match-face)
-                         t t)
-          (push (cons (copy-marker (match-beginning 0))
-                      (length (match-string 0)))
-                temp-positions)
-          (cl-incf rg-hit-count))
-        (rg-format-line-and-column-numbers beg end)
-
-        ;; Delete all remaining escape sequences
-        (goto-char beg)
-        (while (re-search-forward "\033\\[[0-9;]*[0mK]" end 1)
-          (replace-match "" t t))
-
-        (goto-char beg)
-
-        (setq rg-match-positions (nconc rg-match-positions (nreverse temp-positions)))
-
-        (run-hooks 'rg-filter-hook)))))
+        (if rg-use-json-output
+            (rg-json-filter)
+          (rg-filter-raw-output beg end)))
+      (goto-char beg))
+    (run-hooks 'rg-filter-hook)))
 
 ;; The regexp and filter functions below were taken from ag.el
 ;; Kudos to the people from https://github.com/Wilfred/ag.el for these.

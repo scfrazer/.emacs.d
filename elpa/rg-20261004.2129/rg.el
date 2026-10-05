@@ -6,8 +6,8 @@
 ;;
 ;; Author: David Landell <david.landell@sunnyhill.email>
 ;;         Roland McGrath <roland@gnu.org>
-;; Package-Version: 20260823.1828
-;; Package-Revision: 6b00e2ae98c4
+;; Package-Version: 20261004.2129
+;; Package-Revision: 7d4839686031
 ;; URL: https://github.com/dajva/rg.el
 ;; Package-Requires: ((emacs "28.1") (transient "0.9.2") (wgrep "2.1.10"))
 ;; Keywords: matching, tools
@@ -183,7 +183,7 @@ line flags to use.")
 (defvar-local rg--executable-local 'unknown)
 
 (defvar rg-required-command-line-flags
-  '("--color=always"
+  (list "--color=always"
     "--colors=match:fg:red"
     "--colors=path:fg:magenta"
     "--colors=line:fg:green"
@@ -305,6 +305,8 @@ are command line flags to use for the search."
           rg-required-command-line-flags
           (when (or rg-show-columns rg-group-result)
             (list "--column"))
+          (when rg-use-json-output
+            (list "--json"))
           (rg-build-type-add-args)
           (mapcar #'rg-quote-flag
                   (if (functionp rg-command-line-flags)

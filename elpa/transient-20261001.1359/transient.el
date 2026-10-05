@@ -6,8 +6,8 @@
 ;; Homepage: https://github.com/magit/transient
 ;; Keywords: extensions
 
-;; Package-Version: 20260926.1400
-;; Package-Revision: a789ecb54850
+;; Package-Version: 20261001.1359
+;; Package-Revision: 3ad7c3540402
 ;; Package-Requires: (
 ;;     (emacs   "28.1")
 ;;     (compat  "31.0")
@@ -565,7 +565,7 @@ See also `transient-align-variable-pitch'."
   "Whether to force use of a single column to display suffixes.
 
 This might be useful for users with low vision who use large text
-and might otherwise have to scroll in two dimensions. This is also
+and might otherwise have to scroll in two dimensions.  This is also
 useful for blind users, because it causes suffixes to be navigated
 in a more natural order."
   :package-version '(transient . "0.3.6")
@@ -1947,7 +1947,7 @@ variable instead.")
 (defvar transient-exit-hook nil
   "Hook run after exiting a transient menu.
 Unlike `transient-post-exit-hook', this runs even if another transient
-menu becomes active at the same time. ")
+menu becomes active at the same time.")
 
 (defvar transient-post-exit-hook nil
   "Hook run after exiting all transient menus.

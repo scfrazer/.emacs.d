@@ -254,7 +254,7 @@ See `xr' for a description of the DIALECT argument.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260901.1107/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20260901.1107/cond-let-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20261001.1537/cond-let-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cond-let-20261001.1537/cond-let-autoloads.el"))
 
 
 
@@ -297,7 +297,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260925.1854/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20260925.1854/llama-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/llama-20261001.1538/llama-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/llama-20261001.1538/llama-autoloads.el"))
 
 
 
@@ -397,7 +397,7 @@ it is disabled.
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502/with-editor-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20261003.1832/with-editor-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/with-editor-20261003.1832/with-editor-autoloads.el"))
 
 
 
@@ -1428,7 +1428,7 @@ with the specified `:load-path' the module cannot be found." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400/transient-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/transient-20261001.1359/transient-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/transient-20261001.1359/transient-autoloads.el"))
 
 
 
@@ -1546,7 +1546,7 @@ Create `sr-speedbar' window." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828/rg-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/rg-20261004.2129/rg-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/rg-20261004.2129/rg-autoloads.el"))
 
 
 
@@ -1683,6 +1683,10 @@ List all `rg-mode' buffers in `ibuffer'." t)
  (autoload 'rg-isearch-project "rg-isearch.el" "" t)
  (autoload 'rg-isearch-menu "rg-isearch.el" "" t)
 (register-definition-prefixes "rg-isearch" '("rg-get-isearch-string"))
+
+
+
+(register-definition-prefixes "rg-json" '("rg-json-"))
 
 
 
@@ -3707,7 +3711,7 @@ Switch to *Deft* buffer and load files." t nil)
 
 
 )
-(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260825.1510/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20260825.1510/cmake-mode-autoloads.el"))
+(let ((load-true-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20261002.1529/cmake-mode-autoloads.el")(load-file-name "/home/scfrazer/.emacs.d/elpa/cmake-mode-20261002.1529/cmake-mode-autoloads.el"))
 
 
 
@@ -4241,7 +4245,7 @@ it is disabled.
   (info-initialize)
   (setq Info-directory-list
         (append
-         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260921.912" "/home/scfrazer/.emacs.d/elpa/orderless-20260927.2344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20260823.1828" "/home/scfrazer/.emacs.d/elpa/transient-20260926.1400" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20260925.1502" "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0")
+         '("/home/scfrazer/.emacs.d/elpa/dash-20260221.1346" "/home/scfrazer/.emacs.d/elpa/modus-themes-20260921.912" "/home/scfrazer/.emacs.d/elpa/orderless-20260927.2344" "/home/scfrazer/.emacs.d/elpa/flymake-1.4.7" "/home/scfrazer/.emacs.d/elpa/rg-20261004.2129" "/home/scfrazer/.emacs.d/elpa/transient-20261001.1359" "/home/scfrazer/.emacs.d/elpa/use-package-20230426.2324" "/home/scfrazer/.emacs.d/elpa/with-editor-20261003.1832" "/home/scfrazer/.emacs.d/elpa/compat-31.1.0.0")
          Info-directory-list)))
 
 ;; Local Variables:
