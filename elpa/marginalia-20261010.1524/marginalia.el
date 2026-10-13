@@ -5,8 +5,8 @@
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Maintainer: Omar Antolín Camarena <omar@matem.unam.mx>, Daniel Mendler <mail@daniel-mendler.de>
 ;; Created: 2020
-;; Package-Version: 20260926.1228
-;; Package-Revision: 42eafcfddbe8
+;; Package-Version: 20261010.1524
+;; Package-Revision: 381af583d253
 ;; Package-Requires: ((emacs "29.1") (compat "31"))
 ;; URL: https://github.com/minad/marginalia
 ;; Keywords: docs, help, matching, completion
@@ -927,8 +927,9 @@ The string is transformed according to `marginalia--bookmark-type-transforms'."
           ((buffer-file-name buffer))
           ((when-let* ((dir (and (local-variable-p 'dired-directory buffer)
                                  (buffer-local-value 'dired-directory buffer))))
-             (expand-file-name (if (stringp dir) dir (car dir))
-                               (buffer-local-value 'default-directory buffer))))
+             (let (file-name-handler-alist)
+               (expand-file-name (if (stringp dir) dir (car dir))
+                                 (buffer-local-value 'default-directory buffer)))))
           ((local-variable-p 'list-buffers-directory buffer)
            (buffer-local-value 'list-buffers-directory buffer)))
          ""))))
